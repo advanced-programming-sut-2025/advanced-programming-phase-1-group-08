@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SV2025">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/SV2025.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
