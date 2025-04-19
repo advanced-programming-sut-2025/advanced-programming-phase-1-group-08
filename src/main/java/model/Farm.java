@@ -3,7 +3,9 @@ package model;
 import java.util.ArrayList;
 
 public class Farm {
+    private final int width=30;
+    private final int height=30;
 
-    protected ArrayList<Tile> Farm = new ArrayList<>();
+    public ArrayList<Tile> Farm = new ArrayList<>();
 
 }

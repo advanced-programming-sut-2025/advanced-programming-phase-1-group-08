@@ -58,4 +58,7 @@ public class User {
     public void increaseHealth(int health) {
         this.health += health;
     }
+    public Farm getFarm() {
+        return farm;
+    }
 }
