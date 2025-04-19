@@ -12,4 +12,11 @@ public class LoginController {
         String str = "alaki";
         return str;
     }
+    public void alaki () {
+
+        int x = 0;
+        x = 23;
+        x++;
+
+    }
 }
