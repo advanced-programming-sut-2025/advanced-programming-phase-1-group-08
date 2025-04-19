@@ -8,4 +8,8 @@ public class LoginController {
         x--;
         return x;
     }
+    public String check () {
+        String str = "alaki";
+        return str;
+    }
 }
