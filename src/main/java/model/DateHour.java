@@ -5,17 +5,19 @@ import model.Enum.WeatherTime.WeekDay;
 
 public class DateHour {
 
+    private int year;
     private WeekDay weekDay;
     private Season season;
     private int seasonDay; // چندمین روز فصل ( تاریخ )
     private int hour;
 
 
-    public DateHour(WeekDay weekDay, Season season, int seasonDay, int hour) {
+    public DateHour(WeekDay weekDay, Season season, int seasonDay, int hour, int year) {
         this.weekDay = weekDay;
         this.season = season;
         this.seasonDay = seasonDay;
         this.hour = hour;
+        this.year = year;
     }
 
     public int getTime () {
@@ -34,9 +36,8 @@ public class DateHour {
 
     public void increaseHour (int hour) {
 
-        // advanceDay(hour/24);
-        // حواست به عدد بزرگا هم باشه مثلا اگه اندازه ۲ فصل رفت جلو
-        // ساعت جلو میزه بیشتر از ۲۴ هم نشه
+        increaseDay(hour+this.hour/24);
+        this.hour = (hour+this.hour) % 24;
     }
     public void decreaseHour (int hour) {
 
@@ -46,10 +47,8 @@ public class DateHour {
     }
     public void increaseDay (int number) {
 
-        // changeSeason(number/28);
-
-        // تابع برای افزایش روز
-        // بعد تموم شدن ماه بیاد بریم فصل بعد
+        increaseSeason(number+this.seasonDay/28);
+        this.seasonDay = (this.seasonDay + number) % 28;
     }
     public void decreaseDay (int number) {
 
@@ -58,10 +57,27 @@ public class DateHour {
         // تابع برای افزایش روز
         // بعد تموم شدن ماه بیاد بریم فصل بعد
     }
+    public void increaseSeason (int number) {
+
+        checkYearPassed(number);
+        this.season = this.season.passedSeason(number);
+
+    }
+    public void checkYearPassed (int SeasonPassed) {
+
+        if (this.season == Season.Spring)
+            this.year += SeasonPassed % 4;
+        else if (this.season == Season.Summer)
+            this.year += (SeasonPassed + 1) % 4;
+        else if (this.season == Season.Fall)
+            this.year += (SeasonPassed + 2) % 4;
+        else if (this.season == Season.Winter)
+            this.year += (SeasonPassed + 3) % 4;
+    }
+    public void increaseYear (int number) {
+        this.year += year;
+    }
     public void changeSeason (Season season) {
         // حواست به جلو رفتن دو تا فصل باشه
-    }
-    public void increaseSeason () {
-
     }
 }

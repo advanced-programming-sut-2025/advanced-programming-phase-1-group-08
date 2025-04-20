@@ -10,9 +10,10 @@ import static model.App.*;
 
 public class GameController {
 
-    public Farm creatInitialFarm(int id){
+    public Farm creatInitialFarm (int id) {
+
         Farm farm= App.currentUser.getFarm();
-        if (id==1){
+        if ( id == 1 ) {
 
             Lake lake = new Lake();
             lake.setCharactor('L');
@@ -82,7 +83,7 @@ public class GameController {
     public void setTime (boolean gameIsNew) {
 
         if (gameIsNew)
-            currentDate = new DateHour(WeekDay.monday, Season.Spring, 1, 9);
+            currentDate = new DateHour(WeekDay.monday, Season.Spring, 1, 9, 1980);
 
         else {
             // TODO
