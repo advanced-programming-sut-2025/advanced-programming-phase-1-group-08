@@ -28,6 +28,12 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommand.showDayOfWeek.getMather(input) != null)
             System.out.println(controller.showDayOfWeek());
 
+        else if (GameMenuCommand.advanceTime.getMather(input) != null) // TODO
+            System.out.println(controller.increaseHour());
+
+        else if (GameMenuCommand.advanceDate.getMather(input) != null)
+            System.out.println(controller.increaseDate());
+
 
     }
 }

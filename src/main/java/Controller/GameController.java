@@ -100,7 +100,7 @@ public class GameController {
 
         currentDate.increaseHour(hour);
         currentDate.increaseDay(day);
-    }
+    } // TODO   باید کارایی که بعد افزایش زمان انجام میشن رو انجام بدی
 
 
     public void startNewGame () {
@@ -123,13 +123,13 @@ public class GameController {
 
     public Result showTime () {
         return new Result(true, "Time : "
-                + currentDate.getHour());
+                + currentDate.getHour()+ ":00");
     }
     public Result showDate () {
         return new Result(true, "Date : "+currentDate.getYear()+" "+currentDate.getSeason()+" "+currentDate.getDate());
     }
     public Result showDateTime () {
-        return new Result(true, "Time : " + currentDate.getHour() +
+        return new Result(true, "Time : " + currentDate.getHour()+ ":00" +
                 "\nData : "+currentDate.getYear()+" "+currentDate.getSeason()+" "+currentDate.getDate());
     }
     public Result showDayOfWeek () {
@@ -137,7 +137,29 @@ public class GameController {
                 + currentDate.getDayOfTheWeek());
     }
     public Result increaseHour (String hour) {
+
         if (hour.charAt(0) == '-')
-            return new Result(false, "The time must be positive number!");
+            return new Result(false, "The time must be a positive number!");
+        int amount;
+        try {
+            amount = Integer.parseInt(hour);
+        } catch (Exception e) {
+            return new Result(false, "Time is incorrect!");
+        }
+        passedOfTime(0, amount);
+        return new Result(true, "Time change to : "+ currentDate.getHour()+":00");
+    }
+    public Result increaseDate (String date) {
+
+        if (date.charAt(0) == '-')
+            return new Result(false, "The time must be a positive number!");
+        int amount;
+        try {
+            amount = Integer.parseInt(date);
+        } catch (Exception e) {
+            return new Result(false, "Time is incorrect!");
+        }
+        passedOfTime(amount, 0);
+        return new Result(true, "Date change to : "+currentDate.getYear()+" "+currentDate.getSeason()+" "+currentDate.getDate());
     }
 }
