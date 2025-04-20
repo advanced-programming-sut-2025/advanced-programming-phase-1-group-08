@@ -2,10 +2,8 @@ package View;
 
 import Controller.GameController;
 import model.Enum.Commands.GameMenuCommand;
-import model.Result;
 
 import java.util.Scanner;
-import java.util.regex.Matcher;
 
 public class GameMenu implements AppMenu {
 
