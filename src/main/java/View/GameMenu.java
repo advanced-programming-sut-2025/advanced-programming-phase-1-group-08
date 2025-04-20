@@ -1,7 +1,7 @@
 package View;
 
 import Controller.GameController;
-import model.Enum.Commands.GameMenuCommand;
+import model.Enum.Commands.GameMenuCommands;
 
 import java.util.Scanner;
 
@@ -16,16 +16,16 @@ public class GameMenu implements AppMenu {
 
         String input = scanner.nextLine();
 
-        if (GameMenuCommand.showTime.getMather(input) != null)
+        if (GameMenuCommands.showTime.getMather(input) != null)
             System.out.println(controller.showTime());
 
-        else if (GameMenuCommand.showDate.getMather(input) != null)
+        else if (GameMenuCommands.showDate.getMather(input) != null)
             System.out.println(controller.showDate());
 
-        else if (GameMenuCommand.showDateTime.getMather(input) != null)
+        else if (GameMenuCommands.showDateTime.getMather(input) != null)
             System.out.println(controller.showDateTime());
 
-        else if (GameMenuCommand.showDayOfWeek.getMather(input) != null)
+        else if (GameMenuCommands.showDayOfWeek.getMather(input) != null)
             System.out.println(controller.showDayOfWeek());
 
         else if (GameMenuCommand.advanceTime.getMather(input) != null) // TODO
