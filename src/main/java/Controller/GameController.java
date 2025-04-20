@@ -83,8 +83,7 @@ public class GameController {
     public void setTime (boolean gameIsNew) {
 
         if (gameIsNew)
-            currentDate = new DateHour(WeekDay.monday, Season.Spring, 1, 9, 1980);
-
+            currentDate = new DateHour(Season.Spring, 1, 9, 1980);
         else {
             // TODO
         }

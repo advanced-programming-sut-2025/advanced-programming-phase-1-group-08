@@ -6,14 +6,12 @@ import model.Enum.WeatherTime.WeekDay;
 public class DateHour {
 
     private int year;
-    private WeekDay weekDay;
     private Season season;
     private int seasonDay; // چندمین روز فصل ( تاریخ )
     private int hour;
 
 
-    public DateHour(WeekDay weekDay, Season season, int seasonDay, int hour, int year) {
-        this.weekDay = weekDay;
+    public DateHour(Season season, int seasonDay, int hour, int year) {
         this.season = season;
         this.seasonDay = seasonDay;
         this.hour = hour;
@@ -78,6 +76,23 @@ public class DateHour {
         this.year += year;
     }
     public void changeSeason (Season season) {
-        // حواست به جلو رفتن دو تا فصل باشه
+
+    }
+    public WeekDay getDayOfTheWeek () {
+
+        if (this.seasonDay % 7 == 0)
+            return WeekDay.saturday;
+        else if (this.seasonDay % 7 == 1)
+            return WeekDay.sunday;
+        else if (this.seasonDay % 7 == 2)
+            return WeekDay.monday;
+        else if (this.seasonDay % 7 == 3)
+            return WeekDay.tuesday;
+        else if (this.seasonDay % 7 == 4)
+            return WeekDay.wednesday;
+        else if (this.seasonDay % 7 == 5)
+            return WeekDay.thursday;
+        else
+            return WeekDay.friday;
     }
 }
