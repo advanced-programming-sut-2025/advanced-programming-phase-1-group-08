@@ -1,6 +1,7 @@
-package model;
+package model.ToolsPackage;
 
 
+import model.Items;
 
 public class Tools extends Items {
 

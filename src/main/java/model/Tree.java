@@ -1,6 +1,6 @@
 package model;
 
-import model.Enum.TreeType;
+import model.Enum.AllPlants.TreeType;
 
 public class Tree extends GameObject {
 

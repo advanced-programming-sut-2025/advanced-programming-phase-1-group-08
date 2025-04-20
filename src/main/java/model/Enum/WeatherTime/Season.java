@@ -1,4 +1,4 @@
-package model.Enum;
+package model.Enum.WeatherTime;
 
 // برای فصل ها و مشخص کردن اب و هوا
 

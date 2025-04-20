@@ -1,4 +1,4 @@
-package model;
+package model.ToolsPackage;
 
 public class Sⅽythe extends Tools {
 

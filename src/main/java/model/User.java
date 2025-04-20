@@ -1,5 +1,7 @@
 package model;
 
+import model.ToolsPackage.Tools;
+
 public class User {
 
     private String username;
