@@ -3,7 +3,7 @@ package model.Enum.Commands;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum GameMenuCommand {
+public enum GameMenuCommands {
 
     showTime      ("\\s*(?i)time\\s*"),
     showDate      ("\\s*(?i)data\\s*"),
@@ -18,7 +18,7 @@ public enum GameMenuCommand {
 
     private final String pattern;
 
-    GameMenuCommand (String pattern) {
+    GameMenuCommands(String pattern) {
         this.pattern = pattern;
     }
 
