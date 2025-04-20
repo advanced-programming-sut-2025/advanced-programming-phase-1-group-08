@@ -7,30 +7,21 @@ public class DateHour {
 
     private int year;
     private Season season;
-    private int seasonDay; // چندمین روز فصل ( تاریخ )
+    private int date; // چندمین روز فصل ( تاریخ )
     private int hour;
 
 
     public DateHour(Season season, int seasonDay, int hour, int year) {
         this.season = season;
-        this.seasonDay = seasonDay;
+        this.date = seasonDay;
         this.hour = hour;
         this.year = year;
     }
 
-    public int getTime () {
-        return -1;
-    }
-    public String getDate () {
-        return null;
-    }
-    public String getDateTime () {
-        return null;
-    }
-    public WeekDay getDayOfWeek () {
-        return null;
-    }
-
+    public int getHour () {return this.hour;}
+    public int getDate () {return this.date;}
+    public int getYear () {return this.year;}
+    public Season getSeason () {return this.season;}
 
     public void increaseHour (int hour) {
 
@@ -39,8 +30,8 @@ public class DateHour {
     }
     public void increaseDay (int number) {
 
-        increaseSeason((number+this.seasonDay) / 28);
-        this.seasonDay = (this.seasonDay + number) % 28;
+        increaseSeason((number+this.date) / 28);
+        this.date = (this.date + number) % 28;
     }
     public void increaseSeason (int number) {
 
@@ -59,22 +50,19 @@ public class DateHour {
         else if (this.season == Season.Winter)
             this.year += (SeasonPassed + 3) % 4;
     }
-    public void changeSeason (Season season) {
-
-    }
     public WeekDay getDayOfTheWeek () {
 
-        if (this.seasonDay % 7 == 0)
+        if (this.date % 7 == 0)
             return WeekDay.saturday;
-        else if (this.seasonDay % 7 == 1)
+        else if (this.date % 7 == 1)
             return WeekDay.sunday;
-        else if (this.seasonDay % 7 == 2)
+        else if (this.date % 7 == 2)
             return WeekDay.monday;
-        else if (this.seasonDay % 7 == 3)
+        else if (this.date % 7 == 3)
             return WeekDay.tuesday;
-        else if (this.seasonDay % 7 == 4)
+        else if (this.date % 7 == 4)
             return WeekDay.wednesday;
-        else if (this.seasonDay % 7 == 5)
+        else if (this.date % 7 == 5)
             return WeekDay.thursday;
         else
             return WeekDay.friday;

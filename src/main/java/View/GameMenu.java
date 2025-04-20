@@ -1,10 +1,35 @@
 package View;
 
+import Controller.GameController;
+import model.Enum.Commands.GameMenuCommand;
+import model.Result;
+
 import java.util.Scanner;
+import java.util.regex.Matcher;
 
 public class GameMenu implements AppMenu {
+
+
+    GameController controller = new GameController();
+
+
     @Override
     public void check(Scanner scanner) {
+
+        String input = scanner.nextLine();
+
+        if (GameMenuCommand.showTime.getMather(input) != null)
+            System.out.println(controller.showTime());
+
+        else if (GameMenuCommand.showDate.getMather(input) != null)
+            System.out.println(controller.showDate());
+
+        else if (GameMenuCommand.showDateTime.getMather(input) != null)
+            System.out.println(controller.showDateTime());
+
+        else if (GameMenuCommand.showDayOfWeek.getMather(input) != null)
+            System.out.println(controller.showDayOfWeek());
+
 
     }
 }

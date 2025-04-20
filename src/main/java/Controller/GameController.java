@@ -11,7 +11,7 @@ public class GameController {
 
     public Farm creatInitialFarm (int id) {
 
-        Farm farm= App.currentUser.getFarm();
+        Farm farm= currentUser.getFarm();
         if ( id == 1 ) {
 
             Lake lake = new Lake();
@@ -116,5 +116,20 @@ public class GameController {
 
         if (currentUser == currentPlayer)
             passedOfTime(0, 1);
+    }
+    public Result showTime () {
+        return new Result(true, "Time : "
+                + currentDate.getHour());
+    }
+    public Result showDate () {
+        return new Result(true, "Date : "+currentDate.getYear()+" "+currentDate.getSeason()+" "+currentDate.getDate());
+    }
+    public Result showDateTime () {
+        return new Result(true, "Time : " + currentDate.getHour() +
+                "\nData : "+currentDate.getYear()+" "+currentDate.getSeason()+" "+currentDate.getDate());
+    }
+    public Result showDayOfWeek () {
+        return new Result(true, "Day of Week : "
+                + currentDate.getDayOfTheWeek());
     }
 }
