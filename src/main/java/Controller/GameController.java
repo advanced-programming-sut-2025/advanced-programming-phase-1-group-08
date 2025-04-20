@@ -4,7 +4,6 @@ import model.*;
 import model.Enum.WeatherTime.Season;
 import model.Enum.WallType;
 import model.Enum.WeatherTime.Weather;
-import model.Enum.WeatherTime.WeekDay;
 
 import static model.App.*;
 
@@ -97,15 +96,25 @@ public class GameController {
             // TODO
         }
     }
+    public void passedOfTime (int day, int hour) {
+
+        currentDate.increaseHour(hour);
+        currentDate.increaseDay(day);
+    }
 
 
     public void startNewGame () {
 
+        setTime(true);
+        setWeather(true);
     }
     public void loadGame () {
-
+        setTime(false);
+        setWeather(false);
     }
     public void AutomaticFunction () {
 
+        if (currentUser == currentPlayer)
+            passedOfTime(0, 1);
     }
 }

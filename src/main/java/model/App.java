@@ -13,7 +13,8 @@ public class App {
     public static ArrayList<Farm> farms = new ArrayList<>();
     public static Weather currentWeather;
     public static DateHour currentDate;
-    public static User currentUser;
+    public static User currentPlayer; // TODO
+    public static User currentUser; // TODO
     public static Menu currentMenu;
 
 

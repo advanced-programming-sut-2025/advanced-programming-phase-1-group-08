@@ -34,26 +34,13 @@ public class DateHour {
 
     public void increaseHour (int hour) {
 
-        increaseDay(hour+this.hour/24);
+        increaseDay((hour+this.hour) / 24);
         this.hour = (hour+this.hour) % 24;
-    }
-    public void decreaseHour (int hour) {
-
-        // advanceDay(hour/24);
-        // حواست به عدد بزرگا هم باشه مثلا اگه اندازه ۲ فصل رفت جلو
-        // ساعت جلو میزه بیشتر از ۲۴ هم نشه
     }
     public void increaseDay (int number) {
 
-        increaseSeason(number+this.seasonDay/28);
+        increaseSeason((number+this.seasonDay) / 28);
         this.seasonDay = (this.seasonDay + number) % 28;
-    }
-    public void decreaseDay (int number) {
-
-        // changeSeason(number/28);
-
-        // تابع برای افزایش روز
-        // بعد تموم شدن ماه بیاد بریم فصل بعد
     }
     public void increaseSeason (int number) {
 
@@ -61,7 +48,7 @@ public class DateHour {
         this.season = this.season.passedSeason(number);
 
     }
-    public void checkYearPassed (int SeasonPassed) {
+    private void checkYearPassed (int SeasonPassed) {
 
         if (this.season == Season.Spring)
             this.year += SeasonPassed % 4;
@@ -71,9 +58,6 @@ public class DateHour {
             this.year += (SeasonPassed + 2) % 4;
         else if (this.season == Season.Winter)
             this.year += (SeasonPassed + 3) % 4;
-    }
-    public void increaseYear (int number) {
-        this.year += year;
     }
     public void changeSeason (Season season) {
 
