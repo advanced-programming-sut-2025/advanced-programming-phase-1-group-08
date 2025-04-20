@@ -117,6 +117,10 @@ public class GameController {
         if (currentUser == currentPlayer)
             passedOfTime(0, 1);
     }
+
+
+
+
     public Result showTime () {
         return new Result(true, "Time : "
                 + currentDate.getHour());
@@ -131,5 +135,9 @@ public class GameController {
     public Result showDayOfWeek () {
         return new Result(true, "Day of Week : "
                 + currentDate.getDayOfTheWeek());
+    }
+    public Result increaseHour (String hour) {
+        if (hour.charAt(0) == '-')
+            return new Result(false, "The time must be positive number!");
     }
 }
