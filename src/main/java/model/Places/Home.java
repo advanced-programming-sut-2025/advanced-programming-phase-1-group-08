@@ -1,4 +1,7 @@
-package model;
+package model.Places;
+
+import model.Fridge;
+import model.GameObject;
 
 import java.util.ArrayList;
 

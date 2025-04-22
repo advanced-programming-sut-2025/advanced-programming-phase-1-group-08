@@ -1,5 +1,6 @@
 package model;
 
+import model.Places.Farm;
 import model.ToolsPackage.Tools;
 
 public class User {

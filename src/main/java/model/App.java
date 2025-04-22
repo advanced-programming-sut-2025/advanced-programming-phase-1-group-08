@@ -3,6 +3,7 @@ package model;
 
 import model.Enum.Menu;
 import model.Enum.WeatherTime.Weather;
+import model.Places.Farm;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package model.Enum;
+package model.Enum.ItemType;
 
 import model.Animal;
 

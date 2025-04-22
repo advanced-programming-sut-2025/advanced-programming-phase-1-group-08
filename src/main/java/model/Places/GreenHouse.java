@@ -1,4 +1,4 @@
-package model;
+package model.Places;
 
 public class GreenHouse {
 

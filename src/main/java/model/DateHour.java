@@ -22,6 +22,7 @@ public class DateHour {
     public int getDate () {return this.date;}
     public int getYear () {return this.year;}
     public Season getSeason () {return this.season;}
+    public String getNameSeason () {return this.season.getDisplayName();}
 
     public void increaseHour (int hour) {
 
@@ -32,7 +33,7 @@ public class DateHour {
 
         increaseSeason((number+this.date) / 28);
         this.date = (this.date + number) % 28;
-    }
+    } // TODO ساعت از ۹ به بعد باید برن بخوابن و عملا الکیه و دستور افزایش ساعتم حواست باشه
     public void increaseSeason (int number) {
 
         checkYearPassed(number);

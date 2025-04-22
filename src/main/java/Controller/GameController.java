@@ -2,8 +2,11 @@ package Controller;
 
 import model.*;
 import model.Enum.WeatherTime.Season;
-import model.Enum.WallType;
+import model.Enum.ItemType.WallType;
 import model.Enum.WeatherTime.Weather;
+import model.Places.Farm;
+import model.Places.Home;
+import model.Places.Lake;
 
 import static model.App.*;
 
@@ -96,6 +99,13 @@ public class GameController {
             // TODO
         }
     }
+    public void doSeasonAutomaticTask () {
+
+    }
+
+
+
+
     public void passedOfTime (int day, int hour) {
 
         currentDate.increaseHour(hour);
@@ -112,10 +122,16 @@ public class GameController {
         setTime(false);
         setWeather(false);
     }
+    public void startDay () {
+
+    }
     public void AutomaticFunction () {
+
 
         if (currentUser == currentPlayer)
             passedOfTime(0, 1);
+
+        startDay();
     }
 
 
@@ -126,11 +142,15 @@ public class GameController {
                 + currentDate.getHour()+ ":00");
     }
     public Result showDate () {
-        return new Result(true, "Date : "+currentDate.getYear()+" "+currentDate.getSeason()+" "+currentDate.getDate());
+        return new Result(true, "Date : "+currentDate.getYear()+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
+    }
+    public Result showSeason   () {
+
+        return new Result(true, currentDate.getNameSeason());
     }
     public Result showDateTime () {
         return new Result(true, "Time : " + currentDate.getHour()+ ":00" +
-                "\nData : "+currentDate.getYear()+" "+currentDate.getSeason()+" "+currentDate.getDate());
+                "\nData : "+currentDate.getYear()+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
     }
     public Result showDayOfWeek () {
         return new Result(true, "Day of Week : "

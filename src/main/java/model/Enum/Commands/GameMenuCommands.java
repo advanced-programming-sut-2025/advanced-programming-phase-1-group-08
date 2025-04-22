@@ -7,11 +7,12 @@ public enum GameMenuCommands {
 
     showTime      ("\\s*(?i)time\\s*"),
     showDate      ("\\s*(?i)data\\s*"),
-    showDateTime  ("\\s*(?i)dataTime\\s*"),
-    showDayOfWeek ("\\s*(?i)day\\s+(?i)of\\s+(?i)the\\s+(?i)week\\s*"),
+    showSeason    ("\\s*(?i)season\\s*"),
+    showDateTime  ("\\s*dataTime\\s*"),
+    showDayOfWeek ("(?i)\\s*day\\s+of\\s+the\\s+week\\s*"),
 
-    advanceTime ("\\s*(?i)cheat\\s+(?i)advance\\s+(?i)time\\s+(?<hour>.+)\\s*h\\s*"),
-    advanceDate ("\\s*(?i)cheat\\s+(?i)advance\\s+(?i)date\\s+(?<date>.+)\\s*d\\s*"),
+    advanceTime ("(?i)\\s*cheat\\s+advance\\s+time\\s+(?<hour>.+)\\s*h\\s*"),
+    advanceDate ("(?i)\\s*cheat\\s+advance\\s+date\\s+(?<date>.+)\\s*d\\s*"),
 
     ;
 

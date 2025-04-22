@@ -1,6 +1,6 @@
 package model.ToolsPackage;
 
-import model.Enum.TrashCanType;
+import model.Enum.ItemType.TrashCanType;
 
 public class TrashCan extends Tools {
 
