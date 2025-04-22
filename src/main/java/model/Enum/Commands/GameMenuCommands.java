@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 public enum GameMenuCommands {
 
     showTime      ("\\s*(?i)time\\s*"),
-    showDate      ("\\s*(?i)data\\s*"),
+    showDate      ("\\s*(?i)date\\s*"),
     showSeason    ("\\s*(?i)season\\s*"),
-    showDateTime  ("\\s*dataTime\\s*"),
+    showDateTime  ("(?i)\\s*dateTime\\s*"),
     showDayOfWeek ("(?i)\\s*day\\s+of\\s+the\\s+week\\s*"),
 
     advanceTime ("(?i)\\s*cheat\\s+advance\\s+time\\s+(?<hour>.+)\\s*h\\s*"),

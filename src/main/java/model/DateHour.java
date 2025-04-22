@@ -31,8 +31,10 @@ public class DateHour {
     }
     public void increaseDay (int number) {
 
-        increaseSeason((number+this.date) / 28);
+        increaseSeason(((number+this.date)-1) / 28);
         this.date = (this.date + number) % 28;
+        if (this.date == 0)
+            this.date = 28;
     } // TODO ساعت از ۹ به بعد باید برن بخوابن و عملا الکیه و دستور افزایش ساعتم حواست باشه
     public void increaseSeason (int number) {
 
@@ -43,13 +45,13 @@ public class DateHour {
     private void checkYearPassed (int SeasonPassed) {
 
         if (this.season == Season.Spring)
-            this.year += SeasonPassed % 4;
+            this.year += SeasonPassed / 4;
         else if (this.season == Season.Summer)
-            this.year += (SeasonPassed + 1) % 4;
+            this.year += (SeasonPassed + 1) / 4;
         else if (this.season == Season.Fall)
-            this.year += (SeasonPassed + 2) % 4;
+            this.year += (SeasonPassed + 2) / 4;
         else if (this.season == Season.Winter)
-            this.year += (SeasonPassed + 3) % 4;
+            this.year += (SeasonPassed + 3) / 4;
     }
     public WeekDay getDayOfTheWeek () {
 

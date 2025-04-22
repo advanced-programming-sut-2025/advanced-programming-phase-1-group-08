@@ -6,23 +6,22 @@ import model.Enum.Commands.GameMenuCommands;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
-import static model.App.currentDate;
+import static model.Color_Eraser.*;
 
 public class GameMenu implements AppMenu {
 
 
     int i=0;
+
+
     GameController controller = new GameController();
     Matcher matcher;
 
     @Override
     public void check(Scanner scanner) {
 
-        if (i == 0)
+        if (i++ == 0)
             controller.startNewGame();
-
-        if (i++ != 0)
-            currentDate.increaseSeason(1);
 
         String input = scanner.nextLine();
 
@@ -45,8 +44,13 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.increaseHour(matcher.group("hour").trim()));
 
         else if ((matcher = GameMenuCommands.advanceDate.getMather(input)) != null)
-            System.out.println(controller.increaseDate(matcher.group("hour").trim()));
+            System.out.println(controller.increaseDate(matcher.group("date").trim()));
 
+
+
+
+        else
+            System.out.println(RED+"Sorry pls try again");
 
     }
 }
