@@ -14,6 +14,7 @@ import model.Plants.ForagingMinerals;
 import model.Plants.Tree;
 
 import static model.App.*;
+import static model.Color_Eraser.*;
 
 public class GameController {
 
@@ -320,51 +321,49 @@ public class GameController {
     }
 
 
-
-
     public Result showTime () {
-        return new Result(true, "Time : "
+        return new Result(true, BLUE +"Time : "+RESET
                 + currentDate.getHour()+ ":00");
     }
     public Result showDate () {
-        return new Result(true, "Date : "+currentDate.getYear()+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
+        return new Result(true, BLUE+"Date : "+RED+currentDate.getYear()+RESET+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
     }
     public Result showSeason   () {
 
         return new Result(true, currentDate.getNameSeason());
     }
     public Result showDateTime () {
-        return new Result(true, "Time : " + currentDate.getHour()+ ":00" +
-                "\nData : "+currentDate.getYear()+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
+        return new Result(true, BLUE+"Time : "+RED+ currentDate.getHour()+ ":00" +
+                BLUE+"\nData : "+RED+currentDate.getYear()+RESET+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
     }
     public Result showDayOfWeek () {
-        return new Result(true, "Day of Week : "
+        return new Result(true, BLUE+"Day of Week : "+RESET
                 + currentDate.getDayOfTheWeek());
     }
     public Result increaseHour (String hour) {
 
         if (hour.charAt(0) == '-')
-            return new Result(false, "The time must be a positive number!");
+            return new Result(false, RED+"The time must be a positive number!"+RESET);
         int amount;
         try {
             amount = Integer.parseInt(hour);
         } catch (Exception e) {
-            return new Result(false, "Time is incorrect!");
+            return new Result(false, RED+"Time is incorrect!"+RESET);
         }
         passedOfTime(0, amount);
-        return new Result(true, "Time change to : "+ currentDate.getHour()+":00");
+        return new Result(true, BLUE+"Time change to : "+GREEN+ currentDate.getHour()+":00"+RESET);
     }
     public Result increaseDate (String date) {
 
         if (date.charAt(0) == '-')
-            return new Result(false, "The time must be a positive number!");
+            return new Result(false, RED+"The time must be a positive number!"+RESET);
         int amount;
         try {
             amount = Integer.parseInt(date);
         } catch (Exception e) {
-            return new Result(false, "Time is incorrect!");
+            return new Result(false, RED+"Time is incorrect!"+RESET);
         }
         passedOfTime(amount, 0);
-        return new Result(true, "Date change to : "+currentDate.getYear()+" "+currentDate.getSeason()+" "+currentDate.getDate());
+        return new Result(true, BLUE+"Date change to : "+RED+currentDate.getYear()+RESET+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
     }
 }

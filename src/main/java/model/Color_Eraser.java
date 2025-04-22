@@ -1,4 +1,4 @@
-package model.Enum;
+package model;
 
 public class Color_Eraser {
 

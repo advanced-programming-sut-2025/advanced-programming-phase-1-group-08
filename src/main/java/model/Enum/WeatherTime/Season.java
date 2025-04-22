@@ -2,11 +2,11 @@ package model.Enum.WeatherTime;
 
 // برای فصل ها و مشخص کردن اب و هوا
 
-import static model.Enum.Color_Eraser.*;
+import static model.Color_Eraser.*;
 
 public enum Season {
 
-    Winter("❄\uFE0F Winter ❄\uFE0F") {
+    Winter("❄\uFE0FWinter❄\uFE0F") {
 
         public Season passedSeason(int number) {
 
@@ -24,7 +24,7 @@ public enum Season {
             return null;
         }
     },
-    Fall  ("\uD83C\uDF42 Fall \uD83C\uDF42") {
+    Fall  ("\uD83C\uDF42Fall\uD83C\uDF42") {
 
         public Season passedSeason(int number) {
 
@@ -41,7 +41,7 @@ public enum Season {
             return null;
         }
     },
-    Summer("☀\uFE0F Summer ☀\uFE0F") {
+    Summer("☀\uFE0FSummer☀\uFE0F") {
 
         public Season passedSeason(int number) {
 
@@ -58,7 +58,7 @@ public enum Season {
             return null;
         }
     },
-    Spring("\uD83C\uDF38 Spring \uD83C\uDF38") {
+    Spring("\uD83C\uDF38Spring\uD83C\uDF38") {
 
         public Season passedSeason(int number) {
 
@@ -84,13 +84,13 @@ public enum Season {
     public String getDisplayName() {
 
         if (this.equals(Summer))
-            return YELLOW+displayName;
+            return YELLOW+displayName+RESET;
         if (this.equals(Spring))
-            return PURPLE+displayName;
+            return PURPLE+displayName+RESET;
         if (this.equals(Winter))
-            return CYAN+displayName;
+            return CYAN+displayName+RESET;
         else
-            return RED+displayName;
+            return RED+displayName+RESET;
     }
 
     public abstract Season passedSeason   (int number);
