@@ -2,6 +2,7 @@ package model.Enum.WeatherTime;
 
 // برای فصل ها و مشخص کردن اب و هوا
 
+import static model.App.currentDate;
 import static model.Color_Eraser.*;
 
 public enum Season {
@@ -20,8 +21,13 @@ public enum Season {
                 return Winter;
         }
         public Weather getWeather() {
-            // TODO random int
-            return null;
+
+            double randomNumber = Math.random();
+
+            if (randomNumber < 0.15 && currentDate.getDate() != 28)
+                return Weather.Snowy;
+
+            return Weather.Sunny;
         }
     },
     Fall  ("\uD83C\uDF42Fall\uD83C\uDF42") {
@@ -38,7 +44,15 @@ public enum Season {
                 return Fall;
         }
         public Weather getWeather() {
-            return null;
+
+            double randomNumber = Math.random();
+
+            if (randomNumber < 0.2)
+                return Weather.Rainy;
+            if (randomNumber > 0.2 && randomNumber < 0.4)
+                return Weather.Rainy;
+
+            return Weather.Stormy;
         }
     },
     Summer("☀\uFE0FSummer☀\uFE0F") {
@@ -55,7 +69,15 @@ public enum Season {
                 return Summer;
         }
         public Weather getWeather() {
-            return null;
+
+            double randomNumber = Math.random();
+
+            if (randomNumber < 0.1)
+                return Weather.Rainy;
+            if (randomNumber > 0.1 && randomNumber < 0.2)
+                return Weather.Stormy;
+
+            return Weather.Sunny;
         }
     },
     Spring("\uD83C\uDF38Spring\uD83C\uDF38") {
@@ -72,7 +94,15 @@ public enum Season {
                 return Spring;
         }
         public Weather getWeather() {
-            return null;
+
+            double randomNumber = Math.random();
+
+            if (randomNumber < 0.2)
+                return Weather.Rainy;
+            if (randomNumber > 0.2 && randomNumber < 0.3)
+                return Weather.Stormy;
+
+            return Weather.Sunny;
         }
     };
 

@@ -14,6 +14,7 @@ import model.Plants.ForagingMinerals;
 import model.Plants.Tree;
 
 import static model.App.*;
+import static model.App.tomorrowWeather;
 import static model.Color_Eraser.*;
 
 public class GameController {
@@ -261,7 +262,7 @@ public class GameController {
 
 
 
-    public void setTime (boolean gameIsNew) {
+    private void setTime (boolean gameIsNew) {
 
         if (gameIsNew)
             currentDate = new DateHour(Season.Spring, 1, 9, 1980);
@@ -269,7 +270,7 @@ public class GameController {
             // TODO
         }
     }
-    public void setWeather (boolean gameIsNew) {
+    private void setWeather (boolean gameIsNew) {
 
         if (gameIsNew)
             currentWeather = Weather.Sunny;
@@ -278,7 +279,13 @@ public class GameController {
             // TODO
         }
     }
-    public void doSeasonAutomaticTask () {
+    private void doSeasonAutomaticTask () {
+
+        tomorrowWeather = currentDate.getSeason().getWeather();
+
+
+    }
+    private void doWeatherTask () {
 
     }
 
@@ -302,7 +309,7 @@ public class GameController {
         setWeather(false);
     }
     public void startDay () {
-
+        doSeasonAutomaticTask();
     }
     public void AutomaticFunction () {
 
@@ -311,6 +318,8 @@ public class GameController {
             passedOfTime(0, 1);
 
         startDay();
+
+        currentWeather = tomorrowWeather;
     }
 
 
@@ -324,6 +333,24 @@ public class GameController {
     public Result showSeason   () {
 
         return new Result(true, currentDate.getNameSeason());
+    }
+    public Result showWeather  (boolean isToday) {
+
+        if (isToday)
+            return new Result(true, currentWeather.getDisplayName());
+        else
+            return new Result(true, tomorrowWeather.getDisplayName());
+    }
+    public Result setWeather   (String type) {
+
+        Weather weather;
+        try {
+            weather = Weather.valueOf(type);
+        } catch (Exception e) {
+            return new Result(false, RED+"Weather type is incorrect!"+RESET);
+        }
+        currentWeather = weather;
+        return new Result(true, BLUE+"Weather change to "+RESET+currentWeather.getDisplayName());
     }
     public Result showDateTime () {
         return new Result(true, BLUE+"Time : "+RED+ currentDate.getHour()+ ":00" +

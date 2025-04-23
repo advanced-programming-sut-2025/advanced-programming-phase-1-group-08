@@ -46,6 +46,14 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.advanceDate.getMather(input)) != null)
             System.out.println(controller.increaseDate(matcher.group("date").trim()));
 
+        else if (GameMenuCommands.showWeather.getMather(input) != null)
+            System.out.println(controller.showWeather(true));
+
+        else if (GameMenuCommands.showTomorrowWeather.getMather(input) != null)
+            System.out.println(controller.showWeather(false));
+
+        else if ((matcher = GameMenuCommands.setWeather.getMather(input)) != null)
+            System.out.println(controller.setWeather(matcher.group("Weather").trim()));
 
 
 

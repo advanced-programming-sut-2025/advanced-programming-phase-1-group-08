@@ -8,9 +8,14 @@ public enum GameMenuCommands {
     showTime      ("\\s*(?i)time\\s*"),
     showDate      ("\\s*(?i)date\\s*"),
     showSeason    ("\\s*(?i)season\\s*"),
+    showWeather   ("\\s*(?i)weather\\s*"),
     showDateTime  ("(?i)\\s*dateTime\\s*"),
     showDayOfWeek ("(?i)\\s*day\\s+of\\s+the\\s+week\\s*"),
+    showTomorrowWeather("\\s*(?i)weather\\s*forecast\\s*"),
+    buildGreenHouse ("(?i)\\s*greenhouse\\s*build\\s*"),
+    thor ("(?i)\\s*cheat\\s*thor\\s*-l(?<x>.+),(?<y>.+)\\s*"),
 
+    setWeather  ("\\s*(?i)cheat\\s*weather\\s*set\\s*(?<Weather>.+)\\s*"),
     advanceTime ("(?i)\\s*cheat\\s+advance\\s+time\\s+(?<hour>.+)\\s*h\\s*"),
     advanceDate ("(?i)\\s*cheat\\s+advance\\s+date\\s+(?<date>.+)\\s*d\\s*"),
 
