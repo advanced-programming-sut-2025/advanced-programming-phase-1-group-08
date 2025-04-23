@@ -189,10 +189,27 @@ public class GameController {
 
     public void MapGenerator(int i,int j,long seed){
         if (i==0 || i==29 || j==0 || j==29){
-            Walkable walkable=new Walkable();
-            walkable.setCharactor('.');
-            Tile tile=new Tile(i + 60* currentPlayer.topLeftX,j + 60*currentPlayer.topLeftY,walkable);
-            currentPlayer.getFarm().Farm.add(tile);
+            if (i==15 && j==29){
+                door FarmDoor=new door();
+                FarmDoor.setDoor(Door.Farm);
+                FarmDoor.setCharactor('D');
+                Tile tile=new Tile(i + 60*currentPlayer.topLeftX,j + 30*currentPlayer.topLeftY,FarmDoor);
+                currentPlayer.getFarm().Farm.add(tile);
+            }
+            else if (i==29 && j==15){
+                door FarmDoor=new door();
+                FarmDoor.setDoor(Door.Farm);
+                FarmDoor.setCharactor('D');
+                Tile tile=new Tile(i + 30*currentPlayer.topLeftX,j + 60*currentPlayer.topLeftY,FarmDoor);
+                currentPlayer.getFarm().Farm.add(tile);
+            }
+            else {
+                Walkable walkable = new Walkable();
+                walkable.setCharactor('.');
+                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, walkable);
+                currentPlayer.getFarm().Farm.add(tile);
+            }
+
         }
         else {
 

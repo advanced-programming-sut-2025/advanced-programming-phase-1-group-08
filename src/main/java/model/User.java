@@ -19,6 +19,8 @@ public class User {
     private final Farm farm = new Farm();
     public int topLeftX;
     public int topLeftY;
+    private int positionX;
+    private int positionY;
 
 
     public User(String username, String password, String nickname, String email, int point, int health) {
@@ -87,4 +89,17 @@ public class User {
         if (this.health < 0)
             this.health = 0;
     }
+    public int getPositionX() {
+        return positionX;
+    }
+    public void setPositionX(int positionX) {
+        this.positionX = positionX;
+    }
+    public int getPositionY() {
+        return positionY;
+    }
+    public void setPositionY(int positionY) {
+        this.positionY = positionY;
+    }
+
 }
