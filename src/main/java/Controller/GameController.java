@@ -1,7 +1,7 @@
 package Controller;
 
 import model.*;
-import model.Enum.Color_Eraser;
+import model.Color_Eraser;
 import model.Enum.Door;
 import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
@@ -32,8 +32,8 @@ public class GameController {
         if (id==1){
             Mine mine = new Mine();
             mine.setCharactor('M');
-            for (int i=24;i<30;i++){
-                for (int j=24;j<30;j++) {
+            for (int i=23;i<29;i++){
+                for (int j=2;j<8;j++) {
                     Tile tile = new Tile(i + 60*x, j + 60*y, mine);
                     farm.Farm.add(tile);
                 }
@@ -49,8 +49,8 @@ public class GameController {
         if (id==1){
             Lake lake = new Lake();
             lake.setCharactor('L');
-            for (int i=0;i<5;i++){
-                for (int j=25;j<30;j++) {
+            for (int i=2;i<7;i++){
+                for (int j=23;j<29;j++) {
                     Tile tile = new Tile(i +60*x, j+60*y, lake);
                     farm.Farm.add(tile);
                 }
@@ -122,7 +122,7 @@ public class GameController {
         for (int i=0;i<8;i++){
             for (int j=0;j<9;j++) {
                 if (i==0 || i==7){
-                    if (j==4){
+                    if (j==4 && i==7){
                         Tile tile = new Tile(i +60*x, j +60*y, greenHouseDoor);
                         farm.Farm.add(tile);
                     }
@@ -165,7 +165,7 @@ public class GameController {
 
         for (int i=0 ; i<30 ;i++){
             for (int j=0 ; j<30 ; j++) {
-                if (i>=24 && j>=24){
+                if (i>=23 && i<29 && j>=2 && j<8){
                     creatInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(1<i && i<7 && j>22 && j<29){
@@ -190,6 +190,7 @@ public class GameController {
     public void MapGenerator(int i,int j,long seed){
         if (i==0 || i==29 || j==0 || j==29){
             Walkable walkable=new Walkable();
+            walkable.setCharactor('.');
             Tile tile=new Tile(i + 60* currentPlayer.topLeftX,j + 60*currentPlayer.topLeftY,walkable);
             currentPlayer.getFarm().Farm.add(tile);
         }
@@ -223,47 +224,39 @@ public class GameController {
         int x=currentPlayer.topLeftX;
         int y=currentPlayer.topLeftY;
 
-        for (int i=60 * x ; i<60 * x +30 ; i++){
-            for (int j=60 * y ; j<60 * y +30 ; j++) {
-                Tile tile=getTileByCoordinates(i,j,farm);
+        for (int i=60 * x ; i<60 * x +30 ; i++) {
+            for (int j = 60 * y; j < 60 * y + 30; j++) {
 
-                if (tile.getGameObject() instanceof Walkable){
-                    System.out.print(Color_Eraser.WHITE+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
-                else if(tile.getGameObject() instanceof BasicRock){
-                    System.out.print(Color_Eraser.GRAY+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
-                else if (tile.getGameObject() instanceof Tree){
-                    System.out.print(Color_Eraser.GREEN+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
-                else if (tile.getGameObject() instanceof Lake){
-                    System.out.print(Color_Eraser.BLUE+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
-                else if (tile.getGameObject() instanceof Mine){
-                    System.out.print(Color_Eraser.RED+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
-                else if (tile.getGameObject() instanceof Wall){
-                    System.out.print(Color_Eraser.WHITE+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
-                else if (tile.getGameObject() instanceof Home){
-                    System.out.print(Color_Eraser.YELLOW+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
-                else if (tile.getGameObject() instanceof door){
-                    System.out.print(Color_Eraser.Brown+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
-                else if (tile.getGameObject() instanceof GreenHouse){
-                    System.out.print(Color_Eraser.GREEN+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
-                else if (tile.getGameObject() instanceof Fridge){
-                    System.out.print(Color_Eraser.WHITE+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
-                else if (tile.getGameObject() instanceof WaterTank){
-                    System.out.print(Color_Eraser.BLUE+tile.getGameObject().getCharactor()+Color_Eraser.RESET);
-                }
+                Tile tile = getTileByCoordinates(j, i, farm);
 
+                if (tile.getGameObject() instanceof Walkable) {
+                    System.out.print(Color_Eraser.WHITE + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                } else if (tile.getGameObject() instanceof BasicRock) {
+                    System.out.print(Color_Eraser.GRAY + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                } else if (tile.getGameObject() instanceof Tree) {
+                    System.out.print(Color_Eraser.GREEN + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                } else if (tile.getGameObject() instanceof Lake) {
+                    System.out.print(Color_Eraser.BLUE + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                } else if (tile.getGameObject() instanceof Mine) {
+                    System.out.print(Color_Eraser.RED + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                } else if (tile.getGameObject() instanceof Wall) {
+                    System.out.print(Color_Eraser.WHITE + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                } else if (tile.getGameObject() instanceof Home) {
+                    System.out.print(Color_Eraser.YELLOW + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                } else if (tile.getGameObject() instanceof door) {
+                    System.out.print(Color_Eraser.Brown + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                } else if (tile.getGameObject() instanceof GreenHouse) {
+                    System.out.print(Color_Eraser.GREEN + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                } else if (tile.getGameObject() instanceof Fridge) {
+                    System.out.print(Color_Eraser.WHITE + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                } else if (tile.getGameObject() instanceof WaterTank) {
+                    System.out.print(Color_Eraser.BLUE + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                }
             }
             System.out.println();
+
         }
+
     }
 
 

@@ -15,7 +15,7 @@ public class Color_Eraser {
     public static final String CYAN = "\u001B[36m";
     public static final String WHITE = "\u001B[37m";
     public static final String GRAY = "\u001B[40m";
-    public static final String Brown = "\u001B[41m";
+    public static final String Brown = "\u001B[38;2;165;42;42m";
 
     // Bold
     public static final String BLACK_BOLD = "\u001B[1;30m";

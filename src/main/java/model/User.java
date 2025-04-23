@@ -13,8 +13,8 @@ public class User {
     public static int health;
     public Tools currentTool;
     private Farm farm=new Farm();
-    public int topLeftX=0;
-    public int topLeftY=0;
+    public int topLeftX;
+    public int topLeftY;
 
 
     public User(String username, String password, String nickname, String email, int point, int health) {
