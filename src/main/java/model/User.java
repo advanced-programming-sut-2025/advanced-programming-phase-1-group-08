@@ -10,6 +10,7 @@ public class User {
     private String nickname;
     private final String email;
 
+    private Tile SleepTile;
     private int point;
     private int health;
     private int MAX_HEALTH;
@@ -69,15 +70,18 @@ public class User {
     }
     public void setHealth(int health) {
         this.health = health;
+        checkHealth();
     }
     public void increaseHealth(int health) {
         this.health += health;
+        checkHealth();
     }
     public Farm getFarm() {
         return farm;
     }
 
-    public void doAutomaticTask () {
+    public void checkHealth() {
+
         if (this.health > MAX_HEALTH)
             this.health = MAX_HEALTH;
         if (this.health < 0)

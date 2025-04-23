@@ -10,7 +10,6 @@ import model.Places.Farm;
 import model.Places.GreenHouse;
 import model.Places.Home;
 import model.Places.Lake;
-import model.Plants.ForagingMinerals;
 import model.Plants.Tree;
 
 import static model.App.*;
@@ -262,7 +261,15 @@ public class GameController {
 
 
 
+    private void setEnergyInMorning () {
+        for (User user : players) {
 
+            if (user.getHealth() > 0)
+                user.setHealth(user.getMAX_HEALTH());
+            else
+                user.setHealth((user.getMAX_HEALTH()*3)/4);
+        }
+    }
     private void setTime (boolean gameIsNew) {
 
         if (gameIsNew)
@@ -282,13 +289,17 @@ public class GameController {
     }
     private void doSeasonAutomaticTask () {
 
+        currentWeather = tomorrowWeather;
         tomorrowWeather = currentDate.getSeason().getWeather();
-
-
     }
     private void doWeatherTask () {
 
     }
+    private boolean checkForDeath () {
+
+        return currentPlayer.getHealth() <= 0;
+    }
+
 
     public void startNewGame () {
 
@@ -311,9 +322,9 @@ public class GameController {
 
     public void startDay () {
 
-        currentWeather = tomorrowWeather;
         doSeasonAutomaticTask();
-        currentDate.increaseHour((24 -currentDate.getHour()) + 9);
+        passedOfTime(0,(24 -currentDate.getHour()) + 9);
+        setEnergyInMorning();
 
         // TODO بازیکنا برن خونشون , غش کردن
         // TODO محصول کاشته بشه و رشد محصولا یه روز بره بالاتر
@@ -329,6 +340,9 @@ public class GameController {
             startDay();
     }
     public void AutomaticFunctionAfterAnyAct () {
+
+        for (User user : players)
+            user.checkHealth();
 
     }
 
@@ -361,6 +375,29 @@ public class GameController {
         }
         tomorrowWeather = weather;
         return new Result(true, BLUE+"Tomorrow weather change to "+RESET+currentWeather.getDisplayName());
+    }
+    public Result setEnergy    (String amount) {
+
+        if (amount.charAt(0) == '-')
+            return new Result(false, RED+"Energy must be a positive number!"+RESET);
+        int amount2;
+        try {
+            amount2 = Integer.parseInt(amount);
+        } catch (Exception e) {
+            return new Result(false, RED+"Number is incorrect!"+RESET);
+        }
+
+        if (currentPlayer.getHealth() > amount2) {
+            currentPlayer.setHealth(amount2);
+            return new Result(true, BLUE+"Your Energy");
+
+        }
+        else if (currentPlayer.getHealth() < amount2) {
+
+            return new Result(true, "");
+        } else
+            return new Result(false, "Your energy level at this moment is this amount.");
+
     }
     public Result showDateTime () {
         return new Result(true, BLUE+"Time : "+RED+ currentDate.getHour()+ ":00" +
