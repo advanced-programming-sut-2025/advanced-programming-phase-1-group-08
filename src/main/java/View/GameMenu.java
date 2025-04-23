@@ -2,10 +2,12 @@ package View;
 
 import Controller.GameController;
 import model.Enum.Commands.GameMenuCommands;
+import model.Result;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
+import static model.App.currentPlayer;
 import static model.Color_Eraser.*;
 
 public class GameMenu implements AppMenu {
@@ -55,6 +57,8 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.setWeather.getMather(input)) != null)
             System.out.println(controller.setWeather(matcher.group("Weather").trim()));
 
+        else if (GameMenuCommands.showEnergy.getMather(input) != null)
+            System.out.println(CYAN+"Your Energy : "+currentPlayer.getHealth()+ RESET);
 
 
         else

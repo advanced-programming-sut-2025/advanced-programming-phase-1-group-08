@@ -262,6 +262,7 @@ public class GameController {
 
 
 
+
     private void setTime (boolean gameIsNew) {
 
         if (gameIsNew)
@@ -289,6 +290,15 @@ public class GameController {
 
     }
 
+    public void startNewGame () {
+
+        setTime(true);
+        setWeather(true);
+    }
+    public void loadGame () {
+        setTime(false);
+        setWeather(false);
+    }
 
 
 
@@ -299,27 +309,27 @@ public class GameController {
     } // TODO   باید کارایی که بعد افزایش زمان انجام میشن رو انجام بدی
 
 
-    public void startNewGame () {
-
-        setTime(true);
-        setWeather(true);
-    }
-    public void loadGame () {
-        setTime(false);
-        setWeather(false);
-    }
     public void startDay () {
+
+        currentWeather = tomorrowWeather;
         doSeasonAutomaticTask();
+        currentDate.increaseHour((24 -currentDate.getHour()) + 9);
+
+        // TODO بازیکنا برن خونشون , غش کردن
+        // TODO محصول کاشته بشه و رشد محصولا یه روز بره بالاتر
+        // TODO کانی تولید بشه شاپینگ بین خالی بشه و.  پول بیاد تو حساب فرد
     }
-    public void AutomaticFunction () {
+    public void AutomaticFunctionAfterOneTurn () {
 
 
         if (currentUser == currentPlayer)
             passedOfTime(0, 1);
 
-        startDay();
+        if (currentDate.getHour() > 22)
+            startDay();
+    }
+    public void AutomaticFunctionAfterAnyAct () {
 
-        currentWeather = tomorrowWeather;
     }
 
 
@@ -349,8 +359,8 @@ public class GameController {
         } catch (Exception e) {
             return new Result(false, RED+"Weather type is incorrect!"+RESET);
         }
-        currentWeather = weather;
-        return new Result(true, BLUE+"Weather change to "+RESET+currentWeather.getDisplayName());
+        tomorrowWeather = weather;
+        return new Result(true, BLUE+"Tomorrow weather change to "+RESET+currentWeather.getDisplayName());
     }
     public Result showDateTime () {
         return new Result(true, BLUE+"Time : "+RED+ currentDate.getHour()+ ":00" +

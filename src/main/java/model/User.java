@@ -9,10 +9,13 @@ public class User {
     private String password;
     private String nickname;
     private final String email;
+
     private int point;
-    public static int health;
+    private int health;
+    private int MAX_HEALTH;
+
     public Tools currentTool;
-    private Farm farm=new Farm();
+    private final Farm farm = new Farm();
     public int topLeftX;
     public int topLeftY;
 
@@ -24,9 +27,16 @@ public class User {
         this.nickname = nickname;
         this.email = email;
         this.point = point;
+        this.MAX_HEALTH = 200;
     }
 
 
+    public int getMAX_HEALTH() {
+        return MAX_HEALTH;
+    }
+    public void setMAX_HEALTH(int MAX_HEALTH) {
+        this.MAX_HEALTH = MAX_HEALTH;
+    }
     public String getUsername() {
         return username;
     }
@@ -65,5 +75,12 @@ public class User {
     }
     public Farm getFarm() {
         return farm;
+    }
+
+    public void doAutomaticTask () {
+        if (this.health > MAX_HEALTH)
+            this.health = MAX_HEALTH;
+        if (this.health < 0)
+            this.health = 0;
     }
 }

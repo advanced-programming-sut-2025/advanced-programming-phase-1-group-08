@@ -2,7 +2,6 @@ package model.Enum.WeatherTime;
 
 import static model.Color_Eraser.*;
 import static model.Color_Eraser.CYAN;
-import static model.Color_Eraser.RED;
 import static model.Color_Eraser.RESET;
 
 public enum Weather {
