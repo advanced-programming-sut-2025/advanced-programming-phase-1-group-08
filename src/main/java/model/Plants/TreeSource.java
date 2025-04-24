@@ -12,4 +12,8 @@ public class TreeSource extends Items {
         this.type = type;
         this.name = type.getDisplayName();
     }
+
+    public TreesSourceType getType() {
+        return type;
+    }
 }

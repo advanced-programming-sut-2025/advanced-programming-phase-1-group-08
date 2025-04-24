@@ -10,4 +10,8 @@ public class ForagingCrops extends Items {
     public void setType(ForagingCropsType type) {
         this.type = type;
     }
+
+    public ForagingCropsType getType() {
+        return type;
+    }
 }

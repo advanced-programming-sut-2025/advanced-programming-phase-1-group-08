@@ -11,4 +11,8 @@ public class MixedSeeds extends Items {
     public void setType(MixedSeedsType type) {
         this.type = type;
     }
+
+    public MixedSeedsType getType() {
+        return type;
+    }
 }

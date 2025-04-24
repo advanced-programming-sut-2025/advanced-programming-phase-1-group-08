@@ -2,16 +2,20 @@ package model.ToolsPackage;
 
 import model.Enum.ItemType.BackPackType;
 import model.Inventory;
+import model.Items;
 
 public class BaⅽkPaⅽk {
 
     private BackPackType Type = BackPackType.primary;
     private int capacity=12;
+    public final String name="BackPack";
 
-    public Inventory inventory;
+    public Inventory inventory=new Inventory();
 
     public void addItem (){}
-    public void removeItem (){}
+    public void removeItem (Items item){
+
+    }
 
     public BackPackType getType() {
         return Type;
