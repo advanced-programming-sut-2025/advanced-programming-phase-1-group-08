@@ -10,11 +10,14 @@ import model.Places.Farm;
 import model.Places.GreenHouse;
 import model.Places.Home;
 import model.Places.Lake;
+import model.Plants.ForagingMinerals;
+import model.Plants.ForagingSeeds;
 import model.Plants.Tree;
 import model.App;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 import static model.App.*;
@@ -411,7 +414,21 @@ public class GameController {
         if (inventory.getBasicRock()!=null){
             result += "BasicRocks: " + inventory.getBasicRock().numberOfBasicRocksInInventory+"\n";
         }
-        return null;
+        if (inventory.getWood()!=null){
+            result += "Woods: " + inventory.getWood().numberOfWoodsInInventory+"\n";
+        }
+        if (inventory.getForagingMinerals()!=null){
+            result+="ForagingMinerals\n";
+            for (Map.Entry<ForagingMinerals,Integer> entry : inventory.getForagingMinerals().entrySet()) {
+                result += entry.getKey().getType()+": "+entry.getValue()+"\n";
+            }
+        }
+        if (inventory.getForagingSeeds()!=null){
+            result += "ForagingSeeds\n";
+            for (Map.Entry<ForagingSeeds,Integer> entry : inventory.getForagingSeeds().entrySet()) {
+
+            }
+        }
     }
 
 

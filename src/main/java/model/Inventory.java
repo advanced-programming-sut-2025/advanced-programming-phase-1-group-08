@@ -1,9 +1,6 @@
 package model;
 
-import model.Plants.AllCrops;
-import model.Plants.ForagingCrops;
-import model.Plants.ForagingMinerals;
-import model.Plants.ForagingSeeds;
+import model.Plants.*;
 import model.ToolsPackage.Tools;
 
 import java.util.ArrayList;
@@ -19,7 +16,7 @@ public class Inventory {
     private HashMap<AllCrops,Integer> AllCrops=new HashMap<>();
     //TODO غذاهای پخته شده
     private HashMap<ForagingCrops,Integer> ForagingCrops=new HashMap<>();
-    //TODO نهال های درختانی که نیاز به مراقبت دارن
+    private HashMap<TreeSource,Integer> TreeSources=new HashMap<>();
     private ArrayList<Tools> tools=new ArrayList<>();
     // TODO arrayList Item
 
@@ -50,6 +47,10 @@ public class Inventory {
 
     public Wood getWood() {
         return wood;
+    }
+
+    public HashMap<TreeSource, Integer> getTreeSources() {
+        return TreeSources;
     }
 }
 

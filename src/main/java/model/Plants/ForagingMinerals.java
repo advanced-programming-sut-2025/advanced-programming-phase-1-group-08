@@ -18,4 +18,7 @@ public class ForagingMinerals extends Items {
         this.symbol = type.getDescription();
     }
 
+    public ForagingMineralsType getType() {
+        return type;
+    }
 }
