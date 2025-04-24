@@ -1,5 +1,6 @@
 package model;
 
+import model.Enum.SecurityQuestions;
 import model.Places.Farm;
 import model.ToolsPackage.Tools;
 
@@ -8,10 +9,15 @@ public class User {
     private String username;
     private String password;
     private String nickname;
-    private final String email;
+    private String email;
+    private final String gender;
+    private SecurityQuestions MySecurityQuestion;
+    private String MySecurityAnswer;
 
     private Tile SleepTile;
     private int point;
+    private int max_point; // TODO I made this and the one below with setter and getter
+    private int games_played;
     private int health;
     private int MAX_HEALTH;
     private boolean healthUnlimited;
@@ -24,12 +30,13 @@ public class User {
     private int positionY;
 
 
-    public User(String username, String password, String nickname, String email, int point, int health) {
+    public User(String username, String password, String nickname, String email, String gender,  int point, int health) {
 
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
+        this.gender = gender;
         this.point = point;
         this.MAX_HEALTH = 200;
         this.healthUnlimited = false;
@@ -63,6 +70,7 @@ public class User {
     public String getEmail() {
         return email;
     }
+    public void setEmail(String email) {this.email = email;}
     public int getPoint() {
         return point;
     }
@@ -107,4 +115,37 @@ public class User {
     public boolean isHealthUnlimited() {
         return healthUnlimited;
     }
+
+    public SecurityQuestions getMySecurityQuestion() {
+        return MySecurityQuestion;
+    }
+
+    public void setMySecurityQuestion(SecurityQuestions mySecurityQuestion) {
+        MySecurityQuestion = mySecurityQuestion;
+    }
+
+    public String getMySecurityAnswer() {
+        return MySecurityAnswer;
+    }
+
+    public void setMySecurityAnswer(String mySecurityAnswer) {
+        MySecurityAnswer = mySecurityAnswer;
+    }
+
+    public int getMax_point() {
+        return max_point;
+    }
+
+    public void setMax_point(int max_point) {
+        this.max_point = max_point;
+    }
+
+    public int getGames_played() {
+        return games_played;
+    }
+
+    public void setGames_played(int games_played) {
+        this.games_played = games_played;
+    }
+
 }
