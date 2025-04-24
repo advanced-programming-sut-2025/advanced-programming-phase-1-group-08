@@ -1,4 +1,14 @@
 package model.Plants;
 
-public class AllCrops {
+import model.Enum.ItemType.CropsType;
+import model.Items;
+
+public class AllCrops extends Items {
+
+    private CropsType type;
+
+
+    public void setType(CropsType type) {
+        this.type = type;
+    }
 }
