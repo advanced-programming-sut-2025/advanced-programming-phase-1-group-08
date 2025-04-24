@@ -1,6 +1,6 @@
 package model.Plants;
 
-import model.Enum.ItemType.TreesProductType;
+import model.Enum.AllPlants.TreesProductType;
 import model.Items;
 
 public class TreesProdct extends Items {

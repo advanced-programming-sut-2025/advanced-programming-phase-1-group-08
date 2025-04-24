@@ -1,7 +1,7 @@
 package model.Plants;
 
 import model.Enum.AllPlants.TreeType;
-import model.Enum.ItemType.TreesProductType;
+import model.Enum.AllPlants.TreesProductType;
 import model.GameObject;
 
 import java.util.Date;

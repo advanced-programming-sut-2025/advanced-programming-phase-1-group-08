@@ -1,6 +1,6 @@
 package model.Plants;
 
-import model.Enum.ItemType.CropsType;
+import model.Enum.AllPlants.CropsType;
 import model.Items;
 
 public class AllCrops extends Items {

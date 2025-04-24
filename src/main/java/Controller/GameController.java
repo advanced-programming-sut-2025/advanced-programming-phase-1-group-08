@@ -489,6 +489,10 @@ public class GameController {
 
         currentDate.increaseHour(hour);
         currentDate.increaseDay(day);
+        // کارایی که اینجا زدی رو حواست باشه تو استارت دی هم نباشه
+        //  محصولا رشد کنن     استجشون بررسی بشه ( تو خود کلاسشون میشه زد )
+        // تغییر ایکون باید بدن
+
     } // TODO   باید کارایی که بعد افزایش زمان انجام میشن رو انجام بدی
 
 
@@ -504,6 +508,7 @@ public class GameController {
     }
     public void AutomaticFunctionAfterOneTurn () {
 
+        // محصول غول پیگر چک بشه
 
         if (currentUser == currentPlayer)
             passedOfTime(0, 1);

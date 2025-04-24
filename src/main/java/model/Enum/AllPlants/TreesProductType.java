@@ -1,4 +1,4 @@
 package model.Enum.AllPlants;
 
-public enum MixedSeedsType {
+public enum TreesProductType {
 }
