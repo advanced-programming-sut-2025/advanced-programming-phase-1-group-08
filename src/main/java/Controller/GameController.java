@@ -305,8 +305,13 @@ public class GameController {
          int startY=currentPlayer.getPositionY();
          Tile endTile=getTileByCoordinates(goalX, goalY);
 
-         if (!checkConditionsForWalk(goalX, goalY)) {
-             return new Result(false,"you can't go to this coordinate");
+         if (checkConditionsForWalk(goalX, goalY) !=null) {
+             return checkConditionsForWalk(goalX, goalY);
+         }
+         if (currentPlayer.isHealthUnlimited()){
+             currentPlayer.setPositionX(goalX);
+             currentPlayer.setPositionY(goalY);
+             return new Result(true,"now you are in "+goalX+","+goalY);
          }
 
          int [] dirx={0,0,0,1,1,1,-1,-1,-1};
@@ -318,7 +323,40 @@ public class GameController {
              queue.add(new int[]{startX,startY,i,0,0});
          }
 
-         return null;
+         while (!queue.isEmpty()) {
+             int [] current=queue.poll();
+             int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
+             for (int i=0 ; i<8 ; i++) {
+                 int nx=x+dirx[i], ny=y+diry[i];
+
+                 Tile nextTile=getTileByCoordinates(nx, ny);
+                 if (nextTile==null || checkTile(nextTile)) continue;
+
+                 int newSteps=steps+1;
+                 int newTurn=turns+(i==dir ? 0:1);
+                 int cost=newSteps +10*newTurn;
+
+                 if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
+                     costEnergy.put(nextTile, newSteps);
+                     queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
+                 }
+
+             }
+         }
+
+         if (!costEnergy.containsKey(endTile)) {
+             return new Result(false,"you can't go to this coordinate because there no way");
+         }
+         else {
+             int cost=costEnergy.get(endTile)/20;
+             if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
+                return new Result(false,"your Energy is not enough");
+             }
+             else {
+                 currentPlayer.increaseHealth(-cost);
+                 return new Result(true,"you are now in "+goalX+","+goalY);
+             }
+         }
 
     }
 
@@ -331,7 +369,7 @@ public class GameController {
         return false;
     }
 
-    public boolean checkConditionsForWalk(int goalX, int goalY){
+    public Result checkConditionsForWalk(int goalX, int goalY){
         Tile tile = getTileByCoordinates(goalX, goalY);
         Farm farm = null;
         for (Farm farms : farms) {
@@ -343,28 +381,28 @@ public class GameController {
         for (User user : players) {
             if (user.getFarm().equals(farm)){
                 if (!user.getMarried().equals(currentPlayer) && !user.equals(currentPlayer)){
-                    return false;
+                    return new Result(false,"you can't go to this farm");
                 }
             }
         }
 
         if (tile.getGameObject() instanceof GreenHouse) {
             if (!((GreenHouse) tile.getGameObject()).isCreated){
-                return false;
+                return new Result(false,"GreenHouse is not created yet");
             }
         }
 
         for (User user : users) {
             if (user.getPositionX()==goalX && user.getPositionY()==goalY){
-                return false;
+                return new Result(true,"you can't go to this coordinate");
             }
         }
         if (!checkTile(tile)){
-            return false;
+            return new Result(false,"you can't go to this coordinate");
         }
         //TODO اگر NPC در اون مختصات باشه نمیتونیم اونجا بریم
         //TODO جاهایی که دونه کاشتیم
-        return true;
+        return null;
 
     }
 
