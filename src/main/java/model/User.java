@@ -14,6 +14,7 @@ public class User {
     private int point;
     private int health;
     private int MAX_HEALTH;
+    private User Married;//شخصی که باهاش ازدواج کرده
 
     public Tools currentTool;
     private final Farm farm = new Farm();
@@ -102,4 +103,7 @@ public class User {
         this.positionY = positionY;
     }
 
+    public User getMarried() {
+        return Married;
+    }
 }

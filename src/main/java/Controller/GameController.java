@@ -11,6 +11,11 @@ import model.Places.GreenHouse;
 import model.Places.Home;
 import model.Places.Lake;
 import model.Plants.Tree;
+import model.App;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import static model.App.*;
 import static model.App.tomorrowWeather;
@@ -18,8 +23,8 @@ import static model.Color_Eraser.*;
 
 public class GameController {
 
-    public Tile getTileByCoordinates(int x, int y,Farm farm) {
-        for (Tile tile:farm.Farm){
+    public Tile getTileByCoordinates(int x, int y) {
+        for (Tile tile:bigMap){
             if (tile.getX() == x && tile.getY() == y){
                 return tile;
             }
@@ -36,6 +41,7 @@ public class GameController {
                 for (int j=2;j<8;j++) {
                     Tile tile = new Tile(i + 60*x, j + 60*y, mine);
                     farm.Farm.add(tile);
+                    bigMap.add(tile);
                 }
             }
         }
@@ -53,6 +59,7 @@ public class GameController {
                 for (int j=23;j<29;j++) {
                     Tile tile = new Tile(i +60*x, j+60*y, lake);
                     farm.Farm.add(tile);
+                    bigMap.add(tile);
                 }
             }
         }
@@ -75,15 +82,18 @@ public class GameController {
                 if (i==12 || i==18){
                     Tile tile = new Tile(i + 60*x, j + 60*y, wall);
                     farm.Farm.add(tile);
+                    bigMap.add(tile);
                 }
                 else if (i==15 && j==6){
                     Tile tile = new Tile(i + 60*x, j + 60*y, houseDoor);
                     farm.Farm.add(tile);
+                    bigMap.add(tile);
                 }
                 else {
                     if (j==0 || j==6){
                         Tile tile = new Tile(i + 60*x, j + 60*y, wall);
                         farm.Farm.add(tile);
+                        bigMap.add(tile);
                     }
                 }
             }
@@ -101,10 +111,12 @@ public class GameController {
                 if (i==18 && j==5){
                     Tile tile = new Tile(i + 60*x, j +60*y, fridge);
                     farm.Farm.add(tile);
+                    bigMap.add(tile);
                 }
                 else {
                     Tile tile = new Tile(i + 60*x, j + 60*y, home);
                     farm.Farm.add(tile);
+                    bigMap.add(tile);
                 }
             }
         }
@@ -125,16 +137,19 @@ public class GameController {
                     if (j==4 && i==7){
                         Tile tile = new Tile(i +60*x, j +60*y, greenHouseDoor);
                         farm.Farm.add(tile);
+                        bigMap.add(tile);
                     }
                     else {
                         Tile tile = new Tile(i +60*x, j +60*y, GreenWall);
                         farm.Farm.add(tile);
+                        bigMap.add(tile);
                     }
                 }
                 else {
                     if (j==0 || j==8){
                         Tile tile = new Tile(i +60*x, j+60*y, GreenWall);
                         farm.Farm.add(tile);
+                        bigMap.add(tile);
                     }
                 }
             }
@@ -150,10 +165,12 @@ public class GameController {
                 if (i==1 && j==3){
                     Tile tile=new Tile(i + 60*x,j + 60*y,waterTank);
                     farm.Farm.add(tile);
+                    bigMap.add(tile);
                 }
                 else {
                     Tile tile=new Tile(i + 60*x,j + 60*y,greenHouse);
                     farm.Farm.add(tile);
+                    bigMap.add(tile);
                 }
             }
         }
@@ -182,6 +199,7 @@ public class GameController {
                 }
             }
         }
+        farms.add(farm);
 
         return farm;
 
@@ -195,6 +213,7 @@ public class GameController {
                 FarmDoor.setCharactor('D');
                 Tile tile=new Tile(i + 60*currentPlayer.topLeftX,j + 30*currentPlayer.topLeftY,FarmDoor);
                 currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
             }
             else if (i==29 && j==15){
                 door FarmDoor=new door();
@@ -202,12 +221,14 @@ public class GameController {
                 FarmDoor.setCharactor('D');
                 Tile tile=new Tile(i + 30*currentPlayer.topLeftX,j + 60*currentPlayer.topLeftY,FarmDoor);
                 currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
             }
             else {
                 Walkable walkable = new Walkable();
                 walkable.setCharactor('.');
                 Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, walkable);
                 currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
             }
 
         }
@@ -219,18 +240,21 @@ public class GameController {
             if (-1.2 < noise && noise < -0.2) {
                 Tree tree = new Tree();
                 tree.setCharactor('T');
-                Tile tile = new Tile(i + 60 * App.currentPlayer.topLeftX, j + 60 * App.currentPlayer.topLeftY, tree);
-                App.currentPlayer.getFarm().Farm.add(tile);
+                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, tree);
+                currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
             } else if (-0.1 < noise && noise < 0.0) {
                 BasicRock basicRock = new BasicRock();
                 basicRock.setCharactor('S');
-                Tile tile = new Tile(i + 60 * App.currentPlayer.topLeftX, j + 60 * App.currentPlayer.topLeftY, basicRock);
-                App.currentPlayer.getFarm().Farm.add(tile);
+                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, basicRock);
+                currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
             } else {
                 Walkable walkable = new Walkable();
                 walkable.setCharactor('.');
                 Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, walkable);
-                App.currentPlayer.getFarm().Farm.add(tile);
+                currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
             }
 
         }
@@ -244,35 +268,103 @@ public class GameController {
         for (int i=60 * x ; i<60 * x +30 ; i++) {
             for (int j = 60 * y; j < 60 * y + 30; j++) {
 
-                Tile tile = getTileByCoordinates(j, i, farm);
+                Tile tile = getTileByCoordinates(j, i);
 
                 if (tile.getGameObject() instanceof Walkable) {
-                    System.out.print(Color_Eraser.WHITE + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(WHITE + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof BasicRock) {
-                    System.out.print(Color_Eraser.GRAY + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(GRAY + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Tree) {
-                    System.out.print(Color_Eraser.GREEN + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(GREEN + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Lake) {
-                    System.out.print(Color_Eraser.BLUE + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(BLUE + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Mine) {
-                    System.out.print(Color_Eraser.RED + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(RED + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Wall) {
-                    System.out.print(Color_Eraser.WHITE + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(WHITE + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Home) {
-                    System.out.print(Color_Eraser.YELLOW + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(YELLOW + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof door) {
-                    System.out.print(Color_Eraser.Brown + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(Brown + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof GreenHouse) {
-                    System.out.print(Color_Eraser.GREEN + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(GREEN + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Fridge) {
-                    System.out.print(Color_Eraser.WHITE + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(WHITE + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof WaterTank) {
-                    System.out.print(Color_Eraser.BLUE + tile.getGameObject().getCharactor() + Color_Eraser.RESET+" ");
+                    System.out.print(BLUE + tile.getGameObject().getCharactor() + RESET+" ");
                 }
             }
             System.out.println();
 
         }
+
+    }
+
+    public Result walk (int goalX, int goalY){
+         int startX=currentPlayer.getPositionX();
+         int startY=currentPlayer.getPositionY();
+         Tile endTile=getTileByCoordinates(goalX, goalY);
+
+         if (!checkConditionsForWalk(goalX, goalY)) {
+             return new Result(false,"you can't go to this coordinate");
+         }
+
+         int [] dirx={0,0,0,1,1,1,-1,-1,-1};
+         int [] diry={0,1,-1,0,1,-1,0,1,-1};
+         HashMap<Tile,Integer> costEnergy=new HashMap<>();
+         Queue<int []> queue=new LinkedList<>();
+
+         for (int i=0 ; i<8 ; i++) {
+             queue.add(new int[]{startX,startY,i,0,0});
+         }
+
+         return null;
+
+    }
+
+    private boolean checkTile(Tile tile){
+        if (tile.getGameObject() instanceof Home || tile.getGameObject() instanceof door
+                || tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof GreenHouse) {
+
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkConditionsForWalk(int goalX, int goalY){
+        Tile tile = getTileByCoordinates(goalX, goalY);
+        Farm farm = null;
+        for (Farm farms : farms) {
+            if (farms.Farm.contains(tile)) {
+                farm = farms;
+                break;
+            }
+        }
+        for (User user : players) {
+            if (user.getFarm().equals(farm)){
+                if (!user.getMarried().equals(currentPlayer) && !user.equals(currentPlayer)){
+                    return false;
+                }
+            }
+        }
+
+        if (tile.getGameObject() instanceof GreenHouse) {
+            if (!((GreenHouse) tile.getGameObject()).isCreated){
+                return false;
+            }
+        }
+
+        for (User user : users) {
+            if (user.getPositionX()==goalX && user.getPositionY()==goalY){
+                return false;
+            }
+        }
+        if (!checkTile(tile)){
+            return false;
+        }
+        //TODO اگر NPC در اون مختصات باشه نمیتونیم اونجا بریم
+        //TODO جاهایی که دونه کاشتیم
+        return true;
 
     }
 
