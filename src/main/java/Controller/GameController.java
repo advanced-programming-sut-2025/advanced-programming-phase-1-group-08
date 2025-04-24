@@ -406,6 +406,14 @@ public class GameController {
 
     }
 
+    public Result showInventory(Inventory inventory){
+        String result="";
+        if (inventory.getBasicRock()!=null){
+            result += "BasicRocks: " + inventory.getBasicRock().numberOfBasicRocksInInventory+"\n";
+        }
+        return null;
+    }
+
 
 
     private void setEnergyInMorning () {
