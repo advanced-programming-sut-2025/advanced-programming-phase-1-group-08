@@ -1,5 +1,6 @@
 package model;
 
+import model.Plants.AllCrops;
 import model.Plants.ForagingMinerals;
 import model.Plants.ForagingSeeds;
 
