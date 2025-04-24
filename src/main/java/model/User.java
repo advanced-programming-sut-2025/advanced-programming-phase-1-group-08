@@ -14,6 +14,7 @@ public class User {
     private int point;
     private int health;
     private int MAX_HEALTH;
+    private boolean healthUnlimited;
 
     public Tools currentTool;
     private final Farm farm = new Farm();
@@ -31,6 +32,7 @@ public class User {
         this.email = email;
         this.point = point;
         this.MAX_HEALTH = 200;
+        this.healthUnlimited = false;
     }
 
 
@@ -101,5 +103,8 @@ public class User {
     public void setPositionY(int positionY) {
         this.positionY = positionY;
     }
-
+    public void setHealthUnlimited () {this.healthUnlimited = true;}
+    public boolean isHealthUnlimited() {
+        return healthUnlimited;
+    }
 }

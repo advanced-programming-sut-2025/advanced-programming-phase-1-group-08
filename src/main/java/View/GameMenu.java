@@ -61,7 +61,12 @@ public class GameMenu implements AppMenu {
             System.out.println(CYAN+"Your Energy : "+currentPlayer.getHealth()+ RESET);
 
         else if ((matcher = GameMenuCommands.setEnergy.getMather(input)) != null)
-            System.out.println((matcher.group("amount").trim()));
+            System.out.println(controller.setEnergy(matcher.group("amount").trim()));
+
+        else if (GameMenuCommands.energyUnlimit.getMather(input) != null)
+            System.out.println(controller.EnergyUnlimited());
+
+
 
         else
             System.out.println(RED+"Sorry pls try again");

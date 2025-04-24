@@ -314,7 +314,7 @@ public class GameController {
     }
     private boolean checkForDeath () {
 
-        return currentPlayer.getHealth() <= 0;
+        return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
     }
 
 
@@ -395,6 +395,9 @@ public class GameController {
     }
     public Result setEnergy    (String amount) {
 
+        if (currentPlayer.isHealthUnlimited())
+            return new Result(false, BLUE+"You're unstoppable! Energy level: ∞"+RESET);
+
         if (amount.charAt(0) == '-')
             return new Result(false, RED+"Energy must be a positive number!"+RESET);
         int amount2;
@@ -406,15 +409,13 @@ public class GameController {
 
         if (currentPlayer.getHealth() > amount2) {
             currentPlayer.setHealth(amount2);
-            return new Result(true, BLUE+"Your Energy");
-
+            return new Result(true, BLUE+"Your Energy decrease to :" +RESET+amount2);
         }
         else if (currentPlayer.getHealth() < amount2) {
-
-            return new Result(true, "");
+            currentPlayer.setHealth(amount2);
+            return new Result(true, BLUE+"Your Energy increase to :" +RESET+amount2);
         } else
             return new Result(false, "Your energy level at this moment is this amount.");
-
     }
     public Result showDateTime () {
         return new Result(true, BLUE+"Time : "+RED+ currentDate.getHour()+ ":00" +
@@ -449,5 +450,10 @@ public class GameController {
         }
         passedOfTime(amount, 0);
         return new Result(true, BLUE+"Date change to : "+RED+currentDate.getYear()+RESET+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
+    }
+    public Result EnergyUnlimited () {
+
+        currentPlayer.setHealthUnlimited();
+        return new Result(true, BLUE+"Whoa! Infinite energy mode activated!"+RESET);
     }
 }
