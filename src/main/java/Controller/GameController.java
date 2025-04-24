@@ -425,6 +425,7 @@ public class GameController {
         }
         if (inventory.getForagingSeeds()!=null){
             result += "ForagingSeeds\n";
+
             for (Map.Entry<ForagingSeeds,Integer> entry : inventory.getForagingSeeds().entrySet()) {
                 result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
             }

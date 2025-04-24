@@ -14,12 +14,14 @@ public class Color_Eraser {
     public static final String PURPLE = "\u001B[35m";
     public static final String CYAN = "\u001B[36m";
     public static final String WHITE = "\u001B[37m";
+    public static final String ORANGE = "\u001B[38;2;255;165;0m";
     public static final String Brown = "\u001B[38;2;165;42;42m";
 
     public static final String BRIGHT_BLACK   = "\u001B[90m";  // معمولاً نمایانگر خاکستری تیره
     public static final String BRIGHT_RED     = "\u001B[91m";
     public static final String BRIGHT_GREEN   = "\u001B[92m";
     public static final String BRIGHT_YELLOW  = "\u001B[93m";
+    public static final String BRIGHT_BROWN = "\u001B[38;2;205;133;63m";
     public static final String BRIGHT_BLUE    = "\u001B[94m";
     public static final String BRIGHT_PURPLE  = "\u001B[95m";
     public static final String BRIGHT_CYAN    = "\u001B[96m";
@@ -60,6 +62,9 @@ public class Color_Eraser {
     public static final String REVERSED = "\u001B[7m";
     public static final String BOLD = "\u001B[1m";
     public static final String UNDERLINE = "\u001B[4m";
+
+    public static final String BLUEBERRY = "\u001B[38;2;54;72;173m"; // رنگ بلوبری
+
 
     public static final String eraser = "\033[H\033[2J";
 }
