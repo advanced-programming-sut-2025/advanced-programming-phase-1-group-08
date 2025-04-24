@@ -11,4 +11,8 @@ public class AllCrops extends Items {
     public void setType(CropsType type) {
         this.type = type;
     }
+
+    public CropsType getType() {
+        return type;
+    }
 }

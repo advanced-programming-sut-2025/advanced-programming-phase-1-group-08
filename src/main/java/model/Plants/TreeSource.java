@@ -10,4 +10,8 @@ public class TreeSource extends Items {
     public TreeSource (TreesSourceType type) {
         this.type = type;
     }
+
+    public TreesSourceType getType() {
+        return type;
+    }
 }

@@ -1,6 +1,7 @@
 package model;
 
 import model.Places.Farm;
+import model.ToolsPackage.BaⅽkPaⅽk;
 import model.ToolsPackage.Tools;
 
 public class User {
@@ -16,6 +17,7 @@ public class User {
     private int MAX_HEALTH;
     private User Married;//شخصی که باهاش ازدواج کرده
     private boolean healthUnlimited;
+    private BaⅽkPaⅽk baⅽkPaⅽk = new BaⅽkPaⅽk();
 
     public Tools currentTool;
     private final Farm farm = new Farm();
@@ -111,5 +113,9 @@ public class User {
     public void setHealthUnlimited () {this.healthUnlimited = true;}
     public boolean isHealthUnlimited() {
         return healthUnlimited;
+    }
+
+    public BaⅽkPaⅽk getBaⅽkPaⅽk() {
+        return baⅽkPaⅽk;
     }
 }

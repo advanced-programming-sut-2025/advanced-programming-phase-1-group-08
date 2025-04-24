@@ -23,6 +23,7 @@ public enum GameMenuCommands {
     advanceDate ("(?i)\\s*cheat\\s+advance\\s+date\\s+(?<date>.+)\\s*d\\s*"),
     walk("walk\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     inventoryShow("inventory\\s+show\\s*"),
+    removeItem("^inventory trash -i (?<item>.+?)(?= -n|$)(?: -n (?<number>\\d+))?$"),
 
     ;
 

@@ -11,4 +11,8 @@ public class ForagingSeeds extends Items {
     public void setType(ForagingSeedsType type) {
         this.type = type;
     }
+
+    public ForagingSeedsType getType() {
+        return type;
+    }
 }

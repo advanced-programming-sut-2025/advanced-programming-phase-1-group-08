@@ -11,4 +11,8 @@ public class TreesProdct extends Items {
     public void setType(TreesProductType type) {
         this.type = type;
     }
+
+    public TreesProductType getType() {
+        return type;
+    }
 }
