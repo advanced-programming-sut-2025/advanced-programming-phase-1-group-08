@@ -21,6 +21,9 @@ public enum GameMenuCommands {
     setWeather  ("\\s*(?i)cheat\\s*weather\\s*set\\s*(?<Weather>.+)\\s*"),
     advanceTime ("(?i)\\s*cheat\\s+advance\\s+time\\s+(?<hour>.+)\\s*h\\s*"),
     advanceDate ("(?i)\\s*cheat\\s+advance\\s+date\\s+(?<date>.+)\\s*d\\s*"),
+    walk("walk\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
+    inventoryShow("inventory\\s+show\\s*"),
+    removeItem("^inventory trash -i (?<item>.+?)(?= -n|$)(?: -n (?<number>\\d+))?$"),
 
     ;
 

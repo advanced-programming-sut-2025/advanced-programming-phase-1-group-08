@@ -2,6 +2,7 @@ package model;
 
 import model.Enum.SecurityQuestions;
 import model.Places.Farm;
+import model.ToolsPackage.BaⅽkPaⅽk;
 import model.ToolsPackage.Tools;
 
 public class User {
@@ -20,7 +21,9 @@ public class User {
     private int games_played;
     private int health;
     private int MAX_HEALTH;
+    private User Married;//شخصی که باهاش ازدواج کرده
     private boolean healthUnlimited;
+    private BaⅽkPaⅽk baⅽkPaⅽk = new BaⅽkPaⅽk();
 
     public Tools currentTool;
     private final Farm farm = new Farm();
@@ -111,6 +114,10 @@ public class User {
     public void setPositionY(int positionY) {
         this.positionY = positionY;
     }
+
+    public User getMarried() {
+        return Married;
+    }
     public void setHealthUnlimited () {this.healthUnlimited = true;}
     public boolean isHealthUnlimited() {
         return healthUnlimited;
@@ -148,4 +155,8 @@ public class User {
         this.games_played = games_played;
     }
 
+
+    public BaⅽkPaⅽk getBaⅽkPaⅽk() {
+        return baⅽkPaⅽk;
+    }
 }
