@@ -1,6 +1,4 @@
 package model.Enum.AllPlants;
 
-public enum TreeType
-{
-
+public enum AllCropsType {
 }
