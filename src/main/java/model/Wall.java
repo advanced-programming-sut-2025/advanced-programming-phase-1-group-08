@@ -1,6 +1,6 @@
 package model;
 
-import model.Enum.WallType;
+import model.Enum.ItemType.WallType;
 
 public class Wall extends GameObject{
     private WallType wallType;

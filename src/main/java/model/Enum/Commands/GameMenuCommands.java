@@ -6,12 +6,21 @@ import java.util.regex.Pattern;
 public enum GameMenuCommands {
 
     showTime      ("\\s*(?i)time\\s*"),
-    showDate      ("\\s*(?i)data\\s*"),
-    showDateTime  ("\\s*(?i)dataTime\\s*"),
-    showDayOfWeek ("\\s*(?i)day\\s+(?i)of\\s+(?i)the\\s+(?i)week\\s*"),
+    showDate      ("\\s*(?i)date\\s*"),
+    showSeason    ("\\s*(?i)season\\s*"),
+    showWeather   ("\\s*(?i)weather\\s*"),
+    showDateTime  ("(?i)\\s*date\\s*Time\\s*"),
+    showEnergy    ("(?i)\\s*energy\\s*show\\s*"),
+    energyUnlimit ("(?i)\\s*energy\\s*unlimited\\s*"),
+    showDayOfWeek ("(?i)\\s*day\\s+of\\s+the\\s+week\\s*"),
+    createThor    ("(?i)\\s*cheat\\s*thor\\s*-l(?<x>.+),(?<y>.+)\\s*"),
+    setEnergy     ("(?i)\\s*energy\\s*set\\s*-v\\s*(?<amount>\\d+)\\s*"),
+    showTomorrowWeather("\\s*(?i)weather\\s*forecast\\s*"),
+    buildGreenHouse    ("(?i)\\s*greenhouse\\s*build\\s*"),
 
-    advanceTime ("\\s*(?i)cheat\\s+(?i)advance\\s+(?i)time\\s+(?<hour>-?\\s*\\d+)\\s*h\\s*"),
-    advanceDate ("\\s*(?i)cheat\\s+(?i)advance\\s+(?i)date\\s+(?<date>-?\\s*\\d+)\\s*d\\s*"),
+    setWeather  ("\\s*(?i)cheat\\s*weather\\s*set\\s*(?<Weather>.+)\\s*"),
+    advanceTime ("(?i)\\s*cheat\\s+advance\\s+time\\s+(?<hour>.+)\\s*h\\s*"),
+    advanceDate ("(?i)\\s*cheat\\s+advance\\s+date\\s+(?<date>.+)\\s*d\\s*"),
 
     ;
 

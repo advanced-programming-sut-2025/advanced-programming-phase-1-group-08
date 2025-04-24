@@ -1,5 +1,6 @@
 package model;
 
+import model.Places.Farm;
 import model.ToolsPackage.Tools;
 
 public class User {
@@ -8,10 +9,19 @@ public class User {
     private String password;
     private String nickname;
     private final String email;
+
+    private Tile SleepTile;
     private int point;
-    public static int health;
+    private int health;
+    private int MAX_HEALTH;
+    private boolean healthUnlimited;
+
     public Tools currentTool;
-    private Farm farm;
+    private final Farm farm = new Farm();
+    public int topLeftX;
+    public int topLeftY;
+    private int positionX;
+    private int positionY;
 
 
     public User(String username, String password, String nickname, String email, int point, int health) {
@@ -21,9 +31,17 @@ public class User {
         this.nickname = nickname;
         this.email = email;
         this.point = point;
+        this.MAX_HEALTH = 200;
+        this.healthUnlimited = false;
     }
 
 
+    public int getMAX_HEALTH() {
+        return MAX_HEALTH;
+    }
+    public void setMAX_HEALTH(int MAX_HEALTH) {
+        this.MAX_HEALTH = MAX_HEALTH;
+    }
     public String getUsername() {
         return username;
     }
@@ -56,11 +74,37 @@ public class User {
     }
     public void setHealth(int health) {
         this.health = health;
+        checkHealth();
     }
     public void increaseHealth(int health) {
         this.health += health;
+        checkHealth();
     }
     public Farm getFarm() {
         return farm;
+    }
+
+    public void checkHealth() {
+
+        if (this.health > MAX_HEALTH)
+            this.health = MAX_HEALTH;
+        if (this.health < 0)
+            this.health = 0;
+    }
+    public int getPositionX() {
+        return positionX;
+    }
+    public void setPositionX(int positionX) {
+        this.positionX = positionX;
+    }
+    public int getPositionY() {
+        return positionY;
+    }
+    public void setPositionY(int positionY) {
+        this.positionY = positionY;
+    }
+    public void setHealthUnlimited () {this.healthUnlimited = true;}
+    public boolean isHealthUnlimited() {
+        return healthUnlimited;
     }
 }

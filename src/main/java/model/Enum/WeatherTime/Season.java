@@ -2,9 +2,12 @@ package model.Enum.WeatherTime;
 
 // برای فصل ها و مشخص کردن اب و هوا
 
+import static model.App.currentDate;
+import static model.Color_Eraser.*;
+
 public enum Season {
 
-    Winter {
+    Winter("❄\uFE0FWinter❄\uFE0F") {
 
         public Season passedSeason(int number) {
 
@@ -18,10 +21,16 @@ public enum Season {
                 return Winter;
         }
         public Weather getWeather() {
-            // TODO random int
+
+            double randomNumber = Math.random();
+
+            if (randomNumber < 0.15 && currentDate.getDate() != 28)
+                return Weather.Snowy;
+
+            return Weather.Sunny;
         }
     },
-    Fall {
+    Fall  ("\uD83C\uDF42Fall\uD83C\uDF42") {
 
         public Season passedSeason(int number) {
 
@@ -36,9 +45,17 @@ public enum Season {
         }
         public Weather getWeather() {
 
+            double randomNumber = Math.random();
+
+            if (randomNumber < 0.2)
+                return Weather.Rainy;
+            if (randomNumber > 0.2 && randomNumber < 0.4)
+                return Weather.Rainy;
+
+            return Weather.Stormy;
         }
     },
-    Summer {
+    Summer("☀\uFE0FSummer☀\uFE0F") {
 
         public Season passedSeason(int number) {
 
@@ -53,9 +70,17 @@ public enum Season {
         }
         public Weather getWeather() {
 
+            double randomNumber = Math.random();
+
+            if (randomNumber < 0.1)
+                return Weather.Rainy;
+            if (randomNumber > 0.1 && randomNumber < 0.2)
+                return Weather.Stormy;
+
+            return Weather.Sunny;
         }
     },
-    Spring {
+    Spring("\uD83C\uDF38Spring\uD83C\uDF38") {
 
         public Season passedSeason(int number) {
 
@@ -70,20 +95,34 @@ public enum Season {
         }
         public Weather getWeather() {
 
+            double randomNumber = Math.random();
+
+            if (randomNumber < 0.2)
+                return Weather.Rainy;
+            if (randomNumber > 0.2 && randomNumber < 0.3)
+                return Weather.Stormy;
+
+            return Weather.Sunny;
         }
     };
 
-    private int dayOfSeason;
+    private final String displayName;
 
-
-
-
-    public int getDayOfSeason  () {
-        return dayOfSeason;
+    Season(String displayName) {
+        this.displayName = displayName;
     }
+    public String getDisplayName() {
+
+        if (this.equals(Summer))
+            return YELLOW+displayName+RESET;
+        if (this.equals(Spring))
+            return PURPLE+displayName+RESET;
+        if (this.equals(Winter))
+            return CYAN+displayName+RESET;
+        else
+            return RED+displayName+RESET;
+    }
+
     public abstract Season passedSeason   (int number);
     public abstract Weather getWeather();
-    public void setDayOfSeason (int dayOfSeason) {
-        this.dayOfSeason = dayOfSeason;
-    }
 }

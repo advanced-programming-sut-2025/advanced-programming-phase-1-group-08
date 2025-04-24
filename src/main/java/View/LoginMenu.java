@@ -2,7 +2,7 @@ package View;
 
 import java.util.Scanner;
 
-public class LoginMenu implements AppMenu{
+public class LoginMenu implements AppMenu {
 
 
     @Override

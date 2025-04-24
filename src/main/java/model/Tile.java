@@ -4,6 +4,7 @@ public class Tile { // TODO
 
     private int x;
     private int y;
+    private int costEnergy;
 
     private GameObject gameObject;
 
@@ -36,5 +37,13 @@ public class Tile { // TODO
 
     public void setGameObject(GameObject gameObject) {
         this.gameObject = gameObject;
+    }
+
+    public int getCostEnergy() {
+        return costEnergy;
+    }
+
+    public void setCostEnergy(int costEnergy) {
+        this.costEnergy = costEnergy;
     }
 }

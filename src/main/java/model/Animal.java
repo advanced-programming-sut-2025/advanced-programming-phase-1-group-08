@@ -1,6 +1,6 @@
 package model;
 
-import model.Enum.AnimalType;
+import model.Enum.ItemType.AnimalType;
 
 public class Animal extends GameObject {
 
