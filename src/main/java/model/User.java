@@ -9,6 +9,7 @@ public class User {
 
     private String username;
     private String password;
+    private String hashPass;
     private String nickname;
     private String email;
     private final String gender;
@@ -33,16 +34,16 @@ public class User {
     private int positionY;
 
 
-    public User(String username, String password, String nickname, String email, String gender,  int point, int health) {
+    public User(String username, String nickname, String email, String gender,  int point, int health, String hashPass) {
 
         this.username = username;
-        this.password = password;
         this.nickname = nickname;
         this.email = email;
         this.gender = gender;
         this.point = point;
         this.MAX_HEALTH = 200;
         this.healthUnlimited = false;
+        this.hashPass = hashPass;
     }
 
 
