@@ -12,7 +12,7 @@ import static model.Enum.AllPlants.CropsType.*;
 public enum ForagingSeedsType {
 
     JazzSeeds       ( "Jazz Seeds",       true, BlueJazz,
-            4, false, new int[]{1, 2, 2, 2}) {
+            4, false, new int[] {1, 2, 2, 2}) {
         @Override
         public List<String> getCustomStrings() {
             return List.of();
@@ -30,14 +30,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (level <= 3)
                 return YELLOW+"j"+RESET;
-            if (level == 2)
-                return YELLOW+"J"+RESET;
-            if (level == 3)
-                return GREEN+"j"+RESET;
             else
-                return GREEN+"J"+RESET;
+                return GREEN+"j"+RESET;
         }
     },
     CarrotSeeds     ( "Carrot Seeds",     true, Carrot,
@@ -58,12 +54,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (level <= 2)
                 return YELLOW+"c"+RESET;
-            if (level == 2)
-                return YELLOW+"C"+RESET;
             else
-                return ORANGE+"C"+RESET;
+                return ORANGE+"c"+RESET;
         }
     },
     CauliflowerSeeds( "Cauliflower Seeds",true, Cauliflower,
@@ -85,14 +79,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (level <= 4)
                 return WHITE+"f"+RESET;
-            if (level == 2)
-                return WHITE+"F"+RESET;
-            if (level == 3 || level == 4)
-                return GREEN+"f"+RESET;
             else
-                return GREEN+"F"+RESET;
+                return GREEN+"f"+RESET;
         }
     },
     CoffeeBean      ( "CoffeeBean",       false, CoffeeBeanProduct,
@@ -114,14 +104,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (level <= 4)
                 return GREEN+"f"+RESET;
-            if (level == 2)
-                return GREEN+"F"+RESET;
-            if (level == 3 || level == 4)
-                return BRIGHT_BROWN+"f"+RESET;
             else
-                return BRIGHT_BROWN+"F"+RESET;
+                return BRIGHT_BROWN+"f"+RESET;
         }
     },
     GarlicSeeds     ( "JGarlic Seeds",    true, Garlic,
@@ -143,14 +129,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (level <= 3)
                 return BRIGHT_BROWN+"g"+RESET;
-            if (level == 2)
-                return BRIGHT_BROWN+"G"+RESET;
-            if (level == 3)
-                return WHITE+"g"+RESET;
             else
-                return WHITE+"G"+RESET;
+                return WHITE+"g"+RESET;
         }
     },
     BeanStarter     ( "Bean Starter",     false, GreenBean,
@@ -172,14 +154,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (level <= 4)
                 return YELLOW+"b"+RESET;
-            if (level == 2)
-                return YELLOW+"B"+RESET;
-            if (level == 3 || level == 4)
-                return GREEN+"b"+RESET;
             else
-                return GREEN+"B"+RESET;
+                return GREEN+"b"+RESET;
         }
     },
     KaleSeeds       ( "Kale Seeds",       true, Kale,
@@ -201,14 +179,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (level <= 3)
                 return YELLOW+"k"+RESET;
-            if (level == 2)
-                return YELLOW+"K"+RESET;
-            if (level == 3)
-                return GREEN+"k"+RESET;
             else
-                return GREEN+"K"+RESET;
+                return GREEN+"k"+RESET;
         }
     },
     ParsnipSeeds    ( "Parsnip Seeds",    true, Parsnip,
@@ -230,14 +204,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (level <= 3)
                 return GREEN+"p"+RESET;
-            if (level == 2)
-                return GREEN+"P"+RESET;
-            if (level == 3)
-                return WHITE+"p"+RESET;
             else
-                return WHITE+"P"+RESET;
+                return WHITE+"p"+RESET;
         }
     },
     PotatoSeeds     ( "Potato Seeds",     true, Potato,
@@ -257,14 +227,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (level <= 4)
                 return YELLOW+"p"+RESET;
-            if (level == 2)
-                return YELLOW+"P"+RESET;
-            if (level == 3 || level == 4)
-                return BRIGHT_BROWN+"p"+RESET;
             else
-                return BRIGHT_BROWN+"P"+RESET;
+                return BRIGHT_BROWN+"p"+RESET;
         }
     },
     RhubarbSeeds    ( "Rhubarb Seeds",    true, Rhubarb,
@@ -286,14 +252,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (this.getGrowthStages() <= level)
                 return WHITE+"p"+RESET;
-            if (level == 2)
-                return WHITE+"P"+RESET;
-            if (level == 3 || this.getGrowthStages() == level)
-                return PURPLE+"p"+RESET;
             else
-                return PURPLE+"P"+RESET;
+                return PURPLE+"p"+RESET;
         }
     },
     StrawberrySeeds ( "Strawberry Seeds", false, Strawberry,
@@ -315,14 +277,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (this.getGrowthStages() < level)
                 return GREEN+"s"+RESET;
-            if (level == 2)
-                return GREEN+"S"+RESET;
-            if (level == 3 || this.getGrowthStages() == level)
-                return RED+"s"+RESET;
             else
-                return RED+"S"+RESET;
+                return RED+"s"+RESET;
         }
     },
     TulipBulb       ( "Tulip Bulb",       true, Tulip,
@@ -344,14 +302,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (this.getGrowthStages() < level)
                 return GREEN+"t"+RESET;
-            if (level == 2)
-                return GREEN+"T"+RESET;
-            if (level == 3 || this.getGrowthStages() == level)
-                return RED+"t"+RESET;
             else
-                return RED+"T"+RESET;
+                return RED+"t"+RESET;
         }
     },
     RiceShoot       ( "Rice Shoot",       true, UnmilledRice,
@@ -373,14 +327,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (this.getGrowthStages() < level)
                 return YELLOW+"r"+RESET;
-            if (level == 2)
-                return YELLOW+"R"+RESET;
-            if (level == 3 || this.getGrowthStages() == level)
-                return GREEN+"r"+RESET;
             else
-                return GREEN+"R"+RESET;
+                return GREEN+"r"+RESET;
         }
     },
     BlueberrySeeds  ( "Blueberry Seeds",  false, Blueberry,
@@ -400,14 +350,10 @@ public enum ForagingSeedsType {
         @Override
         public String getSymbolByLevel (int level) {
 
-            if (level == 1)
+            if (this.getGrowthStages() < level)
                 return YELLOW+"b"+RESET;
-            if (level == 2)
-                return YELLOW+"B"+RESET;
-            if (level == 3 || this.getGrowthStages() == level)
-                return BLUEBERRY+"b"+RESET;
             else
-                return BLUEBERRY+"B"+RESET;
+                return BLUEBERRY+"b"+RESET;
         }
     },
     CornSeeds       ( "Corn Seeds",       false, Corn,
@@ -426,6 +372,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return WHITE+"o"+RESET;
+            else
+                return YELLOW+"o"+RESET;
+        }
     },
     HopsStarter     ( "Hops Starter",     false, Hops,
             5, false, new int[]{1, 1, 2, 3, 4}) {
@@ -442,6 +396,14 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return WHITE+"h"+RESET;
+            else
+                return GREEN+"h"+RESET;
         }
     },
     PepperSeeds     ( "Pepper Seeds",     false, HotPepper,
@@ -460,6 +422,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BLUE+"h"+RESET;
+            else
+                return RED+"h"+RESET;
+        }
     },
     MelonSeeds      ( "Melon Seeds",      true, Melon,
             5, true, new int[] {1, 2, 3, 3, 3}) {
@@ -476,6 +446,14 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return WHITE+"m"+RESET;
+            else
+                return GREEN+"m"+RESET;
         }
     },
     PoppySeeds      ( "Poppy Seeds",      true, Poppy,
@@ -511,6 +489,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return GREEN+"r"+RESET;
+            else
+                return BRIGHT_RED+"r"+RESET;
+        }
     },
     RedCabbageSeeds ( "Red Cabbage Seeds",true, RedCabbage,
             5, false, new int[]{2, 1, 2, 2, 2}) {
@@ -527,6 +513,14 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return CYAN+"r"+RESET;
+            else
+                return RED+"r"+RESET;
         }
     },
     StarfruitSeeds  ( "Starfruit Seeds",  true, Starfruit,
@@ -545,6 +539,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return WHITE+"s"+RESET;
+            else
+                return YELLOW+"s"+RESET;
+        }
     },
     SpangleSeeds    ( "Spangle Seeds",    true, SummerSpangle,
             4, false, new int[]{1, 2, 3, 1}) {
@@ -561,6 +563,14 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_CYAN+"s"+RESET;
+            else
+                return CYAN+"s"+RESET;
         }
     },
     SummerSquashSeeds( "Summer Squash Seeds",false, SummerSquash,
@@ -579,6 +589,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_PURPLE+"s"+RESET;
+            else
+                return PURPLE+"s"+RESET;
+        }
     },
     SunflowerSeeds  ( "Sunflower Seeds",     true, Sunflower,
             4, false, new int[]{1, 2, 3, 2}) {
@@ -595,6 +613,14 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BG_BRIGHT_YELLOW+BLACK+"s"+RESET;
+            else
+                return BG_YELLOW+BLACK+"s"+RESET;
         }
     },
     TomatoSeeds     ( "Tomato Seeds",        false, Tomato,
@@ -613,6 +639,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BG_BRIGHT_WHITE+BRIGHT_RED+"t"+RESET;
+            else
+                return BG_WHITE+RED+"t"+RESET;
+        }
     },
     WheatSeeds      ( "Wheat Seeds",         true, Wheat,
             4, false, new int[]{1, 1, 1, 1}) {
@@ -629,6 +663,14 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_YELLOW+"w"+RESET;
+            else
+                return YELLOW+"w"+RESET;
         }
     },
     AmaranthSeeds   ( "Amaranth Seeds",      true, Amaranth,
@@ -647,6 +689,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_PURPLE+"a"+RESET;
+            else
+                return PURPLE+"a"+RESET;
+        }
     },
     ArtichokeSeeds  ( "Artichoke Seeds",     true, Artichoke,
             5, false, new int[]{2, 2, 1, 2, 1}) {
@@ -663,6 +713,14 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_GREEN+"a"+RESET;
+            else
+                return GREEN+"a"+RESET;
         }
     },
     BeetSeeds       ( "Beet Seeds",          true, Beet,
@@ -681,6 +739,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        @Override
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_PURPLE+"b"+RESET;
+            else
+                return RED+"b"+RESET;
+        }
     },
     BokChoySeeds    ("BokChoy Seeds",        true, BokChoy,
             4, false, new int[]{1, 1, 1, 1}) {
@@ -697,6 +763,13 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BG_BRIGHT_WHITE+BRIGHT_GREEN+"b"+RESET;
+            else
+                return BG_BRIGHT_WHITE+GREEN+"b"+RESET;
         }
     },
     BroccoliSeeds   ( "Broccoli Seeds",      false, Broccoli,
@@ -715,6 +788,13 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BG_BRIGHT_BLACK+BRIGHT_GREEN+"b"+RESET;
+            else
+                return BG_BRIGHT_BLACK+GREEN+"b"+RESET;
+        }
     },
     CranberrySeeds  ( "Cranberry Seeds",     false, Cranberries,
             5, false, new int[]{1, 2, 1, 1, 2}) {
@@ -731,6 +811,13 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BG_BRIGHT_CYAN+BRIGHT_RED+"b"+RESET;
+            else
+                return BG_BRIGHT_CYAN+RED+"b"+RESET;
         }
     },
     EggplantSeeds   ( "Eggplant Seeds",      false, Eggplant,
@@ -749,6 +836,13 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_PURPLE+"e"+RESET;
+            else
+                return RED+"e"+RESET;
+        }
     },
     FairySeeds      ( "Fairy Seeds",         true, FairyRose,
             4, false, new int[]{1, 4, 4, 3}) {
@@ -765,6 +859,13 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BG_BRIGHT_BLACK+BRIGHT_WHITE+"f"+RESET;
+            else
+                return BG_BRIGHT_BLACK+WHITE+"f"+RESET;
         }
     },
     GrapeStarter    ( "Grape Starter",       false, Grape,
@@ -783,6 +884,13 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_PURPLE+"b"+RESET;
+            else
+                return RED+"b"+RESET;
+        }
     },
     PumpkinSeeds    ( "Pumpkin Seeds",       true, Pumpkin,
             5, true, new int[] {1, 2, 3, 4, 3}) {
@@ -799,6 +907,13 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_PURPLE+"b"+RESET;
+            else
+                return RED+"b"+RESET;
         }
     },
     YamSeeds        ( "Yam Seeds",           true, Yam,
@@ -817,6 +932,13 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_PURPLE+"b"+RESET;
+            else
+                return RED+"b"+RESET;
+        }
     },
     RareSeed        ( "Rare Seed",           true, SweetGemBerry,
             5, false, new int[]{2, 4, 6, 6, 6}) {
@@ -833,6 +955,13 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_PURPLE+"b"+RESET;
+            else
+                return RED+"b"+RESET;
         }
     },
     PowdermelonSeeds("Powdermelon Seeds",    true, Powdermelon,
@@ -851,6 +980,13 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return null;
         }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_PURPLE+"b"+RESET;
+            else
+                return RED+"b"+RESET;
+        }
     },
     AncientSeeds    ( "Ancient Seeds",       false, AncientFruit,
             5, false, new int[]{2, 7, 7, 7, 5}) {
@@ -867,6 +1003,13 @@ public enum ForagingSeedsType {
         @Override
         public ArrayList<Season> getSeason() {
             return null;
+        }
+        public String getSymbolByLevel (int level) {
+
+            if (this.getGrowthStages() < level)
+                return BRIGHT_PURPLE+"b"+RESET;
+            else
+                return RED+"b"+RESET;
         }
     };
 
