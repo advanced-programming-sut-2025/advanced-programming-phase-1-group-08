@@ -6,5 +6,10 @@ public class Shear extends Tools {
         super("Shear", 0);
     }
 
+    @Override
+    public String getName() {
+        return "Shear";
+    }
+
     public void use (){}
 }

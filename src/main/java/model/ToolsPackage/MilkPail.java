@@ -6,6 +6,11 @@ public class MilkPail extends Tools {
         super("MilkPail", 0);
     }
 
+    @Override
+    public String getName() {
+        return "MilkPail";
+    }
+
     public void use (){}
 
 }

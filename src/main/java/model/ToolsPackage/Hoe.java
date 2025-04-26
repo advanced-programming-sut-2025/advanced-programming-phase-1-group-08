@@ -8,7 +8,7 @@ public class Hoe extends Tools {
         super("Hoe", 0);
     }
 
-    public HoeType hoeType=HoeType.primary;
+    public HoeType hoeType=HoeType.primaryHoe;
 
     public void use (){}
 

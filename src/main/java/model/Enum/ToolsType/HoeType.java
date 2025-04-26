@@ -1,35 +1,35 @@
 package model.Enum.ToolsType;
 
 public enum HoeType {
-    primary{
+    primaryHoe{
         @Override
         public int costEnergy() {
             return 5;
         }
     },
 
-    coppery{
+    copperyHoe{
         @Override
         public int costEnergy() {
             return 4;
         }
     },
 
-    iron{
+    ironHoe{
         @Override
         public int costEnergy() {
             return 3;
         }
     },
 
-    golden{
+    goldenHoe{
         @Override
         public int costEnergy() {
             return 2;
         }
     },
 
-    iridium{
+    iridiumHoe{
         @Override
         public int costEnergy() {
             return 1;

@@ -8,7 +8,7 @@ public class PiⅽkAxe extends Tools {
         super("PickAxe", 0);
     }
 
-    public PickAxeType pickAxeType=PickAxeType.primary;
+    public PickAxeType pickAxeType=PickAxeType.PrimaryPickAxe;
 
     public void use (){}
 

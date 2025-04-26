@@ -4,7 +4,7 @@ import model.App;
 
 public enum FishingPoleType {
 
-    primary{
+    TrainingRod{
         @Override
         public int getPrice() {
             return 25;
@@ -20,7 +20,7 @@ public enum FishingPoleType {
             return 8;
         }
     },
-    Bamboo{
+    BambooPole{
         @Override
         public int getPrice() {
             return 500;
@@ -36,7 +36,7 @@ public enum FishingPoleType {
             return 8;
         }
     },
-    FiberGlass{
+    FiberglassRod{
         @Override
         public int getPrice() {
             return 1800;
@@ -52,7 +52,7 @@ public enum FishingPoleType {
             return 6;
         }
     },
-    iridium{
+    IridiumRod{
         @Override
         public int getPrice() {
             return 7500;

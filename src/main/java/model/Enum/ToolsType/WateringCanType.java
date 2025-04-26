@@ -2,7 +2,7 @@ package model.Enum.ToolsType;
 
 public enum WateringCanType {
 
-    primary{
+    PrimaryWateringCan{
         @Override
         public int costEnergy(boolean Farming) {
             if (Farming){
@@ -17,7 +17,7 @@ public enum WateringCanType {
         }
     },
 
-    coppery{
+    CopperyWateringCan{
         @Override
         public int costEnergy(boolean Farming) {
             if (Farming){
@@ -32,7 +32,7 @@ public enum WateringCanType {
         }
     },
 
-    iron{
+    IronWateringCan{
         @Override
         public int costEnergy(boolean Farming) {
             if (Farming){
@@ -47,7 +47,7 @@ public enum WateringCanType {
         }
     },
 
-    golden{
+    GoldenWateringCan{
         @Override
         public int costEnergy(boolean Farming) {
             if (Farming){
@@ -62,7 +62,7 @@ public enum WateringCanType {
         }
     },
 
-    iridium{
+    IridiumWateringCan{
         @Override
         public int costEnergy(boolean Farming) {
             if (Farming){

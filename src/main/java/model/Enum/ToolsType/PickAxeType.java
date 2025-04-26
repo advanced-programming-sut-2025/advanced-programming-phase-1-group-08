@@ -2,7 +2,7 @@ package model.Enum.ToolsType;
 
 public enum PickAxeType {
 
-    primary{
+    PrimaryPickAxe{
         @Override
         public int costEnergy(boolean succesfully, boolean mining){
             if (!succesfully && mining){
@@ -17,7 +17,7 @@ public enum PickAxeType {
         }
     },
 
-    coppery{
+    CopperyPickAxe{
         @Override
         public int costEnergy(boolean succesfully, boolean mining){
             if (!succesfully && mining){
@@ -32,7 +32,7 @@ public enum PickAxeType {
         }
     },
 
-    iron{
+    IronPickAxe{
         @Override
         public int costEnergy(boolean succesfully, boolean mining){
             if (!succesfully && mining){
@@ -47,7 +47,7 @@ public enum PickAxeType {
         }
     },
 
-    golden{
+    GoldenPickAxe{
         @Override
         public int costEnergy(boolean succesfully, boolean mining){
             if (!succesfully && mining){
@@ -62,7 +62,7 @@ public enum PickAxeType {
         }
     },
 
-    iridium{
+    IridiumPickAxe{
         @Override
         public int costEnergy(boolean succesfully, boolean mining){
             if (!succesfully && mining){

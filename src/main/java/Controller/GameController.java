@@ -1,7 +1,6 @@
 package Controller;
 
 import model.*;
-import model.Color_Eraser;
 import model.Enum.Door;
 import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
@@ -11,10 +10,8 @@ import model.Places.GreenHouse;
 import model.Places.Home;
 import model.Places.Lake;
 import model.Plants.*;
-import model.App;
 import model.ToolsPackage.*;
 
-import javax.tools.Tool;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -486,43 +483,7 @@ public class GameController {
 
 
 
-
-
-//    private ForagingMinerals isForagingMineralsExist(String name){
-//        Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
-//        if (inventory.getForagingMinerals()==null){
-//            return null;
-//        }
-//        for (Map.Entry<Items,Integer> entry : inventory.Items.entrySet()) {
-//            if (name.equals(entry.getKey().getType())){
-//                return entry.getKey();
-//            }
-//        }
-//        return null;
-//    }
-//
-//    public Result removeForagingMinerals(Integer number , ForagingMinerals foragingMinerals, HashMap<ForagingMinerals,Integer> x){
-//        if (number==null){
-//            increaseMoney(x.get(foragingMinerals) , foragingMinerals.getType().getPrice());
-//
-//            return new Result(true,foragingMinerals.getType()+" completely removed from your inventory");
-//        }
-//        else if (number > x.get(foragingMinerals)){
-//            return new Result(false,"not enough "+foragingMinerals.getType()+" in your inventory for remove");
-//        }
-//        else if(number==x.get(foragingMinerals)){
-//            x.remove(foragingMinerals);
-//            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-//            return new Result(true,foragingMinerals.getType()+" completely removed from your inventory");
-//        }
-//        else {
-//            x.put(foragingMinerals, x.get(foragingMinerals) - number);
-//            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-//            return new Result(true,"Successfully removed "+number+foragingMinerals.getType()+" from your inventory");
-//        }
-//    }
-
-    public Result findItem(String name,Integer number){
+    public Result removeItem(String name, Integer number){
         Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
 
@@ -534,21 +495,130 @@ public class GameController {
 
             if (entry instanceof ForagingSeeds){
                 if (((ForagingSeeds) entry).getType().equals(name)){
-                    return null;
+                    //TODO return increaseMoney(entry.getValue(),( (ForagingSeeds) entry).getType().getPrice(),(ForagingSeeds) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof AllCrops){
                 if (((AllCrops) entry).getType().equals(name)){
-                    return null;
+                    //TODO return increaseMoney(entry.getValue(),( (AllCrops) entry).getType().getPrice(),(AllCrops) entry, name,entry.getValue());
                 }
             }
+            if (entry instanceof TreeSource){
+                if (((TreeSource) entry).getType().equals(name)){
+                    //TODO return increaseMoney(entry.getValue(),( (TreeSource) entry).getType().getPrice(),(TreeSource) entry, name,entry.getValue());
+                }
+            }
+            if (entry instanceof ForagingCrops){
+                if (((ForagingCrops) entry).getType().equals(name)){
+                    //TODO return increaseMoney(entry.getValue(),( (ForagingCrops) entry).getType().getPrice(),(ForagingCrops) entry, name,entry.getValue());
+                }
+            }
+            if (entry instanceof Tools){
+                return new Result(false,"you can't remove "+name+"becuse it is a tool");
+            }
+
+            //TODO برای غذا و چیزهایی که در آینده ممکنه به اینونتوری اضافه بشه
         }
         return null;
     }
 
+    public Result toolsEquip(String name){
+        name=name.replaceAll("\\s+","");
+        Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
 
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
+            if (entry instanceof Axe){
+                if (((Axe) entry).axeType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof FishingPole){
+                if (((FishingPole) entry).fishingPoleType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof Hoe){
+                if (((Hoe) entry).hoeType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof PiⅽkAxe){
+                if (((PiⅽkAxe) entry).pickAxeType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof WateringCan){
+                if (((WateringCan) entry).wateringCanType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
 
+            else if (entry instanceof Tools){
+                if (((Tools) entry).getName().equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+        }
 
+        return new Result(false,"there is no such tool");
+    }
+
+    public Result showCurrentTool(){
+        Tools currentTool=currentPlayer.currentTool;
+        if (currentTool==null){
+            return new Result(false,"there is no current tool in your hands")
+        }
+        else if (currentTool instanceof Axe){
+            return new Result(true,"current tool: "+((Axe) currentTool).axeType);
+        }
+        else if (currentTool instanceof FishingPole){
+            return new Result(true,"current tool: "+((FishingPole) currentTool).fishingPoleType);
+        }
+        else if (currentTool instanceof Hoe){
+            return new Result(true,"current tool: "+((Hoe) currentTool).hoeType);
+        }
+        else if (currentTool instanceof WateringCan){
+            return new Result(true,"current tool: "+((WateringCan) currentTool).wateringCanType);
+        }
+        else if (currentTool instanceof PiⅽkAxe){
+            return new Result(true,"current tool: "+((PiⅽkAxe) currentTool).pickAxeType);
+        }
+        else {
+            return new Result(true,"current tool: "+currentTool.getName());
+        }
+    }
+
+    public Result availableTools(){
+        Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
+        String result="";
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
+            if (entry instanceof Axe){
+                result+=((Axe) entry).axeType+"\n";
+            }
+            else if (entry instanceof FishingPole){
+                result+=((FishingPole) entry).fishingPoleType+"\n";
+            }
+            else if (entry instanceof Hoe){
+                result+=((Hoe) entry).hoeType+"\n";
+            }
+            else if (entry instanceof WateringCan){
+                result+=((WateringCan) entry).wateringCanType+"\n";
+            }
+            else if (entry instanceof PiⅽkAxe){
+                result+=((PiⅽkAxe) entry).pickAxeType+"\n";
+            }
+            else if (entry instanceof Tools){
+                result+=((Tools) entry).getName() +"\n";
+            }
+        }
+        return new Result(true,result);
+    }
 
     private void setEnergyInMorning () {
         for (User user : players) {

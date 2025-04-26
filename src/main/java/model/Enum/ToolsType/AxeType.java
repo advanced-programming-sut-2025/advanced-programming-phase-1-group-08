@@ -2,7 +2,7 @@ package model.Enum.ToolsType;
 
 public enum AxeType {
 
-    primary{
+    primaryAxe{
         @Override
         public int costEnergy(boolean succesfully, boolean Farming){
             if (!succesfully && Farming){
@@ -17,7 +17,7 @@ public enum AxeType {
         }
     },
 
-    coppery{
+    copperyAxe{
         @Override
         public int costEnergy(boolean succesfully, boolean Farming){
             if (!succesfully && Farming){
@@ -32,7 +32,7 @@ public enum AxeType {
         }
     },
 
-    iron{
+    ironAxe{
         @Override
         public int costEnergy(boolean succesfully, boolean Farming){
             if (!succesfully && Farming){
@@ -47,7 +47,7 @@ public enum AxeType {
         }
     },
 
-    golden{
+    goldenAxe{
         @Override
         public int costEnergy(boolean succesfully, boolean Farming){
             if (!succesfully && Farming){
@@ -62,7 +62,7 @@ public enum AxeType {
         }
     },
 
-    iridium{
+    iridiumAxe{
         @Override
         public int costEnergy(boolean succesfully, boolean Farming){
             if (!succesfully && Farming){

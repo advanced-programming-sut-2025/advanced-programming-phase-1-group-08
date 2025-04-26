@@ -4,7 +4,7 @@ import model.Enum.ToolsType.WateringCanType;
 
 public class WateringCan extends Tools {
 
-    public WateringCanType wateringCanType = model.Enum.ToolsType.WateringCanType.primary;
+    public WateringCanType wateringCanType = WateringCanType.PrimaryWateringCan;
 
     public WateringCan() {
         super("WateringCan", 0);

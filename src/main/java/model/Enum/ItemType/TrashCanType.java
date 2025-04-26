@@ -2,31 +2,31 @@ package model.Enum.ItemType;
 
 public enum TrashCanType {
 
-    primary{
+    primarytTrashCan {
         @Override
         public int getPercent() {
             return 0;
         }
     },
-    coppery{
+    CopperTrashCan {
         @Override
         public int getPercent() {
             return 15;
         }
     },
-    iron{
+    SteelTrashCan {
         @Override
         public int getPercent() {
             return 30;
         }
     },
-    golden{
+    GoldTrashCan {
         @Override
         public int getPercent() {
             return 45;
         }
     },
-    iridium{
+    IridiumTrashCan {
         @Override
         public int getPercent() {
             return 60;

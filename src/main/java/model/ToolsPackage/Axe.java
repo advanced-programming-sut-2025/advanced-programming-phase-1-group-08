@@ -7,7 +7,7 @@ public class Axe extends Tools {
     public Axe(){
         super("Axe", 0);
     }
-    public AxeType axeType=AxeType.primary;
+    public AxeType axeType=AxeType.primaryAxe;
 
     public void use (){}
 }
