@@ -1,7 +1,7 @@
 package model;
 
-public class Wood {
+public class Wood extends Items {
 
-    public int numberOfWoodsInInventory;
+    public static final int price=10;
 
 }

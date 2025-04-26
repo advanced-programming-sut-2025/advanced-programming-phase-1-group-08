@@ -12,7 +12,7 @@ import model.Places.Home;
 import model.Places.Lake;
 import model.Plants.*;
 import model.App;
-import model.ToolsPackage.Tools;
+import model.ToolsPackage.*;
 
 import javax.tools.Tool;
 import java.util.HashMap;
@@ -411,157 +411,143 @@ public class GameController {
 
     public Result showInventory(Inventory inventory){
         String result="";
-        if (inventory.getBasicRock()!=null){
-            result += "BasicRocks: " + inventory.getBasicRock().numberOfBasicRocksInInventory+"\n";
-        }
-        if (inventory.getWood()!=null){
-            result += "Woods: " + inventory.getWood().numberOfWoodsInInventory+"\n";
-        }
-        if (inventory.getForagingMinerals()!=null){
-            result+="ForagingMinerals\n";
-            for (Map.Entry<ForagingMinerals,Integer> entry : inventory.getForagingMinerals().entrySet()) {
-                result += entry.getKey().getType()+": "+entry.getValue()+"\n";
+        for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet()){
+            if (entry instanceof BasicRock){
+                result += "BasicRock: " + entry.getValue() + "\n";
+            }
+            else if (entry instanceof Wood){
+                result += "Wood: " + entry.getValue() + "\n";
+            }
+            else if (entry instanceof ForagingMinerals){
+                result += ((ForagingMinerals) entry).getType() +" "+ entry.getValue() + "\n";
+            }
+            else if (entry instanceof ForagingSeeds){
+                result += ((ForagingSeeds) entry).getType() +" "+ entry.getValue() + "\n";
+            }
+            else if (entry instanceof AllCrops){
+                result += ((AllCrops) entry).getType() +" "+ entry.getValue() + "\n";
+            }
+            else if (entry instanceof ForagingCrops) {
+                result += ((ForagingCrops) entry).getType() +" "+ entry.getValue() + "\n";
+            }
+            else if (entry instanceof TreeSource){
+                result += ((TreeSource) entry).getType() +" "+ entry.getValue() + "\n";
+            }
+            else if (entry instanceof Axe ){
+                result += ((Axe) entry).getName() +" "+((Axe) entry).axeType + "\n";
+            }
+            else if (entry instanceof FishingPole){
+                result += ((FishingPole) entry).getName() +" "+ ((FishingPole) entry).fishingPoleType + "\n";
+            }
+            else if (entry instanceof Hoe){
+                result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).hoeType + "\n";
+            }
+            else if (entry instanceof PiⅽkAxe){
+                result += ((PiⅽkAxe) entry).getName() +" "+ ((PiⅽkAxe) entry).pickAxeType +"\n";
+            }
+            else if (entry instanceof WateringCan){
+                result += ((WateringCan) entry).getName() +" "+ ((WateringCan) entry).wateringCanType + "\n";
+            }
+            else if (entry instanceof TrashCan){
+                result += ((TrashCan) entry).getName() +" "+((TrashCan) entry).Type + "\n";
+            }
+            else if (entry instanceof Tools){
+                result+=((Tools) entry).getName() + "\n";
             }
         }
-        if (inventory.getForagingSeeds()!=null){
-            result += "ForagingSeeds\n";
 
-            for (Map.Entry<ForagingSeeds,Integer> entry : inventory.getForagingSeeds().entrySet()) {
-                result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
-            }
-        }
-        if (inventory.getAllCrops()!=null){
-            result += "AllCrops\n";
-            for (Map.Entry<AllCrops,Integer> entry : inventory.getAllCrops().entrySet()) {
-                result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
-            }
-        }
-        if (inventory.getForagingCrops()!=null){
-            result += "ForagingCrops\n";
-            for (Map.Entry<ForagingCrops,Integer> entry : inventory.getForagingCrops().entrySet()) {
-                result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
-            }
-        }
-        if (inventory.getTreeSources()!=null){
-            result += "TreeSources\n";
-            for (Map.Entry<TreeSource,Integer> entry : inventory.getTreeSources().entrySet()) {
-                result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
-            }
-        }
-        if (inventory.getTools()!=null){
-            result += "Tools\n";
-            for (Tools tool : inventory.getTools()) {
-                result+=tool.getName()+"\n";
-            }
-        }
-
-        if (result.equals("")){
-            return new Result(false,"You have no Item in Your Inventory");
-        }
-        else {
-            return new Result(true,result);
-        }
+        return new Result(true,result);
     }
 
-    private Result removeBasicRock(Integer number){
-         Inventory inventory = currentPlayer.getBaⅽkPaⅽk().inventory;
-         if (inventory.getBasicRock()==null){
-             return new Result(false, "There is no BasicRock in your inventory for remove");
-         }
-         else if (number==null){
-             inventory.getBasicRock().numberOfBasicRocksInInventory =0;
-             //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-             return new Result(true,"BasicRocks completely removed from your inventory");
-         }
-         else if (inventory.getBasicRock().numberOfBasicRocksInInventory < number){
-             return new Result(false,"not enough BasicRocks in your inventory for remove");
-         }
-         else if (inventory.getBasicRock().numberOfBasicRocksInInventory > number){
-             inventory.getBasicRock().numberOfBasicRocksInInventory -= number;
-             //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-             return new Result(true,"Successfully removed "+number+" BasicRocks from your inventory");
-         }
-         else {
-             inventory.getBasicRock().numberOfBasicRocksInInventory =0;
-             //TODO باید این ایتم ها رو توی سطل اشغال بندازیم و مقداری پول دریافت کنیم
-             return new Result(true,"BasicRocks completely removed from your inventory");
-         }
+    private Result increaseMoney(Integer amount , int price , Items items,String name , Integer reminder) {
+        int percent=0;
+        for (Map.Entry<Items,Integer> entry: currentPlayer.getBaⅽkPaⅽk().inventory.Items.entrySet()) {
+            if (entry instanceof TrashCan){
+                percent= ((TrashCan) entry).Type.getPercent();
+                break;
+            }
+        }
+        if (amount ==null || amount == reminder) {
+            int increase=(reminder * percent *price)/100;
+            TrashCan.removeItem(increase,currentPlayer.getBaⅽkPaⅽk().inventory.Items, items, reminder);
+            return new Result(true,name + "completely removed from your inventory");
+        }
+        if (amount > reminder) {
+            return new Result(false,"not enough "+name+" "+"in your inventory for remove");
+        }
+        if (amount < reminder) {
+            int increase=(reminder * percent *price)/100;
+            TrashCan.removeItem(increase,currentPlayer.getBaⅽkPaⅽk().inventory.Items, items, reminder);
+            return new Result(true , amount + " "+name+" "+"removed from your inventory");
+        }
+
+        return null;
     }
 
-    private Result removeWood(Integer number){
-        Inventory inventory = currentPlayer.getBaⅽkPaⅽk().inventory;
-        if (inventory.getWood()==null){
-            return new Result(false, "There is no Wood in your inventory for remove");
-        }
-        else if (number==null){
-            inventory.getWood().numberOfWoodsInInventory =0;
-            //TODO باید این ایتم ها رو توی سطل اشغال بندازیم و مقداری پول دریافت کنیم
-            return new Result(true,"Woods completely removed from your inventory");
-        }
 
-        else if (inventory.getWood().numberOfWoodsInInventory < number){
-            return new Result(false,"not enough Woods in your inventory for remove");
-        }
-        else if (inventory.getWood().numberOfWoodsInInventory > number){
-            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-            inventory.getBasicRock().numberOfBasicRocksInInventory -= number;
-            return new Result(true,"Successfully removed "+number+" Woods from your inventory");
-        }
-        else {
-            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-            inventory.getWood().numberOfWoodsInInventory =0;
-            return new Result(true,"Woods completely removed from your inventory");
-        }
-    }
 
-    private ForagingMinerals isForagingMineralsExist(String name){
+
+
+//    private ForagingMinerals isForagingMineralsExist(String name){
+//        Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
+//        if (inventory.getForagingMinerals()==null){
+//            return null;
+//        }
+//        for (Map.Entry<Items,Integer> entry : inventory.Items.entrySet()) {
+//            if (name.equals(entry.getKey().getType())){
+//                return entry.getKey();
+//            }
+//        }
+//        return null;
+//    }
+//
+//    public Result removeForagingMinerals(Integer number , ForagingMinerals foragingMinerals, HashMap<ForagingMinerals,Integer> x){
+//        if (number==null){
+//            increaseMoney(x.get(foragingMinerals) , foragingMinerals.getType().getPrice());
+//
+//            return new Result(true,foragingMinerals.getType()+" completely removed from your inventory");
+//        }
+//        else if (number > x.get(foragingMinerals)){
+//            return new Result(false,"not enough "+foragingMinerals.getType()+" in your inventory for remove");
+//        }
+//        else if(number==x.get(foragingMinerals)){
+//            x.remove(foragingMinerals);
+//            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
+//            return new Result(true,foragingMinerals.getType()+" completely removed from your inventory");
+//        }
+//        else {
+//            x.put(foragingMinerals, x.get(foragingMinerals) - number);
+//            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
+//            return new Result(true,"Successfully removed "+number+foragingMinerals.getType()+" from your inventory");
+//        }
+//    }
+
+    public Result findItem(String name,Integer number){
         Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
-        if (inventory.getForagingMinerals()==null){
-            return null;
-        }
-        for (Map.Entry<ForagingMinerals,Integer> entry : inventory.getForagingMinerals().entrySet()) {
-            if (name.equals(entry.getKey().getType())){
-                return entry.getKey();
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
+
+            if (entry instanceof ForagingMinerals){
+                if (((ForagingMinerals) entry).getType().equals(name)){
+                     return increaseMoney(entry.getValue(),( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
+                }
+            }
+
+            if (entry instanceof ForagingSeeds){
+                if (((ForagingSeeds) entry).getType().equals(name)){
+                    return null;
+                }
+            }
+            if (entry instanceof AllCrops){
+                if (((AllCrops) entry).getType().equals(name)){
+                    return null;
+                }
             }
         }
         return null;
     }
 
-    public Result removeForagingMinerals(Integer number , ForagingMinerals foragingMinerals, HashMap<ForagingMinerals,Integer> x){
-        if (number==null){
-            x.remove(foragingMinerals);
-            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-            return new Result(true,foragingMinerals.getType()+" completely removed from your inventory");
-        }
-        else if (number > x.get(foragingMinerals)){
-            return new Result(false,"not enough "+foragingMinerals.getType()+" in your inventory for remove");
-        }
-        else if(number==x.get(foragingMinerals)){
-            x.remove(foragingMinerals);
-            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-            return new Result(true,foragingMinerals.getType()+" completely removed from your inventory");
-        }
-        else {
-            x.put(foragingMinerals, x.get(foragingMinerals) - number);
-            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-            return new Result(true,"Successfully removed "+number+foragingMinerals.getType()+" from your inventory");
-        }
-    }
 
 
-    public Result removeItem(String name, Integer number){
-        if (name.equals("BasicRock")){
-            return removeBasicRock(number);
-        }
-        else if (name.equals("Wood")){
-            return removeWood(number);
-        }
-        else if(isForagingMineralsExist(name) !=null){
-            return removeForagingMinerals(number, isForagingMineralsExist(name), currentPlayer.getBaⅽkPaⅽk().inventory.getForagingMinerals());
-        }
-        return null;
-
-    }
 
 
     private void setEnergyInMorning () {
