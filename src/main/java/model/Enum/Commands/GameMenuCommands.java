@@ -24,6 +24,11 @@ public enum GameMenuCommands {
     walk("walk\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     inventoryShow("inventory\\s+show\\s*"),
     removeItem("^inventory trash -i (?<item>.+?)(?= -n|$)(?: -n (?<number>\\d+))?$"),
+    toolsEquip("tools\\s+equip\\s+(?<name>\\S.*)\\s*"),
+    currentTool("tools\\s+show\\s+current\\s*"),
+    availableTool("tools\\s+show\\s+available\\s*"),
+    toolsUpgrade("tools\\s+upgrade\\s+(?<name>\\S.*)\\s*"),
+    toolsUse("tools\\s+use\\s+-d\\s+(?<direction>\\S.*)\\s*"),
 
     ;
 

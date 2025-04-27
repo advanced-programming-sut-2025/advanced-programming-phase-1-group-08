@@ -9,7 +9,4 @@ public class MixedSeeds extends Items {
         return null; //TODO
     }
 
-    public MixedSeedsType getType() {
-        return type;
-    }
 }

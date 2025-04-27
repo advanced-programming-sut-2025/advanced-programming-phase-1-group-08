@@ -7,5 +7,10 @@ public class Sⅽythe extends Tools {
         super("Scythe", 0);
     }
 
+    @Override
+    public String getName() {
+        return "Scythe";
+    }
+
     public void use (){}
 }

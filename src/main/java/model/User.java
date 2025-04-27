@@ -31,6 +31,11 @@ public class User {
     public int topLeftY;
     private int positionX;
     private int positionY;
+    private int money;
+    private int farmingAbility=0;//مهارت کشاورزی که در ابتدا صفر هست.
+    private int miningAbility=0;
+    private int foragingAbility=0;
+    private int fishingAbility=0;
 
 
     public User(String username, String password, String nickname, String email, String gender,  int point, int health) {
@@ -158,5 +163,43 @@ public class User {
 
     public BaⅽkPaⅽk getBaⅽkPaⅽk() {
         return baⅽkPaⅽk;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void increeaseMoney(int amount) {
+        this.money += amount;
+    }
+    public int getFarmingAbility() {
+        return farmingAbility;
+    }
+
+    public int getFishingAbility() {
+        return fishingAbility;
+    }
+
+    public int getForagingAbility() {
+        return foragingAbility;
+    }
+
+    public int getMiningAbility() {
+        return miningAbility;
+    }
+
+    public void increaseFarmingAbility(int amount) {
+        this.farmingAbility += amount;
+    }
+
+    public void increaseFishingAbility(int amount) {
+        this.fishingAbility += amount;
+    }
+
+    public void increaseForagingAbility(int amount) {
+        this.foragingAbility += amount;
+    }
+    public void increaseMiningAbility(int amount) {
+        this.miningAbility += amount;
     }
 }
