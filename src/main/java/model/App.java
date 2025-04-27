@@ -1,9 +1,7 @@
 package model;
 
 
-import model.Enum.Commands.RegisterCommands;
 import model.Enum.Menu;
-import model.Enum.SecurityQuestions;
 import model.Enum.WeatherTime.Weather;
 import model.Places.Farm;
 
@@ -29,7 +27,7 @@ public class App {
         return currentMenu;
     }
 
-    public static void AddNewUser(String username, String pass, String nickname, String email, String gender){
+    public static void AddNewUser (String username, String pass, String nickname, String email, String gender) {
         User newUser = new User(
                 username,
                 pass,
@@ -39,9 +37,9 @@ public class App {
                 0,
                 100
         );
-
-
         App.users.add(newUser);
         App.currentUser = newUser;
     }
+
+
 }

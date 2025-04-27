@@ -16,6 +16,8 @@ public class Color_Eraser {
     public static final String WHITE = "\u001B[37m";
     public static final String ORANGE = "\u001B[38;2;255;165;0m";
     public static final String Brown = "\u001B[38;2;165;42;42m";
+    public static final String BROWN = "\u001B[38;5;94m";
+
 
     public static final String BRIGHT_BLACK   = "\u001B[90m";  // معمولاً نمایانگر خاکستری تیره
     public static final String BRIGHT_RED     = "\u001B[91m";
