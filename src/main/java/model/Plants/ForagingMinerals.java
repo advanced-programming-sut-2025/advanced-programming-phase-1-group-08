@@ -11,7 +11,6 @@ public class ForagingMinerals extends Items {
     public ForagingMinerals(ForagingMineralsType type) {
         this.type = type;
     }
-
     public ForagingMineralsType getType() {
         return type;
     }
