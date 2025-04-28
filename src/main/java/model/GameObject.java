@@ -1,6 +1,7 @@
 package model;
 
 public class GameObject {
+
     private char Charactor;
 
     public char getCharactor() {
@@ -10,4 +11,6 @@ public class GameObject {
         this.Charactor = Charactor;
     }
 
+    public void startDayAutomaticTask() {}
+    public void turnByTurnAutomaticTask() {}
 }

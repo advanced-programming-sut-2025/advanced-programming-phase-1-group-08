@@ -73,19 +73,15 @@ public enum ForagingCropsType {
     public String getDisplayName() {
         return displayName;
     }
-
     public int getPrice() {
         return price;
     }
-
     public int getEnergy() {
         return energy;
     }
-
     public String getIcon() {
         return icon;
     }
-
     public ArrayList<Season> getSeason() {
         return new ArrayList<>(seasons);
     }

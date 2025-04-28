@@ -19,4 +19,7 @@ public class AllCrops extends Items {
     public void setPrice(int price) {
         this.price = price;
     }
+
+
+
 }

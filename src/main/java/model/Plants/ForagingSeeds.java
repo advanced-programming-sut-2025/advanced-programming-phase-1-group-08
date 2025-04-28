@@ -2,30 +2,31 @@ package model.Plants;
 
 import model.DateHour;
 import model.Enum.AllPlants.ForagingSeedsType;
+import model.GameObject;
 import model.Items;
 
 
 import static model.App.currentDate;
 import static model.DateHour.getDayDifferent;
 
-public class ForagingSeeds extends Items {
+public class ForagingSeeds extends GameObject {
 
     private final ForagingSeedsType type;
     private final DateHour birthDay;
     private int stage;
 
 
-    public ForagingSeeds(ForagingSeedsType type, DateHour date) {
+    public ForagingSeeds(ForagingSeedsType type, DateHour currentDate) {
         this.type = type;
-        birthDay = date.clone();
-        stage = 0;
+        birthDay = currentDate.clone();
+        stage = 1;
     }
 
     public ForagingSeedsType getType() {
 
         return type;
     }
-    public void setStage () {
+    public void setStage  () {
 
         int days = 0;
         int defDays = getDayDifferent(currentDate, this.birthDay);
@@ -41,4 +42,10 @@ public class ForagingSeeds extends Items {
 
         return type.getSymbolByLevel(stage);
     }
+
+    @Override
+    public void turnByTurnAutomaticTask() {
+        setStage();
+    }
+
 }

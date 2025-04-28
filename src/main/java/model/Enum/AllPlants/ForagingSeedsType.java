@@ -59,7 +59,7 @@ public enum ForagingSeedsType {
                 return GREEN+"f"+RESET;
         }
     },
-    CoffeeBean      ( "CoffeeBean",       false, CoffeeBeanProduct,
+    CoffeeBean      ( "Coffee Bean",       false, CropsType.CoffeeBean,
             5, false, new int[]{1, 2, 2, 3, 2}) {
 
         @Override

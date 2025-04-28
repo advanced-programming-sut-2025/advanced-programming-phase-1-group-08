@@ -4,8 +4,7 @@ import model.Enum.Menu;
 
 import java.util.Scanner;
 
-import static model.App.currentMenu;
-import static model.App.getCurrentMenu;
+import static model.App.*;
 
 
 public class AppView {
@@ -14,7 +13,8 @@ public class AppView {
         Scanner scanner = new Scanner(System.in);
         currentMenu = Menu.RegisterMenu;
         System.out.println("Welcome To The SignUp Menu!");
-        System.out.println("In This Menu You Can Register, Go to LogInPage or Quit The Program");
+        System.out.println("In This Menu You Can Register, Go to LogInPage or Quit The Program"); // TODO   خب اگه دوباره بره تو ساین اپ منو که اینارو نمیبینه دوباره
+        currentMenu = Menu.GameMenu;
         do {
             getCurrentMenu().checkCommand(scanner);
         } while (getCurrentMenu() != Menu.ExitMenu);

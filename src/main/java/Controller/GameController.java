@@ -1,6 +1,8 @@
 package Controller;
 
 import model.*;
+import model.Enum.AllPlants.CropsType;
+import model.Enum.AllPlants.TreesProductType;
 import model.Enum.Door;
 import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
@@ -23,7 +25,7 @@ import static model.Color_Eraser.*;
 
 public class GameController {
 
-    public Tile getTileByCoordinates(int x, int y) {
+   /* public Tile getTileByCoordinates(int x, int y) {
         for (Tile tile:bigMap){
             if (tile.getX() == x && tile.getY() == y){
                 return tile;
@@ -299,67 +301,67 @@ public class GameController {
         }
 
     }
-
-    public Result walk (int goalX, int goalY){
-         int startX=currentPlayer.getPositionX();
-         int startY=currentPlayer.getPositionY();
-         Tile endTile=getTileByCoordinates(goalX, goalY);
-
-         if (checkConditionsForWalk(goalX, goalY) !=null) {
-             return checkConditionsForWalk(goalX, goalY);
-         }
-         if (currentPlayer.isHealthUnlimited()){
-             currentPlayer.setPositionX(goalX);
-             currentPlayer.setPositionY(goalY);
-             return new Result(true,"now you are in "+goalX+","+goalY);
-         }
-
-         int [] dirx={0,0,0,1,1,1,-1,-1,-1};
-         int [] diry={0,1,-1,0,1,-1,0,1,-1};
-         HashMap<Tile,Integer> costEnergy=new HashMap<>();
-         Queue<int []> queue=new LinkedList<>();
-
-         for (int i=0 ; i<8 ; i++) {
-             queue.add(new int[]{startX,startY,i,0,0});
-         }
-
-         while (!queue.isEmpty()) {
-             int [] current=queue.poll();
-             int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
-             for (int i=0 ; i<8 ; i++) {
-                 int nx=x+dirx[i], ny=y+diry[i];
-
-                 Tile nextTile=getTileByCoordinates(nx, ny);
-                 if (nextTile==null || checkTile(nextTile)) continue;
-
-                 int newSteps=steps+1;
-                 int newTurn=turns+(i==dir ? 0:1);
-                 int cost=newSteps +10*newTurn;
-
-                 if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
-                     costEnergy.put(nextTile, newSteps);
-                     queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
-                 }
-
-             }
-         }
-
-         if (!costEnergy.containsKey(endTile)) {
-             return new Result(false,"you can't go to this coordinate because there no way");
-         }
-         else {
-             int cost=costEnergy.get(endTile)/20;
-             if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
-                return new Result(false,"your Energy is not enough");
-             }
-             else {
-                 currentPlayer.increaseHealth(-cost);
-                 return new Result(true,"you are now in "+goalX+","+goalY);
-             }
-         }
-
-    }
-
+*/
+//    public Result walk (int goalX, int goalY){
+//         int startX=currentPlayer.getPositionX();
+//         int startY=currentPlayer.getPositionY();
+//         Tile endTile=getTileByCoordinates(goalX, goalY);
+//
+//         if (checkConditionsForWalk(goalX, goalY) !=null) {
+//             return checkConditionsForWalk(goalX, goalY);
+//         }
+//         if (currentPlayer.isHealthUnlimited()){
+//             currentPlayer.setPositionX(goalX);
+//             currentPlayer.setPositionY(goalY);
+//             return new Result(true,"now you are in "+goalX+","+goalY);
+//         }
+//
+//         int [] dirx={0,0,0,1,1,1,-1,-1,-1};
+//         int [] diry={0,1,-1,0,1,-1,0,1,-1};
+//         HashMap<Tile,Integer> costEnergy=new HashMap<>();
+//         Queue<int []> queue=new LinkedList<>();
+//
+//         for (int i=0 ; i<8 ; i++) {
+//             queue.add(new int[]{startX,startY,i,0,0});
+//         }
+//
+//         while (!queue.isEmpty()) {
+//             int [] current=queue.poll();
+//             int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
+//             for (int i=0 ; i<8 ; i++) {
+//                 int nx=x+dirx[i], ny=y+diry[i];
+//
+//                 Tile nextTile=getTileByCoordinates(nx, ny);
+//                 if (nextTile==null || checkTile(nextTile)) continue;
+//
+//                 int newSteps=steps+1;
+//                 int newTurn=turns+(i==dir ? 0:1);
+//                 int cost=newSteps +10*newTurn;
+//
+//                 if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
+//                     costEnergy.put(nextTile, newSteps);
+//                     queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
+//                 }
+//
+//             }
+//         }
+//
+//         if (!costEnergy.containsKey(endTile)) {
+//             return new Result(false,"you can't go to this coordinate because there no way");
+//         }
+//         else {
+//             int cost=costEnergy.get(endTile)/20;
+//             if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
+//                return new Result(false,"your Energy is not enough");
+//             }
+//             else {
+//                 currentPlayer.increaseHealth(-cost);
+//                 return new Result(true,"you are now in "+goalX+","+goalY);
+//             }
+//         }
+//
+//    }
+/*
     private boolean checkTile(Tile tile){
         if (tile.getGameObject() instanceof Home || tile.getGameObject() instanceof door
                 || tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof GreenHouse) {
@@ -571,27 +573,15 @@ public class GameController {
 
     public Result showCurrentTool(){
         Tools currentTool=currentPlayer.currentTool;
-        if (currentTool==null){
-            return new Result(false,"there is no current tool in your hands")
-        }
-        else if (currentTool instanceof Axe){
-            return new Result(true,"current tool: "+((Axe) currentTool).axeType);
-        }
-        else if (currentTool instanceof FishingPole){
-            return new Result(true,"current tool: "+((FishingPole) currentTool).fishingPoleType);
-        }
-        else if (currentTool instanceof Hoe){
-            return new Result(true,"current tool: "+((Hoe) currentTool).hoeType);
-        }
-        else if (currentTool instanceof WateringCan){
-            return new Result(true,"current tool: "+((WateringCan) currentTool).wateringCanType);
-        }
-        else if (currentTool instanceof PiⅽkAxe){
-            return new Result(true,"current tool: "+((PiⅽkAxe) currentTool).pickAxeType);
-        }
-        else {
-            return new Result(true,"current tool: "+currentTool.getName());
-        }
+        return switch (currentTool) {
+            case null -> new Result(false, "there is no current tool in your hands");
+            case Axe axe -> new Result(true, "current tool: " + axe.axeType);
+            case FishingPole fishingPole -> new Result(true, "current tool: " + fishingPole.fishingPoleType);
+            case Hoe hoe -> new Result(true, "current tool: " + hoe.hoeType);
+            case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType);
+            case PiⅽkAxe piⅽkAxe -> new Result(true, "current tool: " + piⅽkAxe.pickAxeType);
+            default -> new Result(true, "current tool: " + currentTool.getName());
+        };
     }
 
     public Result availableTools(){
@@ -619,6 +609,9 @@ public class GameController {
         }
         return new Result(true,result);
     }
+
+*/
+
 
     private void setEnergyInMorning () {
         for (User user : players) {
@@ -659,7 +652,6 @@ public class GameController {
         return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
     }
 
-
     public void startNewGame () {
 
         setTime(true);
@@ -689,6 +681,9 @@ public class GameController {
         passedOfTime(0,(24 -currentDate.getHour()) + 9);
         setEnergyInMorning();
 
+        for (Tile tile : bigMap)
+            tile.getGameObject().startDayAutomaticTask();
+
         // TODO بازیکنا برن خونشون , غش کردن
         // TODO محصول کاشته بشه و رشد محصولا یه روز بره بالاتر
         // TODO کانی تولید بشه شاپینگ بین خالی بشه و.  پول بیاد تو حساب فرد
@@ -702,6 +697,9 @@ public class GameController {
 
         if (currentDate.getHour() > 22)
             startDay();
+
+        for (Tile tile : bigMap)
+            tile.getGameObject().startDayAutomaticTask();
     }
     public void AutomaticFunctionAfterAnyAct () {
 
@@ -768,7 +766,7 @@ public class GameController {
         return new Result(true, BLUE+"Time : "+RED+ currentDate.getHour()+ ":00" +
                 BLUE+"\nData : "+RED+currentDate.getYear()+RESET+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
     }
-    public Result showDayOfWeek () {
+    public Result showDayOfWeek() {
         return new Result(true, BLUE+"Day of Week : "+RESET
                 + currentDate.getDayOfTheWeek());
     }
@@ -803,4 +801,25 @@ public class GameController {
         currentPlayer.setHealthUnlimited();
         return new Result(true, BLUE+"Whoa! Infinite energy mode activated!"+RESET);
     }
+    public Result showFruitInfo (String name) {
+
+        TreesProductType type;
+
+        try {
+            type = TreesProductType.fromDisplayName(name);
+            return new Result(true, TreesProductType.getInformation(type));
+
+        } catch (Exception e) {
+
+            CropsType cropType;
+            try {
+                cropType = CropsType.fromDisplayName(name);
+                return new Result(false, CropsType.getInformation(cropType));
+
+            } catch (Exception e1) {
+                return new Result(false, "sorry, name is invalid!");
+            }
+        }
+    }
+
 }
