@@ -26,6 +26,11 @@ public enum FishingPoleType {
         public String getName() {
             return "Training Rod";
         }
+
+        @Override
+        public double getCoefficient() {
+            return 0.1;
+        }
     },
     BambooPole{
         @Override
@@ -46,6 +51,9 @@ public enum FishingPoleType {
         @Override
         public String getName() {
             return "Bamboo Pole";
+        }
+        public double getCoefficient() {
+            return 0.5;
         }
     },
     FiberglassRod{
@@ -68,6 +76,9 @@ public enum FishingPoleType {
         public String getName() {
             return "Fiberglass Rod";
         }
+        public double getCoefficient() {
+            return 0.9;
+        }
     },
     IridiumRod{
         @Override
@@ -89,11 +100,17 @@ public enum FishingPoleType {
         public String getName() {
             return "Iridium Rod";
         }
+
+        @Override
+        public double getCoefficient() {
+            return 1.2;
+        }
     };
 
     public abstract int getPrice();
     public abstract int costEnergy(boolean Fishing);
     public abstract String getName();
+    public abstract double getCoefficient();
 
     public boolean checkAbility(int amount){
         if (App.currentPlayer.getFishingAbility()>=amount){

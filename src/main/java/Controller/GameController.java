@@ -5,6 +5,9 @@ import model.Enum.AllPlants.CropsType;
 import model.Enum.AllPlants.TreeType;
 import model.Enum.AllPlants.TreesProductType;
 import model.Enum.Door;
+import model.Enum.ItemType.FishType;
+import model.Enum.ItemType.Quantity;
+import model.Enum.ToolsType.FishingPoleType;
 import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
 import model.Enum.WeatherTime.Weather;
@@ -658,10 +661,164 @@ public class GameController {
         return null;
     }
 
-    public void FishingInSpring(FishingPole fishingPole){
-        double random=Math.random();
+    public Quantity productQuantity(double quantity){
 
+        if (quantity <= 0.5) {
+            return Quantity.Normal;
+        }
+        if (quantity <= 0.7) {
+            return Quantity.Silver;
+        }
+        if (quantity <= 0.9) {
+            return Quantity.Golden;
+        }
+
+        return Quantity.Iridium;
     }
+
+    public Result addFishToInventory (FishingPole fishingPole){
+        double random=Math.random();
+        int x= (int) (random * currentWeather.getFishing() * (currentPlayer.getFishingAbility()+2));
+        int numberOfFish=Math.min(6,x);
+        String result="number of Fishes: "+numberOfFish+"\n";
+
+        for (int i=0 ; i<numberOfFish ; i++){
+
+            //TODO بعد از هر if باید ماهی رو به inventory اضافه کنیم
+            //TODO اضافه کردن مهارت ماهیگیری فراموش نشه
+            double rand=Math.random();
+            double quantity= (random * (currentPlayer.getFishingAbility()+2) * fishingPole.fishingPoleType.getCoefficient()) / (7 - currentWeather.getFishing());
+            Quantity fishQuantity= productQuantity(quantity);
+
+            if (fishingPole.fishingPoleType.equals(FishingPoleType.TrainingRod)){
+
+                switch (currentDate.getSeason()){
+                    case Spring:
+                        Fish springFish= new Fish(FishType.Herring,fishQuantity);
+                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                    case Summer:
+                        Fish summerFish= new Fish(FishType.Sunfish,fishQuantity);
+                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                    case Fall:
+                        Fish fallFish= new Fish(FishType.Sardine,fishQuantity);
+                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                    case Winter:
+                        Fish winterFish= new Fish(FishType.Perch,fishQuantity);
+                        result += winterFish.getFishType().getName() + winterFish.getQuantity()+ "\n";
+                    default:
+                        break;
+                }
+
+            }
+
+            else if (rand <= 0.2 || ( rand > 0.8 && rand <= 0.85 && currentPlayer.getFishingAbility()!=4) ){
+
+                switch (currentDate.getSeason()){
+                    case Spring:
+                        Fish springFish= new Fish(FishType.Flounder,fishQuantity);
+                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                    case Summer:
+                        Fish summerFish= new Fish(FishType.Tilapia,fishQuantity);
+                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                    case Fall:
+                        Fish fallFish= new Fish(FishType.Salmon,fishQuantity);
+                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                    case Winter:
+                        Fish winterFish= new Fish(FishType.Midnight_Carp,fishQuantity);
+                        result += winterFish.getFishType().getName() + winterFish.getQuantity()+ "\n";
+                    default:
+                        break;
+                }
+            }
+
+            else if (rand <= 0.4 || ( rand > 0.85 && rand <= 0.9 && currentPlayer.getFishingAbility()!=4)){
+
+                switch (currentDate.getSeason()){
+                    case Spring:
+                        Fish springFish= new Fish(FishType.Lionfish,fishQuantity);
+                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                    case Summer:
+                        Fish summerFish= new Fish(FishType.Dorado,fishQuantity);
+                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                    case Fall:
+                        Fish fallFish= new Fish(FishType.Sardine,fishQuantity);
+                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                    case Winter:
+                        Fish winterFish= new Fish(FishType.Squid,fishQuantity);
+                        result += winterFish.getFishType().getName() + winterFish.getQuantity()+ "\n";
+                    default:
+                        break;
+                }
+            }
+
+            else if (rand <= 0.6 || ( rand > 0.9 && rand <= 0.95 && currentPlayer.getFishingAbility()!=4)){
+
+                switch (currentDate.getSeason()){
+                    case Spring:
+                        Fish springFish= new Fish(FishType.Herring,fishQuantity);
+                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                    case Summer:
+                        Fish summerFish= new Fish(FishType.Sunfish,fishQuantity);
+                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                    case Fall:
+                        Fish fallFish= new Fish(FishType.Shad,fishQuantity);
+                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                    case Winter:
+                        Fish winterFish= new Fish(FishType.Tuna,fishQuantity);
+                        result += winterFish.getFishType().getName() + winterFish.getQuantity()+ "\n";
+                    default:
+                        break;
+                }
+
+            }
+
+            else if (rand <= 0.8 || ( rand > 0.95 && currentPlayer.getFishingAbility()!=4)){
+
+                switch (currentDate.getSeason()){
+                    case Spring:
+                        Fish springFish= new Fish(FishType.Ghostfish,fishQuantity);
+                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                    case Summer:
+                        Fish summerFish= new Fish(FishType.Rainbow_Trout,fishQuantity);
+                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                    case Fall:
+                        Fish fallFish= new Fish(FishType.Blue_Discus,fishQuantity);
+                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                    case Winter:
+                        Fish winterFish= new Fish(FishType.Perch,fishQuantity);
+                        result += winterFish.getFishType().getName() + winterFish.getQuantity()+ "\n";
+                    default:
+                        break;
+                }
+
+            }
+            else {
+                if (currentPlayer.getFishingAbility() == 4){
+
+                    switch (currentDate.getSeason()){
+                        case Spring:
+                            Fish springFish= new Fish(FishType.Legend,fishQuantity);
+                            result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        case Summer:
+                            Fish summerFish= new Fish(FishType.Dorado,fishQuantity);
+                            result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        case Fall:
+                            Fish fallFish= new Fish(FishType.Squid,fishQuantity);
+                            result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        case Winter:
+                            Fish winterFish= new Fish(FishType.Tuna,fishQuantity);
+                            result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                    }
+
+                }
+            }
+        }
+
+        //TODO اضافه کردن مهارت ماهیگیری
+
+        return new Result(true,result);
+    }
+
 
     public Result Fishing(String fishingPoleType){
         if (!checkCoordinateForFishing()){
@@ -671,8 +828,7 @@ public class GameController {
             return new Result(false, "No such fishing pole exist!" );
         }
 
-
-
+        return addFishToInventory(isFishingPoleTypeExist(fishingPoleType));
     }
 
 

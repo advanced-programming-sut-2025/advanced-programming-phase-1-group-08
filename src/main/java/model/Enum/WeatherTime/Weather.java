@@ -6,15 +6,17 @@ import static model.Color_Eraser.RESET;
 
 public enum Weather {
 
-    Sunny ("☀\uFE0FSunny☀\uFE0F"),
-    Rainy ("\uD83C\uDF27Rainy\uD83C\uDF27"),
-    Stormy ("\uD83C\uDF2AStormy\uD83C\uDF2A"),
-    Snowy ("☃\uFE0FSnowy☃\uFE0F");
+    Sunny ("☀\uFE0FSunny☀\uFE0F",1.5),
+    Rainy ("\uD83C\uDF27Rainy\uD83C\uDF27",1.2),
+    Stormy ("\uD83C\uDF2AStormy\uD83C\uDF2A",0.5),
+    Snowy ("☃\uFE0FSnowy☃\uFE0F",1);
 
     private final String displayName;
+    private final double fishing;
 
-    Weather(String displayName) {
+    Weather(String displayName,double fishing) {
         this.displayName = displayName;
+        this.fishing = fishing;
     }
     public String getDisplayName() {
 
@@ -26,6 +28,10 @@ public enum Weather {
             return CYAN+displayName+RESET;
         else
             return BLUE+displayName+RESET;
+    }
+
+    public double getFishing() {
+        return fishing;
     }
 
 }
