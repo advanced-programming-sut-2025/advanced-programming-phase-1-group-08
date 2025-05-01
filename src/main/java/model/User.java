@@ -15,27 +15,35 @@ public class User {
     private SecurityQuestions MySecurityQuestion;
     private String MySecurityAnswer;
 
-    private Tile SleepTile;
-    private int point;
-    private int max_point; // TODO I made this and the one below with setter and getter
+    private int max_point;
     private int games_played;
+
+
+    private int point;
     private int health;
     private int MAX_HEALTH;
-    private User Married;//شخصی که باهاش ازدواج کرده
+    private Tile SleepTile;
+    private User Married;  // شخصی که باهاش ازدواج کرده
     private boolean healthUnlimited;
-    private BaⅽkPaⅽk baⅽkPaⅽk = new BaⅽkPaⅽk();
 
+
+    private BaⅽkPaⅽk baⅽkPaⅽk = new BaⅽkPaⅽk();
     public Tools currentTool;
+    private int farmingAbility  = 0; //مهارت کشاورزی که در ابتدا صفر هست.
+    private int miningAbility   = 0;
+    private int foragingAbility = 0;
+    private int fishingAbility  = 0;
+    private int money;
+
+
+
     private final Farm farm = new Farm();
     public int topLeftX;
     public int topLeftY;
     private int positionX;
     private int positionY;
-    private int money;
-    private int farmingAbility=0;//مهارت کشاورزی که در ابتدا صفر هست.
-    private int miningAbility=0;
-    private int foragingAbility=0;
-    private int fishingAbility=0;
+
+
 
 
     public User(String username, String password, String nickname, String email, String gender,  int point, int health) {

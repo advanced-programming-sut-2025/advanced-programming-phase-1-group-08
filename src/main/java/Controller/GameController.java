@@ -162,7 +162,7 @@ public class GameController {
         greenHouse.setCharactor('G');
         WaterTank waterTank=new WaterTank(100);
         waterTank.setWaterTank('W');
-        greenHouse.waterTank=waterTank;
+        greenHouse.setWaterTank(waterTank);
         for (int i=1 ; i<7 ; i++){
             for (int j=1 ; j<8 ; j++) {
                 if (i==1 && j==3){
@@ -303,7 +303,7 @@ public class GameController {
                 } else if (tile.getGameObject() instanceof door) {
                     System.out.print(Brown + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof GreenHouse) {
-                    System.out.print(GREEN + tile.getGameObject().getCharactor() + RESET+" ");
+                    System.out.print(GRAY + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Fridge) {
                     System.out.print(WHITE + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof WaterTank) {
@@ -402,7 +402,7 @@ public class GameController {
         }
 
         if (tile.getGameObject() instanceof GreenHouse) {
-            if (!((GreenHouse) tile.getGameObject()).isCreated){
+            if (!((GreenHouse) tile.getGameObject()).isCreated()){
                 return new Result(false,"GreenHouse is not created yet");
             }
         }
@@ -498,29 +498,29 @@ public class GameController {
 
 
 
-    public Result removeItem(String name, Integer number){
+    public Result removeItem (String name, Integer number){
         Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
 
             if (entry instanceof ForagingMinerals){
-                if (((ForagingMinerals) entry).getType().equals(name)){
+                if (((ForagingMinerals) entry).getType().getDisplayName().equals(name)){
                      return increaseMoney(entry.getValue(),( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
                 }
             }
 
             if (entry instanceof ForagingSeeds){
-                if (((ForagingSeeds) entry).getType().equals(name)){
+                if (((ForagingSeeds) entry).getType().getDisplayName().equals(name)){
                     //TODO قیمت foraging seeds رو باید از مارکتینگ در بیاریم
                     //TODO return increaseMoney(entry.getValue(),( (ForagingSeeds) entry).getType().getPrice(),(ForagingSeeds) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof AllCrops){
-                if (((AllCrops) entry).getType().equals(name)){
+                if (((AllCrops) entry).getType().getDisplayName().equals(name)){
                     return increaseMoney(entry.getValue(),( (AllCrops) entry).getType().getPrice(),(AllCrops) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof TreeSource){
-                if (((TreeSource) entry).getType().equals(name)){
+                if (((TreeSource) entry).getType().getDisplayName().equals(name)){
                     //TODO قیمت TreeSource رو باید از مارکتینگ دربیاریم
                     //TODO return increaseMoney(entry.getValue(),( (TreeSource) entry).getType().getPrice(),(TreeSource) entry, name,entry.getValue());
                 }
@@ -539,12 +539,12 @@ public class GameController {
         return null;
     }
 
-    public Result toolsEquip(String name){
+    public Result toolsEquip (String name){
         name=name.replaceAll("\\s+","");
         Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
 
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
-            if (entry instanceof Axe){
+            if (entry instanceof Axe) {
                 if (((Axe) entry).axeType.equals(name)){
                     currentPlayer.currentTool=(Tools) entry;
                     return new Result(true,"now current tool is "+name);
@@ -836,5 +836,21 @@ public class GameController {
             }
         }
     }
+    public Result buildGreenHouse () {
+
+        for (Map.Entry <Items,Integer> entry: currentPlayer.getBaⅽkPaⅽk().inventory.Items.entrySet()) // این خیلی کیریه
+            if (entry instanceof Wood)
+                if (entry.getValue() < GreenHouse.requiredWood)
+                    return new Result(false, RED+"You don't have enough wood!"+RESET);
+
+        if (currentPlayer.getMoney() < GreenHouse.requiredCoins )
+            return new Result(false, RED+"You don't have enough Coin!"+RESET);
+
+        currentPlayer.increeaseMoney(-1*GreenHouse.requiredCoins);
+
+
+        currentPlayer.getFarm().getGreenHouse().setCreated(true);
+    }
+
 
 }

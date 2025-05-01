@@ -27,4 +27,8 @@ public class Farm {
     public void setLake(Lake lake) {
         this.lake = lake;
     }
+
+    public GreenHouse getGreenHouse() {
+        return greenHouse;
+    }
 }

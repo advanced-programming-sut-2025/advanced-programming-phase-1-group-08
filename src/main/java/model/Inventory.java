@@ -19,7 +19,7 @@ public class Inventory {
 //    private HashMap<TreeSource,Integer> TreeSources=new HashMap<>();
 //    private ArrayList<Tools> tools=new ArrayList<>();
 
-    public HashMap<Items,Integer> Items=new HashMap<>();
+    public HashMap<Items,Integer> Items = new HashMap<>();
 
 
 //    public BasicRock getBasicRock() {
