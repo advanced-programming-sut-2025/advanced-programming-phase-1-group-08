@@ -2,6 +2,7 @@ package Controller;
 
 import model.*;
 import model.Enum.AllPlants.CropsType;
+import model.Enum.AllPlants.TreeType;
 import model.Enum.AllPlants.TreesProductType;
 import model.Enum.Door;
 import model.Enum.WeatherTime.Season;
@@ -22,7 +23,7 @@ import static model.Color_Eraser.*;
 
 public class GameController {
 
-   public Tile getTileByCoordinates(int x, int y) {
+    public Tile getTileByCoordinates(int x, int y) {
         for (Tile tile:bigMap){
             if (tile.getX() == x && tile.getY() == y){
                 return tile;
@@ -121,8 +122,7 @@ public class GameController {
         }
     }
 
-    public void creatInitialGreenHouse(int id , int x , int y) {
-
+    public void creatInitialGreenHouse(int id , int x , int y){
         Farm farm= currentPlayer.getFarm();
         Wall GreenWall = new Wall();
         GreenWall.setWallType(WallType.GreenHouse);
@@ -237,13 +237,25 @@ public class GameController {
             PerlinNoise perlinNoise = new PerlinNoise(seed);
 
             double noise = perlinNoise.noise(i * 0.1, j * 0.1);
-            if (-1.2 < noise && noise < -0.2) {
-                Tree tree = new Tree();
-                tree.setCharactor('T');
+            if (-1.2 < noise && noise < -0.9) {
+                Tree tree = new Tree(TreeType.OakTree,currentDate);
                 Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, tree);
                 currentPlayer.getFarm().Farm.add(tile);
                 bigMap.add(tile);
-            } else if (-0.1 < noise && noise < 0.0) {
+            }
+            else if(noise > -0.9 && noise <-0.5){
+                Tree tree = new Tree(TreeType.MapleTree,currentDate);
+                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, tree);
+                currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
+            }
+            else if (noise > -0.5 && noise < - 0.2){
+                Tree tree = new Tree(TreeType.PineTree,currentDate);
+                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, tree);
+                currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
+            }
+            else if (-0.1 < noise && noise < 0.0) {
                 BasicRock basicRock = new BasicRock();
                 basicRock.setCharactor('S');
                 Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, basicRock);
@@ -359,7 +371,6 @@ public class GameController {
          }
 
     }
-
     private boolean checkTile(Tile tile){
         if (tile.getGameObject() instanceof Home || tile.getGameObject() instanceof door
                 || tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof GreenHouse) {
@@ -495,22 +506,24 @@ public class GameController {
 
             if (entry instanceof ForagingSeeds){
                 if (((ForagingSeeds) entry).getType().equals(name)){
+                    //TODO قیمت foraging seeds رو باید از مارکتینگ در بیاریم
                     //TODO return increaseMoney(entry.getValue(),( (ForagingSeeds) entry).getType().getPrice(),(ForagingSeeds) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof AllCrops){
                 if (((AllCrops) entry).getType().equals(name)){
-                    //TODO return increaseMoney(entry.getValue(),( (AllCrops) entry).getType().getPrice(),(AllCrops) entry, name,entry.getValue());
+                    return increaseMoney(entry.getValue(),( (AllCrops) entry).getType().getPrice(),(AllCrops) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof TreeSource){
                 if (((TreeSource) entry).getType().equals(name)){
+                    //TODO قیمت TreeSource رو باید از مارکتینگ دربیاریم
                     //TODO return increaseMoney(entry.getValue(),( (TreeSource) entry).getType().getPrice(),(TreeSource) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof ForagingCrops){
                 if (((ForagingCrops) entry).getType().equals(name)){
-                    //TODO return increaseMoney(entry.getValue(),( (ForagingCrops) entry).getType().getPrice(),(ForagingCrops) entry, name,entry.getValue());
+                    return increaseMoney(entry.getValue(),( (ForagingCrops) entry).getType().getPrice(),(ForagingCrops) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof Tools){
@@ -607,6 +620,8 @@ public class GameController {
         }
         return new Result(true,result);
     }
+
+
 
 
     private void setEnergyInMorning () {
