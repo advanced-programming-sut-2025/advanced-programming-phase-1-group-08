@@ -44,6 +44,7 @@ public class GameController {
                     bigMap.add(tile);
                 }
             }
+            farm.setMine(mine);
         }
         else if (id==2){
 
@@ -62,6 +63,7 @@ public class GameController {
                     bigMap.add(tile);
                 }
             }
+            farm.setLake(lake);
         }
         else if (id==2){
 
@@ -120,6 +122,7 @@ public class GameController {
                 }
             }
         }
+        farm.setHome(home);
     }
 
     public void creatInitialGreenHouse(int id , int x , int y){
@@ -174,6 +177,7 @@ public class GameController {
                 }
             }
         }
+        farm.setGreenHouse(greenHouse);
     }
 
     public Farm creatInitialFarm(int id){
