@@ -1,6 +1,6 @@
 package model.Enum;
 
 public enum Door {
-    House,GreenHouse,Farm;
+    House,GreenHouse,Farm,Mine;
 
 }

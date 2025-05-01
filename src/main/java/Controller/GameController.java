@@ -36,12 +36,22 @@ public class GameController {
         Farm farm= currentPlayer.getFarm();
         if (id==1){
             Mine mine = new Mine();
+            door MineDoor=new door();
+            MineDoor.setDoor(Door.Mine);
+            MineDoor.setCharactor('D');
             mine.setCharactor('M');
             for (int i=23;i<29;i++){
                 for (int j=2;j<8;j++) {
-                    Tile tile = new Tile(i + 60*x, j + 60*y, mine);
-                    farm.Farm.add(tile);
-                    bigMap.add(tile);
+                    if (i==26 && j==5){
+                        Tile tile = new Tile(i + 60 * x, j + 60 * y, MineDoor);
+                        farm.Farm.add(tile);
+                        bigMap.add(tile);
+                    }
+                    else if (i==23 || i==28 || j==2 || j==7){
+                        Tile tile=new Tile(i + 60 * x, j + 60 * y, mine);
+                        farm.Farm.add(tile);
+                        bigMap.add(tile);
+                    }
                 }
             }
             farm.setMine(mine);
@@ -473,7 +483,7 @@ public class GameController {
 
     private Result increaseMoney(Integer amount , int price , Items items,String name , Integer reminder) {
         int percent=0;
-        for (Map.Entry<Items,Integer> entry: currentPlayer.getBaⅽkPaⅽk().inventory.Items.entrySet()) {
+        for (Map.Entry<Items,Integer> entry: currentPlayer.getBackPack().inventory.Items.entrySet()) {
             if (entry instanceof TrashCan){
                 percent= ((TrashCan) entry).Type.getPercent();
                 break;
@@ -481,7 +491,7 @@ public class GameController {
         }
         if (amount ==null || amount == reminder) {
             int increase=(reminder * percent *price)/100;
-            TrashCan.removeItem(increase,currentPlayer.getBaⅽkPaⅽk().inventory.Items, items, reminder);
+            TrashCan.removeItem(increase,currentPlayer.getBackPack().inventory.Items, items, reminder);
             return new Result(true,name + "completely removed from your inventory");
         }
         if (amount > reminder) {
@@ -489,7 +499,7 @@ public class GameController {
         }
         if (amount < reminder) {
             int increase=(reminder * percent *price)/100;
-            TrashCan.removeItem(increase,currentPlayer.getBaⅽkPaⅽk().inventory.Items, items, reminder);
+            TrashCan.removeItem(increase,currentPlayer.getBackPack().inventory.Items, items, reminder);
             return new Result(true , amount + " "+name+" "+"removed from your inventory");
         }
 
@@ -499,7 +509,7 @@ public class GameController {
 
 
     public Result removeItem (String name, Integer number){
-        Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
+        Inventory inventory=currentPlayer.getBackPack().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
 
             if (entry instanceof Wood){
@@ -553,7 +563,7 @@ public class GameController {
 
     public Result toolsEquip (String name){
         name=name.replaceAll("\\s+","");
-        Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
+        Inventory inventory=currentPlayer.getBackPack().inventory;
 
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
             if (entry instanceof Axe) {
@@ -612,7 +622,7 @@ public class GameController {
     }
 
     public Result availableTools(){
-        Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
+        Inventory inventory=currentPlayer.getBackPack().inventory;
         String result="";
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
             if (entry instanceof Axe){
@@ -650,7 +660,7 @@ public class GameController {
     }
 
     public FishingPole isFishingPoleTypeExist(String name){
-        Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
+        Inventory inventory=currentPlayer.getBackPack().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
             if (entry instanceof FishingPole){
                 if (((FishingPole) entry).fishingPoleType.getName().equals(name)){
