@@ -69,6 +69,9 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.showFruitInfo.getMather(input)) != null)
             System.out.println(controller.showFruitInfo(matcher.group("name").trim()));
 
+        else if (GameMenuCommands.buildGreenHouse.getMather(input) != null)
+            System.out.println(controller.buildGreenHouse());
+
 
 
         else

@@ -500,7 +500,7 @@ public class GameController {
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
 
             if (entry instanceof Wood){
-                if (name.equals("Wood")) {
+                if (name.equals(Wood.name)) {
                     return increaseMoney(entry.getValue(), Wood.price, (Wood) entry.getKey(), name, number);
                 }
             }
@@ -704,6 +704,9 @@ public class GameController {
             // TODO
         }
     }
+    private void setAbilitiesLevel () {
+
+    }
     private void doSeasonAutomaticTask () {
 
         currentWeather = tomorrowWeather;
@@ -896,10 +899,11 @@ public class GameController {
         if (currentPlayer.getMoney() < GreenHouse.requiredCoins )
             return new Result(false, RED+"You don't have enough Coin!"+RESET);
 
-        currentPlayer.increeaseMoney(-1*GreenHouse.requiredCoins);
-
-
+        currentPlayer.increaseMoney(-1*GreenHouse.requiredCoins);
+        removeItem(Wood.name, GreenHouse.requiredWood);
         currentPlayer.getFarm().getGreenHouse().setCreated(true);
+
+        return new Result(true, BLUE+"The greenhouse has been built! \uD83C\uDF31"+RESET);
     }
 
 

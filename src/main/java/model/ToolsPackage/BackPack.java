@@ -4,7 +4,7 @@ import model.Enum.ItemType.BackPackType;
 import model.Inventory;
 import model.Items;
 
-public class BaⅽkPaⅽk {
+public class BackPack {
 
     private BackPackType Type = BackPackType.primary;
     private int capacity=12;
