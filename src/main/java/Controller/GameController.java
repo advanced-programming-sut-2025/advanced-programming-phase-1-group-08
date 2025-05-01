@@ -2,6 +2,7 @@ package Controller;
 
 import model.*;
 import model.Enum.AllPlants.CropsType;
+import model.Enum.AllPlants.TreeType;
 import model.Enum.AllPlants.TreesProductType;
 import model.Enum.Door;
 import model.Enum.WeatherTime.Season;
@@ -25,7 +26,7 @@ import static model.Color_Eraser.*;
 
 public class GameController {
 
-   /* public Tile getTileByCoordinates(int x, int y) {
+    public Tile getTileByCoordinates(int x, int y) {
         for (Tile tile:bigMap){
             if (tile.getX() == x && tile.getY() == y){
                 return tile;
@@ -239,13 +240,25 @@ public class GameController {
             PerlinNoise perlinNoise = new PerlinNoise(seed);
 
             double noise = perlinNoise.noise(i * 0.1, j * 0.1);
-            if (-1.2 < noise && noise < -0.2) {
-                Tree tree = new Tree();
-                tree.setCharactor('T');
+            if (-1.2 < noise && noise < -0.9) {
+                Tree tree = new Tree(TreeType.OakTree,currentDate);
                 Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, tree);
                 currentPlayer.getFarm().Farm.add(tile);
                 bigMap.add(tile);
-            } else if (-0.1 < noise && noise < 0.0) {
+            }
+            else if(noise > -0.9 && noise <-0.5){
+                Tree tree = new Tree(TreeType.MapleTree,currentDate);
+                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, tree);
+                currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
+            }
+            else if (noise > -0.5 && noise < - 0.2){
+                Tree tree = new Tree(TreeType.PineTree,currentDate);
+                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, tree);
+                currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
+            }
+            else if (-0.1 < noise && noise < 0.0) {
                 BasicRock basicRock = new BasicRock();
                 basicRock.setCharactor('S');
                 Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, basicRock);
@@ -277,7 +290,7 @@ public class GameController {
                 } else if (tile.getGameObject() instanceof BasicRock) {
                     System.out.print(GRAY + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Tree) {
-                    System.out.print(GREEN + tile.getGameObject().getCharactor() + RESET+" ");
+                    System.out.print(GREEN + ((Tree) tile.getGameObject()).getIcon() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Lake) {
                     System.out.print(BLUE + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Mine) {
@@ -301,67 +314,66 @@ public class GameController {
         }
 
     }
-*/
-//    public Result walk (int goalX, int goalY){
-//         int startX=currentPlayer.getPositionX();
-//         int startY=currentPlayer.getPositionY();
-//         Tile endTile=getTileByCoordinates(goalX, goalY);
-//
-//         if (checkConditionsForWalk(goalX, goalY) !=null) {
-//             return checkConditionsForWalk(goalX, goalY);
-//         }
-//         if (currentPlayer.isHealthUnlimited()){
-//             currentPlayer.setPositionX(goalX);
-//             currentPlayer.setPositionY(goalY);
-//             return new Result(true,"now you are in "+goalX+","+goalY);
-//         }
-//
-//         int [] dirx={0,0,0,1,1,1,-1,-1,-1};
-//         int [] diry={0,1,-1,0,1,-1,0,1,-1};
-//         HashMap<Tile,Integer> costEnergy=new HashMap<>();
-//         Queue<int []> queue=new LinkedList<>();
-//
-//         for (int i=0 ; i<8 ; i++) {
-//             queue.add(new int[]{startX,startY,i,0,0});
-//         }
-//
-//         while (!queue.isEmpty()) {
-//             int [] current=queue.poll();
-//             int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
-//             for (int i=0 ; i<8 ; i++) {
-//                 int nx=x+dirx[i], ny=y+diry[i];
-//
-//                 Tile nextTile=getTileByCoordinates(nx, ny);
-//                 if (nextTile==null || checkTile(nextTile)) continue;
-//
-//                 int newSteps=steps+1;
-//                 int newTurn=turns+(i==dir ? 0:1);
-//                 int cost=newSteps +10*newTurn;
-//
-//                 if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
-//                     costEnergy.put(nextTile, newSteps);
-//                     queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
-//                 }
-//
-//             }
-//         }
-//
-//         if (!costEnergy.containsKey(endTile)) {
-//             return new Result(false,"you can't go to this coordinate because there no way");
-//         }
-//         else {
-//             int cost=costEnergy.get(endTile)/20;
-//             if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
-//                return new Result(false,"your Energy is not enough");
-//             }
-//             else {
-//                 currentPlayer.increaseHealth(-cost);
-//                 return new Result(true,"you are now in "+goalX+","+goalY);
-//             }
-//         }
-//
-//    }
-/*
+
+    public Result walk (int goalX, int goalY){
+         int startX=currentPlayer.getPositionX();
+         int startY=currentPlayer.getPositionY();
+         Tile endTile=getTileByCoordinates(goalX, goalY);
+
+         if (checkConditionsForWalk(goalX, goalY) !=null) {
+             return checkConditionsForWalk(goalX, goalY);
+         }
+         if (currentPlayer.isHealthUnlimited()){
+             currentPlayer.setPositionX(goalX);
+             currentPlayer.setPositionY(goalY);
+             return new Result(true,"now you are in "+goalX+","+goalY);
+         }
+
+         int [] dirx={0,0,0,1,1,1,-1,-1,-1};
+         int [] diry={0,1,-1,0,1,-1,0,1,-1};
+         HashMap<Tile,Integer> costEnergy=new HashMap<>();
+         Queue<int []> queue=new LinkedList<>();
+
+         for (int i=0 ; i<8 ; i++) {
+             queue.add(new int[]{startX,startY,i,0,0});
+         }
+
+         while (!queue.isEmpty()) {
+             int [] current=queue.poll();
+             int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
+             for (int i=0 ; i<8 ; i++) {
+                 int nx=x+dirx[i], ny=y+diry[i];
+
+                 Tile nextTile=getTileByCoordinates(nx, ny);
+                 if (nextTile==null || checkTile(nextTile)) continue;
+
+                 int newSteps=steps+1;
+                 int newTurn=turns+(i==dir ? 0:1);
+                 int cost=newSteps +10*newTurn;
+
+                 if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
+                     costEnergy.put(nextTile, newSteps);
+                     queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
+                 }
+
+             }
+         }
+
+         if (!costEnergy.containsKey(endTile)) {
+             return new Result(false,"you can't go to this coordinate because there no way");
+         }
+         else {
+             int cost=costEnergy.get(endTile)/20;
+             if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
+                return new Result(false,"your Energy is not enough");
+             }
+             else {
+                 currentPlayer.increaseHealth(-cost);
+                 return new Result(true,"you are now in "+goalX+","+goalY);
+             }
+         }
+
+    }
     private boolean checkTile(Tile tile){
         if (tile.getGameObject() instanceof Home || tile.getGameObject() instanceof door
                 || tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof GreenHouse) {
@@ -497,22 +509,24 @@ public class GameController {
 
             if (entry instanceof ForagingSeeds){
                 if (((ForagingSeeds) entry).getType().equals(name)){
+                    //TODO قیمت foraging seeds رو باید از مارکتینگ در بیاریم
                     //TODO return increaseMoney(entry.getValue(),( (ForagingSeeds) entry).getType().getPrice(),(ForagingSeeds) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof AllCrops){
                 if (((AllCrops) entry).getType().equals(name)){
-                    //TODO return increaseMoney(entry.getValue(),( (AllCrops) entry).getType().getPrice(),(AllCrops) entry, name,entry.getValue());
+                    return increaseMoney(entry.getValue(),( (AllCrops) entry).getType().getPrice(),(AllCrops) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof TreeSource){
                 if (((TreeSource) entry).getType().equals(name)){
+                    //TODO قیمت TreeSource رو باید از مارکتینگ دربیاریم
                     //TODO return increaseMoney(entry.getValue(),( (TreeSource) entry).getType().getPrice(),(TreeSource) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof ForagingCrops){
                 if (((ForagingCrops) entry).getType().equals(name)){
-                    //TODO return increaseMoney(entry.getValue(),( (ForagingCrops) entry).getType().getPrice(),(ForagingCrops) entry, name,entry.getValue());
+                    return increaseMoney(entry.getValue(),( (ForagingCrops) entry).getType().getPrice(),(ForagingCrops) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof Tools){
@@ -610,7 +624,7 @@ public class GameController {
         return new Result(true,result);
     }
 
-*/
+
 
 
     private void setEnergyInMorning () {
