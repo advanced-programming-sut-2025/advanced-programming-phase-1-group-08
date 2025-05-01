@@ -7,10 +7,7 @@ import model.Enum.Door;
 import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
 import model.Enum.WeatherTime.Weather;
-import model.Places.Farm;
-import model.Places.GreenHouse;
-import model.Places.Home;
-import model.Places.Lake;
+import model.Places.*;
 import model.Plants.*;
 import model.ToolsPackage.*;
 
@@ -25,7 +22,7 @@ import static model.Color_Eraser.*;
 
 public class GameController {
 
-   /* public Tile getTileByCoordinates(int x, int y) {
+   public Tile getTileByCoordinates(int x, int y) {
         for (Tile tile:bigMap){
             if (tile.getX() == x && tile.getY() == y){
                 return tile;
@@ -124,7 +121,8 @@ public class GameController {
         }
     }
 
-    public void creatInitialGreenHouse(int id , int x , int y){
+    public void creatInitialGreenHouse(int id , int x , int y) {
+
         Farm farm= currentPlayer.getFarm();
         Wall GreenWall = new Wall();
         GreenWall.setWallType(WallType.GreenHouse);
@@ -301,67 +299,67 @@ public class GameController {
         }
 
     }
-*/
-//    public Result walk (int goalX, int goalY){
-//         int startX=currentPlayer.getPositionX();
-//         int startY=currentPlayer.getPositionY();
-//         Tile endTile=getTileByCoordinates(goalX, goalY);
-//
-//         if (checkConditionsForWalk(goalX, goalY) !=null) {
-//             return checkConditionsForWalk(goalX, goalY);
-//         }
-//         if (currentPlayer.isHealthUnlimited()){
-//             currentPlayer.setPositionX(goalX);
-//             currentPlayer.setPositionY(goalY);
-//             return new Result(true,"now you are in "+goalX+","+goalY);
-//         }
-//
-//         int [] dirx={0,0,0,1,1,1,-1,-1,-1};
-//         int [] diry={0,1,-1,0,1,-1,0,1,-1};
-//         HashMap<Tile,Integer> costEnergy=new HashMap<>();
-//         Queue<int []> queue=new LinkedList<>();
-//
-//         for (int i=0 ; i<8 ; i++) {
-//             queue.add(new int[]{startX,startY,i,0,0});
-//         }
-//
-//         while (!queue.isEmpty()) {
-//             int [] current=queue.poll();
-//             int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
-//             for (int i=0 ; i<8 ; i++) {
-//                 int nx=x+dirx[i], ny=y+diry[i];
-//
-//                 Tile nextTile=getTileByCoordinates(nx, ny);
-//                 if (nextTile==null || checkTile(nextTile)) continue;
-//
-//                 int newSteps=steps+1;
-//                 int newTurn=turns+(i==dir ? 0:1);
-//                 int cost=newSteps +10*newTurn;
-//
-//                 if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
-//                     costEnergy.put(nextTile, newSteps);
-//                     queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
-//                 }
-//
-//             }
-//         }
-//
-//         if (!costEnergy.containsKey(endTile)) {
-//             return new Result(false,"you can't go to this coordinate because there no way");
-//         }
-//         else {
-//             int cost=costEnergy.get(endTile)/20;
-//             if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
-//                return new Result(false,"your Energy is not enough");
-//             }
-//             else {
-//                 currentPlayer.increaseHealth(-cost);
-//                 return new Result(true,"you are now in "+goalX+","+goalY);
-//             }
-//         }
-//
-//    }
-/*
+
+    public Result walk (int goalX, int goalY){
+         int startX=currentPlayer.getPositionX();
+         int startY=currentPlayer.getPositionY();
+         Tile endTile=getTileByCoordinates(goalX, goalY);
+
+         if (checkConditionsForWalk(goalX, goalY) !=null) {
+             return checkConditionsForWalk(goalX, goalY);
+         }
+         if (currentPlayer.isHealthUnlimited()){
+             currentPlayer.setPositionX(goalX);
+             currentPlayer.setPositionY(goalY);
+             return new Result(true,"now you are in "+goalX+","+goalY);
+         }
+
+         int [] dirx={0,0,0,1,1,1,-1,-1,-1};
+         int [] diry={0,1,-1,0,1,-1,0,1,-1};
+         HashMap<Tile,Integer> costEnergy=new HashMap<>();
+         Queue<int []> queue=new LinkedList<>();
+
+         for (int i=0 ; i<8 ; i++) {
+             queue.add(new int[]{startX,startY,i,0,0});
+         }
+
+         while (!queue.isEmpty()) {
+             int [] current=queue.poll();
+             int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
+             for (int i=0 ; i<8 ; i++) {
+                 int nx=x+dirx[i], ny=y+diry[i];
+
+                 Tile nextTile=getTileByCoordinates(nx, ny);
+                 if (nextTile==null || checkTile(nextTile)) continue;
+
+                 int newSteps=steps+1;
+                 int newTurn=turns+(i==dir ? 0:1);
+                 int cost=newSteps +10*newTurn;
+
+                 if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
+                     costEnergy.put(nextTile, newSteps);
+                     queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
+                 }
+
+             }
+         }
+
+         if (!costEnergy.containsKey(endTile)) {
+             return new Result(false,"you can't go to this coordinate because there no way");
+         }
+         else {
+             int cost=costEnergy.get(endTile)/20;
+             if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
+                return new Result(false,"your Energy is not enough");
+             }
+             else {
+                 currentPlayer.increaseHealth(-cost);
+                 return new Result(true,"you are now in "+goalX+","+goalY);
+             }
+         }
+
+    }
+
     private boolean checkTile(Tile tile){
         if (tile.getGameObject() instanceof Home || tile.getGameObject() instanceof door
                 || tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof GreenHouse) {
@@ -609,8 +607,6 @@ public class GameController {
         }
         return new Result(true,result);
     }
-
-*/
 
 
     private void setEnergyInMorning () {
