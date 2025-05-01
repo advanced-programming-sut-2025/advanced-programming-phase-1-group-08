@@ -31,4 +31,8 @@ public class Farm {
     public GreenHouse getGreenHouse() {
         return greenHouse;
     }
+
+    public Mine getMine() {
+        return mine;
+    }
 }

@@ -1,9 +1,7 @@
 package Controller;
 
 import model.*;
-import model.Enum.AllPlants.CropsType;
-import model.Enum.AllPlants.TreeType;
-import model.Enum.AllPlants.TreesProductType;
+import model.Enum.AllPlants.*;
 import model.Enum.Door;
 import model.Enum.ItemType.FishType;
 import model.Enum.ItemType.Quantity;
@@ -16,13 +14,42 @@ import model.Plants.*;
 import model.ToolsPackage.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static model.App.*;
 import static model.App.tomorrowWeather;
 import static model.Color_Eraser.*;
+import static model.Enum.AllPlants.ForagingMineralsType.*;
 
 public class GameController {
 
+    Random rand = new Random();
+
+
+    public Tile getTileByDir (int dir) {
+
+        int x = currentPlayer.getPositionX();
+        int y = currentPlayer.getPositionY();
+
+        if (dir == 1)
+            return getTileByCoordinates(x+1, y);
+        else if (dir == 2)
+            return getTileByCoordinates(x+1, y+1);
+        else if (dir == 3)
+            return getTileByCoordinates(x, y+1);
+        else if (dir == 4)
+            return getTileByCoordinates(x-1, y+1);
+        else if (dir == 5)
+            return getTileByCoordinates(x-1, y);
+        else if (dir == 6)
+            return getTileByCoordinates(x-1, y-1);
+        else if (dir == 7)
+            return getTileByCoordinates(x, y-1);
+        else if (dir == 8)
+            return getTileByCoordinates(x+1, y-1);
+        else
+            return null;
+    }
     public Tile getTileByCoordinates(int x, int y) {
         for (Tile tile:bigMap){
             if (tile.getX() == x && tile.getY() == y){
@@ -35,7 +62,7 @@ public class GameController {
     public void creatInitialMine(int id , int x , int y){
         Farm farm= currentPlayer.getFarm();
         if (id==1){
-            Mine mine = new Mine();
+            Mine mine = new Mine(23, 2);
             door MineDoor=new door();
             MineDoor.setDoor(Door.Mine);
             MineDoor.setCharactor('D');
@@ -877,9 +904,6 @@ public class GameController {
             // TODO
         }
     }
-    private void setAbilitiesLevel () {
-
-    }
     private void doSeasonAutomaticTask () {
 
         currentWeather = tomorrowWeather;
@@ -892,6 +916,92 @@ public class GameController {
 
         return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
     }
+    private Result useHoe (int dir) {
+
+        if (!currentPlayer.isHealthUnlimited())
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+
+        Tile tile = getTileByDir(dir);
+
+        if (plowedTile.contains(tile))
+            return new Result(false, RED+"This tile is already plowed!"+RESET);
+        if (!(tile.getGameObject() instanceof Walkable))
+            return new Result(false, RED+"You can't plow this tile!"+RESET);
+
+        plowedTile.add(tile);
+        return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
+    }
+    private void createRandomForaging () {
+
+        for (Tile tile : bigMap) {
+            if (plowedTile.contains(tile) && tile.getGameObject() instanceof Walkable && Math.random() <= 0.01)
+                if (Math.random() <= 0.5) {
+
+                    List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
+                            .filter(d -> d.getSeason().contains(currentDate.getSeason()))
+                            .toList();
+
+                    ForagingSeedsType type = types.get(rand.nextInt(types.size()));
+
+                    ForagingSeeds seed = new ForagingSeeds(type, currentDate);
+                    tile.setGameObject(seed);
+                }
+                else {
+
+                    List<ForagingCropsType> types = Arrays.stream(ForagingCropsType.values())
+                            .filter(d -> d.getSeason().contains(currentDate.getSeason()))
+                            .toList();
+
+                    ForagingCropsType type = types.get(rand.nextInt(types.size()));
+
+                    ForagingCrops crop = new ForagingCrops(type);
+                    tile.setGameObject(crop);
+                }
+        }
+    }
+    private void createRandomMinerals () {
+
+        int x1 = currentPlayer.getFarm().getMine().getStartX()+1;
+        int y1 = currentPlayer.getFarm().getMine().getStartY()+1;
+
+        if (Math.random() < RUBY.getProbability())
+            getTileByCoordinates(x1, y1).setGameObject(new ForagingMinerals(RUBY));
+        if (Math.random() < COAL.getProbability())
+            getTileByCoordinates(x1+1, y1).setGameObject(new ForagingMinerals(COAL));
+        if (Math.random() < IRON.getProbability())
+            getTileByCoordinates(x1+2, y1).setGameObject(new ForagingMinerals(IRON));
+        if (Math.random() < TOPAZ.getProbability())
+            getTileByCoordinates(x1+3, y1).setGameObject(new ForagingMinerals(TOPAZ));
+        if (Math.random() < GOLD.getProbability())
+            getTileByCoordinates(x1, y1+1).setGameObject(new ForagingMinerals(GOLD));
+        if (Math.random() < JADE.getProbability())
+            getTileByCoordinates(x1+1, y1+1).setGameObject(new ForagingMinerals(JADE));
+        if (Math.random() < IRIDIUM.getProbability())
+            getTileByCoordinates(x1+2, y1+1).setGameObject(new ForagingMinerals(IRIDIUM));
+        if (Math.random() < QUARTZ.getProbability())
+            getTileByCoordinates(x1+3, y1+1).setGameObject(new ForagingMinerals(QUARTZ));
+        if (Math.random() < EMERALD.getProbability())
+            getTileByCoordinates(x1, y1+2).setGameObject(new ForagingMinerals(EMERALD));
+        if (Math.random() < COPPER.getProbability())
+            getTileByCoordinates(x1+1, y1+2).setGameObject(new ForagingMinerals(COPPER));
+        if (Math.random() < DIAMOND.getProbability())
+            getTileByCoordinates(x1+2, y1+2).setGameObject(new ForagingMinerals(DIAMOND));
+        if (Math.random() < AMETHYST.getProbability())
+            getTileByCoordinates(x1+3, y1+2).setGameObject(new ForagingMinerals(AMETHYST));
+        if (Math.random() < AQUAMARINE.getProbability())
+            getTileByCoordinates(x1, y1+3).setGameObject(new ForagingMinerals(AQUAMARINE));
+        if (Math.random() < FROZEN_TEAR.getProbability())
+            getTileByCoordinates(x1+1, y1+3).setGameObject(new ForagingMinerals(FROZEN_TEAR));
+        if (Math.random() < FIRE_QUARTZ.getProbability())
+            getTileByCoordinates(x1+2, y1+3).setGameObject(new ForagingMinerals(FIRE_QUARTZ));
+        if (Math.random() < PRISMATIC_SHARD.getProbability())
+            getTileByCoordinates(x1+2, y1+3).setGameObject(new ForagingMinerals(PRISMATIC_SHARD));
+        if (Math.random() < EARTH_CRYSTAL.getProbability())
+            getTileByCoordinates(x1+3, y1+3).setGameObject(new ForagingMinerals(EARTH_CRYSTAL));
+
+
+    }
+
 
     public void startNewGame () {
 
@@ -915,12 +1025,12 @@ public class GameController {
 
     } // TODO   باید کارایی که بعد افزایش زمان انجام میشن رو انجام بدی
 
-
     public void startDay () {
 
         doSeasonAutomaticTask();
         passedOfTime(0,(24 -currentDate.getHour()) + 9);
         setEnergyInMorning();
+        createRandomForaging();
 
         for (Tile tile : bigMap)
             tile.getGameObject().startDayAutomaticTask();
@@ -948,6 +1058,9 @@ public class GameController {
             user.checkHealth();
 
     }
+
+
+
 
 
     public Result showTime () {
@@ -1064,7 +1177,7 @@ public class GameController {
     }
     public Result buildGreenHouse () {
 
-        for (Map.Entry <Items,Integer> entry: currentPlayer.getBaⅽkPaⅽk().inventory.Items.entrySet()) // این خیلی کیریه
+        for (Map.Entry <Items,Integer> entry: currentPlayer.getBackPack().inventory.Items.entrySet()) // این خیلی کیریه
             if (entry instanceof Wood)
                 if (entry.getValue() < GreenHouse.requiredWood)
                     return new Result(false, RED+"You don't have enough wood!"+RESET);
@@ -1077,6 +1190,12 @@ public class GameController {
         currentPlayer.getFarm().getGreenHouse().setCreated(true);
 
         return new Result(true, BLUE+"The greenhouse has been built! \uD83C\uDF31"+RESET);
+    }
+    public Result useTools (String direction) {
+
+        int dir = Integer.parseInt(direction);
+
+        return null; // TODO
     }
 
 
