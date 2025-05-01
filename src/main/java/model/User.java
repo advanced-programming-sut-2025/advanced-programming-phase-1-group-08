@@ -173,18 +173,6 @@ public class User {
     public void increaseMoney (int amount) {
         this.money += amount;
     }
-    public int getFarmingAbility() {
-        return farmingAbility;
-    }
-    public int getFishingAbility() {
-        return fishingAbility;
-    }
-    public int getForagingAbility() {
-        return foragingAbility;
-    }
-    public int getMiningAbility() {
-        return miningAbility;
-    }
 
     public int getLevelFarming() {
         if (this.farmingAbility < 50)

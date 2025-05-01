@@ -113,7 +113,7 @@ public enum FishingPoleType {
     public abstract double getCoefficient();
 
     public boolean checkAbility(int amount){
-        if (App.currentPlayer.getFishingAbility()>=amount){
+        if (App.currentPlayer.getLevelFishing()>=amount){
             return true;
         }
         return false;
