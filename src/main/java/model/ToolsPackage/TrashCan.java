@@ -20,7 +20,7 @@ public class TrashCan extends Tools {
 
 
     public static void removeItem (int money , HashMap<Items,Integer> x, Items items, Integer amount){
-        App.currentPlayer.increeaseMoney(money);
+        App.currentPlayer.increaseMoney(money);
         if (amount == null || x.get(items)==amount){
             x.remove(items);
         }

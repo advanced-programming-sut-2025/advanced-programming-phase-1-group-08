@@ -2,7 +2,7 @@ package model;
 
 import model.Enum.SecurityQuestions;
 import model.Places.Farm;
-import model.ToolsPackage.BaⅽkPaⅽk;
+import model.ToolsPackage.BackPack;
 import model.ToolsPackage.Tools;
 
 public class User {
@@ -27,7 +27,7 @@ public class User {
     private boolean healthUnlimited;
 
 
-    private BaⅽkPaⅽk baⅽkPaⅽk = new BaⅽkPaⅽk();
+    private final BackPack backPack = new BackPack();
     public Tools currentTool;
     private int farmingAbility  = 0; //مهارت کشاورزی که در ابتدا صفر هست.
     private int miningAbility   = 0;
@@ -139,71 +139,105 @@ public class User {
     public SecurityQuestions getMySecurityQuestion() {
         return MySecurityQuestion;
     }
-
     public void setMySecurityQuestion(SecurityQuestions mySecurityQuestion) {
         MySecurityQuestion = mySecurityQuestion;
     }
-
     public String getMySecurityAnswer() {
         return MySecurityAnswer;
     }
-
     public void setMySecurityAnswer(String mySecurityAnswer) {
         MySecurityAnswer = mySecurityAnswer;
     }
-
     public int getMax_point() {
         return max_point;
     }
-
     public void setMax_point(int max_point) {
         this.max_point = max_point;
     }
-
     public int getGames_played() {
         return games_played;
     }
-
     public void setGames_played(int games_played) {
         this.games_played = games_played;
     }
 
 
-    public BaⅽkPaⅽk getBaⅽkPaⅽk() {
-        return baⅽkPaⅽk;
+    public BackPack getBackPack() {
+        return backPack;
     }
 
     public int getMoney() {
         return money;
     }
 
-    public void increeaseMoney(int amount) {
+    public void increaseMoney (int amount) {
         this.money += amount;
     }
     public int getFarmingAbility() {
         return farmingAbility;
     }
-
     public int getFishingAbility() {
         return fishingAbility;
     }
-
     public int getForagingAbility() {
         return foragingAbility;
     }
-
     public int getMiningAbility() {
         return miningAbility;
     }
 
+    public int getLevelFarming() {
+        if (this.farmingAbility < 50)
+            return 0;
+        if (this.farmingAbility < 100)
+            return 1;
+        if (this.farmingAbility < 250)
+            return 2;
+        if (this.farmingAbility < 350)
+            return 3;
+        return 4;
+    }
+    public int getLevelFishing() {
+        if (this.fishingAbility < 50)
+            return 0;
+        if (this.fishingAbility < 100)
+            return 1;
+        if (this.fishingAbility < 250)
+            return 2;
+        if (this.fishingAbility < 350)
+            return 3;
+        return 4;
+    }
+    public int getLevelForaging() {
+        if (this.foragingAbility < 50)
+            return 0;
+        if (this.foragingAbility < 100)
+            return 1;
+        if (this.foragingAbility < 250)
+            return 2;
+        if (this.foragingAbility < 350)
+            return 3;
+        return 4;
+    }
+    public int getLevelMining() {
+        if (this.miningAbility < 50)
+            return 0;
+        if (this.miningAbility < 100)
+            return 1;
+        if (this.miningAbility < 250)
+            return 2;
+        if (this.miningAbility < 350)
+            return 3;
+        return 4;
+    }
+
+
     public void increaseFarmingAbility(int amount) {
         this.farmingAbility += amount;
     }
-
     public void increaseFishingAbility(int amount) {
         this.fishingAbility += amount;
     }
-
     public void increaseForagingAbility(int amount) {
         this.foragingAbility += amount;
     }
