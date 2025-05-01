@@ -12,10 +12,7 @@ import model.Places.*;
 import model.Plants.*;
 import model.ToolsPackage.*;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 import static model.App.*;
 import static model.App.tomorrowWeather;
@@ -502,11 +499,23 @@ public class GameController {
         Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
 
+            if (entry instanceof Wood){
+                if (name.equals("Wood")) {
+                    return increaseMoney(entry.getValue(), Wood.price, (Wood) entry.getKey(), name, number);
+                }
+            }
+            if (entry instanceof BasicRock){
+                if (name.equals("BasicRock")) {
+                    return increaseMoney(entry.getValue(), BasicRock.price, (BasicRock) entry.getKey(), name, number);
+                }
+            }
+
             if (entry instanceof ForagingMinerals){
                 if (((ForagingMinerals) entry).getType().getDisplayName().equals(name)){
                      return increaseMoney(entry.getValue(),( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
                 }
             }
+
 
             if (entry instanceof ForagingSeeds){
                 if (((ForagingSeeds) entry).getType().getDisplayName().equals(name)){
@@ -623,6 +632,47 @@ public class GameController {
             }
         }
         return new Result(true,result);
+    }
+
+    public boolean checkCoordinateForFishing(){
+        int [] x={1,1,1,0,0,-1,-1,-1};
+        int [] y={1,0,-1,1,-1,-1,0,1};
+        for (int i=0;i<8;i++){
+            if (getTileByCoordinates(currentPlayer.getPositionX() +x[i],currentPlayer.getPositionY() +y[i]).
+                    getGameObject() instanceof Lake){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public FishingPole isFishingPoleTypeExist(String name){
+        Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
+            if (entry instanceof FishingPole){
+                if (((FishingPole) entry).fishingPoleType.getName().equals(name)){
+                    return (FishingPole) entry;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void FishingInSpring(FishingPole fishingPole){
+        double random=Math.random();
+
+    }
+
+    public Result Fishing(String fishingPoleType){
+        if (!checkCoordinateForFishing()){
+            return new Result(false, "you can't fishing because lake is not around you" );
+        }
+        if (isFishingPoleTypeExist(fishingPoleType)==null){
+            return new Result(false, "No such fishing pole exist!" );
+        }
+
+
+
     }
 
 

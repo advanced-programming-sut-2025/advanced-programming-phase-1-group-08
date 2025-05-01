@@ -2,6 +2,8 @@ package model.Enum.ToolsType;
 
 import model.App;
 
+import java.util.ArrayList;
+
 public enum FishingPoleType {
 
     TrainingRod{
@@ -19,6 +21,11 @@ public enum FishingPoleType {
             }
             return 8;
         }
+
+        @Override
+        public String getName() {
+            return "Training Rod";
+        }
     },
     BambooPole{
         @Override
@@ -34,6 +41,11 @@ public enum FishingPoleType {
                 return 7;
             }
             return 8;
+        }
+
+        @Override
+        public String getName() {
+            return "Bamboo Pole";
         }
     },
     FiberglassRod{
@@ -51,6 +63,11 @@ public enum FishingPoleType {
             }
             return 6;
         }
+
+        @Override
+        public String getName() {
+            return "Fiberglass Rod";
+        }
     },
     IridiumRod{
         @Override
@@ -67,10 +84,16 @@ public enum FishingPoleType {
             }
             return 4;
         }
+
+        @Override
+        public String getName() {
+            return "Iridium Rod";
+        }
     };
 
     public abstract int getPrice();
     public abstract int costEnergy(boolean Fishing);
+    public abstract String getName();
 
     public boolean checkAbility(int amount){
         if (App.currentPlayer.getFishingAbility()>=amount){
