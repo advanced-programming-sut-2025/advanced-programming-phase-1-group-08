@@ -52,6 +52,13 @@ public class GameController {
                         farm.Farm.add(tile);
                         bigMap.add(tile);
                     }
+                    else {
+                        Walkable walkable = new Walkable();
+                        walkable.setCharactor('.');
+                        Tile tile = new Tile(i + 60 * x, j + 60 * y, walkable);
+                        farm.Farm.add(tile);
+                        bigMap.add(tile);
+                    }
                 }
             }
             farm.setMine(mine);
