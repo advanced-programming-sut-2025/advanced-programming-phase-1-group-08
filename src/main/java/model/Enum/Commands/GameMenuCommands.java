@@ -31,6 +31,7 @@ public enum GameMenuCommands {
     availableTool("tools\\s+show\\s+available\\s*"),
     toolsUpgrade("tools\\s+upgrade\\s+(?<name>\\S.*)\\s*"),
     toolsUse("tools\\s+use\\s+-d\\s+(?<direction>\\S.*)\\s*"),
+    fishing("fishing\\s+-p\\s+(?<name>\\S.*)\\s*"),
 
     ;
 
