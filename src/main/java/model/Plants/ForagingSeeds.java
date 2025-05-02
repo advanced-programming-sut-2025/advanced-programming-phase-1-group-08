@@ -61,8 +61,11 @@ public class ForagingSeeds extends Items {
             delete();
     }
     public DateHour getBirthDay () {
+
         return this.birthDay;
     }
+    public void setLastWater(DateHour lastWater) {
 
-
+        this.lastWater = lastWater;
+    }
 }

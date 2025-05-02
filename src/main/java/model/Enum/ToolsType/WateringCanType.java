@@ -2,21 +2,22 @@ package model.Enum.ToolsType;
 
 public enum WateringCanType {
 
-    PrimaryWateringCan  (5, 40),
+    PrimaryWateringCan  ("Primary Watering Can",-5, 40),
 
-    CopperyWateringCan  (4, 55),
+    CopperyWateringCan  ("Coppery Watering Can",-4, 55),
 
-    IronWateringCan     (3, 70),
+    IronWateringCan     ("Iron Watering Can",   -3, 70),
 
-    GoldenWateringCan   (2, 85),
+    GoldenWateringCan   ("Golden Watering Can", -2, 85),
 
-    IridiumWateringCan  (1, 100);
+    IridiumWateringCan  ("Iridium Watering Can",-1, 100);
 
-
+    private final String displayName;
     private final int energyCost;
     private final int capacity;
 
-    WateringCanType(int energyCost, int capacity) {
+    WateringCanType(String displayName, int energyCost, int capacity) {
+        this.displayName = displayName;
         this.energyCost = energyCost;
         this.capacity = capacity;
     }
@@ -28,5 +29,9 @@ public enum WateringCanType {
     public int getCapacity  () {
 
         return capacity;
+    }
+    public String getDisplayName () {
+
+        return this.displayName;
     }
 }

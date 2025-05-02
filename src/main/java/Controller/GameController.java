@@ -487,7 +487,7 @@ public class GameController {
                 result += ((FishingPole) entry).getName() +" "+ ((FishingPole) entry).fishingPoleType + "\n";
             }
             else if (entry instanceof Hoe){
-                result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).hoeType + "\n";
+                result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).getType() + "\n";
             }
             else if (entry instanceof PickAxe){
                 result += ((PickAxe) entry).getName() +" "+ ((PickAxe) entry).pickAxeType +"\n";
@@ -604,7 +604,7 @@ public class GameController {
                 }
             }
             else if (entry instanceof Hoe){
-                if (((Hoe) entry).hoeType.equals(name)){
+                if (((Hoe) entry).getType().equals(name)){
                     currentPlayer.currentTool=(Tools) entry;
                     return new Result(true,"now current tool is "+name);
                 }
@@ -638,8 +638,8 @@ public class GameController {
             case null -> new Result(false, "there is no current tool in your hands");
             case Axe axe -> new Result(true, "current tool: " + axe.axeType);
             case FishingPole fishingPole -> new Result(true, "current tool: " + fishingPole.fishingPoleType);
-            case Hoe hoe -> new Result(true, "current tool: " + hoe.hoeType);
-            case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType);
+            case Hoe hoe -> new Result(true, "current tool: " + hoe.getType().getDisplayName());
+            case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType.getDisplayName());
             case PickAxe piⅽkAxe -> new Result(true, "current tool: " + piⅽkAxe.pickAxeType);
             default -> new Result(true, "current tool: " + currentTool.getName());
         };
@@ -653,7 +653,7 @@ public class GameController {
             } else if (entry instanceof FishingPole) {
                 result += ((FishingPole) entry).fishingPoleType + "\n";
             } else if (entry instanceof Hoe) {
-                result += ((Hoe) entry).hoeType + "\n";
+                result += ((Hoe) entry).getType() + "\n";
             } else if (entry instanceof WateringCan) {
                 result += ((WateringCan) entry).wateringCanType + "\n";
             } else if (entry instanceof PickAxe) {
@@ -1270,12 +1270,9 @@ public class GameController {
 
     private Result useHoe (int dir) {
 
-        if (!currentPlayer.isHealthUnlimited()) {
-            if (currentPlayer.getLevelFarming() == 4)
-                currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost() - 1);
-            else
-                currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
-        }
+        if (!currentPlayer.isHealthUnlimited())
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+
         Tile tile = getTileByDir(dir);
 
         if (plowedTile.contains(tile))
@@ -1286,15 +1283,7 @@ public class GameController {
         plowedTile.add(tile);
         return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
     }
-    private Result useWateringCan (int dir) {
 
-        if (!currentPlayer.isHealthUnlimited()) {
-            if (currentPlayer.getLevelFarming() == 4)
-                currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost() - 1);
-            else
-                currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
-        }
-    }
 
     public void startNewGame () {
 
@@ -1518,6 +1507,46 @@ public class GameController {
 
         return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
         }
+    }
+    private Result useWateringCan (String direction) {
+
+        int dir;
+
+        try {
+            dir = Integer.parseInt(direction);
+        } catch (Exception e) {
+            return new Result(false, RED+"Direction is incorrect"+RESET);
+        }
+
+        if (!(currentPlayer.currentTool instanceof WateringCan))
+            return new Result(false, RED+"سطل اب رو بردار دوست من"+RESET);
+
+        if (!currentPlayer.isHealthUnlimited())
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+
+        Tile tile = getTileByDir(dir);
+        GameObject object = tile.getGameObject();
+
+        if (((WateringCan) currentPlayer.currentTool).getReminderCapacity() < 1)
+            return new Result(false, RED+"ظرفت خالیه مشتی"+RESET);
+
+        if (object instanceof ForagingSeeds) {
+            ((WateringCan) currentPlayer.currentTool).decreaseWater(1);
+            ((ForagingSeeds) object).setLastWater(currentDate);
+            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
+
+        } else if (object instanceof Tree) {
+            ((WateringCan) currentPlayer.currentTool).decreaseWater(1);
+            ((ForagingSeeds) object).setLastWater(currentDate);
+            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
+
+        } else if (object instanceof GiantProduct) {
+            ((WateringCan) currentPlayer.currentTool).decreaseWater(1);
+            ((ForagingSeeds) object).setLastWater(currentDate);
+            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
+        }
+
+        return new Result(false, RED+"No plant in here!"+RESET);
     }
 
 

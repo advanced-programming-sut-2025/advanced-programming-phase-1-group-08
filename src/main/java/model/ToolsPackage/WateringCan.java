@@ -17,25 +17,41 @@ public class WateringCan extends Tools {
     }
 
 
-    public int getReminderCapacity() {
-        return reminderCapacity;
-    }
-    public void setReminderCapacity(int reminderCapacity) {
-        this.reminderCapacity = reminderCapacity;
-    }
-    public void increaseReminderCapacity(int amount) {
-        this.reminderCapacity += amount;
-    }
-
-
 
     public void use () {}
-
-    @Override
     public int healthCost() {
 
         if (currentPlayer.getLevelFarming() == 4)
-            return this.wateringCanType.getEnergyCost()-1;
+            return this.wateringCanType.getEnergyCost()+1;
         return this.wateringCanType.getEnergyCost();
+    }
+
+    public WateringCanType getWateringCanType() {
+
+        return wateringCanType;
+    }
+    public void setWateringCanType(WateringCanType wateringCanType) {
+
+        this.wateringCanType = wateringCanType;
+    }
+
+    public int getReminderCapacity() {
+
+        return reminderCapacity;
+    }
+    public void decreaseWater(int amount) {
+        this.reminderCapacity -= amount;
+        checkForWater();
+    }
+    public void makeFullWater () {
+
+        this.reminderCapacity = this.wateringCanType.getCapacity();
+    }
+    public void checkForWater () {
+
+        if (this.reminderCapacity < 0)
+            this.reminderCapacity = 0;
+        if (this.reminderCapacity > this.wateringCanType.getCapacity())
+            this.reminderCapacity = this.wateringCanType.getCapacity();
     }
 }
