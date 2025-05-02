@@ -980,8 +980,7 @@ public class GameController {
             }
         }
 
-        return new Result(false , "there is no way for animal to go to this coordinate!")
-
+        return new Result(false , "there is no way for animal to go to this coordinate!");
     }
 
     private Result checkShepherdAnimals(int goalX, int goalY, String name) {
@@ -1271,9 +1270,12 @@ public class GameController {
 
     private Result useHoe (int dir) {
 
-        if (!currentPlayer.isHealthUnlimited())
-            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
-
+        if (!currentPlayer.isHealthUnlimited()) {
+            if (currentPlayer.getLevelFarming() == 4)
+                currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost() - 1);
+            else
+                currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+        }
         Tile tile = getTileByDir(dir);
 
         if (plowedTile.contains(tile))
@@ -1283,6 +1285,15 @@ public class GameController {
 
         plowedTile.add(tile);
         return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
+    }
+    private Result useWateringCan (int dir) {
+
+        if (!currentPlayer.isHealthUnlimited()) {
+            if (currentPlayer.getLevelFarming() == 4)
+                currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost() - 1);
+            else
+                currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+        }
     }
 
     public void startNewGame () {
@@ -1333,7 +1344,7 @@ public class GameController {
             startDay();
 
         for (Tile tile : bigMap)
-            tile.getGameObject().startDayAutomaticTask();
+            tile.getGameObject().turnByTurnAutomaticTask();
     }
     public void AutomaticFunctionAfterAnyAct () {
 

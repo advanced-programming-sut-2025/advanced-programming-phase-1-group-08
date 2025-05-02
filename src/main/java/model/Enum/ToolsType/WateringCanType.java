@@ -2,81 +2,31 @@ package model.Enum.ToolsType;
 
 public enum WateringCanType {
 
-    PrimaryWateringCan{
-        @Override
-        public int costEnergy(boolean Farming) {
-            if (Farming){
-                return 4;
-            }
-            return 5;
-        }
+    PrimaryWateringCan  (5, 40),
 
-        @Override
-        public int getInitialCapacity() {
-            return 40;
-        }
-    },
+    CopperyWateringCan  (4, 55),
 
-    CopperyWateringCan{
-        @Override
-        public int costEnergy(boolean Farming) {
-            if (Farming){
-                return 3;
-            }
-            return 4;
-        }
+    IronWateringCan     (3, 70),
 
-        @Override
-        public int getInitialCapacity() {
-            return 55;
-        }
-    },
+    GoldenWateringCan   (2, 85),
 
-    IronWateringCan{
-        @Override
-        public int costEnergy(boolean Farming) {
-            if (Farming){
-                return 2;
-            }
-            return 3;
-        }
+    IridiumWateringCan  (1, 100);
 
-        @Override
-        public int getInitialCapacity() {
-            return 70;
-        }
-    },
 
-    GoldenWateringCan{
-        @Override
-        public int costEnergy(boolean Farming) {
-            if (Farming){
-                return 1;
-            }
-            return 2;
-        }
+    private final int energyCost;
+    private final int capacity;
 
-        @Override
-        public int getInitialCapacity() {
-            return 85;
-        }
-    },
+    WateringCanType(int energyCost, int capacity) {
+        this.energyCost = energyCost;
+        this.capacity = capacity;
+    }
 
-    IridiumWateringCan{
-        @Override
-        public int costEnergy(boolean Farming) {
-            if (Farming){
-                return 1;
-            }
-            return 1;
-        }
+    public int getEnergyCost() {
 
-        @Override
-        public int getInitialCapacity() {
-            return 100;
-        }
-    };
+        return energyCost;
+    }
+    public int getCapacity  () {
 
-    public abstract int costEnergy(boolean Farming);
-    public abstract int getInitialCapacity();
+        return capacity;
+    }
 }

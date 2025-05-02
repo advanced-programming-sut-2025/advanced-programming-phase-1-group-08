@@ -2,15 +2,20 @@ package model.ToolsPackage;
 
 import model.Enum.ToolsType.WateringCanType;
 
+import static model.App.currentPlayer;
+
 public class WateringCan extends Tools {
 
-    public WateringCanType wateringCanType = WateringCanType.PrimaryWateringCan;
+    public WateringCanType wateringCanType;
+    private int reminderCapacity;
 
-    public WateringCan() {
+    public WateringCan(WateringCanType type) {
+
         super("WateringCan", 0);
+        this.wateringCanType = type;
+        reminderCapacity = this.wateringCanType.getCapacity();
     }
 
-    private int reminderCapacity;
 
     public int getReminderCapacity() {
         return reminderCapacity;
@@ -22,5 +27,15 @@ public class WateringCan extends Tools {
         this.reminderCapacity += amount;
     }
 
-    public void use (){}
+
+
+    public void use () {}
+
+    @Override
+    public int healthCost() {
+
+        if (currentPlayer.getLevelFarming() == 4)
+            return this.wateringCanType.getEnergyCost()-1;
+        return this.wateringCanType.getEnergyCost();
+    }
 }

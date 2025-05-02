@@ -3,7 +3,10 @@ package model.Plants;
 import model.DateHour;
 import model.Enum.AllPlants.ForagingSeedsType;
 import model.Items;
+import model.Tile;
+import model.Walkable;
 
+import static model.App.bigMap;
 import static model.App.currentDate;
 import static model.Color_Eraser.*;
 import static model.DateHour.getDayDifferent;
@@ -21,9 +24,9 @@ public class GiantProduct extends Items {
         stage = 1;
     }
 
-    public ForagingSeedsType getType() {
+    public void setLastWater (DateHour dateHour) {
 
-        return type;
+        this.lastWater = dateHour;
     }
     public void setStage  () {
 
@@ -37,14 +40,42 @@ public class GiantProduct extends Items {
                 days += this.type.getStageDate(i);
         }
     }
-    public String getIcon () {
+    public boolean checkForDeath () {
 
-        return BG_BRIGHT_PURPLE+type.getSymbolByLevel(stage)+RESET;
+        return getDayDifferent(currentDate, lastWater) > 1;
     }
+    public void delete () {
+
+        for (Tile tile : bigMap)
+            if (tile.getGameObject().equals(this))
+                tile.setGameObject(new Walkable());
+    }
+
 
     @Override
     public void turnByTurnAutomaticTask() {
         setStage();
+        if (checkForDeath())
+            delete();
     }
+
+
+    public ForagingSeedsType getType() {
+
+        return type;
+    }
+    public String getIcon () {
+
+        return BG_BRIGHT_PURPLE+type.getSymbolByLevel(stage)+RESET;
+    }
+    public DateHour getBirthDay () {
+
+        return this.birthDay;
+    }
+    public DateHour getLastWater () {
+
+        return this.lastWater;
+    }
+
 
 }
