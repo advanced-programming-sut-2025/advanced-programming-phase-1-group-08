@@ -1,24 +1,23 @@
 package model.Plants;
 
-import model.*;
+import model.DateHour;
 import model.Enum.AllPlants.ForagingSeedsType;
+import model.Items;
 
-
-import static model.App.bigMap;
 import static model.App.currentDate;
+import static model.Color_Eraser.*;
 import static model.DateHour.getDayDifferent;
 
-public class ForagingSeeds extends Items {
+public class GiantProduct extends Items {
 
     private final ForagingSeedsType type;
     private final DateHour birthDay;
     private DateHour lastWater;
     private int stage;
 
-
-    public ForagingSeeds(ForagingSeedsType type, DateHour Date) {
+    public GiantProduct (ForagingSeedsType type, DateHour currentDate) {
         this.type = type;
-        birthDay = Date.clone();
+        this.birthDay = currentDate.clone();
         stage = 1;
     }
 
@@ -40,29 +39,12 @@ public class ForagingSeeds extends Items {
     }
     public String getIcon () {
 
-        return type.getSymbolByLevel(stage);
-    }
-    public boolean checkForDeath () {
-
-        return getDayDifferent(currentDate, lastWater) > 1;
-    }
-    public void delete () {
-
-        for (Tile tile : bigMap)
-            if (tile.getGameObject().equals(this))
-                tile.setGameObject(new Walkable());
+        return BG_BRIGHT_PURPLE+type.getSymbolByLevel(stage)+RESET;
     }
 
     @Override
     public void turnByTurnAutomaticTask() {
-
         setStage();
-        if (checkForDeath())
-            delete();
     }
-    public DateHour getBirthDay () {
-        return this.birthDay;
-    }
-
 
 }

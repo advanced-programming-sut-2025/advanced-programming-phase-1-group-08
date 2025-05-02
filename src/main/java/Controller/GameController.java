@@ -355,58 +355,58 @@ public class GameController {
         int startY = currentPlayer.getPositionY();
         Tile endTile = getTileByCoordinates(goalX, goalY);
 
-         if (checkConditionsForWalk(goalX, goalY) !=null) {
-             return checkConditionsForWalk(goalX, goalY);
-         }
-         if (currentPlayer.isHealthUnlimited()){
-             currentPlayer.setPositionX(goalX);
-             currentPlayer.setPositionY(goalY);
-             return new Result(true,"now you are in "+goalX+","+goalY);
-         }
+        if (checkConditionsForWalk(goalX, goalY) !=null) {
+            return checkConditionsForWalk(goalX, goalY);
+        }
+        if (currentPlayer.isHealthUnlimited()){
+            currentPlayer.setPositionX(goalX);
+            currentPlayer.setPositionY(goalY);
+            return new Result(true,"now you are in "+goalX+","+goalY);
+        }
 
-         int [] dirx={0,0,0,1,1,1,-1,-1,-1};
-         int [] diry={0,1,-1,0,1,-1,0,1,-1};
-         HashMap<Tile,Integer> costEnergy=new HashMap<>();
-         Queue<int []> queue=new LinkedList<>();
+        int [] dirx={0,0,0,1,1,1,-1,-1,-1};
+        int [] diry={0,1,-1,0,1,-1,0,1,-1};
+        HashMap<Tile,Integer> costEnergy=new HashMap<>();
+        Queue<int []> queue=new LinkedList<>();
 
-         for (int i=0 ; i<8 ; i++) {
-             queue.add(new int[]{startX,startY,i,0,0});
-         }
+        for (int i=0 ; i<8 ; i++) {
+            queue.add(new int[]{startX,startY,i,0,0});
+        }
 
-         while (!queue.isEmpty()) {
-             int [] current=queue.poll();
-             int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
-             for (int i=0 ; i<8 ; i++) {
-                 int nx=x+dirx[i], ny=y+diry[i];
+        while (!queue.isEmpty()) {
+            int [] current=queue.poll();
+            int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
+            for (int i=0 ; i<8 ; i++) {
+                int nx=x+dirx[i], ny=y+diry[i];
 
-                 Tile nextTile=getTileByCoordinates(nx, ny);
-                 if (nextTile==null || checkTile(nextTile)) continue;
+                Tile nextTile=getTileByCoordinates(nx, ny);
+                if (nextTile==null || checkTile(nextTile)) continue;
 
-                 int newSteps=steps+1;
-                 int newTurn=turns+(i==dir ? 0:1);
-                 int cost=newSteps +10*newTurn;
+                int newSteps=steps+1;
+                int newTurn=turns+(i==dir ? 0:1);
+                int cost=newSteps +10*newTurn;
 
-                 if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
-                     costEnergy.put(nextTile, newSteps);
-                     queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
-                 }
+                if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
+                    costEnergy.put(nextTile, newSteps);
+                    queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
+                }
 
-             }
-         }
+            }
+        }
 
-         if (!costEnergy.containsKey(endTile)) {
-             return new Result(false,"you can't go to this coordinate because there no way");
-         }
-         else {
-             int cost=costEnergy.get(endTile)/20;
-             if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
+        if (!costEnergy.containsKey(endTile)) {
+            return new Result(false,"you can't go to this coordinate because there no way");
+        }
+        else {
+            int cost=costEnergy.get(endTile)/20;
+            if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
                 return new Result(false,"your Energy is not enough");
-             }
-             else {
-                 currentPlayer.increaseHealth(-cost);
-                 return new Result(true,"you are now in "+goalX+","+goalY);
-             }
-         }
+            }
+            else {
+                currentPlayer.increaseHealth(-cost);
+                return new Result(true,"you are now in "+goalX+","+goalY);
+            }
+        }
 
     }
     private boolean checkTile(Tile tile){
@@ -484,8 +484,8 @@ public class GameController {
             else if (entry instanceof Hoe){
                 result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).hoeType + "\n";
             }
-            else if (entry instanceof PiⅽkAxe){
-                result += ((PiⅽkAxe) entry).getName() +" "+ ((PiⅽkAxe) entry).pickAxeType +"\n";
+            else if (entry instanceof PickAxe){
+                result += ((PickAxe) entry).getName() +" "+ ((PickAxe) entry).pickAxeType +"\n";
             }
             else if (entry instanceof WateringCan){
                 result += ((WateringCan) entry).getName() +" "+ ((WateringCan) entry).wateringCanType + "\n";
@@ -542,7 +542,7 @@ public class GameController {
 
             if (entry instanceof ForagingMinerals){
                 if (((ForagingMinerals) entry).getType().getDisplayName().equals(name)){
-                     return increaseMoney(number,( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
+                    return increaseMoney(number,( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
                 }
             }
 
@@ -869,7 +869,7 @@ public class GameController {
         //TODO عملیات کم شدن از inventory در هنگام خرید
 
         if (barnORCageType.equals(BarnORCageType.Barn) || barnORCageType.equals(BarnORCageType.BigBarn)
-                 || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
+                || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
             barnOrCage.setCharactor('b');
         }
         else {
@@ -908,9 +908,8 @@ public class GameController {
         return new Result(false,petName+"  doesn't exist!");
     }
 
-    public Result animals() {
-        for (B)
-    }
+   // public Result animals() {
+    //for (B)}
 
 
     private void setEnergyInMorning () {
@@ -954,7 +953,7 @@ public class GameController {
 
         return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
     }
-    private Result plantMixedSeed (String dir) {
+    private Result plantMixedSeed (int dir) {
 
         Inventory inventory=currentPlayer.getBackPack().inventory;
 
@@ -965,15 +964,20 @@ public class GameController {
 
                     ForagingSeedsType type = ((MixedSeeds) entry).getSeeds(currentDate.getSeason());
                     inventory.Items.put(entry.getKey(), entry.getValue() - 1);
-                    Tile tile = getTileByDir(Integer.parseInt(dir));
-                    tile.setGameObject(new ForagingSeeds(type, currentDate));
+                    Tile tile = getTileByDir(dir);
+
+                    if (plowedTile.contains(tile)) {
+                        tile.setGameObject(new ForagingSeeds(type, currentDate));
+                        plowedTile.remove(tile);
+                    } else
+                        return new Result(false, RED+"First, you must plow the tile."+RESET);
 
                 } else
                     return new Result(false, RED + "You don't have Mixed seed!" + RESET);
             }
         return new Result(false, PURPLE+" اینونتوری و ریموو ایتم خیلی بدن "+RESET);
     }
-    private Result plantForagingSeed (ForagingSeedsType type, String dir) {
+    private Result plantForagingSeed (ForagingSeedsType type, int dir) {
 
         Inventory inventory=currentPlayer.getBackPack().inventory;
 
@@ -983,13 +987,50 @@ public class GameController {
                 if (inventory.Items.get(entry) > 0) {
 
                     inventory.Items.put(entry.getKey(), entry.getValue() - 1);
-                    Tile tile = getTileByDir(Integer.parseInt(dir));
-                    tile.setGameObject(new ForagingSeeds(type, currentDate));
+                    Tile tile = getTileByDir(dir);
+
+                    if (plowedTile.contains(tile)) {
+                        tile.setGameObject(new ForagingSeeds(type, currentDate));
+                        plowedTile.remove(tile);
+                    } else
+                        return new Result(false, RED+"First, you must plow the tile."+RESET);
 
                 } else
                     return new Result(false, RED + "You don't have Mixed seed!" + RESET);
             }
         return new Result(false, PURPLE+" اینونتوری و ریموو ایتم خیلی بدن "+RESET);
+    }
+    private void checkForGiant () {
+
+        for (int i = 0; i < 89 ; i++)
+            for (int j = 0; j < 89 ; j++) {
+
+                Tile tile1 = getTileByCoordinates(i, j);
+                if (tile1.getGameObject() instanceof ForagingSeeds)
+                    if (((ForagingSeeds) tile1.getGameObject()).getType().canGrowGiant()) {
+
+                        ForagingSeedsType type = ((ForagingSeeds) tile1.getGameObject()).getType();
+                        Tile tile2 = getTileByCoordinates(i+1, j);
+                        Tile tile3 = getTileByCoordinates(i, j+1);
+                        Tile tile4 = getTileByCoordinates(i+1, j+1);
+
+                        if (tile2.getGameObject() instanceof ForagingSeeds &&
+                            tile3.getGameObject() instanceof ForagingSeeds &&
+                            tile4.getGameObject() instanceof ForagingSeeds)
+
+                            if ((((ForagingSeeds) tile2.getGameObject()).getType() == type) &&
+                                    (((ForagingSeeds) tile3.getGameObject()).getType() == type) &&
+                                    (((ForagingSeeds) tile4.getGameObject()).getType() == type)) {
+
+                                GiantProduct giantProduct = new GiantProduct(
+                                        type, ((ForagingSeeds) tile1.getGameObject()).getBirthDay());
+                                tile1.setGameObject(giantProduct);
+                                tile2.setGameObject(giantProduct);
+                                tile3.setGameObject(giantProduct);
+                                tile4.setGameObject(giantProduct);
+                            }
+                    }
+            }
     }
 
     private void createRandomForaging () {
@@ -1118,8 +1159,6 @@ public class GameController {
     }
     public void AutomaticFunctionAfterOneTurn () {
 
-        // محصول غول پیگر چک بشه
-
         if (currentUser == currentPlayer)
             passedOfTime(0, 1);
 
@@ -1130,6 +1169,8 @@ public class GameController {
             tile.getGameObject().startDayAutomaticTask();
     }
     public void AutomaticFunctionAfterAnyAct () {
+
+        checkForGiant();
 
         for (User user : players)
             user.checkHealth();
@@ -1254,7 +1295,7 @@ public class GameController {
     }
     public Result buildGreenHouse () {
 
-        for (Map.Entry <Items,Integer> entry: currentPlayer.getBaⅽkPaⅽk().inventory.Items.entrySet()) // این خیلی کیریه
+        for (Map.Entry <Items,Integer> entry: currentPlayer.getBackPack().inventory.Items.entrySet()) // این خیلی کیریه
             if (entry instanceof Wood)
                 if (entry.getValue() < GreenHouse.requiredWood)
                     return new Result(false, RED+"You don't have enough wood!"+RESET);
@@ -1282,12 +1323,19 @@ public class GameController {
     }
     public Result planting (String name, String direction) {
 
+        int dir;
+        try {
+            dir = Integer.parseInt(direction);
+        } catch (Exception e) {
+            return new Result(false, RED+"Direction is invalid"+RESET);
+        }
+
         if (name.matches("\\s*(?i)Mixed\\s*seed(s)?\\s*"))
-            return plantMixedSeed(direction);
+            return plantMixedSeed(dir);
 
         try {
             ForagingSeedsType type = ForagingSeedsType.valueOf(name);
-            return plantForagingSeed(type, direction);
+            return plantForagingSeed(type, dir);
         } catch (Exception e) {
 
         return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);

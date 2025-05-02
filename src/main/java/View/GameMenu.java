@@ -72,6 +72,9 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.buildGreenHouse.getMather(input) != null)
             System.out.println(controller.buildGreenHouse());
 
+        else if ((matcher = GameMenuCommands.planting.getMather(input)) != null)
+            System.out.println(controller.planting(matcher.group("seed").trim(),
+                    matcher.group("direction").trim()));
 
 
         else
