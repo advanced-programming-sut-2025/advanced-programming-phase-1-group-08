@@ -36,7 +36,8 @@ public enum GameMenuCommands {
     buildBarnOrCage("build\\s+-a\\s+(?<name>\\S.*)\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     pet("pet\\s+-n\\s+(?<name>\\S.*)\\s*"),
     animals("\\s*animals\\s*"),
-
+    shepherdAnimals("shepherd\\s+animals\\s+-n\\s+(?<name>\\S.*)\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
+    feedHay("feed\\s+hay\\s+-n\\s+(?<name>\\S.*)\\s*"),
     ;
 
 

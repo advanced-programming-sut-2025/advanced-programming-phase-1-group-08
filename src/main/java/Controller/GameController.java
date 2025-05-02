@@ -20,6 +20,7 @@ import static model.App.*;
 import static model.App.tomorrowWeather;
 import static model.Color_Eraser.*;
 import static model.Enum.AllPlants.ForagingMineralsType.*;
+import static model.Enum.AllPlants.ForagingMineralsType.RUBY;
 
 public class GameController {
 
@@ -57,13 +58,12 @@ public class GameController {
             }
         }
         return null;
-    }   ///        الان اینونتوری ساخته میشه از همه چی توش گذاشتی همون اول ؟
+    }
 
-
-    public void createInitialMine(int id, int x, int y){
+    public void creatInitialMine(int id, int x, int y) {
         Farm farm = currentPlayer.getFarm();
         if (id == 1) {
-            Mine mine = new Mine(23, 2);
+            Mine mine = new Mine();
             door MineDoor = new door();
             MineDoor.setDoor(Door.Mine);
             MineDoor.setCharactor('D');
@@ -93,7 +93,8 @@ public class GameController {
 
         }
     }
-    public void createInitialLake(int id, int x, int y) {
+
+    public void creatInitialLake(int id, int x, int y) {
         Farm farm = currentPlayer.getFarm();
         if (id == 1) {
             Lake lake = new Lake();
@@ -110,7 +111,8 @@ public class GameController {
 
         }
     }
-    public void createInitialHouse(int id, int x, int y) {
+
+    public void creatInitialHouse(int id, int x, int y) {
         Farm farm = currentPlayer.getFarm();
         Wall wall = new Wall();
         wall.setWallType(WallType.House);
@@ -161,7 +163,8 @@ public class GameController {
         }
         farm.setHome(home);
     }
-    public void createInitialGreenHouse(int id, int x, int y) {
+
+    public void creatInitialGreenHouse(int id, int x, int y) {
         Farm farm = currentPlayer.getFarm();
         Wall GreenWall = new Wall();
         GreenWall.setWallType(WallType.GreenHouse);
@@ -215,6 +218,7 @@ public class GameController {
         }
         farm.setGreenHouse(greenHouse);
     }
+
     public Farm creatInitialFarm(int id){
         long seed=System.currentTimeMillis();
         Farm farm= currentPlayer.getFarm();
@@ -222,16 +226,16 @@ public class GameController {
         for (int i=0 ; i<30 ;i++){
             for (int j=0 ; j<30 ; j++) {
                 if (i>=23 && i<29 && j>=2 && j<8){
-                    createInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    creatInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(1<i && i<7 && j>22 && j<29){
-                    createInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    creatInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(i>=12 && i<19 && j<7){
-                    createInitialHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    creatInitialHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if (i<8 && j<9){
-                    createInitialGreenHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    creatInitialGreenHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else {
                     MapGenerator(i,j,seed);
@@ -243,6 +247,7 @@ public class GameController {
         return farm;
 
     }
+
     public void MapGenerator(int i,int j,long seed){
         if (i==0 || i==29 || j==0 || j==29){
             if (i==15 && j==29){
@@ -310,6 +315,7 @@ public class GameController {
         }
 
     }
+
     public void print(Farm farm){
         int x=currentPlayer.topLeftX;
         int y=currentPlayer.topLeftY;
@@ -348,7 +354,6 @@ public class GameController {
         }
 
     }
-
 
     public Result walk(int goalX, int goalY) {
         int startX = currentPlayer.getPositionX();
@@ -417,6 +422,11 @@ public class GameController {
     public Result checkConditionsForWalk(int goalX, int goalY){
         Tile tile = getTileByCoordinates(goalX, goalY);
         Farm farm = null;
+
+        if (goalX <0 || goalX >90 || goalY <0 || goalY >90) {
+            return new Result(false,"you can't walk out of bounds");
+        }
+
         for (Farm farms : farms) {
             if (farms.Farm.contains(tile)) {
                 farm = farms;
@@ -525,7 +535,10 @@ public class GameController {
 
         return null;
     }
-    public Result removeItemToTrashcan(String name, Integer number) {
+
+
+
+    public Result removeItemToTrashcan (String name, Integer number){
         Inventory inventory=currentPlayer.getBackPack().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
 
@@ -601,8 +614,8 @@ public class GameController {
                     return new Result(true,"now current tool is "+name);
                 }
             }
-            else if (entry instanceof PickAxe){
-                if (((PickAxe) entry).pickAxeType.equals(name)){
+            else if (entry instanceof PiⅽkAxe){
+                if (((PiⅽkAxe) entry).pickAxeType.equals(name)){
                     currentPlayer.currentTool=(Tools) entry;
                     return new Result(true,"now current tool is "+name);
                 }
@@ -624,6 +637,7 @@ public class GameController {
 
         return new Result(false,"there is no such tool");
     }
+
     public Result showCurrentTool(){
         Tools currentTool=currentPlayer.currentTool;
         return switch (currentTool) {
@@ -632,29 +646,30 @@ public class GameController {
             case FishingPole fishingPole -> new Result(true, "current tool: " + fishingPole.fishingPoleType);
             case Hoe hoe -> new Result(true, "current tool: " + hoe.hoeType);
             case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType);
-            case PickAxe piⅽkAxe -> new Result(true, "current tool: " + piⅽkAxe.pickAxeType);
+            case PiⅽkAxe piⅽkAxe -> new Result(true, "current tool: " + piⅽkAxe.pickAxeType);
             default -> new Result(true, "current tool: " + currentTool.getName());
         };
     }
+
     public Result availableTools() {
         Inventory inventory = currentPlayer.getBackPack().inventory;
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
             if (entry instanceof Axe) {
-                result += ((Axe) entry).axeType + "\n";
+                result.append(((Axe) entry).axeType).append("\n");
             } else if (entry instanceof FishingPole) {
-                result += ((FishingPole) entry).fishingPoleType + "\n";
+                result.append(((FishingPole) entry).fishingPoleType).append("\n");
             } else if (entry instanceof Hoe) {
-                result += ((Hoe) entry).hoeType + "\n";
+                result.append(((Hoe) entry).hoeType).append("\n");
             } else if (entry instanceof WateringCan) {
-                result += ((WateringCan) entry).wateringCanType + "\n";
-            } else if (entry instanceof PickAxe) {
-                result += ((PickAxe) entry).pickAxeType + "\n";
+                result.append(((WateringCan) entry).wateringCanType).append("\n");
+            } else if (entry instanceof PiⅽkAxe) {
+                result.append(((PiⅽkAxe) entry).pickAxeType).append("\n");
             } else if (entry instanceof Tools) {
-                result += ((Tools) entry).getName() + "\n";
+                result.append(((Tools) entry).getName()).append("\n");
             }
         }
-        return new Result(true,result);
+        return new Result(true, result.toString());
     }
 
     public boolean checkCoordinateForFishing(){
@@ -695,11 +710,12 @@ public class GameController {
 
         return Quantity.Iridium;
     }
+
     public Result addFishToInventory(FishingPole fishingPole) {
         double random = Math.random();
         int x = (int) (random * currentWeather.getFishing() * (currentPlayer.getLevelFishing() + 2));
         int numberOfFish = Math.min(6, x);
-        String result = "number of Fishes: " + numberOfFish + "\n";
+        StringBuilder result = new StringBuilder("number of Fishes: " + numberOfFish + "\n");
 
         for (int i = 0; i < numberOfFish; i++) {
 
@@ -714,16 +730,16 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Herring, fishQuantity);
-                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Sunfish, fishQuantity);
-                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Sardine, fishQuantity);
-                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Perch, fishQuantity);
-                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                        result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
                 }
@@ -735,16 +751,16 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Flounder, fishQuantity);
-                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Tilapia, fishQuantity);
-                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Salmon, fishQuantity);
-                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Midnight_Carp, fishQuantity);
-                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                        result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
                 }
@@ -753,16 +769,16 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Lionfish, fishQuantity);
-                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Dorado, fishQuantity);
-                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Sardine, fishQuantity);
-                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Squid, fishQuantity);
-                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                        result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
                 }
@@ -771,16 +787,16 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Herring, fishQuantity);
-                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Sunfish, fishQuantity);
-                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Shad, fishQuantity);
-                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Tuna, fishQuantity);
-                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                        result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
                 }
@@ -791,16 +807,16 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Ghostfish, fishQuantity);
-                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Rainbow_Trout, fishQuantity);
-                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Blue_Discus, fishQuantity);
-                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Perch, fishQuantity);
-                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                        result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
                 }
@@ -812,16 +828,16 @@ public class GameController {
                     switch (currentDate.getSeason()){
                         case Spring:
                             Fish springFish= new Fish(FishType.Legend,fishQuantity);
-                            result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                            result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                         case Summer:
                             Fish summerFish= new Fish(FishType.Dorado,fishQuantity);
-                            result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                            result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                         case Fall:
                             Fish fallFish= new Fish(FishType.Squid,fishQuantity);
-                            result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                            result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                         case Winter:
                             Fish winterFish= new Fish(FishType.Tuna,fishQuantity);
-                            result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                            result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     }
 
                 }
@@ -830,7 +846,7 @@ public class GameController {
 
         //TODO اضافه کردن مهارت ماهیگیری
 
-        return new Result(true,result);
+        return new Result(true, result.toString());
     }
 
 
@@ -846,7 +862,10 @@ public class GameController {
     }
 
     private boolean checkTilesForCreateBarnOrCage(int x, int y, int width, int height) {
-        if (x + width > 30 || y + height > 30 || x<0 || y<0) {
+        if (x<60 * currentPlayer.topLeftX || y< 60 * currentPlayer.topLeftY) {
+            return false;
+        }
+        if (x + width > 30 + 60 * currentPlayer.topLeftX || y + height > 30 + 60 * currentPlayer.topLeftY) {
             return false;
         }
         for (int i = x; i < x+width; i++) {
@@ -890,6 +909,17 @@ public class GameController {
 
     }
 
+    public Animal getAnimalByName(String animalName) {
+        for (BarnOrCage barnOrCage:currentPlayer.BarnOrCages){
+            for (Animal animal: barnOrCage.animals){
+                if (animal.getName().equals(animalName)){
+                    return animal;
+                }
+            }
+        }
+        return null;
+    }
+
     public Result pet(String petName) {
         int [] x={1,1,1,0,0,-1,-1,-1};
         int [] y={1,0,-1,1,-1,-1,0,1};
@@ -909,7 +939,152 @@ public class GameController {
     }
 
     public Result animals() {
-        for (B)
+        StringBuilder result= new StringBuilder();
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animal : barnOrCage.animals){
+                result.append(animal.getName()).append(" Friendship: ").append(animal.getFriendShip()).append(" petToday: ")
+                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeed()).append("\n");
+            }
+        }
+        return new Result(true, result.toString());
+    }
+
+    public Result shepherdAnimals(int goalX, int goalY, String name) {
+
+        if (checkShepherdAnimals(goalX , goalY , name) != null) {
+            return checkShepherdAnimals(goalX , goalY , name);
+        }
+
+        Animal animal = getAnimalByName(name);
+        Walkable walkable=new Walkable();
+
+        int [] x={1,1,1,0,0,-1,-1,-1};
+        int [] y={1,0,-1,1,-1,-1,0,1};
+        Queue<Tile> queue = new LinkedList<>();
+        ArrayList<Tile> tiles = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            if (checkTileForAnimalWalking(animal.getPositionX() + x[i] , animal.getPositionY() + y[i] )) {
+                queue.add(getTileByCoordinates(animal.getPositionX() + x[i] , animal.getPositionY() + y[i]));
+            }
+        }
+        tiles.add(getTileByCoordinates(animal.getPositionX() , animal.getPositionY() ));
+
+        while (!queue.isEmpty()) {
+            Tile tile=queue.poll();
+            tiles.add(tile);
+            if (tile.getX() == goalX && tile.getY() == goalY) {
+                tile.setGameObject(animal);
+                getTileByCoordinates(animal.getPositionX(), animal.getPositionY() ).setGameObject(walkable);
+                animal.setPositionX(goalX);
+                animal.setPositionY(goalY);
+                return new Result(true, name + "shepherd successfully!");
+            }
+
+            for (int i = 0; i < 8; i++) {
+                if (! checkTileForAnimalWalking(tile.getX() + x[i] , tile.getY() + y[i] ) ) {
+                    continue;
+                }
+                if (tiles.contains(getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i]))) {
+                    continue;
+                }
+                queue.add(getTileByCoordinates(tile.getX() + x[i], tile.getY() + y[i]));
+            }
+        }
+
+        return new Result(false , "there is no way for animal to go to this coordinate!")
+
+    }
+
+    private Result checkShepherdAnimals(int goalX, int goalY, String name) {
+        if (goalX < 0 || goalX >90 || goalY < 0 || goalY >90) {
+            return new Result(false , "you can't shepherd animals out of bounds!");
+        }
+        Tile tile = getTileByCoordinates(goalX , goalY );
+        if (!(tile.getGameObject() instanceof Walkable)) {
+            return new Result(false , "yot can't shepherd animals on this coordinate!");
+        }
+        if (currentWeather.equals(Weather.Snowy) || currentWeather.equals(Weather.Rainy) || currentWeather.equals(Weather.Stormy) ) {
+            return new Result(false , "The weather conditions isn't suitable");
+        }
+
+        Animal animal=null;
+
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animal1 : barnOrCage.animals) {
+                if (animal1.getName().equals(name)) {
+                    animal = animal1;
+                    break;
+                }
+            }
+        }
+
+        if (animal == null) {
+            return new Result(false , "animal not found!");
+        }
+
+        return null;
+
+    }
+
+    public boolean checkTileForAnimalWalking(int x, int y) {
+        Tile tile = getTileByCoordinates(x + 60 * currentPlayer.topLeftX, y + 60 * currentPlayer.topLeftY);
+        if (tile == null) {
+            return false;
+        }
+        if (!(tile.getGameObject() instanceof Walkable) || ! (tile.getGameObject() instanceof BarnOrCage)) {
+            return false;
+        }
+        return true;
+    }
+
+    public Result feedHay(String name) {
+        Animal animal=getAnimalByName(name);
+        if (animal==null) {
+            return new Result(false , "animal not found!");
+        }
+        animal.setFeed(true);
+        return new Result(true, "you fed "+name+" successfully!");
+    }
+
+    public boolean animalIsOnBarnOrCage(Animal animal) {
+        BarnOrCage barnOrCage=null;
+        for (BarnOrCage barnOrCage1 : currentPlayer.BarnOrCages) {
+            for (Animal animal1 : barnOrCage1.animals) {
+                if (animal1.equals(animal)) {
+                    barnOrCage=barnOrCage1;
+                    break;
+                }
+            }
+        }
+        assert barnOrCage != null;
+        int width=barnOrCage.getBarnORCageType().getWidth();
+        int height=barnOrCage.getBarnORCageType().getHeight();
+
+        for (int i= barnOrCage.topLeftX ; i< barnOrCage.topLeftX + width ; i++) {
+            for (int j=barnOrCage.topLeftY ; j< barnOrCage.topLeftY + height ; j++) {
+                Tile tile=getTileByCoordinates(i,j);
+                if (tile.getGameObject().equals(animal)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void calculateAnimalsFriendship() {// آخر روز کال میشه
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animal : barnOrCage.animals) {
+                if (! animal.isFeed()){
+                    animal.increaseFriendShip(- 20);
+                }
+                if (! animal.isPetToday()) {
+                    animal.increaseFriendShip(- 10 * (animal.getFriendShip()/200));
+                }
+                if ( ! animalIsOnBarnOrCage(animal)) {
+                    animal.increaseFriendShip(- 20);
+                }
+            }
+        }
     }
 
 
@@ -991,7 +1166,6 @@ public class GameController {
             }
         return new Result(false, PURPLE+" اینونتوری و ریموو ایتم خیلی بدن "+RESET);
     }
-
     private void createRandomForaging () {
 
         for (Tile tile : bigMap) {
@@ -1106,8 +1280,6 @@ public class GameController {
         doSeasonAutomaticTask();
         passedOfTime(0, (24 - currentDate.getHour()) + 9);
         setEnergyInMorning();
-        createRandomForaging();
-        createRandomMinerals();
 
         for (Tile tile : bigMap)
             tile.getGameObject().startDayAutomaticTask();
