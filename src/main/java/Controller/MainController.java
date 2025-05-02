@@ -1,10 +1,13 @@
 package Controller;
 
 import model.Result;
+import model.SaveData.SessionManager;
+import model.SaveData.UserDataBase;
 
 public class MainController {
 
     public Result logoutRes () {
+        SessionManager.logout();
         return new Result(true, "You Logged Out Successfully.");
     }
 

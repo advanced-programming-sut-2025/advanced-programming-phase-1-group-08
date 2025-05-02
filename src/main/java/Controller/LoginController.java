@@ -1,6 +1,8 @@
 package Controller;
 import model.Enum.Menu;
 import model.Result;
+import model.SaveData.PasswordHashUtil;
+import model.SaveData.UserDataBase;
 import model.User;
 import model.App;
 
@@ -10,14 +12,13 @@ import static Controller.RegisterController.*;
 
 public class LoginController {
     public Result LoginRes(String username, String password) {
-        for (User user : App.users) {
-            if (user.getUsername().equals(username)) {
-
-                if (user.getPassword().equals(password))
+        if (UserDataBase.findUserByUsername(username) != null) {
+            User user = UserDataBase.findUserByUsername(username);
+            if (user.getHashPass().equals(PasswordHashUtil.hashPassword(password)))
                     return new Result(true, "User Logged in Successfully.You are Now in Main Menu!");
-                else
+            else
                     return new Result(false, "Password is Incorrect!");
-            }
+
         }
 
         return new Result(false , "Username Doesn't Exist!");
@@ -60,6 +61,8 @@ public class LoginController {
                             return new Result(false , passIsStrong(choice));
 
                         user.setPassword(choice);
+                        model.SaveData.UserDataBase.updatePassword(username, choice);
+
                         return new Result(true, "Your Password is: " + user.getPassword());
                     }
                 }

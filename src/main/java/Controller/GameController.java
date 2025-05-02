@@ -369,8 +369,8 @@ public class GameController {
              return new Result(true,"now you are in "+goalX+","+goalY);
          }
 
-         int [] dirx={0,0,1,1,1,-1,-1,-1};
-         int [] diry={1,-1,0,1,-1,0,1,-1};
+         int [] dirx={0,0,0,1,1,1,-1,-1,-1};
+         int [] diry={0,1,-1,0,1,-1,0,1,-1};
          HashMap<Tile,Integer> costEnergy=new HashMap<>();
          Queue<int []> queue=new LinkedList<>();
 
@@ -404,14 +404,7 @@ public class GameController {
          }
          else {
              int cost=costEnergy.get(endTile)/20;
-
-             if (currentPlayer.isHealthUnlimited()){
-                 currentPlayer.setPositionX(goalX);
-                 currentPlayer.setPositionY(goalY);
-                 return new Result(true,"now you are in "+goalX+","+goalY);
-             }
-
-             else if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
+             if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
                 return new Result(false,"your Energy is not enough");
              }
              else {
@@ -421,14 +414,9 @@ public class GameController {
          }
 
     }
-
     private boolean checkTile(Tile tile){
-        if (tile.getGameObject() instanceof Home || tile.getGameObject() instanceof door
-                || tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof GreenHouse) {
-
-            return true;
-        }
-        return false;
+        return tile.getGameObject() instanceof Home || tile.getGameObject() instanceof door
+                || tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof GreenHouse;
     }
 
     public Result checkConditionsForWalk(int goalX, int goalY){
@@ -590,7 +578,7 @@ public class GameController {
                 }
             }
             if (entry instanceof ForagingCrops){
-                if (((ForagingCrops) entry).getType().getDisplayName().equals(name)){
+                if (((ForagingCrops) entry).getType().equals(name)){
                     return increaseMoney(entry.getValue(),( (ForagingCrops) entry).getType().getPrice(),(ForagingCrops) entry, name,entry.getValue());
                 }
             }
@@ -911,7 +899,7 @@ public class GameController {
             for (int j = topLeftY; j < topLeftY + barnORCageType.getHeight(); j++) {
 
                 if (i == topLeftX || i == topLeftX + barnORCageType.getWidth() -1 || j == topLeftY || j == topLeftY + barnORCageType.getHeight() -1) {
-                    Tile tile = getTileByCoordinates(i , j );
+                    Tile tile = getTileByCoordinates(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY);
                     tile.setGameObject(barnOrCage);
                 }
             }
@@ -1141,20 +1129,42 @@ public class GameController {
 
         return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
     }
-    private Result useHoe (int dir) {
+    private Result plantMixedSeed (String dir) {
 
-        if (!currentPlayer.isHealthUnlimited())
-            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+        Inventory inventory=currentPlayer.getBackPack().inventory;
 
-        Tile tile = getTileByDir(dir);
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
 
-        if (plowedTile.contains(tile))
-            return new Result(false, RED+"This tile is already plowed!"+RESET);
-        if (!(tile.getGameObject() instanceof Walkable))
-            return new Result(false, RED+"You can't plow this tile!"+RESET);
+            if (entry instanceof MixedSeeds) {
+                if (inventory.Items.get(entry) > 0) {
 
-        plowedTile.add(tile);
-        return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
+                    ForagingSeedsType type = ((MixedSeeds) entry).getSeeds(currentDate.getSeason());
+                    inventory.Items.put(entry.getKey(), entry.getValue() - 1);
+                    Tile tile = getTileByDir(Integer.parseInt(dir));
+                    tile.setGameObject(new ForagingSeeds(type, currentDate));
+
+                } else
+                    return new Result(false, RED + "You don't have Mixed seed!" + RESET);
+            }
+        return new Result(false, PURPLE+" اینونتوری و ریموو ایتم خیلی بدن "+RESET);
+    }
+    private Result plantForagingSeed (ForagingSeedsType type, String dir) {
+
+        Inventory inventory=currentPlayer.getBackPack().inventory;
+
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
+
+            if (entry instanceof ForagingSeeds) {
+                if (inventory.Items.get(entry) > 0) {
+
+                    inventory.Items.put(entry.getKey(), entry.getValue() - 1);
+                    Tile tile = getTileByDir(Integer.parseInt(dir));
+                    tile.setGameObject(new ForagingSeeds(type, currentDate));
+
+                } else
+                    return new Result(false, RED + "You don't have Mixed seed!" + RESET);
+            }
+        return new Result(false, PURPLE+" اینونتوری و ریموو ایتم خیلی بدن "+RESET);
     }
     private void createRandomForaging () {
 
@@ -1227,6 +1237,21 @@ public class GameController {
 
     }
 
+    private Result useHoe (int dir) {
+
+        if (!currentPlayer.isHealthUnlimited())
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+
+        Tile tile = getTileByDir(dir);
+
+        if (plowedTile.contains(tile))
+            return new Result(false, RED+"This tile is already plowed!"+RESET);
+        if (!(tile.getGameObject() instanceof Walkable))
+            return new Result(false, RED+"You can't plow this tile!"+RESET);
+
+        plowedTile.add(tile);
+        return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
+    }
 
     public void startNewGame () {
 
@@ -1410,7 +1435,13 @@ public class GameController {
             return new Result(false, RED+"You don't have enough Coin!"+RESET);
 
         currentPlayer.increaseMoney(-1*GreenHouse.requiredCoins);
-        removeItem(Wood.name, GreenHouse.requiredWood);
+
+        Inventory inventory=currentPlayer.getBackPack().inventory;
+
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
+            if (entry instanceof Wood)
+                inventory.Items.put(entry.getKey(), entry.getValue() - GreenHouse.requiredWood);
+
         currentPlayer.getFarm().getGreenHouse().setCreated(true);
 
         return new Result(true, BLUE+"The greenhouse has been built! \uD83C\uDF31"+RESET);
@@ -1420,6 +1451,19 @@ public class GameController {
         int dir = Integer.parseInt(direction);
 
         return null; // TODO
+    }
+    public Result planting (String name, String direction) {
+
+        if (name.matches("\\s*(?i)Mixed\\s*seed(s)?\\s*"))
+            return plantMixedSeed(direction);
+
+        try {
+            ForagingSeedsType type = ForagingSeedsType.valueOf(name);
+            return plantForagingSeed(type, direction);
+        } catch (Exception e) {
+
+        return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
+        }
     }
 
 
