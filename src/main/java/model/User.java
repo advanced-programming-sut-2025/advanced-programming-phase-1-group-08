@@ -52,13 +52,14 @@ public class User {
     public User(String username, String nickname, String email, String gender,  int point, int health, String hashPass) {
 
         this.username = username;
+        this.hashPass = hashPass;
         this.nickname = nickname;
         this.email = email;
         this.gender = gender;
         this.point = point;
         this.MAX_HEALTH = 200;
         this.healthUnlimited = false;
-        this.hashPass = hashPass;
+
     }
 
 
