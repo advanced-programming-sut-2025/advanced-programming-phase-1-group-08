@@ -6,7 +6,7 @@ public class Animal extends GameObject {
 
     private AnimalType type;
     private int FriendShip;
-    private String name;
+    private final String name;
     boolean isFeed;
     boolean isPetToday;
     boolean spentNightOutside;
@@ -20,5 +20,30 @@ public class Animal extends GameObject {
         this.spentNightOutside = spentNightOutside;
     }
 
+    public String getName() {
+        return name;
+    }
+    public AnimalType getType() {
+        return type;
+    }
+    public int getFriendShip() {
+        return FriendShip;
+    }
+    public void increaseFriendShip( int amount ) {
+        FriendShip += amount;
+    }
+    public boolean isFeed() {
+        return isFeed;
+    }
+    public boolean isPetToday() {
+        return isPetToday;
+    }
 
+    public void setPetToday(boolean petToday) {
+        isPetToday = petToday;
+    }
+
+    public boolean isSpentNightOutside() {
+        return spentNightOutside;
+    }
 }

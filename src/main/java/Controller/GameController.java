@@ -3,6 +3,7 @@ package Controller;
 import model.*;
 import model.Enum.AllPlants.*;
 import model.Enum.Door;
+import model.Enum.ItemType.BarnORCageType;
 import model.Enum.ItemType.FishType;
 import model.Enum.ItemType.Quantity;
 import model.Enum.ToolsType.FishingPoleType;
@@ -18,6 +19,8 @@ import java.util.*;
 import static model.App.*;
 import static model.App.tomorrowWeather;
 import static model.Color_Eraser.*;
+import static model.Enum.AllPlants.ForagingMineralsType.*;
+import static model.Enum.AllPlants.ForagingMineralsType.RUBY;
 
 public class GameController {
 
@@ -534,24 +537,24 @@ public class GameController {
 
 
 
-    public Result removeItem (String name, Integer number){
+    public Result removeItemToTrashcan (String name, Integer number){
         Inventory inventory=currentPlayer.getBackPack().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
 
             if (entry instanceof Wood){
                 if (name.equals(Wood.name)) {
-                    return increaseMoney(entry.getValue(), Wood.price, (Wood) entry.getKey(), name, number);
+                    return increaseMoney(number, Wood.price, (Wood) entry.getKey(), name, entry.getValue());
                 }
             }
             if (entry instanceof BasicRock){
                 if (name.equals("BasicRock")) {
-                    return increaseMoney(entry.getValue(), BasicRock.price, (BasicRock) entry.getKey(), name, number);
+                    return increaseMoney(number, BasicRock.price, (BasicRock) entry.getKey(), name, entry.getValue());
                 }
             }
 
             if (entry instanceof ForagingMinerals){
                 if (((ForagingMinerals) entry).getType().getDisplayName().equals(name)){
-                     return increaseMoney(entry.getValue(),( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
+                     return increaseMoney(number,( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
                 }
             }
 
@@ -564,7 +567,7 @@ public class GameController {
             }
             if (entry instanceof AllCrops){
                 if (((AllCrops) entry).getType().getDisplayName().equals(name)){
-                    return increaseMoney(entry.getValue(),( (AllCrops) entry).getType().getPrice(),(AllCrops) entry, name,entry.getValue());
+                    return increaseMoney(number,( (AllCrops) entry).getType().getPrice(),(AllCrops) entry, name,entry.getValue());
                 }
             }
             if (entry instanceof TreeSource){
@@ -742,7 +745,7 @@ public class GameController {
 
             }
 
-            else if (rand <= 0.2 || ( rand > 0.8 && rand <= 0.85 && currentPlayer.getFishingAbility()!=4) ){
+            else if (rand <= 0.2 || ( rand > 0.8 && rand <= 0.85 && currentPlayer.getLevelFishing()!=4) ){
 
                 switch (currentDate.getSeason()) {
                     case Spring:
@@ -819,7 +822,7 @@ public class GameController {
 
             }
             else {
-                if (currentPlayer.getFishingAbility() == 4){
+                if (currentPlayer.getLevelFishing() == 4){
 
                     switch (currentDate.getSeason()){
                         case Spring:
@@ -900,6 +903,28 @@ public class GameController {
 
         return new Result(true, barnORCageType.getName() + "created successfully!");
 
+    }
+
+    public Result pet(String petName) {
+        int [] x={1,1,1,0,0,-1,-1,-1};
+        int [] y={1,0,-1,1,-1,-1,0,1};
+
+        for (int i = 0; i < 8; i++) {
+            Tile tile = getTileByCoordinates(currentPlayer.getPositionX() + x[i], currentPlayer.getPositionY() + y[i]);
+            if (tile.getGameObject() instanceof Animal) {
+                Animal animal = (Animal) tile.getGameObject();
+                if (animal.getName().equals(petName)) {
+                    animal.increaseFriendShip(15);
+                    animal.setPetToday(true);
+                    return new Result(true, petName + " petted successfully!");
+                }
+            }
+        }
+        return new Result(false,petName+"  doesn't exist!");
+    }
+
+    public Result animals() {
+        for (B)
     }
 
 

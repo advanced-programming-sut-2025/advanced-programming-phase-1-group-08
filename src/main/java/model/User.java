@@ -5,6 +5,8 @@ import model.Places.Farm;
 import model.ToolsPackage.BackPack;
 import model.ToolsPackage.Tools;
 
+import java.util.ArrayList;
+
 public class User {
 
     private String username;
@@ -43,7 +45,7 @@ public class User {
     private int positionX;
     private int positionY;
 
-
+    public ArrayList<BarnOrCage> BarnOrCages = new ArrayList<>();
 
 
     public User(String username, String password, String nickname, String email, String gender,  int point, int health) {
