@@ -417,6 +417,11 @@ public class GameController {
     public Result checkConditionsForWalk(int goalX, int goalY){
         Tile tile = getTileByCoordinates(goalX, goalY);
         Farm farm = null;
+
+        if (goalX <0 || goalX >90 || goalY <0 || goalY >90) {
+            return new Result(false,"you can't walk out of bounds");
+        }
+
         for (Farm farms : farms) {
             if (farms.Farm.contains(tile)) {
                 farm = farms;
@@ -525,7 +530,10 @@ public class GameController {
 
         return null;
     }
-    public Result removeItemToTrashcan(String name, Integer number) {
+
+
+
+    public Result removeItemToTrashcan (String name, Integer number){
         Inventory inventory=currentPlayer.getBackPack().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
 
@@ -869,7 +877,7 @@ public class GameController {
         //TODO عملیات کم شدن از inventory در هنگام خرید
 
         if (barnORCageType.equals(BarnORCageType.Barn) || barnORCageType.equals(BarnORCageType.BigBarn)
-                || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
+                 || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
             barnOrCage.setCharactor('b');
         }
         else {
@@ -890,6 +898,17 @@ public class GameController {
 
     }
 
+    public Animal getAnimalByName(String animalName) {
+        for (BarnOrCage barnOrCage:currentPlayer.BarnOrCages){
+            for (Animal animal: barnOrCage.animals){
+                if (animal.getName().equals(animalName)){
+                    return animal;
+                }
+            }
+        }
+        return null;
+    }
+
     public Result pet(String petName) {
         int [] x={1,1,1,0,0,-1,-1,-1};
         int [] y={1,0,-1,1,-1,-1,0,1};
@@ -908,8 +927,154 @@ public class GameController {
         return new Result(false,petName+"  doesn't exist!");
     }
 
-   // public Result animals() {
-    //for (B)}
+    public Result animals() {
+        StringBuilder result= new StringBuilder();
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animal : barnOrCage.animals){
+                result.append(animal.getName()).append(" Friendship: ").append(animal.getFriendShip()).append(" petToday: ")
+                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeed()).append("\n");
+            }
+        }
+        return new Result(true, result.toString());
+    }
+
+    public Result shepherdAnimals(int goalX, int goalY, String name) {
+
+        if (checkShepherdAnimals(goalX , goalY , name) != null) {
+            return checkShepherdAnimals(goalX , goalY , name);
+        }
+
+        Animal animal = getAnimalByName(name);
+        Walkable walkable=new Walkable();
+
+        int [] x={1,1,1,0,0,-1,-1,-1};
+        int [] y={1,0,-1,1,-1,-1,0,1};
+        Queue<Tile> queue = new LinkedList<>();
+        ArrayList<Tile> tiles = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            if (checkTileForAnimalWalking(animal.getPositionX() + x[i] , animal.getPositionY() + y[i] )) {
+                queue.add(getTileByCoordinates(animal.getPositionX() + x[i] , animal.getPositionY() + y[i]));
+            }
+        }
+        tiles.add(getTileByCoordinates(animal.getPositionX() , animal.getPositionY() ));
+
+        while (!queue.isEmpty()) {
+            Tile tile=queue.poll();
+            tiles.add(tile);
+            if (tile.getX() == goalX && tile.getY() == goalY) {
+                tile.setGameObject(animal);
+                getTileByCoordinates(animal.getPositionX(), animal.getPositionY() ).setGameObject(walkable);
+                animal.setPositionX(goalX);
+                animal.setPositionY(goalY);
+                return new Result(true, name + "shepherd successfully!");
+            }
+
+            for (int i = 0; i < 8; i++) {
+                if (! checkTileForAnimalWalking(tile.getX() + x[i] , tile.getY() + y[i] ) ) {
+                    continue;
+                }
+                if (tiles.contains(getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i]))) {
+                    continue;
+                }
+                queue.add(getTileByCoordinates(tile.getX() + x[i], tile.getY() + y[i]));
+            }
+        }
+
+        return new Result(false , "there is no way for animal to go to this coordinate!")
+
+    }
+
+    private Result checkShepherdAnimals(int goalX, int goalY, String name) {
+        if (goalX < 0 || goalX >90 || goalY < 0 || goalY >90) {
+            return new Result(false , "you can't shepherd animals out of bounds!");
+        }
+        Tile tile = getTileByCoordinates(goalX , goalY );
+        if (!(tile.getGameObject() instanceof Walkable)) {
+            return new Result(false , "yot can't shepherd animals on this coordinate!");
+        }
+        if (currentWeather.equals(Weather.Snowy) || currentWeather.equals(Weather.Rainy) || currentWeather.equals(Weather.Stormy) ) {
+            return new Result(false , "The weather conditions isn't suitable");
+        }
+
+        Animal animal=null;
+
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animal1 : barnOrCage.animals) {
+                if (animal1.getName().equals(name)) {
+                    animal = animal1;
+                    break;
+                }
+            }
+        }
+
+        if (animal == null) {
+            return new Result(false , "animal not found!");
+        }
+
+        return null;
+
+    }
+
+    public boolean checkTileForAnimalWalking(int x, int y) {
+        Tile tile = getTileByCoordinates(x + 60 * currentPlayer.topLeftX, y + 60 * currentPlayer.topLeftY);
+        if (tile == null) {
+            return false;
+        }
+        if (!(tile.getGameObject() instanceof Walkable) || ! (tile.getGameObject() instanceof BarnOrCage)) {
+            return false;
+        }
+        return true;
+    }
+
+    public Result feedHay(String name) {
+        Animal animal=getAnimalByName(name);
+        if (animal==null) {
+            return new Result(false , "animal not found!");
+        }
+        animal.setFeed(true);
+        return new Result(true, "you fed "+name+" successfully!");
+    }
+
+    public boolean animalIsOnBarnOrCage(Animal animal) {
+        BarnOrCage barnOrCage=null;
+        for (BarnOrCage barnOrCage1 : currentPlayer.BarnOrCages) {
+            for (Animal animal1 : barnOrCage1.animals) {
+                if (animal1.equals(animal)) {
+                    barnOrCage=barnOrCage1;
+                    break;
+                }
+            }
+        }
+        assert barnOrCage != null;
+        int width=barnOrCage.getBarnORCageType().getWidth();
+        int height=barnOrCage.getBarnORCageType().getHeight();
+
+        for (int i= barnOrCage.topLeftX ; i< barnOrCage.topLeftX + width ; i++) {
+            for (int j=barnOrCage.topLeftY ; j< barnOrCage.topLeftY + height ; j++) {
+                Tile tile=getTileByCoordinates(i,j);
+                if (tile.getGameObject().equals(animal)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void calculateAnimalsFriendship() {// آخر روز کال میشه
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animal : barnOrCage.animals) {
+                if (! animal.isFeed()){
+                    animal.increaseFriendShip(- 20);
+                }
+                if (! animal.isPetToday()) {
+                    animal.increaseFriendShip(- 10 * (animal.getFriendShip()/200));
+                }
+                if ( ! animalIsOnBarnOrCage(animal)) {
+                    animal.increaseFriendShip(- 20);
+                }
+            }
+        }
+    }
 
 
     private void setEnergyInMorning () {
@@ -1158,6 +1323,8 @@ public class GameController {
         // TODO کانی تولید بشه شاپینگ بین خالی بشه و.  پول بیاد تو حساب فرد
     }
     public void AutomaticFunctionAfterOneTurn () {
+
+        // محصول غول پیگر چک بشه
 
         if (currentUser == currentPlayer)
             passedOfTime(0, 1);

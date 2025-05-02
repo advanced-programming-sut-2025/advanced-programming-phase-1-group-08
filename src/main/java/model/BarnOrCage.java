@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class BarnOrCage extends GameObject {
 
     private BarnORCageType barnORCageType;
-    ArrayList<Animal> animals = new ArrayList<>();
+    public ArrayList<Animal> animals = new ArrayList<>();
     public final int topLeftX;
     public final int topLeftY;
 
@@ -21,5 +21,7 @@ public class BarnOrCage extends GameObject {
         return this.barnORCageType.getInitialCapacity() - animals.size();
     }
 
-
+    public BarnORCageType getBarnORCageType() {
+        return barnORCageType;
+    }
 }

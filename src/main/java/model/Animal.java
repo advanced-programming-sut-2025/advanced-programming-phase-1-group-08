@@ -7,17 +7,21 @@ public class Animal extends GameObject {
     private AnimalType type;
     private int FriendShip;
     private final String name;
+    private int positionX;
+    private int positionY;
+    private int lastProduceDay;
     boolean isFeed;
     boolean isPetToday;
     boolean spentNightOutside;
 
-    public Animal(AnimalType type,int friendShip, String name, boolean isFeed, boolean isPetToday, boolean spentNightOutside ) {
+    public Animal(AnimalType type,int friendShip, String name, boolean isFeed, boolean isPetToday, boolean spentNightOutside, int day ) {
         this.type = type;
         this.FriendShip = friendShip;
         this.name = name;
         this.isFeed = isFeed;
         this.isPetToday = isPetToday;
         this.spentNightOutside = spentNightOutside;
+        this.lastProduceDay=day;
     }
 
     public String getName() {
@@ -35,6 +39,11 @@ public class Animal extends GameObject {
     public boolean isFeed() {
         return isFeed;
     }
+
+    public void setFeed(boolean feed) {
+        isFeed = feed;
+    }
+
     public boolean isPetToday() {
         return isPetToday;
     }
@@ -45,5 +54,27 @@ public class Animal extends GameObject {
 
     public boolean isSpentNightOutside() {
         return spentNightOutside;
+    }
+
+    public int getPositionX() {
+        return positionX;
+    }
+    public void setPositionX(int positionX) {
+        this.positionX = positionX;
+    }
+
+    public int getPositionY() {
+        return positionY;
+    }
+    public void setPositionY(int positionY) {
+        this.positionY = positionY;
+    }
+
+    public int getLastProduceDay() {
+        return lastProduceDay;
+    }
+
+    public void setLastProduceDay(int lastProduceDay) {
+        this.lastProduceDay = lastProduceDay;
     }
 }
