@@ -19,6 +19,7 @@ public enum GameMenuCommands {
     setWeather    ("\\s*(?i)cheat\\s*weather\\s*set\\s*(?<Weather>.+)\\s*"),
     advanceTime   ("(?i)\\s*cheat\\s+advance\\s+time\\s+(?<hour>.+)\\s*h\\s*"),
     advanceDate   ("(?i)\\s*cheat\\s+advance\\s+date\\s+(?<date>.+)\\s*d\\s*"),
+    planting      ("\\s*(?i)plant\\s*-s\\s*(?<seed>.+)\\s*-d\\s*(?<direction>\\d+)\\s*"),
     showTomorrowWeather("\\s*(?i)weather\\s*forecast\\s*"),
     buildGreenHouse    ("(?i)\\s*greenhouse\\s*build\\s*"),
 

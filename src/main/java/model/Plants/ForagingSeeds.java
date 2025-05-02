@@ -9,7 +9,7 @@ import model.Items;
 import static model.App.currentDate;
 import static model.DateHour.getDayDifferent;
 
-public class ForagingSeeds extends GameObject {
+public class ForagingSeeds extends Items {
 
     private final ForagingSeedsType type;
     private final DateHour birthDay;

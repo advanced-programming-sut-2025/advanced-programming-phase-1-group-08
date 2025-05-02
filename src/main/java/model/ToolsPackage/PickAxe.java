@@ -2,9 +2,9 @@ package model.ToolsPackage;
 
 import model.Enum.ToolsType.PickAxeType;
 
-public class PiⅽkAxe extends Tools {
+public class PickAxe extends Tools {
 
-    public PiⅽkAxe(){
+    public PickAxe(){
         super("PickAxe", 0);
     }
 
