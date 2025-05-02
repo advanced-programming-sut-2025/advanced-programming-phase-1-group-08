@@ -15,15 +15,27 @@ public enum GameMenuCommands {
     showDayOfWeek ("(?i)\\s*day\\s+of\\s+the\\s+week\\s*"),
     createThor    ("(?i)\\s*cheat\\s*thor\\s*-l(?<x>.+),(?<y>.+)\\s*"),
     setEnergy     ("(?i)\\s*energy\\s*set\\s*-v\\s*(?<amount>\\d+)\\s*"),
+    showFruitInfo ("(?i)\\s*craft\\s*info\\s*-n\\s*(?<name>\\S+)\\s*"),
+    setWeather    ("\\s*(?i)cheat\\s*weather\\s*set\\s*(?<Weather>.+)\\s*"),
+    advanceTime   ("(?i)\\s*cheat\\s+advance\\s+time\\s+(?<hour>.+)\\s*h\\s*"),
+    advanceDate   ("(?i)\\s*cheat\\s+advance\\s+date\\s+(?<date>.+)\\s*d\\s*"),
+    planting      ("\\s*(?i)plant\\s*-s\\s*(?<seed>.+)\\s*-d\\s*(?<direction>\\d+)\\s*"),
     showTomorrowWeather("\\s*(?i)weather\\s*forecast\\s*"),
     buildGreenHouse    ("(?i)\\s*greenhouse\\s*build\\s*"),
 
-    setWeather  ("\\s*(?i)cheat\\s*weather\\s*set\\s*(?<Weather>.+)\\s*"),
-    advanceTime ("(?i)\\s*cheat\\s+advance\\s+time\\s+(?<hour>.+)\\s*h\\s*"),
-    advanceDate ("(?i)\\s*cheat\\s+advance\\s+date\\s+(?<date>.+)\\s*d\\s*"),
+
     walk("walk\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     inventoryShow("inventory\\s+show\\s*"),
     removeItem("^inventory trash -i (?<item>.+?)(?= -n|$)(?: -n (?<number>\\d+))?$"),
+    toolsEquip("tools\\s+equip\\s+(?<name>\\S.*)\\s*"),
+    currentTool("tools\\s+show\\s+current\\s*"),
+    availableTool("tools\\s+show\\s+available\\s*"),
+    toolsUpgrade("tools\\s+upgrade\\s+(?<name>\\S.*)\\s*"),
+    toolsUse("tools\\s+use\\s+-d\\s+(?<direction>\\S.*)\\s*"),
+    fishing("fishing\\s+-p\\s+(?<name>\\S.*)\\s*"),
+    buildBarnOrCage("build\\s+-a\\s+(?<name>\\S.*)\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
+    pet("pet\\s+-n\\s+(?<name>\\S.*)\\s*"),
+    animals("\\s*animals\\s*"),
 
     ;
 

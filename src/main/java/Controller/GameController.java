@@ -1,100 +1,137 @@
 package Controller;
 
 import model.*;
-import model.Color_Eraser;
+import model.Enum.AllPlants.*;
 import model.Enum.Door;
+import model.Enum.ItemType.BarnORCageType;
+import model.Enum.ItemType.FishType;
+import model.Enum.ItemType.Quantity;
+import model.Enum.ToolsType.FishingPoleType;
 import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
 import model.Enum.WeatherTime.Weather;
-import model.Places.Farm;
-import model.Places.GreenHouse;
-import model.Places.Home;
-import model.Places.Lake;
+import model.Places.*;
 import model.Plants.*;
-import model.App;
-import model.ToolsPackage.Tools;
+import model.ToolsPackage.*;
 
-import javax.tools.Tool;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 import static model.App.*;
 import static model.App.tomorrowWeather;
 import static model.Color_Eraser.*;
+import static model.Enum.AllPlants.ForagingMineralsType.*;
 
 public class GameController {
 
+    Random rand = new Random();
+
+
+    public Tile getTileByDir (int dir) {
+
+        int x = currentPlayer.getPositionX();
+        int y = currentPlayer.getPositionY();
+
+        if (dir == 1)
+            return getTileByCoordinates(x+1, y);
+        else if (dir == 2)
+            return getTileByCoordinates(x+1, y+1);
+        else if (dir == 3)
+            return getTileByCoordinates(x, y+1);
+        else if (dir == 4)
+            return getTileByCoordinates(x-1, y+1);
+        else if (dir == 5)
+            return getTileByCoordinates(x-1, y);
+        else if (dir == 6)
+            return getTileByCoordinates(x-1, y-1);
+        else if (dir == 7)
+            return getTileByCoordinates(x, y-1);
+        else if (dir == 8)
+            return getTileByCoordinates(x+1, y-1);
+        else
+            return null;
+    }
     public Tile getTileByCoordinates(int x, int y) {
-        for (Tile tile:bigMap){
-            if (tile.getX() == x && tile.getY() == y){
+        for (Tile tile : bigMap) {
+            if (tile.getX() == x && tile.getY() == y) {
                 return tile;
             }
         }
         return null;
-    }
+    }   ///        الان اینونتوری ساخته میشه از همه چی توش گذاشتی همون اول ؟
 
-    public void creatInitialMine(int id , int x , int y){
-        Farm farm= currentPlayer.getFarm();
-        if (id==1){
-            Mine mine = new Mine();
+
+    public void createInitialMine(int id, int x, int y){
+        Farm farm = currentPlayer.getFarm();
+        if (id == 1) {
+            Mine mine = new Mine(23, 2);
+            door MineDoor = new door();
+            MineDoor.setDoor(Door.Mine);
+            MineDoor.setCharactor('D');
             mine.setCharactor('M');
-            for (int i=23;i<29;i++){
-                for (int j=2;j<8;j++) {
-                    Tile tile = new Tile(i + 60*x, j + 60*y, mine);
-                    farm.Farm.add(tile);
-                    bigMap.add(tile);
+            Walkable walkable = new Walkable();
+            walkable.setCharactor('.');
+
+            for (int i = 23; i < 29; i++) {
+                for (int j = 2; j < 8; j++) {
+                    if (i == 26 && j == 5) {
+                        Tile tile = new Tile(i + 60 * x, j + 60 * y, MineDoor);
+                        farm.Farm.add(tile);
+                        bigMap.add(tile);
+                    } else if (i == 23 || i == 28 || j == 2 || j == 7) {
+                        Tile tile = new Tile(i + 60 * x, j + 60 * y, mine);
+                        farm.Farm.add(tile);
+                        bigMap.add(tile);
+                    } else {
+                        Tile tile = new Tile(i + 60 * x, j + 60 * y, walkable);
+                        farm.Farm.add(tile);
+                        bigMap.add(tile);
+                    }
                 }
             }
-        }
-        else if (id==2){
+            farm.setMine(mine);
+        } else if (id == 2) {
 
         }
     }
-
-    public void creatInitialLake(int id , int x , int y){
-        Farm farm= currentPlayer.getFarm();
-        if (id==1){
+    public void createInitialLake(int id, int x, int y) {
+        Farm farm = currentPlayer.getFarm();
+        if (id == 1) {
             Lake lake = new Lake();
             lake.setCharactor('L');
-            for (int i=2;i<7;i++){
-                for (int j=23;j<29;j++) {
-                    Tile tile = new Tile(i +60*x, j+60*y, lake);
+            for (int i = 2; i < 7; i++) {
+                for (int j = 23; j < 29; j++) {
+                    Tile tile = new Tile(i + 60 * x, j + 60 * y, lake);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
                 }
             }
-        }
-        else if (id==2){
+            farm.setLake(lake);
+        } else if (id == 2) {
 
         }
     }
-
-    public void creatInitialHouse(int id , int x , int y){
-        Farm farm= currentPlayer.getFarm();
+    public void createInitialHouse(int id, int x, int y) {
+        Farm farm = currentPlayer.getFarm();
         Wall wall = new Wall();
         wall.setWallType(WallType.House);
         wall.setCharactor('#');
-        door houseDoor=new door();
+        door houseDoor = new door();
         houseDoor.setDoor(Door.House);
         houseDoor.setCharactor('D');
 
-        for (int i=12;i<19;i++){
-            for (int j=0;j<7;j++) {
-                if (i==12 || i==18){
-                    Tile tile = new Tile(i + 60*x, j + 60*y, wall);
+        for (int i = 12; i < 19; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (i == 12 || i == 18) {
+                    Tile tile = new Tile(i + 60 * x, j + 60 * y, wall);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
-                }
-                else if (i==15 && j==6){
-                    Tile tile = new Tile(i + 60*x, j + 60*y, houseDoor);
+                } else if (i == 15 && j == 6) {
+                    Tile tile = new Tile(i + 60 * x, j + 60 * y, houseDoor);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
-                }
-                else {
-                    if (j==0 || j==6){
-                        Tile tile = new Tile(i + 60*x, j + 60*y, wall);
+                } else {
+                    if (j == 0 || j == 6) {
+                        Tile tile = new Tile(i + 60 * x, j + 60 * y, wall);
                         farm.Farm.add(tile);
                         bigMap.add(tile);
                     }
@@ -103,30 +140,29 @@ public class GameController {
         }
 
 
-        Fridge fridge=new Fridge(18 + 60*x,6 + 60*y);
+        Fridge fridge = new Fridge(18 + 60 * x, 6 + 60 * y);
         fridge.setCharactor('F');
-        Home home=new Home(13 +60*x,1 + 60*y,fridge);
+        Home home = new Home(13 + 60 * x, 1 + 60 * y, fridge);
         home.setCharactor('H');
-        home.houseDoor=houseDoor;
+        home.houseDoor = houseDoor;
 
-        for (int i=13 ; i<18 ; i++){
-            for (int j=1 ; j<6 ; j++) {
-                if (i==18 && j==5){
-                    Tile tile = new Tile(i + 60*x, j +60*y, fridge);
+        for (int i = 13; i < 18; i++) {
+            for (int j = 1; j < 6; j++) {
+                if (i == 18 && j == 5) {
+                    Tile tile = new Tile(i + 60 * x, j + 60 * y, fridge);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
-                }
-                else {
-                    Tile tile = new Tile(i + 60*x, j + 60*y, home);
+                } else {
+                    Tile tile = new Tile(i + 60 * x, j + 60 * y, home);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
                 }
             }
         }
+        farm.setHome(home);
     }
-
-    public void creatInitialGreenHouse(int id , int x , int y){
-        Farm farm= currentPlayer.getFarm();
+    public void createInitialGreenHouse(int id, int x, int y) {
+        Farm farm = currentPlayer.getFarm();
         Wall GreenWall = new Wall();
         GreenWall.setWallType(WallType.GreenHouse);
         GreenWall.setCharactor('#');
@@ -162,7 +198,7 @@ public class GameController {
         greenHouse.setCharactor('G');
         WaterTank waterTank=new WaterTank(100);
         waterTank.setWaterTank('W');
-        greenHouse.waterTank=waterTank;
+        greenHouse.setWaterTank(waterTank);
         for (int i=1 ; i<7 ; i++){
             for (int j=1 ; j<8 ; j++) {
                 if (i==1 && j==3){
@@ -177,8 +213,8 @@ public class GameController {
                 }
             }
         }
+        farm.setGreenHouse(greenHouse);
     }
-
     public Farm creatInitialFarm(int id){
         long seed=System.currentTimeMillis();
         Farm farm= currentPlayer.getFarm();
@@ -186,16 +222,16 @@ public class GameController {
         for (int i=0 ; i<30 ;i++){
             for (int j=0 ; j<30 ; j++) {
                 if (i>=23 && i<29 && j>=2 && j<8){
-                    creatInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(1<i && i<7 && j>22 && j<29){
-                    creatInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(i>=12 && i<19 && j<7){
-                    creatInitialHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if (i<8 && j<9){
-                    creatInitialGreenHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialGreenHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else {
                     MapGenerator(i,j,seed);
@@ -207,7 +243,6 @@ public class GameController {
         return farm;
 
     }
-
     public void MapGenerator(int i,int j,long seed){
         if (i==0 || i==29 || j==0 || j==29){
             if (i==15 && j==29){
@@ -240,13 +275,25 @@ public class GameController {
             PerlinNoise perlinNoise = new PerlinNoise(seed);
 
             double noise = perlinNoise.noise(i * 0.1, j * 0.1);
-            if (-1.2 < noise && noise < -0.2) {
-                Tree tree = new Tree();
-                tree.setCharactor('T');
+            if (-1.2 < noise && noise < -0.9) {
+                Tree tree = new Tree(TreeType.OakTree,currentDate);
                 Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, tree);
                 currentPlayer.getFarm().Farm.add(tile);
                 bigMap.add(tile);
-            } else if (-0.1 < noise && noise < 0.0) {
+            }
+            else if(noise > -0.9 && noise <-0.5){
+                Tree tree = new Tree(TreeType.MapleTree,currentDate);
+                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, tree);
+                currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
+            }
+            else if (noise > -0.5 && noise < - 0.2){
+                Tree tree = new Tree(TreeType.PineTree,currentDate);
+                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, tree);
+                currentPlayer.getFarm().Farm.add(tile);
+                bigMap.add(tile);
+            }
+            else if (-0.1 < noise && noise < 0.0) {
                 BasicRock basicRock = new BasicRock();
                 basicRock.setCharactor('S');
                 Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, basicRock);
@@ -263,7 +310,6 @@ public class GameController {
         }
 
     }
-
     public void print(Farm farm){
         int x=currentPlayer.topLeftX;
         int y=currentPlayer.topLeftY;
@@ -290,7 +336,7 @@ public class GameController {
                 } else if (tile.getGameObject() instanceof door) {
                     System.out.print(Brown + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof GreenHouse) {
-                    System.out.print(GREEN + tile.getGameObject().getCharactor() + RESET+" ");
+                    System.out.print(GRAY + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof Fridge) {
                     System.out.print(WHITE + tile.getGameObject().getCharactor() + RESET+" ");
                 } else if (tile.getGameObject() instanceof WaterTank) {
@@ -303,10 +349,11 @@ public class GameController {
 
     }
 
-    public Result walk (int goalX, int goalY){
-         int startX=currentPlayer.getPositionX();
-         int startY=currentPlayer.getPositionY();
-         Tile endTile=getTileByCoordinates(goalX, goalY);
+
+    public Result walk(int goalX, int goalY) {
+        int startX = currentPlayer.getPositionX();
+        int startY = currentPlayer.getPositionY();
+        Tile endTile = getTileByCoordinates(goalX, goalY);
 
          if (checkConditionsForWalk(goalX, goalY) !=null) {
              return checkConditionsForWalk(goalX, goalY);
@@ -362,14 +409,9 @@ public class GameController {
          }
 
     }
-
     private boolean checkTile(Tile tile){
-        if (tile.getGameObject() instanceof Home || tile.getGameObject() instanceof door
-                || tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof GreenHouse) {
-
-            return true;
-        }
-        return false;
+        return tile.getGameObject() instanceof Home || tile.getGameObject() instanceof door
+                || tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof GreenHouse;
     }
 
     public Result checkConditionsForWalk(int goalX, int goalY){
@@ -390,7 +432,7 @@ public class GameController {
         }
 
         if (tile.getGameObject() instanceof GreenHouse) {
-            if (!((GreenHouse) tile.getGameObject()).isCreated){
+            if (!((GreenHouse) tile.getGameObject()).isCreated()){
                 return new Result(false,"GreenHouse is not created yet");
             }
         }
@@ -411,156 +453,463 @@ public class GameController {
 
     public Result showInventory(Inventory inventory){
         String result="";
-        if (inventory.getBasicRock()!=null){
-            result += "BasicRocks: " + inventory.getBasicRock().numberOfBasicRocksInInventory+"\n";
-        }
-        if (inventory.getWood()!=null){
-            result += "Woods: " + inventory.getWood().numberOfWoodsInInventory+"\n";
-        }
-        if (inventory.getForagingMinerals()!=null){
-            result+="ForagingMinerals\n";
-            for (Map.Entry<ForagingMinerals,Integer> entry : inventory.getForagingMinerals().entrySet()) {
-                result += entry.getKey().getType()+": "+entry.getValue()+"\n";
+        for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet()){
+            if (entry instanceof BasicRock){
+                result += "BasicRock: " + entry.getValue() + "\n";
             }
-        }
-//        if (inventory.getForagingSeeds()!=null){
-//            result += "ForagingSeeds\n";
-//
-//            for (Map.Entry<ForagingSeeds,Integer> entry : inventory.getForagingSeeds().entrySet()) {
-//                result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
-//            }
-//        }
-        if (inventory.getAllCrops()!=null){
-            result += "AllCrops\n";
-            for (Map.Entry<AllCrops,Integer> entry : inventory.getAllCrops().entrySet()) {
-                result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
+            else if (entry instanceof Wood){
+                result += "Wood: " + entry.getValue() + "\n";
             }
-        }
-        if (inventory.getForagingCrops()!=null){
-            result += "ForagingCrops\n";
-            for (Map.Entry<ForagingCrops,Integer> entry : inventory.getForagingCrops().entrySet()) {
-                result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
+            else if (entry instanceof ForagingMinerals){
+                result += ((ForagingMinerals) entry).getType() +" "+ entry.getValue() + "\n";
             }
-        }
-        if (inventory.getTreeSources()!=null){
-            result += "TreeSources\n";
-            for (Map.Entry<TreeSource,Integer> entry : inventory.getTreeSources().entrySet()) {
-                result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
+            else if (entry instanceof ForagingSeeds){
+                result += ((ForagingSeeds) entry).getType() +" "+ entry.getValue() + "\n";
             }
-        }
-        if (inventory.getTools()!=null){
-            result += "Tools\n";
-            for (Tools tool : inventory.getTools()) {
-                result+=tool.getName()+"\n";
+            else if (entry instanceof AllCrops){
+                result += ((AllCrops) entry).getType() +" "+ entry.getValue() + "\n";
+            }
+            else if (entry instanceof ForagingCrops) {
+                result += ((ForagingCrops) entry).getType() +" "+ entry.getValue() + "\n";
+            }
+            else if (entry instanceof TreeSource){
+                result += ((TreeSource) entry).getType() +" "+ entry.getValue() + "\n";
+            }
+            else if (entry instanceof Axe ){
+                result += ((Axe) entry).getName() +" "+((Axe) entry).axeType + "\n";
+            }
+            else if (entry instanceof FishingPole){
+                result += ((FishingPole) entry).getName() +" "+ ((FishingPole) entry).fishingPoleType + "\n";
+            }
+            else if (entry instanceof Hoe){
+                result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).hoeType + "\n";
+            }
+            else if (entry instanceof PiⅽkAxe){
+                result += ((PiⅽkAxe) entry).getName() +" "+ ((PiⅽkAxe) entry).pickAxeType +"\n";
+            }
+            else if (entry instanceof WateringCan){
+                result += ((WateringCan) entry).getName() +" "+ ((WateringCan) entry).wateringCanType + "\n";
+            }
+            else if (entry instanceof TrashCan){
+                result += ((TrashCan) entry).getName() +" "+((TrashCan) entry).Type + "\n";
+            }
+            else if (entry instanceof Tools){
+                result+=((Tools) entry).getName() + "\n";
             }
         }
 
-        if (result.equals("")){
-            return new Result(false,"You have no Item in Your Inventory");
-        }
-        else {
-            return new Result(true,result);
-        }
+        return new Result(true,result);
     }
 
-    private Result removeBasicRock(Integer number){
-         Inventory inventory = currentPlayer.getBaⅽkPaⅽk().inventory;
-         if (inventory.getBasicRock()==null){
-             return new Result(false, "There is no BasicRock in your inventory for remove");
-         }
-         else if (number==null){
-             inventory.getBasicRock().numberOfBasicRocksInInventory =0;
-             //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-             return new Result(true,"BasicRocks completely removed from your inventory");
-         }
-         else if (inventory.getBasicRock().numberOfBasicRocksInInventory < number){
-             return new Result(false,"not enough BasicRocks in your inventory for remove");
-         }
-         else if (inventory.getBasicRock().numberOfBasicRocksInInventory > number){
-             inventory.getBasicRock().numberOfBasicRocksInInventory -= number;
-             //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-             return new Result(true,"Successfully removed "+number+" BasicRocks from your inventory");
-         }
-         else {
-             inventory.getBasicRock().numberOfBasicRocksInInventory =0;
-             //TODO باید این ایتم ها رو توی سطل اشغال بندازیم و مقداری پول دریافت کنیم
-             return new Result(true,"BasicRocks completely removed from your inventory");
-         }
+    private Result increaseMoney(Integer amount , int price , Items items,String name , Integer reminder) {
+        int percent=0;
+        for (Map.Entry<Items,Integer> entry: currentPlayer.getBackPack().inventory.Items.entrySet()) {
+            if (entry instanceof TrashCan){
+                percent= ((TrashCan) entry).Type.getPercent();
+                break;
+            }
+        }
+        if (amount ==null || amount == reminder) {
+            int increase=(reminder * percent *price)/100;
+            TrashCan.removeItem(increase,currentPlayer.getBackPack().inventory.Items, items, reminder);
+            return new Result(true,name + "completely removed from your inventory");
+        }
+        if (amount > reminder) {
+            return new Result(false,"not enough "+name+" "+"in your inventory for remove");
+        }
+        if (amount < reminder) {
+            int increase=(reminder * percent *price)/100;
+            TrashCan.removeItem(increase,currentPlayer.getBackPack().inventory.Items, items, reminder);
+            return new Result(true , amount + " "+name+" "+"removed from your inventory");
+        }
+
+        return null;
+    }
+    public Result removeItemToTrashcan(String name, Integer number) {
+        Inventory inventory=currentPlayer.getBackPack().inventory;
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
+
+            if (entry instanceof Wood){
+                if (name.equals(Wood.name)) {
+                    return increaseMoney(number, Wood.price, (Wood) entry.getKey(), name, entry.getValue());
+                }
+            }
+            if (entry instanceof BasicRock){
+                if (name.equals("BasicRock")) {
+                    return increaseMoney(number, BasicRock.price, (BasicRock) entry.getKey(), name, entry.getValue());
+                }
+            }
+
+            if (entry instanceof ForagingMinerals){
+                if (((ForagingMinerals) entry).getType().getDisplayName().equals(name)){
+                     return increaseMoney(number,( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
+                }
+            }
+
+
+            if (entry instanceof ForagingSeeds){
+                if (((ForagingSeeds) entry).getType().getDisplayName().equals(name)){
+                    //TODO قیمت foraging seeds رو باید از مارکتینگ در بیاریم
+                    //TODO return increaseMoney(entry.getValue(),( (ForagingSeeds) entry).getType().getPrice(),(ForagingSeeds) entry, name,entry.getValue());
+                }
+            }
+            if (entry instanceof AllCrops){
+                if (((AllCrops) entry).getType().getDisplayName().equals(name)){
+                    return increaseMoney(number,( (AllCrops) entry).getType().getPrice(),(AllCrops) entry, name,entry.getValue());
+                }
+            }
+            if (entry instanceof TreeSource){
+                if (((TreeSource) entry).getType().getDisplayName().equals(name)){
+                    //TODO قیمت TreeSource رو باید از مارکتینگ دربیاریم
+                    //TODO return increaseMoney(entry.getValue(),( (TreeSource) entry).getType().getPrice(),(TreeSource) entry, name,entry.getValue());
+                }
+            }
+            if (entry instanceof ForagingCrops){
+                if (((ForagingCrops) entry).getType().equals(name)){
+                    return increaseMoney(entry.getValue(),( (ForagingCrops) entry).getType().getPrice(),(ForagingCrops) entry, name,entry.getValue());
+                }
+            }
+            if (entry instanceof Tools){
+                return new Result(false,"you can't remove "+name+"becuse it is a tool");
+            }
+
+            //TODO برای غذا و چیزهایی که در آینده ممکنه به اینونتوری اضافه بشه
+        }
+        return null;
     }
 
-    private Result removeWood(Integer number){
-        Inventory inventory = currentPlayer.getBaⅽkPaⅽk().inventory;
-        if (inventory.getWood()==null){
-            return new Result(false, "There is no Wood in your inventory for remove");
-        }
-        else if (number==null){
-            inventory.getWood().numberOfWoodsInInventory =0;
-            //TODO باید این ایتم ها رو توی سطل اشغال بندازیم و مقداری پول دریافت کنیم
-            return new Result(true,"Woods completely removed from your inventory");
+    public Result toolsEquip (String name){
+        name=name.replaceAll("\\s+","");
+        Inventory inventory=currentPlayer.getBackPack().inventory;
+
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
+            if (entry instanceof Axe) {
+                if (((Axe) entry).axeType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof FishingPole){
+                if (((FishingPole) entry).fishingPoleType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof Hoe){
+                if (((Hoe) entry).hoeType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof PickAxe){
+                if (((PickAxe) entry).pickAxeType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof WateringCan){
+                if (((WateringCan) entry).wateringCanType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+
+            else if (entry instanceof Tools){
+                if (((Tools) entry).getName().equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
         }
 
-        else if (inventory.getWood().numberOfWoodsInInventory < number){
-            return new Result(false,"not enough Woods in your inventory for remove");
+        return new Result(false,"there is no such tool");
+    }
+    public Result showCurrentTool(){
+        Tools currentTool=currentPlayer.currentTool;
+        return switch (currentTool) {
+            case null -> new Result(false, "there is no current tool in your hands");
+            case Axe axe -> new Result(true, "current tool: " + axe.axeType);
+            case FishingPole fishingPole -> new Result(true, "current tool: " + fishingPole.fishingPoleType);
+            case Hoe hoe -> new Result(true, "current tool: " + hoe.hoeType);
+            case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType);
+            case PickAxe piⅽkAxe -> new Result(true, "current tool: " + piⅽkAxe.pickAxeType);
+            default -> new Result(true, "current tool: " + currentTool.getName());
+        };
+    }
+    public Result availableTools() {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        String result = "";
+        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+            if (entry instanceof Axe) {
+                result += ((Axe) entry).axeType + "\n";
+            } else if (entry instanceof FishingPole) {
+                result += ((FishingPole) entry).fishingPoleType + "\n";
+            } else if (entry instanceof Hoe) {
+                result += ((Hoe) entry).hoeType + "\n";
+            } else if (entry instanceof WateringCan) {
+                result += ((WateringCan) entry).wateringCanType + "\n";
+            } else if (entry instanceof PickAxe) {
+                result += ((PickAxe) entry).pickAxeType + "\n";
+            } else if (entry instanceof Tools) {
+                result += ((Tools) entry).getName() + "\n";
+            }
         }
-        else if (inventory.getWood().numberOfWoodsInInventory > number){
-            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-            inventory.getBasicRock().numberOfBasicRocksInInventory -= number;
-            return new Result(true,"Successfully removed "+number+" Woods from your inventory");
-        }
-        else {
-            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-            inventory.getWood().numberOfWoodsInInventory =0;
-            return new Result(true,"Woods completely removed from your inventory");
-        }
+        return new Result(true,result);
     }
 
-    private ForagingMinerals isForagingMineralsExist(String name){
-        Inventory inventory=currentPlayer.getBaⅽkPaⅽk().inventory;
-        if (inventory.getForagingMinerals()==null){
-            return null;
+    public boolean checkCoordinateForFishing(){
+        int [] x={1,1,1,0,0,-1,-1,-1};
+        int [] y={1,0,-1,1,-1,-1,0,1};
+        for (int i=0;i<8;i++){
+            if (getTileByCoordinates(currentPlayer.getPositionX() +x[i],currentPlayer.getPositionY() +y[i]).
+                    getGameObject() instanceof Lake){
+                return true;
+            }
         }
-        for (Map.Entry<ForagingMinerals,Integer> entry : inventory.getForagingMinerals().entrySet()) {
-            if (name.equals(entry.getKey().getType())){
-                return entry.getKey();
+        return false;
+    }
+
+    public FishingPole isFishingPoleTypeExist(String name){
+        Inventory inventory=currentPlayer.getBackPack().inventory;
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
+            if (entry instanceof FishingPole){
+                if (((FishingPole) entry).fishingPoleType.getName().equals(name)){
+                    return (FishingPole) entry;
+                }
             }
         }
         return null;
     }
 
-    public Result removeForagingMinerals(Integer number , ForagingMinerals foragingMinerals, HashMap<ForagingMinerals,Integer> x){
-        if (number==null){
-            x.remove(foragingMinerals);
-            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-            return new Result(true,foragingMinerals.getType()+" completely removed from your inventory");
+    public Quantity productQuantity(double quantity){
+
+        if (quantity <= 0.5) {
+            return Quantity.Normal;
         }
-        else if (number > x.get(foragingMinerals)){
-            return new Result(false,"not enough "+foragingMinerals.getType()+" in your inventory for remove");
+        if (quantity <= 0.7) {
+            return Quantity.Silver;
         }
-        else if(number==x.get(foragingMinerals)){
-            x.remove(foragingMinerals);
-            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-            return new Result(true,foragingMinerals.getType()+" completely removed from your inventory");
+        if (quantity <= 0.9) {
+            return Quantity.Golden;
         }
-        else {
-            x.put(foragingMinerals, x.get(foragingMinerals) - number);
-            //TODO باید این آیتم ها رو توی سطل آشغال بندازیم و مقداری پول دریافت کنیم
-            return new Result(true,"Successfully removed "+number+foragingMinerals.getType()+" from your inventory");
+
+        return Quantity.Iridium;
+    }
+    public Result addFishToInventory(FishingPole fishingPole) {
+        double random = Math.random();
+        int x = (int) (random * currentWeather.getFishing() * (currentPlayer.getLevelFishing() + 2));
+        int numberOfFish = Math.min(6, x);
+        String result = "number of Fishes: " + numberOfFish + "\n";
+
+        for (int i = 0; i < numberOfFish; i++) {
+
+            //TODO بعد از هر if باید ماهی رو به inventory اضافه کنیم
+            //TODO اضافه کردن مهارت ماهیگیری فراموش نشه
+            double rand = Math.random();
+            double quantity = (random * (currentPlayer.getLevelFishing() + 2) * fishingPole.fishingPoleType.getCoefficient()) / (7 - currentWeather.getFishing());
+            Quantity fishQuantity = productQuantity(quantity);
+
+            if (fishingPole.fishingPoleType.equals(FishingPoleType.TrainingRod)) {
+
+                switch (currentDate.getSeason()) {
+                    case Spring:
+                        Fish springFish = new Fish(FishType.Herring, fishQuantity);
+                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                    case Summer:
+                        Fish summerFish = new Fish(FishType.Sunfish, fishQuantity);
+                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                    case Fall:
+                        Fish fallFish = new Fish(FishType.Sardine, fishQuantity);
+                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                    case Winter:
+                        Fish winterFish = new Fish(FishType.Perch, fishQuantity);
+                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                    default:
+                        break;
+                }
+
+            }
+
+            else if (rand <= 0.2 || ( rand > 0.8 && rand <= 0.85 && currentPlayer.getLevelFishing()!=4) ){
+
+                switch (currentDate.getSeason()) {
+                    case Spring:
+                        Fish springFish = new Fish(FishType.Flounder, fishQuantity);
+                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                    case Summer:
+                        Fish summerFish = new Fish(FishType.Tilapia, fishQuantity);
+                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                    case Fall:
+                        Fish fallFish = new Fish(FishType.Salmon, fishQuantity);
+                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                    case Winter:
+                        Fish winterFish = new Fish(FishType.Midnight_Carp, fishQuantity);
+                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                    default:
+                        break;
+                }
+            } else if (rand <= 0.4 || (rand > 0.85 && rand <= 0.9 && currentPlayer.getLevelFishing() != 4)) {
+
+                switch (currentDate.getSeason()) {
+                    case Spring:
+                        Fish springFish = new Fish(FishType.Lionfish, fishQuantity);
+                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                    case Summer:
+                        Fish summerFish = new Fish(FishType.Dorado, fishQuantity);
+                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                    case Fall:
+                        Fish fallFish = new Fish(FishType.Sardine, fishQuantity);
+                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                    case Winter:
+                        Fish winterFish = new Fish(FishType.Squid, fishQuantity);
+                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                    default:
+                        break;
+                }
+            } else if (rand <= 0.6 || (rand > 0.9 && rand <= 0.95 && currentPlayer.getLevelFishing() != 4)) {
+
+                switch (currentDate.getSeason()) {
+                    case Spring:
+                        Fish springFish = new Fish(FishType.Herring, fishQuantity);
+                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                    case Summer:
+                        Fish summerFish = new Fish(FishType.Sunfish, fishQuantity);
+                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                    case Fall:
+                        Fish fallFish = new Fish(FishType.Shad, fishQuantity);
+                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                    case Winter:
+                        Fish winterFish = new Fish(FishType.Tuna, fishQuantity);
+                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                    default:
+                        break;
+                }
+
+            }
+            else if (rand <= 0.8 || (rand > 0.95 && currentPlayer.getLevelFishing() != 4)) {
+
+                switch (currentDate.getSeason()) {
+                    case Spring:
+                        Fish springFish = new Fish(FishType.Ghostfish, fishQuantity);
+                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                    case Summer:
+                        Fish summerFish = new Fish(FishType.Rainbow_Trout, fishQuantity);
+                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                    case Fall:
+                        Fish fallFish = new Fish(FishType.Blue_Discus, fishQuantity);
+                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                    case Winter:
+                        Fish winterFish = new Fish(FishType.Perch, fishQuantity);
+                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                    default:
+                        break;
+                }
+
+            }
+            else {
+                if (currentPlayer.getLevelFishing() == 4){
+
+                    switch (currentDate.getSeason()){
+                        case Spring:
+                            Fish springFish= new Fish(FishType.Legend,fishQuantity);
+                            result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        case Summer:
+                            Fish summerFish= new Fish(FishType.Dorado,fishQuantity);
+                            result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        case Fall:
+                            Fish fallFish= new Fish(FishType.Squid,fishQuantity);
+                            result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        case Winter:
+                            Fish winterFish= new Fish(FishType.Tuna,fishQuantity);
+                            result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                    }
+
+                }
+            }
         }
+
+        //TODO اضافه کردن مهارت ماهیگیری
+
+        return new Result(true,result);
     }
 
 
-    public Result removeItem(String name, Integer number){
-        if (name.equals("BasicRock")){
-            return removeBasicRock(number);
+    public Result Fishing(String fishingPoleType) {
+        if (!checkCoordinateForFishing()) {
+            return new Result(false, "you can't fishing because lake is not around you");
         }
-        else if (name.equals("Wood")){
-            return removeWood(number);
+        if (isFishingPoleTypeExist(fishingPoleType) == null) {
+            return new Result(false, "No such fishing pole exist!");
         }
-        else if(isForagingMineralsExist(name) !=null){
-            return removeForagingMinerals(number, isForagingMineralsExist(name), currentPlayer.getBaⅽkPaⅽk().inventory.getForagingMinerals());
-        }
-        return null;
 
+        return addFishToInventory(isFishingPoleTypeExist(fishingPoleType));
+    }
+
+    private boolean checkTilesForCreateBarnOrCage(int x, int y, int width, int height) {
+        if (x + width > 30 || y + height > 30 || x<0 || y<0) {
+            return false;
+        }
+        for (int i = x; i < x+width; i++) {
+            for (int j = y; j < y+height; j++) {
+                Tile tile = getTileByCoordinates(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY);
+                if (!(tile.getGameObject() instanceof Walkable)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public Result createBarnOrCage(int topLeftX, int topLeftY, BarnORCageType barnORCageType) {
+        if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, barnORCageType.getWidth(), barnORCageType.getHeight())) {
+            return new Result(false, "you can't create barn or cage on this coordinate!");
+        }
+
+        BarnOrCage barnOrCage = new BarnOrCage(barnORCageType, topLeftX, topLeftY);
+        //TODO عملیات کم شدن از inventory در هنگام خرید
+
+        if (barnORCageType.equals(BarnORCageType.Barn) || barnORCageType.equals(BarnORCageType.BigBarn)
+                 || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
+            barnOrCage.setCharactor('b');
+        }
+        else {
+            barnOrCage.setCharactor('c');
+        }
+
+        for (int i = topLeftX; i < topLeftX + barnORCageType.getWidth(); i++) {
+            for (int j = topLeftY; j < topLeftY + barnORCageType.getHeight(); j++) {
+
+                if (i == topLeftX || i == topLeftX + barnORCageType.getWidth() -1 || j == topLeftY || j == topLeftY + barnORCageType.getHeight() -1) {
+                    Tile tile = getTileByCoordinates(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY);
+                    tile.setGameObject(barnOrCage);
+                }
+            }
+        }
+
+        return new Result(true, barnORCageType.getName() + "created successfully!");
+
+    }
+
+    public Result pet(String petName) {
+        int [] x={1,1,1,0,0,-1,-1,-1};
+        int [] y={1,0,-1,1,-1,-1,0,1};
+
+        for (int i = 0; i < 8; i++) {
+            Tile tile = getTileByCoordinates(currentPlayer.getPositionX() + x[i], currentPlayer.getPositionY() + y[i]);
+            if (tile.getGameObject() instanceof Animal) {
+                Animal animal = (Animal) tile.getGameObject();
+                if (animal.getName().equals(petName)) {
+                    animal.increaseFriendShip(15);
+                    animal.setPetToday(true);
+                    return new Result(true, petName + " petted successfully!");
+                }
+            }
+        }
+        return new Result(false,petName+"  doesn't exist!");
+    }
+
+    public Result animals() {
+        for (B)
     }
 
 
@@ -590,6 +939,9 @@ public class GameController {
             // TODO
         }
     }
+    private void setAbilitiesLevel () {
+
+    }
     private void doSeasonAutomaticTask () {
 
         currentWeather = tomorrowWeather;
@@ -602,7 +954,130 @@ public class GameController {
 
         return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
     }
+    private Result plantMixedSeed (String dir) {
 
+        Inventory inventory=currentPlayer.getBackPack().inventory;
+
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
+
+            if (entry instanceof MixedSeeds) {
+                if (inventory.Items.get(entry) > 0) {
+
+                    ForagingSeedsType type = ((MixedSeeds) entry).getSeeds(currentDate.getSeason());
+                    inventory.Items.put(entry.getKey(), entry.getValue() - 1);
+                    Tile tile = getTileByDir(Integer.parseInt(dir));
+                    tile.setGameObject(new ForagingSeeds(type, currentDate));
+
+                } else
+                    return new Result(false, RED + "You don't have Mixed seed!" + RESET);
+            }
+        return new Result(false, PURPLE+" اینونتوری و ریموو ایتم خیلی بدن "+RESET);
+    }
+    private Result plantForagingSeed (ForagingSeedsType type, String dir) {
+
+        Inventory inventory=currentPlayer.getBackPack().inventory;
+
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
+
+            if (entry instanceof ForagingSeeds) {
+                if (inventory.Items.get(entry) > 0) {
+
+                    inventory.Items.put(entry.getKey(), entry.getValue() - 1);
+                    Tile tile = getTileByDir(Integer.parseInt(dir));
+                    tile.setGameObject(new ForagingSeeds(type, currentDate));
+
+                } else
+                    return new Result(false, RED + "You don't have Mixed seed!" + RESET);
+            }
+        return new Result(false, PURPLE+" اینونتوری و ریموو ایتم خیلی بدن "+RESET);
+    }
+
+    private void createRandomForaging () {
+
+        for (Tile tile : bigMap) {
+            if (plowedTile.contains(tile) && tile.getGameObject() instanceof Walkable && Math.random() <= 0.01)
+                if (Math.random() <= 0.5) {
+
+                    List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
+                            .filter(d -> d.getSeason().contains(currentDate.getSeason()))
+                            .toList();
+
+                    ForagingSeedsType type = types.get(rand.nextInt(types.size()));
+
+                    ForagingSeeds seed = new ForagingSeeds(type, currentDate);
+                    tile.setGameObject(seed);
+                }
+                else {
+
+                    List<ForagingCropsType> types = Arrays.stream(ForagingCropsType.values())
+                            .filter(d -> d.getSeason().contains(currentDate.getSeason()))
+                            .toList();
+
+                    ForagingCropsType type = types.get(rand.nextInt(types.size()));
+
+                    ForagingCrops crop = new ForagingCrops(type);
+                    tile.setGameObject(crop);
+                }
+        }
+    }
+    private void createRandomMinerals () {
+
+        int x1 = currentPlayer.getFarm().getMine().getStartX()+1;
+        int y1 = currentPlayer.getFarm().getMine().getStartY()+1;
+
+        if (Math.random() < RUBY.getProbability())
+            getTileByCoordinates(x1, y1).setGameObject(new ForagingMinerals(RUBY));
+        if (Math.random() < COAL.getProbability())
+            getTileByCoordinates(x1+1, y1).setGameObject(new ForagingMinerals(COAL));
+        if (Math.random() < IRON.getProbability())
+            getTileByCoordinates(x1+2, y1).setGameObject(new ForagingMinerals(IRON));
+        if (Math.random() < TOPAZ.getProbability())
+            getTileByCoordinates(x1+3, y1).setGameObject(new ForagingMinerals(TOPAZ));
+        if (Math.random() < GOLD.getProbability())
+            getTileByCoordinates(x1, y1+1).setGameObject(new ForagingMinerals(GOLD));
+        if (Math.random() < JADE.getProbability())
+            getTileByCoordinates(x1+1, y1+1).setGameObject(new ForagingMinerals(JADE));
+        if (Math.random() < IRIDIUM.getProbability())
+            getTileByCoordinates(x1+2, y1+1).setGameObject(new ForagingMinerals(IRIDIUM));
+        if (Math.random() < QUARTZ.getProbability())
+            getTileByCoordinates(x1+3, y1+1).setGameObject(new ForagingMinerals(QUARTZ));
+        if (Math.random() < EMERALD.getProbability())
+            getTileByCoordinates(x1, y1+2).setGameObject(new ForagingMinerals(EMERALD));
+        if (Math.random() < COPPER.getProbability())
+            getTileByCoordinates(x1+1, y1+2).setGameObject(new ForagingMinerals(COPPER));
+        if (Math.random() < DIAMOND.getProbability())
+            getTileByCoordinates(x1+2, y1+2).setGameObject(new ForagingMinerals(DIAMOND));
+        if (Math.random() < AMETHYST.getProbability())
+            getTileByCoordinates(x1+3, y1+2).setGameObject(new ForagingMinerals(AMETHYST));
+        if (Math.random() < AQUAMARINE.getProbability())
+            getTileByCoordinates(x1, y1+3).setGameObject(new ForagingMinerals(AQUAMARINE));
+        if (Math.random() < FROZEN_TEAR.getProbability())
+            getTileByCoordinates(x1+1, y1+3).setGameObject(new ForagingMinerals(FROZEN_TEAR));
+        if (Math.random() < FIRE_QUARTZ.getProbability())
+            getTileByCoordinates(x1+2, y1+3).setGameObject(new ForagingMinerals(FIRE_QUARTZ));
+        if (Math.random() < PRISMATIC_SHARD.getProbability())
+            getTileByCoordinates(x1+2, y1+3).setGameObject(new ForagingMinerals(PRISMATIC_SHARD));
+        if (Math.random() < EARTH_CRYSTAL.getProbability())
+            getTileByCoordinates(x1+3, y1+3).setGameObject(new ForagingMinerals(EARTH_CRYSTAL));
+
+
+    }
+
+    private Result useHoe (int dir) {
+
+        if (!currentPlayer.isHealthUnlimited())
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+
+        Tile tile = getTileByDir(dir);
+
+        if (plowedTile.contains(tile))
+            return new Result(false, RED+"This tile is already plowed!"+RESET);
+        if (!(tile.getGameObject() instanceof Walkable))
+            return new Result(false, RED+"You can't plow this tile!"+RESET);
+
+        plowedTile.add(tile);
+        return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
+    }
 
     public void startNewGame () {
 
@@ -626,12 +1101,16 @@ public class GameController {
 
     } // TODO   باید کارایی که بعد افزایش زمان انجام میشن رو انجام بدی
 
-
     public void startDay () {
 
         doSeasonAutomaticTask();
-        passedOfTime(0,(24 -currentDate.getHour()) + 9);
+        passedOfTime(0, (24 - currentDate.getHour()) + 9);
         setEnergyInMorning();
+        createRandomForaging();
+        createRandomMinerals();
+
+        for (Tile tile : bigMap)
+            tile.getGameObject().startDayAutomaticTask();
 
         // TODO بازیکنا برن خونشون , غش کردن
         // TODO محصول کاشته بشه و رشد محصولا یه روز بره بالاتر
@@ -646,6 +1125,9 @@ public class GameController {
 
         if (currentDate.getHour() > 22)
             startDay();
+
+        for (Tile tile : bigMap)
+            tile.getGameObject().startDayAutomaticTask();
     }
     public void AutomaticFunctionAfterAnyAct () {
 
@@ -653,6 +1135,9 @@ public class GameController {
             user.checkHealth();
 
     }
+
+
+
 
 
     public Result showTime () {
@@ -712,7 +1197,7 @@ public class GameController {
         return new Result(true, BLUE+"Time : "+RED+ currentDate.getHour()+ ":00" +
                 BLUE+"\nData : "+RED+currentDate.getYear()+RESET+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
     }
-    public Result showDayOfWeek () {
+    public Result showDayOfWeek() {
         return new Result(true, BLUE+"Day of Week : "+RESET
                 + currentDate.getDayOfTheWeek());
     }
@@ -747,4 +1232,67 @@ public class GameController {
         currentPlayer.setHealthUnlimited();
         return new Result(true, BLUE+"Whoa! Infinite energy mode activated!"+RESET);
     }
+    public Result showFruitInfo (String name) {
+
+        TreesProductType type;
+
+        try {
+            type = TreesProductType.fromDisplayName(name);
+            return new Result(true, TreesProductType.getInformation(type));
+
+        } catch (Exception e) {
+
+            CropsType cropType;
+            try {
+                cropType = CropsType.fromDisplayName(name);
+                return new Result(false, CropsType.getInformation(cropType));
+
+            } catch (Exception e1) {
+                return new Result(false, "sorry, name is invalid!");
+            }
+        }
+    }
+    public Result buildGreenHouse () {
+
+        for (Map.Entry <Items,Integer> entry: currentPlayer.getBaⅽkPaⅽk().inventory.Items.entrySet()) // این خیلی کیریه
+            if (entry instanceof Wood)
+                if (entry.getValue() < GreenHouse.requiredWood)
+                    return new Result(false, RED+"You don't have enough wood!"+RESET);
+
+        if (currentPlayer.getMoney() < GreenHouse.requiredCoins )
+            return new Result(false, RED+"You don't have enough Coin!"+RESET);
+
+        currentPlayer.increaseMoney(-1*GreenHouse.requiredCoins);
+
+        Inventory inventory=currentPlayer.getBackPack().inventory;
+
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
+            if (entry instanceof Wood)
+                inventory.Items.put(entry.getKey(), entry.getValue() - GreenHouse.requiredWood);
+
+        currentPlayer.getFarm().getGreenHouse().setCreated(true);
+
+        return new Result(true, BLUE+"The greenhouse has been built! \uD83C\uDF31"+RESET);
+    }
+    public Result useTools (String direction) {
+
+        int dir = Integer.parseInt(direction);
+
+        return null; // TODO
+    }
+    public Result planting (String name, String direction) {
+
+        if (name.matches("\\s*(?i)Mixed\\s*seed(s)?\\s*"))
+            return plantMixedSeed(direction);
+
+        try {
+            ForagingSeedsType type = ForagingSeedsType.valueOf(name);
+            return plantForagingSeed(type, direction);
+        } catch (Exception e) {
+
+        return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
+        }
+    }
+
+
 }

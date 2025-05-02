@@ -5,9 +5,9 @@ import model.Items;
 
 public class ForagingCrops extends Items {
 
-    private ForagingCropsType type;
+    private final ForagingCropsType type;
 
-    public void setType(ForagingCropsType type) {
+    public ForagingCrops(ForagingCropsType type) {
         this.type = type;
     }
 

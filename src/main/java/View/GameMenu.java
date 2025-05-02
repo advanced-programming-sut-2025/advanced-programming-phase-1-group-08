@@ -66,10 +66,16 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.energyUnlimit.getMather(input) != null)
             System.out.println(controller.EnergyUnlimited());
 
+        else if ((matcher = GameMenuCommands.showFruitInfo.getMather(input)) != null)
+            System.out.println(controller.showFruitInfo(matcher.group("name").trim()));
+
+        else if (GameMenuCommands.buildGreenHouse.getMather(input) != null)
+            System.out.println(controller.buildGreenHouse());
+
 
 
         else
-            System.out.println(RED+"Sorry pls try again");
+            System.out.println(RED+"Sorry pls try again"+RESET);
 
     }
 }

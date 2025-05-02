@@ -3,7 +3,7 @@ package model;
 import model.Enum.WeatherTime.Season;
 import model.Enum.WeatherTime.WeekDay;
 
-public class DateHour {
+public class DateHour implements Cloneable {
 
     private int year;
     private Season season;
@@ -69,5 +69,69 @@ public class DateHour {
             return WeekDay.thursday;
         else
             return WeekDay.friday;
+    }
+
+    @Override
+    public DateHour clone() {
+        try {
+            return (DateHour) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
+
+    public static int getDayDifferentBySeason (Season season1, Season season2) {
+
+        if (season2.equals(Season.Spring)) {
+            if (season1.equals(Season.Spring))
+                return 0;
+            if (season1.equals(Season.Summer))
+                return 28;
+            if (season1.equals(Season.Fall))
+                return 56;
+            else
+                return 84;
+        }
+        if (season2.equals(Season.Summer)) {
+            if (season1.equals(Season.Spring))
+                return -28;
+            if (season1.equals(Season.Summer))
+                return 0;
+            if (season1.equals(Season.Winter))
+                return 28;
+            else
+                return 56;
+        }
+        if (season2.equals(Season.Fall)) {
+            if (season1.equals(Season.Spring))
+                return -56;
+            if (season1.equals(Season.Summer))
+                return -28;
+            if (season1.equals(Season.Winter))
+                return 0;
+            else
+                return 28;
+        }
+        else {
+            if (season1.equals(Season.Spring))
+                return -84;
+            if (season1.equals(Season.Summer))
+                return -56;
+            if (season1.equals(Season.Winter))
+                return -28;
+            else
+                return 0;
+        }
+    }
+    public static int getDayDifferent (DateHour dateHour1, DateHour dateHour2) {
+
+        int day = 0;
+
+        day += (dateHour2.getYear() - dateHour1.getYear()) * 28 * 4;
+        day += getDayDifferentBySeason(dateHour1.getSeason(), dateHour2.getSeason());
+        day += dateHour2.getDate() - dateHour1.getDate();
+
+        return day;
     }
 }
