@@ -1,11 +1,12 @@
 package model.ToolsPackage;
 
 import model.Enum.ToolsType.HoeType;
+import model.Enum.WeatherTime.Weather;
 import model.Tile;
 
 import java.util.ArrayList;
 
-import static model.App.currentPlayer;
+import static model.App.*;
 
 public class Hoe extends Tools {
 
@@ -33,9 +34,15 @@ public class Hoe extends Tools {
 
     public int healthCost() {
 
+        double x = 1;
+        if (currentWeather.equals(Weather.Snowy))
+            x = 2;
+        if (currentWeather.equals(Weather.Rainy) || currentWeather.equals(Weather.Stormy))
+            x = 1.5;
+
         if (currentPlayer.getLevelFarming() == 4)
-            return this.type.getEnergyCost()+1;
-        return this.type.getEnergyCost();
+            return (int) (this.type.getEnergyCost()*x)+1;
+        return (int) (this.type.getEnergyCost()*x);
     }
 
 }

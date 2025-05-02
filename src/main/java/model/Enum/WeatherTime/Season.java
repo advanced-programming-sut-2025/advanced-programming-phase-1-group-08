@@ -7,7 +7,7 @@ import static model.Color_Eraser.*;
 
 public enum Season {
 
-    Winter("❄\uFE0FWinter❄\uFE0F") {
+    Winter("❄️Winter❄️") {
 
         public Season passedSeason(int number) {
 
@@ -55,7 +55,7 @@ public enum Season {
             return Weather.Stormy;
         }
     },
-    Summer("☀\uFE0FSummer☀\uFE0F") {
+    Summer("☀️Summer☀️") {
 
         public Season passedSeason(int number) {
 

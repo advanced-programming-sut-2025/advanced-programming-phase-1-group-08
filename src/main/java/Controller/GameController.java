@@ -15,6 +15,7 @@ import model.Plants.*;
 import model.ToolsPackage.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static model.App.*;
 import static model.App.tomorrowWeather;
@@ -1109,9 +1110,68 @@ public class GameController {
 
         currentWeather = tomorrowWeather;
         tomorrowWeather = currentDate.getSeason().getWeather();
+
+    }
+    private void lightningStrike (Tile selected) {
+
+        GameObject object = selected.getGameObject();
+
+        if (object instanceof Tree)
+            selected.setGameObject(new ForagingMinerals(COAL));
+        else if (object instanceof ForagingSeeds)
+            selected.setGameObject(new Walkable());
+        else if (object instanceof Animal)
+            selected.setGameObject(new Walkable());
+
+    }
+    private Tile selectTileForThor (Farm farm) {
+
+        GreenHouse greenHouse = farm.getGreenHouse();
+
+        List<Tile> matchingTiles = farm.Farm.stream()
+                .filter(tile -> tile.getGameObject() instanceof Tree ||
+                        tile.getGameObject() instanceof ForagingSeeds ||
+                        !(tile.getX() >= greenHouse.getCoordinateX() && tile.getY() <= greenHouse.getCoordinateY() &&
+                                tile.getX() <= greenHouse.getCoordinateX()+greenHouse.getLength() &&
+                                tile.getY() >= greenHouse.getCoordinateY()+ greenHouse.getWidth()))
+                                .toList();
+
+        Random random = new Random();
+        return matchingTiles.get(random.nextInt(matchingTiles.size()));
     }
     private void doWeatherTask () {
 
+        if (currentWeather.equals(Weather.Rainy) || currentWeather.equals(Weather.Stormy)) {
+            for (Tile tile : bigMap) {
+                GameObject object = tile.getGameObject();
+
+                if (object instanceof Tree)
+                    ((Tree) object).setLastWater(currentDate);
+                if (object instanceof GiantProduct)
+                    ((GiantProduct) object).setLastWater(currentDate);
+                if (object instanceof ForagingSeeds)
+                    ((ForagingSeeds) object).setLastWater(currentDate);
+            }
+        }
+        if (currentWeather.equals(Weather.Stormy)) {
+
+            Random random1 = new Random();
+
+            if (random1.nextInt(2) == 1)
+                lightningStrike(selectTileForThor(players.getFirst().getFarm()));
+
+            random1 = new Random();
+            if (random1.nextInt(2) == 1)
+                lightningStrike(selectTileForThor(players.get(1).getFarm()));
+
+            random1 = new Random();
+            if (random1.nextInt(2) == 1)
+                lightningStrike(selectTileForThor(players.get(2).getFarm()));
+
+            random1 = new Random();
+            if (random1.nextInt(2) == 1)
+                lightningStrike(selectTileForThor(players.get(3).getFarm()));
+        }
     }
     private boolean checkForDeath () {
 
@@ -1335,6 +1395,8 @@ public class GameController {
         for (Tile tile : bigMap)
             tile.getGameObject().startDayAutomaticTask();
 
+        doWeatherTask();
+
         // TODO بازیکنا برن خونشون , غش کردن
         // TODO محصول کاشته بشه و رشد محصولا یه روز بره بالاتر
         // TODO کانی تولید بشه شاپینگ بین خالی بشه و.  پول بیاد تو حساب فرد
@@ -1525,7 +1587,7 @@ public class GameController {
         return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
         }
     }
-    private Result WateringPlant (String direction) {
+    public Result WateringPlant (String direction) {
 
         int dir;
 
@@ -1570,6 +1632,17 @@ public class GameController {
         }
 
         return new Result(false, RED+"No plant in here!"+RESET);
+    }
+    public Result thor (String x, String y) {
+
+        int x1 = Integer.parseInt(x);
+        int y1 = Integer.parseInt(y);
+
+        if (x1 < currentPlayer.getFarm().) // میخوام چک کنم ابعاد تو مزرغش باشه
+            return new Result(false, );
+
+        lightningStrike(getTileByCoordinates(x1, y1));
+        return new Result(true, BLUE+"A lightning bolt hits!"+RESET);
     }
 
 

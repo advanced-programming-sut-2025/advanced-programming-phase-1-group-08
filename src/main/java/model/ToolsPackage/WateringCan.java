@@ -1,8 +1,10 @@
 package model.ToolsPackage;
 
 import model.Enum.ToolsType.WateringCanType;
+import model.Enum.WeatherTime.Weather;
 
 import static model.App.currentPlayer;
+import static model.App.currentWeather;
 
 public class WateringCan extends Tools {
 
@@ -20,10 +22,15 @@ public class WateringCan extends Tools {
 
     public void use () {}
     public int healthCost() {
+        double x = 1;
+        if (currentWeather.equals(Weather.Snowy))
+            x = 2;
+        if (currentWeather.equals(Weather.Rainy) || currentWeather.equals(Weather.Stormy))
+            x = 1.5;
 
         if (currentPlayer.getLevelFarming() == 4)
-            return this.wateringCanType.getEnergyCost()+1;
-        return this.wateringCanType.getEnergyCost();
+            return (int) (this.wateringCanType.getEnergyCost()*x)+1;
+        return (int) (this.wateringCanType.getEnergyCost()*x);
     }
 
     public WateringCanType getWateringCanType() {

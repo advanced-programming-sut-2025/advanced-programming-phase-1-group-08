@@ -30,15 +30,12 @@ public class GreenHouse extends GameObject {
     public void setWaterTank(WaterTank waterTank) {
         this.waterTank = waterTank;
     }
-
     public void setCreated(boolean created) {
         isCreated = created;
     }
-
     public WaterTank getWaterTank() {
         return waterTank;
     }
-
     public boolean isCreated() {
         return isCreated;
     }
@@ -49,6 +46,16 @@ public class GreenHouse extends GameObject {
         else
             return GRAY+"G"+ RESET;
     }
-
-
+    public int getLength() {
+        return length;
+    }
+    public int getWidth() {
+        return width;
+    }
+    public int getCoordinateX() {
+        return coordinateX;
+    }
+    public int getCoordinateY() {
+        return coordinateY;
+    }
 }
