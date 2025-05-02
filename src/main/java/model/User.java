@@ -160,4 +160,12 @@ public class User {
     public BaⅽkPaⅽk getBaⅽkPaⅽk() {
         return baⅽkPaⅽk;
     }
+
+    public void setHashPass(String hashPass) {
+        this.hashPass = hashPass;
+    }
+
+    public String getHashPass() {
+        return hashPass;
+    }
 }

@@ -42,4 +42,17 @@ public class UserDataBase {
         }
         return null;
     }
+
+    public static boolean updatePassword(String username, String newPassword) {
+        List<User> users = loadUsers();
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                user.setHashPass(PasswordHashUtil.hashPassword(newPassword));
+                user.setPassword(newPassword);
+                saveUsers(users);
+                return true;
+            }
+        }
+        return false;
+    }
 }

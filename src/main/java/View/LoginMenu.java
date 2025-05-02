@@ -3,6 +3,8 @@ package View;
 import Controller.LoginController;
 import model.Enum.Commands.LoginCommands;
 import model.Result;
+import model.SaveData.SessionManager;
+import model.SaveData.UserDataBase;
 import model.User;
 import model.App;
 import model.Enum.Menu;
@@ -25,10 +27,11 @@ public class LoginMenu extends AppView implements AppMenu {
 
                 App.currentMenu = Menu.MainMenu;
 
-                for (User user : App.users)
-                    if (user.getUsername().equals(LoginCommands.Login.getMatcher(input).group("username").trim()))
-                        App.currentUser = user ;
-
+                if (UserDataBase.findUserByUsername(LoginCommands.Login.getMatcher(input).group("username").trim()) != null) {
+                    User user = UserDataBase.findUserByUsername(LoginCommands.Login.getMatcher(input).group("username").trim());
+                    App.currentUser = user;
+                    SessionManager.saveSession(user, LoginCommands.Login.getMatcher(input).group(3) != null && LoginCommands.Login.getMatcher(input).group(3).equals(" --stay-logged-in"));
+                }
             }
         }
         else if (LoginCommands.ForgotPass.getMatcher(input) != null ) {

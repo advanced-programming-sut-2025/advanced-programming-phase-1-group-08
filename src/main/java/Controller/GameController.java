@@ -423,13 +423,13 @@ public class GameController {
                 result += entry.getKey().getType()+": "+entry.getValue()+"\n";
             }
         }
-        if (inventory.getForagingSeeds()!=null){
-            result += "ForagingSeeds\n";
-
-            for (Map.Entry<ForagingSeeds,Integer> entry : inventory.getForagingSeeds().entrySet()) {
-                result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
-            }
-        }
+//        if (inventory.getForagingSeeds()!=null){
+//            result += "ForagingSeeds\n";
+//
+//            for (Map.Entry<ForagingSeeds,Integer> entry : inventory.getForagingSeeds().entrySet()) {
+//                result+= entry.getKey().getType()+": "+entry.getValue()+"\n";
+//            }
+//        }
         if (inventory.getAllCrops()!=null){
             result += "AllCrops\n";
             for (Map.Entry<AllCrops,Integer> entry : inventory.getAllCrops().entrySet()) {
