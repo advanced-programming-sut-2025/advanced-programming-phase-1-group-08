@@ -20,6 +20,8 @@ public class Hoe extends Tools {
 
     public void use () {}
 
+
+    public void kir (){}
     public HoeType getType() {
 
         return type;

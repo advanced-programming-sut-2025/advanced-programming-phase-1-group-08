@@ -197,7 +197,7 @@ public class GameController {
         GreenHouse greenHouse=new GreenHouse(1 + 60*x,1 + 60*y);
         greenHouse.setCharactor('G');
         WaterTank waterTank=new WaterTank(100);
-        waterTank.setWaterTank('W');
+        waterTank.setWaterTank('W'); // اینجا عدد میخواد چرا حروف دادی؟
         greenHouse.setWaterTank(waterTank);
         for (int i=1 ; i<7 ; i++){
             for (int j=1 ; j<8 ; j++) {
@@ -1279,9 +1279,26 @@ public class GameController {
             return new Result(false, RED+"This tile is already plowed!"+RESET);
         if (!(tile.getGameObject() instanceof Walkable))
             return new Result(false, RED+"You can't plow this tile!"+RESET);
-
+        if (!(currentPlayer.currentTool instanceof Hoe))
+            return null;
+        currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
         plowedTile.add(tile);
         return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
+    }
+    public Result useWateringCan (int dir) {
+
+        Tile tile = getTileByDir(dir);
+
+        if (!(currentPlayer.currentTool instanceof WateringCan))
+            return null;
+
+        if (tile.getGameObject() instanceof Lake || tile.getGameObject() instanceof WaterTank) {
+            ((WateringCan) currentPlayer.currentTool).makeFullWater();
+            return new Result(true, BLUE+"The tank is now full. Time to water" +
+                    " those plants!\uD83D\uDEB0"+RESET);
+        }
+        else
+            return new Result(false, RED+"This place is bone dry.\uD83C\uDF35"+RESET);
     }
 
 
@@ -1508,7 +1525,7 @@ public class GameController {
         return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
         }
     }
-    private Result useWateringCan (String direction) {
+    private Result WateringPlant (String direction) {
 
         int dir;
 
@@ -1531,18 +1548,24 @@ public class GameController {
             return new Result(false, RED+"ظرفت خالیه مشتی"+RESET);
 
         if (object instanceof ForagingSeeds) {
+
             ((WateringCan) currentPlayer.currentTool).decreaseWater(1);
             ((ForagingSeeds) object).setLastWater(currentDate);
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
             return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
 
         } else if (object instanceof Tree) {
+
             ((WateringCan) currentPlayer.currentTool).decreaseWater(1);
-            ((ForagingSeeds) object).setLastWater(currentDate);
+            ((Tree) object).setLastWater(currentDate);
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
             return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
 
         } else if (object instanceof GiantProduct) {
+
             ((WateringCan) currentPlayer.currentTool).decreaseWater(1);
-            ((ForagingSeeds) object).setLastWater(currentDate);
+            ((GiantProduct) object).setLastWater(currentDate);
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
             return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
         }
 
