@@ -32,7 +32,7 @@ public class User {
 
     private final BackPack backPack = new BackPack();
     public Tools currentTool;
-    private int farmingAbility  = 0; //مهارت کشاورزی که در ابتدا صفر هست.
+    private int farmingAbility  = 0;
     private int miningAbility   = 0;
     private int foragingAbility = 0;
     private int fishingAbility  = 0;
@@ -169,11 +169,9 @@ public class User {
     public BackPack getBackPack() {
         return backPack;
     }
-
     public int getMoney() {
         return money;
     }
-
     public void increaseMoney (int amount) {
         this.money += amount;
     }

@@ -3,7 +3,7 @@ package model.ToolsPackage;
 
 import model.Items;
 
-public class Tools extends Items {
+public abstract class Tools extends Items {
 
 
     private int level = 0;
@@ -25,11 +25,5 @@ public class Tools extends Items {
     public void setLevel(int level) {
         this.level = level;
     }
-
-    public int healthCost () {
-        return -1;
-    }
-
-
-
+    public abstract int healthCost ();
 }
