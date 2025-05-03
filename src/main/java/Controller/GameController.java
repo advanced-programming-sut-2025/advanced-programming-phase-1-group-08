@@ -1745,6 +1745,13 @@ public class GameController {
 
 
 
+    public void show () {
+
+
+
+
+
+    }
 
 
     public Result showTime () {
