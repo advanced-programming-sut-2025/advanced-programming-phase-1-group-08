@@ -1,5 +1,7 @@
-package model;
+package model.MapThings;
 
+
+import model.Items;
 
 public class Wood extends Items {
 

@@ -81,7 +81,7 @@ public class DateHour implements Cloneable {
     }
 
 
-    public static int getDayDifferentBySeason (Season season1, Season season2) {
+    private static int getDayDifferentBySeason (Season season1, Season season2) {
 
         if (season2.equals(Season.Spring)) {
             if (season1.equals(Season.Spring))
@@ -124,13 +124,13 @@ public class DateHour implements Cloneable {
                 return 0;
         }
     }
-    public static int getDayDifferent (DateHour dateHour1, DateHour dateHour2) {
+    public static int getDayDifferent (DateHour first, DateHour older) {
 
         int day = 0;
 
-        day += (dateHour2.getYear() - dateHour1.getYear()) * 28 * 4;
-        day += getDayDifferentBySeason(dateHour1.getSeason(), dateHour2.getSeason());
-        day += dateHour2.getDate() - dateHour1.getDate();
+        day += (older.getYear() - first.getYear()) * 28 * 4;
+        day += getDayDifferentBySeason(first.getSeason(), older.getSeason());
+        day += older.getDate() - first.getDate();
 
         return day;
     }

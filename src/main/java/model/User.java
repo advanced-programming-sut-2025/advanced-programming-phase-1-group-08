@@ -1,6 +1,7 @@
 package model;
 
 import model.Enum.SecurityQuestions;
+import model.MapThings.Tile;
 import model.Places.Farm;
 import model.ToolsPackage.BackPack;
 import model.ToolsPackage.Tools;
@@ -18,8 +19,10 @@ public class User {
     private SecurityQuestions MySecurityQuestion;
     private String MySecurityAnswer;
 
-    private int max_point;
-    private int games_played;
+    // TODO وقتی بازی تموم میشه این سه تارو ست کنیم
+    private int max_point = 0;
+    private int games_played = 0;
+    private boolean currently_in_game = false;
 
 
     private int point;
@@ -42,7 +45,7 @@ public class User {
 
     private final Farm farm = new Farm();
     public int topLeftX;
-    public int topLeftY;
+    public int topLeftY; // اینا باید برن تو فارم
     private int positionX;
     private int positionY;
 
@@ -63,55 +66,79 @@ public class User {
     }
 
 
-    public int getMAX_HEALTH() {
-        return MAX_HEALTH;
-    }
-    public void setMAX_HEALTH(int MAX_HEALTH) {
-        this.MAX_HEALTH = MAX_HEALTH;
-    }
     public String getUsername() {
         return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
     }
     public String getPassword() {
         return password;
     }
-    public void setPassword(String password) {
-        this.password = password;
-    }
     public String getNickname() {
         return nickname;
-    }
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
     }
     public String getEmail() {
         return email;
     }
-    public void setEmail(String email) {this.email = email;}
-    public int getPoint() {
+    public void   setUsername(String username) {
+        this.username = username;
+    }
+    public void   setPassword(String password) {
+        this.password = password;
+    }
+    public void   setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+    public void   setEmail(String email) {this.email = email;}
+
+    public SecurityQuestions getMySecurityQuestion() {
+        return MySecurityQuestion;
+    }
+    public void   setMySecurityQuestion(SecurityQuestions mySecurityQuestion) {
+        MySecurityQuestion = mySecurityQuestion;
+    }
+    public String getMySecurityAnswer() {
+        return MySecurityAnswer;
+    }
+    public void   setMySecurityAnswer(String mySecurityAnswer) {
+        MySecurityAnswer = mySecurityAnswer;
+    }
+    public int    getMax_point() {
+        return max_point;
+    }
+    public void   setMax_point(int max_point) {
+        this.max_point = max_point;
+    }
+    public int    getGames_played() {
+        return games_played;
+    }
+    public void   setGames_played(int games_played) {
+        this.games_played = games_played;
+    }
+
+
+    public int  getMAX_HEALTH() {
+        return MAX_HEALTH;
+    }
+    public int  getPoint() {
         return point;
+    }
+    public int  getHealth() {
+        return health;
+    }
+    public void setMAX_HEALTH(int MAX_HEALTH) {
+        this.MAX_HEALTH = MAX_HEALTH;
     }
     public void setPoint(int point) {
         this.point = point;
-    }
-    public int getHealth() {
-        return health;
     }
     public void setHealth(int health) {
         this.health = health;
         checkHealth();
     }
+
     public void increaseHealth(int health) {
         this.health += health;
         checkHealth();
     }
-    public Farm getFarm() {
-        return farm;
-    }
-
     public void checkHealth() {
 
         if (this.health > MAX_HEALTH)
@@ -119,51 +146,32 @@ public class User {
         if (this.health < 0)
             this.health = 0;
     }
-    public int getPositionX() {
-        return positionX;
+
+
+    public Farm getFarm() {
+        return farm;
     }
     public void setPositionX(int positionX) {
         this.positionX = positionX;
     }
-    public int getPositionY() {
-        return positionY;
-    }
     public void setPositionY(int positionY) {
         this.positionY = positionY;
     }
+    public int  getPositionX() {
+        return positionX;
+    }
+    public int  getPositionY() {
+        return positionY;
+    }
 
-    public User getMarried() {
+    public User    getMarried() {
         return Married;
     }
-    public void setHealthUnlimited () {this.healthUnlimited = true;}
+    public void    setHealthUnlimited () {this.healthUnlimited = true;}
     public boolean isHealthUnlimited() {
         return healthUnlimited;
     }
 
-    public SecurityQuestions getMySecurityQuestion() {
-        return MySecurityQuestion;
-    }
-    public void setMySecurityQuestion(SecurityQuestions mySecurityQuestion) {
-        MySecurityQuestion = mySecurityQuestion;
-    }
-    public String getMySecurityAnswer() {
-        return MySecurityAnswer;
-    }
-    public void setMySecurityAnswer(String mySecurityAnswer) {
-        MySecurityAnswer = mySecurityAnswer;
-    }
-    public int getMax_point() {
-        return max_point;
-    }
-    public void setMax_point(int max_point) {
-        this.max_point = max_point;
-    }
-    public int getGames_played() {
-        return games_played;
-    }
-    public void setGames_played(int games_played) {
-        this.games_played = games_played;
-    }
 
 
     public BackPack getBackPack() {
@@ -222,16 +230,16 @@ public class User {
     }
 
 
-    public void increaseFarmingAbility(int amount) {
+    public void increaseFarmingAbility (int amount) {
         this.farmingAbility += amount;
     }
-    public void increaseFishingAbility(int amount) {
+    public void increaseFishingAbility (int amount) {
         this.fishingAbility += amount;
     }
     public void increaseForagingAbility(int amount) {
         this.foragingAbility += amount;
     }
-    public void increaseMiningAbility(int amount) {
+    public void increaseMiningAbility  (int amount) {
         this.miningAbility += amount;
     }
 
@@ -241,5 +249,25 @@ public class User {
 
     public String getHashPass() {
         return hashPass;
+    }
+
+    public boolean isCurrently_in_game() {
+        return currently_in_game;
+    }
+
+    public void setCurrently_in_game(boolean currently_in_game) {
+        this.currently_in_game = currently_in_game;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return username.equals(user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return username.hashCode();
     }
 }

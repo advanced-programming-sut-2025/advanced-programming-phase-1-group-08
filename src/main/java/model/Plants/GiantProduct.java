@@ -3,8 +3,10 @@ package model.Plants;
 import model.DateHour;
 import model.Enum.AllPlants.ForagingSeedsType;
 import model.Items;
-import model.Tile;
-import model.Walkable;
+import model.MapThings.Tile;
+import model.MapThings.Walkable;
+
+import java.util.ArrayList;
 
 import static model.App.bigMap;
 import static model.App.currentDate;
@@ -13,15 +15,19 @@ import static model.DateHour.getDayDifferent;
 
 public class GiantProduct extends Items {
 
+    private ArrayList<Tile> neighbors = new ArrayList<>();
     private final ForagingSeedsType type;
     private final DateHour birthDay;
+    private boolean isProtected;
     private DateHour lastWater;
     private int stage;
 
-    public GiantProduct (ForagingSeedsType type, DateHour currentDate) {
+    public GiantProduct (ForagingSeedsType type, DateHour currentDate, ArrayList<Tile> neighbors) {
         this.type = type;
         this.birthDay = currentDate.clone();
-        stage = 1;
+        isProtected = false;
+        setStage();
+        this.neighbors = neighbors;
     }
 
     public void setLastWater (DateHour dateHour) {
@@ -31,7 +37,7 @@ public class GiantProduct extends Items {
     public void setStage  () {
 
         int days = 0;
-        int defDays = getDayDifferent(currentDate, this.birthDay);
+        int defDays = getDayDifferent(this.birthDay, currentDate);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
             if (defDays > days && (days+this.type.getStageDate(i)) > defDays)
@@ -40,9 +46,14 @@ public class GiantProduct extends Items {
                 days += this.type.getStageDate(i);
         }
     }
+    public void setProtected(boolean aProtected) {
+
+        isProtected = aProtected;
+    }
+
     public boolean checkForDeath () {
 
-        return getDayDifferent(currentDate, lastWater) > 1;
+        return getDayDifferent(lastWater, currentDate) > 1;
     }
     public void delete () {
 
@@ -60,13 +71,14 @@ public class GiantProduct extends Items {
     }
 
 
-    public ForagingSeedsType getType() {
 
-        return type;
-    }
-    public String getIcon () {
+    public String   getIcon () {
 
         return BG_BRIGHT_PURPLE+type.getSymbolByLevel(stage)+RESET;
+    }
+    public boolean  isProtected() {
+
+        return isProtected;
     }
     public DateHour getBirthDay () {
 
@@ -76,6 +88,13 @@ public class GiantProduct extends Items {
 
         return this.lastWater;
     }
+    public ForagingSeedsType getType() {
 
+        return type;
+    }
+    public ArrayList<Tile>   getNeighbors() {
+
+        return neighbors;
+    }
 
 }

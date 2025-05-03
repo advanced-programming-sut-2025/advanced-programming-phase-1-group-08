@@ -1,5 +1,7 @@
 package model.Enum.AllPlants;
 
+import model.Enum.WeatherTime.Season;
+
 import static model.Color_Eraser.*;
 import static model.Enum.AllPlants.TreesSourceType.*;
 
@@ -52,14 +54,32 @@ public enum TreeType {
         this.icon2 = icon2;
     }
 
-    public String getIcon (int level) {
-        if (level < 4)
-            return this.icon1;
-        else
-            return this.icon2;
+    public String getIcon1() {
+
+        return icon1;
+    }
+    public String getIcon2() {
+
+        return icon2;
     }
     public String getDisplayName() {return displayName;}
     public TreesSourceType getSourceType() {return sourceType;}
     public TreesProductType getProductType() {return productType;}
     public int getHarvestYield() {return harvestYield;}
+    public static String getInformation (TreeType type) {
+
+        return BLUE+"Name :"+RESET + type.displayName +
+                BLUE+"\nFruit :"+RESET + type.productType.getDisplayName() +
+                BLUE+"\nSource : "+RESET + type.sourceType.getDisplayName() +
+                BLUE+"\nMature Icon   :"+RESET + type.icon2 +
+                BLUE+"\nSeedling Icon : "+RESET + type.icon1 +
+                BLUE+"\nFruit Harvest Cycle :"+RESET + type.harvestYield;
+    }
+
+    public static TreeType fromDisplayName(String displayName) {
+        for (TreeType type : TreeType.values())
+            if (type.getDisplayName().equalsIgnoreCase(displayName))
+                return type;
+        throw new IllegalArgumentException(RED+"wrong name!"+RESET);
+    }
 }

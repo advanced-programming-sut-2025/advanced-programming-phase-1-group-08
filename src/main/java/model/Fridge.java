@@ -1,5 +1,7 @@
 package model;
 
+import model.MapThings.GameObject;
+
 public class Fridge extends GameObject {
     //ArrayList<GameObject>
     private int x;

@@ -2,6 +2,7 @@ package model;
 
 import model.Enum.ItemType.AnimalProductType;
 import model.Enum.ItemType.AnimalType;
+import model.MapThings.GameObject;
 
 public class Animal extends GameObject {
 
