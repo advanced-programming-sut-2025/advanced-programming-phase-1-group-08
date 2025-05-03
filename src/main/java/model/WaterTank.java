@@ -3,6 +3,7 @@ package model;
 import model.Places.Farm;
 
 public class WaterTank extends GameObject {
+
         private int waterTank;
 
         public WaterTank(int waterTank) {

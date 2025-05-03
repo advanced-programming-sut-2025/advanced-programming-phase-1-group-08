@@ -1,42 +1,31 @@
 package model.Enum.ToolsType;
 
 public enum HoeType {
-    primaryHoe{
-        @Override
-        public int costEnergy() {
-            return -5;
-        }
-    },
 
-    copperyHoe{
-        @Override
-        public int costEnergy() {
-            return -4;
-        }
-    },
+    primaryHoe  ("Primary Hoe", -5),
 
-    ironHoe{
-        @Override
-        public int costEnergy() {
-            return -3;
-        }
-    },
+    copperyHoe  ("Coppery Hoe", -4),
 
-    goldenHoe{
-        @Override
-        public int costEnergy() {
-            return -2;
-        }
-    },
+    ironHoe     ("Iron Hoe",    -3),
 
-    iridiumHoe{
-        @Override
-        public int costEnergy() {
-            return -1;
-        }
-    };
+    goldenHoe   ("Golden Hoe",  -2),
 
-    public abstract int costEnergy();
+    iridiumHoe  ("Iridium Hoe", -1);
 
+    private final int energyCost;
+    private final String displayName;
 
+    HoeType(String displayName, int energyCost) {
+        this.displayName = displayName;
+        this.energyCost = energyCost;
+    }
+
+    public int getEnergyCost() {
+
+        return energyCost;
+    }
+    public String getDisplayName() {
+
+        return displayName;
+    }
 }

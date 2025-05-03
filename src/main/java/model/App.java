@@ -18,6 +18,8 @@ public class App {
     public static ArrayList<Tile> plowedTile = new ArrayList<>();
     public static List<HumanCommunications> relations = new ArrayList<>();
 
+    public static final int mapDimensions = 90;
+
     public static Weather tomorrowWeather;
     public static Weather currentWeather;
     public static DateHour currentDate;

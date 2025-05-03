@@ -2,81 +2,36 @@ package model.Enum.ToolsType;
 
 public enum WateringCanType {
 
-    PrimaryWateringCan{
-        @Override
-        public int costEnergy(boolean Farming) {
-            if (Farming){
-                return 4;
-            }
-            return 5;
-        }
+    PrimaryWateringCan  ("Primary Watering Can",-5, 40),
 
-        @Override
-        public int getInitialCapacity() {
-            return 40;
-        }
-    },
+    CopperyWateringCan  ("Coppery Watering Can",-4, 55),
 
-    CopperyWateringCan{
-        @Override
-        public int costEnergy(boolean Farming) {
-            if (Farming){
-                return 3;
-            }
-            return 4;
-        }
+    IronWateringCan     ("Iron Watering Can",   -3, 70),
 
-        @Override
-        public int getInitialCapacity() {
-            return 55;
-        }
-    },
+    GoldenWateringCan   ("Golden Watering Can", -2, 85),
 
-    IronWateringCan{
-        @Override
-        public int costEnergy(boolean Farming) {
-            if (Farming){
-                return 2;
-            }
-            return 3;
-        }
+    IridiumWateringCan  ("Iridium Watering Can",-1, 100);
 
-        @Override
-        public int getInitialCapacity() {
-            return 70;
-        }
-    },
+    private final String displayName;
+    private final int energyCost;
+    private final int capacity;
 
-    GoldenWateringCan{
-        @Override
-        public int costEnergy(boolean Farming) {
-            if (Farming){
-                return 1;
-            }
-            return 2;
-        }
+    WateringCanType(String displayName, int energyCost, int capacity) {
+        this.displayName = displayName;
+        this.energyCost = energyCost;
+        this.capacity = capacity;
+    }
 
-        @Override
-        public int getInitialCapacity() {
-            return 85;
-        }
-    },
+    public int getEnergyCost() {
 
-    IridiumWateringCan{
-        @Override
-        public int costEnergy(boolean Farming) {
-            if (Farming){
-                return 1;
-            }
-            return 1;
-        }
+        return energyCost;
+    }
+    public int getCapacity  () {
 
-        @Override
-        public int getInitialCapacity() {
-            return 100;
-        }
-    };
+        return capacity;
+    }
+    public String getDisplayName () {
 
-    public abstract int costEnergy(boolean Farming);
-    public abstract int getInitialCapacity();
+        return this.displayName;
+    }
 }

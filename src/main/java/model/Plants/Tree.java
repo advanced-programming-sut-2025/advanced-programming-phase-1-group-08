@@ -4,9 +4,12 @@ import model.DateHour;
 import model.Enum.AllPlants.TreeType;
 import model.Enum.AllPlants.TreesProductType;
 import model.GameObject;
+import model.Tile;
+import model.Walkable;
 
 import java.util.Date;
 
+import static model.App.bigMap;
 import static model.App.currentDate;
 import static model.DateHour.getDayDifferent;
 
@@ -14,6 +17,7 @@ public class Tree extends GameObject {
 
     private final TreeType type;
     private int stage;
+    private DateHour lastWater;
     private final DateHour birthDay;
 
 
@@ -41,9 +45,31 @@ public class Tree extends GameObject {
 
         return this.type.getIcon(stage);
     }
+    public boolean checkForDeath () {
+
+        return getDayDifferent(currentDate, lastWater) > 3;
+    }
+    public void delete () {
+
+        for (Tile tile : bigMap)
+            if (tile.getGameObject().equals(this))
+                tile.setGameObject(new Walkable());
+    }
+
 
     @Override
     public void turnByTurnAutomaticTask() {
         setStage();
+        if (checkForDeath())
+            delete();
+    }
+
+    public DateHour getLastWater() {
+
+        return lastWater;
+    }
+    public void setLastWater(DateHour lastWater) {
+
+        this.lastWater = lastWater;
     }
 }

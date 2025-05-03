@@ -4,9 +4,7 @@ import model.*;
 import model.Enum.AllPlants.*;
 import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Door;
-import model.Enum.ItemType.BarnORCageType;
-import model.Enum.ItemType.FishType;
-import model.Enum.ItemType.Quantity;
+import model.Enum.ItemType.*;
 import model.Enum.ToolsType.FishingPoleType;
 import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
@@ -27,6 +25,17 @@ import static model.SaveData.UserDataBase.findUserByUsername;
 public class GameController {
 
     Random rand = new Random();
+
+    public boolean isNeighbor(int x1, int y1, int x2, int y2) {
+        int [] dirx={0,0,1,1,1,-1,-1,-1};
+        int [] diry={1,-1,0,1,-1,0,1,-1};
+        for (int i=0 ; i<8 ; i++) {
+            if (x1 + dirx[i] == x2 && y1 + diry[i] == y2) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     public Tile getTileByDir (int dir) {
@@ -62,10 +71,11 @@ public class GameController {
         return null;
     }
 
-    public void creatInitialMine(int id, int x, int y) {
+
+    public void createInitialMine(int id, int x, int y){
         Farm farm = currentPlayer.getFarm();
         if (id == 1) {
-            Mine mine = new Mine();
+            Mine mine = new Mine(23, 2);
             door MineDoor = new door();
             MineDoor.setDoor(Door.Mine);
             MineDoor.setCharactor('D');
@@ -648,7 +658,7 @@ public class GameController {
             case FishingPole fishingPole -> new Result(true, "current tool: " + fishingPole.fishingPoleType);
             case Hoe hoe -> new Result(true, "current tool: " + hoe.hoeType);
             case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType);
-            case PiⅽkAxe piⅽkAxe -> new Result(true, "current tool: " + piⅽkAxe.pickAxeType);
+            case PickAxe pickAxe -> new Result(true, "current tool: " + pickAxe.pickAxeType);
             default -> new Result(true, "current tool: " + currentTool.getName());
         };
     }
@@ -665,8 +675,10 @@ public class GameController {
                 result.append(((Hoe) entry).hoeType).append("\n");
             } else if (entry instanceof WateringCan) {
                 result.append(((WateringCan) entry).wateringCanType).append("\n");
-            } else if (entry instanceof PiⅽkAxe) {
-                result.append(((PiⅽkAxe) entry).pickAxeType).append("\n");
+            } else if (entry instanceof PickAxe) {
+                result .append (((PickAxe) entry).pickAxeType).append("\n");
+            } else if (entry instanceof PickAxe) {
+                result.append(((PickAxe) entry).pickAxeType).append("\n");
             } else if (entry instanceof Tools) {
                 result.append(((Tools) entry).getName()).append("\n");
             }
@@ -1044,7 +1056,7 @@ public class GameController {
         if (animal==null) {
             return new Result(false , "animal not found!");
         }
-        animal.setFeed(true);
+        animal.setFeedToday(true);
         return new Result(true, "you fed "+name+" successfully!");
     }
 
@@ -1076,7 +1088,7 @@ public class GameController {
     public void calculateAnimalsFriendship() {// آخر روز کال میشه
         for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
             for (Animal animal : barnOrCage.animals) {
-                if (! animal.isFeed()){
+                if (! animal.isFeedToday()){
                     animal.increaseFriendShip(- 20);
                 }
                 if (! animal.isPetToday()) {
@@ -1085,10 +1097,128 @@ public class GameController {
                 if ( ! animalIsOnBarnOrCage(animal)) {
                     animal.increaseFriendShip(- 20);
                 }
+                animal.setFeedPreviousDay(animal.isFeedToday());
+                animal.setFeedToday(false);
+                if (currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod()) {
+                    animal.setLastProduceDay(currentDate.getDate());
+                }
+                else if (currentDate.getDate() - animal.getLastProduceDay() == -28 + animal.getType().getPeriod()) {
+                    animal.setLastProduceDay(currentDate.getDate());
+                }
+                animal.setRandomProduction(Math.random() + 0.5);
+                animal.setRandomQuantity(Math.random());
+                animal.setRandomChance(Math.random());
+                animal.setProductCollected(false);
             }
         }
     }
 
+    public boolean checkBigProduct(Animal animal) {
+        double possibility=( animal.getFriendShip() + (150 * animal.getRandomProduction()) ) / 1500;
+        return animal.getRandomChance() < possibility;
+    }
+
+    public void checkAnimalProduct(Animal animal) {
+        if (animal.getType().equals(AnimalType.dino)) {
+            animal.setProductType(AnimalProductType.dinosaurEgg);
+        }
+        if (animal.getType().equals(AnimalType.sheep)) {
+            animal.setProductType(AnimalProductType.sheeps_Wool);
+        }
+        //TODO truffle فراموش نشود
+        if (animal.getFriendShip() < 100 || ! checkBigProduct(animal)) {
+            switch (animal.getType()) {
+                case hen -> { animal.setProductType(AnimalProductType.Egg); }
+                case duck -> { animal.setProductType(AnimalProductType.duckEgg); }
+                case rabbit -> { animal.setProductType(AnimalProductType.rabbits_Wool);}
+                case cow -> { animal.setProductType(AnimalProductType.milk);}
+                case goat -> { animal.setProductType(AnimalProductType.goatMilk);}
+            }
+        }
+        else if (animal.getFriendShip() >= 100 && checkBigProduct(animal) ) {
+            switch (animal.getType()) {
+                case hen -> { animal.setProductType(AnimalProductType.bigEgg) ; }
+                case duck -> { animal.setProductType(AnimalProductType.duckFeather) ; }
+                case rabbit -> { animal.setProductType(AnimalProductType.rabbits_Foot) ;}
+                case cow -> { animal.setProductType(AnimalProductType.bigMilk);}
+                case goat -> { animal.setProductType(AnimalProductType.bigGoatMilk);}
+            }
+        }
+
+    }
+
+    public boolean checkPeriod(Animal animal) {
+        return currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod() || currentDate.getDate() - animal.getLastProduceDay() == -28 + animal.getType().getPeriod();
+    }
+
+    public Result getProductAnimals(String name) {
+        Animal animal=getAnimalByName(name);
+
+        if (! animal.isFeedPreviousDay()){
+            return new Result(false , "No Product because you didn't feed " + animal.getName() + " in previous day");
+        }
+        if (! checkPeriod(animal)) {
+            return new Result(false , "It's not time yet. This animal isn't ready to produce again");
+        }
+        if ( ! isNeighbor(currentPlayer.getPositionX() , currentPlayer.getPositionY() , animal.getPositionX() , animal.getPositionY())) {
+            return new Result(false , "The animal is not in Neighbor Tile");
+        }
+
+
+        double Quantity=((double) animal.getFriendShip() / 1000) * (0.5 * (1 + animal.getRandomProduction()));
+        Quantity quantity=productQuantity(Quantity);
+
+        Animalproduct animalproduct = new Animalproduct(animal.getProductType(), quantity);
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        inventory.Items.put(animalproduct , 1);
+        animal.setProductCollected(true);
+
+        return new Result(true , "product "+ animal.getProductType().getName() + "collected successfully");
+    }
+
+    public Result produces() {
+        StringBuilder result=new StringBuilder();
+        result.append("Produces :\n");
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animal : barnOrCage.animals) {
+                result.append(animal.getName()).append(",  Remaining Produces: ");
+                if (animal.isFeedPreviousDay() && checkPeriod(animal) && ! animal.isProductCollected()) {
+                    result.append(animal.getProductType().getName()).append(", ");
+
+                    double Quantity=((double) animal.getFriendShip() / 1000) * (0.5 * (1 + animal.getRandomProduction()));
+                    Quantity quantity=productQuantity(Quantity);
+
+                    result.append("Quantity: ").append(quantity.getName());
+
+                }
+                result.append("\n");
+            }
+        }
+        return new Result(true , result.toString());
+    }
+
+    public Result removeAnimal(Animal animal) {
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animal2 : barnOrCage.animals) {
+                if (animal.equals(animal2)) {
+                    barnOrCage.getAnimals().remove(animal2);
+                    return new Result(true , animal.getName() + " was sold successfully");
+                }
+            }
+        }
+        return null;
+    }
+
+    public Result sellAnimal(String name) {
+        Animal animal=getAnimalByName(name);
+        //TODO وقتی مغازه زده میشه باید اینجا رو بزنیم. فعلا قیمت اولیه حیوان را نداریم
+        if (animal == null) {
+            return new Result(false , "Animal not found");
+        }
+
+        return removeAnimal(animal);
+
+    }
 
     private void setEnergyInMorning () {
         for (User user : players) {
@@ -1123,9 +1253,68 @@ public class GameController {
 
         currentWeather = tomorrowWeather;
         tomorrowWeather = currentDate.getSeason().getWeather();
+
+    }
+    private void lightningStrike (Tile selected) {
+
+        GameObject object = selected.getGameObject();
+
+        if (object instanceof Tree)
+            selected.setGameObject(new ForagingMinerals(COAL));
+        else if (object instanceof ForagingSeeds)
+            selected.setGameObject(new Walkable());
+        else if (object instanceof Animal)
+            selected.setGameObject(new Walkable());
+
+    }
+    private Tile selectTileForThor (Farm farm) {
+
+        GreenHouse greenHouse = farm.getGreenHouse();
+
+        List<Tile> matchingTiles = farm.Farm.stream()
+                .filter(tile -> tile.getGameObject() instanceof Tree ||
+                        tile.getGameObject() instanceof ForagingSeeds ||
+                        !(tile.getX() >= greenHouse.getCoordinateX() && tile.getY() <= greenHouse.getCoordinateY() &&
+                                tile.getX() <= greenHouse.getCoordinateX()+greenHouse.getLength() &&
+                                tile.getY() >= greenHouse.getCoordinateY()+ greenHouse.getWidth()))
+                                .toList();
+
+        Random random = new Random();
+        return matchingTiles.get(random.nextInt(matchingTiles.size()));
     }
     private void doWeatherTask () {
 
+        if (currentWeather.equals(Weather.Rainy) || currentWeather.equals(Weather.Stormy)) {
+            for (Tile tile : bigMap) {
+                GameObject object = tile.getGameObject();
+
+                if (object instanceof Tree)
+                    ((Tree) object).setLastWater(currentDate);
+                if (object instanceof GiantProduct)
+                    ((GiantProduct) object).setLastWater(currentDate);
+                if (object instanceof ForagingSeeds)
+                    ((ForagingSeeds) object).setLastWater(currentDate);
+            }
+        }
+        if (currentWeather.equals(Weather.Stormy)) {
+
+            Random random1 = new Random();
+
+            if (random1.nextInt(2) == 1)
+                lightningStrike(selectTileForThor(players.getFirst().getFarm()));
+
+            random1 = new Random();
+            if (random1.nextInt(2) == 1)
+                lightningStrike(selectTileForThor(players.get(1).getFarm()));
+
+            random1 = new Random();
+            if (random1.nextInt(2) == 1)
+                lightningStrike(selectTileForThor(players.get(2).getFarm()));
+
+            random1 = new Random();
+            if (random1.nextInt(2) == 1)
+                lightningStrike(selectTileForThor(players.get(3).getFarm()));
+        }
     }
     private boolean checkForDeath () {
 
@@ -1142,8 +1331,13 @@ public class GameController {
 
                     ForagingSeedsType type = ((MixedSeeds) entry).getSeeds(currentDate.getSeason());
                     inventory.Items.put(entry.getKey(), entry.getValue() - 1);
-                    Tile tile = getTileByDir(Integer.parseInt(dir));
-                    tile.setGameObject(new ForagingSeeds(type, currentDate));
+                    Tile tile = getTileByDir(dir);
+
+                    if (plowedTile.contains(tile)) {
+                        tile.setGameObject(new ForagingSeeds(type, currentDate));
+                        plowedTile.remove(tile);
+                    } else
+                        return new Result(false, RED+"First, you must plow the tile."+RESET);
 
                 } else
                     return new Result(false, RED + "You don't have Mixed seed!" + RESET);
@@ -1160,14 +1354,52 @@ public class GameController {
                 if (inventory.Items.get(entry) > 0) {
 
                     inventory.Items.put(entry.getKey(), entry.getValue() - 1);
-                    Tile tile = getTileByDir(Integer.parseInt(dir));
-                    tile.setGameObject(new ForagingSeeds(type, currentDate));
+                    Tile tile = getTileByDir(dir);
+
+                    if (plowedTile.contains(tile)) {
+                        tile.setGameObject(new ForagingSeeds(type, currentDate));
+                        plowedTile.remove(tile);
+                    } else
+                        return new Result(false, RED+"First, you must plow the tile."+RESET);
 
                 } else
                     return new Result(false, RED + "You don't have Mixed seed!" + RESET);
             }
         return new Result(false, PURPLE+" اینونتوری و ریموو ایتم خیلی بدن "+RESET);
     }
+    private void checkForGiant () {
+
+        for (int i = 0; i < 89 ; i++)
+            for (int j = 0; j < 89 ; j++) {
+
+                Tile tile1 = getTileByCoordinates(i, j);
+                if (tile1.getGameObject() instanceof ForagingSeeds)
+                    if (((ForagingSeeds) tile1.getGameObject()).getType().canGrowGiant()) {
+
+                        ForagingSeedsType type = ((ForagingSeeds) tile1.getGameObject()).getType();
+                        Tile tile2 = getTileByCoordinates(i+1, j);
+                        Tile tile3 = getTileByCoordinates(i, j+1);
+                        Tile tile4 = getTileByCoordinates(i+1, j+1);
+
+                        if (tile2.getGameObject() instanceof ForagingSeeds &&
+                            tile3.getGameObject() instanceof ForagingSeeds &&
+                            tile4.getGameObject() instanceof ForagingSeeds)
+
+                            if ((((ForagingSeeds) tile2.getGameObject()).getType() == type) &&
+                                    (((ForagingSeeds) tile3.getGameObject()).getType() == type) &&
+                                    (((ForagingSeeds) tile4.getGameObject()).getType() == type)) {
+
+                                GiantProduct giantProduct = new GiantProduct(
+                                        type, ((ForagingSeeds) tile1.getGameObject()).getBirthDay());
+                                tile1.setGameObject(giantProduct);
+                                tile2.setGameObject(giantProduct);
+                                tile3.setGameObject(giantProduct);
+                                tile4.setGameObject(giantProduct);
+                            }
+                    }
+            }
+    }
+
     private void createRandomForaging () {
 
         for (Tile tile : bigMap) {
@@ -1254,6 +1486,22 @@ public class GameController {
         plowedTile.add(tile);
         return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
     }
+    public Result useWateringCan (int dir) {
+
+        Tile tile = getTileByDir(dir);
+
+        if (!(currentPlayer.currentTool instanceof WateringCan))
+            return null;
+
+        if (tile.getGameObject() instanceof Lake || tile.getGameObject() instanceof WaterTank) {
+            ((WateringCan) currentPlayer.currentTool).makeFullWater();
+            return new Result(true, BLUE+"The tank is now full. Time to water" +
+                    " those plants!\uD83D\uDEB0"+RESET);
+        }
+        else
+            return new Result(false, RED+"This place is bone dry.\uD83C\uDF35"+RESET);
+    }
+
 
     public void startNewGame (String input) {
 
@@ -1389,9 +1637,13 @@ public class GameController {
         doSeasonAutomaticTask();
         passedOfTime(0, (24 - currentDate.getHour()) + 9);
         setEnergyInMorning();
+        createRandomForaging();
+        createRandomMinerals();
 
         for (Tile tile : bigMap)
             tile.getGameObject().startDayAutomaticTask();
+
+        doWeatherTask();
 
         // TODO بازیکنا برن خونشون , غش کردن
         // TODO محصول کاشته بشه و رشد محصولا یه روز بره بالاتر
@@ -1573,6 +1825,63 @@ public class GameController {
 
         return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
         }
+    }
+    public Result WateringPlant (String direction) {
+
+        int dir;
+
+        try {
+            dir = Integer.parseInt(direction);
+        } catch (Exception e) {
+            return new Result(false, RED+"Direction is incorrect"+RESET);
+        }
+
+        if (!(currentPlayer.currentTool instanceof WateringCan))
+            return new Result(false, RED+"سطل اب رو بردار دوست من"+RESET);
+
+        if (!currentPlayer.isHealthUnlimited())
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+
+        Tile tile = getTileByDir(dir);
+        GameObject object = tile.getGameObject();
+
+        if (((WateringCan) currentPlayer.currentTool).getReminderCapacity() < 1)
+            return new Result(false, RED+"ظرفت خالیه مشتی"+RESET);
+
+        if (object instanceof ForagingSeeds) {
+
+            ((WateringCan) currentPlayer.currentTool).decreaseWater(1);
+            ((ForagingSeeds) object).setLastWater(currentDate);
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
+
+        } else if (object instanceof Tree) {
+
+            ((WateringCan) currentPlayer.currentTool).decreaseWater(1);
+            ((Tree) object).setLastWater(currentDate);
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
+
+        } else if (object instanceof GiantProduct) {
+
+            ((WateringCan) currentPlayer.currentTool).decreaseWater(1);
+            ((GiantProduct) object).setLastWater(currentDate);
+            currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
+        }
+
+        return new Result(false, RED+"No plant in here!"+RESET);
+    }
+    public Result thor (String x, String y) {
+
+        int x1 = Integer.parseInt(x);
+        int y1 = Integer.parseInt(y);
+
+        if (x1 < currentPlayer.getFarm().) // میخوام چک کنم ابعاد تو مزرغش باشه
+            return new Result(false, );
+
+        lightningStrike(getTileByCoordinates(x1, y1));
+        return new Result(true, BLUE+"A lightning bolt hits!"+RESET);
     }
 
 

@@ -16,8 +16,8 @@ public enum AnimalProductType {
     milk("Milk" , 125),
     bigMilk("Big Milk", 190),
 
-    cowMilk("Cow Milk" , 225),
-    bigCowMilk("Big Cow Milk" , 345),
+    goatMilk("Cow Milk" , 225),
+    bigGoatMilk("Big Cow Milk" , 345),
 
     sheeps_Wool("Sheep's Wool" , 340),
 

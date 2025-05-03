@@ -1,27 +1,36 @@
 package model;
 
+import model.Enum.ItemType.AnimalProductType;
 import model.Enum.ItemType.AnimalType;
 
 public class Animal extends GameObject {
 
     private AnimalType type;
+    private AnimalProductType productType;
     private int FriendShip;
     private final String name;
     private int positionX;
     private int positionY;
     private int lastProduceDay;
-    boolean isFeed;
-    boolean isPetToday;
-    boolean spentNightOutside;
+    private double randomProduction;
+    private double randomQuantity;
+    private double randomChance;
+    private boolean isFeedToday;
+    private boolean isFeedPreviousDay;
+    private boolean isPetToday;
+    private boolean spentNightOutside;
+    private boolean productCollected;
 
-    public Animal(AnimalType type,int friendShip, String name, boolean isFeed, boolean isPetToday, boolean spentNightOutside, int day ) {
+    public Animal(AnimalType type,int friendShip, String name, boolean isFeed, boolean isFeedPreviousDay, boolean isPetToday, boolean spentNightOutside, int day ) {
         this.type = type;
         this.FriendShip = friendShip;
         this.name = name;
-        this.isFeed = isFeed;
+        this.isFeedToday = isFeed;
         this.isPetToday = isPetToday;
         this.spentNightOutside = spentNightOutside;
         this.lastProduceDay=day;
+        this.isFeedPreviousDay = isFeedPreviousDay;
+        productCollected=false;
     }
 
     public String getName() {
@@ -36,12 +45,12 @@ public class Animal extends GameObject {
     public void increaseFriendShip( int amount ) {
         FriendShip += amount;
     }
-    public boolean isFeed() {
-        return isFeed;
+    public boolean isFeedToday() {
+        return isFeedToday;
     }
 
-    public void setFeed(boolean feed) {
-        isFeed = feed;
+    public void setFeedToday(boolean feedToday) {
+        isFeedToday = feedToday;
     }
 
     public boolean isPetToday() {
@@ -76,5 +85,48 @@ public class Animal extends GameObject {
 
     public void setLastProduceDay(int lastProduceDay) {
         this.lastProduceDay = lastProduceDay;
+    }
+
+    public boolean isFeedPreviousDay() {
+        return isFeedPreviousDay;
+    }
+
+    public void setFeedPreviousDay(boolean feedPreviousDay) {
+        isFeedPreviousDay = feedPreviousDay;
+    }
+
+    public void setProductCollected(boolean productCollected) {
+        this.productCollected = productCollected;
+    }
+    public boolean isProductCollected() {
+        return productCollected;
+    }
+
+    public double getRandomProduction() {
+        return randomProduction;
+    }
+    public void setRandomProduction(double randomProduction) {
+        this.randomProduction = randomProduction;
+    }
+    public double getRandomQuantity() {
+        return randomQuantity;
+    }
+    public void setRandomQuantity(double randomQuantity) {
+        this.randomQuantity = randomQuantity;
+    }
+
+    public double getRandomChance() {
+        return randomChance;
+    }
+    public void setRandomChance(double randomChance) {
+        this.randomChance = randomChance;
+    }
+
+    public AnimalProductType getProductType() {
+        return productType;
+    }
+
+    public void setProductType(AnimalProductType productType) {
+        this.productType = productType;
     }
 }

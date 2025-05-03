@@ -24,4 +24,8 @@ public class BarnOrCage extends GameObject {
     public BarnORCageType getBarnORCageType() {
         return barnORCageType;
     }
+
+    public ArrayList<Animal> getAnimals() {
+        return animals;
+    }
 }
