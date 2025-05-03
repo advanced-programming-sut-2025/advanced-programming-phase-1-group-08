@@ -6,7 +6,12 @@ import java.util.regex.Pattern;
 public enum GameMenuCommands {
 
     makeNewGame   ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
+    nextTurn      ("\\s(?i)*next\\s*turn\\s*"),
     friendships   ("\\s*(?i)friendships\\s*"),
+    talking       ("\\s*(?i)talk\\s*-u\\s*(?<username>\\S+)-m\\s*(?<message>.+)\\s*"),
+    talkHistory   ("\\s*(?i)talk\\s*history\\s*(?<username>.+)\\s*"),
+    hug           ("\\s*(?i)hug\\s*-u\\s*(?<username>.+)\\s*"),
+    giveFlower    ("\\s*(?i)flower\\s*-u\\s*(?<username>.+)\\s*"),
     showTime      ("\\s*(?i)time\\s*"),
     showDate      ("\\s*(?i)date\\s*"),
     showSeason    ("\\s*(?i)season\\s*"),

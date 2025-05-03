@@ -27,8 +27,23 @@ public class GameMenu implements AppMenu {
         if (GameMenuCommands.makeNewGame.getMather(input) != null)
             controller.startNewGame(input);
 
+        else if (GameMenuCommands.nextTurn.getMather(input) != null)
+            controller.nextTurn();
+
         else if (GameMenuCommands.friendships.getMather(input) != null)
             controller.DisplayFriendships();
+
+        else if (GameMenuCommands.talking.getMather(input) != null)
+            controller.talking(input);
+
+        else if (GameMenuCommands.hug.getMather(input) != null)
+            controller.hug(input);
+
+        else if (GameMenuCommands.giveFlower.getMather(input) != null)
+            controller.giveFlowers(input);
+
+        else if (GameMenuCommands.talkHistory.getMather(input) != null)
+            controller.DisplayingTalkHistory(input);
 
         else if (GameMenuCommands.showTime.getMather(input) != null)
             System.out.println(controller.showTime());

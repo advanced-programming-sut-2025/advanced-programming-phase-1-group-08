@@ -447,7 +447,7 @@ public class GameController {
         }
         for (User user : players) {
             if (user.getFarm().equals(farm)){
-                if (!user.getMarried().equals(currentPlayer) && !user.equals(currentPlayer)){
+                if (!user.getSpouse().equals(currentPlayer) && !user.equals(currentPlayer)){
                     return new Result(false,"you can't go to this farm");
                 }
             }
@@ -1621,6 +1621,79 @@ public class GameController {
             if (f.getPlayer1().getUsername().equals(targetName) || f.getPlayer2().getUsername().equals(targetName))
                 f.printInfo();
         }
+    }
+    public void talking (String input) {
+        String destinationUsername = GameMenuCommands.talking.getMather(input).group("username");
+        String message = GameMenuCommands.talking.getMather(input).group("message");
+        if (!players.contains(findUserByUsername(destinationUsername))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (destinationUsername.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(destinationUsername));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+        Result result = f.talk(message);
+        System.out.println(result);
+    }
+    public void DisplayingTalkHistory (String input) {
+        String username = GameMenuCommands.talkHistory.getMather(input).group("username");
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+        Result result = f.talkingHistory();
+        System.out.println(result);
+    }
+    public void hug (String input) {
+        String username = GameMenuCommands.hug.getMather(input).group("username");
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Hug " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+        Result result = f.Hug();
+        System.out.println(result);
+    }
+    public void giveFlowers (String input) {
+        String username = GameMenuCommands.giveFlower.getMather(input).group("username");
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't give Flower to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+        Result result = f.buyFlowers();
+        System.out.println(result);
     }
     public void loadGame () {
         // TODO ذخیره جزییات بازی و لود بازی

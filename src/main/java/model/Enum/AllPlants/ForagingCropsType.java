@@ -1,13 +1,14 @@
 package model.Enum.AllPlants;
 
 import model.Enum.WeatherTime.Season;
+import model.Items;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static model.Color_Eraser.*;
 
-public enum ForagingCropsType {
+public enum ForagingCropsType extends Items {
 
     CommonMushroom  ("Common Mushroom", 40, 38, BG_RED+BLACK+BOLD+"C"+RESET,
             List.of(Season.Spring, Season.Fall, Season.Summer, Season.Winter)),

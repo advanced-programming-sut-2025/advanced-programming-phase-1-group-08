@@ -28,7 +28,7 @@ public class User {
     private int health;
     private int MAX_HEALTH;
     private Tile SleepTile;
-    private User Married;  // شخصی که باهاش ازدواج کرده
+    private User Spouse;  // شخصی که باهاش ازدواج کرده
     private boolean healthUnlimited;
 
 
@@ -135,8 +135,8 @@ public class User {
         this.positionY = positionY;
     }
 
-    public User getMarried() {
-        return Married;
+    public User getSpouse() {
+        return Spouse;
     }
     public void setHealthUnlimited () {this.healthUnlimited = true;}
     public boolean isHealthUnlimited() {

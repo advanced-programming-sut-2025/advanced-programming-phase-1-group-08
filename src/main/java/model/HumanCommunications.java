@@ -1,7 +1,7 @@
 package model;
 
-import Controller.GameController;
-import Controller.GameController.*;
+import model.Enum.AllPlants.ForagingCropsType;
+import model.Plants.ForagingCrops;
 
 import java.util.*;
 
@@ -47,8 +47,8 @@ public class HumanCommunications {
     public User getPlayer2() {
         return player2;
     }
-
-    public int getLevel() {
+    //TODO وقتی مکانیزم کاهش لول رو زدی یادت باشه این بولین های اول رو فالس کنی با کم شدن لول
+    public void updateLevel() {
         if (FriendshipLevel == 0 && getXP() >= 100) {
             increaseLevel();
             setXP(getXP() - 100);
@@ -65,6 +65,9 @@ public class HumanCommunications {
             marry();
             setXP(getXP() - 400);
         }
+    }
+    public int getLevel() {
+        updateLevel();
         return FriendshipLevel;
     }
     public void increaseLevel() {
@@ -76,74 +79,148 @@ public class HumanCommunications {
     }
 
     // LEVEL ZERO TASKS
-    public void talk(String text) {
+    public Result talk(String text) {
+
+        User me = currentPlayer;
+        User other;
+        if (player1.getUsername().equals(currentPlayer.getUsername()))
+            other = player2;
+        else
+            other = player1;
+
         if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-            System.out.println("You Should " + RED+"Get Closer"+RESET + " in Order to Talk to " + player2 + "!");
-            return;
+            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Talk to " + other.getNickname() + "!"+RESET);
         }
 
         addXP(10);
 
-        Set<User> key = new HashSet<>(Arrays.asList(player1, player2));
+        Set<User> key = new HashSet<>(Arrays.asList(me, other));
         conversations.putIfAbsent(key, new ArrayList<>());
-        conversations.get(key).add(new MessageHandling(player1, player2, text));
+        conversations.get(key).add(new MessageHandling(me, other, text));
 
+        return new Result(true, GREEN+"You Sent a Message to " + other + "."+RESET);
     }
-    public void talkingHistory() {
+    public Result talkingHistory() {
         Set<User> key = new HashSet<>(Arrays.asList(player1, player2));
         List<MessageHandling> messages = conversations.getOrDefault(key, new ArrayList<>());
         System.out.println("📜 Chat between " + player1.getNickname() + " and " + player2.getNickname() + ":");
         for (MessageHandling m : messages) {
             m.print();
         }
+        return new Result(true, GREEN+"Successfully Displayed."+RESET);
     }
-    public void trade() {
+    public Result trade(String type, String iGive, int iGiveAmount, String iGet, int iGetAmount) {
+        User me = currentPlayer;
+        User other;
+        if (player1.getUsername().equals(currentPlayer.getUsername()))
+            other = player2;
+        else
+            other = player1;
 
-    }
+        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
+            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Send Trade Offer to " + other.getNickname() + "!"+RESET);
+        }
+
+
+    } //TODO اگه بازیکن مورد نظر وجود نداشت پیغام مناسب چاپ بشه و اگه مقدار یا آیتم نامعتبر بودن ارور بده
 
     // LEVEL ONE TASKS
-    public void sendGifts() {
+    public Result sendGifts() {
+        User me = currentPlayer;
+        User other;
+        if (player1.getUsername().equals(currentPlayer.getUsername()))
+            other = player2;
+        else
+            other = player1;
+
         if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-            System.out.println("You Should " + RED+"Get Closer"+RESET + " in Order to Send Gift to " + player2 + "!");
-            return;
+            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Send Gift to " + other.getNickname() + "!"+RESET);
         }
         if (getLevel() < 1) {
-            System.out.println("You can't Send Gifts in your Current " + RED+"Friendship Level"+RESET + ".");
-            return;
+
+            return new Result(false, RED+"You can't Send Gifts in your Current " + RED+"Friendship Level"+RESET + "."+RESET);
         }
 
         //TODO
     }
 
     // LEVEL TWO TASKS
-    public void Hug() {
+    public Result Hug() {
+
+        User me = currentPlayer;
+        User other;
+        if (player1.getUsername().equals(currentPlayer.getUsername()))
+            other = player2;
+        else
+            other = player1;
+
         if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-            System.out.println("You Should " + RED+"Get Closer"+RESET + " in Order to Hug " + player2 + "!");
-            return;
+            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Hug " + other.getNickname() + "!"+RESET);
         }
         if (getLevel() < 2) {
-            System.out.println("You can't Hug in your Current " + RED+"Friendship Level"+RESET + ".");
-            return;
+            return new Result(false, RED+"You can't Hug in your Current " + RED+"Friendship Level"+RESET + "."+RESET);
         }
 
-        System.out.println(GREEN+"You Hugged " + player2 + "."+RESET);
+
+
         addXP(60);
         getLevel(); // to get Updated
+        return new Result(true, GREEN+"You Hugged " + other.getNickname() + "."+RESET);
     }
-    public void buyFlowers() {
+    public Result buyFlowers() {
+        User other;
+        if (player1.getUsername().equals(currentPlayer.getUsername()))
+            other = player2;
+        else
+            other = player1;
+
+        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Inventory otherInventory = other.getBackPack().inventory;
+
         if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-            System.out.println("You Should " + RED+"Get Closer"+RESET + " in Order to Buy Flower for " + player2 + "!");
-            return;
+            return new Result(false, RED+"You Should Get Closer in Order to Buy Flower for " + other.getNickname() + "!"+RESET);
         }
         if (getLevel() < 2) {
-            System.out.println("You can't Buy Flower in your Current " + RED+"Friendship Level"+RESET + ".");
-            return;
+            return new Result(false, RED+"You can't Buy Flower in your Current " + RED+"Friendship Level"+RESET + "."+RESET);
         }
-        //TODO
+
+        boolean IHaveDandelions = false;
+        for (Map.Entry <Items , Integer> entry : myInventory.Items.entrySet() ) {
+            if (entry instanceof ForagingCrops) {
+                if (((ForagingCrops) entry).getType().equals(ForagingCropsType.Dandelion)) {
+                    IHaveDandelions = true;
+                    myInventory.Items.put(entry.getKey(), entry.getValue() - 1);
+                    if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
+                    break;
+                }
+            }
+        }
+        if (!IHaveDandelions)
+            return new Result(false, RED+"You Don't Have Dandelions to Give!"+RESET);
+
+
+        for (Map.Entry <Items , Integer> entry : otherInventory.Items.entrySet() ) {
+            if (entry instanceof ForagingCrops) {
+                if (((ForagingCrops)entry).getType().equals(ForagingCropsType.Dandelion)) {
+                    otherInventory.Items.put(entry.getKey(), entry.getValue() + 1);
+                    return new Result(true, GREEN+"You Gave Dandelions to " + other.getNickname()+RESET);
+                }
+            }
+        }
+
+        otherInventory.Items.put(new ForagingCrops(ForagingCropsType.Dandelion), 1);
+        return new Result(true, GREEN+"You Gave Dandelions to " + other.getNickname()+RESET);
     }
 
     // LEVEL THREE TASKS
     public void propose() {
+        User me = currentPlayer;
+        User other;
+        if (player1.getUsername().equals(currentPlayer.getUsername()))
+            other = player2;
+        else
+            other = player1;
+
         // TODO جنسیت هاشونو چک کن
 
         if (getLevel() < 3) {
@@ -154,7 +231,9 @@ public class HumanCommunications {
     }
 
     // LEVEL FOUR
-    public void marry() {
+    public void marry() { //spouse!!!
+
+
         FriendshipLevel = 4;
         //TODO زمین ها و پولهاشون مال هردو میشه
     }
