@@ -236,7 +236,7 @@ public class GameController {
         for (int i=0 ; i<30 ;i++){
             for (int j=0 ; j<30 ; j++) {
                 if (i>=23 && i<29 && j>=2 && j<8){
-                    creatInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(1<i && i<7 && j>22 && j<29){
                     creatInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
@@ -502,10 +502,10 @@ public class GameController {
                 result += ((FishingPole) entry).getName() +" "+ ((FishingPole) entry).fishingPoleType + "\n";
             }
             else if (entry instanceof Hoe){
-                result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).hoeType + "\n";
+                result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).getType() + "\n";
             }
-            else if (entry instanceof PiⅽkAxe){
-                result += ((PiⅽkAxe) entry).getName() +" "+ ((PiⅽkAxe) entry).pickAxeType +"\n";
+            else if (entry instanceof PickAxe){
+                result += ((PickAxe) entry).getName() +" "+ ((PickAxe) entry).pickAxeType +"\n";
             }
             else if (entry instanceof WateringCan){
                 result += ((WateringCan) entry).getName() +" "+ ((WateringCan) entry).wateringCanType + "\n";
@@ -613,25 +613,25 @@ public class GameController {
                 }
             }
             else if (entry instanceof FishingPole){
-                if (((FishingPole) entry).fishingPoleType.equals(name)){
+                if (((FishingPole) entry).fishingPoleType.getName().equals(name)){
                     currentPlayer.currentTool=(Tools) entry;
                     return new Result(true,"now current tool is "+name);
                 }
             }
             else if (entry instanceof Hoe){
-                if (((Hoe) entry).hoeType.equals(name)){
+                if (((Hoe) entry).getType().getDisplayName().equals(name)){
                     currentPlayer.currentTool=(Tools) entry;
                     return new Result(true,"now current tool is "+name);
                 }
             }
-            else if (entry instanceof PiⅽkAxe){
-                if (((PiⅽkAxe) entry).pickAxeType.equals(name)){
+            else if (entry instanceof PickAxe){
+                if (((PickAxe) entry).pickAxeType.equals(name)){
                     currentPlayer.currentTool=(Tools) entry;
                     return new Result(true,"now current tool is "+name);
                 }
             }
             else if (entry instanceof WateringCan){
-                if (((WateringCan) entry).wateringCanType.equals(name)){
+                if (((WateringCan) entry).wateringCanType.getDisplayName().equals(name)){
                     currentPlayer.currentTool=(Tools) entry;
                     return new Result(true,"now current tool is "+name);
                 }
@@ -654,7 +654,7 @@ public class GameController {
             case null -> new Result(false, "there is no current tool in your hands");
             case Axe axe -> new Result(true, "current tool: " + axe.axeType);
             case FishingPole fishingPole -> new Result(true, "current tool: " + fishingPole.fishingPoleType);
-            case Hoe hoe -> new Result(true, "current tool: " + hoe.hoeType);
+            case Hoe hoe -> new Result(true, "current tool: " + hoe.getType());
             case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType);
             case PickAxe pickAxe -> new Result(true, "current tool: " + pickAxe.pickAxeType);
             default -> new Result(true, "current tool: " + currentTool.getName());
@@ -670,13 +670,11 @@ public class GameController {
             } else if (entry instanceof FishingPole) {
                 result.append(((FishingPole) entry).fishingPoleType).append("\n");
             } else if (entry instanceof Hoe) {
-                result.append(((Hoe) entry).hoeType).append("\n");
+                result.append(((Hoe) entry).getType().getDisplayName()).append("\n");
             } else if (entry instanceof WateringCan) {
                 result.append(((WateringCan) entry).wateringCanType).append("\n");
             } else if (entry instanceof PickAxe) {
                 result .append (((PickAxe) entry).pickAxeType).append("\n");
-            } else if (entry instanceof PickAxe) {
-                result.append(((PickAxe) entry).pickAxeType).append("\n");
             } else if (entry instanceof Tools) {
                 result.append(((Tools) entry).getName()).append("\n");
             }
@@ -955,7 +953,7 @@ public class GameController {
         for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
             for (Animal animal : barnOrCage.animals){
                 result.append(animal.getName()).append(" Friendship: ").append(animal.getFriendShip()).append(" petToday: ")
-                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeed()).append("\n");
+                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeedToday()).append("\n");
             }
         }
         return new Result(true, result.toString());

@@ -1,5 +1,8 @@
 package model.Enum.AllPlants;
 
+import model.App;
+import model.App.*;
+import model.Enum.ItemType.MarketType;
 import model.Enum.WeatherTime.Season;
 
 import java.util.ArrayList;
@@ -12,7 +15,7 @@ import static model.Enum.AllPlants.CropsType.*;
 public enum ForagingSeedsType {
 
     JazzSeeds       ( "Jazz Seeds",       true, BlueJazz,
-            4, false, new int[]{1, 2, 2, 2}  ) {
+            4, false, new int[]{1, 2, 2, 2},5,5  ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -26,9 +29,29 @@ public enum ForagingSeedsType {
             else
                 return GREEN+"j"+RESET;
         }
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 37;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                        return 30;
+                    }
+                    return 45;
+                }
+            }
+            return -1;
+        }
     },
     CarrotSeeds     ( "Carrot Seeds",     true, Carrot,
-            3, false, new int[]{1, 1, 1,}     ) {
+            3, false, new int[]{1, 1, 1,} ,10,0  ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -42,9 +65,24 @@ public enum ForagingSeedsType {
             else
                 return ORANGE+"c"+RESET;
         }
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 50;}
+                case PierrGeneralStore -> {return -1;}
+            }
+            return -1;
+        }
     },
     CauliflowerSeeds( "Cauliflower Seeds",true, Cauliflower,
-            5, true, new int[]{1, 2, 4, 4, 1}) {
+            5, true, new int[]{1, 2, 4, 4, 1} , 5,5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -58,9 +96,28 @@ public enum ForagingSeedsType {
             else
                 return GREEN+"f"+RESET;
         }
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 100;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                        return 80;
+                    }
+                    return 120;
+                }
+            }
+            return -1;
+        }
     },
     CoffeeBean      ( "Coffee Bean",       false, CropsType.CoffeeBean,
-            5, false, new int[]{1, 2, 2, 3, 2}) {
+            5, false, new int[]{1, 2, 2, 3, 2} , 1, 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -74,9 +131,22 @@ public enum ForagingSeedsType {
             else
                 return BRIGHT_BROWN+"f"+RESET;
         }
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 200;}
+                default -> {return -1 ;}
+            }
+        }
     },
     GarlicSeeds     ( "JGarlic Seeds",    true, Garlic,
-            4, false, new int[]{1, 1, 1, 1}) {
+            4, false, new int[]{1, 1, 1, 1} ,0 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -90,9 +160,27 @@ public enum ForagingSeedsType {
             else
                 return WHITE+"g"+RESET;
         }
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                        return 40;
+                    }
+                    return 60;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     BeanStarter     ( "Bean Starter",     false, GreenBean,
-            5, false, new int[]{1, 1, 1, 3, 4}) {
+            5, false, new int[]{1, 1, 1, 3, 4} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -106,9 +194,28 @@ public enum ForagingSeedsType {
             else
                 return GREEN+"b"+RESET;
         }
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 75;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                        return 60;
+                    }
+                    return 90;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     KaleSeeds       ( "Kale Seeds",       true, Kale,
-            4, false, new int[]{1, 2, 2, 1}) {
+            4, false, new int[]{1, 2, 2, 1} ,5,5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -122,9 +229,28 @@ public enum ForagingSeedsType {
             else
                 return GREEN+"k"+RESET;
         }
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 87;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                        return 70;
+                    }
+                    return 105;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     ParsnipSeeds    ( "Parsnip Seeds",    true, Parsnip,
-            4, false, new int[]{1, 1, 1, 1}) {
+            4, false, new int[]{1, 1, 1, 1} ,5, 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -138,9 +264,30 @@ public enum ForagingSeedsType {
             else
                 return WHITE+"p"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 25;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                        return 20;
+                    }
+                    return 30;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     PotatoSeeds     ( "Potato Seeds",     true, Potato,
-            5, false, new int[]{1, 1, 1, 2, 1}) {
+            5, false, new int[]{1, 1, 1, 2, 1} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -154,9 +301,30 @@ public enum ForagingSeedsType {
             else
                 return BRIGHT_BROWN+"p"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 62;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                        return 50;
+                    }
+                    return 75;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     RhubarbSeeds    ( "Rhubarb Seeds",    true, Rhubarb,
-            5, false, new int[]{2, 2, 2, 3, 4}) {
+            5, false, new int[]{2, 2, 2, 3, 4} , 5 , 0) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -170,9 +338,24 @@ public enum ForagingSeedsType {
             else
                 return PURPLE+"p"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 100;}
+                default -> {return -1 ;}
+            }
+        }
     },
     StrawberrySeeds ( "Strawberry Seeds", false, Strawberry,
-            5, false, new int[]{1, 1, 2, 2, 2,}) {
+            5, false, new int[]{1, 1, 2, 2, 2,} , 5 , 0) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -186,9 +369,24 @@ public enum ForagingSeedsType {
             else
                 return RED+"s"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 100;}
+                default -> {return -1 ;}
+            }
+        }
     },
     TulipBulb       ( "Tulip Bulb",       true, Tulip,
-            4, false, new int[]{1, 1, 2, 2}) {
+            4, false, new int[]{1, 1, 2, 2} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -202,9 +400,30 @@ public enum ForagingSeedsType {
             else
                 return RED+"t"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 25;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                        return 20;
+                    }
+                    return 30;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     RiceShoot       ( "Rice Shoot",       true, UnmilledRice,
-            4, false, new int[]{1, 2, 2, 3}) {
+            4, false, new int[]{1, 2, 2, 3} , 0 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -218,9 +437,29 @@ public enum ForagingSeedsType {
             else
                 return GREEN+"r"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                        return 40;
+                    }
+                    return 60;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     BlueberrySeeds  ( "Blueberry Seeds",  false, Blueberry,
-            5, false, new int[]{1, 3, 3, 4, 2}) {
+            5, false, new int[]{1, 3, 3, 4, 2} , 0 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -234,9 +473,29 @@ public enum ForagingSeedsType {
             else
                 return BLUEBERRY+"b"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                        return 80;
+                    }
+                    return 120;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     CornSeeds       ( "Corn Seeds",       false, Corn,
-            5, false, new int[]{2, 3, 3, 3, 3}) {
+            5, false, new int[]{2, 3, 3, 3, 3} ,5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -250,9 +509,30 @@ public enum ForagingSeedsType {
             else
                 return YELLOW+"o"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 187;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                        return 150;
+                    }
+                    return 225;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     HopsStarter     ( "Hops Starter",     false, Hops,
-            5, false, new int[]{1, 1, 2, 3, 4}) {
+            5, false, new int[]{1, 1, 2, 3, 4} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -266,9 +546,30 @@ public enum ForagingSeedsType {
             else
                 return GREEN+"h"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 75;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                        return 60;
+                    }
+                    return 90;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     PepperSeeds     ( "Pepper Seeds",     false, HotPepper,
-            5, false, new int[]{1, 1, 1, 1, 1}) {
+            5, false, new int[]{1, 1, 1, 1, 1} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -282,9 +583,30 @@ public enum ForagingSeedsType {
             else
                 return RED+"h"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 50;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                        return 40;
+                    }
+                    return 60;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     MelonSeeds      ( "Melon Seeds",      true, Melon,
-            5, true, new int[] {1, 2, 3, 3, 3}) {
+            5, true, new int[] {1, 2, 3, 3, 3} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -298,9 +620,30 @@ public enum ForagingSeedsType {
             else
                 return GREEN+"m"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 100;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                        return 80;
+                    }
+                    return 120;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     PoppySeeds      ( "Poppy Seeds",      true, Poppy,
-            4, false, new int[]{1, 2, 2, 2}) {
+            4, false, new int[]{1, 2, 2, 2} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -314,9 +657,30 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_YELLOW+RED+"p"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 125;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                        return 100;
+                    }
+                    return 150;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     RadishSeeds     ("Radish Seeds",      true, Radish,
-            4, false, new int[]{2, 1, 2, 1}) {
+            4, false, new int[]{2, 1, 2, 1} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -330,9 +694,30 @@ public enum ForagingSeedsType {
             else
                 return BRIGHT_RED+"r"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 50;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                        return 40;
+                    }
+                    return 60;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     RedCabbageSeeds ( "Red Cabbage Seeds",true, RedCabbage,
-            5, false, new int[]{2, 1, 2, 2, 2}) {
+            5, false, new int[]{2, 1, 2, 2, 2} ,0 ,5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -346,9 +731,29 @@ public enum ForagingSeedsType {
             else
                 return RED+"r"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                        return 100;
+                    }
+                    return 150;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     StarfruitSeeds  ( "Starfruit Seeds",  true, Starfruit,
-            5, false, new int[]{2, 3, 2, 3, 3}) {
+            5, false, new int[]{2, 3, 2, 3, 3} , 5 , 0) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -362,9 +767,24 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_WHITE+BRIGHT_YELLOW+"s"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 400;}
+                default -> {return -1 ;}
+            }
+        }
     },
     SpangleSeeds    ( "Spangle Seeds",    true, SummerSpangle,
-            4, false, new int[]{1, 2, 3, 1}) {
+            4, false, new int[]{1, 2, 3, 1} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -378,9 +798,30 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_WHITE+BLUE+"s"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 62;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                        return 50;
+                    }
+                    return 75;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     SummerSquashSeeds( "Summer Squash Seeds",false, SummerSquash,
-            5, false, new int[]{1, 1, 1, 2, 1}) {
+            5, false, new int[]{1, 1, 1, 2, 1} ,10 , 0) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -394,9 +835,24 @@ public enum ForagingSeedsType {
             else
                 return PURPLE+"s"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 10;}
+                default -> {return -1 ;}
+            }
+        }
     },
     SunflowerSeeds  ( "Sunflower Seeds",     true, Sunflower,
-            4, false, new int[]{1, 2, 3, 2}) {
+            4, false, new int[]{1, 2, 3, 2} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -410,9 +866,30 @@ public enum ForagingSeedsType {
             else
                 return BG_YELLOW+BLACK+"s"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 125;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                        return 200;
+                    }
+                    return 300;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     TomatoSeeds     ( "Tomato Seeds",        false, Tomato,
-            5, false, new int[]{2, 2, 2, 2, 3}) {
+            5, false, new int[]{2, 2, 2, 2, 3} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -426,9 +903,30 @@ public enum ForagingSeedsType {
             else
                 return BG_WHITE+RED+"t"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 62;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                        return 50;
+                    }
+                    return 75;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     WheatSeeds      ( "Wheat Seeds",         true, Wheat,
-            4, false, new int[]{1, 1, 1, 1}) {
+            4, false, new int[]{1, 1, 1, 1} , 10 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -442,9 +940,30 @@ public enum ForagingSeedsType {
             else
                 return YELLOW+"w"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 12;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                        return 10;
+                    }
+                    return 15;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     AmaranthSeeds   ( "Amaranth Seeds",      true, Amaranth,
-            4, false, new int[]{1, 2, 2, 2}) {
+            4, false, new int[]{1, 2, 2, 2} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -458,9 +977,30 @@ public enum ForagingSeedsType {
             else
                 return PURPLE+"a"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 87;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                        return 70;
+                    }
+                    return 105;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     ArtichokeSeeds  ( "Artichoke Seeds",     true, Artichoke,
-            5, false, new int[]{2, 2, 1, 2, 1}) {
+            5, false, new int[]{2, 2, 1, 2, 1} ,0 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -474,9 +1014,29 @@ public enum ForagingSeedsType {
             else
                 return GREEN+"a"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                        return 30;
+                    }
+                    return 45;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     BeetSeeds       ( "Beet Seeds",          true, Beet,
-            4, false, new int[]{1, 1, 2, 2}) {
+            4, false, new int[]{1, 1, 2, 2} ,5 , 0) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -490,9 +1050,24 @@ public enum ForagingSeedsType {
             else
                 return RED+"b"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 20;}
+                default -> {return -1 ;}
+            }
+        }
     },
     BokChoySeeds    ("BokChoy Seeds",        true, BokChoy,
-            4, false, new int[]{1, 1, 1, 1}) {
+            4, false, new int[]{1, 1, 1, 1} , 5 , 5) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
@@ -504,9 +1079,30 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_WHITE+GREEN+"b"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 62;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                        return 50;
+                    }
+                    return 75;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     BroccoliSeeds   ( "Broccoli Seeds",      false, Broccoli,
-            4, false, new int[]{2, 2, 2, 2}) {
+            4, false, new int[]{2, 2, 2, 2} ,5 , 0) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
@@ -518,9 +1114,24 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_BLACK+GREEN+"b"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 15;}
+                default -> {return -1 ;}
+            }
+        }
     },
     CranberrySeeds  ( "Cranberry Seeds",     false, Cranberries,
-            5, false, new int[]{1, 2, 1, 1, 2}) {
+            5, false, new int[]{1, 2, 1, 1, 2} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -533,9 +1144,30 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_CYAN+RED+"b"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 300;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                        return 240;
+                    }
+                    return 360;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     EggplantSeeds   ( "Eggplant Seeds",      false, Eggplant,
-            4, false, new int[]{1, 1, 1, 1}) {
+            4, false, new int[]{1, 1, 1, 1} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -548,9 +1180,30 @@ public enum ForagingSeedsType {
             else
                 return RED+"e"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 25;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                        return 20;
+                    }
+                    return 30;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     FairySeeds      ( "Fairy Seeds",         true, FairyRose,
-            4, false, new int[]{1, 4, 4, 3}) {
+            4, false, new int[]{1, 4, 4, 3}, 5,5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -563,9 +1216,30 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_BLACK+WHITE+"f"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 250;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                        return 200;
+                    }
+                    return 300;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     GrapeStarter    ( "Grape Starter",       false, Grape,
-            5, false, new int[]{1, 1, 2, 3, 3}) {
+            5, false, new int[]{1, 1, 2, 3, 3} ,0 , 5) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
@@ -577,9 +1251,29 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_BLACK+YELLOW+"g"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                        return 60;
+                    }
+                    return 90;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     PumpkinSeeds    ( "Pumpkin Seeds",       true, Pumpkin,
-            5, true, new int[] {1, 2, 3, 4, 3}) {
+            5, true, new int[] {1, 2, 3, 4, 3} , 0 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -592,9 +1286,29 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_BLACK+ORANGE+"p"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                        return 100;
+                    }
+                    return 150;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     YamSeeds        ( "Yam Seeds",           true, Yam,
-            4, false, new int[]{1, 3, 3, 3}) {
+            4, false, new int[]{1, 3, 3, 3} , 5 , 5) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -607,9 +1321,30 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_YELLOW+BROWN+"y"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 75;}
+                case PierrGeneralStore -> {
+                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                        return 60;
+                    }
+                    return 90;
+                }
+                default -> {return -1 ;}
+            }
+        }
     },
     RareSeed        ( "Rare Seed",           true, SweetGemBerry,
-            5, false, new int[]{2, 4, 6, 6, 6}) {
+            5, false, new int[]{2, 4, 6, 6, 6} , 1 , 0) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -622,9 +1357,24 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_BLACK+ORANGE+"r"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 1000;}
+                default -> {return -1 ;}
+            }
+        }
     },
     PowdermelonSeeds("Powdermelon Seeds",    true, Powdermelon,
-            5, true, new int[]{1, 2, 1, 2, 1}) {
+            5, true, new int[]{1, 2, 1, 2, 1} , 10 , 0) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -637,9 +1387,24 @@ public enum ForagingSeedsType {
             else
                 return BG_BRIGHT_PURPLE+CYAN+"p"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            switch (marketType) {
+                case JojaMart -> {return 20;}
+                default -> {return -1 ;}
+            }
+        }
     },
     AncientSeeds    ( "Ancient Seeds",       false, AncientFruit,
-            5, false, new int[]{2, 7, 7, 7, 5}) {
+            5, false, new int[]{2, 7, 7, 7, 5} , 0 , 0) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -652,6 +1417,18 @@ public enum ForagingSeedsType {
             else
                 return CYAN+"a"+RESET;
         }
+
+        public void increaseJojaMartLimit(int amount) {
+            JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+        public void increasePierrGeneralLimit(int amount) {
+            PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+        }
+
+        @Override
+        public int getPrice( MarketType marketType) {
+            return -1;
+        }
     };
 
 
@@ -661,14 +1438,18 @@ public enum ForagingSeedsType {
     private final int growthStages;
     private final boolean canGrowGiant;
     private final int[] stageDays; // مدت زمان پیش‌فرض برای هر مرحله رشد
+    public int JojaMartLimit;
+    public int PierrGeneralLimit;
 
-    ForagingSeedsType(String displayName, boolean isOneTimeUse, CropsType productType, int growthStages, boolean canGrowGiant, int[] stageDays) {
+    ForagingSeedsType(String displayName, boolean isOneTimeUse, CropsType productType, int growthStages, boolean canGrowGiant, int[] stageDays, int JojaMartLimit, int PierrGeneralLimit) {
         this.displayName = displayName;
         this.isOneTimeUse = isOneTimeUse;
         this.productType = productType;
         this.growthStages = growthStages;
         this.canGrowGiant = canGrowGiant;
         this.stageDays = stageDays;
+        this.JojaMartLimit = JojaMartLimit;
+        this.PierrGeneralLimit = PierrGeneralLimit;
     }
 
     public String getDisplayName() {
@@ -692,4 +1473,7 @@ public enum ForagingSeedsType {
     // متدهای ابسترکت
     public abstract String getSymbolByLevel (int level);
     public abstract ArrayList<Season> getSeason();
+    public abstract int getPrice(MarketType marketType);
+    public abstract void increaseJojaMartLimit(int amount);
+    public abstract void increasePierrGeneralLimit(int amount);
 }
