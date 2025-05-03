@@ -15,18 +15,33 @@ import static model.DateHour.getDayDifferent;
 
 public class Tree extends GameObject {
 
-    private final TreeType type;
-    private int stage;
-    private DateHour lastWater;
     private final DateHour birthDay;
+    private final TreeType type;
+    private boolean isProtected;
+    private DateHour lastWater;
+    private DateHour lastFruit;
+    private int stage;
 
 
     public Tree(TreeType type, DateHour currentDate) {
         this.type = type;
         birthDay = currentDate.clone();
-        stage = 0;
+        stage = 1;
+        this.isProtected = false;
     }
 
+    public void setProtected(boolean aProtected) {
+
+        isProtected = aProtected;
+    }
+    public void setLastWater(DateHour lastWater) {
+
+        this.lastWater = lastWater;
+    }
+    public void setLastFruit(DateHour lastFruit) {
+
+        this.lastFruit = lastFruit;
+    }
     public void setStage () {
 
         int defDays = getDayDifferent(currentDate, this.birthDay);
@@ -41,10 +56,24 @@ public class Tree extends GameObject {
             stage = 4;
 
     }
-    public String getIcon () {
+
+    public String   getIcon () {
 
         return this.type.getIcon(stage);
     }
+    public boolean  isProtected() {
+
+        return isProtected;
+    }
+    public DateHour getLastWater() {
+
+        return lastWater;
+    }
+    public DateHour getLastFruit() {
+
+        return lastFruit;
+    }
+
     public boolean checkForDeath () {
 
         return getDayDifferent(currentDate, lastWater) > 3;
@@ -62,14 +91,5 @@ public class Tree extends GameObject {
         setStage();
         if (checkForDeath())
             delete();
-    }
-
-    public DateHour getLastWater() {
-
-        return lastWater;
-    }
-    public void setLastWater(DateHour lastWater) {
-
-        this.lastWater = lastWater;
     }
 }

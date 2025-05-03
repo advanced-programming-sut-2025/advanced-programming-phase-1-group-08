@@ -689,7 +689,7 @@ public enum ForagingSeedsType {
     public int getStageDate (int Stage) {
         return stageDays[Stage];
     }
-    // متدهای ابسترکت
+
     public abstract String getSymbolByLevel (int level);
     public abstract ArrayList<Season> getSeason();
 }

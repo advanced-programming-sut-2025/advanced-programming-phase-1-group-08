@@ -83,28 +83,32 @@ public enum CropsType {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append("Name: ").append(type.displayName).append("\nSource: ").append(type.seedsType.getDisplayName())
-                .append("\nStages: ");
+        builder.append(BLUE+"Name: "+RESET).append(type.displayName)
+                .append(BLUE+"\nSource: "+RESET).append(type.seedsType.getDisplayName())
+                .append(BLUE+"\nStages: "+RESET);
         for (int i = 0; i < type.seedsType.getGrowthStages(); i++)
             builder.append(type.seedsType.getStageDate(i)).append("-");
 
         builder.deleteCharAt(builder.length() - 1);
 
-        builder.append("\nTotal Harvest Time: ").append(type.seedsType.getGrowthStages())
-                .append("\nOne Time: ").append(type.seedsType.isOneTimeUse()).append("\nRegrowth Time:")
-                .append("\nBase Sell Price: ").append(type.getPrice()).append("\nIs Edible: ").append(type.isEdible)
-                .append("\nBase Energy: ").append(type.energy).append("\nSeason: ");
+        builder.append(BLUE+"\nTotal Harvest Time: "+RESET).append(type.seedsType.getGrowthStages())
+                .append(BLUE+"\nOne Time: "+RESET).append(type.seedsType.isOneTimeUse())
+                .append(BLUE+"\nRegrowth Time:"+RESET)
+                .append(BLUE+"\nBase Sell Price: "+RESET).append(type.getPrice())
+                .append(BLUE+"\nIs Edible: "+RESET).append(type.isEdible)
+                .append(BLUE+"\nBase Energy: "+RESET).append(type.energy)
+                .append(BLUE+"\nSeason: "+RESET);
 
         ArrayList<Season> seasons = type.seedsType.getSeason();
         for (Season season : seasons) builder.append(season.getDisplayName()).append(" ");
 
-        builder.append("\nCan Become Giant: ").append(type.getSeedsType().canGrowGiant());
+        builder.append(BLUE+"\nCan Become Giant: "+RESET).append(type.getSeedsType().canGrowGiant());
         return builder.toString();
     }
 
     public static CropsType fromDisplayName(String displayName) {
         for (CropsType type : CropsType.values())
-            if (type.getDisplayName().equals(displayName))
+            if (type.getDisplayName().equalsIgnoreCase(displayName))
                 return type;
         throw new IllegalArgumentException(RED+"wrong name!"+RESET);
     }

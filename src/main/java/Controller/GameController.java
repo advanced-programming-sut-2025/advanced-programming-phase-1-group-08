@@ -1216,7 +1216,7 @@ public class GameController {
                 user.setHealth((user.getMAX_HEALTH()*3)/4);
         }
     }
-    private void setTime (boolean gameIsNew) {
+    private void setTime (boolean gameIsNew)    {
 
         if (gameIsNew)
             currentDate = new DateHour(Season.Spring, 1, 9, 1980);
@@ -1261,25 +1261,53 @@ public class GameController {
 
             Random random1 = new Random();
 
-            if (random1.nextInt(2) == 1)
-                lightningStrike(selectTileForThor(players.getFirst().getFarm()));
-
-            random1 = new Random();
-            if (random1.nextInt(2) == 1)
-                lightningStrike(selectTileForThor(players.get(1).getFarm()));
-
-            random1 = new Random();
-            if (random1.nextInt(2) == 1)
-                lightningStrike(selectTileForThor(players.get(2).getFarm()));
-
-            random1 = new Random();
-            if (random1.nextInt(2) == 1)
-                lightningStrike(selectTileForThor(players.get(3).getFarm()));
+            for (User user : players)
+                if (random1.nextInt(2) == 1)
+                    lightningStrike(selectTileForThor(user.getFarm()));
         }
     }
 
+
     private void crowAttack () {
 
+        for (Farm farm : farms) {
+
+            int number = 0;
+            for (Tile tile : farm.Farm) {
+
+                if (tile.getGameObject() instanceof Tree ||
+                        tile.getGameObject() instanceof ForagingSeeds ||
+                        tile.getGameObject() instanceof GiantProduct)
+                    number++;
+
+                if (number % 16 == 0) {
+
+                    double x = Math.random();
+                    if (x <= 0.25) {
+
+                        GameObject object = tile.getGameObject();
+
+                        if (object instanceof Tree)
+                            ((Tree) object).setLastFruit(currentDate);
+
+                        if (object instanceof ForagingSeeds) {
+                            if (((ForagingSeeds) object).getType().isOneTimeUse())
+                                tile.setGameObject(new Walkable());
+                            else
+                                ((ForagingSeeds) object).setLastProduct(currentDate);
+                        }
+                        if (object instanceof GiantProduct) {
+                            ArrayList<Tile> neighbors = ((GiantProduct) object).getNeighbors();
+                            tile.setGameObject(new Walkable());
+
+                            for (Tile tile1 : neighbors)
+                                tile1.setGameObject(new Walkable());
+
+                        }
+                    }
+                }
+            }
+        }
     }
     private void lightningStrike (Tile selected) {
 
@@ -1305,7 +1333,9 @@ public class GameController {
         return matchingTiles.get(random.nextInt(matchingTiles.size()));
     }
 
+    private void checkForPlantProduct () {
 
+    }
     private Result plantMixedSeed (int dir) {
 
         Inventory inventory=currentPlayer.getBackPack().inventory;
@@ -1376,7 +1406,9 @@ public class GameController {
                                     (((ForagingSeeds) tile4.getGameObject()).getType() == type)) {
 
                                 GiantProduct giantProduct = new GiantProduct(
-                                        type, ((ForagingSeeds) tile1.getGameObject()).getBirthDay());
+                                        type, ((ForagingSeeds) tile1.getGameObject()).getBirthDay(),
+                                        new ArrayList<>(List.of(tile2, tile3, tile4)));
+
                                 tile1.setGameObject(giantProduct);
                                 tile2.setGameObject(giantProduct);
                                 tile3.setGameObject(giantProduct);
@@ -1525,11 +1557,13 @@ public class GameController {
         createRandomForaging();
         createRandomMinerals();
 
+
         for (Tile tile : bigMap)
             tile.getGameObject().startDayAutomaticTask();
 
         doWeatherTask();
-
+        crowAttack(); // قبل محصول دادن درخت باید باشه
+        checkForPlantProduct();
         // TODO بازیکنا برن خونشون , غش کردن
         // TODO محصول کاشته بشه و رشد محصولا یه روز بره بالاتر
         // TODO کانی تولید بشه شاپینگ بین خالی بشه و.  پول بیاد تو حساب فرد
@@ -1777,6 +1811,23 @@ public class GameController {
         lightningStrike(getTileByCoordinates(x1, y1));
         return new Result(true, BLUE+"A lightning bolt hits!"+RESET);
     }
+    public Result info (String name) {
 
+        TreeType treeType;
+        try {
+            treeType = TreeType.fromDisplayName(name);
+            return new Result(true, TreeType.getInformation(treeType));
+
+        } catch (Exception e1) {
+
+            ForagingCropsType foragingCropsType;
+            try {
+                foragingCropsType = ForagingCropsType.fromDisplayName(name);
+                return new Result(true, ForagingCropsType.getInformation(foragingCropsType));
+            } catch (Exception e2) {
+                return new Result(false, RED+"Name is incorrect!"+RESET);
+            }
+        }
+    }
 
 }

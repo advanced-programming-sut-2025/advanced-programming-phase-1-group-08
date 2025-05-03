@@ -12,6 +12,8 @@ public class ForagingSeeds extends Items {
 
     private final ForagingSeedsType type;
     private final DateHour birthDay;
+    private DateHour lastProduct;
+    private boolean isProtected;
     private DateHour lastWater;
     private int stage;
 
@@ -20,12 +22,35 @@ public class ForagingSeeds extends Items {
         this.type = type;
         birthDay = Date.clone();
         stage = 1;
+        isProtected = false;
     }
 
     public ForagingSeedsType getType() {
 
         return type;
     }
+    public String   getIcon () {
+
+        return type.getSymbolByLevel(stage);
+    }
+    public DateHour getBirthDay () {
+
+        return this.birthDay;
+    }
+    public boolean  isProtected() {
+
+        return isProtected;
+    }
+    public DateHour getLastWater() {
+
+        return lastWater;
+    }
+    public DateHour getLastProduct() {
+
+        return lastProduct;
+    }
+
+
     public void setStage  () {
 
         int days = 0;
@@ -38,10 +63,20 @@ public class ForagingSeeds extends Items {
                 days += this.type.getStageDate(i);
         }
     }
-    public String getIcon () {
+    public void setLastWater(DateHour lastWater) {
 
-        return type.getSymbolByLevel(stage);
+        this.lastWater = lastWater;
     }
+    public void setProtected(boolean aProtected) {
+
+        isProtected = aProtected;
+    }
+    public void setLastProduct(DateHour lastProduct) {
+
+        this.lastProduct = lastProduct;
+    }
+
+
     public boolean checkForDeath () {
 
         return getDayDifferent(currentDate, lastWater) > 1;
@@ -59,13 +94,5 @@ public class ForagingSeeds extends Items {
         setStage();
         if (checkForDeath())
             delete();
-    }
-    public DateHour getBirthDay () {
-
-        return this.birthDay;
-    }
-    public void setLastWater(DateHour lastWater) {
-
-        this.lastWater = lastWater;
     }
 }
