@@ -38,6 +38,9 @@ public enum GameMenuCommands {
     animals("\\s*animals\\s*"),
     shepherdAnimals("shepherd\\s+animals\\s+-n\\s+(?<name>\\S.*)\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     feedHay("feed\\s+hay\\s+-n\\s+(?<name>\\S.*)\\s*"),
+    produces("\\s*produces\\s*"),
+    collectProduct("collect\\s+product\\s+-n\\s+(?<name>\\S.*)\\s*"),
+    sellAnimal("sell\\s+animal\\s+-n\\s+(?<name>\\S.*)\\s*"),
     ;
 
 
