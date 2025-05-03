@@ -13,8 +13,10 @@ import static model.DateHour.getDayDifferent;
 public class ForagingSeeds extends Items {
 
     private final ForagingSeedsType type;
-    private final DateHour birthDay;
+    private DateHour birthDay;
+    private boolean todayFertilize;
     private DateHour lastProduct;
+    private boolean haveProduct;
     private boolean isProtected;
     private DateHour lastWater;
     private int stage;
@@ -25,6 +27,7 @@ public class ForagingSeeds extends Items {
         birthDay = Date.clone();
         stage = 1;
         isProtected = false;
+        haveProduct = false;
     }
 
     public ForagingSeedsType getType() {
@@ -43,6 +46,10 @@ public class ForagingSeeds extends Items {
 
         return isProtected;
     }
+    public boolean isHaveProduct() {
+
+        return haveProduct;
+    }
     public DateHour getLastWater() {
 
         return lastWater;
@@ -50,6 +57,10 @@ public class ForagingSeeds extends Items {
     public DateHour getLastProduct() {
 
         return lastProduct;
+    }
+    public boolean isTodayFertilize() {
+
+        return todayFertilize;
     }
 
 
@@ -65,6 +76,10 @@ public class ForagingSeeds extends Items {
                 days += this.type.getStageDate(i);
         }
     }
+    public void setBirthDay(DateHour birthDay) {
+
+        this.birthDay = birthDay;
+    }
     public void setLastWater(DateHour lastWater) {
 
         this.lastWater = lastWater;
@@ -77,11 +92,21 @@ public class ForagingSeeds extends Items {
 
         this.lastProduct = lastProduct;
     }
+    public void setTodayFertilize(boolean todayFertilize) {
+
+        this.todayFertilize = todayFertilize;
+    }
 
 
     public boolean checkForDeath () {
 
         return getDayDifferent( lastWater, currentDate) > 1;
+    }
+    public void checkHaveProduct () {
+
+        this.haveProduct = type.getSeason().contains(currentDate.getSeason()) &&
+                getDayDifferent(lastProduct, currentDate) > type. // TODO &&
+                this.stage == this.type.getGrowthStages();
     }
     public void delete () {
 
@@ -91,7 +116,7 @@ public class ForagingSeeds extends Items {
     }
 
     @Override
-    public void turnByTurnAutomaticTask() {
+    public void startDayAutomaticTask() {
 
         setStage();
         if (checkForDeath())

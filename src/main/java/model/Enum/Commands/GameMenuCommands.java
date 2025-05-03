@@ -5,27 +5,29 @@ import java.util.regex.Pattern;
 
 public enum GameMenuCommands {
 
-    makeNewGame   ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
-    friendships   ("\\s*(?i)friendships\\s*"),
     showTime      ("\\s*(?i)time\\s*"),
     showDate      ("\\s*(?i)date\\s*"),
     showSeason    ("\\s*(?i)season\\s*"),
     showWeather   ("\\s*(?i)weather\\s*"),
+    friendships   ("\\s*(?i)friendships\\s*"),
     showDateTime  ("(?i)\\s*date\\s*Time\\s*"),
     showEnergy    ("(?i)\\s*energy\\s*show\\s*"),
     energyUnlimit ("(?i)\\s*energy\\s*unlimited\\s*"),
     howMuchWater  ("(?i)\\s*how\\s*much\\s*water\\s*"),
     showDayOfWeek ("(?i)\\s*day\\s+of\\s+the\\s+week\\s*"),
-    createThor    ("(?i)\\s*cheat\\s*thor\\s*-l(?<x>.+),(?<y>.+)\\s*"),
-    setEnergy     ("(?i)\\s*energy\\s*set\\s*-v\\s*(?<amount>\\d+)\\s*"),
     showFruitInfo ("(?i)\\s*craft\\s*info\\s*-n\\s*(?<name>\\S+)\\s*"),
+    setEnergy     ("(?i)\\s*energy\\s*set\\s*-v\\s*(?<amount>\\d+)\\s*"),
+    createThor    ("(?i)\\s*cheat\\s*thor\\s*-l(?<x>\\d+),(?<y>\\d+)\\s*"),
     setWeather    ("\\s*(?i)cheat\\s*weather\\s*set\\s*(?<Weather>.+)\\s*"),
     advanceTime   ("(?i)\\s*cheat\\s+advance\\s+time\\s+(?<hour>.+)\\s*h\\s*"),
     advanceDate   ("(?i)\\s*cheat\\s+advance\\s+date\\s+(?<date>.+)\\s*d\\s*"),
+    showPlant     ("(?i)\\s*show\\s*plant\\s*-l\\s*(?<x>\\d+),\\s*(?<y>\\d+)\\s*"),
     planting      ("\\s*(?i)plant\\s*-s\\s*(?<seed>.+)\\s*-d\\s*(?<direction>\\d+)\\s*"),
     showTomorrowWeather("\\s*(?i)weather\\s*forecast\\s*"),
     buildGreenHouse    ("(?i)\\s*greenhouse\\s*build\\s*"),
 
+    makeNewGame   ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)" +
+            "(?:\\s+(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
 
     walk("walk\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     inventoryShow("inventory\\s+show\\s*"),

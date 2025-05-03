@@ -85,6 +85,8 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.createThor.getMather(input) != null)
             System.out.println(controller.thor(matcher.group("x").trim(), matcher.group("y").trim()));
 
+        else if (GameMenuCommands.showPlant.getMather(input) != null)
+            System.out.println(controller.());
 
 
 

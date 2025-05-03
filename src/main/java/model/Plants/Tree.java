@@ -92,8 +92,9 @@ public class Tree extends GameObject {
                 tile.setGameObject(new Walkable());
     }
 
+
     @Override
-    public void turnByTurnAutomaticTask() {
+    public void startDayAutomaticTask () {
 
         setStage();
         setHaveFruit();

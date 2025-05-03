@@ -1345,6 +1345,16 @@ public class GameController {
         return matchingTiles.get(random.nextInt(matchingTiles.size()));
     }
 
+
+    private Result showTree (Tile tile) {
+
+    }
+    private Result showGiant (Tile tile) {
+
+    }
+    private Result showForaging (Tile tile) {
+
+    }
     private void checkForPlantProduct () {
 
     }
@@ -1883,6 +1893,7 @@ public class GameController {
     }
     public Result useTools (String direction) {
 
+        // باید تو مزرعه خودش باشه و گوشه ها هم نباشه گه رانتام نشه
         int dir = Integer.parseInt(direction);
 
         return null; // TODO
@@ -1895,6 +1906,8 @@ public class GameController {
         } catch (Exception e) {
             return new Result(false, RED+"Direction is invalid"+RESET);
         }
+        if (dir < 1 || dir > 8)
+            return new Result(false, RED+"Direction is invalid"+RESET);
 
         if (name.matches("\\s*(?i)Mixed\\s*seed(s)?\\s*"))
             return plantMixedSeed(dir);
@@ -1916,6 +1929,8 @@ public class GameController {
         } catch (Exception e) {
             return new Result(false, RED+"Direction is incorrect"+RESET);
         }
+        if (dir < 1 || dir > 8)
+            return new Result(false, RED+"Direction is invalid"+RESET);
 
         if (!(currentPlayer.currentTool instanceof WateringCan))
             return new Result(false, RED+"سطل اب رو بردار دوست من"+RESET);
@@ -1992,6 +2007,26 @@ public class GameController {
                         +RESET+((WateringCan) entry).getReminderCapacity());
 
         return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
+    }
+    public Result showPlant (String xNumber, String yNumber) {
+
+        int x = Integer.parseInt(xNumber);
+        int y = Integer.parseInt(yNumber);
+
+        if (!currentPlayer.getFarm().isInFarm(x, y))
+            return new Result(false, RED+"Pick from your own farm!"+RESET);
+
+        Tile tile = getTileByCoordinates(x, y);
+
+        if (tile.getGameObject() instanceof Tree)
+            return new Result(true, );
+        if (tile.getGameObject() instanceof ForagingSeeds)
+            return new Result(true, );
+        if (tile.getGameObject() instanceof GiantProduct)
+            return new Result(true, );
+
+        return new Result(false, RED+"That tile don't have plant!"+RESET);
+
     }
 
 }
