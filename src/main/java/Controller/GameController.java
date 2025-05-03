@@ -1106,38 +1106,12 @@ public class GameController {
     private void setAbilitiesLevel () {
 
     }
+
     private void doSeasonAutomaticTask () {
 
         currentWeather = tomorrowWeather;
         tomorrowWeather = currentDate.getSeason().getWeather();
 
-    }
-    private void lightningStrike (Tile selected) {
-
-        GameObject object = selected.getGameObject();
-
-        if (object instanceof Tree)
-            selected.setGameObject(new ForagingMinerals(COAL));
-        else if (object instanceof ForagingSeeds)
-            selected.setGameObject(new Walkable());
-        else if (object instanceof Animal)
-            selected.setGameObject(new Walkable());
-
-    }
-    private Tile selectTileForThor (Farm farm) {
-
-        GreenHouse greenHouse = farm.getGreenHouse();
-
-        List<Tile> matchingTiles = farm.Farm.stream()
-                .filter(tile -> tile.getGameObject() instanceof Tree ||
-                        tile.getGameObject() instanceof ForagingSeeds ||
-                        !(tile.getX() >= greenHouse.getCoordinateX() && tile.getY() <= greenHouse.getCoordinateY() &&
-                                tile.getX() <= greenHouse.getCoordinateX()+greenHouse.getLength() &&
-                                tile.getY() >= greenHouse.getCoordinateY()+ greenHouse.getWidth()))
-                                .toList();
-
-        Random random = new Random();
-        return matchingTiles.get(random.nextInt(matchingTiles.size()));
     }
     private void doWeatherTask () {
 
@@ -1173,10 +1147,35 @@ public class GameController {
                 lightningStrike(selectTileForThor(players.get(3).getFarm()));
         }
     }
-    private boolean checkForDeath () {
 
-        return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
+    private void crowAttack () {
+
     }
+    private void lightningStrike (Tile selected) {
+
+        GameObject object = selected.getGameObject();
+
+        if (object instanceof Tree)
+            selected.setGameObject(new ForagingMinerals(COAL));
+        else if (object instanceof ForagingSeeds)
+            selected.setGameObject(new Walkable());
+        else if (object instanceof Animal)
+            selected.setGameObject(new Walkable());
+
+    }
+    private Tile selectTileForThor (Farm farm) {
+
+        List<Tile> matchingTiles = farm.Farm.stream()
+                .filter(tile -> tile.getGameObject() instanceof Tree ||
+                        tile.getGameObject() instanceof ForagingSeeds &&
+                                !farm.isInGreenHouse(tile.getX(), tile.getY()))
+                                .toList();
+
+        Random random = new Random();
+        return matchingTiles.get(random.nextInt(matchingTiles.size()));
+    }
+
+
     private Result plantMixedSeed (int dir) {
 
         Inventory inventory=currentPlayer.getBackPack().inventory;
@@ -1224,7 +1223,7 @@ public class GameController {
             }
         return new Result(false, PURPLE+" اینونتوری و ریموو ایتم خیلی بدن "+RESET);
     }
-    private void checkForGiant () {
+    private void    checkForGiant () {
 
         for (int i = 0; i < 89 ; i++)
             for (int j = 0; j < 89 ; j++) {
@@ -1255,6 +1254,10 @@ public class GameController {
                             }
                     }
             }
+    }
+    private boolean checkForDeath () {
+
+        return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
     }
 
     private void createRandomForaging () {
@@ -1345,7 +1348,7 @@ public class GameController {
         plowedTile.add(tile);
         return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
     }
-    public Result useWateringCan (int dir) {
+    private Result useWateringCan (int dir) {
 
         Tile tile = getTileByDir(dir);
 
@@ -1638,8 +1641,8 @@ public class GameController {
         int x1 = Integer.parseInt(x);
         int y1 = Integer.parseInt(y);
 
-        if (x1 < currentPlayer.getFarm().) // میخوام چک کنم ابعاد تو مزرغش باشه
-            return new Result(false, );
+        if (!currentPlayer.getFarm().isInFarm(x1, y1))
+            return new Result(false, RED+"Pick from your own farm!"+RESET);
 
         lightningStrike(getTileByCoordinates(x1, y1));
         return new Result(true, BLUE+"A lightning bolt hits!"+RESET);
