@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 public enum GameMenuCommands {
 
     makeNewGame   ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
+    friendships   ("\\s*(?i)friendships\\s*"),
     showTime      ("\\s*(?i)time\\s*"),
     showDate      ("\\s*(?i)date\\s*"),
     showSeason    ("\\s*(?i)season\\s*"),

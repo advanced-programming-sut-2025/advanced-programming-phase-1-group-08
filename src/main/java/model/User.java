@@ -65,6 +65,7 @@ public class User {
     }
 
 
+
     public int getMAX_HEALTH() {
         return MAX_HEALTH;
     }
@@ -253,5 +254,17 @@ public class User {
 
     public void setCurrently_in_game(boolean currently_in_game) {
         this.currently_in_game = currently_in_game;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return username.equals(user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return username.hashCode();
     }
 }

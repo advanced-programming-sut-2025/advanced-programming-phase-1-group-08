@@ -12,7 +12,7 @@ import model.Enum.WeatherTime.Weather;
 import model.Places.*;
 import model.Plants.*;
 import model.ToolsPackage.*;
-import model.SaveData.UserDataBase.*;
+
 import java.util.*;
 
 import static model.App.*;
@@ -26,7 +26,7 @@ public class GameController {
 
     Random rand = new Random();
 
-    public boolean isNeighbor(int x1, int y1, int x2, int y2) {
+    public static boolean isNeighbor(int x1, int y1, int x2, int y2) {
         int [] dirx={0,0,1,1,1,-1,-1,-1};
         int [] diry={1,-1,0,1,-1,0,1,-1};
         for (int i=0 ; i<8 ; i++) {
@@ -106,7 +106,7 @@ public class GameController {
         }
     }
 
-    public void creatInitialLake(int id, int x, int y) {
+    public void createInitialLake(int id, int x, int y) {
         Farm farm = currentPlayer.getFarm();
         if (id == 1) {
             Lake lake = new Lake();
@@ -124,7 +124,7 @@ public class GameController {
         }
     }
 
-    public void creatInitialHouse(int id, int x, int y) {
+    public void createInitialHouse(int id, int x, int y) {
         Farm farm = currentPlayer.getFarm();
         Wall wall = new Wall();
         wall.setWallType(WallType.House);
@@ -176,7 +176,7 @@ public class GameController {
         farm.setHome(home);
     }
 
-    public void creatInitialGreenHouse(int id, int x, int y) {
+    public void createInitialGreenHouse(int id, int x, int y) {
         Farm farm = currentPlayer.getFarm();
         Wall GreenWall = new Wall();
         GreenWall.setWallType(WallType.GreenHouse);
@@ -231,23 +231,23 @@ public class GameController {
         farm.setGreenHouse(greenHouse);
     }
 
-    public Farm creatInitialFarm(int id){
+    public Farm createInitialFarm(int id){
         long seed=System.currentTimeMillis();
         Farm farm= currentPlayer.getFarm();
 
         for (int i=0 ; i<30 ;i++){
             for (int j=0 ; j<30 ; j++) {
                 if (i>=23 && i<29 && j>=2 && j<8){
-                    creatInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(1<i && i<7 && j>22 && j<29){
-                    creatInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(i>=12 && i<19 && j<7){
-                    creatInitialHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if (i<8 && j<9){
-                    creatInitialGreenHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialGreenHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else {
                     MapGenerator(i,j,seed);
@@ -1561,7 +1561,7 @@ public class GameController {
                     System.out.println("Choose between 1 and 2!");
                     continue;
                 }
-                creatInitialFarm(choice);
+                createInitialFarm(choice);
                 break;
             }
         }
@@ -1569,20 +1569,57 @@ public class GameController {
         setTime(true);
         setWeather(true);
         currentPlayer = currentUser;
+
+        // Form Friendships
+        for (int i = 0; i < players.size(); i++) {
+            for (int j = i + 1; j < players.size(); j++) {
+                HumanCommunications f = new HumanCommunications(players.get(i), players.get(j));
+                friendships.add(f);
+            }
+        }
+
+//        friendships.get(0).addXp(150);  // این باعث میشه لول بره بالا
+//        friendships.get(0).printInfo();
+
     }
-    public void nextTurn() {
+    public void nextTurn () {
         User old = currentPlayer;
         boolean done = false;
         boolean temp = false;
-        while (true) {
+        int wrongAttempts = 0;
+        while (wrongAttempts <= 5) {
             for (User user : players) {
                 if (temp) {
                     currentPlayer = user;
+                    System.out.println(currentPlayer.getNickname() + "'s turn.");
+
+                    // Display Unseen Messages...
+                    System.out.println("Displaying Unseen Messages...");
+                    for (List<MessageHandling> messages : conversations.values()) {
+                        for (MessageHandling m : messages) {
+                            if (m.getReceiver().equals(currentPlayer) && !m.isSeen()) {
+                                m.print();
+                                m.setSeen(true);
+                            }
+                        }
+                    }
+                    System.out.println(GREEN+"Unseen Messages Displayed."+RESET);
                     return;
                 }
                 if (Objects.equals(user.getUsername(), old.getUsername()))
                     temp = true;
+                wrongAttempts++;
             }
+        }
+
+        System.out.println(RED+"Couldn't find the next Player!"+RESET);
+    }
+    public void DisplayFriendships () {
+        String targetName = currentPlayer.getUsername();
+
+        for (HumanCommunications f : friendships) {
+            if (f.getPlayer1().getUsername().equals(targetName) || f.getPlayer2().getUsername().equals(targetName))
+                f.printInfo();
         }
     }
     public void loadGame () {
@@ -1590,7 +1627,7 @@ public class GameController {
         setTime(false);
         setWeather(false);
     }
-    public void exitGame() {
+    public void exitGame () {
         if (currentPlayer != currentUser) {
             System.out.println("Access Denied!");
             return;
@@ -1598,7 +1635,7 @@ public class GameController {
 
         //TODO سیو کل بازی
     }
-    public void forceTerminate() {
+    public void forceTerminate () {
         Scanner scanner = new Scanner(System.in);
         User terminator = currentPlayer;
         for (User user: players) {
