@@ -18,8 +18,10 @@ public class User {
     private SecurityQuestions MySecurityQuestion;
     private String MySecurityAnswer;
 
-    private int max_point;
-    private int games_played;
+    // TODO وقتی بازی تموم میشه این سه تارو ست کنیم
+    private int max_point = 0;
+    private int games_played = 0;
+    private boolean currently_in_game = false;
 
 
     private int point;
@@ -243,5 +245,13 @@ public class User {
 
     public String getHashPass() {
         return hashPass;
+    }
+
+    public boolean isCurrently_in_game() {
+        return currently_in_game;
+    }
+
+    public void setCurrently_in_game(boolean currently_in_game) {
+        this.currently_in_game = currently_in_game;
     }
 }

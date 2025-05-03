@@ -7,6 +7,7 @@ import model.Places.Farm;
 import model.SaveData.PasswordHashUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class App {
 
@@ -15,6 +16,7 @@ public class App {
     public static ArrayList<Farm> farms  = new ArrayList<>();
     public static ArrayList<Tile> bigMap = new ArrayList<>();
     public static ArrayList<Tile> plowedTile = new ArrayList<>();
+    public static List<HumanCommunications> relations = new ArrayList<>();
 
     public static Weather tomorrowWeather;
     public static Weather currentWeather;

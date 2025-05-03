@@ -2,6 +2,7 @@ package Controller;
 
 import model.*;
 import model.Enum.AllPlants.*;
+import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Door;
 import model.Enum.ItemType.BarnORCageType;
 import model.Enum.ItemType.FishType;
@@ -13,7 +14,7 @@ import model.Enum.WeatherTime.Weather;
 import model.Places.*;
 import model.Plants.*;
 import model.ToolsPackage.*;
-
+import model.SaveData.UserDataBase.*;
 import java.util.*;
 
 import static model.App.*;
@@ -21,6 +22,7 @@ import static model.App.tomorrowWeather;
 import static model.Color_Eraser.*;
 import static model.Enum.AllPlants.ForagingMineralsType.*;
 import static model.Enum.AllPlants.ForagingMineralsType.RUBY;
+import static model.SaveData.UserDataBase.findUserByUsername;
 
 public class GameController {
 
@@ -991,7 +993,7 @@ public class GameController {
             }
         }
 
-        return new Result(false , "there is no way for animal to go to this coordinate!")
+        return new Result(false , "there is no way for animal to go to this coordinate!");
 
     }
 
@@ -1253,16 +1255,123 @@ public class GameController {
         return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
     }
 
-    public void startNewGame () {
+    public void startNewGame (String input) {
+
+        String user1name = GameMenuCommands.makeNewGame.getMather(input).group("username1");
+        String user2name = GameMenuCommands.makeNewGame.getMather(input).group("username2"); // could be null
+        String user3name = GameMenuCommands.makeNewGame.getMather(input).group("username3"); // could be null
+        if (findUserByUsername(user1name) == null){
+            System.out.println("User Not Found!");
+            return;
+        }
+        if (user2name != null) {
+            if (findUserByUsername(user2name) == null) {
+                System.out.println("User Not Found!");
+                return;
+            }
+        }
+        if (user3name != null) {
+            if (findUserByUsername(user3name) == null) {
+                System.out.println("User Not Found!");
+                return;
+            }
+        }
+
+        if (findUserByUsername(user1name).isCurrently_in_game()){
+            System.out.println("User Currently in Game!");
+            return;
+        }
+
+        if (user2name != null) {
+            if (findUserByUsername(user2name).isCurrently_in_game()) {
+                System.out.println("User Not Found!");
+                return;
+            }
+        }
+        if (user3name != null) {
+            if (findUserByUsername(user3name).isCurrently_in_game()) {
+                System.out.println("User Not Found!");
+                return;
+            }
+        }
+        players.add(currentUser);
+        currentPlayer = currentUser;
+        players.add(findUserByUsername(user1name));
+        if (user2name != null) players.add(findUserByUsername(user2name));
+        if (user3name != null) players.add(findUserByUsername(user3name));
+
+        Scanner scanner = new Scanner(System.in);
+
+        for (User user: players) {
+            currentPlayer = user;
+            while (true) {
+                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
+                String choiceString = scanner.nextLine();
+                String[] splitChoice = choiceString.trim().split("\\s+");
+                int choice = Integer.parseInt(splitChoice[2]);
+                if (choice != 1 && choice != 2) {
+                    System.out.println("Choose between 1 and 2!");
+                    continue;
+                }
+                creatInitialFarm(choice);
+                break;
+            }
+        }
 
         setTime(true);
         setWeather(true);
+        currentPlayer = currentUser;
+    }
+    public void nextTurn() {
+        User old = currentPlayer;
+        boolean done = false;
+        boolean temp = false;
+        while (true) {
+            for (User user : players) {
+                if (temp) {
+                    currentPlayer = user;
+                    return;
+                }
+                if (Objects.equals(user.getUsername(), old.getUsername()))
+                    temp = true;
+            }
+        }
     }
     public void loadGame () {
+        // TODO ذخیره جزییات بازی و لود بازی
         setTime(false);
         setWeather(false);
     }
+    public void exitGame() {
+        if (currentPlayer != currentUser) {
+            System.out.println("Access Denied!");
+            return;
+        }
 
+        //TODO سیو کل بازی
+    }
+    public void forceTerminate() {
+        Scanner scanner = new Scanner(System.in);
+        User terminator = currentPlayer;
+        for (User user: players) {
+            if (user == terminator)
+                continue;
+            currentPlayer = user;
+            System.out.println(currentPlayer.getNickname() + ", Do You Agree With the Game Termination?[Y/N]");
+            String choice = scanner.next();
+            if (!choice.trim().toLowerCase().equals("y")) {
+                System.out.println("Vote Failed! The Game won't be Terminated.");
+                currentPlayer = terminator;
+                return;
+            }
+        }
+
+        //TODO  کارهای ترمینیت کردن مثل پاک کردن فایل های سیو و ریست کردن همه دیتاهای بازیکنا بجز ماکسیمم امتیاز
+        for (User user: players) {
+            user.setCurrently_in_game(false);
+            user.setMax_point(user.getPoint());
+        }
+    }
 
 
     public void passedOfTime (int day, int hour) {
