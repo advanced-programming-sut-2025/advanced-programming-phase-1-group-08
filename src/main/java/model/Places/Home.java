@@ -1,8 +1,8 @@
 package model.Places;
 
 import model.Fridge;
-import model.GameObject;
-import model.door;
+import model.MapThings.GameObject;
+import model.MapThings.door;
 
 import java.util.ArrayList;
 

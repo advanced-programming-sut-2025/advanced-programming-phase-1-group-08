@@ -14,6 +14,7 @@ public enum GameMenuCommands {
     showDateTime  ("(?i)\\s*date\\s*Time\\s*"),
     showEnergy    ("(?i)\\s*energy\\s*show\\s*"),
     energyUnlimit ("(?i)\\s*energy\\s*unlimited\\s*"),
+    howMuchWater  ("(?i)\\s*how\\s*much\\s*water\\s*"),
     showDayOfWeek ("(?i)\\s*day\\s+of\\s+the\\s+week\\s*"),
     createThor    ("(?i)\\s*cheat\\s*thor\\s*-l(?<x>.+),(?<y>.+)\\s*"),
     setEnergy     ("(?i)\\s*energy\\s*set\\s*-v\\s*(?<amount>\\d+)\\s*"),

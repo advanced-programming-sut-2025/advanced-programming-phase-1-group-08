@@ -2,6 +2,8 @@ package model.Plants;
 
 import model.*;
 import model.Enum.AllPlants.ForagingSeedsType;
+import model.MapThings.Tile;
+import model.MapThings.Walkable;
 
 
 import static model.App.bigMap;
@@ -54,7 +56,7 @@ public class ForagingSeeds extends Items {
     public void setStage  () {
 
         int days = 0;
-        int defDays = getDayDifferent(currentDate, this.birthDay);
+        int defDays = getDayDifferent( this.birthDay, currentDate);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
             if (defDays > days && (days+this.type.getStageDate(i)) > defDays)
@@ -79,7 +81,7 @@ public class ForagingSeeds extends Items {
 
     public boolean checkForDeath () {
 
-        return getDayDifferent(currentDate, lastWater) > 1;
+        return getDayDifferent( lastWater, currentDate) > 1;
     }
     public void delete () {
 

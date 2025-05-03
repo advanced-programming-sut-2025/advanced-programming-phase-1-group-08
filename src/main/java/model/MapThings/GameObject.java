@@ -1,4 +1,4 @@
-package model;
+package model.MapThings;
 
 public class GameObject {
 

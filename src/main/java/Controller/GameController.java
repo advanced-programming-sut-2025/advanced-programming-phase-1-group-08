@@ -9,12 +9,12 @@ import model.Enum.ToolsType.FishingPoleType;
 import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
 import model.Enum.WeatherTime.Weather;
+import model.MapThings.*;
 import model.Places.*;
 import model.Plants.*;
 import model.ToolsPackage.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static model.App.*;
 import static model.App.tomorrowWeather;
@@ -1218,6 +1218,8 @@ public class GameController {
 
     }
 
+
+
     private void setEnergyInMorning () {
         for (User user : players) {
 
@@ -1745,15 +1747,6 @@ public class GameController {
 
 
 
-    public void show () {
-
-
-
-
-
-    }
-
-
     public Result showTime () {
         return new Result(true, BLUE +"Time : "+RESET
                 + currentDate.getHour()+ ":00");
@@ -1988,6 +1981,17 @@ public class GameController {
                 return new Result(false, RED+"Name is incorrect!"+RESET);
             }
         }
+    }
+    public Result howMuchWater () {
+
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+
+        for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet())
+            if (entry instanceof WateringCan)
+                return new Result(true, BLUE+"Water Remaining : "
+                        +RESET+((WateringCan) entry).getReminderCapacity());
+
+        return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
     }
 
 }

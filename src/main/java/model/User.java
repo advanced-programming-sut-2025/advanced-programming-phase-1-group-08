@@ -1,6 +1,7 @@
 package model;
 
 import model.Enum.SecurityQuestions;
+import model.MapThings.Tile;
 import model.Places.Farm;
 import model.ToolsPackage.BackPack;
 import model.ToolsPackage.Tools;

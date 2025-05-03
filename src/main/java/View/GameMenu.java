@@ -79,6 +79,20 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.planting(matcher.group("seed").trim(),
                     matcher.group("direction").trim()));
 
+        else if (GameMenuCommands.howMuchWater.getMather(input) != null)
+            System.out.println(controller.howMuchWater());
+
+        else if (GameMenuCommands.createThor.getMather(input) != null)
+            System.out.println(controller.thor(matcher.group("x").trim(), matcher.group("y").trim()));
+
+
+
+
+
+
+
+
+
         else if (input.matches("\\s*exit\\s*game\\s*"))
             controller.exitGame();
         else if (input.matches("\\s*force\\s*terminate\\s*"))

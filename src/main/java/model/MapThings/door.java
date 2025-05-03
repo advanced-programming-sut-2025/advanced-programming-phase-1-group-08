@@ -1,7 +1,6 @@
-package model;
+package model.MapThings;
 
 
-import Controller.GameController;
 import model.Enum.Door;
 
 public class door extends GameObject {

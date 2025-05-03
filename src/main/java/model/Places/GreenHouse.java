@@ -1,8 +1,8 @@
 package model.Places;
 
-import model.GameObject;
+import model.MapThings.GameObject;
 import model.User;
-import model.WaterTank;
+import model.MapThings.WaterTank;
 
 import static model.Color_Eraser.*;
 

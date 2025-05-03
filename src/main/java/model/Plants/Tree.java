@@ -2,12 +2,9 @@ package model.Plants;
 
 import model.DateHour;
 import model.Enum.AllPlants.TreeType;
-import model.Enum.AllPlants.TreesProductType;
-import model.GameObject;
-import model.Tile;
-import model.Walkable;
-
-import java.util.Date;
+import model.MapThings.GameObject;
+import model.MapThings.Tile;
+import model.MapThings.Walkable;
 
 import static model.App.bigMap;
 import static model.App.currentDate;
@@ -20,6 +17,7 @@ public class Tree extends GameObject {
     private boolean isProtected;
     private DateHour lastWater;
     private DateHour lastFruit;
+    private boolean haveFruit;
     private int stage;
 
 
@@ -42,9 +40,9 @@ public class Tree extends GameObject {
 
         this.lastFruit = lastFruit;
     }
-    public void setStage () {
+    private void setStage () {
 
-        int defDays = getDayDifferent(currentDate, this.birthDay);
+        int defDays = getDayDifferent(this.birthDay, currentDate);
 
         if (defDays > 0 && defDays < 7)
             stage = 1;
@@ -59,7 +57,10 @@ public class Tree extends GameObject {
 
     public String   getIcon () {
 
-        return this.type.getIcon(stage);
+        if (stage >= 4 && haveFruit)
+            return this.type.getIcon2();
+        else
+            return this.type.getIcon1();
     }
     public boolean  isProtected() {
 
@@ -74,22 +75,30 @@ public class Tree extends GameObject {
         return lastFruit;
     }
 
-    public boolean checkForDeath () {
 
-        return getDayDifferent(currentDate, lastWater) > 3;
+    private boolean checkForDeath () {
+
+        return getDayDifferent(lastWater, currentDate) > 3;
     }
-    public void delete () {
+    private void setHaveFruit () {
+
+        this.haveFruit = this.type.getSourceType().getSeason().contains(currentDate.getSeason()) &&
+                getDayDifferent(lastFruit, currentDate) > 6;
+    }
+    private void delete () {
 
         for (Tile tile : bigMap)
             if (tile.getGameObject().equals(this))
                 tile.setGameObject(new Walkable());
     }
 
-
     @Override
     public void turnByTurnAutomaticTask() {
+
         setStage();
+        setHaveFruit();
         if (checkForDeath())
             delete();
+
     }
 }

@@ -54,11 +54,13 @@ public enum TreeType {
         this.icon2 = icon2;
     }
 
-    public String getIcon (int level) {
-        if (level < 4)
-            return this.icon1;
-        else
-            return this.icon2;
+    public String getIcon1() {
+
+        return icon1;
+    }
+    public String getIcon2() {
+
+        return icon2;
     }
     public String getDisplayName() {return displayName;}
     public TreesSourceType getSourceType() {return sourceType;}
