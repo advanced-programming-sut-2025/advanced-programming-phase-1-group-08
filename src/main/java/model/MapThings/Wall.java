@@ -1,8 +1,8 @@
-package model;
+package model.MapThings;
 
 import model.Enum.ItemType.WallType;
 
-public class Wall extends GameObject{
+public class Wall extends GameObject {
     private WallType wallType;
 
     public void setWallType(WallType wallType) {

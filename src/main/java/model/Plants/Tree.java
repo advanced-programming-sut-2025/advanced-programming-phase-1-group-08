@@ -2,12 +2,9 @@ package model.Plants;
 
 import model.DateHour;
 import model.Enum.AllPlants.TreeType;
-import model.Enum.AllPlants.TreesProductType;
-import model.GameObject;
-import model.Tile;
-import model.Walkable;
-
-import java.util.Date;
+import model.MapThings.GameObject;
+import model.MapThings.Tile;
+import model.MapThings.Walkable;
 
 import static model.App.bigMap;
 import static model.App.currentDate;
@@ -15,21 +12,37 @@ import static model.DateHour.getDayDifferent;
 
 public class Tree extends GameObject {
 
-    private final TreeType type;
-    private int stage;
-    private DateHour lastWater;
     private final DateHour birthDay;
+    private final TreeType type;
+    private boolean isProtected;
+    private DateHour lastWater;
+    private DateHour lastFruit;
+    private boolean haveFruit;
+    private int stage;
 
 
     public Tree(TreeType type, DateHour currentDate) {
         this.type = type;
         birthDay = currentDate.clone();
-        stage = 0;
+        stage = 1;
+        this.isProtected = false;
     }
 
-    public void setStage () {
+    public void setProtected(boolean aProtected) {
 
-        int defDays = getDayDifferent(currentDate, this.birthDay);
+        isProtected = aProtected;
+    }
+    public void setLastWater(DateHour lastWater) {
+
+        this.lastWater = lastWater;
+    }
+    public void setLastFruit(DateHour lastFruit) {
+
+        this.lastFruit = lastFruit;
+    }
+    private void setStage () {
+
+        int defDays = getDayDifferent(this.birthDay, currentDate);
 
         if (defDays > 0 && defDays < 7)
             stage = 1;
@@ -41,15 +54,38 @@ public class Tree extends GameObject {
             stage = 4;
 
     }
-    public String getIcon () {
 
-        return this.type.getIcon(stage);
-    }
-    public boolean checkForDeath () {
+    public String   getIcon () {
 
-        return getDayDifferent(currentDate, lastWater) > 3;
+        if (stage >= 4 && haveFruit)
+            return this.type.getIcon2();
+        else
+            return this.type.getIcon1();
     }
-    public void delete () {
+    public boolean  isProtected() {
+
+        return isProtected;
+    }
+    public DateHour getLastWater() {
+
+        return lastWater;
+    }
+    public DateHour getLastFruit() {
+
+        return lastFruit;
+    }
+
+
+    private boolean checkForDeath () {
+
+        return getDayDifferent(lastWater, currentDate) > 3;
+    }
+    private void setHaveFruit () {
+
+        this.haveFruit = this.type.getSourceType().getSeason().contains(currentDate.getSeason()) &&
+                getDayDifferent(lastFruit, currentDate) > 6;
+    }
+    private void delete () {
 
         for (Tile tile : bigMap)
             if (tile.getGameObject().equals(this))
@@ -58,18 +94,12 @@ public class Tree extends GameObject {
 
 
     @Override
-    public void turnByTurnAutomaticTask() {
+    public void startDayAutomaticTask () {
+
         setStage();
+        setHaveFruit();
         if (checkForDeath())
             delete();
-    }
 
-    public DateHour getLastWater() {
-
-        return lastWater;
-    }
-    public void setLastWater(DateHour lastWater) {
-
-        this.lastWater = lastWater;
     }
 }

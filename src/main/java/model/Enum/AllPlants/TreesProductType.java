@@ -4,8 +4,7 @@ import model.Enum.WeatherTime.Season;
 
 import java.util.ArrayList;
 
-import static model.Color_Eraser.RED;
-import static model.Color_Eraser.RESET;
+import static model.Color_Eraser.*;
 
 public enum TreesProductType {
 
@@ -58,17 +57,21 @@ public enum TreesProductType {
 
         StringBuilder builder = new StringBuilder();
 
-        builder.append("Name: ").append(type.displayName)
-                .append("\nSource: ").append(type.treeType.getSourceType().getDisplayName())
-                .append("\nStages: ").append("7-7-7-7").append("\nTotal Harvest Time: ").append("28")
-                .append("\nOne Time: ").append("False").append("\nRegrowth Time: 28")
-                .append("\nBase Sell Price: ").append(type.getPrice()).append("\nIs Edible: ").append(type.isEdible())
-                .append("\nBase Energy: ").append(type.energy).append("\nSeason: ");
+        builder.append(BLUE+"Name: "+RESET).append(type.displayName)
+                .append(BLUE+"\nSource: "+RESET).append(type.treeType.getSourceType().getDisplayName())
+                .append(BLUE+"\nStages: "+RESET).append("7-7-7-7")
+                .append(BLUE+"\nTotal Harvest Time: "+RESET).append("28")
+                .append(BLUE+"\nOne Time: "+RESET).append("False")
+                .append(BLUE+"\nRegrowth Time: 28"+RESET)
+                .append(BLUE+"\nBase Sell Price: "+RESET).append(type.getPrice())
+                .append(BLUE+"\nIs Edible: "+RESET).append(type.isEdible())
+                .append(BLUE+"\nBase Energy: "+RESET).append(type.energy)
+                .append(BLUE+"\nSeason: "+RESET);
 
         ArrayList<Season> seasons = type.treeType.getSourceType().getSeason();
         for (Season season : seasons) builder.append(season.getDisplayName()).append(" ");
 
-        builder.append("\nCan Become Giant: ").append("No");
+        builder.append(BLUE+"\nCan Become Giant: "+RESET).append("No");
         return builder.toString();
     }
     public static TreesProductType fromDisplayName(String displayName) {

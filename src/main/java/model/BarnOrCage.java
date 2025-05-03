@@ -1,6 +1,7 @@
 package model;
 
 import model.Enum.ItemType.BarnORCageType;
+import model.MapThings.GameObject;
 
 import java.util.ArrayList;
 

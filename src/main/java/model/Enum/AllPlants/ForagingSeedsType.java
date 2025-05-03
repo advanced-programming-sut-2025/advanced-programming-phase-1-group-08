@@ -1,5 +1,6 @@
 package model.Enum.AllPlants;
 
+import model.Enum.ItemType.MarketType;
 import model.Enum.WeatherTime.Season;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import static model.Enum.AllPlants.CropsType.*;
 public enum ForagingSeedsType {
 
     JazzSeeds       ( "Jazz Seeds",       true, BlueJazz,
-            4, false, new int[]{1, 2, 2, 2}  ) {
+            4, false, new int[]{1, 2, 2, 2}) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -26,6 +27,7 @@ public enum ForagingSeedsType {
             else
                 return GREEN+"j"+RESET;
         }
+
     },
     CarrotSeeds     ( "Carrot Seeds",     true, Carrot,
             3, false, new int[]{1, 1, 1,}     ) {
@@ -689,7 +691,8 @@ public enum ForagingSeedsType {
     public int getStageDate (int Stage) {
         return stageDays[Stage];
     }
-    // متدهای ابسترکت
+
+    public abstract int getDailyLimit (MarketType type);
     public abstract String getSymbolByLevel (int level);
     public abstract ArrayList<Season> getSeason();
 }

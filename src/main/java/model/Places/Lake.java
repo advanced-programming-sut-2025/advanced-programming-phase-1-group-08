@@ -1,6 +1,6 @@
 package model.Places;
 
-import model.GameObject;
+import model.MapThings.GameObject;
 
 public class Lake extends GameObject {
 }

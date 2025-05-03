@@ -1,6 +1,7 @@
 package model;
 
 import model.Enum.SecurityQuestions;
+import model.MapThings.Tile;
 import model.Places.Farm;
 import model.ToolsPackage.BackPack;
 import model.ToolsPackage.Tools;
@@ -44,7 +45,7 @@ public class User {
 
     private final Farm farm = new Farm();
     public int topLeftX;
-    public int topLeftY;
+    public int topLeftY; // اینا باید برن تو فارم
     private int positionX;
     private int positionY;
 
@@ -107,6 +108,7 @@ public class User {
         this.health = health;
         checkHealth();
     }
+
     public void increaseHealth(int health) {
         this.health += health;
         checkHealth();
@@ -138,7 +140,7 @@ public class User {
     public User getSpouse() {
         return Spouse;
     }
-    public void setHealthUnlimited () {this.healthUnlimited = true;}
+    public void    setHealthUnlimited () {this.healthUnlimited = true;}
     public boolean isHealthUnlimited() {
         return healthUnlimited;
     }
@@ -227,16 +229,16 @@ public class User {
     }
 
 
-    public void increaseFarmingAbility(int amount) {
+    public void increaseFarmingAbility (int amount) {
         this.farmingAbility += amount;
     }
-    public void increaseFishingAbility(int amount) {
+    public void increaseFishingAbility (int amount) {
         this.fishingAbility += amount;
     }
     public void increaseForagingAbility(int amount) {
         this.foragingAbility += amount;
     }
-    public void increaseMiningAbility(int amount) {
+    public void increaseMiningAbility  (int amount) {
         this.miningAbility += amount;
     }
 

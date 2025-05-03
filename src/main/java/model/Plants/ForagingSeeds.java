@@ -2,6 +2,8 @@ package model.Plants;
 
 import model.*;
 import model.Enum.AllPlants.ForagingSeedsType;
+import model.MapThings.Tile;
+import model.MapThings.Walkable;
 
 
 import static model.App.bigMap;
@@ -11,7 +13,11 @@ import static model.DateHour.getDayDifferent;
 public class ForagingSeeds extends Items {
 
     private final ForagingSeedsType type;
-    private final DateHour birthDay;
+    private DateHour birthDay;
+    private boolean todayFertilize;
+    private DateHour lastProduct;
+    private boolean haveProduct;
+    private boolean isProtected;
     private DateHour lastWater;
     private int stage;
 
@@ -20,16 +26,48 @@ public class ForagingSeeds extends Items {
         this.type = type;
         birthDay = Date.clone();
         stage = 1;
+        isProtected = false;
+        haveProduct = false;
     }
 
     public ForagingSeedsType getType() {
 
         return type;
     }
+    public String   getIcon () {
+
+        return type.getSymbolByLevel(stage);
+    }
+    public DateHour getBirthDay () {
+
+        return this.birthDay;
+    }
+    public boolean  isProtected() {
+
+        return isProtected;
+    }
+    public boolean isHaveProduct() {
+
+        return haveProduct;
+    }
+    public DateHour getLastWater() {
+
+        return lastWater;
+    }
+    public DateHour getLastProduct() {
+
+        return lastProduct;
+    }
+    public boolean isTodayFertilize() {
+
+        return todayFertilize;
+    }
+
+
     public void setStage  () {
 
         int days = 0;
-        int defDays = getDayDifferent(currentDate, this.birthDay);
+        int defDays = getDayDifferent( this.birthDay, currentDate);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
             if (defDays > days && (days+this.type.getStageDate(i)) > defDays)
@@ -38,13 +76,37 @@ public class ForagingSeeds extends Items {
                 days += this.type.getStageDate(i);
         }
     }
-    public String getIcon () {
+    public void setBirthDay(DateHour birthDay) {
 
-        return type.getSymbolByLevel(stage);
+        this.birthDay = birthDay;
     }
+    public void setLastWater(DateHour lastWater) {
+
+        this.lastWater = lastWater;
+    }
+    public void setProtected(boolean aProtected) {
+
+        isProtected = aProtected;
+    }
+    public void setLastProduct(DateHour lastProduct) {
+
+        this.lastProduct = lastProduct;
+    }
+    public void setTodayFertilize(boolean todayFertilize) {
+
+        this.todayFertilize = todayFertilize;
+    }
+
+
     public boolean checkForDeath () {
 
-        return getDayDifferent(currentDate, lastWater) > 1;
+        return getDayDifferent( lastWater, currentDate) > 1;
+    }
+    public void checkHaveProduct () {
+
+        this.haveProduct = type.getSeason().contains(currentDate.getSeason()) &&
+                getDayDifferent(lastProduct, currentDate) > type. // TODO &&
+                this.stage == this.type.getGrowthStages();
     }
     public void delete () {
 
@@ -54,18 +116,10 @@ public class ForagingSeeds extends Items {
     }
 
     @Override
-    public void turnByTurnAutomaticTask() {
+    public void startDayAutomaticTask() {
 
         setStage();
         if (checkForDeath())
             delete();
-    }
-    public DateHour getBirthDay () {
-
-        return this.birthDay;
-    }
-    public void setLastWater(DateHour lastWater) {
-
-        this.lastWater = lastWater;
     }
 }

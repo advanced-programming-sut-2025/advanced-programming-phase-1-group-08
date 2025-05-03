@@ -86,4 +86,28 @@ public enum ForagingCropsType extends Items {
     public ArrayList<Season> getSeason() {
         return new ArrayList<>(seasons);
     }
+
+    public static String getInformation (ForagingCropsType type) {
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(BLUE+"Name : "+RESET).append(type.displayName)
+                .append(BLUE+"\nPrice : "+RESET).append(type.price)
+                .append(BLUE+"\nEnergy : "+RESET).append(type.energy)
+                .append(BLUE+"\nIcon : "+RESET).append(type.icon)
+                .append(BLUE+"\nSeasons : "+RESET);
+
+        for (Season season : type.seasons)
+            builder.append(season).append(",");
+
+        builder.deleteCharAt(builder.length() - 1);
+
+        return builder.toString();
+    }
+
+    public static ForagingCropsType fromDisplayName(String displayName) {
+        for (ForagingCropsType type : ForagingCropsType.values())
+            if (type.getDisplayName().equalsIgnoreCase(displayName))
+                return type;
+        throw new IllegalArgumentException(RED+"wrong name!"+RESET);
+    }
 }

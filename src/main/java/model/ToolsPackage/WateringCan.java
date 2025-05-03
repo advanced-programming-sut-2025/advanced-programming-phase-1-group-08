@@ -22,11 +22,8 @@ public class WateringCan extends Tools {
 
     public void use () {}
     public int healthCost() {
-        double x = 1;
-        if (currentWeather.equals(Weather.Snowy))
-            x = 2;
-        if (currentWeather.equals(Weather.Rainy) || currentWeather.equals(Weather.Stormy))
-            x = 1.5;
+
+        double x = currentWeather.getEnergyCostCoefficient();
 
         if (currentPlayer.getLevelFarming() == 4)
             return (int) (this.wateringCanType.getEnergyCost()*x)+1;

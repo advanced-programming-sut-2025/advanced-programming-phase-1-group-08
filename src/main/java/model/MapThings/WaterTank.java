@@ -1,6 +1,4 @@
-package model;
-
-import model.Places.Farm;
+package model.MapThings;
 
 public class WaterTank extends GameObject {
 
