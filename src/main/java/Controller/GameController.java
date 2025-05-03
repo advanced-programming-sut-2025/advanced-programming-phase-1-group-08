@@ -20,8 +20,10 @@ import static model.App.*;
 import static model.App.tomorrowWeather;
 import static model.Color_Eraser.*;
 import static model.Enum.AllPlants.ForagingMineralsType.*;
+
 import static model.Enum.AllPlants.ForagingMineralsType.RUBY;
 import static model.SaveData.UserDataBase.findUserByUsername;
+
 
 public class GameController {
 
