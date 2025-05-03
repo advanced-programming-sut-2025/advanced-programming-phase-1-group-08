@@ -22,12 +22,15 @@ public class GameMenu implements AppMenu {
     @Override
     public void check(Scanner scanner) {
 
-        if (i++ == 0)
-            controller.startNewGame();
-
         String input = scanner.nextLine();
 
-        if (GameMenuCommands.showTime.getMather(input) != null)
+        if (GameMenuCommands.makeNewGame.getMather(input) != null)
+            controller.startNewGame(input);
+
+        else if (GameMenuCommands.friendships.getMather(input) != null)
+            controller.DisplayFriendships();
+
+        else if (GameMenuCommands.showTime.getMather(input) != null)
             System.out.println(controller.showTime());
 
         else if (GameMenuCommands.showDate.getMather(input) != null)
@@ -76,9 +79,12 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.planting(matcher.group("seed").trim(),
                     matcher.group("direction").trim()));
 
-
+        else if (input.matches("\\s*exit\\s*game\\s*"))
+            controller.exitGame();
+        else if (input.matches("\\s*force\\s*terminate\\s*"))
+            controller.forceTerminate();
         else
-            System.out.println(RED+"Sorry pls try again"+RESET);
+            System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
     }
 }

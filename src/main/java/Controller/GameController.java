@@ -2,6 +2,7 @@ package Controller;
 
 import model.*;
 import model.Enum.AllPlants.*;
+import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Door;
 import model.Enum.ItemType.*;
 import model.Enum.ToolsType.FishingPoleType;
@@ -19,12 +20,14 @@ import static model.App.*;
 import static model.App.tomorrowWeather;
 import static model.Color_Eraser.*;
 import static model.Enum.AllPlants.ForagingMineralsType.*;
+import static model.Enum.AllPlants.ForagingMineralsType.RUBY;
+import static model.SaveData.UserDataBase.findUserByUsername;
 
 public class GameController {
 
     Random rand = new Random();
 
-    public boolean isNeighbor(int x1, int y1, int x2, int y2) {
+    public static boolean isNeighbor(int x1, int y1, int x2, int y2) {
         int [] dirx={0,0,1,1,1,-1,-1,-1};
         int [] diry={1,-1,0,1,-1,0,1,-1};
         for (int i=0 ; i<8 ; i++) {
@@ -225,7 +228,7 @@ public class GameController {
         }
         farm.setGreenHouse(greenHouse);
     }
-    public Farm creatInitialFarm(int id){
+    public Farm createInitialFarm(int id){
         long seed=System.currentTimeMillis();
         Farm farm= currentPlayer.getFarm();
 
@@ -253,6 +256,7 @@ public class GameController {
         return farm;
 
     }
+
     public void MapGenerator(int i,int j,long seed){
         if (i==0 || i==29 || j==0 || j==29){
             if (i==15 && j==29){
@@ -320,6 +324,7 @@ public class GameController {
         }
 
     }
+
     public void print(Farm farm){
         int x=currentPlayer.topLeftX;
         int y=currentPlayer.topLeftY;
@@ -642,6 +647,7 @@ public class GameController {
 
         return new Result(false,"there is no such tool");
     }
+
     public Result showCurrentTool(){
         Tools currentTool=currentPlayer.currentTool;
         return switch (currentTool) {
@@ -654,6 +660,7 @@ public class GameController {
             default -> new Result(true, "current tool: " + currentTool.getName());
         };
     }
+
     public Result availableTools() {
         Inventory inventory = currentPlayer.getBackPack().inventory;
         String result = "";
@@ -713,11 +720,12 @@ public class GameController {
 
         return Quantity.Iridium;
     }
+
     public Result addFishToInventory(FishingPole fishingPole) {
         double random = Math.random();
         int x = (int) (random * currentWeather.getFishing() * (currentPlayer.getLevelFishing() + 2));
         int numberOfFish = Math.min(6, x);
-        String result = "number of Fishes: " + numberOfFish + "\n";
+        StringBuilder result = new StringBuilder("number of Fishes: " + numberOfFish + "\n");
 
         for (int i = 0; i < numberOfFish; i++) {
 
@@ -732,16 +740,16 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Herring, fishQuantity);
-                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Sunfish, fishQuantity);
-                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Sardine, fishQuantity);
-                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Perch, fishQuantity);
-                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                        result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
                 }
@@ -753,16 +761,16 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Flounder, fishQuantity);
-                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Tilapia, fishQuantity);
-                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Salmon, fishQuantity);
-                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Midnight_Carp, fishQuantity);
-                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                        result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
                 }
@@ -771,16 +779,16 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Lionfish, fishQuantity);
-                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Dorado, fishQuantity);
-                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Sardine, fishQuantity);
-                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Squid, fishQuantity);
-                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                        result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
                 }
@@ -789,16 +797,16 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Herring, fishQuantity);
-                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Sunfish, fishQuantity);
-                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Shad, fishQuantity);
-                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Tuna, fishQuantity);
-                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                        result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
                 }
@@ -809,16 +817,16 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Ghostfish, fishQuantity);
-                        result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                        result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Rainbow_Trout, fishQuantity);
-                        result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                        result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Blue_Discus, fishQuantity);
-                        result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                        result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Perch, fishQuantity);
-                        result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                        result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
                 }
@@ -830,16 +838,16 @@ public class GameController {
                     switch (currentDate.getSeason()){
                         case Spring:
                             Fish springFish= new Fish(FishType.Legend,fishQuantity);
-                            result += springFish.getFishType().getName() + springFish.getQuantity() + "\n";
+                            result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                         case Summer:
                             Fish summerFish= new Fish(FishType.Dorado,fishQuantity);
-                            result += summerFish.getFishType().getName() + summerFish.getQuantity() + "\n";
+                            result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                         case Fall:
                             Fish fallFish= new Fish(FishType.Squid,fishQuantity);
-                            result += fallFish.getFishType().getName() + fallFish.getQuantity() + "\n";
+                            result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                         case Winter:
                             Fish winterFish= new Fish(FishType.Tuna,fishQuantity);
-                            result += winterFish.getFishType().getName() + winterFish.getQuantity() + "\n";
+                            result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     }
 
                 }
@@ -848,7 +856,7 @@ public class GameController {
 
         //TODO اضافه کردن مهارت ماهیگیری
 
-        return new Result(true,result);
+        return new Result(true, result.toString());
     }
 
 
@@ -994,6 +1002,7 @@ public class GameController {
         }
 
         return new Result(false , "there is no way for animal to go to this coordinate!");
+
     }
 
     private Result checkShepherdAnimals(int goalX, int goalY, String name) {
@@ -1216,7 +1225,7 @@ public class GameController {
                 user.setHealth((user.getMAX_HEALTH()*3)/4);
         }
     }
-    private void setTime (boolean gameIsNew)    {
+    private void setTime (boolean gameIsNew) {
 
         if (gameIsNew)
             currentDate = new DateHour(Season.Spring, 1, 9, 1980);
@@ -1236,7 +1245,6 @@ public class GameController {
     private void setAbilitiesLevel () {
 
     }
-
     private void doSeasonAutomaticTask () {
 
         currentWeather = tomorrowWeather;
@@ -1527,16 +1535,160 @@ public class GameController {
     }
 
 
-    public void startNewGame () {
+    public void startNewGame (String input) {
+
+        String user1name = GameMenuCommands.makeNewGame.getMather(input).group("username1");
+        String user2name = GameMenuCommands.makeNewGame.getMather(input).group("username2"); // could be null
+        String user3name = GameMenuCommands.makeNewGame.getMather(input).group("username3"); // could be null
+        if (findUserByUsername(user1name) == null){
+            System.out.println("User Not Found!");
+            return;
+        }
+        if (user2name != null) {
+            if (findUserByUsername(user2name) == null) {
+                System.out.println("User Not Found!");
+                return;
+            }
+        }
+        if (user3name != null) {
+            if (findUserByUsername(user3name) == null) {
+                System.out.println("User Not Found!");
+                return;
+            }
+        }
+
+        if (findUserByUsername(user1name).isCurrently_in_game()){
+            System.out.println("User Currently in Game!");
+            return;
+        }
+
+        if (user2name != null) {
+            if (findUserByUsername(user2name).isCurrently_in_game()) {
+                System.out.println("User Not Found!");
+                return;
+            }
+        }
+        if (user3name != null) {
+            if (findUserByUsername(user3name).isCurrently_in_game()) {
+                System.out.println("User Not Found!");
+                return;
+            }
+        }
+        players.add(currentUser);
+        currentPlayer = currentUser;
+        players.add(findUserByUsername(user1name));
+        if (user2name != null) players.add(findUserByUsername(user2name));
+        if (user3name != null) players.add(findUserByUsername(user3name));
+
+        Scanner scanner = new Scanner(System.in);
+
+        for (User user: players) {
+            currentPlayer = user;
+            while (true) {
+                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
+                String choiceString = scanner.nextLine();
+                String[] splitChoice = choiceString.trim().split("\\s+");
+                int choice = Integer.parseInt(splitChoice[2]);
+                if (choice != 1 && choice != 2) {
+                    System.out.println("Choose between 1 and 2!");
+                    continue;
+                }
+                createInitialFarm(choice);
+                break;
+            }
+        }
 
         setTime(true);
         setWeather(true);
+        currentPlayer = currentUser;
+
+        // Form Friendships
+        for (int i = 0; i < players.size(); i++) {
+            for (int j = i + 1; j < players.size(); j++) {
+                HumanCommunications f = new HumanCommunications(players.get(i), players.get(j));
+                friendships.add(f);
+            }
+        }
+
+//        friendships.get(0).addXp(150);  // این باعث میشه لول بره بالا
+//        friendships.get(0).printInfo();
+
+    }
+    public void nextTurn () {
+        User old = currentPlayer;
+        boolean done = false;
+        boolean temp = false;
+        int wrongAttempts = 0;
+        while (wrongAttempts <= 5) {
+            for (User user : players) {
+                if (temp) {
+                    currentPlayer = user;
+                    System.out.println(currentPlayer.getNickname() + "'s turn.");
+
+                    // Display Unseen Messages...
+                    System.out.println("Displaying Unseen Messages...");
+                    for (List<MessageHandling> messages : conversations.values()) {
+                        for (MessageHandling m : messages) {
+                            if (m.getReceiver().equals(currentPlayer) && !m.isSeen()) {
+                                m.print();
+                                m.setSeen(true);
+                            }
+                        }
+                    }
+                    System.out.println(GREEN+"Unseen Messages Displayed."+RESET);
+                    return;
+                }
+                if (Objects.equals(user.getUsername(), old.getUsername()))
+                    temp = true;
+                wrongAttempts++;
+            }
+        }
+
+        System.out.println(RED+"Couldn't find the next Player!"+RESET);
+    }
+    public void DisplayFriendships () {
+        String targetName = currentPlayer.getUsername();
+
+        for (HumanCommunications f : friendships) {
+            if (f.getPlayer1().getUsername().equals(targetName) || f.getPlayer2().getUsername().equals(targetName))
+                f.printInfo();
+        }
     }
     public void loadGame () {
+        // TODO ذخیره جزییات بازی و لود بازی
         setTime(false);
         setWeather(false);
     }
+    public void exitGame () {
+        if (currentPlayer != currentUser) {
+            System.out.println("Access Denied!");
+            return;
+        }
 
+        //TODO سیو کل بازی
+    }
+    public void forceTerminate () {
+        Scanner scanner = new Scanner(System.in);
+        User terminator = currentPlayer;
+        for (User user: players) {
+            if (user == terminator)
+                continue;
+            currentPlayer = user;
+            System.out.println(currentPlayer.getNickname() + ", Do You Agree With the Game Termination?[Y/N]");
+            String choice = scanner.next();
+            if (!choice.trim().toLowerCase().equals("y")) {
+                System.out.println("Vote Failed! The Game won't be Terminated.");
+                currentPlayer = terminator;
+                return;
+            }
+        }
+
+        //TODO  کارهای ترمینیت کردن مثل پاک کردن فایل های سیو و ریست کردن همه دیتاهای بازیکنا بجز ماکسیمم امتیاز
+        for (User user: players) {
+            user.setCurrently_in_game(false);
+            user.setMax_point(user.getPoint());
+        }
+    }
 
 
     public void passedOfTime (int day, int hour) {
@@ -1556,7 +1708,6 @@ public class GameController {
         setEnergyInMorning();
         createRandomForaging();
         createRandomMinerals();
-
 
         for (Tile tile : bigMap)
             tile.getGameObject().startDayAutomaticTask();
