@@ -3,12 +3,9 @@ package Controller;
 import model.*;
 import model.Enum.AllPlants.*;
 import model.Enum.Door;
-import model.Enum.ItemType.BarnORCageType;
-import model.Enum.ItemType.FishType;
-import model.Enum.ItemType.Quantity;
+import model.Enum.ItemType.*;
 import model.Enum.ToolsType.FishingPoleType;
 import model.Enum.WeatherTime.Season;
-import model.Enum.ItemType.WallType;
 import model.Enum.WeatherTime.Weather;
 import model.Places.*;
 import model.Plants.*;
@@ -25,6 +22,17 @@ import static model.Enum.AllPlants.ForagingMineralsType.RUBY;
 public class GameController {
 
     Random rand = new Random();
+
+    public boolean isNeighbor(int x1, int y1, int x2, int y2) {
+        int [] dirx={0,0,1,1,1,-1,-1,-1};
+        int [] diry={1,-1,0,1,-1,0,1,-1};
+        for (int i=0 ; i<8 ; i++) {
+            if (x1 + dirx[i] == x2 && y1 + diry[i] == y2) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     public Tile getTileByDir (int dir) {
@@ -494,8 +502,8 @@ public class GameController {
             else if (entry instanceof Hoe){
                 result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).hoeType + "\n";
             }
-            else if (entry instanceof PiⅽkAxe){
-                result += ((PiⅽkAxe) entry).getName() +" "+ ((PiⅽkAxe) entry).pickAxeType +"\n";
+            else if (entry instanceof PickAxe){
+                result += ((PickAxe) entry).getName() +" "+ ((PickAxe) entry).pickAxeType +"\n";
             }
             else if (entry instanceof WateringCan){
                 result += ((WateringCan) entry).getName() +" "+ ((WateringCan) entry).wateringCanType + "\n";
@@ -544,12 +552,12 @@ public class GameController {
 
             if (entry instanceof Wood){
                 if (name.equals(Wood.name)) {
-                    return increaseMoney(number, Wood.price, (Wood) entry.getKey(), name, entry.getValue());
+                    return increaseMoney(number, Wood.price, entry.getKey(), name, entry.getValue());
                 }
             }
             if (entry instanceof BasicRock){
                 if (name.equals("BasicRock")) {
-                    return increaseMoney(number, BasicRock.price, (BasicRock) entry.getKey(), name, entry.getValue());
+                    return increaseMoney(number, BasicRock.price, entry.getKey(), name, entry.getValue());
                 }
             }
 
@@ -614,8 +622,8 @@ public class GameController {
                     return new Result(true,"now current tool is "+name);
                 }
             }
-            else if (entry instanceof PiⅽkAxe){
-                if (((PiⅽkAxe) entry).pickAxeType.equals(name)){
+            else if (entry instanceof PickAxe){
+                if (((PickAxe) entry).pickAxeType.equals(name)){
                     currentPlayer.currentTool=(Tools) entry;
                     return new Result(true,"now current tool is "+name);
                 }
@@ -646,7 +654,7 @@ public class GameController {
             case FishingPole fishingPole -> new Result(true, "current tool: " + fishingPole.fishingPoleType);
             case Hoe hoe -> new Result(true, "current tool: " + hoe.hoeType);
             case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType);
-            case PiⅽkAxe piⅽkAxe -> new Result(true, "current tool: " + piⅽkAxe.pickAxeType);
+            case PickAxe pickAxe -> new Result(true, "current tool: " + pickAxe.pickAxeType);
             default -> new Result(true, "current tool: " + currentTool.getName());
         };
     }
@@ -663,8 +671,8 @@ public class GameController {
                 result.append(((Hoe) entry).hoeType).append("\n");
             } else if (entry instanceof WateringCan) {
                 result.append(((WateringCan) entry).wateringCanType).append("\n");
-            } else if (entry instanceof PiⅽkAxe) {
-                result.append(((PiⅽkAxe) entry).pickAxeType).append("\n");
+            } else if (entry instanceof PickAxe) {
+                result.append(((PickAxe) entry).pickAxeType).append("\n");
             } else if (entry instanceof Tools) {
                 result.append(((Tools) entry).getName()).append("\n");
             }
@@ -926,8 +934,7 @@ public class GameController {
 
         for (int i = 0; i < 8; i++) {
             Tile tile = getTileByCoordinates(currentPlayer.getPositionX() + x[i], currentPlayer.getPositionY() + y[i]);
-            if (tile.getGameObject() instanceof Animal) {
-                Animal animal = (Animal) tile.getGameObject();
+            if (tile.getGameObject() instanceof Animal animal) {
                 if (animal.getName().equals(petName)) {
                     animal.increaseFriendShip(15);
                     animal.setPetToday(true);
@@ -943,7 +950,7 @@ public class GameController {
         for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
             for (Animal animal : barnOrCage.animals){
                 result.append(animal.getName()).append(" Friendship: ").append(animal.getFriendShip()).append(" petToday: ")
-                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeed()).append("\n");
+                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeedToday()).append("\n");
             }
         }
         return new Result(true, result.toString());
@@ -977,6 +984,7 @@ public class GameController {
                 getTileByCoordinates(animal.getPositionX(), animal.getPositionY() ).setGameObject(walkable);
                 animal.setPositionX(goalX);
                 animal.setPositionY(goalY);
+                //TODO تغذیه از علف ها
                 return new Result(true, name + "shepherd successfully!");
             }
 
@@ -991,7 +999,7 @@ public class GameController {
             }
         }
 
-        return new Result(false , "there is no way for animal to go to this coordinate!")
+        return new Result(false , "there is no way for animal to go to this coordinate!");
 
     }
 
@@ -1031,10 +1039,7 @@ public class GameController {
         if (tile == null) {
             return false;
         }
-        if (!(tile.getGameObject() instanceof Walkable) || ! (tile.getGameObject() instanceof BarnOrCage)) {
-            return false;
-        }
-        return true;
+        return tile.getGameObject() instanceof Walkable && tile.getGameObject() instanceof BarnOrCage;
     }
 
     public Result feedHay(String name) {
@@ -1042,7 +1047,7 @@ public class GameController {
         if (animal==null) {
             return new Result(false , "animal not found!");
         }
-        animal.setFeed(true);
+        animal.setFeedToday(true);
         return new Result(true, "you fed "+name+" successfully!");
     }
 
@@ -1074,7 +1079,7 @@ public class GameController {
     public void calculateAnimalsFriendship() {// آخر روز کال میشه
         for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
             for (Animal animal : barnOrCage.animals) {
-                if (! animal.isFeed()){
+                if (! animal.isFeedToday()){
                     animal.increaseFriendShip(- 20);
                 }
                 if (! animal.isPetToday()) {
@@ -1083,10 +1088,128 @@ public class GameController {
                 if ( ! animalIsOnBarnOrCage(animal)) {
                     animal.increaseFriendShip(- 20);
                 }
+                animal.setFeedPreviousDay(animal.isFeedToday());
+                animal.setFeedToday(false);
+                if (currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod()) {
+                    animal.setLastProduceDay(currentDate.getDate());
+                }
+                else if (currentDate.getDate() - animal.getLastProduceDay() == -28 + animal.getType().getPeriod()) {
+                    animal.setLastProduceDay(currentDate.getDate());
+                }
+                animal.setRandomProduction(Math.random() + 0.5);
+                animal.setRandomQuantity(Math.random());
+                animal.setRandomChance(Math.random());
+                animal.setProductCollected(false);
             }
         }
     }
 
+    public boolean checkBigProduct(Animal animal) {
+        double possibility=( animal.getFriendShip() + (150 * animal.getRandomProduction()) ) / 1500;
+        return animal.getRandomChance() < possibility;
+    }
+
+    public void checkAnimalProduct(Animal animal) {
+        if (animal.getType().equals(AnimalType.dino)) {
+            animal.setProductType(AnimalProductType.dinosaurEgg);
+        }
+        if (animal.getType().equals(AnimalType.sheep)) {
+            animal.setProductType(AnimalProductType.sheeps_Wool);
+        }
+        //TODO truffle فراموش نشود
+        if (animal.getFriendShip() < 100 || ! checkBigProduct(animal)) {
+            switch (animal.getType()) {
+                case hen -> { animal.setProductType(AnimalProductType.Egg); }
+                case duck -> { animal.setProductType(AnimalProductType.duckEgg); }
+                case rabbit -> { animal.setProductType(AnimalProductType.rabbits_Wool);}
+                case cow -> { animal.setProductType(AnimalProductType.milk);}
+                case goat -> { animal.setProductType(AnimalProductType.goatMilk);}
+            }
+        }
+        else if (animal.getFriendShip() >= 100 && checkBigProduct(animal) ) {
+            switch (animal.getType()) {
+                case hen -> { animal.setProductType(AnimalProductType.bigEgg) ; }
+                case duck -> { animal.setProductType(AnimalProductType.duckFeather) ; }
+                case rabbit -> { animal.setProductType(AnimalProductType.rabbits_Foot) ;}
+                case cow -> { animal.setProductType(AnimalProductType.bigMilk);}
+                case goat -> { animal.setProductType(AnimalProductType.bigGoatMilk);}
+            }
+        }
+
+    }
+
+    public boolean checkPeriod(Animal animal) {
+        return currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod() || currentDate.getDate() - animal.getLastProduceDay() == -28 + animal.getType().getPeriod();
+    }
+
+    public Result getProductAnimals(String name) {
+        Animal animal=getAnimalByName(name);
+
+        if (! animal.isFeedPreviousDay()){
+            return new Result(false , "No Product because you didn't feed " + animal.getName() + " in previous day");
+        }
+        if (! checkPeriod(animal)) {
+            return new Result(false , "It's not time yet. This animal isn't ready to produce again");
+        }
+        if ( ! isNeighbor(currentPlayer.getPositionX() , currentPlayer.getPositionY() , animal.getPositionX() , animal.getPositionY())) {
+            return new Result(false , "The animal is not in Neighbor Tile");
+        }
+
+
+        double Quantity=((double) animal.getFriendShip() / 1000) * (0.5 * (1 + animal.getRandomProduction()));
+        Quantity quantity=productQuantity(Quantity);
+
+        Animalproduct animalproduct = new Animalproduct(animal.getProductType(), quantity);
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        inventory.Items.put(animalproduct , 1);
+        animal.setProductCollected(true);
+
+        return new Result(true , "product "+ animal.getProductType().getName() + "collected successfully");
+    }
+
+    public Result produces() {
+        StringBuilder result=new StringBuilder();
+        result.append("Produces :\n");
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animal : barnOrCage.animals) {
+                result.append(animal.getName()).append(",  Remaining Produces: ");
+                if (animal.isFeedPreviousDay() && checkPeriod(animal) && ! animal.isProductCollected()) {
+                    result.append(animal.getProductType().getName()).append(", ");
+
+                    double Quantity=((double) animal.getFriendShip() / 1000) * (0.5 * (1 + animal.getRandomProduction()));
+                    Quantity quantity=productQuantity(Quantity);
+
+                    result.append("Quantity: ").append(quantity.getName());
+
+                }
+                result.append("\n");
+            }
+        }
+        return new Result(true , result.toString());
+    }
+
+    public Result removeAnimal(Animal animal) {
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animal2 : barnOrCage.animals) {
+                if (animal.equals(animal2)) {
+                    barnOrCage.getAnimals().remove(animal2);
+                    return new Result(true , animal.getName() + " was sold successfully");
+                }
+            }
+        }
+        return null;
+    }
+
+    public Result sellAnimal(String name) {
+        Animal animal=getAnimalByName(name);
+        //TODO وقتی مغازه زده میشه باید اینجا رو بزنیم. فعلا قیمت اولیه حیوان را نداریم
+        if (animal == null) {
+            return new Result(false , "Animal not found");
+        }
+
+        return removeAnimal(animal);
+
+    }
 
     private void setEnergyInMorning () {
         for (User user : players) {
