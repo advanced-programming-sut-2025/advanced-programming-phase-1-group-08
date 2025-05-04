@@ -1356,13 +1356,42 @@ public class GameController {
     }
 
 
-    private Result showTree (Tile tile) {
+    private String showTree (Tree tree) {
+
+
+        return "name : " + tree.getType().getDisplayName() +
+                "\nLast Water : " + BLUE + "Date : " + RED + tree.getLastWater().getYear() +
+                RESET + " " + tree.getLastWater().getNameSeason() +
+                " " + tree.getLastWater().getDate() +
+                "\nLast Fruit : " + BLUE + "Date : " + RED + tree.getLastFruit().getYear() +
+                RESET + " " + tree.getLastFruit().getNameSeason() +
+                " " + tree.getLastFruit().getDate() +
+                "\nToday fertilize :" + tree.isFertilize() +
+                "\nStage :" + tree.getStage() +
+                "\nHave fruit :" + tree.isHaveFruit();
+    }
+    private String showForaging (ForagingSeeds foragingSeeds) {
+
+        return "name : " + foragingSeeds.getType().getDisplayName() +
+                "\nLast Water : " + BLUE + "Date : " + RED + foragingSeeds.getLastWater().getYear() +
+                RESET + " " + foragingSeeds.getLastWater().getNameSeason() +
+                " " + foragingSeeds.getLastWater().getDate() +
+                "\nToday fertilize :" + foragingSeeds.isTodayFertilize() +
+                "\nStage :" + foragingSeeds.getStage() +
+                "\nOne Time :" + foragingSeeds.getType().isOneTimeUse() +
+                "\nCan grow giant :" + foragingSeeds.getType().canGrowGiant();
 
     }
-    private Result showGiant (Tile tile) {
+    private String  showGiant (GiantProduct giantProduct) {
 
-    }
-    private Result showForaging (Tile tile) {
+        return "name : " + giantProduct.getType().getDisplayName() +
+                "\nLast Water : " + BLUE + "Date : " + RED + giantProduct.getLastWater().getYear() +
+                RESET + " " + giantProduct.getLastWater().getNameSeason() +
+                " " + giantProduct.getLastWater().getDate() +
+                "\nToday fertilize :" + giantProduct.isTodayFertilize() +
+                "\nStage :" + giantProduct.getStage() +
+                "\nOne Time :" + giantProduct.getType().isOneTimeUse() +
+                "\nCan grow giant :" + giantProduct.getType().canGrowGiant();
 
     }
     private void checkForPlantProduct () {
@@ -2101,14 +2130,13 @@ public class GameController {
         Tile tile = getTileByCoordinates(x, y);
 
         if (tile.getGameObject() instanceof Tree)
-            return new Result(true, );
+            return new Result(true, showTree((Tree) tile.getGameObject()));
         if (tile.getGameObject() instanceof ForagingSeeds)
-            return new Result(true, );
+            return new Result(true, showForaging((ForagingSeeds) tile.getGameObject()));
         if (tile.getGameObject() instanceof GiantProduct)
-            return new Result(true, );
+            return new Result(true, showGiant((GiantProduct) tile.getGameObject()));
 
         return new Result(false, RED+"That tile don't have plant!"+RESET);
 
     }
-
 }

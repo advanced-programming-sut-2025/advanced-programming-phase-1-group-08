@@ -18,8 +18,10 @@ public class GiantProduct extends Items {
     private ArrayList<Tile> neighbors = new ArrayList<>();
     private final ForagingSeedsType type;
     private final DateHour birthDay;
+    private boolean todayFertilize;
     private boolean isProtected;
     private DateHour lastWater;
+    private int numFertilize;
     private int stage;
 
     public GiantProduct (ForagingSeedsType type, DateHour currentDate, ArrayList<Tile> neighbors) {
@@ -30,9 +32,19 @@ public class GiantProduct extends Items {
         this.neighbors = neighbors;
     }
 
+    public void setProtected(boolean aProtected) {
+
+        isProtected = aProtected;
+    }
     public void setLastWater (DateHour dateHour) {
 
         this.lastWater = dateHour;
+    } // TODO    کود بقیه و تاقیرشونم مقل این بزنی
+    public void setFertilize() {
+
+        this.todayFertilize = true;
+        numFertilize++; // TODO بر اساس نوع کود
+
     }
     public void setStage  () {
 
@@ -45,10 +57,6 @@ public class GiantProduct extends Items {
             else
                 days += this.type.getStageDate(i);
         }
-    }
-    public void setProtected(boolean aProtected) {
-
-        isProtected = aProtected;
     }
 
     public boolean checkForDeath () {
@@ -71,7 +79,10 @@ public class GiantProduct extends Items {
     }
 
 
+    public int getStage() {
 
+        return stage;
+    }
     public String   getIcon () {
 
         return BG_BRIGHT_PURPLE+type.getSymbolByLevel(stage)+RESET;
