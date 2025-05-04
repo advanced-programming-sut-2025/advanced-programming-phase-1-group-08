@@ -5,6 +5,7 @@ import model.Enum.Menu;
 import model.Enum.WeatherTime.Weather;
 import model.MapThings.Tile;
 import model.Places.Farm;
+import model.Places.Market;
 import model.SaveData.PasswordHashUtil;
 
 import java.util.*;
@@ -20,6 +21,7 @@ public class App {
     public static ArrayList<Tile> bigMap = new ArrayList<>();
     public static ArrayList<Tile> plowedTile = new ArrayList<>();
     public static List<HumanCommunications> relations = new ArrayList<>();
+    public static ArrayList<Market> markets = new ArrayList<>();
 
     public static final int mapDimensions = 90;
 

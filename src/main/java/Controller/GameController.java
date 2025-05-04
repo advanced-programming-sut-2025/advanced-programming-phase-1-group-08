@@ -234,14 +234,14 @@ public class GameController {
         farm.setGreenHouse(greenHouse);
     }
 
-    public Farm creatInitialFarm(int id){
+    public Farm createInitialFarm(int id){
         long seed=System.currentTimeMillis();
         Farm farm= currentPlayer.getFarm();
 
         for (int i=0 ; i<30 ;i++){
             for (int j=0 ; j<30 ; j++) {
                 if (i>=23 && i<29 && j>=2 && j<8){
-                    creatInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(1<i && i<7 && j>22 && j<29){
                     creatInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
@@ -470,6 +470,16 @@ public class GameController {
         if (!checkTile(tile)){
             return new Result(false,"you can't go to this coordinate");
         }
+
+        for (Market market : markets) {
+            if (goalX > market.getTopLeftX() && goalY > market.getTopLeftY()){
+                if (goalX < market.getTopLeftX() + market.getWidth() && goalY < market.getTopLeftY() + market.getHeight()){
+                    if (market.getMarketType().getStartHour() > currentDate.getHour() || market.getMarketType().getEndHour() < currentDate.getHour()){
+                        return new Result(false , "you can't go to Market because it is not open");
+                    }
+                }
+            }
+        }
         //TODO اگر NPC در اون مختصات باشه نمیتونیم اونجا بریم
         //TODO جاهایی که دونه کاشتیم
         return null;
@@ -507,10 +517,10 @@ public class GameController {
                 result += ((FishingPole) entry).getName() +" "+ ((FishingPole) entry).fishingPoleType + "\n";
             }
             else if (entry instanceof Hoe){
-                result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).hoeType + "\n";
+                result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).getType() + "\n";
             }
-            else if (entry instanceof PiⅽkAxe){
-                result += ((PiⅽkAxe) entry).getName() +" "+ ((PiⅽkAxe) entry).pickAxeType +"\n";
+            else if (entry instanceof PickAxe){
+                result += ((PickAxe) entry).getName() +" "+ ((PickAxe) entry).pickAxeType +"\n";
             }
             else if (entry instanceof WateringCan){
                 result += ((WateringCan) entry).getName() +" "+ ((WateringCan) entry).wateringCanType + "\n";
@@ -629,8 +639,8 @@ public class GameController {
                     return new Result(true,"now current tool is "+name);
                 }
             }
-            else if (entry instanceof PiⅽkAxe){
-                if (((PiⅽkAxe) entry).pickAxeType.equals(name)){
+            else if (entry instanceof PickAxe){
+                if (((PickAxe) entry).pickAxeType.equals(name)){
                     currentPlayer.currentTool=(Tools) entry;
                     return new Result(true,"now current tool is "+name);
                 }
@@ -659,7 +669,7 @@ public class GameController {
             case null -> new Result(false, "there is no current tool in your hands");
             case Axe axe -> new Result(true, "current tool: " + axe.axeType);
             case FishingPole fishingPole -> new Result(true, "current tool: " + fishingPole.fishingPoleType);
-            case Hoe hoe -> new Result(true, "current tool: " + hoe.hoeType);
+            case Hoe hoe -> new Result(true, "current tool: " + hoe.getType());
             case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType);
             case PickAxe pickAxe -> new Result(true, "current tool: " + pickAxe.pickAxeType);
             default -> new Result(true, "current tool: " + currentTool.getName());
@@ -675,11 +685,11 @@ public class GameController {
             } else if (entry instanceof FishingPole) {
                 result.append(((FishingPole) entry).fishingPoleType).append("\n");
             } else if (entry instanceof Hoe) {
-                result += ((Hoe) entry).getType() + "\n";
+                result .append ( ((Hoe) entry).getType() ) .append("\n");
             } else if (entry instanceof WateringCan) {
                 result.append(((WateringCan) entry).wateringCanType).append("\n");
             } else if (entry instanceof PickAxe) {
-                result += ((PickAxe) entry).pickAxeType + "\n";
+                result .append(((PickAxe) entry).pickAxeType) .append( "\n");
             } else if (entry instanceof Tools) {
                 result.append(((Tools) entry).getName()).append("\n");
             }
@@ -958,7 +968,7 @@ public class GameController {
         for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
             for (Animal animal : barnOrCage.animals){
                 result.append(animal.getName()).append(" Friendship: ").append(animal.getFriendShip()).append(" petToday: ")
-                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeed()).append("\n");
+                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeedToday()).append("\n");
             }
         }
         return new Result(true, result.toString());
@@ -1223,6 +1233,7 @@ public class GameController {
 
 
 
+
     private void setEnergyInMorning () {
         for (User user : players) {
 
@@ -1351,40 +1362,7 @@ public class GameController {
         Random random = new Random();
         return matchingTiles.get(random.nextInt(matchingTiles.size()));
     }
-    private void doWeatherTask () {
 
-        if (currentWeather.equals(Weather.Rainy) || currentWeather.equals(Weather.Stormy)) {
-            for (Tile tile : bigMap) {
-                GameObject object = tile.getGameObject();
-
-                if (object instanceof Tree)
-                    ((Tree) object).setLastWater(currentDate);
-                if (object instanceof GiantProduct)
-                    ((GiantProduct) object).setLastWater(currentDate);
-                if (object instanceof ForagingSeeds)
-                    ((ForagingSeeds) object).setLastWater(currentDate);
-            }
-        }
-        if (currentWeather.equals(Weather.Stormy)) {
-
-            Random random1 = new Random();
-
-            if (random1.nextInt(2) == 1)
-                lightningStrike(selectTileForThor(players.getFirst().getFarm()));
-
-            random1 = new Random();
-            if (random1.nextInt(2) == 1)
-                lightningStrike(selectTileForThor(players.get(1).getFarm()));
-
-            random1 = new Random();
-            if (random1.nextInt(2) == 1)
-                lightningStrike(selectTileForThor(players.get(2).getFarm()));
-
-            random1 = new Random();
-            if (random1.nextInt(2) == 1)
-                lightningStrike(selectTileForThor(players.get(3).getFarm()));
-        }
-    }
     private boolean checkForDeath () {
 
         return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
@@ -1468,10 +1446,7 @@ public class GameController {
                     }
             }
     }
-    private boolean checkForDeath () {
 
-        return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
-    }
 
     private void createRandomForaging () {
 
@@ -1902,7 +1877,7 @@ public class GameController {
     }
     public Result buildGreenHouse () {
 
-        for (Map.Entry <Items,Integer> entry: currentPlayer.getBaⅽkPaⅽk().inventory.Items.entrySet()) // این خیلی کیریه
+        for (Map.Entry <Items,Integer> entry: currentPlayer.getBackPack().inventory.Items.entrySet()) // این خیلی کیریه
             if (entry instanceof Wood)
                 if (entry.getValue() < GreenHouse.requiredWood)
                     return new Result(false, RED+"You don't have enough wood!"+RESET);

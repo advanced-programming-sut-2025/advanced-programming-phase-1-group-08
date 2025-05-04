@@ -2,6 +2,9 @@ package model.ToolsPackage;
 
 public class Shear extends Tools {
 
+    private static final int coinNeeded=1000;
+    private static int remindInShop=1;
+
     public Shear(){
         super("Shear", 0);
     }
@@ -12,4 +15,21 @@ public class Shear extends Tools {
     }
 
     public void use (){}
+
+    public static int getRemindInShop() {
+        return remindInShop;
+    }
+    public static void setRemindInShop() {
+        this.remindInShop = 1;
+    }
+    public static void increaseRemindInShop(int amount) {
+        remindInShop += amount;
+    }
+
+    public static int getCoinNeeded() {
+        return coinNeeded;
+    }
+    public static int getRemindInshop() {
+        return remindInShop;
+    }
 }
