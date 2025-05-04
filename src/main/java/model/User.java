@@ -29,7 +29,7 @@ public class User {
     private int health;
     private int MAX_HEALTH;
     private Tile SleepTile;
-    private User Married;  // شخصی که باهاش ازدواج کرده
+    private User Spouse;  // شخصی که باهاش ازدواج کرده
     private boolean healthUnlimited;
 
 
@@ -66,69 +66,43 @@ public class User {
     }
 
 
-    public String getUsername() {
-        return username;
-    }
-    public String getPassword() {
-        return password;
-    }
-    public String getNickname() {
-        return nickname;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void   setUsername(String username) {
-        this.username = username;
-    }
-    public void   setPassword(String password) {
-        this.password = password;
-    }
-    public void   setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-    public void   setEmail(String email) {this.email = email;}
 
-    public SecurityQuestions getMySecurityQuestion() {
-        return MySecurityQuestion;
-    }
-    public void   setMySecurityQuestion(SecurityQuestions mySecurityQuestion) {
-        MySecurityQuestion = mySecurityQuestion;
-    }
-    public String getMySecurityAnswer() {
-        return MySecurityAnswer;
-    }
-    public void   setMySecurityAnswer(String mySecurityAnswer) {
-        MySecurityAnswer = mySecurityAnswer;
-    }
-    public int    getMax_point() {
-        return max_point;
-    }
-    public void   setMax_point(int max_point) {
-        this.max_point = max_point;
-    }
-    public int    getGames_played() {
-        return games_played;
-    }
-    public void   setGames_played(int games_played) {
-        this.games_played = games_played;
-    }
-
-
-    public int  getMAX_HEALTH() {
+    public int getMAX_HEALTH() {
         return MAX_HEALTH;
-    }
-    public int  getPoint() {
-        return point;
-    }
-    public int  getHealth() {
-        return health;
     }
     public void setMAX_HEALTH(int MAX_HEALTH) {
         this.MAX_HEALTH = MAX_HEALTH;
     }
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getNickname() {
+        return nickname;
+    }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {this.email = email;}
+    public int getPoint() {
+        return point;
+    }
     public void setPoint(int point) {
         this.point = point;
+    }
+    public int getHealth() {
+        return health;
     }
     public void setHealth(int health) {
         this.health = health;
@@ -139,6 +113,10 @@ public class User {
         this.health += health;
         checkHealth();
     }
+    public Farm getFarm() {
+        return farm;
+    }
+
     public void checkHealth() {
 
         if (this.health > MAX_HEALTH)
@@ -146,40 +124,61 @@ public class User {
         if (this.health < 0)
             this.health = 0;
     }
-
-
-    public Farm getFarm() {
-        return farm;
+    public int getPositionX() {
+        return positionX;
     }
     public void setPositionX(int positionX) {
         this.positionX = positionX;
     }
+    public int getPositionY() {
+        return positionY;
+    }
     public void setPositionY(int positionY) {
         this.positionY = positionY;
     }
-    public int  getPositionX() {
-        return positionX;
-    }
-    public int  getPositionY() {
-        return positionY;
-    }
 
-    public User    getMarried() {
-        return Married;
+    public User getSpouse() {
+        return Spouse;
     }
     public void    setHealthUnlimited () {this.healthUnlimited = true;}
     public boolean isHealthUnlimited() {
         return healthUnlimited;
     }
 
+    public SecurityQuestions getMySecurityQuestion() {
+        return MySecurityQuestion;
+    }
+    public void setMySecurityQuestion(SecurityQuestions mySecurityQuestion) {
+        MySecurityQuestion = mySecurityQuestion;
+    }
+    public String getMySecurityAnswer() {
+        return MySecurityAnswer;
+    }
+    public void setMySecurityAnswer(String mySecurityAnswer) {
+        MySecurityAnswer = mySecurityAnswer;
+    }
+    public int getMax_point() {
+        return max_point;
+    }
+    public void setMax_point(int max_point) {
+        this.max_point = max_point;
+    }
+    public int getGames_played() {
+        return games_played;
+    }
+    public void setGames_played(int games_played) {
+        this.games_played = games_played;
+    }
 
 
     public BackPack getBackPack() {
         return backPack;
     }
+
     public int getMoney() {
         return money;
     }
+
     public void increaseMoney (int amount) {
         this.money += amount;
     }

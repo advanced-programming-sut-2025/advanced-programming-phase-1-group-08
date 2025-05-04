@@ -72,7 +72,7 @@ public class GameController {
             }
         }
         return null;
-    }
+    }   ///        الان اینونتوری ساخته میشه از همه چی توش گذاشتی همون اول ؟
 
 
     public void createInitialMine(int id, int x, int y){
@@ -108,8 +108,7 @@ public class GameController {
 
         }
     }
-
-    public void creatInitialLake(int id, int x, int y) {
+    public void createInitialLake(int id, int x, int y) {
         Farm farm = currentPlayer.getFarm();
         if (id == 1) {
             Lake lake = new Lake();
@@ -126,8 +125,7 @@ public class GameController {
 
         }
     }
-
-    public void creatInitialHouse(int id, int x, int y) {
+    public void createInitialHouse(int id, int x, int y) {
         Farm farm = currentPlayer.getFarm();
         Wall wall = new Wall();
         wall.setWallType(WallType.House);
@@ -178,8 +176,7 @@ public class GameController {
         }
         farm.setHome(home);
     }
-
-    public void creatInitialGreenHouse(int id, int x, int y) {
+    public void createInitialGreenHouse(int id, int x, int y) {
         Farm farm = currentPlayer.getFarm();
         Wall GreenWall = new Wall();
         GreenWall.setWallType(WallType.GreenHouse);
@@ -215,7 +212,7 @@ public class GameController {
         GreenHouse greenHouse=new GreenHouse(1 + 60*x,1 + 60*y);
         greenHouse.setCharactor('G');
         WaterTank waterTank=new WaterTank(100);
-        waterTank.setWaterTank('W');
+        waterTank.setWaterTank('W'); // اینجا عدد میخواد چرا حروف دادی؟
         greenHouse.setWaterTank(waterTank);
         for (int i=1 ; i<7 ; i++){
             for (int j=1 ; j<8 ; j++) {
@@ -233,7 +230,6 @@ public class GameController {
         }
         farm.setGreenHouse(greenHouse);
     }
-
     public Farm createInitialFarm(int id){
         long seed=System.currentTimeMillis();
         Farm farm= currentPlayer.getFarm();
@@ -244,13 +240,13 @@ public class GameController {
                     createInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(1<i && i<7 && j>22 && j<29){
-                    creatInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if(i>=12 && i<19 && j<7){
-                    creatInitialHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else if (i<8 && j<9){
-                    creatInitialGreenHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                    createInitialGreenHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
                 }
                 else {
                     MapGenerator(i,j,seed);
@@ -370,6 +366,7 @@ public class GameController {
 
     }
 
+
     public Result walk(int goalX, int goalY) {
         int startX = currentPlayer.getPositionX();
         int startY = currentPlayer.getPositionY();
@@ -393,40 +390,40 @@ public class GameController {
             queue.add(new int[]{startX,startY,i,0,0});
         }
 
-         while (!queue.isEmpty()) {
-             int [] current=queue.poll();
-             int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
-             for (int i=0 ; i<8 ; i++) {
-                 int nx=x+dirx[i], ny=y+diry[i];
+        while (!queue.isEmpty()) {
+            int [] current=queue.poll();
+            int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
+            for (int i=0 ; i<8 ; i++) {
+                int nx=x+dirx[i], ny=y+diry[i];
 
-                 Tile nextTile=getTileByCoordinates(nx, ny);
-                 if (nextTile==null || checkTile(nextTile)) continue;
+                Tile nextTile=getTileByCoordinates(nx, ny);
+                if (nextTile==null || checkTile(nextTile)) continue;
 
-                 int newSteps=steps+1;
-                 int newTurn=turns+(i==dir ? 0:1);
-                 int cost=newSteps +10*newTurn;
+                int newSteps=steps+1;
+                int newTurn=turns+(i==dir ? 0:1);
+                int cost=newSteps +10*newTurn;
 
-                 if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
-                     costEnergy.put(nextTile, newSteps);
-                     queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
-                 }
+                if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
+                    costEnergy.put(nextTile, newSteps);
+                    queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
+                }
 
-             }
-         }
+            }
+        }
 
-         if (!costEnergy.containsKey(endTile)) {
-             return new Result(false,"you can't go to this coordinate because there no way");
-         }
-         else {
-             int cost=costEnergy.get(endTile)/20;
-             if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
+        if (!costEnergy.containsKey(endTile)) {
+            return new Result(false,"you can't go to this coordinate because there no way");
+        }
+        else {
+            int cost=costEnergy.get(endTile)/20;
+            if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
                 return new Result(false,"your Energy is not enough");
-             }
-             else {
-                 currentPlayer.increaseHealth(-cost);
-                 return new Result(true,"you are now in "+goalX+","+goalY);
-             }
-         }
+            }
+            else {
+                currentPlayer.increaseHealth(-cost);
+                return new Result(true,"you are now in "+goalX+","+goalY);
+            }
+        }
 
     }
     private boolean checkTile(Tile tile){
@@ -580,7 +577,7 @@ public class GameController {
 
             if (entry instanceof ForagingMinerals){
                 if (((ForagingMinerals) entry).getType().getDisplayName().equals(name)){
-                     return increaseMoney(number,( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
+                    return increaseMoney(number,( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
                 }
             }
 
@@ -1233,7 +1230,6 @@ public class GameController {
 
 
 
-
     private void setEnergyInMorning () {
         for (User user : players) {
 
@@ -1349,25 +1345,30 @@ public class GameController {
     }
     private Tile selectTileForThor (Farm farm) {
 
-        GreenHouse greenHouse = farm.getGreenHouse();
-
         List<Tile> matchingTiles = farm.Farm.stream()
                 .filter(tile -> tile.getGameObject() instanceof Tree ||
-                        tile.getGameObject() instanceof ForagingSeeds ||
-                        !(tile.getX() >= greenHouse.getCoordinateX() && tile.getY() <= greenHouse.getCoordinateY() &&
-                                tile.getX() <= greenHouse.getCoordinateX()+greenHouse.getLength() &&
-                                tile.getY() >= greenHouse.getCoordinateY()+ greenHouse.getWidth()))
+                        tile.getGameObject() instanceof ForagingSeeds &&
+                                !farm.isInGreenHouse(tile.getX(), tile.getY()))
                                 .toList();
 
         Random random = new Random();
         return matchingTiles.get(random.nextInt(matchingTiles.size()));
     }
 
-    private boolean checkForDeath () {
 
-        return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
+    private Result showTree (Tile tile) {
+
     }
-    private Result plantMixedSeed (String dir) {
+    private Result showGiant (Tile tile) {
+
+    }
+    private Result showForaging (Tile tile) {
+
+    }
+    private void checkForPlantProduct () {
+
+    }
+    private Result plantMixedSeed (int dir) {
 
         Inventory inventory=currentPlayer.getBackPack().inventory;
 
@@ -1391,7 +1392,7 @@ public class GameController {
             }
         return new Result(false, PURPLE+" اینونتوری و ریموو ایتم خیلی بدن "+RESET);
     }
-    private Result plantForagingSeed (ForagingSeedsType type, String dir) {
+    private Result plantForagingSeed (ForagingSeedsType type, int dir) {
 
         Inventory inventory=currentPlayer.getBackPack().inventory;
 
@@ -1437,7 +1438,9 @@ public class GameController {
                                     (((ForagingSeeds) tile4.getGameObject()).getType() == type)) {
 
                                 GiantProduct giantProduct = new GiantProduct(
-                                        type, ((ForagingSeeds) tile1.getGameObject()).getBirthDay());
+                                        type, ((ForagingSeeds) tile1.getGameObject()).getBirthDay(),
+                                        new ArrayList<>(List.of(tile2, tile3, tile4)));
+
                                 tile1.setGameObject(giantProduct);
                                 tile2.setGameObject(giantProduct);
                                 tile3.setGameObject(giantProduct);
@@ -1446,7 +1449,10 @@ public class GameController {
                     }
             }
     }
+    private boolean checkForDeath () {
 
+        return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
+    }
 
     private void createRandomForaging () {
 
@@ -1672,6 +1678,79 @@ public class GameController {
                 f.printInfo();
         }
     }
+    public void talking (String input) {
+        String destinationUsername = GameMenuCommands.talking.getMather(input).group("username");
+        String message = GameMenuCommands.talking.getMather(input).group("message");
+        if (!players.contains(findUserByUsername(destinationUsername))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (destinationUsername.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(destinationUsername));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+        Result result = f.talk(message);
+        System.out.println(result);
+    }
+    public void DisplayingTalkHistory (String input) {
+        String username = GameMenuCommands.talkHistory.getMather(input).group("username");
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+        Result result = f.talkingHistory();
+        System.out.println(result);
+    }
+    public void hug (String input) {
+        String username = GameMenuCommands.hug.getMather(input).group("username");
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Hug " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+        Result result = f.Hug();
+        System.out.println(result);
+    }
+    public void giveFlowers (String input) {
+        String username = GameMenuCommands.giveFlower.getMather(input).group("username");
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't give Flower to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+        Result result = f.buyFlowers();
+        System.out.println(result);
+    }
     public void loadGame () {
         // TODO ذخیره جزییات بازی و لود بازی
         setTime(false);
@@ -1748,7 +1827,7 @@ public class GameController {
             startDay();
 
         for (Tile tile : bigMap)
-            tile.getGameObject().startDayAutomaticTask();
+            tile.getGameObject().turnByTurnAutomaticTask();
     }
     public void AutomaticFunctionAfterAnyAct () {
 
@@ -1758,8 +1837,6 @@ public class GameController {
             user.checkHealth();
 
     }
-
-
 
 
 
@@ -1911,13 +1988,15 @@ public class GameController {
         } catch (Exception e) {
             return new Result(false, RED+"Direction is invalid"+RESET);
         }
+        if (dir < 1 || dir > 8)
+            return new Result(false, RED+"Direction is invalid"+RESET);
 
         if (name.matches("\\s*(?i)Mixed\\s*seed(s)?\\s*"))
-            return plantMixedSeed(direction);
+            return plantMixedSeed(dir);
 
         try {
             ForagingSeedsType type = ForagingSeedsType.valueOf(name);
-            return plantForagingSeed(type, direction);
+            return plantForagingSeed(type, dir);
         } catch (Exception e) {
 
         return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
@@ -1932,6 +2011,8 @@ public class GameController {
         } catch (Exception e) {
             return new Result(false, RED+"Direction is incorrect"+RESET);
         }
+        if (dir < 1 || dir > 8)
+            return new Result(false, RED+"Direction is invalid"+RESET);
 
         if (!(currentPlayer.currentTool instanceof WateringCan))
             return new Result(false, RED+"سطل اب رو بردار دوست من"+RESET);
@@ -2008,6 +2089,26 @@ public class GameController {
                         +RESET+((WateringCan) entry).getReminderCapacity());
 
         return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
+    }
+    public Result showPlant (String xNumber, String yNumber) {
+
+        int x = Integer.parseInt(xNumber);
+        int y = Integer.parseInt(yNumber);
+
+        if (!currentPlayer.getFarm().isInFarm(x, y))
+            return new Result(false, RED+"Pick from your own farm!"+RESET);
+
+        Tile tile = getTileByCoordinates(x, y);
+
+        if (tile.getGameObject() instanceof Tree)
+            return new Result(true, );
+        if (tile.getGameObject() instanceof ForagingSeeds)
+            return new Result(true, );
+        if (tile.getGameObject() instanceof GiantProduct)
+            return new Result(true, );
+
+        return new Result(false, RED+"That tile don't have plant!"+RESET);
+
     }
 
 }

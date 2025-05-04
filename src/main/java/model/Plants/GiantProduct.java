@@ -64,7 +64,7 @@ public class GiantProduct extends Items {
 
 
     @Override
-    public void turnByTurnAutomaticTask() {
+    public void startDayAutomaticTask() {
         setStage();
         if (checkForDeath())
             delete();
