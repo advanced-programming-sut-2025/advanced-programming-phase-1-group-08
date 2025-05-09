@@ -18,14 +18,19 @@ public class Tree extends GameObject {
     private DateHour lastWater;
     private DateHour lastFruit;
     private boolean haveFruit;
+    private boolean fertilize;
     private int stage;
 
 
     public Tree(TreeType type, DateHour currentDate) {
+        stage = 1;
         this.type = type;
         birthDay = currentDate.clone();
-        stage = 1;
-        this.isProtected = false;
+        lastWater = currentDate.clone();
+        lastFruit = currentDate.clone();
+        isProtected = false;
+        haveFruit = false;
+        fertilize = false;
     }
 
     public void setProtected(boolean aProtected) {
@@ -39,6 +44,16 @@ public class Tree extends GameObject {
     public void setLastFruit(DateHour lastFruit) {
 
         this.lastFruit = lastFruit;
+    }
+    public void setFertilize() {
+
+        this.fertilize = true;
+
+        if (stage == 4) // TODO  بر اساس نوع کود
+            lastFruit.decreaseDay(1);
+        else
+            birthDay.decreaseDay(1);
+
     }
     private void setStage () {
 
@@ -55,12 +70,29 @@ public class Tree extends GameObject {
 
     }
 
+
+    public int getStage() {
+
+        return stage;
+    }
+    public TreeType getType() {
+
+        return type;
+    }
     public String   getIcon () {
 
         if (stage >= 4 && haveFruit)
             return this.type.getIcon2();
         else
             return this.type.getIcon1();
+    }
+    public boolean  isFertilize() {
+
+        return fertilize;
+    }
+    public boolean  isHaveFruit() {
+
+        return haveFruit;
     }
     public boolean  isProtected() {
 
@@ -98,6 +130,7 @@ public class Tree extends GameObject {
 
         setStage();
         setHaveFruit();
+        this.fertilize = false;
         if (checkForDeath())
             delete();
 

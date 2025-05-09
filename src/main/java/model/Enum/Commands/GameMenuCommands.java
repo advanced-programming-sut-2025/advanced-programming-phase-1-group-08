@@ -36,7 +36,7 @@ public enum GameMenuCommands {
 
     walk("walk\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     inventoryShow("inventory\\s+show\\s*"),
-    removeItem("^inventory trash -i (?<item>.+?)(?= -n|$)(?: -n (?<number>\\d+))?$"),
+    removeItem("^inventory\\s+trash\\s+-i\\s+(?<item>.+?)(?= -n|$)(?: -n (?<number>\\d+))?$"),
     toolsEquip("tools\\s+equip\\s+(?<name>\\S.*)\\s*"),
     currentTool("tools\\s+show\\s+current\\s*"),
     availableTool("tools\\s+show\\s+available\\s*"),
@@ -51,6 +51,10 @@ public enum GameMenuCommands {
     produces("\\s*produces\\s*"),
     collectProduct("collect\\s+product\\s+-n\\s+(?<name>\\S.*)\\s*"),
     sellAnimal("sell\\s+animal\\s+-n\\s+(?<name>\\S.*)\\s*"),
+    showAllProducts("(?i)show\\s+all\\s+products\\s*"),
+    showAvailableProducts("(?i)show\\s+all\\s+available\\s+products\\s*"),
+    purchase("^(?i)purchase\\s+(.+?)(?:\\s+-n\\s+(\\d+))?$"),
+
     ;
 
 

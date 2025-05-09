@@ -1,12 +1,13 @@
 package model.Enum.ToolsType;
 
 import model.App;
+import model.Enum.ItemType.MarketType;
 
 import java.util.ArrayList;
 
 public enum FishingPoleType {
 
-    TrainingRod{
+    TrainingRod (1){
         @Override
         public int getPrice() {
             return 25;
@@ -32,7 +33,7 @@ public enum FishingPoleType {
             return 0.1;
         }
     },
-    BambooPole{
+    BambooPole (1){
         @Override
         public int getPrice() {
             return 500;
@@ -56,7 +57,7 @@ public enum FishingPoleType {
             return 0.5;
         }
     },
-    FiberglassRod{
+    FiberglassRod (1){
         @Override
         public int getPrice() {
             return 1800;
@@ -80,7 +81,7 @@ public enum FishingPoleType {
             return 0.9;
         }
     },
-    IridiumRod{
+    IridiumRod (1){
         @Override
         public int getPrice() {
             return 7500;
@@ -111,6 +112,25 @@ public enum FishingPoleType {
     public abstract int costEnergy(boolean Fishing);
     public abstract String getName();
     public abstract double getCoefficient();
+    private int initialShopLimit;
+    private int shopLimit=1;
+
+    FishingPoleType(int InitialShopLimit) {
+        this.initialShopLimit = InitialShopLimit;
+    }
+
+    public int getInitialShopLimit() {
+        return initialShopLimit;
+    }
+    public void setshopLimit() {
+        this.shopLimit = initialShopLimit;
+    }
+    public int getshopLimit() {
+        return shopLimit;
+    }
+    public void incrementShopLimit(int amount) {
+        this.shopLimit += amount;
+    }
 
     public boolean checkAbility(int amount){
         if (App.currentPlayer.getLevelFishing()>=amount){

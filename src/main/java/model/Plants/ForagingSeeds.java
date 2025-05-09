@@ -23,24 +23,27 @@ public class ForagingSeeds extends Items {
 
 
     public ForagingSeeds(ForagingSeedsType type, DateHour Date) {
+        stage = 1;
         this.type = type;
         birthDay = Date.clone();
-        stage = 1;
+        lastProduct = Date.clone();
+        lastWater = Date.clone();
         isProtected = false;
         haveProduct = false;
+        todayFertilize = false;
     }
 
     public ForagingSeedsType getType() {
 
         return type;
     }
+    public int getStage() {
+
+        return stage;
+    }
     public String   getIcon () {
 
         return type.getSymbolByLevel(stage);
-    }
-    public DateHour getBirthDay () {
-
-        return this.birthDay;
     }
     public boolean  isProtected() {
 
@@ -49,6 +52,10 @@ public class ForagingSeeds extends Items {
     public boolean isHaveProduct() {
 
         return haveProduct;
+    }
+    public DateHour getBirthDay () {
+
+        return this.birthDay;
     }
     public DateHour getLastWater() {
 
@@ -75,6 +82,16 @@ public class ForagingSeeds extends Items {
             else
                 days += this.type.getStageDate(i);
         }
+    }
+    public void setFertilize() {
+
+        this.todayFertilize = true;
+
+        if (stage == 4) // TODO  بر اساس نوع کود
+            lastProduct.decreaseDay(1);
+        else
+            birthDay.decreaseDay(1);
+
     }
     public void setBirthDay(DateHour birthDay) {
 
@@ -103,9 +120,10 @@ public class ForagingSeeds extends Items {
         return getDayDifferent( lastWater, currentDate) > 1;
     }
     public void checkHaveProduct () {
-
+        // یمتونی تعداد کود هایی که داده شده رو سیو کنی و یه کپی از کارنت دیت بگیری و روزاشو کم کنی
+        // یا حتی میشه اون تایع کم شدن روز رو استاتیک بزاری و حروجی یه تاریخ جدید بده و ازون استفاده کنی
         this.haveProduct = type.getSeason().contains(currentDate.getSeason()) &&
-                getDayDifferent(lastProduct, currentDate) > type. // TODO &&
+                getDayDifferent(lastProduct, currentDate) > type.getRegrowthTime() &&
                 this.stage == this.type.getGrowthStages();
     }
     public void delete () {
@@ -119,6 +137,7 @@ public class ForagingSeeds extends Items {
     public void startDayAutomaticTask() {
 
         setStage();
+        todayFertilize = false;
         if (checkForDeath())
             delete();
     }

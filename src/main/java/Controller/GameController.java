@@ -29,7 +29,7 @@ public class GameController {
 
     Random rand = new Random();
 
-    public static boolean isNeighbor(int x1, int y1, int x2, int y2) {
+    public boolean isNeighbor(int x1, int y1, int x2, int y2) {
         int [] dirx={0,0,1,1,1,-1,-1,-1};
         int [] diry={1,-1,0,1,-1,0,1,-1};
         for (int i=0 ; i<8 ; i++) {
@@ -447,7 +447,7 @@ public class GameController {
         }
         for (User user : players) {
             if (user.getFarm().equals(farm)){
-                if (!user.getSpouse().equals(currentPlayer) && !user.equals(currentPlayer)){
+                if (!user.getMarried().equals(currentPlayer) && !user.equals(currentPlayer)){
                     return new Result(false,"you can't go to this farm");
                 }
             }
@@ -466,6 +466,16 @@ public class GameController {
         }
         if (!checkTile(tile)){
             return new Result(false,"you can't go to this coordinate");
+        }
+
+        for (Market market : markets) {
+            if (goalX > market.getTopLeftX() && goalY > market.getTopLeftY()){
+                if (goalX < market.getTopLeftX() + market.getWidth() && goalY < market.getTopLeftY() + market.getHeight()){
+                    if (market.getMarketType().getStartHour() > currentDate.getHour() || market.getMarketType().getEndHour() < currentDate.getHour()){
+                        return new Result(false , "you can't go to Market because it is not open");
+                    }
+                }
+            }
         }
         //TODO اگر NPC در اون مختصات باشه نمیتونیم اونجا بریم
         //TODO جاهایی که دونه کاشتیم
@@ -665,23 +675,23 @@ public class GameController {
 
     public Result availableTools() {
         Inventory inventory = currentPlayer.getBackPack().inventory;
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
             if (entry instanceof Axe) {
-                result += ((Axe) entry).axeType + "\n";
+                result.append(((Axe) entry).axeType).append("\n");
             } else if (entry instanceof FishingPole) {
-                result += ((FishingPole) entry).fishingPoleType + "\n";
+                result.append(((FishingPole) entry).fishingPoleType).append("\n");
             } else if (entry instanceof Hoe) {
-                result += ((Hoe) entry).getType() + "\n";
+                result .append ( ((Hoe) entry).getType() ) .append("\n");
             } else if (entry instanceof WateringCan) {
-                result += ((WateringCan) entry).wateringCanType + "\n";
+                result.append(((WateringCan) entry).wateringCanType).append("\n");
             } else if (entry instanceof PickAxe) {
-                result += ((PickAxe) entry).pickAxeType + "\n";
+                result .append(((PickAxe) entry).pickAxeType) .append( "\n");
             } else if (entry instanceof Tools) {
-                result += ((Tools) entry).getName() + "\n";
+                result.append(((Tools) entry).getName()).append("\n");
             }
         }
-        return new Result(true,result);
+        return new Result(true, result.toString());
     }
 
     public boolean checkCoordinateForFishing(){
@@ -955,7 +965,7 @@ public class GameController {
         for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
             for (Animal animal : barnOrCage.animals){
                 result.append(animal.getName()).append(" Friendship: ").append(animal.getFriendShip()).append(" petToday: ")
-                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeed()).append("\n");
+                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeedToday()).append("\n");
             }
         }
         return new Result(true, result.toString());
@@ -1346,13 +1356,42 @@ public class GameController {
     }
 
 
-    private Result showTree (Tile tile) {
+    private String showTree (Tree tree) {
+
+
+        return "name : " + tree.getType().getDisplayName() +
+                "\nLast Water : " + BLUE + "Date : " + RED + tree.getLastWater().getYear() +
+                RESET + " " + tree.getLastWater().getNameSeason() +
+                " " + tree.getLastWater().getDate() +
+                "\nLast Fruit : " + BLUE + "Date : " + RED + tree.getLastFruit().getYear() +
+                RESET + " " + tree.getLastFruit().getNameSeason() +
+                " " + tree.getLastFruit().getDate() +
+                "\nToday fertilize :" + tree.isFertilize() +
+                "\nStage :" + tree.getStage() +
+                "\nHave fruit :" + tree.isHaveFruit();
+    }
+    private String showForaging (ForagingSeeds foragingSeeds) {
+
+        return "name : " + foragingSeeds.getType().getDisplayName() +
+                "\nLast Water : " + BLUE + "Date : " + RED + foragingSeeds.getLastWater().getYear() +
+                RESET + " " + foragingSeeds.getLastWater().getNameSeason() +
+                " " + foragingSeeds.getLastWater().getDate() +
+                "\nToday fertilize :" + foragingSeeds.isTodayFertilize() +
+                "\nStage :" + foragingSeeds.getStage() +
+                "\nOne Time :" + foragingSeeds.getType().isOneTimeUse() +
+                "\nCan grow giant :" + foragingSeeds.getType().canGrowGiant();
 
     }
-    private Result showGiant (Tile tile) {
+    private String  showGiant (GiantProduct giantProduct) {
 
-    }
-    private Result showForaging (Tile tile) {
+        return "name : " + giantProduct.getType().getDisplayName() +
+                "\nLast Water : " + BLUE + "Date : " + RED + giantProduct.getLastWater().getYear() +
+                RESET + " " + giantProduct.getLastWater().getNameSeason() +
+                " " + giantProduct.getLastWater().getDate() +
+                "\nToday fertilize :" + giantProduct.isTodayFertilize() +
+                "\nStage :" + giantProduct.getStage() +
+                "\nOne Time :" + giantProduct.getType().isOneTimeUse() +
+                "\nCan grow giant :" + giantProduct.getType().canGrowGiant();
 
     }
     private void checkForPlantProduct () {
@@ -1992,7 +2031,6 @@ public class GameController {
     }
     public Result useTools (String direction) {
 
-        // باید تو مزرعه خودش باشه و گوشه ها هم نباشه گه رانتام نشه
         int dir = Integer.parseInt(direction);
 
         return null; // TODO
@@ -2118,14 +2156,13 @@ public class GameController {
         Tile tile = getTileByCoordinates(x, y);
 
         if (tile.getGameObject() instanceof Tree)
-            return new Result(true, );
+            return new Result(true, showTree((Tree) tile.getGameObject()));
         if (tile.getGameObject() instanceof ForagingSeeds)
-            return new Result(true, );
+            return new Result(true, showForaging((ForagingSeeds) tile.getGameObject()));
         if (tile.getGameObject() instanceof GiantProduct)
-            return new Result(true, );
+            return new Result(true, showGiant((GiantProduct) tile.getGameObject()));
 
         return new Result(false, RED+"That tile don't have plant!"+RESET);
 
     }
-
 }

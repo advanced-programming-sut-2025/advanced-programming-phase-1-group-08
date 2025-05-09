@@ -18,6 +18,23 @@ public class DateHour implements Cloneable {
         this.year = year;
     }
 
+    public WeekDay getDayOfTheWeek () {
+
+        if (this.date % 7 == 0)
+            return WeekDay.saturday;
+        else if (this.date % 7 == 1)
+            return WeekDay.sunday;
+        else if (this.date % 7 == 2)
+            return WeekDay.monday;
+        else if (this.date % 7 == 3)
+            return WeekDay.tuesday;
+        else if (this.date % 7 == 4)
+            return WeekDay.wednesday;
+        else if (this.date % 7 == 5)
+            return WeekDay.thursday;
+        else
+            return WeekDay.friday;
+    }
     public int getHour () {return this.hour;}
     public int getDate () {return this.date;}
     public int getYear () {return this.year;}
@@ -53,22 +70,25 @@ public class DateHour implements Cloneable {
         else if (this.season == Season.Winter)
             this.year += (SeasonPassed + 3) / 4;
     }
-    public WeekDay getDayOfTheWeek () {
 
-        if (this.date % 7 == 0)
-            return WeekDay.saturday;
-        else if (this.date % 7 == 1)
-            return WeekDay.sunday;
-        else if (this.date % 7 == 2)
-            return WeekDay.monday;
-        else if (this.date % 7 == 3)
-            return WeekDay.tuesday;
-        else if (this.date % 7 == 4)
-            return WeekDay.wednesday;
-        else if (this.date % 7 == 5)
-            return WeekDay.thursday;
-        else
-            return WeekDay.friday;
+    public void decreaseDay (int day) { // بهش عدد بزرگ ندیم
+
+        if (this.date > day)
+            this.date -= day;
+        else {
+
+            if (this.season.equals(Season.Spring)) {
+                this.season = Season.Winter;
+                this.year--;
+            }
+            else if (this.season.equals(Season.Summer))
+                this.season = Season.Spring;
+            else if (this.season.equals(Season.Fall))
+                this.season = Season.Summer;
+            else if (this.season.equals(Season.Winter))
+                this.season = Season.Fall;
+            this.date = 28+(this.date - day);
+        }
     }
 
     @Override
