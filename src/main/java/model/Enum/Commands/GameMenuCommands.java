@@ -12,6 +12,7 @@ public enum GameMenuCommands {
     talkHistory   ("\\s*(?i)talk\\s*history\\s*(?<username>.+)\\s*"),
     hug           ("\\s*(?i)hug\\s*-u\\s*(?<username>.+)\\s*"),
     giveFlower    ("\\s*(?i)flower\\s*-u\\s*(?<username>.+)\\s*"),
+    sendGift      ("\\s*gift\\s*-u\\s*(?<username>\\S+)-i\\s*(?<item>\\S+)-a\\s*(?<amount>.+)\\s*"),
     showTime      ("\\s*(?i)time\\s*"),
     showDate      ("\\s*(?i)date\\s*"),
     showSeason    ("\\s*(?i)season\\s*"),

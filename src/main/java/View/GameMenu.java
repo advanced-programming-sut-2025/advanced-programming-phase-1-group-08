@@ -39,6 +39,9 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.hug.getMather(input) != null)
             controller.hug(input);
 
+        else if ((GameMenuCommands.sendGift.getMather(input) != null))
+            controller.sendGifts(input);
+
         else if (GameMenuCommands.giveFlower.getMather(input) != null)
             controller.giveFlowers(input);
 

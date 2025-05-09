@@ -1723,6 +1723,32 @@ public class GameController {
         Result result = f.Hug();
         System.out.println(result);
     }
+    public void sendGifts (String input) {
+        String username = GameMenuCommands.sendGift.getMather(input).group("username");
+        String item = GameMenuCommands.sendGift.getMather(input).group("item");
+        int amount = Integer.parseInt(GameMenuCommands.sendGift.getMather(input).group("amount"));
+        if (username == null || item == null) {
+            System.out.println("Invalid Command!");
+            return;
+        }
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Send Gifts to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+
+
+        Result result = f.sendGifts(username, item, amount);
+        System.out.println(result);
+    }
     public void giveFlowers (String input) {
         String username = GameMenuCommands.giveFlower.getMather(input).group("username");
         if (!players.contains(findUserByUsername(username))) {
