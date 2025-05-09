@@ -2,12 +2,14 @@ package model.Plants;
 
 import model.DateHour;
 import model.Enum.AllPlants.TreeType;
+import model.Enum.ItemType.MarketItemType;
 import model.MapThings.GameObject;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
 
 import static model.App.bigMap;
 import static model.App.currentDate;
+import static model.DateHour.decreaseDay;
 import static model.DateHour.getDayDifferent;
 
 public class Tree extends GameObject {
@@ -19,11 +21,14 @@ public class Tree extends GameObject {
     private DateHour lastFruit;
     private boolean haveFruit;
     private boolean fertilize;
+    private int numFertilize;
     private int stage;
 
 
     public Tree(TreeType type, DateHour currentDate) {
+
         stage = 1;
+        numFertilize = 0;
         this.type = type;
         birthDay = currentDate.clone();
         lastWater = currentDate.clone();
@@ -39,24 +44,25 @@ public class Tree extends GameObject {
     }
     public void setLastWater(DateHour lastWater) {
 
-        this.lastWater = lastWater;
+        this.lastWater = lastWater.clone();
     }
     public void setLastFruit(DateHour lastFruit) {
 
-        this.lastFruit = lastFruit;
+        this.lastFruit = lastFruit.clone();
     }
-    public void setFertilize() {
+    public void setFertilize (MarketItemType item) {
 
         this.fertilize = true;
 
-        if (stage == 4) // TODO  بر اساس نوع کود
-            lastFruit.decreaseDay(1);
-        else
-            birthDay.decreaseDay(1);
+        if (item.equals(MarketItemType.QuantityRetainingSoil))
+            numFertilize++;
+        if (item.equals(MarketItemType.BasicRetainingSoil))
+            lastWater = currentDate.clone();
 
     }
     private void setStage () {
 
+        DateHour dateHour = decreaseDay(numFertilize, currentDate);
         int defDays = getDayDifferent(this.birthDay, currentDate);
 
         if (defDays > 0 && defDays < 7)

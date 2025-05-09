@@ -23,7 +23,7 @@ public enum TreesProductType {
     Pomegranate ("Pomegranate",140, true,  38,  TreeType.PomegranateTree),
     CommonMushroom("Common Mushroom",40,true,  38,  TreeType.MushroomTree);
 
-    private String displayName;
+    private final String displayName;
     private final int price;
     private final boolean edible;
     private final int energy;

@@ -71,24 +71,27 @@ public class DateHour implements Cloneable {
             this.year += (SeasonPassed + 3) / 4;
     }
 
-    public void decreaseDay (int day) { // بهش عدد بزرگ ندیم
+    public static DateHour decreaseDay (int day, DateHour dateHour) { // بهش عدد بزرگ ندیم
 
-        if (this.date > day)
-            this.date -= day;
+        DateHour result = dateHour.clone();
+
+        if (result.date > day)
+            result.date -= day;
         else {
 
-            if (this.season.equals(Season.Spring)) {
-                this.season = Season.Winter;
-                this.year--;
+            if (result.season.equals(Season.Spring)) {
+                result.season = Season.Winter;
+                result.year--;
             }
-            else if (this.season.equals(Season.Summer))
-                this.season = Season.Spring;
-            else if (this.season.equals(Season.Fall))
-                this.season = Season.Summer;
-            else if (this.season.equals(Season.Winter))
-                this.season = Season.Fall;
-            this.date = 28+(this.date - day);
+            else if (result.season.equals(Season.Summer))
+                result.season = Season.Spring;
+            else if (result.season.equals(Season.Fall))
+                result.season = Season.Summer;
+            else if (result.season.equals(Season.Winter))
+                result.season = Season.Fall;
+            result.date = 28+(result.date - day);
         }
+        return result;
     }
 
     @Override

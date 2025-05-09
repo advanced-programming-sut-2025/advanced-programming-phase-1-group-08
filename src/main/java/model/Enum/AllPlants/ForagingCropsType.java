@@ -8,7 +8,7 @@ import java.util.List;
 
 import static model.Color_Eraser.*;
 
-public enum ForagingCropsType extends Items {
+public enum ForagingCropsType {
 
     CommonMushroom  ("Common Mushroom", 40, 38, BG_RED+BLACK+BOLD+"C"+RESET,
             List.of(Season.Spring, Season.Fall, Season.Summer, Season.Winter)),
@@ -55,7 +55,10 @@ public enum ForagingCropsType extends Items {
     SnowYam         ("Snow Yam",        100,30, BG_RED+WHITE+BOLD+"S"+RESET,
             List.of(Season.Winter)),
     WinterRoot      ("Winter Root",     70, 25, BG_RED+WHITE+BOLD+"W"+RESET,
+            List.of(Season.Winter)),
+    Fiber           ("Fiber",            0,  0, BG_RED+WHITE+BOLD+"F"+RESET,
             List.of(Season.Winter));
+
 
     private final String displayName;
     private final int price;

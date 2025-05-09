@@ -1,6 +1,8 @@
 package Controller;
 
 import model.*;
+import model.Animall.Animal;
+import model.Animall.BarnOrCage;
 import model.Enum.AllPlants.ForagingSeedsType;
 import model.Enum.AllPlants.TreesSourceType;
 import model.Enum.ItemType.*;
