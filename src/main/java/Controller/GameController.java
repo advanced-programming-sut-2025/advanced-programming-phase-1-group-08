@@ -1468,6 +1468,16 @@ public class GameController {
 
     }
 
+    public Result placeItem(String name, int direction) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        if (name.equals("Mystic Tree Seed")) {
+            //TODO
+        }
+        if (name.equals("Grass Starter")){
+
+        }
+    }
+
 
 
 

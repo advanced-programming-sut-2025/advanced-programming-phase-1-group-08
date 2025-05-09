@@ -1,10 +1,7 @@
 package model.Enum.ItemType;
 
 import Controller.CraftingController;
-import model.App;
-import model.BarsAndOres;
-import model.Inventory;
-import model.Items;
+import model.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -129,6 +126,48 @@ public enum CraftType {
             return App.currentPlayer.getLevelForaging() >= 4;
         }
 
+    },
+    Dehydrator("Dehydrator" , 0 , Map.of("Wood" , 30 , "Stone" , 20 , "Fiber" , 30)) {
+        @Override
+        public boolean checkLevel() {
+            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof MarketItem) {
+                    if (((MarketItem) entry.getKey()).getType().equals(MarketItemType.DehydratorRecipe)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    },
+    GrassStarter("Grass Starter" , 0,Map.of("Wood" , 1 , "Fiber" , 1) ) {
+        @Override
+        public boolean checkLevel() {
+            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof MarketItem) {
+                    if (((MarketItem) entry.getKey()).getType().equals(MarketItemType.GrassStarterRecipe)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    },
+    FishSmoker("Fish Smoker",0,Map.of("Wood" ,50, "Iron Bar" , 3 , "Coal" , 10) ) {
+        @Override
+        public boolean checkLevel() {
+            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof MarketItem) {
+                    if (((MarketItem) entry.getKey()).getType().equals(MarketItemType.FishSmokerRecipe)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     };
 
     private final String name;

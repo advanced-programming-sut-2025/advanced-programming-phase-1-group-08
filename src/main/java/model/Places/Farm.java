@@ -24,9 +24,7 @@ public class Farm {
     public void setMine(Mine mine) {
         this.mine = mine;
     }
-    public void setHome(Home home) {
-        this.home = home;
-    }
+    public void setHome(Home home) {this.home = home;}
     public void setLake(Lake lake) {
         this.lake = lake;
     }
@@ -48,5 +46,9 @@ public class Farm {
     public boolean isInFarm (int x, int y) {
         return (x >= this.x && x < this.x+width &&
                 y >= this.y && y < this.y+height);
+    }
+    public boolean isInHome(int x, int y) {
+        return (x>= home.getTopLeftX() && x < home.getTopLeftX() + home.getWidth()
+                && y>=home.getTopLeftY() && y < home.getTopLeftY() + home.getLength());
     }
 }

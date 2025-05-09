@@ -20,4 +20,20 @@ public class Home extends GameObject {
         this.fridge = fridge;
     }
     ArrayList<String> machines = new ArrayList<>(); // دستگاه هایی که کرفت کردیم و میخواهیم با آنها فراوری یا کارهای دیگر بکنیم
+
+    public int getTopLeftY() {
+        return topLeftY;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public int getTopLeftX() {
+        return topLeftX;
+    }
+
+    public int getWidth() {
+        return width;
+    }
 }
