@@ -58,6 +58,7 @@ public enum GameMenuCommands {
     purchase("^(?i)purchase\\s+(.+?)(?:\\s+-n\\s+(\\d+))?$"),
     craftingRecipe("(?i)crafting\\s+show\\s+recipes\\s*"),
     craftingCraft("(?i)crafting\\s+craft\\s+(?<name>\\S.*)\\s*"),
+    placeItem("place\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-d\\s+(?<direction>\\d+)\\s*"),
 
     ;
 
