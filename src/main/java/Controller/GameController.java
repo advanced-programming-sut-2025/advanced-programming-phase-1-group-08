@@ -2206,6 +2206,14 @@ public class GameController {
         }
         if (object instanceof ForagingCrops) {
 
+            ForagingCropsType type = ((ForagingCrops) object).getType();
+
+            if (currentPlayer.getBackPack().getType().getRemindCapacity() >
+                    currentPlayer.getBackPack().inventory.Items.size() ||
+                    checkAmountProductAvailable(new ForagingCrops(type), 0))
+
+                return new Result(false, RED+"Inventory is full"+RESET);
+
             advanceItem(new ForagingCrops(((ForagingCrops) object).getType()), 1);
 
         }
@@ -2213,6 +2221,11 @@ public class GameController {
             if (((ForagingSeeds) object).isHaveProduct()) {
 
                 ForagingSeedsType type = ((ForagingSeeds) object).getType();
+                if (currentPlayer.getBackPack().getType().getRemindCapacity() >
+                        currentPlayer.getBackPack().inventory.Items.size() ||
+                        checkAmountProductAvailable(new AllCrops(type.getProductType()), 0))
+                    return new Result(false, RED+"Inventory is full"+RESET);
+
                 advanceItem(new AllCrops(type.getProductType()), 1);
                 ((ForagingSeeds) object).harvest();
 
@@ -2224,6 +2237,13 @@ public class GameController {
             if (((GiantProduct) object).isHaveProduct()) {
 
                 ForagingSeedsType type = ((GiantProduct) object).getType();
+
+                if (currentPlayer.getBackPack().getType().getRemindCapacity() >
+                        currentPlayer.getBackPack().inventory.Items.size() ||
+                        checkAmountProductAvailable(new AllCrops(type.getProductType()), 0))
+
+                    return new Result(false, RED+"Inventory is full"+RESET);
+
                 advanceItem(new AllCrops(type.getProductType()), 10);
                 ((GiantProduct) object).harvest();
 
@@ -2231,6 +2251,8 @@ public class GameController {
             } else
                 return new Result(false, RED + "Still growing..." + RESET);
         }
+
+        return new Result(false, RED+"There are no plant!"+RESET);
     }
 
 
