@@ -1,9 +1,10 @@
-package model;
+package model.Animall;
 
 import model.Enum.ItemType.FishType;
 import model.Enum.ItemType.Quantity;
+import model.Items;
 
-public class Fish extends Items{
+public class Fish extends Items {
 
     private FishType fishType;
     private Quantity quantity;

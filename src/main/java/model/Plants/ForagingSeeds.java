@@ -2,12 +2,15 @@ package model.Plants;
 
 import model.*;
 import model.Enum.AllPlants.ForagingSeedsType;
+import model.Enum.ItemType.MarketItem;
+import model.Enum.ItemType.MarketItemType;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
 
 
 import static model.App.bigMap;
 import static model.App.currentDate;
+import static model.DateHour.decreaseDay;
 import static model.DateHour.getDayDifferent;
 
 public class ForagingSeeds extends Items {
@@ -19,11 +22,22 @@ public class ForagingSeeds extends Items {
     private boolean haveProduct;
     private boolean isProtected;
     private DateHour lastWater;
+    private int numFertilize;
     private int stage;
 
 
-    public ForagingSeeds(ForagingSeedsType type, DateHour Date) {
+    public ForagingSeeds(ForagingSeedsType type) {
         stage = 1;
+        numFertilize = 0;
+        this.type = type;
+        isProtected = false;
+        haveProduct = false;
+        todayFertilize = false;
+    }
+    public ForagingSeeds(ForagingSeedsType type, DateHour Date) {
+
+        stage = 1;
+        numFertilize = 0;
         this.type = type;
         birthDay = Date.clone();
         lastProduct = Date.clone();
@@ -74,7 +88,8 @@ public class ForagingSeeds extends Items {
     public void setStage  () {
 
         int days = 0;
-        int defDays = getDayDifferent( this.birthDay, currentDate);
+        DateHour dateHour = decreaseDay(numFertilize, currentDate);
+        int defDays = getDayDifferent(this.birthDay, dateHour);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
             if (defDays > days && (days+this.type.getStageDate(i)) > defDays)
@@ -83,31 +98,31 @@ public class ForagingSeeds extends Items {
                 days += this.type.getStageDate(i);
         }
     }
-    public void setFertilize() {
+    public void setFertilize (MarketItemType item) {
 
         this.todayFertilize = true;
 
-        if (stage == 4) // TODO  بر اساس نوع کود
-            lastProduct.decreaseDay(1);
-        else
-            birthDay.decreaseDay(1);
+        if (item.equals(MarketItemType.QuantityRetainingSoil))
+            numFertilize++;
+        if (item.equals(MarketItemType.BasicRetainingSoil))
+            lastWater = currentDate.clone();
 
     }
-    public void setBirthDay(DateHour birthDay) {
+    public void setBirthDay  (DateHour birthDay) {
 
-        this.birthDay = birthDay;
+        this.birthDay = birthDay.clone();
     }
-    public void setLastWater(DateHour lastWater) {
+    public void setLastWater (DateHour lastWater) {
 
-        this.lastWater = lastWater;
+        this.lastWater = lastWater.clone();
     }
-    public void setProtected(boolean aProtected) {
+    public void setProtected (boolean aProtected) {
 
         isProtected = aProtected;
     }
     public void setLastProduct(DateHour lastProduct) {
 
-        this.lastProduct = lastProduct;
+        this.lastProduct = lastProduct.clone();
     }
     public void setTodayFertilize(boolean todayFertilize) {
 

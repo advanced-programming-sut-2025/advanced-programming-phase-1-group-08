@@ -1,4 +1,4 @@
-package model;
+package model.Animall;
 
 import model.Enum.ItemType.AnimalProductType;
 import model.Enum.ItemType.AnimalType;

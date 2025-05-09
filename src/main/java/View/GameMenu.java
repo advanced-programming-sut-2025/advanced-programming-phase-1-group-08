@@ -41,7 +41,7 @@ public class GameMenu implements AppMenu {
             controller.hug(input);
 
         else if (GameMenuCommands.sendGift.getMather(input) != null)
-            controller.sendGifts(input);
+            controller.sendGifts(input); // TODO
 
         else if (GameMenuCommands.propose.getMather(input) != null)
             controller.propose(input);
@@ -108,8 +108,10 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.thor(matcher.group("x").trim(), matcher.group("y").trim()));
 
         else if (GameMenuCommands.showPlant.getMather(input) != null)
-            System.out.println(controller.());
+            System.out.println(controller.showPlant(matcher.group("x").trim(), matcher.group("y").trim()));
 
+        else if (GameMenuCommands.fertilize.getMather(input) != null)
+            System.out.println(controller.fertilize(matcher.group("fertilizer").trim(), matcher.group("direction").trim()));
 
 
 

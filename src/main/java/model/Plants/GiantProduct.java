@@ -2,6 +2,7 @@ package model.Plants;
 
 import model.DateHour;
 import model.Enum.AllPlants.ForagingSeedsType;
+import model.Enum.ItemType.MarketItemType;
 import model.Items;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import static model.App.bigMap;
 import static model.App.currentDate;
 import static model.Color_Eraser.*;
+import static model.DateHour.decreaseDay;
 import static model.DateHour.getDayDifferent;
 
 public class GiantProduct extends Items {
@@ -25,11 +27,13 @@ public class GiantProduct extends Items {
     private int stage;
 
     public GiantProduct (ForagingSeedsType type, DateHour currentDate, ArrayList<Tile> neighbors) {
-        this.type = type;
-        this.birthDay = currentDate.clone();
-        isProtected = false;
+
         setStage();
+        numFertilize = 0;
+        this.type = type;
+        isProtected = false;
         this.neighbors = neighbors;
+        birthDay = currentDate.clone();
     }
 
     public void setProtected(boolean aProtected) {
@@ -38,18 +42,23 @@ public class GiantProduct extends Items {
     }
     public void setLastWater (DateHour dateHour) {
 
-        this.lastWater = dateHour;
-    } // TODO    کود بقیه و تاقیرشونم مقل این بزنی
-    public void setFertilize() {
+        this.lastWater = dateHour.clone();
+    }
+    public void setFertilize(MarketItemType item) {
 
         this.todayFertilize = true;
-        numFertilize++; // TODO بر اساس نوع کود
+
+        if (item.equals(MarketItemType.QuantityRetainingSoil))
+            numFertilize++;
+        if (item.equals(MarketItemType.BasicRetainingSoil))
+            lastWater = currentDate.clone();
 
     }
     public void setStage  () {
 
         int days = 0;
-        int defDays = getDayDifferent(this.birthDay, currentDate);
+        DateHour dateHour = decreaseDay(numFertilize, currentDate);
+        int defDays = getDayDifferent(this.birthDay, dateHour);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
             if (defDays > days && (days+this.type.getStageDate(i)) > defDays)
@@ -73,9 +82,13 @@ public class GiantProduct extends Items {
 
     @Override
     public void startDayAutomaticTask() {
+
         setStage();
+        this.todayFertilize = false;
+
         if (checkForDeath())
             delete();
+
     }
 
 
@@ -98,6 +111,10 @@ public class GiantProduct extends Items {
     public DateHour getLastWater () {
 
         return this.lastWater;
+    }
+    public boolean isTodayFertilize() {
+
+        return todayFertilize;
     }
     public ForagingSeedsType getType() {
 

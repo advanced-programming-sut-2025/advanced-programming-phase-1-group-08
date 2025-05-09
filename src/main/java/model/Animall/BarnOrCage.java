@@ -1,4 +1,4 @@
-package model;
+package model.Animall;
 
 import model.Enum.ItemType.BarnORCageType;
 import model.MapThings.GameObject;
