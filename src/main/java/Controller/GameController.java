@@ -1951,6 +1951,25 @@ public class GameController {
         Result result = f.buyFlowers();
         System.out.println(result);
     }
+    public void propose (String input) {
+        String username = GameMenuCommands.propose.getMather(input).group("username");
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Propose to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+
+        Result result = f.propose();
+        System.out.println(result);
+    }
     public void loadGame () {
         // TODO ذخیره جزییات بازی و لود بازی
         setTime(false);

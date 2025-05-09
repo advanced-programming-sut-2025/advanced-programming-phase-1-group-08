@@ -1,6 +1,7 @@
 package model;
 
 import model.Enum.AllPlants.ForagingCropsType;
+import model.Enum.ItemType.MarketItem;
 import model.Plants.ForagingCrops;
 
 import java.util.*;
@@ -215,29 +216,78 @@ public class HumanCommunications {
     }
 
     // LEVEL THREE TASKS
-    public void propose() {
-        User me = currentPlayer;
+    public Result propose() {
         User other;
         if (player1.getUsername().equals(currentPlayer.getUsername()))
             other = player2;
         else
             other = player1;
 
-        // TODO جنسیت هاشونو چک کن
+        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Inventory otherInventory = other.getBackPack().inventory;
 
-        if (getLevel() < 3) {
-            System.out.println("You Can't Propose in your Current Friendship Level.");
-            return;
+        if (currentPlayer.getGender().equals(other.getGender()))
+            return new Result(false, RED+"No Gay Marriage in Iran!"+RESET);
+
+        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
+            return new Result(false, PURPLE+"Get Closer Honey!"+RESET);
         }
+
+        if (getLevel() < 3)
+            return new Result(false, RED+"You Can't Propose in your Current Friendship Level."+RESET);
+
+        boolean IHaveRing = false;
+        for (Map.Entry <Items , Integer> entry : myInventory.Items.entrySet() ) {
+            if (entry instanceof ?????) {
+                if (((????????) entry).getType().equals(MarketItem.WeddingRing)) {
+                    IHaveRing = true;
+                    myInventory.Items.put(entry.getKey(), entry.getValue() - 1);
+                    if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
+                    break;
+                }
+            }
+        }
+        if (!IHaveRing)
+            return new Result(false, RED+"You Don't Have Ring to Propose!"+RESET);
+
+
+        return new Result(true, GREEN+"You Proposed Successfully!"+RESET);
+
         //TODO
     }
 
     // LEVEL FOUR
-    public void marry() { //spouse!!!
+    public Result marry() { //spouse!!!
+        if (!SUCCESSFULPropose)
+            return new Result(false, RED+"Your Propose Hasn't been Accepted Yet!"+RESET);
+
+        User other;
+        if (player1.getUsername().equals(currentPlayer.getUsername()))
+            other = player2;
+        else
+            other = player1;
+
+        Inventory otherInventory = other.getBackPack().inventory;
+
+        for (Map.Entry <Items , Integer> entry : otherInventory.Items.entrySet() ) {
+            if (entry instanceof MarketItem) {
+                if (((MarketItem)entry).getType().equals(MarketItem.WeddingRing)) {
+                    otherInventory.Items.put(entry.getKey(), entry.getValue() + 1);
+                    return new Result(false, "HAPPY MARRIAGE!");
+                }
+            }
+        }
+
+
+        //todo خط پایینو ادیت کن
+        otherInventory.Items.put(new ForagingCrops(ForagingCropsType.Dandelion), 1);
+        return new Result(true, GREEN+"You Gave Dandelions to " + other.getNickname()+RESET);
 
 
         FriendshipLevel = 4;
         //TODO زمین ها و پولهاشون مال هردو میشه
+
+
     }
 
     // TODO اون پاراگراف بین سطح های دوستی و تعاملات

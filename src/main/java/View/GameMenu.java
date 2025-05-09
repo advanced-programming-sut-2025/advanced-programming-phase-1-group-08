@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 
 import static model.App.currentPlayer;
+import static model.App.getCurrentMenu;
 import static model.Color_Eraser.*;
 
 public class GameMenu implements AppMenu {
@@ -39,8 +40,11 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.hug.getMather(input) != null)
             controller.hug(input);
 
-        else if ((GameMenuCommands.sendGift.getMather(input) != null))
+        else if (GameMenuCommands.sendGift.getMather(input) != null)
             controller.sendGifts(input);
+
+        else if (GameMenuCommands.propose.getMather(input) != null)
+            controller.propose(input);
 
         else if (GameMenuCommands.giveFlower.getMather(input) != null)
             controller.giveFlowers(input);
