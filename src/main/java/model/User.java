@@ -258,6 +258,9 @@ public class User {
         this.currently_in_game = currently_in_game;
     }
 
+
+    public String getGender() {return gender;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
