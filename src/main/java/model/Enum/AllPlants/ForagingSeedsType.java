@@ -13,7 +13,7 @@ import static model.Enum.AllPlants.CropsType.*;
 
 public enum ForagingSeedsType {
 
-    JazzSeeds       ( "Jazz Seeds",       true, BlueJazz,
+    JazzSeeds       ( "Jazz Seeds",       true, BlueJazz,10000,
             4, false, new int[]{1, 2, 2, 2},5,5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore )  ) {
 
@@ -45,7 +45,7 @@ public enum ForagingSeedsType {
             return -1;
         }
     },
-    CarrotSeeds     ( "Carrot Seeds",     true, Carrot,
+    CarrotSeeds     ( "Carrot Seeds",     true, Carrot,  10000,
             3, false, new int[]{1, 1, 1,} ,10,0 ,
             List.of(MarketType.JojaMart) ) {
 
@@ -72,7 +72,7 @@ public enum ForagingSeedsType {
             return -1;
         }
     },
-    CauliflowerSeeds( "Cauliflower Seeds",true, Cauliflower,
+    CauliflowerSeeds( "Cauliflower Seeds",true, Cauliflower,10000,
             5, true, new int[]{1, 2, 4, 4, 1} , 5,5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -103,7 +103,7 @@ public enum ForagingSeedsType {
             return -1;
         }
     },
-    CoffeeBean      ( "Coffee Bean",       false, CropsType.CoffeeBean,
+    CoffeeBean      ( "Coffee Bean",       false, CropsType.CoffeeBean,2,
             5, false, new int[]{1, 2, 2, 3, 2} , 1, 5 ,
             List.of(MarketType.JojaMart ) ) {
 
@@ -128,7 +128,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    GarlicSeeds     ( "JGarlic Seeds",    true, Garlic,
+    GarlicSeeds     ( "JGarlic Seeds",    true, Garlic,10000,
             4, false, new int[]{1, 1, 1, 1} ,0 , 5 ,
             List.of( MarketType.PierreGeneralStore ) ) {
 
@@ -158,7 +158,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    BeanStarter     ( "Bean Starter",     false, GreenBean,
+    BeanStarter     ( "Bean Starter",     false, GreenBean,3,
             5, false, new int[]{1, 1, 1, 3, 4} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -189,7 +189,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    KaleSeeds       ( "Kale Seeds",       true, Kale,
+    KaleSeeds       ( "Kale Seeds",       true, Kale,10000,
             4, false, new int[]{1, 2, 2, 1} ,5,5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -220,7 +220,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    ParsnipSeeds    ( "Parsnip Seeds",    true, Parsnip,
+    ParsnipSeeds    ( "Parsnip Seeds",    true, Parsnip,10000,
             4, false, new int[]{1, 1, 1, 1} ,5, 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -251,7 +251,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    PotatoSeeds     ( "Potato Seeds",     true, Potato,
+    PotatoSeeds     ( "Potato Seeds",     true, Potato,10000,
             5, false, new int[]{1, 1, 1, 2, 1} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -282,7 +282,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    RhubarbSeeds    ( "Rhubarb Seeds",    true, Rhubarb,
+    RhubarbSeeds    ( "Rhubarb Seeds",    true, Rhubarb,10000,
             5, false, new int[]{2, 2, 2, 3, 4} , 5 , 0 ,
             List.of(MarketType.JojaMart) ) {
 
@@ -307,7 +307,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    StrawberrySeeds ( "Strawberry Seeds", false, Strawberry,
+    StrawberrySeeds ( "Strawberry Seeds", false, Strawberry,4,
             5, false, new int[]{1, 1, 2, 2, 2,} , 5 , 0 ,
             List.of(MarketType.JojaMart) ) {
 
@@ -332,7 +332,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    TulipBulb       ( "Tulip Bulb",       true, Tulip,
+    TulipBulb       ( "Tulip Bulb",       true, Tulip,10000,
             4, false, new int[]{1, 1, 2, 2} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -364,7 +364,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    RiceShoot       ( "Rice Shoot",       true, UnmilledRice,
+    RiceShoot       ( "Rice Shoot",       true, UnmilledRice,10000,
             4, false, new int[]{1, 2, 2, 3} , 0 , 5 ,
             List.of(MarketType.PierreGeneralStore ) ) {
 
@@ -395,7 +395,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    BlueberrySeeds  ( "Blueberry Seeds",  false, Blueberry,
+    BlueberrySeeds  ( "Blueberry Seeds",  false, Blueberry,4,
             5, false, new int[]{1, 3, 3, 4, 2} , 0 , 5 ,
             List.of(MarketType.PierreGeneralStore ) ) {
 
@@ -425,7 +425,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    CornSeeds       ( "Corn Seeds",       false, Corn,
+    CornSeeds       ( "Corn Seeds",       false, Corn,4,
             5, false, new int[]{2, 3, 3, 3, 3} ,5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -457,7 +457,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    HopsStarter     ( "Hops Starter",     false, Hops,
+    HopsStarter     ( "Hops Starter",     false, Hops,1,
             5, false, new int[]{1, 1, 2, 3, 4} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -488,7 +488,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    PepperSeeds     ( "Pepper Seeds",     false, HotPepper,
+    PepperSeeds     ( "Pepper Seeds",     false, HotPepper,3,
             5, false, new int[]{1, 1, 1, 1, 1} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -520,7 +520,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    MelonSeeds      ( "Melon Seeds",      true, Melon,
+    MelonSeeds      ( "Melon Seeds",      true, Melon,10000,
             5, true, new int[] {1, 2, 3, 3, 3} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -551,7 +551,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    PoppySeeds      ( "Poppy Seeds",      true, Poppy,
+    PoppySeeds      ( "Poppy Seeds",      true, Poppy,10000,
             4, false, new int[]{1, 2, 2, 2} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -583,7 +583,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    RadishSeeds     ("Radish Seeds",      true, Radish,
+    RadishSeeds     ("Radish Seeds",      true, Radish,10000,
             4, false, new int[]{2, 1, 2, 1} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -614,7 +614,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    RedCabbageSeeds ( "Red Cabbage Seeds",true, RedCabbage,
+    RedCabbageSeeds ( "Red Cabbage Seeds",true, RedCabbage,10000,
             5, false, new int[]{2, 1, 2, 2, 2} ,0 ,5 ,
             List.of(MarketType.PierreGeneralStore ) ) {
 
@@ -644,7 +644,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    StarfruitSeeds  ( "Starfruit Seeds",  true, Starfruit,
+    StarfruitSeeds  ( "Starfruit Seeds",  true, Starfruit,10000,
             5, false, new int[]{2, 3, 2, 3, 3} , 5 , 0 ,
             List.of(MarketType.JojaMart) ) {
 
@@ -669,7 +669,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    SpangleSeeds    ( "Spangle Seeds",    true, SummerSpangle,
+    SpangleSeeds    ( "Spangle Seeds",    true, SummerSpangle,10000,
             4, false, new int[]{1, 2, 3, 1} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -700,7 +700,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    SummerSquashSeeds( "Summer Squash Seeds",false, SummerSquash,
+    SummerSquashSeeds( "Summer Squash Seeds",false, SummerSquash,3,
             5, false, new int[]{1, 1, 1, 2, 1} ,10 , 0 ,
             List.of(MarketType.JojaMart ) ) {
 
@@ -725,7 +725,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    SunflowerSeeds  ( "Sunflower Seeds",     true, Sunflower,
+    SunflowerSeeds  ( "Sunflower Seeds",     true, Sunflower,10000,
             4, false, new int[]{1, 2, 3, 2} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -756,7 +756,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    TomatoSeeds     ( "Tomato Seeds",        false, Tomato,
+    TomatoSeeds     ( "Tomato Seeds",        false, Tomato,4,
             5, false, new int[]{2, 2, 2, 2, 3} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -788,7 +788,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    WheatSeeds      ( "Wheat Seeds",         true, Wheat,
+    WheatSeeds      ( "Wheat Seeds",         true, Wheat,10000,
             4, false, new int[]{1, 1, 1, 1} , 10 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -819,7 +819,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    AmaranthSeeds   ( "Amaranth Seeds",      true, Amaranth,
+    AmaranthSeeds   ( "Amaranth Seeds",      true, Amaranth,10000,
             4, false, new int[]{1, 2, 2, 2} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -850,7 +850,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    ArtichokeSeeds  ( "Artichoke Seeds",     true, Artichoke,
+    ArtichokeSeeds  ( "Artichoke Seeds",     true, Artichoke,10000,
             5, false, new int[]{2, 2, 1, 2, 1} ,0 , 5 ,
             List.of(MarketType.PierreGeneralStore ) ) {
 
@@ -880,7 +880,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    BeetSeeds       ( "Beet Seeds",          true, Beet,
+    BeetSeeds       ( "Beet Seeds",          true, Beet,10000,
             4, false, new int[]{1, 1, 2, 2} ,5 , 0 ,
             List.of(MarketType.JojaMart ) ){
 
@@ -905,7 +905,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    BokChoySeeds    ("BokChoy Seeds",        true, BokChoy,
+    BokChoySeeds    ("BokChoy Seeds",        true, BokChoy,10000,
             4, false, new int[]{1, 1, 1, 1} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
         @Override
@@ -934,7 +934,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    BroccoliSeeds   ( "Broccoli Seeds",      false, Broccoli,
+    BroccoliSeeds   ( "Broccoli Seeds",      false, Broccoli,4,
             4, false, new int[]{2, 2, 2, 2} ,5 , 0 ,
             List.of(MarketType.JojaMart ) ){
         @Override
@@ -957,7 +957,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    CranberrySeeds  ( "Cranberry Seeds",     false, Cranberries,
+    CranberrySeeds  ( "Cranberry Seeds",     false, Cranberries,5,
             5, false, new int[]{1, 2, 1, 1, 2} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -987,7 +987,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    EggplantSeeds   ( "Eggplant Seeds",      false, Eggplant,
+    EggplantSeeds   ( "Eggplant Seeds",      false, Eggplant,5,
             4, false, new int[]{1, 1, 1, 1} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -1017,7 +1017,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    FairySeeds      ( "Fairy Seeds",         true, FairyRose,
+    FairySeeds      ( "Fairy Seeds",         true, FairyRose,10000,
             4, false, new int[]{1, 4, 4, 3}, 5,5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -1047,7 +1047,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    GrapeStarter    ( "Grape Starter",       false, Grape,
+    GrapeStarter    ( "Grape Starter",       false, Grape,3,
             5, false, new int[]{1, 1, 2, 3, 3} ,0 , 5 ,
             List.of(MarketType.PierreGeneralStore ) ) {
         @Override
@@ -1075,7 +1075,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    PumpkinSeeds    ( "Pumpkin Seeds",       true, Pumpkin,
+    PumpkinSeeds    ( "Pumpkin Seeds",       true, Pumpkin,10000,
             5, true, new int[] {1, 2, 3, 4, 3} , 0 , 5 ,
             List.of(MarketType.PierreGeneralStore ) ) {
 
@@ -1105,7 +1105,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    YamSeeds        ( "Yam Seeds",           true, Yam,
+    YamSeeds        ( "Yam Seeds",           true, Yam,10000,
             4, false, new int[]{1, 3, 3, 3} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -1135,7 +1135,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    RareSeed        ( "Rare Seed",           true, SweetGemBerry,
+    RareSeed        ( "Rare Seed",           true, SweetGemBerry,10000,
             5, false, new int[]{2, 4, 6, 6, 6} , 1 , 0 ,
             List.of(MarketType.JojaMart) ) {
 
@@ -1159,7 +1159,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    PowdermelonSeeds("Powdermelon Seeds",    true, Powdermelon,
+    PowdermelonSeeds("Powdermelon Seeds",    true, Powdermelon,10000,
             5, true, new int[]{1, 2, 1, 2, 1} , 10 , 0 ,
             List.of(MarketType.JojaMart) ) {
 
@@ -1183,7 +1183,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    AncientSeeds    ( "Ancient Seeds",       false, AncientFruit,
+    AncientSeeds    ( "Ancient Seeds",       false, AncientFruit,7,
             5, false, new int[]{2, 7, 7, 7, 5} , 1 , 0 ,
             List.of(MarketType.JojaMart) ) {
 
@@ -1215,17 +1215,21 @@ public enum ForagingSeedsType {
     private final boolean isOneTimeUse;
     private final CropsType productType;
     private final int growthStages;
+    private final int regrowthTime;
     private final boolean canGrowGiant;
     private final int[] stageDays; // مدت زمان پیش‌فرض برای هر مرحله رشد
     public int JojaMartLimit;
     public int PierrGeneralLimit;
     private final List<MarketType> marketTypes;
 
-    ForagingSeedsType(String displayName, boolean isOneTimeUse, CropsType productType, int growthStages, boolean canGrowGiant, int[] stageDays, int JojaMartLimit, int PierrGeneralLimit , List<MarketType> marketTypes) {
+    ForagingSeedsType(String displayName, boolean isOneTimeUse, CropsType productType,
+                      int regrowthTime, int growthStages, boolean canGrowGiant, int[] stageDays,
+                      int JojaMartLimit, int PierrGeneralLimit , List<MarketType> marketTypes) {
         this.displayName = displayName;
         this.isOneTimeUse = isOneTimeUse;
         this.productType = productType;
         this.growthStages = growthStages;
+        this.regrowthTime = regrowthTime;
         this.canGrowGiant = canGrowGiant;
         this.stageDays = stageDays;
         this.JojaMartLimit = JojaMartLimit;
@@ -1248,10 +1252,14 @@ public enum ForagingSeedsType {
     public boolean canGrowGiant() {
         return canGrowGiant;
     }
+    public int getRegrowthTime() {
+        return regrowthTime;
+    }
     public int getStageDate (int Stage) {
         return stageDays[Stage];
     }
-    // متدهای ابسترکت
+
+
     public abstract String getSymbolByLevel (int level);
     public abstract ArrayList<Season> getSeason();
     public abstract int getPrice(MarketType marketType);

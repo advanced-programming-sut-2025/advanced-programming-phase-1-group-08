@@ -125,13 +125,15 @@ public class HumanCommunications {
     } //TODO اگه بازیکن مورد نظر وجود نداشت پیغام مناسب چاپ بشه و اگه مقدار یا آیتم نامعتبر بودن ارور بده
 
     // LEVEL ONE TASKS
-    public Result sendGifts() {
-        User me = currentPlayer;
+    public Result sendGifts(String username, String item, int amount) {
         User other;
         if (player1.getUsername().equals(currentPlayer.getUsername()))
             other = player2;
         else
             other = player1;
+
+        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Inventory otherInventory = other.getBackPack().inventory;
 
         if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
             return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Send Gift to " + other.getNickname() + "!"+RESET);
@@ -141,7 +143,7 @@ public class HumanCommunications {
             return new Result(false, RED+"You can't Send Gifts in your Current " + RED+"Friendship Level"+RESET + "."+RESET);
         }
 
-        //TODO
+        //TODO تو کوله پشتیت پیداش کن- برش دار- بده بهش- مجبورش کن ریت کنه
     }
 
     // LEVEL TWO TASKS

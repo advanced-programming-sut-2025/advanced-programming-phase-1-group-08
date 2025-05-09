@@ -1501,13 +1501,42 @@ public class GameController {
     }
 
 
-    private Result showTree (Tile tile) {
+    private String showTree (Tree tree) {
+
+
+        return "name : " + tree.getType().getDisplayName() +
+                "\nLast Water : " + BLUE + "Date : " + RED + tree.getLastWater().getYear() +
+                RESET + " " + tree.getLastWater().getNameSeason() +
+                " " + tree.getLastWater().getDate() +
+                "\nLast Fruit : " + BLUE + "Date : " + RED + tree.getLastFruit().getYear() +
+                RESET + " " + tree.getLastFruit().getNameSeason() +
+                " " + tree.getLastFruit().getDate() +
+                "\nToday fertilize :" + tree.isFertilize() +
+                "\nStage :" + tree.getStage() +
+                "\nHave fruit :" + tree.isHaveFruit();
+    }
+    private String showForaging (ForagingSeeds foragingSeeds) {
+
+        return "name : " + foragingSeeds.getType().getDisplayName() +
+                "\nLast Water : " + BLUE + "Date : " + RED + foragingSeeds.getLastWater().getYear() +
+                RESET + " " + foragingSeeds.getLastWater().getNameSeason() +
+                " " + foragingSeeds.getLastWater().getDate() +
+                "\nToday fertilize :" + foragingSeeds.isTodayFertilize() +
+                "\nStage :" + foragingSeeds.getStage() +
+                "\nOne Time :" + foragingSeeds.getType().isOneTimeUse() +
+                "\nCan grow giant :" + foragingSeeds.getType().canGrowGiant();
 
     }
-    private Result showGiant (Tile tile) {
+    private String  showGiant (GiantProduct giantProduct) {
 
-    }
-    private Result showForaging (Tile tile) {
+        return "name : " + giantProduct.getType().getDisplayName() +
+                "\nLast Water : " + BLUE + "Date : " + RED + giantProduct.getLastWater().getYear() +
+                RESET + " " + giantProduct.getLastWater().getNameSeason() +
+                " " + giantProduct.getLastWater().getDate() +
+                "\nToday fertilize :" + giantProduct.isTodayFertilize() +
+                "\nStage :" + giantProduct.getStage() +
+                "\nOne Time :" + giantProduct.getType().isOneTimeUse() +
+                "\nCan grow giant :" + giantProduct.getType().canGrowGiant();
 
     }
     private void checkForPlantProduct () {
@@ -1878,6 +1907,32 @@ public class GameController {
         Result result = f.Hug();
         System.out.println(result);
     }
+    public void sendGifts (String input) {
+        String username = GameMenuCommands.sendGift.getMather(input).group("username");
+        String item = GameMenuCommands.sendGift.getMather(input).group("item");
+        int amount = Integer.parseInt(GameMenuCommands.sendGift.getMather(input).group("amount"));
+        if (username == null || item == null) {
+            System.out.println("Invalid Command!");
+            return;
+        }
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Send Gifts to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+
+
+        Result result = f.sendGifts(username, item, amount);
+        System.out.println(result);
+    }
     public void giveFlowers (String input) {
         String username = GameMenuCommands.giveFlower.getMather(input).group("username");
         if (!players.contains(findUserByUsername(username))) {
@@ -2246,14 +2301,13 @@ public class GameController {
         Tile tile = getTileByCoordinates(x, y);
 
         if (tile.getGameObject() instanceof Tree)
-            return new Result(true, );
+            return new Result(true, showTree((Tree) tile.getGameObject()));
         if (tile.getGameObject() instanceof ForagingSeeds)
-            return new Result(true, );
+            return new Result(true, showForaging((ForagingSeeds) tile.getGameObject()));
         if (tile.getGameObject() instanceof GiantProduct)
-            return new Result(true, );
+            return new Result(true, showGiant((GiantProduct) tile.getGameObject()));
 
         return new Result(false, RED+"That tile don't have plant!"+RESET);
 
     }
-
 }
