@@ -44,6 +44,7 @@ public enum GameMenuCommands {
     toolsUpgrade("tools\\s+upgrade\\s+(?<name>\\S.*)\\s*"),
     toolsUse("tools\\s+use\\s+-d\\s+(?<direction>\\S.*)\\s*"),
     fishing("fishing\\s+-p\\s+(?<name>\\S.*)\\s*"),
+    buyAnimal("(?i)buy\\s+animal\\s+-a\\s+(?<animal>\\S.*)\\s+-n\\s+(?<name>\\S.*)\\s*"),
     buildBarnOrCage("build\\s+-a\\s+(?<name>\\S.*)\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     pet("pet\\s+-n\\s+(?<name>\\S.*)\\s*"),
     animals("\\s*animals\\s*"),

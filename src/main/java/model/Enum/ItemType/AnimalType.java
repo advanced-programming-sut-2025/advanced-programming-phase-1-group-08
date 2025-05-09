@@ -46,4 +46,8 @@ public enum AnimalType {
     public void increaseRemindInShop(int amount) {
         this.remindInShop += amount;
     }
+
+    public List<BarnORCageType> getBarnorcages() {
+        return barnorcages;
+    }
 }

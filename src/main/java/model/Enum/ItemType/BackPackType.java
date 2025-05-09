@@ -1,5 +1,11 @@
 package model.Enum.ItemType;
 
+import model.App;
+import model.Inventory;
+import model.Items;
+
+import java.util.Map;
+
 public enum BackPackType {
     primary("primary",12,0 ,0) {
 
@@ -48,6 +54,17 @@ public enum BackPackType {
 
     public void increaseRemindInShop(int amount) {
         this.remindInShop += amount;
+    }
+
+    public int getRemindCapacity() {
+        int x=0;
+        Inventory inventory = App.currentPlayer.getBackPack().inventory;
+        for (Map.Entry < Items , Integer > entry : inventory.Items.entrySet()) {
+            if (entry.getValue() > 0) {
+                x++;
+            }
+        }
+        return App.currentPlayer.getBackPack().getType().getCapacity() - x;
     }
 
 
