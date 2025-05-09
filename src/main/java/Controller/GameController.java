@@ -29,7 +29,7 @@ public class GameController {
 
     Random rand = new Random();
 
-    public boolean isNeighbor(int x1, int y1, int x2, int y2) {
+    public static boolean isNeighbor(int x1, int y1, int x2, int y2) {
         int [] dirx={0,0,1,1,1,-1,-1,-1};
         int [] diry={1,-1,0,1,-1,0,1,-1};
         for (int i=0 ; i<8 ; i++) {
@@ -447,7 +447,7 @@ public class GameController {
         }
         for (User user : players) {
             if (user.getFarm().equals(farm)){
-                if (!user.getMarried().equals(currentPlayer) && !user.equals(currentPlayer)){
+                if (!user.getSpouse().equals(currentPlayer) && !user.equals(currentPlayer)){
                     return new Result(false,"you can't go to this farm");
                 }
             }
@@ -902,12 +902,51 @@ public class GameController {
     }
 
     public Result createBarnOrCage(int topLeftX, int topLeftY, BarnORCageType barnORCageType) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        Marketing marketing = new Marketing();
+
+        if (marketing.findEnteredShopType() != MarketType.MarnieRanch) {
+            return new Result(false , "you can't create a barn or cage because you are not in Marnie's Ranch Market");
+        }
+
         if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, barnORCageType.getWidth(), barnORCageType.getHeight())) {
             return new Result(false, "you can't create barn or cage on this coordinate!");
         }
 
+        int Wood = 0;
+        int Stone= 0;
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof Wood) {
+                Wood=entry.getValue();
+            }
+            if (entry.getKey() instanceof BasicRock) {
+                Stone=entry.getValue();
+            }
+        }
+
+        if (barnORCageType.getWoodNeeded() > Wood) {
+            return new Result(false , "you can't create barn or cage because you don't have enough wood!");
+        }
+        if (barnORCageType.getStoneNeeded() > Stone) {
+            return new Result(false , "you can't create barn or cage because you don't have enough stone!");
+        }
+        if (barnORCageType.getPrice() > currentPlayer.getMoney() ) {
+            return new Result(false , "you can't create barn or cage because you don't have enough money!");
+        }
+
         BarnOrCage barnOrCage = new BarnOrCage(barnORCageType, topLeftX, topLeftY);
-        //TODO عملیات کم شدن از inventory در هنگام خرید
+
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof Wood) {
+                entry.setValue(entry.getValue() - Wood);
+            }
+            if (entry.getKey() instanceof BasicRock) {
+                entry.setValue(entry.getValue() - Stone);
+            }
+        }
+
+
+        currentPlayer.increaseMoney(- barnORCageType.getPrice());
 
         if (barnORCageType.equals(BarnORCageType.Barn) || barnORCageType.equals(BarnORCageType.BigBarn)
                  || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
@@ -921,7 +960,7 @@ public class GameController {
             for (int j = topLeftY; j < topLeftY + barnORCageType.getHeight(); j++) {
 
                 if (i == topLeftX || i == topLeftX + barnORCageType.getWidth() -1 || j == topLeftY || j == topLeftY + barnORCageType.getHeight() -1) {
-                    Tile tile = getTileByCoordinates(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY);
+                    Tile tile = getTileByCoordinates(i , j );
                     tile.setGameObject(barnOrCage);
                 }
             }
@@ -930,6 +969,112 @@ public class GameController {
         return new Result(true, barnORCageType.getName() + "created successfully!");
 
     }
+
+
+
+    public Result createWell(int topLeftX , int topLeftY) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        Marketing marketing = new Marketing();
+
+        if (marketing.findEnteredShopType() != MarketType.MarnieRanch) {
+            return new Result(false , "you can't create a Well because you are not in Marnie's Ranch Market");
+        }
+
+        if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, Well.getWidth(), Well.getHeight())) {
+            return new Result(false, "you can't create a Well on this coordinate!");
+        }
+
+        int Stone= 0;
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof BasicRock) {
+                Stone=entry.getValue();
+            }
+        }
+
+        if (Well.getNeededStone() > Stone) {
+            return new Result(false , "you can't create well because you don't have enough stone!");
+        }
+
+        if (Well.getNeededCoin() > currentPlayer.getMoney() ) {
+            return new Result(false , "you can't create well because you don't have enough money!");
+        }
+
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof BasicRock) {
+                entry.setValue(entry.getValue() - Stone);
+                break;
+            }
+        }
+        currentPlayer.increaseMoney(- Well.getNeededCoin());
+
+        Well well = new Well(topLeftX, topLeftY);
+        well.setCharactor('w');
+
+        for (int i = topLeftX; i < topLeftX + Well.getWidth(); i++) {
+            for (int j = topLeftY; j < topLeftY + Well.getHeight(); j++) {
+
+                if (i == topLeftX || i == topLeftX + Well.getWidth() -1 || j == topLeftY || j == topLeftY + Well.getHeight() -1) {
+                    Tile tile = getTileByCoordinates(i , j );
+                    tile.setGameObject(well);
+                }
+            }
+        }
+        return new Result(true, "Well Created Successfully");
+
+    }
+
+
+    public Result createShippingBin(int topLeftX , int topLeftY) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        Marketing marketing = new Marketing();
+
+        if (marketing.findEnteredShopType() != MarketType.MarnieRanch) {
+            return new Result(false , "you can't create a Shipping Bin because you are not in Marnie's Ranch Market");
+        }
+
+        if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, ShippingBin.getWidth(), ShippingBin.getHeight())) {
+            return new Result(false, "you can't create a Shipping Bin on this coordinate!");
+        }
+
+        int Wood= 0;
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof Wood) {
+                Wood=entry.getValue();
+            }
+        }
+
+        if (ShippingBin.getWoodNeeded() > Wood) {
+            return new Result(false , "you can't create Shipping Bin because you don't have enough Wood!");
+        }
+
+        if (ShippingBin.getCoinNeeded() > currentPlayer.getMoney() ) {
+            return new Result(false , "you can't create Shipping Bin because you don't have enough money!");
+        }
+
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof Wood) {
+                entry.setValue(entry.getValue() - Wood);
+            }
+        }
+        currentPlayer.increaseMoney(- ShippingBin.getCoinNeeded());
+
+        ShippingBin shippingBin = new ShippingBin(topLeftX, topLeftY);
+        shippingBin.setCharactor('s');
+
+        for (int i = topLeftX; i < topLeftX + ShippingBin.getWidth(); i++) {
+            for (int j = topLeftY; j < topLeftY + ShippingBin.getHeight(); j++) {
+
+                if (i == topLeftX || i == topLeftX + ShippingBin.getWidth() -1 || j == topLeftY || j == topLeftY + ShippingBin.getHeight() -1) {
+                    Tile tile = getTileByCoordinates(i , j );
+                    tile.setGameObject(shippingBin);
+                }
+            }
+        }
+        return new Result(true, "Shipping Bin Created Successfully");
+    }
+
+
+
 
     public Animal getAnimalByName(String animalName) {
         for (BarnOrCage barnOrCage:currentPlayer.BarnOrCages){

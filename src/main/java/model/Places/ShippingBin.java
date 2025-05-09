@@ -1,6 +1,8 @@
 package model.Places;
 
-public class ShippingBin {
+import model.MapThings.GameObject;
+
+public class ShippingBin extends GameObject {
     private static final int width=1;
     private static final int height=1;
     private static final int coinNeeded=250;
@@ -21,10 +23,10 @@ public class ShippingBin {
     public int getTopLeftY() {
         return topLeftY;
     }
-    public int getWidth() {
+    public static int getWidth() {
         return width;
     }
-    public int getHeight() {
+    public static int getHeight() {
         return height;
     }
     public static int getCoinNeeded() {

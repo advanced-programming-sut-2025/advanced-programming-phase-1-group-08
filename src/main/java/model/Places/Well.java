@@ -1,6 +1,8 @@
 package model.Places;
 
-public class Well {
+import model.MapThings.GameObject;
+
+public class Well extends GameObject {
     private static int remindInShop=1;
     private static final int width=3;
     private static final int height=3;

@@ -1,11 +1,8 @@
 package model.Enum.ItemType;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import model.Enum.ItemType.MarketType.*;
 
-public enum MarketItem {
+public enum MarketItemType {
     JojaCola("Joja Cola", List.of(MarketType.JojaMart) , Integer.MAX_VALUE , 0 ) {
         @Override
         public int getPrice(int id) {
@@ -590,7 +587,7 @@ public enum MarketItem {
     public abstract int getInitialPierreShopsLimit();
 
 
-    MarketItem(String name , List<MarketType> marketTypes , int otherShopsLimit , int PierreShopsLimit ) {
+    MarketItemType(String name , List<MarketType> marketTypes , int otherShopsLimit , int PierreShopsLimit ) {
         this.name = name;
         this.marketTypes = marketTypes;
         this.otherShopsLimit = otherShopsLimit;

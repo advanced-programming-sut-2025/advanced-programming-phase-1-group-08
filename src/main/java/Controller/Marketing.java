@@ -1,17 +1,24 @@
 package Controller;
 
+import model.*;
 import model.Enum.AllPlants.ForagingSeedsType;
+import model.Enum.AllPlants.TreesSourceType;
 import model.Enum.ItemType.*;
 import model.Enum.ToolsType.FishingPoleType;
+import model.MapThings.Tile;
+import model.MapThings.Walkable;
+import model.MapThings.Wood;
 import model.Places.Market;
 import model.Places.ShippingBin;
 import model.Places.Well;
-import model.Result;
+import model.Plants.ForagingSeeds;
+import model.Plants.TreeSource;
 import model.ToolsPackage.MilkPail;
 import model.ToolsPackage.Shear;
 
-import static model.App.currentPlayer;
-import static model.App.markets;
+import java.util.Map;
+
+import static model.App.*;
 
 public class Marketing {
 
@@ -41,7 +48,7 @@ public class Marketing {
                 result.append(animalType.name()).append(", Price: ").append(animalType.getPrice()).append("\n");
             }
         }
-        result.append(MarketItem.Hay.getName()).append(", Price: ").append(MarketItem.Hay.getPrice(0)).append("\n");
+        result.append(MarketItemType.Hay.getName()).append(", Price: ").append(MarketItemType.Hay.getPrice(0)).append("\n");
         if (id ==1 || MilkPail.getRemindInShop() > 0) {
             result.append("Milk Pail").append(", Price: ").append(MilkPail.coinNeeded).append("\n");
         }
@@ -60,7 +67,7 @@ public class Marketing {
         else if (id == 2) {
             result.append(MarketType.StardropSaloon.name()).append(" available Products:").append("\n");
         }
-        for (MarketItem marketItem : MarketItem.values()) {
+        for (MarketItemType marketItem : MarketItemType.values()) {
             if (marketItem.getMarketTypes().contains(MarketType.StardropSaloon)) {
                 int remind= marketItem.getOtherShopsLimit();
                 if (id == 1 || remind > 0 ) {
@@ -95,7 +102,7 @@ public class Marketing {
             result.append("Shipping Bin, Price: ").append(ShippingBin.getCoinNeeded()).append(", Wood: ").append(ShippingBin.getWoodNeeded()).append("\n");
         }
 
-        for (MarketItem marketItem : MarketItem.values()) {
+        for (MarketItemType marketItem : MarketItemType.values()) {
             if (marketItem.getMarketTypes().contains(MarketType.CarpenterShop)) {
                 int remind= marketItem.getOtherShopsLimit();
                 if (id == 1 || remind > 0 ) {
@@ -124,7 +131,7 @@ public class Marketing {
                 }
             }
         }
-        for (MarketItem marketItem : MarketItem.values()) {
+        for (MarketItemType marketItem : MarketItemType.values()) {
             if (marketItem.getMarketTypes().contains(MarketType.JojaMart)) {
                 int remind = marketItem.getOtherShopsLimit();
                 if (id == 1 || remind > 0 ) {
@@ -152,7 +159,7 @@ public class Marketing {
                 }
             }
         }
-        for (MarketItem marketItem : MarketItem.values()) {
+        for (MarketItemType marketItem : MarketItemType.values()) {
             if (marketItem.getMarketTypes().contains(MarketType.PierreGeneralStore)) {
                 int remind = marketItem.getPierreShopsLimit();
                 if (id == 1 || remind > 0 ) {
@@ -179,7 +186,7 @@ public class Marketing {
         else if (id == 2) {
             result.append(MarketType.FishShop.name()).append(" available Products:").append("\n");
         }
-        for (MarketItem marketItem : MarketItem.values()) {
+        for (MarketItemType marketItem : MarketItemType.values()) {
             if (marketItem.getMarketTypes().contains(MarketType.FishShop)) {
                 int remind = marketItem.getOtherShopsLimit();
                 if (id == 1 || remind > 0 ) {
@@ -211,5 +218,447 @@ public class Marketing {
             case FishShop -> {return FishSoupProducts(id) ; }
         }
 
+        return null;
+
+    }
+
+
+    public void takeAnimalToBarnOrCage(Animal animal , BarnOrCage barnOrCage ) {
+        GameController gameController = new GameController();
+        for (int x=barnOrCage.topLeftX ; x < barnOrCage.getBarnORCageType().getWidth() ; x++) {
+            for (int y=barnOrCage.topLeftY ; y< barnOrCage.getBarnORCageType().getHeight() ; y++) {
+
+                Tile tile=gameController.getTileByCoordinates(x,y);
+
+                if (tile.getGameObject() instanceof Walkable) {
+                    tile.setGameObject(animal);
+                    animal.setPositionX(x);
+                    animal.setPositionY(y);
+                    return;
+                }
+            }
+        }
+    }
+
+
+    public Result buyAnimal(String animal ,String name) {
+        AnimalType animalType=null;
+        for (AnimalType animalType1 : AnimalType.values()) {
+            if (animalType1.name().equals(animal)) {
+                animalType=animalType1;
+            }
+        }
+        if (animalType==null) {
+            return new Result(false , "No such type of Animal!");
+        }
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            for (Animal animals : barnOrCage.getAnimals()) {
+                if (animals.getName().equals(animal)) {
+                    return new Result(false , "You already have Animal with name "+animal);
+                }
+            }
+        }
+        if (currentPlayer.getMoney() < animalType.getPrice()) {
+            return new Result(false , "You don't have enough money to buy this animal");
+        }
+        if (animalType.getRemindInShop() == 0) {
+            return new Result(false , "The purchase limit for this product has been reached");
+        }
+        boolean canBuyAnimal = false;
+        for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
+            if (animalType.getBarnorcages().contains(barnOrCage.getBarnORCageType())) {
+                if (barnOrCage.getReminderCapacity() > 0) {
+                    canBuyAnimal = true;
+                    Animal newAnimal = new Animal(animalType , 0 , name , false , false , false , false , currentDate.getDate());
+                    takeAnimalToBarnOrCage(newAnimal , barnOrCage);
+                    barnOrCage.animals.add(newAnimal);
+                    animalType.increaseRemindInShop(-1);
+                }
+            }
+        }
+        if (! canBuyAnimal) {
+            return new Result(false , "you don't have enough capacity or suitable place for this animal");
+        }
+
+        return new Result(true , "you bought this animal successfully");
+
+    }
+
+
+    public Result purchaseFromMarnieRanch(String name , Integer amount) {
+
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+
+        if (name.equals("Hay")) {
+            if (amount == null) {
+                amount = 1;
+            }
+            if (amount > MarketItemType.Hay.getOtherShopsLimit()) {
+                return new Result(false , "The purchase limit for this product has been reached");
+            }
+            if (MarketItemType.Hay.getPrice(0) * amount > currentPlayer.getMoney()){
+                return new Result(false , "not enough money to purchase this product");
+            }
+            if (currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                return new Result(false , "Not enough capacity in your backpack");
+            }
+
+            MarketItem Hay=new MarketItem(MarketItemType.Hay);
+            inventory.Items.put(Hay , amount);
+            currentPlayer.increaseMoney(- amount * MarketItemType.Hay.getPrice(0));
+            MarketItemType.Hay.increaseOtherShopsLimit(-amount);
+            return new Result(false , "you bought this product successfully");
+        }
+        if (name.equals("Milk Pail")) {
+            if (amount == null) {
+                amount = 1;
+            }
+            if (amount > MilkPail.getRemindInShop()) {
+                return new Result(false , "The purchase limit for this product has been reached");
+            }
+            if (MilkPail.coinNeeded * amount > currentPlayer.getMoney()){
+                return new Result(false , "not enough money to purchase this product");
+            }
+            if (amount > currentPlayer.getBackPack().getType().getCapacity()) {
+                return new Result(false , "Not enough capacity in your backpack");
+            }
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry instanceof MilkPail) {
+                    return new Result(false , "you already have Milk Pail in your inventory");
+                }
+            }
+            MilkPail milkPail = new MilkPail();
+            inventory.Items.put(milkPail , amount);
+            MilkPail.increaseRemindInShop(- amount);
+            currentPlayer.increaseMoney( - amount * MilkPail.coinNeeded);
+            return new Result(false , "you bought this product successfully");
+        }
+
+        if (name.equals("Shears")) {
+            if (amount == null) {
+                amount = 1;
+            }
+            if (amount > Shear.getRemindInShop()) {
+                return new Result(false , "The purchase limit for this product has been reached");
+            }
+            if (Shear.coinNeeded * amount > currentPlayer.getMoney()){
+                return new Result(false , "not enough money to purchase this product");
+            }
+            if (amount > currentPlayer.getBackPack().getType().getCapacity()) {
+                return new Result(false , "Not enough capacity in your backpack");
+            }
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry instanceof Shear) {
+                    return new Result(false , "you already have Milk Pail in your inventory");
+                }
+            }
+            Shear shear = new Shear();
+            inventory.Items.put(shear , amount);
+            Shear.increaseRemindInShop(- amount);
+            currentPlayer.increaseMoney(- amount * Shear.coinNeeded);
+            return new Result(false , "you bought this product successfully");
+        }
+
+        return new Result(false , "No such product found");
+    }
+
+    public Result purchaseFromStardrop(String name , Integer amount) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        MarketItemType Product = null;
+        for (MarketItemType type : MarketItemType.values()) {
+            if (type.getMarketTypes().contains(MarketType.StardropSaloon)) {
+                if (type.getName().equals(name)) {
+                    Product = type;
+                }
+            }
+        }
+        if (Product == null) {
+            return new Result(false , "No such product found");
+        }
+        if (amount == null) {
+            amount = 1;
+        }
+        if (amount > Product.getOtherShopsLimit()) {
+            return new Result(false , "The purchase limit for this product is reached");
+        }
+        if (currentPlayer.getMoney() < amount * Product.getPrice(0)) {
+            return new Result(false , "Not enough money to purchase this product");
+        }
+        if (currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+            return new Result(false , "Not enough capacity in your backpack");
+        }
+        for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof MarketItem) {
+                if (((MarketItem) entry.getKey()).getType() .equals(Product) ) {
+                    entry.setValue(entry.getValue() + amount);
+                    Product.increaseOtherShopsLimit(-amount);
+                    currentPlayer.increaseMoney( - amount * Product.getPrice(0));
+                    return new Result(false , "You bought this product successfully");
+                }
+            }
+        }
+        MarketItem newItem = new MarketItem(Product);
+        inventory.Items.put(newItem , amount);
+        Product.increaseOtherShopsLimit(-amount);
+        currentPlayer.increaseMoney( - amount * Product.getPrice(0));
+
+        return new Result(false , "You bought this product successfully");
+    }
+
+    public Result purchaseFromCarpenter(String name , Integer amount) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+
+        if (amount == null) {
+            amount = 1;
+        }
+        MarketItemType Product = null;
+
+        for (MarketItemType type : MarketItemType.values()) {
+            if (type.getName().equals(name) && type.getMarketTypes().contains(MarketType.CarpenterShop)) {
+                    Product = type;
+            }
+        }
+
+        if (Product == null) {
+            return new Result(false , "No such product found");
+        }
+        if (currentPlayer.getMoney() < amount * Product.getPrice(0)) {
+            return new Result(false , "Not enough money to purchase this product");
+        }
+        if (Product.getOtherShopsLimit() < amount) {
+            return new Result(false , "The purchase limit for this product is reached");
+        }
+        if (currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+            return new Result(false , "Not enough capacity in your backpack");
+        }
+
+        if (Product.getName().equals("Stone") ) {
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof BasicRock) {
+                    entry.setValue(entry.getValue() + amount);
+                    Product.increaseOtherShopsLimit(-amount);
+                    currentPlayer.increaseMoney(- amount * Product.getPrice(0));
+                    return new Result(false , "You bought this product successfully");
+                }
+            }
+        }
+
+        if (Product.getName().equals("Wood") ) {
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof Wood) {
+                    entry.setValue(entry.getValue() + amount);
+                    Product.increaseOtherShopsLimit(-amount);
+                    currentPlayer.increaseMoney(- amount * Product.getPrice(0));
+                    return new Result(false , "You bought this product successfully");
+                }
+            }
+        }
+        return null;
+    }
+
+    private Result buySeedsOrMarketItem(MarketItemType Product , ForagingSeedsType foragingSeed , Integer amount , MarketType marketType) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+
+        int id=0;
+        if (marketType.equals(MarketType.PierreGeneralStore)) {
+            id = 1;
+        }
+
+        if (Product == null && foragingSeed == null) {
+            return new Result(false , "No such product found");
+        }
+        if (currentPlayer.getMoney() < amount * Product.getPrice(id)) {
+            return new Result(false , "Not enough money to purchase this product");
+        }
+        if (currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+            return new Result(false , "Not enough capacity in your backpack");
+        }
+
+        if (Product != null) {
+
+            if (id == 1 && Product.getPierreShopsLimit() < amount) {
+                return new Result(false , "The purchase limit for this product is reached");
+            }
+            if (Product.getOtherShopsLimit() < amount && id!=1) {
+                return new Result(false , "The purchase limit for this product is reached");
+            }
+
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof MarketItem) {
+                    if (((MarketItem) entry.getKey()).getType() .equals(Product)) {
+                        entry.setValue(entry.getValue() + amount);
+                        if (id == 1) {
+                            Product.increaseOtherShopsLimit(-amount);
+                        }
+                        else {
+                            Product.increaseOtherShopsLimit(-amount);
+                        }
+                        currentPlayer.increaseMoney(- amount * Product.getPrice(id));
+                        return new Result(true , "You bought this product successfully");
+                    }
+                }
+            }
+
+            MarketItem marketItem = new MarketItem(Product);
+            inventory.Items.put(marketItem, amount);
+            return new Result(true , "You bought this product successfully");
+        }
+
+        else {
+            if (foragingSeed.JojaMartLimit < amount && id!=1) {
+                return new Result(false , "The purchase limit for this product is reached");
+            }
+            if (foragingSeed.PierrGeneralLimit < amount && id==1) {
+                return new Result(false , "The purchase limit for this product is reached");
+            }
+
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof ForagingSeeds) {
+                    if (((ForagingSeeds) entry.getKey()).getType() .equals(foragingSeed)) {
+                        entry.setValue(entry.getValue() + amount);
+                        if (id == 1) {
+                            foragingSeed.PierrGeneralLimit -= amount;
+                            currentPlayer.increaseMoney(-  amount * foragingSeed.getPrice(MarketType.PierreGeneralStore));
+                        }
+                        else {
+                            foragingSeed.JojaMartLimit -= amount;
+                            currentPlayer.increaseMoney(- amount * foragingSeed.getPrice(MarketType.JojaMart));
+                        }
+                        return new Result(false , "You bought this product successfully");
+                    }
+                }
+            }
+
+            ForagingSeeds foragingSeeds = new ForagingSeeds(foragingSeed , null) ;
+            inventory.Items.put(foragingSeeds, amount);
+            return new Result(false , "You bought this product successfully");
+        }
+    }
+
+    public Result purchaseFromJojaMart(String name , Integer amount) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        if (amount == null) {
+            amount = 1;
+        }
+        MarketItemType Product = null;
+        ForagingSeedsType foragingSeed = null;
+
+        for (MarketItemType type : MarketItemType.values()) {
+            if (type.getName().equals(name) && type.getMarketTypes().contains(MarketType.JojaMart)) {
+                Product = type;
+            }
+        }
+        for (ForagingSeedsType foragingSeeds : ForagingSeedsType.values()) {
+            if (foragingSeeds.getMarketTypes().contains(MarketType.JojaMart) && foragingSeeds.getDisplayName().equals(name)) {
+                foragingSeed = foragingSeeds;
+            }
+        }
+
+        return buySeedsOrMarketItem(Product , foragingSeed , amount , MarketType.JojaMart);
+
+    }
+
+    private Result buyBackpack(BackPackType backPackType , Integer amount) {
+        if (backPackType.getRemindInShop() < amount) {
+            return new Result(false , "The purchase limit for this product is reached");
+        }
+
+        if (currentPlayer.getMoney() < amount * backPackType.getPrice()) {
+            return new Result(false , "Not enough money to purchase this product");
+        }
+
+        currentPlayer.getBackPack().setType(backPackType);
+        currentPlayer.increaseMoney( -amount * backPackType.getPrice());
+        backPackType.increaseRemindInShop(-amount);
+        return new Result(false , "you bought" + backPackType.getName() + " successfully");
+    }
+
+
+    private Result buyTreeSource(TreesSourceType treesSourceType , Integer amount) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        if (currentPlayer.getMoney() < amount * treesSourceType.getPrice()) {
+            return new Result(false , "Not enough money to purchase this product");
+        }
+        if (amount > currentPlayer.getBackPack().getType().getRemindCapacity()) {
+            return new Result(false , "Not enough capacity in your backpack");
+        }
+        for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof TreeSource) {
+                if (((TreeSource) entry.getKey()).getType() .equals(treesSourceType)) {
+                    entry.setValue(entry.getValue() + amount);
+                    currentPlayer.increaseMoney(- amount * treesSourceType.getPrice());
+                    return new Result(true , "You bought " + treesSourceType.name() +" successfully");
+                }
+            }
+        }
+
+        TreeSource treeSource = new TreeSource(treesSourceType);
+        inventory.Items.put(treeSource, amount);
+        currentPlayer.increaseMoney(-amount * treesSourceType.getPrice());
+        return new Result(true , "You bought " + treesSourceType.name() +" successfully");
+    }
+
+
+    public Result purchaseFromPierre(String name , Integer amount) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        if (amount == null) {
+            amount = 1;
+        }
+        MarketItemType Product = null;
+        ForagingSeedsType foragingSeed = null;
+        TreesSourceType treesSource = null;
+        BackPackType backPack = null;
+
+        for (MarketItemType type : MarketItemType.values()) {
+            if (type.getName().equals(name) && type.getMarketTypes().contains(MarketType.PierreGeneralStore)) {
+                Product = type;
+            }
+        }
+        for (ForagingSeedsType foragingSeeds : ForagingSeedsType.values()) {
+            if (foragingSeeds.getMarketTypes().contains(MarketType.PierreGeneralStore) && foragingSeeds.getDisplayName().equals(name)) {
+                foragingSeed = foragingSeeds;
+            }
+        }
+        for (TreesSourceType type : TreesSourceType.values()) {
+            if (type.getDisplayName().equals(name) && type.getPrice() !=0 ) {
+                treesSource = type;
+            }
+        }
+        for (BackPackType backPackType : BackPackType.values()) {
+            if (backPackType.getName().equals(name) ) {
+                backPack = backPackType;
+            }
+        }
+
+
+        if (backPack != null) {
+            return buyBackpack(backPack , amount);
+        }
+        if (treesSource != null) {
+            return buyTreeSource(treesSource , amount);
+        }
+        return buySeedsOrMarketItem(Product , foragingSeed , amount , MarketType.PierreGeneralStore);
+
+    }
+
+    public Result purchaseFromFishShop(String name , Integer amount) {
+
+    }
+
+
+    public Result purchase(String name , Integer amount) {
+        MarketType marketType = findEnteredShopType();
+
+        if (marketType == null) {
+            return new Result(false , "you are not in any shop");
+        }
+        switch (marketType) {
+            case MarnieRanch -> {purchaseFromMarnieRanch(name, amount);}
+            case StardropSaloon -> {purchaseFromStardrop(name, amount);}
+            case CarpenterShop -> {purchaseFromCarpenter(name, amount);}
+            case JojaMart -> {purchaseFromJojaMart(name, amount);}
+            case PierreGeneralStore -> {purchaseFromPierre(name, amount);}
+            case FishShop ->
+        }
     }
 }
