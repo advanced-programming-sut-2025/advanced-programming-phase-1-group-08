@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public enum FishingPoleType {
 
-    TrainingRod (1){
+    TrainingRod (1 , -1){
         @Override
         public int getPrice() {
             return 25;
@@ -33,7 +33,7 @@ public enum FishingPoleType {
             return 0.1;
         }
     },
-    BambooPole (1){
+    BambooPole (1 , -1){
         @Override
         public int getPrice() {
             return 500;
@@ -57,7 +57,7 @@ public enum FishingPoleType {
             return 0.5;
         }
     },
-    FiberglassRod (1){
+    FiberglassRod (1 , 2){
         @Override
         public int getPrice() {
             return 1800;
@@ -81,7 +81,7 @@ public enum FishingPoleType {
             return 0.9;
         }
     },
-    IridiumRod (1){
+    IridiumRod (1 , 4){
         @Override
         public int getPrice() {
             return 7500;
@@ -113,10 +113,12 @@ public enum FishingPoleType {
     public abstract String getName();
     public abstract double getCoefficient();
     private int initialShopLimit;
+    private final int level;
     private int shopLimit=1;
 
-    FishingPoleType(int InitialShopLimit) {
+    FishingPoleType(int InitialShopLimit , int level) {
         this.initialShopLimit = InitialShopLimit;
+        this.level = level;
     }
 
     public int getInitialShopLimit() {
@@ -130,6 +132,10 @@ public enum FishingPoleType {
     }
     public void incrementShopLimit(int amount) {
         this.shopLimit += amount;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public boolean checkAbility(int amount){

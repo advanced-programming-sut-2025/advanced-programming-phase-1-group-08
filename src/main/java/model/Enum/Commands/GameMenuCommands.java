@@ -55,6 +55,8 @@ public enum GameMenuCommands {
     showAllProducts("(?i)show\\s+all\\s+products\\s*"),
     showAvailableProducts("(?i)show\\s+all\\s+available\\s+products\\s*"),
     purchase("^(?i)purchase\\s+(.+?)(?:\\s+-n\\s+(\\d+))?$"),
+    craftingRecipe("(?i)crafting\\s+show\\s+recipes\\s*"),
+    craftingCraft("(?i)crafting\\s+craft\\s+(?<name>\\S.*)\\s*"),
 
     ;
 

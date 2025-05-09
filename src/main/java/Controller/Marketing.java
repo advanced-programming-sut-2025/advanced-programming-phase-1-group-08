@@ -13,6 +13,7 @@ import model.Places.ShippingBin;
 import model.Places.Well;
 import model.Plants.ForagingSeeds;
 import model.Plants.TreeSource;
+import model.ToolsPackage.FishingPole;
 import model.ToolsPackage.MilkPail;
 import model.ToolsPackage.Shear;
 
@@ -499,6 +500,13 @@ public class Marketing {
                 }
             }
 
+            if (id == 1) {
+                Product.increaseOtherShopsLimit(-amount);
+            }
+            else {
+                Product.increaseOtherShopsLimit(-amount);
+            }
+
             MarketItem marketItem = new MarketItem(Product);
             inventory.Items.put(marketItem, amount);
             return new Result(true , "You bought this product successfully");
@@ -641,7 +649,94 @@ public class Marketing {
 
     }
 
+    private Result buyFishingPole(FishingPoleType poleType , Integer amount) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        if (amount > poleType.getshopLimit()) {
+            return new Result(false ,"The purchase limit for this product is reached");
+        }
+        if (currentPlayer.getMoney() < amount * poleType.getPrice()) {
+            return new Result(false , "Not enough money to purchase this product");
+        }
+        if (currentPlayer.getLevelFishing() < poleType.getLevel()) {
+            return new Result(false ,"for buy this fishing pole you should be at least in level " + poleType.getLevel());
+        }
+
+        for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof FishingPole) {
+                inventory.Items.remove(entry.getKey());
+                break;
+            }
+        }
+
+        if (amount > currentPlayer.getBackPack().getType().getRemindCapacity()) {
+            return new Result(false , "Not enough capacity in your backpack");
+        }
+
+        FishingPole fishingPole = new FishingPole();
+        fishingPole.fishingPoleType = poleType;
+        inventory.Items.put(fishingPole, amount);
+        poleType.incrementShopLimit(-amount);
+
+        return new Result(true , "You bought " + poleType.name() +" successfully");
+
+    }
+
     public Result purchaseFromFishShop(String name , Integer amount) {
+          Inventory inventory = currentPlayer.getBackPack().inventory;
+          if (amount == null) {
+              amount = 1;
+          }
+
+          FishingPoleType fishingPoleType = null;
+          MarketItemType Product = null;
+
+          for (FishingPoleType type : FishingPoleType.values()) {
+              if (type.getName().equals(name) ) {
+                  fishingPoleType = type;
+                  break;
+              }
+          }
+          for (MarketItemType type : MarketItemType.values()) {
+              if (type.getName().equals(name) && type.getMarketTypes().contains(MarketType.FishShop)) {
+                  Product = type;
+                  break;
+              }
+          }
+
+          if (Product == null && fishingPoleType == null) {
+              return new Result(false , "No such product found");
+          }
+
+          if (fishingPoleType != null) {
+              return buyFishingPole(fishingPoleType , amount);
+          }
+
+          if (Product.getOtherShopsLimit() < amount) {
+              return new Result(false , "The purchase limit for this product is reached");
+          }
+          if (currentPlayer.getMoney() < amount * Product.getPrice(0)) {
+              return new Result(false , "Not enough money to purchase this product");
+          }
+          if (amount > currentPlayer.getBackPack().getType().getRemindCapacity()) {
+              return new Result(false , "Not enough capacity in your backpack");
+          }
+
+          for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+              if (entry.getKey() instanceof MarketItem) {
+                  if (((MarketItem) entry.getKey()).getType() .equals(Product)) {
+                      entry.setValue(entry.getValue() + amount);
+                      Product.increaseOtherShopsLimit(-amount);
+                      currentPlayer.increaseMoney(-amount * Product.getPrice(0));
+                      return new Result(true , "You bought " + Product.getName() +" successfully");
+                  }
+              }
+          }
+
+          MarketItem marketItem = new MarketItem(Product);
+          inventory.Items.put(marketItem, amount);
+          currentPlayer.increaseMoney(-amount * Product.getPrice(0));
+          Product.increaseOtherShopsLimit(-amount);
+          return new Result(true , "You bought " + Product.getName() +" successfully");
 
     }
 
@@ -658,7 +753,8 @@ public class Marketing {
             case CarpenterShop -> {purchaseFromCarpenter(name, amount);}
             case JojaMart -> {purchaseFromJojaMart(name, amount);}
             case PierreGeneralStore -> {purchaseFromPierre(name, amount);}
-            case FishShop ->
+            case FishShop ->{purchaseFromFishShop(name, amount);}
         }
+        return null;
     }
 }
