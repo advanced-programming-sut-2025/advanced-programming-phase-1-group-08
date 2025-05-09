@@ -1474,6 +1474,10 @@ public class GameController {
             //TODO
         }
         if (name.equals("Grass Starter")){
+           Items items=CraftingController.numberOfIngrediants(name);
+           if (items == null) {
+               return new Result(false , "Grass Starter not found");
+           }
 
         }
     }
