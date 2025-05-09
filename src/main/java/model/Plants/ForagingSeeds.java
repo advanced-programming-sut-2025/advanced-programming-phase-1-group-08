@@ -2,7 +2,6 @@ package model.Plants;
 
 import model.*;
 import model.Enum.AllPlants.ForagingSeedsType;
-import model.Enum.ItemType.MarketItem;
 import model.Enum.ItemType.MarketItemType;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
@@ -88,7 +87,8 @@ public class ForagingSeeds extends Items {
     public void setStage  () {
 
         int days = 0;
-        DateHour dateHour = decreaseDay(numFertilize, currentDate);
+        DateHour dateHour = currentDate.clone();
+        dateHour.increaseDay(numFertilize);
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
@@ -120,6 +120,13 @@ public class ForagingSeeds extends Items {
 
         isProtected = aProtected;
     }
+    public void harvest () {
+
+        if (type.isOneTimeUse())
+            delete();
+        else
+            lastProduct = currentDate.clone();
+    }
     public void setLastProduct(DateHour lastProduct) {
 
         this.lastProduct = lastProduct.clone();
@@ -135,11 +142,18 @@ public class ForagingSeeds extends Items {
         return getDayDifferent( lastWater, currentDate) > 1;
     }
     public void checkHaveProduct () {
-        // یمتونی تعداد کود هایی که داده شده رو سیو کنی و یه کپی از کارنت دیت بگیری و روزاشو کم کنی
-        // یا حتی میشه اون تایع کم شدن روز رو استاتیک بزاری و حروجی یه تاریخ جدید بده و ازون استفاده کنی
-        this.haveProduct = type.getSeason().contains(currentDate.getSeason()) &&
-                getDayDifferent(lastProduct, currentDate) > type.getRegrowthTime() &&
-                this.stage == this.type.getGrowthStages();
+
+        DateHour dateHour = currentDate.clone();
+        dateHour.increaseDay(numFertilize);
+
+        if (type.isOneTimeUse())
+            this.haveProduct = type.getSeason().contains(currentDate.getSeason()) &&
+                    stage == type.getGrowthStages();
+        else {
+            this.haveProduct = type.getSeason().contains(currentDate.getSeason()) &&
+                    getDayDifferent(lastProduct, dateHour) > type.getRegrowthTime() &&
+                    this.stage == this.type.getGrowthStages();
+        }
     }
     public void delete () {
 
@@ -153,6 +167,7 @@ public class ForagingSeeds extends Items {
 
         setStage();
         todayFertilize = false;
+        checkHaveProduct();
         if (checkForDeath())
             delete();
     }

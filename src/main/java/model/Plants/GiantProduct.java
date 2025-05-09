@@ -23,6 +23,7 @@ public class GiantProduct extends Items {
     private boolean todayFertilize;
     private boolean isProtected;
     private DateHour lastWater;
+    private boolean haveProduct;
     private int numFertilize;
     private int stage;
 
@@ -57,7 +58,8 @@ public class GiantProduct extends Items {
     public void setStage  () {
 
         int days = 0;
-        DateHour dateHour = decreaseDay(numFertilize, currentDate);
+        DateHour dateHour = currentDate.clone();
+        dateHour.increaseDay(numFertilize);
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
@@ -68,9 +70,26 @@ public class GiantProduct extends Items {
         }
     }
 
+
+    public void checkHaveProduct () {
+
+
+
+        DateHour dateHour = currentDate.clone();
+        dateHour.increaseDay(numFertilize);
+        this.haveProduct = type.getSeason().contains(currentDate.getSeason()) &&
+                getDayDifferent(birthDay, dateHour) > type.getRegrowthTime() &&
+                this.stage == this.type.getGrowthStages();
+    }
     public boolean checkForDeath () {
 
         return getDayDifferent(lastWater, currentDate) > 1;
+    }
+    public void harvest () {
+
+        for (Tile tile : bigMap)
+            if (neighbors.contains(tile))
+                tile.setGameObject(new Walkable());
     }
     public void delete () {
 
@@ -85,7 +104,7 @@ public class GiantProduct extends Items {
 
         setStage();
         this.todayFertilize = false;
-
+        checkHaveProduct();
         if (checkForDeath())
             delete();
 
@@ -103,6 +122,10 @@ public class GiantProduct extends Items {
     public boolean  isProtected() {
 
         return isProtected;
+    }
+    public boolean isHaveProduct() {
+
+        return haveProduct;
     }
     public DateHour getBirthDay () {
 
