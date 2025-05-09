@@ -8,10 +8,14 @@ public class AllCrops extends Items {
     private CropsType type;
     private int price;
 
-    public void setType(CropsType type) {
+    public AllCrops(CropsType type) {
         this.type = type;
-        this.price = type.getPrice();
     }
+
+//    public void setType(CropsType type) {
+//        this.type = type;
+//        this.price = type.getPrice();
+//    }
 
     public CropsType getType() {
         return type;

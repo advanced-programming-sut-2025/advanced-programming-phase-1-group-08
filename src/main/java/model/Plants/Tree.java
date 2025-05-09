@@ -3,6 +3,7 @@ package model.Plants;
 import model.DateHour;
 import model.Enum.AllPlants.TreeType;
 import model.Enum.ItemType.MarketItemType;
+import model.Items;
 import model.MapThings.GameObject;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
@@ -12,7 +13,7 @@ import static model.App.currentDate;
 import static model.DateHour.decreaseDay;
 import static model.DateHour.getDayDifferent;
 
-public class Tree extends GameObject {
+public class Tree extends Items {
 
     private final DateHour birthDay;
     private final TreeType type;
@@ -120,8 +121,11 @@ public class Tree extends GameObject {
     }
     private void setHaveFruit () {
 
+        DateHour dateHour = currentDate.clone();
+        dateHour.increaseDay(numFertilize);
+
         this.haveFruit = this.type.getSourceType().getSeason().contains(currentDate.getSeason()) &&
-                getDayDifferent(lastFruit, currentDate) > 6;
+                getDayDifferent(lastFruit, dateHour) > 6;
     }
     private void delete () {
 

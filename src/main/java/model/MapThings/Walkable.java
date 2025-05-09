@@ -30,6 +30,9 @@ public class Walkable extends GameObject {
             case "Fiber" -> {
                 return BG_GREEN + " " + RESET;
             }
+            case "PLowed" -> {
+                return BG_BRIGHT_BROWN + " " + RESET;
+            }
         }
         return " ";
     }
