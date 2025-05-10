@@ -17,7 +17,7 @@ public enum GameMenuCommands {
     talking       ("\\s*(?i)talk\\s*-u\\s*(?<username>\\S+)-m\\s*(?<message>.+)\\s*"),
     propose       ("\\s*(?i)ask\\s*marriage\\s*-u\\s*(?<username>\\S)-r\\s*(?<ring>.+)"),
     sendGift      ("\\s*(?i)gift\\s*-u\\s*(?<username>\\S+)-i\\s*(?<item>\\S+)-a\\s*(?<amount>.+)\\s*"),
-
+    trade         ("\\s*(?i)start\\s*trade\\s*"),
                                                         //  Date Time weather
     showTomorrowWeather("\\s*(?i)weather\\s*forecast\\s*"),
     showTime      ("\\s*(?i)time\\s*"),

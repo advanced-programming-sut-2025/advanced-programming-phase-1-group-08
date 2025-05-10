@@ -1,6 +1,11 @@
 package model.Enum.ItemType;
 
+import model.Enum.AllPlants.CropsType;
+
 import java.util.List;
+
+import static model.Color_Eraser.RED;
+import static model.Color_Eraser.RESET;
 
 public enum MarketItemType {
     JojaCola("Joja_Cola", List.of(MarketType.JojaMart) , Integer.MAX_VALUE , 0 ) {
@@ -618,5 +623,12 @@ public enum MarketItemType {
         PierreShopsLimit = getInitialPierreShopsLimit();
     }
 
+
+    public static MarketItemType fromDisplayName(String displayName) {
+        for (MarketItemType type : MarketItemType.values())
+            if (type.getName().equalsIgnoreCase(displayName))
+                return type;
+        throw new IllegalArgumentException(RED+"wrong name!"+RESET);
+    }
 
 }

@@ -1,11 +1,18 @@
 package model;
 
 
+import model.Enum.AllPlants.CropsType;
+import model.Enum.AllPlants.ForagingCropsType;
+import model.Enum.AllPlants.TreesProductType;
+import model.Enum.ItemType.MarketItemType;
 import model.Enum.Menu;
 import model.Enum.WeatherTime.Weather;
 import model.MapThings.Tile;
 import model.Places.Farm;
 import model.Places.Market;
+import model.Plants.AllCrops;
+import model.Plants.ForagingCrops;
+import model.Plants.TreesProdct;
 import model.SaveData.PasswordHashUtil;
 
 import java.util.*;
@@ -67,4 +74,49 @@ public class App {
         model.SaveData.UserDataBase.addUser(newUser);
 
     }
+
+    public static Items AllFromDisplayNames (String name) {
+        Items items = null;
+        try {
+            items = new AllCrops(CropsType.fromDisplayName(name));
+            return items;
+        } catch (Exception e) {
+            try {
+                items = new ForagingCrops(ForagingCropsType.fromDisplayName(name));
+                return items;
+            } catch (Exception ex) {
+                try {
+                    items = new TreesProdct(TreesProductType.fromDisplayName(name));
+                    return items;
+                } catch (Exception exe) {
+                    try {
+                        items = new MarketItem(MarketItemType.fromDisplayName(name));
+                        return items;
+                    }
+                    catch (Exception exception) {
+                        return null;
+                    }
+                }
+            }
+        }
+    }
 }
+
+
+//TreesProductType type;
+//
+//        try {
+//type = TreesProductType.fromDisplayName(name);
+//            return new Result(true, TreesProductType.getInformation(type));
+//
+//        } catch (Exception e) {
+//
+//CropsType cropType;
+//            try {
+//cropType = CropsType.fromDisplayName(name);
+//                return new Result(true, CropsType.getInformation(cropType));
+//
+//        } catch (Exception e1) {
+//        return new Result(false, RED+"sorry, name is invalid!"+RESET);
+//            }
+//                    }

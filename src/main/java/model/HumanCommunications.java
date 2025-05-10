@@ -446,7 +446,7 @@ public class HumanCommunications {
             assert type != null;
             if (type.equals("MarketItemType")) {
                 if (entry instanceof MarketItem) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         IHaveThat = true;
                         myInventory.Items.put(entry.getKey(), entry.getValue() - amount);
                         if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
@@ -456,7 +456,7 @@ public class HumanCommunications {
             }
             else if (type.equals("FishType")) {
                 if (entry instanceof Fish) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         IHaveThat = true;
                         myInventory.Items.put(entry.getKey(), entry.getValue() - amount);
                         if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
@@ -466,7 +466,7 @@ public class HumanCommunications {
             }
             else if (type.equals("AnimalProductType")) {
                 if (entry instanceof Animalproduct) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         IHaveThat = true;
                         myInventory.Items.put(entry.getKey(), entry.getValue() - amount);
                         if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
@@ -484,7 +484,7 @@ public class HumanCommunications {
         for (Map.Entry <Items , Integer> entry : myInventory.Items.entrySet() ) {
             if (type.equals("MarketItemType")) {
                 if (entry instanceof MarketItem) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         otherInventory.Items.put(entry.getKey(), entry.getValue() + amount);
                         return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
                     }
@@ -492,7 +492,7 @@ public class HumanCommunications {
             }
             else if (type.equals("FishType")) {
                 if (entry instanceof Fish) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         otherInventory.Items.put(entry.getKey(), entry.getValue() + amount);
                         return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
                     }
@@ -500,7 +500,7 @@ public class HumanCommunications {
             }
             else if (type.equals("AnimalProductType")) {
                 if (entry instanceof Animalproduct) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         otherInventory.Items.put(entry.getKey(), entry.getValue() + amount);
                         return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
                     }
@@ -511,8 +511,6 @@ public class HumanCommunications {
 
         otherInventory.Items.put(items, amount);
         return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
-
-        //TODO اگه ریزالت ترو بود مجبورش کن ریت کنه
     }
 
     // LEVEL TWO TASKS

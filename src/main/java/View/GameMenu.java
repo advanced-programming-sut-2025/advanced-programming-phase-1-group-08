@@ -1,6 +1,7 @@
 package View;
 
 import Controller.GameController;
+import Controller.TradeController;
 import model.Enum.Commands.GameMenuCommands;
 import model.Result;
 
@@ -40,11 +41,16 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.hug.getMather(input) != null)
             controller.hug(input);
 
-//        else if (GameMenuCommands.sendGift.getMather(input) != null)
-//            controller.sendGifts(input); // TODO
+        else if (GameMenuCommands.sendGift.getMather(input) != null)
+            controller.sendGifts(input);
+
+        else if (GameMenuCommands.trade.getMather(input) != null) {
+            TradeController tradeController = new TradeController();
+            tradeController.tradeStart();
+        }
 //
 //        else if (GameMenuCommands.propose.getMather(input) != null)
-//            controller.propose(input);
+//            controller.propose(input); //TODO
 
         else if (GameMenuCommands.giveFlower.getMather(input) != null)
             controller.giveFlowers(input);
