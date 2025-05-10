@@ -104,6 +104,7 @@ public class GiantProduct extends Items {
 
         setStage();
         this.todayFertilize = false;
+        isProtected = false;
         checkHaveProduct();
         if (checkForDeath())
             delete();

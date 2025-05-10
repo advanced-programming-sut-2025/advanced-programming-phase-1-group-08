@@ -1,7 +1,6 @@
 package model;
 
 import model.Enum.AllPlants.ForagingCropsType;
-import model.Enum.ItemType.MarketItem;
 import model.Plants.ForagingCrops;
 
 import java.util.*;
@@ -110,42 +109,42 @@ public class HumanCommunications {
         }
         return new Result(true, GREEN+"Successfully Displayed."+RESET);
     }
-    public Result trade(String type, String iGive, int iGiveAmount, String iGet, int iGetAmount) {
-        User me = currentPlayer;
-        User other;
-        if (player1.getUsername().equals(currentPlayer.getUsername()))
-            other = player2;
-        else
-            other = player1;
-
-        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Send Trade Offer to " + other.getNickname() + "!"+RESET);
-        }
-
-
-    } //TODO اگه بازیکن مورد نظر وجود نداشت پیغام مناسب چاپ بشه و اگه مقدار یا آیتم نامعتبر بودن ارور بده
-
-    // LEVEL ONE TASKS
-    public Result sendGifts(String username, String item, int amount) {
-        User other;
-        if (player1.getUsername().equals(currentPlayer.getUsername()))
-            other = player2;
-        else
-            other = player1;
-
-        Inventory myInventory = currentPlayer.getBackPack().inventory;
-        Inventory otherInventory = other.getBackPack().inventory;
-
-        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Send Gift to " + other.getNickname() + "!"+RESET);
-        }
-        if (getLevel() < 1) {
-
-            return new Result(false, RED+"You can't Send Gifts in your Current " + RED+"Friendship Level"+RESET + "."+RESET);
-        }
-
-        //TODO تو کوله پشتیت پیداش کن- برش دار- بده بهش- مجبورش کن ریت کنه
-    }
+//    public Result trade(String type, String iGive, int iGiveAmount, String iGet, int iGetAmount) {
+//        User me = currentPlayer;
+//        User other;
+//        if (player1.getUsername().equals(currentPlayer.getUsername()))
+//            other = player2;
+//        else
+//            other = player1;
+//
+//        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
+//            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Send Trade Offer to " + other.getNickname() + "!"+RESET);
+//        }
+//
+//
+//    } //TODO اگه بازیکن مورد نظر وجود نداشت پیغام مناسب چاپ بشه و اگه مقدار یا آیتم نامعتبر بودن ارور بده
+//
+//    // LEVEL ONE TASKS
+//    public Result sendGifts(String username, String item, int amount) {
+//        User other;
+//        if (player1.getUsername().equals(currentPlayer.getUsername()))
+//            other = player2;
+//        else
+//            other = player1;
+//
+//        Inventory myInventory = currentPlayer.getBackPack().inventory;
+//        Inventory otherInventory = other.getBackPack().inventory;
+//
+//        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
+//            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Send Gift to " + other.getNickname() + "!"+RESET);
+//        }
+//        if (getLevel() < 1) {
+//
+//            return new Result(false, RED+"You can't Send Gifts in your Current " + RED+"Friendship Level"+RESET + "."+RESET);
+//        }
+//
+//        //TODO تو کوله پشتیت پیداش کن- برش دار- بده بهش- مجبورش کن ریت کنه
+//    }
 
     // LEVEL TWO TASKS
     public Result Hug() {
@@ -237,16 +236,16 @@ public class HumanCommunications {
             return new Result(false, RED+"You Can't Propose in your Current Friendship Level."+RESET);
 
         boolean IHaveRing = false;
-        for (Map.Entry <Items , Integer> entry : myInventory.Items.entrySet() ) {
-            if (entry instanceof ?????) {
-                if (((????????) entry).getType().equals(MarketItem.WeddingRing)) {
-                    IHaveRing = true;
-                    myInventory.Items.put(entry.getKey(), entry.getValue() - 1);
-                    if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
-                    break;
-                }
-            }
-        }
+//        for (Map.Entry <Items , Integer> entry : myInventory.Items.entrySet() ) {
+//            if (entry instanceof ?????) {
+//                if (((????????) entry).getType().equals(MarketItem.WeddingRing)) {
+//                    IHaveRing = true;
+//                    myInventory.Items.put(entry.getKey(), entry.getValue() - 1);
+//                    if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
+//                    break;
+//                }
+//            }
+//        }
         if (!IHaveRing)
             return new Result(false, RED+"You Don't Have Ring to Propose!"+RESET);
 
@@ -269,14 +268,14 @@ public class HumanCommunications {
 
         Inventory otherInventory = other.getBackPack().inventory;
 
-        for (Map.Entry <Items , Integer> entry : otherInventory.Items.entrySet() ) {
-            if (entry instanceof MarketItem) {
-                if (((MarketItem)entry).getType().equals(MarketItem.WeddingRing)) {
-                    otherInventory.Items.put(entry.getKey(), entry.getValue() + 1);
-                    return new Result(false, "HAPPY MARRIAGE!");
-                }
-            }
-        }
+//        for (Map.Entry <Items , Integer> entry : otherInventory.Items.entrySet() ) {
+//            if (entry instanceof MarketItem) {
+//                if (((MarketItem)entry).getType().equals(MarketItem.WeddingRing)) {
+//                    otherInventory.Items.put(entry.getKey(), entry.getValue() + 1);
+//                    return new Result(false, "HAPPY MARRIAGE!");
+//                }
+//            }
+//        }
 
 
         //todo خط پایینو ادیت کن
@@ -284,7 +283,7 @@ public class HumanCommunications {
         return new Result(true, GREEN+"You Gave Dandelions to " + other.getNickname()+RESET);
 
 
-        FriendshipLevel = 4;
+        //FriendshipLevel = 4;
         //TODO زمین ها و پولهاشون مال هردو میشه
 
 

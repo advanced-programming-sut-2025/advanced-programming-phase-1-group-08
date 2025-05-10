@@ -140,6 +140,7 @@ public class Tree extends Items {
 
         setStage();
         setHaveFruit();
+        isProtected = false;
         this.fertilize = false;
         if (checkForDeath())
             delete();

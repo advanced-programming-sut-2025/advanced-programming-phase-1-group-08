@@ -32,4 +32,9 @@ public class Shear extends Tools {
     public static int getRemindInshop() {
         return remindInShop;
     }
+
+    @Override
+    public int healthCost() { // TODO
+        return 0;
+    }
 }

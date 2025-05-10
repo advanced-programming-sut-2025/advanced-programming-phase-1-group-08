@@ -10,4 +10,9 @@ public class Axe extends Tools {
     public AxeType axeType=AxeType.primaryAxe;
 
     public void use (){}
+
+    @Override
+    public int healthCost() { // TODO
+        return 0;
+    }
 }

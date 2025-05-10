@@ -33,7 +33,7 @@ public class ForagingSeeds extends Items {
         haveProduct = false;
         todayFertilize = false;
     }
-    public ForagingSeeds(ForagingSeedsType type, DateHour Date) {
+    public ForagingSeeds(ForagingSeedsType type, DateHour Date) { // TODO  باید بالایی کال بشه قبل کاشتن
 
         stage = 1;
         numFertilize = 0;
@@ -167,6 +167,7 @@ public class ForagingSeeds extends Items {
 
         setStage();
         todayFertilize = false;
+        isProtected = false;
         checkHaveProduct();
         if (checkForDeath())
             delete();
