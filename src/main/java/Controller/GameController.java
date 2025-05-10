@@ -1899,6 +1899,36 @@ public class GameController {
         Result result = f.Hug();
         System.out.println(result);
     }
+
+    public void sendGifts (String input) {
+        String username = GameMenuCommands.sendGift.getMather(input).group("username");
+        String item = GameMenuCommands.sendGift.getMather(input).group("item");
+        int amount = Integer.parseInt(GameMenuCommands.sendGift.getMather(input).group("amount"));
+        if (username == null || item == null) {
+            System.out.println("Invalid Command!");
+            return;
+        }
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Send Gifts to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+
+
+        Result result = f.sendGifts(username, item, amount);
+        System.out.println(result);
+        if (result.IsSuccess())
+            new MessageHandling(currentPlayer, findUserByUsername(username), currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!");
+    }
+
     public void giveFlowers (String input) {
         String username = GameMenuCommands.giveFlower.getMather(input).group("username");
         if (!players.contains(findUserByUsername(username))) {
@@ -1952,6 +1982,11 @@ public class GameController {
             user.setMax_point(user.getPoint());
         }
     }
+
+
+
+
+
 
 
     public void passedOfTime (int day, int hour) {
@@ -2400,6 +2435,7 @@ public class GameController {
         ((Walkable) tile.getGameObject()).setGrassOrFiber("Plowed");
         return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
     }
+
     private Result useWateringCan (int dir) {
 
         Tile tile = getTileByDir(dir);
@@ -2415,6 +2451,7 @@ public class GameController {
         else
             return new Result(false, RED+"This place is bone dry.\uD83C\uDF35"+RESET);
     }
+
     private Result useScythe (int dir) {
 
 
@@ -2459,43 +2496,6 @@ public class GameController {
 
             advanceItem(new ForagingCrops(((ForagingCrops) object).getType()), 1);
 
-        Result result = f.sendGifts(username, item, amount);
-        System.out.println(result);
-        if (result.IsSuccess())
-            new MessageHandling(currentPlayer, findUserByUsername(username), currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!");
-    }
-    public void giveFlowers (String input) {
-        String username = GameMenuCommands.giveFlower.getMather(input).group("username");
-        if (!players.contains(findUserByUsername(username))) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
-            return;
-        }
-        if (username.equals(currentPlayer.getUsername())) {
-            System.out.println("You can't give Flower to " + RED+"Yourself"+RESET + "!");
-            return;
-        }
-        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
-        if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
-            return;
-        }
-        Result result = f.buyFlowers();
-        System.out.println(result);
-    }
-    public void propose (String input) {
-        String username = GameMenuCommands.propose.getMather(input).group("username");
-        if (!players.contains(findUserByUsername(username))) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
-            return;
-        }
-        if (username.equals(currentPlayer.getUsername())) {
-            System.out.println("You can't Propose to " + RED+"Yourself"+RESET + "!");
-            return;
-        }
-        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
-        if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
-            return;
         }
         if (object instanceof ForagingSeeds) {
             if (((ForagingSeeds) object).isHaveProduct()) {
@@ -2540,13 +2540,16 @@ public class GameController {
         return new Result(true, BLUE +"Time : "+RESET
                 + currentDate.getHour()+ ":00");
     }
+
     public Result showDate () {
         return new Result(true, BLUE+"Date : "+RED+currentDate.getYear()+RESET+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
     }
+
     public Result showSeason   () {
 
         return new Result(true, currentDate.getNameSeason());
     }
+
     public Result showWeather  (boolean isToday) {
 
         if (isToday)
@@ -2554,6 +2557,7 @@ public class GameController {
         else
             return new Result(true, tomorrowWeather.getDisplayName());
     }
+
     public Result setWeather   (String type) {
 
         Weather weather;
@@ -2589,14 +2593,17 @@ public class GameController {
         } else
             return new Result(false, "Your energy level at this moment is this amount.");
     }
+
     public Result showDateTime () {
         return new Result(true, BLUE+"Time : "+RED+ currentDate.getHour()+ ":00" +
                 BLUE+"\nData : "+RED+currentDate.getYear()+RESET+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
     }
+
     public Result showDayOfWeek() {
         return new Result(true, BLUE+"Day of Week : "+RESET
                 + currentDate.getDayOfTheWeek());
     }
+
     public Result increaseHour (String hour) {
 
         if (hour.charAt(0) == '-')
@@ -2610,6 +2617,7 @@ public class GameController {
         passedOfTime(0, amount);
         return new Result(true, BLUE+"Time change to : "+GREEN+ currentDate.getHour()+":00"+RESET);
     }
+
     public Result increaseDate (String date) {
 
         if (date.charAt(0) == '-')
@@ -2623,6 +2631,7 @@ public class GameController {
         passedOfTime(amount, 0);
         return new Result(true, BLUE+"Date change to : "+RED+currentDate.getYear()+RESET+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
     }
+
     public Result EnergyUnlimited () {
 
         currentPlayer.setHealthUnlimited();
@@ -2650,6 +2659,7 @@ public class GameController {
             }
         }
     }
+
     public Result buildGreenHouse () {
 
         for (Map.Entry <Items,Integer> entry: currentPlayer.getBackPack().inventory.Items.entrySet()) // این خیلی کیریه
@@ -2672,6 +2682,7 @@ public class GameController {
 
         return new Result(true, BLUE+"The greenhouse has been built! \uD83C\uDF31"+RESET);
     }
+
     public Result useTools (String direction) {
 
         if (!currentPlayer.isHealthUnlimited())
@@ -2684,6 +2695,7 @@ public class GameController {
 
         return null; // TODO
     }
+
     public Result planting (String name, String direction) {
 
         if (!checkDirection(direction))
@@ -2702,6 +2714,7 @@ public class GameController {
         return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
         }
     }
+
     public Result WateringPlant (String direction) {
 
         if (!checkDirection(direction))
@@ -2745,6 +2758,7 @@ public class GameController {
 
         return new Result(false, RED+"No plant in here!"+RESET);
     }
+
     public Result thor (String x, String y) {
 
         int x1 = Integer.parseInt(x);
@@ -2756,6 +2770,7 @@ public class GameController {
         lightningStrike(getTileByCoordinates(x1, y1));
         return new Result(true, BLUE+"A lightning bolt hits!"+RESET);
     }
+
     public Result info (String name) {
 
         TreeType treeType;
@@ -2774,6 +2789,7 @@ public class GameController {
             }
         }
     }
+
     public Result howMuchWater () {
 
         Inventory inventory = currentPlayer.getBackPack().inventory;
@@ -2785,6 +2801,7 @@ public class GameController {
 
         return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
     }
+
     public Result showPlant (String xNumber, String yNumber) {
 
         int x = Integer.parseInt(xNumber);
@@ -2805,6 +2822,7 @@ public class GameController {
         return new Result(false, RED+"That tile don't have plant!"+RESET);
 
     }
+
     public Result fertilize (String fertilizeType, String direction) {
 
         if (!checkDirection(direction))
