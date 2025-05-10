@@ -43,6 +43,7 @@ public class GameController {
         }
         return false;
     }
+
     private boolean checkDirection (String dir) {
 
         try {
@@ -1469,6 +1470,10 @@ public class GameController {
     }
 
     private Result placeBomb(Tile tile , String name , Items items) {
+        if (currentPlayer.getFarm().isInHome(currentPlayer.getPositionX(), currentPlayer.getPositionY())) {
+            return new Result(false , "you can't place Bomb in your Home because it is dangerous");
+        }
+
         Inventory inventory = currentPlayer.getBackPack().inventory;
         int domain=0;
         CraftType Bomb=null;
@@ -1523,9 +1528,10 @@ public class GameController {
 
     private Result placeScarecrow(Tile tile , String name, Items items) {
         Inventory inventory = currentPlayer.getBackPack().inventory;
-        if (!(tile.getGameObject() instanceof Walkable) || ! ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk")) {
-            return new Result(false , "you can't place Scarecrow on this coordinate");
+        if (currentPlayer.getFarm().isInHome(currentPlayer.getPositionX(), currentPlayer.getPositionY())) {
+            return new Result(false , "you can't place "+name+" in your Home because it is not for this place");
         }
+
         if (name.equals("Scarecrow")) {
             tile.setGameObject(items);
             inventory.Items.compute(items , (k,v) -> v-1);
@@ -1539,6 +1545,37 @@ public class GameController {
             return new Result(true , "Deluxe Scarecrow successfully placed");
         }
     }
+
+
+
+    private Result placeOther(Items items , Tile tile) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+
+        if (items instanceof CraftingItem) {
+            if (((CraftingItem) items).getCraftType().equals(CraftType.BeeHouse)) {
+
+                if (currentPlayer.getFarm().isInHome(tile.getX(), tile.getY())) {
+                    return new Result(false , "you should place Bee House in Farm!")
+                }
+                tile.setGameObject(items);
+                inventory.Items.compute(items , (k,v) -> v-1);
+                if (inventory.Items.get(items) == 0) {
+                    inventory.Items.remove(items);
+                }
+                return new Result(true , "Item placed Successfully");
+            }
+
+            tile.setGameObject(items);
+            inventory.Items.compute(items , (k,v) -> v-1);
+            if (inventory.Items.get(items) == 0) {
+                inventory.Items.remove(items);
+            }
+            return new Result(true , "Item placed Successfully");
+
+        }
+    }
+
+
 
     public Result placeItem(String name, int direction) {
         Inventory inventory = currentPlayer.getBackPack().inventory;
@@ -1573,9 +1610,7 @@ public class GameController {
         if (tile.getGameObject() instanceof Walkable && !((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk")) {
             return new Result(false , "You can't place Item on this Tile");
         }
-        if (currentPlayer.getFarm().isInHome(currentPlayer.getPositionX(), currentPlayer.getPositionY())) {
-            return new Result(false , "you can't place Item in your Home because it could be dangerous");
-        }
+
 
         if (name.equals("Mystic Tree Seed")) {
             //TODO
@@ -1599,13 +1634,95 @@ public class GameController {
             case "Scarecrow","Deluxe Scarecrow" -> {
                 return placeScarecrow(tile, name, items);
             }
+            case "Furnace","Charcoal Klin","Bee House","Cheese Press","Keg","Loom","Mayonnaise Machine","Oil Maker","Preserves Jar","Dehydrator" ->{
+                return placeOther(items, tile);
+            }
 
         }
         return new Result(false , "Something went wrong");
     }
 
+    private CraftingItem isNeighborWithCrafting(String name) {
+        int [] dirx={0,0,1,1,1,-1,-1,-1};
+        int [] diry={1,-1,0,1,-1,0,1,-1};
+
+        for (int x = currentPlayer.getPositionX(); x <currentPlayer.getPositionX()+ dirx.length; x++) {
+            for (int y=currentPlayer.getPositionY() ; y< currentPlayer.getPositionY()+ diry.length; y++) {
+                Tile tile=getTileByCoordinates(x,y);
+                if (tile == null) {
+                    continue;
+                }
+                if (tile.getGameObject() instanceof CraftingItem) {
+                    if (((CraftingItem) tile.getGameObject()).getCraftType().getName().equals(name)) {
+                        return (CraftingItem) tile.getGameObject();
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
 
+
+    public Result ArtisanUse(String artisanName , String first , String second) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        String newArtistName=artisanName.replace('_',' ');
+        CraftingItem craftingItem=isNeighborWithCrafting(newArtistName.trim());
+
+        if (craftingItem==null) {
+            return new Result(false , "you can't use this Crafting because you are not close to it");
+        }
+
+
+        if (second !=null) {
+            second=second.trim();
+        }
+        CraftType craftType=null;
+
+        for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof CraftingItem) {
+                if (((CraftingItem) entry.getKey()).getCraftType().getName().equals(newArtistName)) {
+                    craftType=((CraftingItem) entry.getKey()).getCraftType();
+                }
+            }
+        }
+        if (craftType==null) {
+            return new Result(false , "you don't have Machine for craft this Item");
+        }
+        for (ArtisanType artisanType : ArtisanType.values()) {
+            if (artisanType.getCraftType().equals(craftType)) {
+
+                if (artisanType.checkIngredient(first.trim(), second)) {
+                    artisanType.creatArtesian(first.trim(), craftingItem);
+                    return new Result(true , "you use "+newArtistName+" successfully");
+                }
+            }
+        }
+        return new Result(false , "Not enough ingredient for use");
+
+    }
+
+
+    public Result ArtisanGetProduct(String name) {
+        int [] dirx={0,0,1,1,1,-1,-1,-1};
+        int [] diry={1,-1,0,1,-1,0,1,-1};
+
+        for (int x =currentPlayer.getPositionX() ; x< currentPlayer.getPositionX()+ dirx.length; x++) {
+            for (int y=currentPlayer.getPositionY() ; y<currentPlayer.getPositionY()+ diry.length; y++) {
+                Tile tile=getTileByCoordinates(x,y);
+                if (tile == null) {
+                    continue;
+                }
+                if (tile.getGameObject() instanceof CraftingItem) {
+                    HashMap<Items , DateHour> temp=((CraftingItem) tile.getGameObject()).getBuffer();
+
+                    for (Map.Entry<Items , DateHour> entry : temp.entrySet()) {
+                        if (entry.getKey().)
+                    }
+                }
+            }
+        }
+    }
 
 
     public void startNewGame (String input) {

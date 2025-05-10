@@ -114,4 +114,8 @@ public enum CropsType {
                 return type;
         throw new IllegalArgumentException(RED+"wrong name!"+RESET);
     }
+
+    public boolean isVegetable () {
+        return isVegetable;
+    }
 }

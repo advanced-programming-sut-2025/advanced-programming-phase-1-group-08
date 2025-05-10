@@ -8,6 +8,7 @@ import model.ToolsPackage.BackPack;
 import model.ToolsPackage.Tools;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User {
 
@@ -33,7 +34,7 @@ public class User {
     private User Spouse;  // شخصی که باهاش ازدواج کرده
     private boolean healthUnlimited;
 
-    public ArrayList<ArtisanProduct> buffer=new ArrayList<>();//برای برداشت محصولات فرآوری شده استفاده میشود
+    public HashMap<Items , DateHour> buffer=new HashMap<>();//برای برداشت محصولات فرآوری شده استفاده میشود
 
     private final BackPack backPack = new BackPack();
     public Tools currentTool;
