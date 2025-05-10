@@ -2,11 +2,13 @@ package model.Enum;
 
 import model.*;
 import model.Animall.Animalproduct;
+import model.Animall.Fish;
 import model.Enum.WeatherTime.Weather;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.ItemType.*;
 import model.MapThings.Wood;
 import model.Plants.AllCrops;
+import model.Plants.MixedSeeds;
 
 import java.awt.image.ImageProducer;
 import java.util.HashMap;
@@ -15,7 +17,8 @@ import java.util.Map;
 
 public enum NPC {
 
-    Sebastian("Sebastian") {
+    Sebastian("Sebastian", Map.of(new BarsAndOres(BarsAndOreType.IronOre), 50,
+            new BasicRock(), 150 )) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -60,16 +63,18 @@ public enum NPC {
                     ((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.sheeps_Wool))) {
                 return true;
             }
-//            else if (items instanceof Animalproduct &&
+//            else if (items instanceof Animalproduct && TODO
 //                    ((((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.rabbits_Wool))||
 //                            ((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.sheeps_Wool))) {
 //                return true;
 //            }
             else return items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Pizza);
         }
-    },
+    }, // TODO
 
-    Abigail("Abigail") {
+    Abigail("Abigail",  Map.of(new BarsAndOres(BarsAndOreType.GoldBar), 1,
+            new AllCrops(CropsType.Pumpkin), 1,
+            new AllCrops(CropsType.Wheat),   50)) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -118,7 +123,9 @@ public enum NPC {
         }
     },
 
-    Harvey("Harvey") {
+    Harvey("Harvey", Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
+            new AllCrops(CropsType.Kale), 12,
+            new ArtisanProduct(ArtisanType.Wine),   1)) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -157,17 +164,19 @@ public enum NPC {
         @Override
         public boolean isItFavorite (Items items) {
 
-            if (items instanceof )) // TODO
+            if (items instanceof ArtisanProduct && ((ArtisanProduct) items).getType().equals(ArtisanType.Pickles))
                 return true;
 
-            else if (items instanceof MarketItem ) {
+            else if (items instanceof ArtisanProduct && ((ArtisanProduct) items).getType().equals(ArtisanType.Wine))
                 return true;
-            }
+
             else return items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Coffee);
         }
     },
 
-    Lia("Lia") {
+    Lia("Lia",  Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
+            new Wood(), 200,
+            new BasicRock(),   200)) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -212,11 +221,13 @@ public enum NPC {
             else if (items instanceof AllCrops && ((AllCrops) items).getType().equals(CropsType.Grape))
                 return true;
 
-            else return ;
+            else return items instanceof ArtisanProduct && ((ArtisanProduct) items).getType().equals(ArtisanType.Wine);
         }
     },
 
-    Robin("Robin") {
+    Robin("Robin",  Map.of(new BarsAndOres(BarsAndOreType.IronBar), 10,
+            new Wood(), 80,
+            new MixedSeeds(),   10)) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -266,14 +277,21 @@ public enum NPC {
     };
 
     private final String name;
+    private final Map<Items, Integer> Request;
 
 
     public abstract boolean isItFavorite (Items items);
     public abstract String getDialogue(int level, Weather weather);
 
 
-    NPC (String name) {
+    NPC (String name, Map<Items, Integer> request) {
         this.name = name;
+        Request = request;
+    }
+
+    public String getName() {
+
+        return name;
     }
 
 }
