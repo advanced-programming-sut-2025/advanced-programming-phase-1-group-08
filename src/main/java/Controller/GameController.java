@@ -1932,6 +1932,8 @@ public class GameController {
 
         Result result = f.sendGifts(username, item, amount);
         System.out.println(result);
+        if (result.IsSuccess())
+            new MessageHandling(currentPlayer, findUserByUsername(username), currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!");
     }
     public void giveFlowers (String input) {
         String username = GameMenuCommands.giveFlower.getMather(input).group("username");
