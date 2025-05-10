@@ -2,6 +2,10 @@ package model.Plants;
 
 import model.Enum.AllPlants.ForagingCropsType;
 import model.Items;
+import model.MapThings.Tile;
+import model.MapThings.Walkable;
+
+import static model.App.bigMap;
 
 public class ForagingCrops extends Items {
 
@@ -13,5 +17,12 @@ public class ForagingCrops extends Items {
 
     public ForagingCropsType getType() {
         return type;
+    }
+
+    public void delete () {
+
+        for (Tile tile : bigMap)
+            if (tile.getGameObject().equals(this))
+                tile.setGameObject(new Walkable());
     }
 }
