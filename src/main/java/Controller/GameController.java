@@ -170,7 +170,6 @@ public class GameController {
     }   ///        الان اینونتوری ساخته میشه از همه چی توش گذاشتی همون اول ؟
 
 
-
     public void createInitialMine(int id, int x, int y){
         Farm farm = currentPlayer.getFarm();
         if (id == 1) {
@@ -2055,9 +2054,31 @@ public class GameController {
     private void checkForPlantProduct () {
 
     }
-    private Result plantTree () {
+    private Result plantTree (TreeType type, int dir) {
 
 
+        Inventory inventory=currentPlayer.getBackPack().inventory; // TODO
+
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
+
+            if (entry instanceof ForagingSeeds && ((ForagingSeeds) entry).getType().equals(type)) {
+                if (inventory.Items.get(entry) > 0) {
+
+                    inventory.Items.put(entry.getKey(), entry.getValue() - 1);
+                    Tile tile = getTileByDir(dir);
+
+                    if (tile.getGameObject() instanceof Walkable &&
+                            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) {
+
+                        tile.setGameObject(new ForagingSeeds(type, currentDate));
+
+                    } else
+                        return new Result(false, RED+"First, you must plow the tile."+RESET);
+                }
+                else
+                    return new Result(false, RED + "You don't have this seed!" + RESET);
+            }
+        return new Result(false, RED + "You don't have this seed!" + RESET);
     }
 
 
@@ -2076,9 +2097,11 @@ public class GameController {
                     inventory.Items.put(entry.getKey(), entry.getValue() - 1);
                     Tile tile = getTileByDir(dir);
 
-                    if (plowedTile.contains(tile)) {
+                    if (tile.getGameObject() instanceof Walkable &&
+                            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) {
+
                         tile.setGameObject(new ForagingSeeds(type, currentDate));
-                        plowedTile.remove(tile);
+
                     } else
                         return new Result(false, RED+"First, you must plow the tile."+RESET);
 
@@ -2100,12 +2123,13 @@ public class GameController {
                     inventory.Items.put(entry.getKey(), entry.getValue() - 1);
                     Tile tile = getTileByDir(dir);
 
-                    if (plowedTile.contains(tile)) {
+                    if (tile.getGameObject() instanceof Walkable &&
+                            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) {
+
                         tile.setGameObject(new ForagingSeeds(type, currentDate));
-                        plowedTile.remove(tile);
+
                     } else
                         return new Result(false, RED+"First, you must plow the tile."+RESET);
-
                 }
                 else
                     return new Result(false, RED + "You don't have this seed!" + RESET);
@@ -2176,7 +2200,8 @@ public class GameController {
     private void createRandomForaging () {
 
         for (Tile tile : bigMap) {
-            if (plowedTile.contains(tile) && tile.getGameObject() instanceof Walkable && Math.random() <= 0.01)
+            if (tile.getGameObject() instanceof Walkable &&
+                    ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed") && Math.random() <= 0.01)
                 if (Math.random() <= 0.5) {
 
                     List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
@@ -2249,14 +2274,13 @@ public class GameController {
 
         Tile tile = getTileByDir(dir);
 
-        if (plowedTile.contains(tile))
+        if (tile.getGameObject() instanceof Walkable &&
+                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed"))
             return new Result(false, RED+"This tile is already plowed!"+RESET);
         if (!(tile.getGameObject() instanceof Walkable))
             return new Result(false, RED+"You can't plow this tile!"+RESET);
-        if (!(currentPlayer.currentTool instanceof Hoe))
-            return null;
 
-        plowedTile.add(tile);
+        ((Walkable) tile.getGameObject()).setGrassOrFiber("Plowed");
         return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
     }
     private Result useWateringCan (int dir) {
@@ -2287,12 +2311,112 @@ public class GameController {
             ((Walkable) object).setGrassOrFiber("Walk");
         }
 
-        if (object instanceof Tree)
+        if (object instanceof Tree) {
 
+            if (((Tree) object).isHaveFruit()) {
 
+                TreeType type = ((Tree) object).getType();
 
+                if (currentPlayer.getBackPack().getType().getRemindCapacity() >
+                        currentPlayer.getBackPack().inventory.Items.size() ||
+                        checkAmountProductAvailable(new Tree(type, currentDate), 0))
+                    return new Result(false, RED+"Inventory is full"+RESET);
+
+                advanceItem(new TreesProdct(type.getProductType()), type.getHarvestYield());
+
+                ((Tree) object).setLastFruit(currentDate);
+                return new Result(true, BLUE + "You got " + type.getHarvestYield()
+                        + type.getProductType().getDisplayName() + RESET);
+            } else
+                return new Result(true, RED + "This tree doesn't have fruit" + RESET);
+        }
+        if (object instanceof ForagingCrops) {
+
+            ForagingCropsType type = ((ForagingCrops) object).getType();
+
+            if (currentPlayer.getBackPack().getType().getRemindCapacity() >
+                    currentPlayer.getBackPack().inventory.Items.size() ||
+                    checkAmountProductAvailable(new ForagingCrops(type), 0))
+
+                return new Result(false, RED+"Inventory is full"+RESET);
+
+            advanceItem(new ForagingCrops(((ForagingCrops) object).getType()), 1);
+
+        Result result = f.sendGifts(username, item, amount);
+        System.out.println(result);
+        if (result.IsSuccess())
+            new MessageHandling(currentPlayer, findUserByUsername(username), currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!");
     }
+    public void giveFlowers (String input) {
+        String username = GameMenuCommands.giveFlower.getMather(input).group("username");
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't give Flower to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+        Result result = f.buyFlowers();
+        System.out.println(result);
+    }
+    public void propose (String input) {
+        String username = GameMenuCommands.propose.getMather(input).group("username");
+        if (!players.contains(findUserByUsername(username))) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Propose to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, findUserByUsername(username));
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+        if (object instanceof ForagingSeeds) {
+            if (((ForagingSeeds) object).isHaveProduct()) {
 
+                ForagingSeedsType type = ((ForagingSeeds) object).getType();
+                if (currentPlayer.getBackPack().getType().getRemindCapacity() >
+                        currentPlayer.getBackPack().inventory.Items.size() ||
+                        checkAmountProductAvailable(new AllCrops(type.getProductType()), 0))
+                    return new Result(false, RED+"Inventory is full"+RESET);
+
+                advanceItem(new AllCrops(type.getProductType()), 1);
+                ((ForagingSeeds) object).harvest();
+
+                return new Result(true, BLUE + "You got 1 " + type.getProductType().getDisplayName() + RESET);
+            } else
+                return new Result(false, RED + "Still growing..." + RESET);
+        }
+        if (object instanceof GiantProduct) {
+            if (((GiantProduct) object).isHaveProduct()) {
+
+                ForagingSeedsType type = ((GiantProduct) object).getType();
+
+                if (currentPlayer.getBackPack().getType().getRemindCapacity() >
+                        currentPlayer.getBackPack().inventory.Items.size() ||
+                        checkAmountProductAvailable(new AllCrops(type.getProductType()), 0))
+
+                    return new Result(false, RED+"Inventory is full"+RESET);
+
+                advanceItem(new AllCrops(type.getProductType()), 10);
+                ((GiantProduct) object).harvest();
+
+                return new Result(true, BLUE + "You got 10 " + type.getProductType().getDisplayName() + RESET);
+            } else
+                return new Result(false, RED + "Still growing..." + RESET);
+        }
+
+        return new Result(false, RED+"There are no plant!"+RESET);
+    }
 
 
     public Result showTime () {
@@ -2587,6 +2711,6 @@ public class GameController {
 
         advanceItem(new MarketItem(type), -1);
         fertilizePlant(type, tile);
-        return new Result(true, BLUE+"The plant has been fertilized!✨"+RESET);
+        return new Result(true, BLUE+"The plant has been fertilized! ✨"+RESET);
     }
 }
