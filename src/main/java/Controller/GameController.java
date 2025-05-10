@@ -557,7 +557,7 @@ public class GameController {
         }
         for (User user : players) {
             if (user.getFarm().equals(farm)){
-                if (!user.getMarried().equals(currentPlayer) && !user.equals(currentPlayer)){
+                if (!user.getSpouse().equals(currentPlayer) && !user.equals(currentPlayer)){
                     return new Result(false,"you can't go to this farm");
                 }
             }
@@ -1717,6 +1717,7 @@ public class GameController {
     }
 
 
+//  کد آقاتون از اینجا شروع میشه. دست نزنید
     public Result ArtisanGetProduct(String name) {
         int [] dirx={0,0,1,1,1,-1,-1,-1};
         int [] diry={1,-1,0,1,-1,0,1,-1};
@@ -1836,6 +1837,15 @@ public class GameController {
                             if (m.getReceiver().equals(currentPlayer) && !m.isSeen()) {
                                 m.print();
                                 m.setSeen(true);
+
+                                //بخش ریت کردن هدیه ها
+                                if (m.getText().endsWith("Rate it out of 5!")) {
+                                    HumanCommunications f = getFriendship(currentPlayer, m.getSender());
+                                    while (true) {
+                                        assert f != null;
+                                        if (f.rateGifts().IsSuccess()) break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -1997,7 +2007,7 @@ public class GameController {
         }
     }
 
-
+// قسمت آقاتون اینجا تموم میشه
 
 
 

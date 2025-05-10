@@ -15,6 +15,8 @@ public class MessageHandling {
     public User getReceiver() {
         return receiver;
     }
+    public User getSender(){ return sender; }
+    public String getText() { return text; }
 
     public boolean isSeen() {
         return seen;
