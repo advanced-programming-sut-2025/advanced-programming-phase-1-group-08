@@ -3,7 +3,7 @@ package model.Enum.ItemType;
 public enum AnimalProductType {
 
     Egg("Egg" , 50),
-    bigEgg("Big Egg",95),
+    bigEgg("Large Egg",95),
 
     duckEgg("Duck Egg", 95),
     duckFeather("Duck Feather", 250),
@@ -14,10 +14,10 @@ public enum AnimalProductType {
     dinosaurEgg("Dinosaur Egg" , 350),
 
     milk("Milk" , 125),
-    bigMilk("Big Milk", 190),
+    bigMilk("Large Milk", 190),
 
-    goatMilk("Cow Milk" , 225),
-    bigGoatMilk("Big Cow Milk" , 345),
+    goatMilk("Goat Milk" , 225),
+    bigGoatMilk("Large Goat Milk" , 345),
 
     sheeps_Wool("Sheep's Wool" , 340),
 

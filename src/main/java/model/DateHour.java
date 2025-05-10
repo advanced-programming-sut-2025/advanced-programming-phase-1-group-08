@@ -157,4 +157,42 @@ public class DateHour implements Cloneable {
 
         return day;
     }
+
+    public static int getHourDiffrent(DateHour first) {
+        int firstSeason=0;
+        switch (first.getSeason()) {
+            case Spring -> {
+                firstSeason=1;
+            }
+            case Summer -> {
+                firstSeason=2;
+            }
+            case Fall -> {
+                firstSeason=3;
+            }
+            case Winter -> {
+                firstSeason=4;
+            }
+        }
+        int nowSeason =0;
+        switch (App.currentDate.getSeason()) {
+            case Spring -> {
+                nowSeason =1;
+            }
+            case Summer -> {
+                nowSeason =2;
+            }
+            case Fall -> {
+                nowSeason =3;
+            }
+            case Winter -> {
+                nowSeason =4;
+            }
+        }
+
+        int firstHour= first.year * 2688 + firstSeason * 672 + (first.getDate() -1)*24 + first.getHour();
+        int secondHour= App.currentDate.year * 2688 + nowSeason * 672 + (App.currentDate.getDate() -1 ) * 24 + App.currentDate.getHour();
+
+        return secondHour - firstHour;
+    }
 }

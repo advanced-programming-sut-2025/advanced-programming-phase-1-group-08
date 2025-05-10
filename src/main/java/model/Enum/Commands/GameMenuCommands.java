@@ -72,6 +72,8 @@ public enum GameMenuCommands {
     craftingRecipe("(?i)crafting\\s+show\\s+recipes\\s*"),
     craftingCraft("(?i)crafting\\s+craft\\s+(?<name>\\S.*)\\s*"),
     placeItem("place\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-d\\s+(?<direction>\\d+)\\s*"),
+    artisanUse("(?i)artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<first>\\S+)(?:\\s+(\\S+)\\s*)?"),
+    artisanGet("(?i)artisan\\s+get\\s+(?<name>\\S.*)\\s*"),
 
     ;
 
