@@ -1,51 +1,279 @@
 package model.Enum;
 
-import model.Items;
+import model.*;
+import model.Animall.Animalproduct;
+import model.Enum.WeatherTime.Weather;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.ItemType.*;
+import model.MapThings.Wood;
+import model.Plants.AllCrops;
+
+import java.awt.image.ImageProducer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public enum NPC {
 
-//    Sebastian("Sebastian", Map.of("greeting", List.of("Hello amigo.", "What do you have for me?"),
-//                                    "gift", List.of("Oh, Thank you.", "Thanks, but... Umm, I don't like these!"),
-//                                    "insult", List.of("I hate you!"),
-//                                    "else", List.of("What? I didn't unserstand!")), List.of(AnimalProductType.sheeps_Wool, CropsType.Pumpkin)),
-//
-//    Abigail("Abigail", /*List of favorites*/ , Map.of("greeting", List.of("Hello amigo.", "What do you have for me?"),
-//            "gift", List.of("Oh, Thank you.", "Thanks, but... Umm, I don't like these!"),
-//            "insult", List.of("I hate you!"),
-//            "else", List.of("What? I didn't unserstand!")), ),
-//
-//    Harvey("Harvey", /*List of favorites*/ , Map.of("greeting", List.of("Hello amigo.", "What do you have for me?"),
-//            "gift", List.of("Oh, Thank you.", "Thanks, but... Umm, I don't like these!"),
-//            "insult", List.of("I hate you!"),
-//            "else", List.of("What? I didn't unserstand!")), ),
-//
-//    Lia("Lia", /*List of favorites*/ , Map.of("greeting", List.of("Hello amigo.", "What do you have for me?"),
-//            "gift", List.of("Oh, Thank you.", "Thanks, but... Umm, I don't like these!"),
-//            "insult", List.of("I hate you!"),
-//            "else", List.of("What? I didn't unserstand!")), ),
-//
-//    Robin("Robin", /*List of favorites*/ , Map.of("greet", List.of("Hello amigo.", "What do you have for me?"),
-//            "gift", List.of("Oh, Thank you.", "Thanks, but... Umm, I don't like these!"),
-//            "insult", List.of("I hate you!"),
-//            "else", List.of("What? I didn't unserstand!")), );
-//
-//    private final String name;
-//    private final List<Items> favoriteItems;
-//    private final Map<String /*Quest*/, Boolean /*Done Or Not*/> Quests;
-//    private final Map<String, List<String>> dialogues;
-//
-//    NPC(String name, Map<String, List<String>> dialogues, List<Items> favoriteItems, Map<String, Boolean> quests) {
-//        this.name = name;
-//        this.favoriteItems = favoriteItems;
-//        this.dialogues = dialogues;
-//        Quests = quests;
-//    }
-//    public List<Items> getFavoriteItems() {
-//        return favoriteItems;
-//    }
+    Sebastian("Sebastian") {
+
+        @Override
+        public String getDialogue(int friendshipLevel, Weather weather) {
+
+            Map<Integer, Map<Weather, String>> dialogues = new HashMap<>();
+
+            dialogues.put(1, Map.of(
+                    Weather.Sunny, "Morning'! Perfect day for planting.",
+                    Weather.Rainy, "Rain's coming'... crops needed it.",
+                    Weather.Stormy, "Storm's wrecking' my fields!",
+                    Weather.Snowy, "Snow's covered everything'..."
+            ));
+
+            dialogues.put(0, Map.of(
+                    Weather.Sunny, "Morning'! Perfect day for planting.",
+                    Weather.Rainy, "Rain's coming'... crops needed it.",
+                    Weather.Stormy, "Storm's wrecking' my fields!",
+                    Weather.Snowy, "Snow's covered everything'..."
+            ));
+
+            dialogues.put(2, Map.of(
+                    Weather.Sunny, "Wanna help me plant these seeds?",
+                    Weather.Rainy, "Take this umbrella, don't get soaked!",
+                    Weather.Stormy, "Stay under the tree till it passes.",
+                    Weather.Snowy, "Need a shovel? Gotta clear the paths."
+            ));
+
+            dialogues.put(3, Map.of(
+                    Weather.Sunny, "Secret time: There's a hidden spring underground!",
+                    Weather.Rainy, "Come inside, I'll make ya herbal tea.",
+                    Weather.Stormy, "We'll ride out this storm together!",
+                    Weather.Snowy, "Take these gloves, keep your hands warm."
+            ));
+            return dialogues.get(friendshipLevel).get(weather);
+        }
+
+        @Override
+        public boolean isItFavorite (Items items) {
+
+            if (items instanceof Animalproduct &&
+                    ((((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.rabbits_Wool))||
+                    ((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.sheeps_Wool))) {
+                return true;
+            }
+//            else if (items instanceof Animalproduct &&
+//                    ((((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.rabbits_Wool))||
+//                            ((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.sheeps_Wool))) {
+//                return true;
+//            }
+            else return items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Pizza);
+        }
+    },
+
+    Abigail("Abigail") {
+
+        @Override
+        public String getDialogue(int friendshipLevel, Weather weather) {
+            Map<Integer, Map<Weather, String>> dialogues = new HashMap<>();
+
+            dialogues.put(0, Map.of(
+                    Weather.Sunny, "Hot out... make it quick.",
+                    Weather.Rainy, "Roof's leaking', but I keep working'.",
+                    Weather.Stormy, "Storm? Don't care.",
+                    Weather.Snowy, "Metal gets brittle in the cold."
+            ));
+
+            dialogues.put(1, Map.of(
+                    Weather.Sunny, "Hot out... make it quick.",
+                    Weather.Rainy, "Roof's leaking', but I keep working'.",
+                    Weather.Stormy, "Storm? Don't care.",
+                    Weather.Snowy, "Metal gets brittle in the cold."
+            ));
+
+            dialogues.put(2, Map.of(
+                    Weather.Sunny, "Try swinging this hammer.",
+                    Weather.Rainy, "Watch your step, floor's slippery.",
+                    Weather.Stormy, "Forged this blade for stormy nights.",
+                    Weather.Snowy, "Clear the snow from the doorway, will ya?"
+            ));
+
+            dialogues.put(3, Map.of(
+                    Weather.Sunny, "Made this sword special for you. Keep it quiet!",
+                    Weather.Rainy, "Get in here, spot by the forge's yours.",
+                    Weather.Stormy, "Not even lightning stops my work!",
+                    Weather.Snowy, "Wear these ironclad gloves. They're warm."
+            ));
+            return dialogues.get(friendshipLevel).get(weather);
+        }
+
+        @Override
+        public boolean isItFavorite (Items items) {
+
+            if (items instanceof BasicRock)
+                return true;
+
+            else if (items instanceof BarsAndOres && ((BarsAndOres) items).getType().equals(BarsAndOreType.IronOre)) {
+                return true;
+            }
+            else return items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Coffee);
+        }
+    },
+
+    Harvey("Harvey") {
+
+        @Override
+        public String getDialogue(int friendshipLevel, Weather weather) {
+            Map<Integer, Map<Weather, String>> dialogues = new HashMap<>();
+
+            dialogues.put(1, Map.of(
+                    Weather.Sunny, "That book? Not for beginners.",
+                    Weather.Rainy, "Rain washes away modern noise.",
+                    Weather.Stormy, "Storms shaped ancient civilizations.",
+                    Weather.Snowy, "Cold preserves history better..."
+            ));
+
+            dialogues.put(0, Map.of(
+                    Weather.Sunny, "That book? Not for beginners.",
+                    Weather.Rainy, "Rain washes away modern noise.",
+                    Weather.Stormy, "Storms shaped ancient civilizations.",
+                    Weather.Snowy, "Cold preserves history better..."
+            ));
+
+            dialogues.put(2, Map.of(
+                    Weather.Sunny, "Help me decipher these runes?",
+                    Weather.Rainy, "Ancient ink flows like this rain.",
+                    Weather.Stormy, "Legends say storms reveal secrets.",
+                    Weather.Snowy, "Snow hides ruins... and truths."
+            ));
+
+            dialogues.put(3, Map.of(
+                    Weather.Sunny, "The lost library's coordinates... trust me with them.",
+                    Weather.Rainy, "Share this fire, I'll share forbidden knowledge.",
+                    Weather.Stormy, "The storm's rage matches the old gods' wrath!",
+                    Weather.Snowy, "Take this map. It leads to frozen archives."
+            ));
+            return dialogues.get(friendshipLevel).get(weather);
+        }
+
+        @Override
+        public boolean isItFavorite (Items items) {
+
+            if (items instanceof )) // TODO
+                return true;
+
+            else if (items instanceof MarketItem ) {
+                return true;
+            }
+            else return items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Coffee);
+        }
+    },
+
+    Lia("Lia") {
+
+        @Override
+        public String getDialogue(int friendshipLevel, Weather weather) {
+            Map<Integer, Map<Weather, String>> dialogues = new HashMap<>();
+
+            dialogues.put(0, Map.of(
+                    Weather.Sunny, "Everything's rare and valuable!",
+                    Weather.Rainy, "Rain? Perfect time to buy!",
+                    Weather.Stormy, "Storm-proof goods here!",
+                    Weather.Snowy, "Furs? Best in the land!"
+            ));
+
+            dialogues.put(1, Map.of(
+                    Weather.Sunny, "Everything's rare and valuable!",
+                    Weather.Rainy, "Rain? Perfect time to buy!",
+                    Weather.Stormy, "Storm-proof goods here!",
+                    Weather.Snowy, "Furs? Best in the land!"
+            ));
+
+            dialogues.put(2, Map.of(
+                    Weather.Sunny, "Special discount... for now.",
+                    Weather.Rainy, "Buy this waterproof cloak!",
+                    Weather.Stormy, "Storm lanterns - half price!",
+                    Weather.Snowy, "Snowshoes? Last pair!"
+            ));
+
+            dialogues.put(3, Map.of(
+                    Weather.Sunny, "Take this master key. Opens any chest.",
+                    Weather.Rainy, "My private stash - pick what you want.",
+                    Weather.Stormy, "Wealth whispers in the thunder...",
+                    Weather.Snowy, "Diamond-grade ice pick. Yours."
+            ));
+            return dialogues.get(friendshipLevel).get(weather);
+        }
+
+        @Override
+        public boolean isItFavorite (Items items) {
+
+            if (items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Salad))
+                return true;
+
+            else if (items instanceof AllCrops && ((AllCrops) items).getType().equals(CropsType.Grape))
+                return true;
+
+            else return ;
+        }
+    },
+
+    Robin("Robin") {
+
+        @Override
+        public String getDialogue(int friendshipLevel, Weather weather) {
+            Map<Integer, Map<Weather, String>> dialogues = new HashMap<>();
+
+            dialogues.put(0, Map.of(
+                    Weather.Sunny, "The valley's quiet. Too quiet.",
+                    Weather.Rainy, "Rain hides ambush sounds.",
+                    Weather.Stormy, "Storm's fury matches mine!",
+                    Weather.Snowy, "Cold sharpens the blade."
+            ));
+
+            dialogues.put(1, Map.of(
+                    Weather.Sunny, "The valley's quiet. Too quiet.",
+                    Weather.Rainy, "Rain hides ambush sounds.",
+                    Weather.Stormy, "Storm's fury matches mine!",
+                    Weather.Snowy, "Cold sharpens the blade."
+            ));
+
+            dialogues.put(2, Map.of(
+                    Weather.Sunny, "Spar with me. Don't hold back.",
+                    Weather.Rainy, "Wet steel sings a death song.",
+                    Weather.Stormy, "Thunder drowns battle cries!",
+                    Weather.Snowy, "Snow reveals traitors' tracks."
+            ));
+
+            dialogues.put(3, Map.of(
+                    Weather.Sunny, "Take my ancestral blade. You're worthy.",
+                    Weather.Rainy, "Shelter here. I'll guard your sleep.",
+                    Weather.Stormy, "We'll charge through lightning together!",
+                    Weather.Snowy, "My war cloak. It's kept me alive."
+            ));
+            return dialogues.get(friendshipLevel).get(weather);
+        }
+
+        @Override
+        public boolean isItFavorite (Items items) {
+
+            if (items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Spaghetti))
+                return true;
+
+            else if (items instanceof Wood)
+                return true;
+
+            else return items instanceof BarsAndOres && ((BarsAndOres) items).getType().equals(BarsAndOreType.IronBar);
+        }
+    };
+
+    private final String name;
+
+
+    public abstract boolean isItFavorite (Items items);
+    public abstract String getDialogue(int level, Weather weather);
+
+
+    NPC (String name) {
+        this.name = name;
+    }
 
 }
