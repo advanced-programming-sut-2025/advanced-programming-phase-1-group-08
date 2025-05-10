@@ -552,13 +552,13 @@ public class GameController {
                 break;
             }
         }
-//        for (User user : players) {
-//            if (user.getFarm().equals(farm)){
-//                if (!user.getMarried().equals(currentPlayer) && !user.equals(currentPlayer)){
-//                    return new Result(false,"you can't go to this farm");
-//                }
-//            }
-//        }
+        for (User user : players) {
+            if (user.getFarm().equals(farm)){
+                if (!user.getMarried().equals(currentPlayer) && !user.equals(currentPlayer)){
+                    return new Result(false,"you can't go to this farm");
+                }
+            }
+        }
 
         if (tile.getGameObject() instanceof GreenHouse) {
             if (!((GreenHouse) tile.getGameObject()).isCreated()){
@@ -1480,19 +1480,141 @@ public class GameController {
 
     }
 
-//    public Result placeItem(String name, int direction) {
-//        Inventory inventory = currentPlayer.getBackPack().inventory;
-//        if (name.equals("Mystic Tree Seed")) {
-//            //TODO
-//        }
-//        if (name.equals("Grass Starter")){
-//           Items items=CraftingController.numberOfIngrediants(name);
-//           if (items == null) {
-//               return new Result(false , "Grass Starter not found");
-//           }
-//
-//        }
-//    }
+    private Result placeBomb(Tile tile , String name , Items items) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        int domain=0;
+        CraftType Bomb=null;
+
+        for (CraftType craftType:CraftType.values()) {
+            if (craftType.name().equals(name)) {
+                Bomb=craftType;
+                break;
+            }
+        }
+
+        assert Bomb != null;
+        if (Bomb.equals(CraftType.CherryBomb)) {
+            domain=3;
+        }
+        if (Bomb.equals(CraftType.Bomb)) {
+            domain=5;
+        }
+        if (Bomb.equals(CraftType.MegaBomb)) {
+            domain=7;
+        }
+
+        int x= tile.getX();
+        int y= tile.getY();
+
+        for (int i=x ; i < x + domain ; i++) {
+            for (int j=y ; j < y + domain ; j++) {
+                Tile target=getTileByCoordinates(i,j);
+                if (target == null) {
+                    continue;
+                }
+                if (target.getGameObject() instanceof Tree) {
+                    ((Tree) target.getGameObject()).delete();
+                }
+                else if (target.getGameObject() instanceof ForagingCrops) {
+                    ((ForagingCrops) target.getGameObject()).delete();
+                }
+                else if (target.getGameObject() instanceof GiantProduct) {
+                    ((GiantProduct) target.getGameObject()).delete();
+                }
+                else if (target.getGameObject() instanceof ForagingSeeds) {
+                    ((ForagingSeeds) target.getGameObject()).delete();
+                }
+            }
+        }
+        inventory.Items.compute(items , (k,v) -> v-1);
+        inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() ==0);
+
+        return new Result(true , "Bomb successfully replaced and everything destroyed");
+    }
+
+
+    private Result placeScarecrow(Tile tile , String name, Items items) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        if (!(tile.getGameObject() instanceof Walkable) || ! ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk")) {
+            return new Result(false , "you can't place Scarecrow on this coordinate");
+        }
+        if (name.equals("Scarecrow")) {
+            tile.setGameObject(items);
+            inventory.Items.compute(items , (k,v) -> v-1);
+            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() ==0);
+            return new Result(true , "Scarecrow successfully placed");
+        }
+        else  {
+            tile.setGameObject(items);
+            inventory.Items.compute(items , (k,v) -> v-1);
+            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() ==0);
+            return new Result(true , "Deluxe Scarecrow successfully placed");
+        }
+    }
+
+    public Result placeItem(String name, int direction) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        Tile tile=getTileByDir(direction);
+        if (tile == null) {
+            return new Result(false , "you can't place Item on this Tile");
+        }
+
+        Farm farm=null;
+        for (Farm farms : farms) {
+            if (farms.Farm.contains(tile)) {
+                farm = farms;
+            }
+        }
+
+        for (User user: players) {
+            if (user.getFarm().equals(farm)) {
+                if (!user.equals(currentPlayer) && ! user.getSpouse().equals(currentPlayer) ) {
+                    return new Result(false , "you can't place Item on this Tile");
+                }
+            }
+        }
+
+        if (farm == null) {
+            return new Result(false , "you can't place Item on this Tile");
+        }
+
+        if (!(tile.getGameObject() instanceof Walkable) ){
+            return new Result(false , "You can't place Item on this Tile");
+        }
+
+        if (tile.getGameObject() instanceof Walkable && !((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk")) {
+            return new Result(false , "You can't place Item on this Tile");
+        }
+        if (currentPlayer.getFarm().isInHome(currentPlayer.getPositionX(), currentPlayer.getPositionY())) {
+            return new Result(false , "you can't place Item in your Home because it could be dangerous");
+        }
+
+        if (name.equals("Mystic Tree Seed")) {
+            //TODO
+        }
+
+        Items items=CraftingController.numberOfIngrediants(name);
+        if (items == null) {
+            return new Result(false , name + "not found!");
+        }
+        switch (name) {
+            case "Grass Starter" -> {
+                ((Walkable) tile.getGameObject()).setGrassOrFiber("Grass");
+                return new Result(true, "Grass Starter placed successfully");
+            }
+            case "Cherry Bomb", "Bomb", "Mega Bomb" -> {
+                return placeBomb(tile, name, items);
+            }
+            case "Quality Sprinkler", "Sprinkler", "Iridium Sprinkler" -> {
+                //TODO تابعی که عرفان زده کال میشود
+            }
+            case "Scarecrow","Deluxe Scarecrow" -> {
+                return placeScarecrow(tile, name, items);
+            }
+
+        }
+        return new Result(false , "Something went wrong");
+    }
 
 
 
@@ -1916,6 +2038,22 @@ public class GameController {
                     }
             }
     }
+    private boolean checkForDeath () {
+
+        return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
+    }
+    private void fertilizePlant (MarketItemType fertilizeType , Tile tile) {
+
+        GameObject gameObject = tile.getGameObject();
+
+        if (gameObject instanceof GiantProduct)
+            ((GiantProduct) gameObject).setFertilize(fertilizeType);
+        if (gameObject instanceof Tree)
+            ((Tree) gameObject).setFertilize(fertilizeType);
+        if (gameObject instanceof ForagingSeeds)
+            ((ForagingSeeds) gameObject).setFertilize(fertilizeType);
+
+    }
     private boolean checkTileForPlant (Tile tile) {
 
         GameObject object = tile.getGameObject();
@@ -2169,12 +2307,6 @@ public class GameController {
         if (gameObject instanceof ForagingSeeds)
             ((ForagingSeeds) gameObject).setFertilize(fertilizeType);
 
-    }
-
-
-    private boolean checkForDeath () {
-
-        return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
     }
 
     private Result useHoe (int dir) {

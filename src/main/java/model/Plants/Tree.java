@@ -127,7 +127,7 @@ public class Tree extends Items {
         this.haveFruit = this.type.getSourceType().getSeason().contains(currentDate.getSeason()) &&
                 getDayDifferent(lastFruit, dateHour) > 6;
     }
-    private void delete () {
+    public void delete () {
 
         for (Tile tile : bigMap)
             if (tile.getGameObject().equals(this))

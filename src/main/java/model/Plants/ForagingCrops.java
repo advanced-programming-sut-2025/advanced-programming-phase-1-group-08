@@ -34,6 +34,5 @@ public class ForagingCrops extends Items {
         for (Tile tile : bigMap)
             if (tile.getGameObject().equals(this))
                 tile.setGameObject(new Walkable());
-
     }
 }
