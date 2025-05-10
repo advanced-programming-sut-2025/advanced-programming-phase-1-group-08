@@ -1,5 +1,6 @@
 package model;
 
+import model.Animall.BarnOrCage;
 import model.Enum.SecurityQuestions;
 import model.MapThings.Tile;
 import model.Places.Farm;

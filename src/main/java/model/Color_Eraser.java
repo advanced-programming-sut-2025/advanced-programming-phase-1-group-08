@@ -59,7 +59,7 @@ public class Color_Eraser {
     public static final String BG_BRIGHT_PURPLE = "\u001B[105m";
     public static final String BG_BRIGHT_CYAN   = "\u001B[106m";
     public static final String BG_BRIGHT_WHITE  = "\u001B[107m";
-
+    public static final String BG_BRIGHT_BROWN = "\u001B[48;2;205;133;63m";
 
     public static final String REVERSED = "\u001B[7m";
     public static final String BOLD = "\u001B[1m";

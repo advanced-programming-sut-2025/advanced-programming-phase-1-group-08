@@ -1,0 +1,163 @@
+package Controller;
+
+import model.*;
+import model.Enum.AllPlants.ForagingMineralsType;
+import model.Enum.AllPlants.TreesSourceType;
+import model.Enum.ItemType.CraftType;
+import model.Enum.ItemType.MarketItemType;
+import model.MapThings.Wood;
+import model.Plants.ForagingMinerals;
+import model.Plants.TreeSource;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class CraftingController {
+
+    public static Items numberOfIngrediants(String name) {
+        Inventory inventory = App.currentPlayer.getBackPack().inventory;
+
+        for (Map.Entry < Items , Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof ForagingMinerals) {
+                if (((ForagingMinerals) entry.getKey()).getType().equals(ForagingMineralsType.COAL)) {
+                    return entry.getKey();
+                }
+            }
+
+            if (entry.getKey() instanceof BarsAndOres) {
+                if (((BarsAndOres) entry.getKey()).getType().getName().equals(name)) {
+                    return entry.getKey();
+                }
+            }
+            if (name.equals("Wood") && entry.getKey() instanceof Wood) {
+                return entry.getKey();
+            }
+            if (name.equals("Stone") && entry.getKey() instanceof BasicRock) {
+                return entry.getKey();
+            }
+            //TODO برای Fiber باید بزنیم
+
+
+            if (entry.getKey() instanceof TreeSource) {
+                if (((TreeSource) entry.getKey()).getType().name().equals(name)) {
+                    return entry.getKey();
+                }
+            }
+            if (entry.getKey() instanceof CraftingItem) {
+                if (((CraftingItem) entry.getKey()).getCraftType().getName().equals(name)) {
+                    return entry.getKey();
+                }
+            }
+            if (entry.getKey() instanceof MarketItem) {
+                if (((MarketItem) entry.getKey()).getType().getName().equals(name)) {
+                    return entry.getKey();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Result showCraftingRecipe() {
+        Inventory inventory = App.currentPlayer.getBackPack().inventory;
+        StringBuilder output = new StringBuilder();
+
+        if (! App.currentPlayer.getFarm().isInHome(App.currentPlayer.getPositionX(),App.currentPlayer.getPositionY())) {
+            return new Result(false, "you are not in home");
+        }
+
+        for (CraftType craftType : CraftType.values()) {
+            if (craftType.checkLevel()) {
+                output.append(craftType.name()).append("\n");
+            }
+        }
+
+        return new Result(true , output.toString());
+    }
+
+
+    public Result craftingCraft(String name) {
+        Inventory inventory = App.currentPlayer.getBackPack().inventory;
+        CraftType type=null;
+        HashMap<Items , Integer> ingrediant = new HashMap();
+
+        for (CraftType craftType : CraftType.values()) {
+            if (craftType.getName().equals(name)) {
+                type = craftType;
+            }
+        }
+
+        if (!App.currentPlayer.getFarm().isInHome(App.currentPlayer.getPositionX(), App.currentPlayer.getPositionY())) {
+            return new Result(false, "You are not in Home");
+        }
+
+        if (type == null) {
+            return new Result(false , "No such Craft Type");
+        }
+        if (App.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+            return new Result(false , "Not enough Capacity in your BackPack");
+        }
+        if (!type.checkLevel()) {
+            return new Result(false , "you don't have Recipe for this crafting");
+        }
+
+        for (Map.Entry <String,Integer> entry : type.getIngrediants().entrySet()) {
+            Items items =numberOfIngrediants(entry.getKey()) ;
+            if (items == null) {
+                return new Result(false , "Not enough "+entry.getKey());
+            }
+            if (inventory.Items.get(items) < entry.getValue()) {
+                return new Result(false , "Not enough "+entry.getKey());
+            }
+            ingrediant.put(items, entry.getValue());
+        }
+
+
+        for (Map.Entry <Items , Integer> entry : ingrediant.entrySet()) {
+            inventory.Items.compute(entry.getKey(), (k, x) -> x - entry.getValue());
+        }
+        if (name.equals("Grass Starter")) {
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof MarketItem && ((MarketItem) entry.getKey()).getType().equals(MarketItemType.GrassStarter)) {
+                    entry.setValue(entry.getValue() + 1);
+                    return new Result(true , "you created Grass Starter Successfully!");
+                }
+            }
+            MarketItem grassStarter = new MarketItem(MarketItemType.GrassStarter);
+            inventory.Items.put(grassStarter, 1);
+            return new Result(true , "You created Grass Starter Successfully!");
+        }
+        if (name.equals("Mystic Tree Seed")) {
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof TreeSource && ((TreeSource) entry.getKey()).getType().equals(TreesSourceType.Mystic_Tree_Seeds)) {
+                    entry.setValue(entry.getValue() + 1);
+                    return new Result(true , "you created Grass Starter Successfully!");
+                }
+            }
+            TreeSource MysticTreeSeed =new TreeSource(TreesSourceType.Mystic_Tree_Seeds);
+            inventory.Items.put(MysticTreeSeed, 1);
+            return new Result(true , "You created Mystic Tree Seed Successfully!");
+        }
+
+        for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof CraftingItem && ((CraftingItem) entry.getKey()).getCraftType().equals(type)) {
+                entry.setValue(entry.getValue() + 1);
+                return new Result(true , "You created "+type.getName()+" Successfully!");
+            }
+        }
+
+
+        CraftingItem newCraft=new CraftingItem(type);
+        inventory.Items.put(newCraft, 1);
+
+        inventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+        App.currentPlayer.increaseHealth(-2);
+
+        return new Result(true , "you created " +newCraft.getCraftType().getName() + " successfully");
+
+    }
+
+
+
+
+}
