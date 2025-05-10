@@ -29,4 +29,10 @@ public class TrashCan extends Tools {
         }
     } // اسمش باید عوض یشه هم ورودی منابعی که باید برگردونده بشه رو بگیره و درصد برگشت هم که از تو اینام بدست میاد
 
+
+    @Override
+    public int healthCost() { // TODO
+        return 0;
+    }
+
 }

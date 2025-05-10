@@ -25,4 +25,10 @@ public class MilkPail extends Tools {
     public static void increaseRemindInShop(int amount) {
         remindInShop += amount;
     }
+
+
+    @Override
+    public int healthCost() { // TODO
+        return 0;
+    }
 }

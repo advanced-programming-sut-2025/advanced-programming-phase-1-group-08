@@ -12,4 +12,8 @@ public class PickAxe extends Tools {
 
     public void use (){}
 
+    @Override
+    public int healthCost() { // TODO
+        return 0;
+    }
 }

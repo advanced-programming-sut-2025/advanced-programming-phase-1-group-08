@@ -59,7 +59,7 @@ public class HumanCommunications {
     public User getPlayer2() {
         return player2;
     }
-
+    //TODO وقتی مکانیزم کاهش لول رو زدی یادت باشه این بولین های اول رو فالس کنی با کم شدن لول
     public void updateLevel() {
         if (FriendshipLevel == 0 && getXP() >= 100) {
             increaseLevel();

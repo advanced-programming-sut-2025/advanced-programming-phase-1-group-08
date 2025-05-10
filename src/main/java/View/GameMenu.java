@@ -40,11 +40,11 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.hug.getMather(input) != null)
             controller.hug(input);
 
-        else if (GameMenuCommands.sendGift.getMather(input) != null)
-            controller.sendGifts(input); // TODO
-
-        else if (GameMenuCommands.propose.getMather(input) != null)
-            controller.propose(input);
+//        else if (GameMenuCommands.sendGift.getMather(input) != null)
+//            controller.sendGifts(input); // TODO
+//
+//        else if (GameMenuCommands.propose.getMather(input) != null)
+//            controller.propose(input);
 
         else if (GameMenuCommands.giveFlower.getMather(input) != null)
             controller.giveFlowers(input);
@@ -104,14 +104,17 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.howMuchWater.getMather(input) != null)
             System.out.println(controller.howMuchWater());
 
-        else if (GameMenuCommands.createThor.getMather(input) != null)
+        else if ((matcher = GameMenuCommands.createThor.getMather(input)) != null)
             System.out.println(controller.thor(matcher.group("x").trim(), matcher.group("y").trim()));
 
-        else if (GameMenuCommands.showPlant.getMather(input) != null)
+        else if ((matcher = GameMenuCommands.showPlant.getMather(input)) != null)
             System.out.println(controller.showPlant(matcher.group("x").trim(), matcher.group("y").trim()));
 
-        else if (GameMenuCommands.fertilize.getMather(input) != null)
+        else if ((matcher = GameMenuCommands.fertilize.getMather(input)) != null)
             System.out.println(controller.fertilize(matcher.group("fertilizer").trim(), matcher.group("direction").trim()));
+
+        else if ((matcher = GameMenuCommands.showTreeInfo.getMather(input)) != null)
+            System.out.println(controller.info(matcher.group("name").trim()));
 
 
 

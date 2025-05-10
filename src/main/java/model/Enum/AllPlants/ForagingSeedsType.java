@@ -128,7 +128,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    GarlicSeeds     ( "JGarlic Seeds",    true, Garlic,10000,
+    GarlicSeeds     ( "Garlic Seeds",    true, Garlic,10000,
             4, false, new int[]{1, 1, 1, 1} ,0 , 5 ,
             List.of( MarketType.PierreGeneralStore ) ) {
 
@@ -1257,6 +1257,9 @@ public enum ForagingSeedsType {
     }
     public int getStageDate (int Stage) {
         return stageDays[Stage];
+    }
+    public int[] getStageDays() {
+        return stageDays;
     }
 
 

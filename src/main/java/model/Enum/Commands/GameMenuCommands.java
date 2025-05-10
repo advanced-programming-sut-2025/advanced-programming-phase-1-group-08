@@ -7,7 +7,7 @@ public enum GameMenuCommands {
 
 
     makeNewGame   ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
-    nextTurn      ("\\s(?i)*next\\s*turn\\s*"),
+    nextTurn      ("\\s*(?i)next\\s*turn\\s*"),
 
                                                         //  relation
     friendships   ("\\s*(?i)friendships\\s*"),
@@ -37,7 +37,8 @@ public enum GameMenuCommands {
 
                                                         // plants
     buildGreenHouse    ("(?i)\\s*greenhouse\\s*build\\s*"),
-    showFruitInfo ("(?i)\\s*craft\\s*info\\s*-n\\s*(?<name>\\S+)\\s*"),
+    showTreeInfo  ("(?i)\\s*info\\s*-n\\s*(?<name>.+)\\s*"),
+    showFruitInfo ("(?i)\\s*craft\\s*info\\s*-n\\s*(?<name>.+)\\s*"),
     createThor    ("(?i)\\s*cheat\\s*thor\\s*-l(?<x>\\d+),(?<y>\\d+)\\s*"),
     showPlant     ("(?i)\\s*show\\s*plant\\s*-l\\s*(?<x>\\d+),\\s*(?<y>\\d+)\\s*"),
     planting      ("(?i)\\s*plant\\s*-s\\s*(?<seed>.+)\\s*-d\\s*(?<direction>\\d+)\\s*"),
@@ -71,6 +72,8 @@ public enum GameMenuCommands {
     craftingRecipe("(?i)crafting\\s+show\\s+recipes\\s*"),
     craftingCraft("(?i)crafting\\s+craft\\s+(?<name>\\S.*)\\s*"),
     placeItem("place\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-d\\s+(?<direction>\\d+)\\s*"),
+    artisanUse("(?i)artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<first>\\S+)(?:\\s+(\\S+)\\s*)?"),
+    artisanGet("(?i)artisan\\s+get\\s+(?<name>\\S.*)\\s*"),
 
     ;
 
