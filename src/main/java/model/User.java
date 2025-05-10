@@ -33,6 +33,7 @@ public class User {
     private User Spouse;  // شخصی که باهاش ازدواج کرده
     private boolean healthUnlimited;
 
+    public ArrayList<ArtisanProduct> buffer=new ArrayList<>();//برای برداشت محصولات فرآوری شده استفاده میشود
 
     private final BackPack backPack = new BackPack();
     public Tools currentTool;
