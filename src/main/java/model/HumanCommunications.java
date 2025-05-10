@@ -1,11 +1,11 @@
 package model;
 
-import model.Enum.AllPlants.ForagingCropsType;
 import model.Enum.ItemType.AnimalProductType;
 import model.Enum.ItemType.FishType;
 import model.Enum.ItemType.MarketItemType;
 import model.Enum.ItemType.Quantity;
-import model.Plants.ForagingCrops;
+import model.Animall.Fish;
+import model.Animall.Animalproduct;
 
 import java.util.*;
 
@@ -162,8 +162,17 @@ public class HumanCommunications {
     } //TODO اگه بازیکن مورد نظر وجود نداشت پیغام مناسب چاپ بشه و اگه مقدار یا آیتم نامعتبر بودن ارور بده
 
     // LEVEL ONE TASKS
-    public void rateGifts(){
+    public Result rateGifts(){
+        Scanner scanner = new Scanner(System.in);
+        int rate = scanner.nextInt();
+        if (!(rate >= 1 && rate <= 5))
+            return new Result(false, RED+"Just Enter a Digit! (1 to 5)"+RESET);
 
+        int x = ((rate - 3) * 30) + 15;
+        setXP(getXP() + x);
+        updateLevel();
+
+        return new Result(true, GREEN+"Rated Successfully."+RESET);
     }
     public Result sendGifts(String username, String item, int amount) {
         User other;
