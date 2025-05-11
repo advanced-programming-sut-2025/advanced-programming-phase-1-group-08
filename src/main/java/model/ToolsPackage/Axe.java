@@ -22,6 +22,7 @@ public class Axe extends Tools {
         this.type = type;
     }
 
+
     @Override
     public int healthCost() {
 

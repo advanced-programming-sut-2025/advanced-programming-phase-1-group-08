@@ -2,16 +2,19 @@ package model.MapThings;
 
 public class WaterTank extends GameObject {
 
-        private int waterTank;
+        private int amount;
 
         public WaterTank(int waterTank) {
-            this.waterTank = waterTank;
+            this.amount = waterTank;
         }
 
-        public void setWaterTank(int waterTank) {
-            this.waterTank = waterTank;
+        public void increaseAmount(int waterTank) {
+        this.amount += waterTank;
+    }
+        public void setAmount(int waterTank) {
+            this.amount = waterTank;
         }
-        public int getWaterTank() {
-            return waterTank;
+        public int getAmount() {
+            return amount;
         }
 }

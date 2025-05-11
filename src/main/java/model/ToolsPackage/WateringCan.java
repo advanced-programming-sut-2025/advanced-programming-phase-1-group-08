@@ -8,7 +8,7 @@ import static model.App.currentWeather;
 
 public class WateringCan extends Tools {
 
-    public WateringCanType wateringCanType;
+    private WateringCanType wateringCanType;
     private int reminderCapacity;
 
     public WateringCan(WateringCanType type) {
@@ -20,7 +20,6 @@ public class WateringCan extends Tools {
 
 
 
-    public void use () {}
     public int healthCost() {
 
         double x = currentWeather.getEnergyCostCoefficient();
@@ -57,5 +56,9 @@ public class WateringCan extends Tools {
             this.reminderCapacity = 0;
         if (this.reminderCapacity > this.wateringCanType.getCapacity())
             this.reminderCapacity = this.wateringCanType.getCapacity();
+    }
+    public void increaseReminderCapacity (int amount) {
+
+        this.reminderCapacity += amount;
     }
 }

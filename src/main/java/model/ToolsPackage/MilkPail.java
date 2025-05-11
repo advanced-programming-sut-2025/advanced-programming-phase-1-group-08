@@ -6,7 +6,7 @@ public class MilkPail extends Tools {
     public static int remindInShop=1;
 
     public MilkPail(){
-        super("MilkPail", 0);
+        super("MilkPail");
     }
 
     @Override
