@@ -21,6 +21,7 @@ public class App {
 
     // TODO موقع سیو دیتا اینارو باید همشو سیو کرد و موقع ترمینیت پاک کرد
     public static Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
+    public static Map<Set<User>, List<Trade>> trades = new HashMap<>();
     public static ArrayList<HumanCommunications> friendships = new ArrayList<>();
 
     public static ArrayList<User> players = new ArrayList<>();
@@ -103,20 +104,3 @@ public class App {
 }
 
 
-//TreesProductType type;
-//
-//        try {
-//type = TreesProductType.fromDisplayName(name);
-//            return new Result(true, TreesProductType.getInformation(type));
-//
-//        } catch (Exception e) {
-//
-//CropsType cropType;
-//            try {
-//cropType = CropsType.fromDisplayName(name);
-//                return new Result(true, CropsType.getInformation(cropType));
-//
-//        } catch (Exception e1) {
-//        return new Result(false, RED+"sorry, name is invalid!"+RESET);
-//            }
-//                    }
