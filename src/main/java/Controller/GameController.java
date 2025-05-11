@@ -35,6 +35,15 @@ public class GameController {
 
     Random rand = new Random();
 
+    public ArrayList<Tile> sortMap(ArrayList<Tile> Map) {
+        Collections.sort(Map , (a,b) -> {
+            if (a.getY() != b.getY()) return Integer.compare(a.getY(), b.getY());
+            return Integer.compare(a.getX(), b.getX());
+        });
+
+        return Map;
+    }
+
     public static boolean isNeighbor(int x1, int y1, int x2, int y2) {
         int [] dirx={0,0,1,1,1,-1,-1,-1};
         int [] diry={1,-1,0,1,-1,0,1,-1};
@@ -418,6 +427,57 @@ public class GameController {
             for (int j=30 ; j<60 ; j++) {
                 if (i!=75) {
                     Tile tile=new Tile(i , j , unWalkable);
+                    bigMap.add(tile);
+                }
+            }
+        }
+    }
+
+
+    public void buildNpcVillage() {
+        Wall wall=new Wall();
+        wall.setWallType(WallType.Npc);
+        door dor=new door();
+        dor.setDoor(Door.Npc);
+        Marketing marketing=new Marketing();
+        Walkable walkable=new Walkable();
+
+        for (int i=30 ; i<60 ; i++) {
+            for (int j=30 ; j<60 ; j++) {
+                if (i== 30 || i==59 || j==30 || j==59) {
+                    if ( (i==30 && j==45 ) || (i==45 && j==30) || (i==45 && j==59) || (i==59 && j==45) ) {
+                        Tile tile=new Tile(i , j , dor);
+                        bigMap.add(tile);
+                    }
+                    else {
+                        Tile tile = new Tile(i, j, wall);
+                        bigMap.add(tile);
+                    }
+                }
+                else if (MarketType.isInMarket(i, j) != null) {
+                    MarketType marketType = MarketType.isInMarket(i, j);
+                    if (i== marketType.getTopleftx() + marketType.getWidth() - 1 && j==marketType.getToplefty() +2) {
+                        Tile tile=new Tile(i , j , dor);
+                        bigMap.add(tile);
+                    }
+                    else {
+                        Tile tile=new Tile(i , j , wall);
+                        bigMap.add(tile);
+                    }
+                }
+                else if (NPC.wallOrDoor(i, j) != null) {
+                    NPC npc = NPC.wallOrDoor(i, j);
+                    if (i == npc.getTopLeftX() + npc.getWidth() -1 && j==npc.getTopLeftY() + 2) {
+                        Tile tile=new Tile(i , j , dor);
+                        bigMap.add(tile);
+                    }
+                    else {
+                        Tile tile=new Tile(i , j , wall);
+                        bigMap.add(tile);
+                    }
+                }
+                else {
+                    Tile tile=new Tile(i , j , walkable);
                     bigMap.add(tile);
                 }
             }
