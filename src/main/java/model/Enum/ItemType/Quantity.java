@@ -17,4 +17,7 @@ public enum Quantity {
     public String getName() {
         return name;
     }
+    public double getValue() {
+        return value;
+    }
 }

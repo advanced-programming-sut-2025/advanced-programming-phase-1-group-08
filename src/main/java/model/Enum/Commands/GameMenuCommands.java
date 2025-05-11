@@ -48,6 +48,16 @@ public enum GameMenuCommands {
     howMuchWater  ("(?i)\\s*how\\s*much\\s*water\\s*"),
 
 
+
+                                                        // NPC
+
+    questsList   ("(?i)\\s*quests\\s*list\\s*"),
+    meetNPC      ("(?i)\\s*meet\\s*NPC\\s*(?<npc_name>\\S+)\\s*"),
+    questsFinish ("(?i)\\s*quests\\s*finish\\s*-i\\s*(?<index>\\d+)\\s*"),
+    giftNPC      ("(?i)\\s*gift\\s*NPC\\s*(?<npc_name>\\S+)\\s*-i\\s*(?<item>.+)\\s*"),
+    friendshipNPCList ("(?i)\\s*friendship\\s*NPC\\s*list\\s*"),
+
+
     walk("walk\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     inventoryShow("inventory\\s+show\\s*"),
     removeItem("^inventory\\s+trash\\s+-i\\s+(?<item>.+?)(?= -n|$)(?: -n (?<number>\\d+))?$"),
@@ -74,6 +84,8 @@ public enum GameMenuCommands {
     placeItem("place\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-d\\s+(?<direction>\\d+)\\s*"),
     artisanUse("(?i)artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<first>\\S+)(?:\\s+(\\S+)\\s*)?"),
     artisanGet("(?i)artisan\\s+get\\s+(?<name>\\S.*)\\s*"),
+    sell("(?i)sell\\s+(?<name>\\S.*)\\s*"),
+    sellByCount("(?i)sell\\s+(?<name>\\S.*)\\s+-n\\s+(?<count>\\d+)\\s*"),
 
     ;
 

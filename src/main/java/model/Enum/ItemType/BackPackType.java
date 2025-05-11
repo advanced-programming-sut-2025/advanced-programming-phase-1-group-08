@@ -1,10 +1,14 @@
 package model.Enum.ItemType;
 
+import model.Animall.Animalproduct;
+import model.Animall.Fish;
 import model.App;
 import model.Inventory;
 import model.Items;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public enum BackPackType {
     primary("primary",12,0 ,0) {
@@ -59,12 +63,21 @@ public enum BackPackType {
     public int getRemindCapacity() {
         int x=0;
         Inventory inventory = App.currentPlayer.getBackPack().inventory;
+        Set<FishType> fishTypes=new HashSet<>();
+        Set<AnimalProductType> animalProductTypes=new HashSet<>();
         for (Map.Entry < Items , Integer > entry : inventory.Items.entrySet()) {
-            if (entry.getValue() > 0) {
+            if (entry.getKey() instanceof Fish) {
+                fishTypes.add(((Fish) entry.getKey()).getFishType());
+            }
+            else if (entry.getKey() instanceof Animalproduct) {
+                animalProductTypes.add(((Animalproduct) entry.getKey()).getAnimalProductType());
+            }
+            else {
                 x++;
             }
         }
-        return App.currentPlayer.getBackPack().getType().getCapacity() - x;
+
+        return App.currentPlayer.getBackPack().getType().getCapacity() - x - fishTypes.size() - animalProductTypes.size() ;
     }
 
 

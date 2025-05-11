@@ -1,6 +1,7 @@
 package model;
 
 import model.Animall.BarnOrCage;
+import model.Enum.NPC;
 import model.Enum.SecurityQuestions;
 import model.MapThings.Tile;
 import model.Places.Farm;
@@ -8,7 +9,10 @@ import model.ToolsPackage.BackPack;
 import model.ToolsPackage.Tools;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+
+import static model.App.currentDate;
 
 public class User {
 
@@ -33,6 +37,12 @@ public class User {
     private Tile SleepTile;
     private User Spouse;  // شخصی که باهاش ازدواج کرده
     private boolean healthUnlimited;
+
+
+    private HashMap<NPC, Integer>    friendshipPoint = new HashMap<>();
+    private final HashMap<NPC, DateHour>  level3Date = new HashMap<>();
+    private final HashMap<NPC, Boolean> todayTalking = new HashMap<>();
+    private final HashMap<NPC, Boolean> todayGifting = new HashMap<>();
 
     public HashMap<Items , DateHour> buffer=new HashMap<>();//برای برداشت محصولات فرآوری شده استفاده میشود
 
@@ -177,11 +187,9 @@ public class User {
     public BackPack getBackPack() {
         return backPack;
     }
-
     public int getMoney() {
         return money;
     }
-
     public void increaseMoney (int amount) {
         this.money += amount;
     }
@@ -230,8 +238,6 @@ public class User {
             return 3;
         return 4;
     }
-
-
     public void increaseFarmingAbility (int amount) {
         this.farmingAbility += amount;
     }
@@ -245,10 +251,53 @@ public class User {
         this.miningAbility += amount;
     }
 
+
+    public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {
+
+        this.friendshipPoint = friendshipPoint;
+    }
+    public void increaseFriendshipPoint(NPC npc, int point) {
+
+        this.friendshipPoint.put(npc, friendshipPoint.get(npc) + point);
+    }
+    public int getFriendshipLevel(NPC npc) {
+
+        int level = Math.min(friendshipPoint.get(npc)%200, 3);
+
+        if (level == 3 && level3Date.get(npc) == currentDate)
+            level3Date.put(npc, currentDate.clone());
+
+        return level;
+    }
+    public boolean getTodayGifting(NPC npc) {
+
+        return todayGifting.get(npc);
+    }
+    public boolean getTodayTalking(NPC npc) {
+
+        return todayTalking.get(npc);
+    }
+    public DateHour getLevel3Date(NPC npc) {
+
+        return level3Date.get(npc);
+    }
+    public void setLevel3Date(NPC npc, DateHour dateHour) {
+
+        level3Date.put(npc, dateHour);
+    }
+    public void setTodayTalking(NPC npc, boolean isTrue) {
+
+        this.todayTalking.put(npc, isTrue);
+    }
+    public void setTodayGifting(NPC npc, boolean isTrue) {
+
+        this.todayGifting.put(npc, isTrue);
+    }
+
+
     public void setHashPass(String hashPass) {
         this.hashPass = hashPass;
     }
-
     public String getHashPass() {
         return hashPass;
     }
