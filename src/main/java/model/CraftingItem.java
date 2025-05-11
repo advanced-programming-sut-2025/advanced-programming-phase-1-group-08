@@ -3,12 +3,13 @@ package model;
 import model.Enum.ItemType.CraftType;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class CraftingItem extends Items {
     private CraftType craftType;
     private int x;
     private int y;
-    private HashMap<Items , DateHour> buffer=new HashMap<>();
+    private HashMap<Items , HashMap<DateHour , Integer>> buffer=new HashMap<Items, HashMap<DateHour, Integer>>();
 
     public CraftingItem(CraftType craftType) {
         this.craftType = craftType;
@@ -35,7 +36,7 @@ public class CraftingItem extends Items {
         this.y = y;
     }
 
-    public HashMap<Items, DateHour> getBuffer() {
+    public HashMap<Items, HashMap<DateHour, Integer>> getBuffer() {
         return buffer;
     }
 }

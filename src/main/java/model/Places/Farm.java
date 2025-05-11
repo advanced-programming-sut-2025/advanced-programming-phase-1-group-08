@@ -16,6 +16,7 @@ public class Farm {
     private Lake lake;
 
     public ArrayList<Tile> Farm = new ArrayList<>();
+    public ArrayList<ShippingBin> shippingBins = new ArrayList<>();
 
 
     public void setGreenHouse(GreenHouse greenHouse) {

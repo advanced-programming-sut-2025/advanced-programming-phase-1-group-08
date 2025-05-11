@@ -73,6 +73,8 @@ public enum GameMenuCommands {
     placeItem("place\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-d\\s+(?<direction>\\d+)\\s*"),
     artisanUse("(?i)artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<first>\\S+)(?:\\s+(\\S+)\\s*)?"),
     artisanGet("(?i)artisan\\s+get\\s+(?<name>\\S.*)\\s*"),
+    sell("(?i)sell\\s+(?<name>\\S.*)\\s*"),
+    sellByCount("(?i)sell\\s+(?<name>\\S.*)\\s+-n\\s+(?<count>\\d+)\\s*"),
 
     ;
 

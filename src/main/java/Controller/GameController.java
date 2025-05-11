@@ -355,6 +355,61 @@ public class GameController {
 
     }
 
+    public void buildHall() {
+        Walkable walkable=new Walkable();
+        UnWalkable unWalkable=new UnWalkable();
+        for (int j = 30 ; j<60 ; j++) {
+            Tile tile=new Tile(15 , j , walkable);
+            bigMap.add(tile);
+        }
+        for (int i=30 ; i<60 ; i++) {
+            Tile tile=new Tile(i , 15 , walkable);
+            bigMap.add(tile);
+        }
+        for (int i = 30 ; i<60 ; i++) {
+            Tile tile=new Tile(i , 75 , walkable);
+            bigMap.add(tile);
+        }
+        for (int j=30 ; j<60 ; j++) {
+            Tile tile=new Tile(75 , j , walkable);
+            bigMap.add(tile);
+        }
+        for (int i=30 ; i<60 ; i++) {
+            for (int j=0 ; j<30 ; j++) {
+                if (j != 15) {
+                    Tile tile=new Tile(i , j , unWalkable);
+                    bigMap.add(tile);
+                }
+            }
+        }
+        for (int i=0 ; i<30 ; i++) {
+            for (int j=30 ; j<60 ; j++) {
+                if (i!=15) {
+                    Tile tile=new Tile(i , j , unWalkable);
+                    bigMap.add(tile);
+                }
+            }
+        }
+        for (int i=30 ; i<60 ; i++) {
+            for (int j=60 ; j<90 ; j++) {
+                if (j!=75) {
+                    Tile tile=new Tile(i , j , unWalkable);
+                    bigMap.add(tile);
+                }
+            }
+        }
+        for (int i=60 ; i<90 ; i++) {
+            for (int j=30 ; j<60 ; j++) {
+                if (i!=75) {
+                    Tile tile=new Tile(i , j , unWalkable);
+                    bigMap.add(tile);
+                }
+            }
+        }
+    }
+
+
+
     public void MapGenerator(int i,int j,long seed){
         if (i==0 || i==29 || j==0 || j==29){
             if (i==15 && j==29){
@@ -1166,6 +1221,7 @@ public class GameController {
                 }
             }
         }
+        currentPlayer.getFarm().shippingBins.add(shippingBin);
         return new Result(true, "Shipping Bin Created Successfully");
     }
 
@@ -1703,27 +1759,202 @@ public class GameController {
     }
 
 
+    private void addArtisanToInventory(Items item) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey().equals(item)) {
+                inventory.Items.put(item, entry.getValue() + 1);
+                return;
+            }
+        }
+        inventory.Items.put(item, 1);
+    }
+
     public Result ArtisanGetProduct(String name) {
         int [] dirx={0,0,1,1,1,-1,-1,-1};
         int [] diry={1,-1,0,1,-1,0,1,-1};
 
+        Inventory inventory= currentPlayer.getBackPack().inventory;
+        if (currentPlayer.getBackPack().getType().getRemindCapacity() ==0) {
+            return new Result(false , "you can't get product because your backpack is full");
+        }
+        Items items=null;
+
         for (int x =currentPlayer.getPositionX() ; x< currentPlayer.getPositionX()+ dirx.length; x++) {
+
             for (int y=currentPlayer.getPositionY() ; y<currentPlayer.getPositionY()+ diry.length; y++) {
                 Tile tile=getTileByCoordinates(x,y);
                 if (tile == null) {
                     continue;
                 }
-                if (tile.getGameObject() instanceof CraftingItem) {
-                    HashMap<Items , DateHour> temp=((CraftingItem) tile.getGameObject()).getBuffer();
 
-                    for (Map.Entry<Items , DateHour> entry : temp.entrySet()) {
-                        if (entry.getKey().)
+                if (tile.getGameObject() instanceof CraftingItem) {
+                    HashMap<Items ,HashMap<DateHour , Integer>> temp=((CraftingItem) tile.getGameObject()).getBuffer();
+
+                    for (Map.Entry<Items , HashMap<DateHour , Integer>> entry : temp.entrySet()) {
+
+                        if (entry.getKey() instanceof ArtisanProduct) {
+                            if (((ArtisanProduct) entry.getKey()).getType().getName().equals(name)) {
+                                for (DateHour dateHour : entry.getValue().keySet()) {
+                                    if (DateHour.getHourDiffrent(dateHour) >= entry.getValue().get(dateHour)) {
+                                        items=entry.getKey();
+                                        temp.remove(items);
+                                        break;
+                                    }
+                                    else {
+                                        return new Result(false , "you should wait");
+                                    }
+                                }
+                            }
+                        }
+
+                        if (entry.getKey() instanceof MarketItem) {
+                            if (((MarketItem) entry.getKey()).getType().getName().equals(name)) {
+                                for (DateHour dateHour : entry.getValue().keySet()) {
+                                    if (DateHour.getHourDiffrent(dateHour) >= entry.getValue().get(dateHour)) {
+                                        items = entry.getKey();
+                                        temp.remove(items);
+                                        break;
+                                    }
+                                    else {
+                                        return new Result(false , "you should wait");
+                                    }
+                                }
+                            }
+                        }
+
+                        if (entry.getKey() instanceof ForagingMinerals) {
+                            if (((ForagingMinerals) entry.getKey()).getType().getDisplayName().equals(name)) {
+                                for (DateHour dateHour : entry.getValue().keySet()) {
+                                    if (DateHour.getHourDiffrent(dateHour) >= entry.getValue().get(dateHour)) {
+                                        items = entry.getKey();
+                                        temp.remove(items);
+                                        break;
+                                    }
+                                    else {
+                                        return new Result(false , "you should wait");
+                                    }
+                                }
+                            }
+                        }
+
+                        if (entry.getKey() instanceof BarsAndOres) {
+                            if (((BarsAndOres) entry.getKey()).getType().getName().equals(name)) {
+                                for (DateHour dateHour : entry.getValue().keySet()) {
+                                    if (DateHour.getHourDiffrent(dateHour) >= entry.getValue().get(dateHour)) {
+                                        items = entry.getKey();
+                                        temp.remove(items);
+                                        break;
+                                    }
+                                    else {
+                                        return new Result(false , "you should wait");
+                                    }
+                                }
+                            }
+                        }
+
+                        if (items !=null) {
+                            break;
+                        }
+                    }
+                }
+
+                if (items != null) {
+                    addArtisanToInventory(items);
+                    return new Result(true , name + "successfully added to your inventory");
+                }
+            }
+        }
+        return new Result(false , name + " not found");
+    }
+
+
+    private Result sellFish(ArrayList<Fish> fishes , Integer amount,ShippingBin shippingBin) {
+        Inventory inventory= currentPlayer.getBackPack().inventory;
+        if (amount == -1) {
+            amount = fishes.size();
+        }
+        int cursor=0;
+        for (Fish fish : fishes ) {
+            if (cursor == amount) {
+                return new Result(false , "Products Successfully added to Shipping Bin") ;
+            }
+            shippingBin.binContents.add(fish);
+            inventory.Items.remove(fish);
+            cursor++;
+        }
+        return null;
+    }
+
+    private Result sellAnimalProduct(ArrayList<Animalproduct> animalproducts , Integer amount,ShippingBin shippingBin) {
+        Inventory inventory= currentPlayer.getBackPack().inventory;
+        if (amount == -1) {
+            amount = animalproducts.size();
+        }
+        int cursor=0;
+        for (Animalproduct animalproduct : animalproducts ) {
+            if (cursor == amount) {
+                return new Result(false , "Products Successfully added to Shipping Bin") ;
+            }
+            shippingBin.binContents.add(animalproduct);
+            inventory.Items.remove(animalproduct);
+
+            cursor++;
+        }
+        return null;
+    }
+
+
+
+    public Result sell(String name , Integer amount) {
+        ShippingBin shippingBin=ShippingBin.isNearShippingBin();
+        if (shippingBin == null ) {
+            return new Result(false , "you are not near shipping bin");
+        }
+
+        Inventory inventory=currentPlayer.getBackPack().inventory;
+        ArrayList<Fish> fishes=new ArrayList<>();
+        ArrayList<Animalproduct> animalproducts=new ArrayList<>();
+
+        for (Map.Entry <Items,Integer> entry : inventory.Items.entrySet() ) {
+            if (entry.getKey() instanceof Fish) {
+                if (((Fish) entry.getKey()).getFishType().getName().equals(name)) {
+                    fishes.add((Fish) entry.getKey());
+                }
+            }
+            if (entry.getKey() instanceof Animalproduct) {
+                if (((Animalproduct) entry.getKey()).getAnimalProductType().getName().equals(name)) {
+                    animalproducts.add((Animalproduct) entry.getKey());
+                }
+            }
+        }
+        if (fishes.isEmpty() && animalproducts.isEmpty()) {
+            return new Result(false , name + " not found!");
+        }
+        if (!fishes.isEmpty()) {
+           return sellFish(fishes , amount, shippingBin);
+        }
+        else {
+           return sellAnimalProduct(animalproducts , amount, shippingBin);
+        }
+    }
+
+
+    public void unloadAndReward() {
+        for (User user : players) {
+            Farm farm = user.getFarm();
+            for (ShippingBin shippingBin : farm.shippingBins) {
+                for (Items items : shippingBin.binContents) {
+                    if (items instanceof Fish) {
+                        user.increaseMoney((int) (((Fish) items).getFishType().getPrice() * ((Fish) items).getQuantity().getValue()));
+                    }
+                    if (items instanceof Animalproduct) {
+                        user.increaseMoney((int) (((Animalproduct) items).getAnimalProductType().getInitialPrice() * ((Animalproduct) items).getQuantity().getValue()));
                     }
                 }
             }
         }
     }
-
 
     public void startNewGame (String input) {
 
@@ -2006,6 +2237,7 @@ public class GameController {
         setEnergyInMorning();
         createRandomForaging();
         createRandomMinerals();
+        unloadAndReward();
 
         for (Tile tile : bigMap)
             tile.getGameObject().startDayAutomaticTask();
