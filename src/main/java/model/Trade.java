@@ -112,22 +112,228 @@ public class Trade {
         // if Accepted:
 
         Inventory receiverInventory = currentPlayer.getBackPack().inventory;
-        char P_or_T = trade.receiverGivesPorT;
-        if (P_or_T == 'p' && currentPlayer.getMoney() < trade.receiverAmount) {
-            f.reduceXP(30);
-            return new Result(false, RED+"Not Enough Money to Accept!"+RESET);
-        }
-        else if (!(P_or_T == 't' || P_or_T == 'p'))
+        char receiver_P_or_T = trade.receiverGivesPorT;
+
+        Inventory senderInventory = trade.sender.getBackPack().inventory;
+
+
+        if (!(receiver_P_or_T == 't' || receiver_P_or_T == 'p'))
             return new Result(false, RED+"Invalid Trade!"+RESET);
 
 
-        //todo اینجا ترید واقعی انجام میشه و از هردو کم یا زیاد میشه پس اول چک کن رسیور اون آیتمو داره اگه داشت اوکیش کن و بعدشم برای حالت پولی اوکیش کن (برای هردو طرف)
+        if (trade.senderGivesPorT == 'p') {
+            currentPlayer.increaseMoney(trade.receiverAmount);
+            trade.sender.increaseMoney(-trade.receiverAmount);
+        }
+        if (trade.senderGivesPorT == 't') {
+            Items items = AllFromDisplayNames(trade.senderGivesWhat);
+            int amount = trade.senderAmount;
+            for (Map.Entry<Items, Integer> entry : senderInventory.Items.entrySet()) {
+                if (entry.getKey() instanceof MarketItem) {
+                    if (items instanceof MarketItem ) {
+                        MarketItemType marketItemType = ((MarketItem) items).getType();
+                        if (marketItemType.equals(((MarketItem) entry.getKey()).getType())) {
+                            senderInventory.Items.put(entry.getKey(), entry.getValue() - amount);
+                        }
+                    }
+                }
 
-        if (P_or_T == 't') {
+                else if (entry.getKey() instanceof AllCrops) {
+                    if (items instanceof AllCrops ) {
+                        CropsType cropsType = ((AllCrops) items).getType();
+                        if (cropsType.equals(((AllCrops) entry.getKey()).getType())) {
+                            senderInventory.Items.put(entry.getKey(), entry.getValue() - amount);
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof ForagingCrops) {
+                    if (items instanceof ForagingCrops ) {
+                        ForagingCropsType foragingCropsType = ((ForagingCrops) items).getType();
+                        if (foragingCropsType.equals(((ForagingCrops) entry.getKey()).getType())) {
+                            senderInventory.Items.put(entry.getKey(), entry.getValue() - amount);
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof TreesProdct) {
+                    if (items instanceof TreesProdct ) {
+                        TreesProductType treesProductType = ((TreesProdct) items).getType();
+                        if (treesProductType.equals(((TreesProdct) entry.getKey()).getType())) {
+                            senderInventory.Items.put(entry.getKey(), entry.getValue() - amount);
+                        }
+                    }
+                }
+            }
+
+            senderInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+
+            boolean done = false;
+            for (Map.Entry<Items, Integer> entry : receiverInventory.Items.entrySet()) {
+                if (entry.getKey() instanceof MarketItem) {
+                    if (items instanceof MarketItem ) {
+                        MarketItemType marketItemType = ((MarketItem) items).getType();
+                        if (marketItemType.equals(((MarketItem) entry.getKey()).getType())) {
+                            receiverInventory.Items.put(entry.getKey(), entry.getValue() + amount);
+                            done = true;
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof AllCrops) {
+                    if (items instanceof AllCrops ) {
+                        CropsType cropsType = ((AllCrops) items).getType();
+                        if (cropsType.equals(((AllCrops) entry.getKey()).getType())) {
+                            receiverInventory.Items.put(entry.getKey(), entry.getValue() + amount);
+                            done = true;
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof ForagingCrops) {
+                    if (items instanceof ForagingCrops ) {
+                        ForagingCropsType foragingCropsType = ((ForagingCrops) items).getType();
+                        if (foragingCropsType.equals(((ForagingCrops) entry.getKey()).getType())) {
+                            receiverInventory.Items.put(entry.getKey(), entry.getValue() + amount);
+                            done = true;
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof TreesProdct) {
+                    if (items instanceof TreesProdct ) {
+                        TreesProductType treesProductType = ((TreesProdct) items).getType();
+                        if (treesProductType.equals(((TreesProdct) entry.getKey()).getType())) {
+                            receiverInventory.Items.put(entry.getKey(), entry.getValue() + amount);
+                            done = true;
+                        }
+                    }
+                }
+            }
+            if (!done)
+                receiverInventory.Items.put(AllFromDisplayNames(trade.senderGivesWhat), amount);
 
         }
-        else {
+        if (receiver_P_or_T == 'p') {
+            if (currentPlayer.getMoney() < trade.receiverAmount) {
+                f.reduceXP(30);
+                return new Result(false, RED+"Not Enough Money to Accept!"+RESET);
+            }
 
+            // تبادل پول
+            currentPlayer.increaseMoney(-trade.receiverAmount);
+            trade.sender.increaseMoney(trade.receiverAmount);
+        }
+
+        if (receiver_P_or_T == 't') {
+            Items items = AllFromDisplayNames(trade.receiverGivesWhat);
+            int amount = trade.receiverAmount;
+            for (Map.Entry<Items, Integer> entry : receiverInventory.Items.entrySet()) {
+                if (entry.getKey() instanceof MarketItem) {
+                    if (items instanceof MarketItem ) {
+                        MarketItemType marketItemType = ((MarketItem) items).getType();
+                        if (marketItemType.equals(((MarketItem) entry.getKey()).getType())) {
+
+                            if (entry.getValue() < amount) {
+                                f.reduceXP(30);
+                                return new Result(false, RED + "Not Enough Item!" + RESET);
+                            }
+                            receiverInventory.Items.put(entry.getKey(), entry.getValue() - amount);
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof AllCrops) {
+                    if (items instanceof AllCrops ) {
+                        CropsType cropsType = ((AllCrops) items).getType();
+                        if (cropsType.equals(((AllCrops) entry.getKey()).getType())) {
+
+                            if (entry.getValue() < amount){
+                                f.reduceXP(30);
+                                return new Result(false, RED+"Not Enough Item!"+RESET);
+                            }
+                            receiverInventory.Items.put(entry.getKey(), entry.getValue() - amount);
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof ForagingCrops) {
+                    if (items instanceof ForagingCrops ) {
+                        ForagingCropsType foragingCropsType = ((ForagingCrops) items).getType();
+                        if (foragingCropsType.equals(((ForagingCrops) entry.getKey()).getType())) {
+
+                            if (entry.getValue() < amount) {
+                                f.reduceXP(30);
+                                return new Result(false, RED + "Not Enough Item!" + RESET);
+                            }
+                            receiverInventory.Items.put(entry.getKey(), entry.getValue() - amount);
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof TreesProdct) {
+                    if (items instanceof TreesProdct ) {
+                        TreesProductType treesProductType = ((TreesProdct) items).getType();
+                        if (treesProductType.equals(((TreesProdct) entry.getKey()).getType())) {
+
+                            if (entry.getValue() < amount) {
+                                f.reduceXP(30);
+                                return new Result(false, RED + "Not Enough Item!" + RESET);
+                            }
+                            receiverInventory.Items.put(entry.getKey(), entry.getValue() - amount);
+                        }
+                    }
+                }
+
+            }
+
+            receiverInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+
+            boolean done = false;
+            for (Map.Entry<Items, Integer> entry : senderInventory.Items.entrySet()) {
+                if (entry.getKey() instanceof MarketItem) {
+                    if (items instanceof MarketItem ) {
+                        MarketItemType marketItemType = ((MarketItem) items).getType();
+                        if (marketItemType.equals(((MarketItem) entry.getKey()).getType())) {
+                            senderInventory.Items.put(entry.getKey(), entry.getValue() + amount);
+                            done = true;
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof AllCrops) {
+                    if (items instanceof AllCrops ) {
+                        CropsType cropsType = ((AllCrops) items).getType();
+                        if (cropsType.equals(((AllCrops) entry.getKey()).getType())) {
+                            senderInventory.Items.put(entry.getKey(), entry.getValue() + amount);
+                            done = true;
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof ForagingCrops) {
+                    if (items instanceof ForagingCrops ) {
+                        ForagingCropsType foragingCropsType = ((ForagingCrops) items).getType();
+                        if (foragingCropsType.equals(((ForagingCrops) entry.getKey()).getType())) {
+                            senderInventory.Items.put(entry.getKey(), entry.getValue() + amount);
+                            done = true;
+                        }
+                    }
+                }
+
+                else if (entry.getKey() instanceof TreesProdct) {
+                    if (items instanceof TreesProdct ) {
+                        TreesProductType treesProductType = ((TreesProdct) items).getType();
+                        if (treesProductType.equals(((TreesProdct) entry.getKey()).getType())) {
+                            senderInventory.Items.put(entry.getKey(), entry.getValue() + amount);
+                            done = true;
+                        }
+                    }
+                }
+            }
+
+            if (!done)
+                senderInventory.Items.put(AllFromDisplayNames(trade.receiverGivesWhat), amount);
         }
 
 
