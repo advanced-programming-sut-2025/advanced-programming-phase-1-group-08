@@ -21,7 +21,8 @@ import java.util.Map;
 public enum NPC {
 
     Sebastian("Sebastian", new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.IronOre), 50,
-            new BasicRock(), 150 )), 42, 45, 6, 5, 10) {
+            new BasicRock(), 150 )), 42, 45, 6, 5,
+            new MarketItem(MarketItemType.Oil), 10) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -88,7 +89,8 @@ public enum NPC {
 
     Abigail("Abigail",  new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.GoldBar), 1,
             new AllCrops(CropsType.Pumpkin), 1,
-            new AllCrops(CropsType.Wheat),   50)), 51, 45, 6, 5, 20) {
+            new AllCrops(CropsType.Wheat),   50)), 51, 45, 6, 5,
+            new MarketItem(MarketItemType.Bouquet), 20) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -150,7 +152,8 @@ public enum NPC {
 
     Harvey("Harvey", new LinkedHashMap<>(Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
             new AllCrops(CropsType.Kale), 12,
-            new ArtisanProduct(ArtisanType.Wine),   1)), 32, 52, 6, 5, 15) {
+            new ArtisanProduct(ArtisanType.Wine),   1)), 32, 52, 6, 5,
+            new MarketItem(MarketItemType.Bread), 15) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -212,7 +215,8 @@ public enum NPC {
 
     Lia("Lia",  new LinkedHashMap<>(Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
             new Wood(), 200,
-            new BasicRock(),   200)), 42, 52, 6, 5, 25) {
+            new BasicRock(),   200)), 42, 52, 6, 5,
+            new MarketItem(MarketItemType.Salad), 25) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -274,7 +278,8 @@ public enum NPC {
 
     Robin("Robin",  new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.IronBar), 10,
             new Wood(), 80,
-            new MixedSeeds(),   10)), 51, 52, 6, 5, 18) {
+            new MixedSeeds(),   10)), 51, 52, 6, 5,
+            new MarketItem(MarketItemType.Coffee), 18) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -339,6 +344,7 @@ public enum NPC {
     private final int Hight;
     private final int topLeftX;
     private final int topLeftY;
+    private final Items giftItem;
     private final int request3DayNeeded;
     private final LinkedHashMap<Items, Integer> Request;
 
@@ -348,13 +354,16 @@ public enum NPC {
     public abstract String getReward (int index);
 
 
-    NPC (String name, LinkedHashMap<Items, Integer> request, int topLeftX, int topLeftY, int width, int height, int request3DayNeeded) {
+    NPC (String name, LinkedHashMap<Items, Integer> request, int topLeftX, int topLeftY,
+         int width, int height, Items giftItem, int request3DayNeeded) {
+
         Request = request;
         this.name = name;
         Width = width;
         Hight = height;
         this.topLeftX = topLeftX;
         this.topLeftY = topLeftY;
+        this.giftItem = giftItem;
         this.request3DayNeeded = request3DayNeeded;
     }
 
@@ -381,6 +390,9 @@ public enum NPC {
     }
     public int getTopLeftY() {
         return topLeftY;
+    }
+    public Items getGiftItem() {
+        return giftItem;
     }
 
     public static NPC wallOrDoor (int x, int y) {

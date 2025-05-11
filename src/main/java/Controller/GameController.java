@@ -2918,12 +2918,23 @@ public class GameController {
                                                     // NPC task
     private void NPCAutomatTask () {
 
+        User saveUser = currentPlayer;
+
         for (User user : players)
             for (NPC npc : NPC.values()) {
+
+                currentPlayer = user;
                 user.setTodayTalking(npc, false);
                 user.setTodayGifting(npc, false);
                 user.setLevel3Date(npc, currentDate);
+
+                if (user.getFriendshipLevel(npc) == 3 && Math.random() > 0.5)
+                    if (user.getBackPack().getType().getRemindCapacity() > 0 ||
+                            checkAmountProductAvailable(npc.getGiftItem(), 1))
+
+                        advanceItem(npc.getGiftItem(), 1);
             }
+        currentPlayer = saveUser;
     }
     private String padRight(String text, int length) {
         if (text.length() >= length) return text.substring(0, length);
@@ -3584,7 +3595,6 @@ public class GameController {
     public Result doQuest (String name, String index) {
 
         int ID;
-
         try {
             ID = Integer.parseInt(index);
         } catch (Exception e) {
@@ -3597,6 +3607,8 @@ public class GameController {
         } catch (Exception e) {
             return new Result(false, RED+"You're looking for someone who isn't real"+RESET);
         }
+        if (!npc.isInHisHome(currentPlayer.getPositionX(), currentPlayer.getPositionY()))
+            return new Result(false, RED+"You should go to their place first"+RESET);
 
         return switch (ID) {
             case 1 -> doTask1(npc);
