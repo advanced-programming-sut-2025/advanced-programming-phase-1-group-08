@@ -187,12 +187,11 @@ public class GameController {
             return null;
     }
     public Tile getTileByCoordinates(int x, int y) {
-        for (Tile tile : bigMap) {
-            if (tile.getX() == x && tile.getY() == y) {
-                return tile;
-            }
+        if (x<0 || y<0 || x>=90 || y>=90) {
+            return null;
         }
-        return null;
+        Tile targetTile = bigMap.get(90 * y + x);
+        return targetTile;
     }   ///        الان اینونتوری ساخته میشه از همه چی توش گذاشتی همون اول ؟
 
 
@@ -599,63 +598,79 @@ public class GameController {
         int startY = currentPlayer.getPositionY();
         Tile endTile = getTileByCoordinates(goalX, goalY);
 
+        if (endTile==null) {
+            return new Result(false,"you can't go to this coordinate");
+        }
+
+        PriorityQueue<State> queue = new PriorityQueue<>(Comparator.comparingInt(s -> s.Energy));
+        Set<State> visited = new HashSet<>();
+
+
         if (checkConditionsForWalk(goalX, goalY) !=null) {
             return checkConditionsForWalk(goalX, goalY);
         }
-        if (currentPlayer.isHealthUnlimited()){
-            currentPlayer.setPositionX(goalX);
-            currentPlayer.setPositionY(goalY);
-            return new Result(true,"now you are in "+goalX+","+goalY);
+
+        for (int dir =1 ; dir<9 ; dir++) {
+            Tile tile = getTileByDir(dir);
+            if (tile == null ) {
+                continue;
+            }
+            if (checkConditionsForWalk(tile.getX() , tile.getY()) !=null) {
+                State state=new State(startX , startY , dir , 0);
+                break;
+            }
         }
 
-        int [] dirx={0,0,0,1,1,1,-1,-1,-1};
-        int [] diry={0,1,-1,0,1,-1,0,1,-1};
-        HashMap<Tile,Integer> costEnergy=new HashMap<>();
-        Queue<int []> queue=new LinkedList<>();
-
-        for (int i=0 ; i<8 ; i++) {
-            queue.add(new int[]{startX,startY,i,0,0});
-        }
+        int [] dirx={0,0,1,1,1,-1,-1,-1};
+        int [] diry={1,-1,0,1,-1,0,1,-1};
 
         while (!queue.isEmpty()) {
-            int [] current=queue.poll();
-            int x=current[0], y=current[1], dir=current[2], steps=current[3], turns=current[4];
-            for (int i=0 ; i<8 ; i++) {
-                int nx=x+dirx[i], ny=y+diry[i];
-
-                Tile nextTile=getTileByCoordinates(nx, ny);
-                if (nextTile==null || checkTile(nextTile)) continue;
-
-                int newSteps=steps+1;
-                int newTurn=turns+(i==dir ? 0:1);
-                int cost=newSteps +10*newTurn;
-
-                if (!costEnergy.containsKey(nextTile) || cost<costEnergy.get(nextTile)) {
-                    costEnergy.put(nextTile, newSteps);
-                    queue.add(new int[]{nextTile.getX(),nextTile.getY(),i,newSteps,newTurn});
+            State current = queue.poll();
+            if (current.x == goalX && current.y == goalY) {
+                if (currentPlayer.isHealthUnlimited()){
+                    currentPlayer.setPositionX(goalX);
+                    currentPlayer.setPositionY(goalY);
+                    return new Result(true,"now you are in "+goalX+","+goalY);
                 }
-
+                if (currentPlayer.getHealth() >= current.Energy ) {
+                    currentPlayer.increaseHealth(- current.Energy);
+                    currentPlayer.setPositionX(goalX);
+                    currentPlayer.setPositionY(goalY);
+                    return new Result(true, "you are now in " + goalX + "," + goalY);
+                }
+                return new Result(false , "your energy is not enough for go to this tile");
+            }
+            if (visited.contains(current)) {
+                continue;
+            }
+            visited.add(current);
+            for (int i=0 ; i<8 ; i++) {
+                int x=dirx[i];
+                int y=diry[i];
+                if (checkConditionsForWalk(x,y) ==null) {
+                    continue;
+                }
+                int turnCost= (i+1==current.direction) ? 0:10;
+                int totalEnergy=current.Energy;
+                if (turnCost == 0) {
+                    totalEnergy++;
+                }
+                else {
+                    totalEnergy+=turnCost;
+                }
+                queue.add(new State(x , y , i+1 , totalEnergy));
             }
         }
 
-        if (!costEnergy.containsKey(endTile)) {
-            return new Result(false,"you can't go to this coordinate because there no way");
-        }
-        else {
-            int cost=costEnergy.get(endTile)/20;
-            if (cost > currentPlayer.getHealth() /* TODO شاید بعدا از health controller استفاده کنیم! */){
-                return new Result(false,"your Energy is not enough");
-            }
-            else {
-                currentPlayer.increaseHealth(-cost);
-                return new Result(true,"you are now in "+goalX+","+goalY);
-            }
-        }
-
+        return new Result(false , "No way to this coordinate");
     }
     private boolean checkTile(Tile tile){
+        if (tile==null) {
+            return false;
+        }
         return tile.getGameObject() instanceof Home || tile.getGameObject() instanceof door
-                || tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof GreenHouse;
+                || (tile.getGameObject() instanceof Walkable)
+                || tile.getGameObject() instanceof GreenHouse;
     }
 
     public Result checkConditionsForWalk(int goalX, int goalY){
@@ -704,71 +719,86 @@ public class GameController {
                 }
             }
         }
-        //TODO اگر NPC در اون مختصات باشه نمیتونیم اونجا بریم
-        //TODO جاهایی که دونه کاشتیم
         return null;
 
     }
 
     public Result showInventory(Inventory inventory){
-        String result="";
+        StringBuilder output = new StringBuilder();
+        output.append("Items:").append('\n');
+
         for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet()){
-            if (entry instanceof BasicRock){
-                result += "BasicRock: " + entry.getValue() + "\n";
+            if (entry.getKey() instanceof BasicRock){
+                output.append("Stone: ").append(entry.getValue()).append('\n');
             }
-            else if (entry instanceof Wood){
-                result += "Wood: " + entry.getValue() + "\n";
+            else if (entry.getKey() instanceof Wood){
+                output.append("Wood: ").append(entry.getValue()).append('\n');
             }
-            else if (entry instanceof ForagingMinerals){
-                result += ((ForagingMinerals) entry).getType() +" "+ entry.getValue() + "\n";
+            else if (entry.getKey() instanceof ForagingMinerals){
+                output.append(((ForagingMinerals) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
-            else if (entry instanceof ForagingSeeds){
-                result += ((ForagingSeeds) entry).getType() +" "+ entry.getValue() + "\n";
+            else if (entry.getKey() instanceof ForagingSeeds){
+                output.append(((ForagingSeeds) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
-            else if (entry instanceof AllCrops){
-                result += ((AllCrops) entry).getType() +" "+ entry.getValue() + "\n";
+            else if (entry.getKey() instanceof AllCrops){
+                output.append(((AllCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
-            else if (entry instanceof ForagingCrops) {
-                result += ((ForagingCrops) entry).getType() +" "+ entry.getValue() + "\n";
+            else if (entry.getKey() instanceof ForagingCrops) {
+                output.append(((ForagingCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
-            else if (entry instanceof TreeSource){
-                result += ((TreeSource) entry).getType() +" "+ entry.getValue() + "\n";
+            else if (entry.getKey() instanceof TreeSource){
+                output.append(((TreeSource) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
-            else if (entry instanceof Axe ){
-                result += ((Axe) entry).getName() +" "+((Axe) entry).axeType + "\n";
+            else if (entry.getKey() instanceof Axe ){
+                output.append(((Axe) entry.getKey()).axeType.name()).append('\n');
             }
-            else if (entry instanceof FishingPole){
-                result += ((FishingPole) entry).getName() +" "+ ((FishingPole) entry).fishingPoleType + "\n";
+            else if (entry.getKey() instanceof FishingPole){
+                output.append(((FishingPole) entry.getKey()).fishingPoleType.name()).append('\n');
             }
-            else if (entry instanceof Hoe){
-                result += ((Hoe) entry).getName() +" "+ ((Hoe) entry).getType() + "\n";
+            else if (entry.getKey() instanceof Hoe){
+                output.append(((Hoe) entry.getKey()).getType().getDisplayName()).append('\n');
             }
-            else if (entry instanceof PickAxe){
-                result += ((PickAxe) entry).getName() +" "+ ((PickAxe) entry).pickAxeType +"\n";
+            else if (entry.getKey() instanceof PickAxe){
+                output.append(((PickAxe) entry.getKey()).pickAxeType.name()).append('\n');
             }
-            else if (entry instanceof WateringCan){
-                result += ((WateringCan) entry).getName() +" "+ ((WateringCan) entry).wateringCanType + "\n";
+            else if (entry.getKey() instanceof WateringCan){
+                output.append(((WateringCan) entry.getKey()).wateringCanType.getDisplayName()).append('\n');
             }
-            else if (entry instanceof TrashCan){
-                result += ((TrashCan) entry).getName() +" "+((TrashCan) entry).Type + "\n";
+            else if (entry.getKey() instanceof TrashCan){
+                output.append(((TrashCan) entry.getKey()).Type.name()).append('\n');
             }
-            else if (entry instanceof Tools){
-                result+=((Tools) entry).getName() + "\n";
+            else if (entry.getKey() instanceof Tools){
+                output.append(((Tools) entry.getKey()).getName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof MarketItem) {
+                output.append(((MarketItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof Fish) {
+                output.append(((Fish) entry.getKey()).getFishType().getName()).append(": ") .append(((Fish) entry.getKey()).getQuantity().getName()).append('\n');
+            }
+            else if (entry.getKey() instanceof Animalproduct) {
+                output.append(((Animalproduct) entry.getKey()).getAnimalProductType().getName()).append(": ").append(((Animalproduct) entry.getKey()).getQuantity().getName()).append('\n');
+            }
+            else if (entry.getKey() instanceof CraftingItem) {
+                output.append(((CraftingItem) entry.getKey()).getCraftType().getName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof ArtisanProduct) {
+                output.append(((ArtisanProduct) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
         }
 
-        return new Result(true,result);
+        return new Result(true,output.toString());
     }
 
     private Result increaseMoney(Integer amount , int price , Items items,String name , Integer reminder) {
         int percent=0;
         for (Map.Entry<Items,Integer> entry: currentPlayer.getBackPack().inventory.Items.entrySet()) {
-            if (entry instanceof TrashCan){
-                percent= ((TrashCan) entry).Type.getPercent();
+            if (entry.getKey() instanceof TrashCan){
+                percent= ((TrashCan) entry.getKey()).Type.getPercent();
                 break;
             }
         }
-        if (amount ==null || amount == reminder) {
+        if (amount ==null || amount.equals(reminder)) {
             int increase=(reminder * percent *price)/100;
             TrashCan.removeItem(increase,currentPlayer.getBackPack().inventory.Items, items, reminder);
             return new Result(true,name + "completely removed from your inventory");
@@ -776,13 +806,10 @@ public class GameController {
         if (amount > reminder) {
             return new Result(false,"not enough "+name+" "+"in your inventory for remove");
         }
-        if (amount < reminder) {
-            int increase=(reminder * percent *price)/100;
-            TrashCan.removeItem(increase,currentPlayer.getBackPack().inventory.Items, items, reminder);
-            return new Result(true , amount + " "+name+" "+"removed from your inventory");
-        }
+        int increase = (reminder * percent * price) / 100;
+        TrashCan.removeItem(increase,currentPlayer.getBackPack().inventory.Items, items, reminder);
+        return new Result(true , amount + " "+name+" "+"removed from your inventory");
 
-        return null;
     }
 
 
@@ -791,51 +818,39 @@ public class GameController {
         Inventory inventory=currentPlayer.getBackPack().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
 
-            if (entry instanceof Wood){
+            if (entry.getKey() instanceof Wood){
                 if (name.equals(Wood.name)) {
                     return increaseMoney(number, Wood.price, (Wood) entry.getKey(), name, entry.getValue());
                 }
             }
-            if (entry instanceof BasicRock){
-                if (name.equals("BasicRock")) {
+            if (entry.getKey() instanceof BasicRock){
+                if (name.equals("Stone")) {
                     return increaseMoney(number, BasicRock.price, (BasicRock) entry.getKey(), name, entry.getValue());
                 }
             }
 
-            if (entry instanceof ForagingMinerals){
-                if (((ForagingMinerals) entry).getType().getDisplayName().equals(name)){
-                    return increaseMoney(number,( (ForagingMinerals) entry).getType().getPrice(),(ForagingMinerals) entry, name,entry.getValue());
+            if (entry.getKey() instanceof ForagingMinerals){
+                if (((ForagingMinerals) entry.getKey()).getType().getDisplayName().equals(name)){
+                    return increaseMoney(number,((ForagingMinerals) entry.getKey()).getType().getPrice(),entry.getKey(), name,entry.getValue());
                 }
             }
 
 
-            if (entry instanceof ForagingSeeds){
-                if (((ForagingSeeds) entry).getType().getDisplayName().equals(name)){
-                    //TODO قیمت foraging seeds رو باید از مارکتینگ در بیاریم
-                    //TODO return increaseMoney(entry.getValue(),( (ForagingSeeds) entry).getType().getPrice(),(ForagingSeeds) entry, name,entry.getValue());
+            if (entry.getKey() instanceof AllCrops){
+                if (((AllCrops) entry.getKey()).getType().getDisplayName().equals(name)){
+                    return increaseMoney(number, ((AllCrops) entry.getKey()).getType().getPrice(), entry.getKey(), name,entry.getValue());
                 }
-            }
-            if (entry instanceof AllCrops){
-                if (((AllCrops) entry).getType().getDisplayName().equals(name)){
-                    return increaseMoney(number,( (AllCrops) entry).getType().getPrice(),(AllCrops) entry, name,entry.getValue());
-                }
-            }
-            if (entry instanceof TreeSource){
-                if (((TreeSource) entry).getType().getDisplayName().equals(name)){
-                    //TODO قیمت TreeSource رو باید از مارکتینگ دربیاریم
-                    //TODO return increaseMoney(entry.getValue(),( (TreeSource) entry).getType().getPrice(),(TreeSource) entry, name,entry.getValue());
-                }
-            }
-            if (entry instanceof ForagingCrops){
-                if (((ForagingCrops) entry).getType().equals(name)){
-                    return increaseMoney(entry.getValue(),( (ForagingCrops) entry).getType().getPrice(),(ForagingCrops) entry, name,entry.getValue());
-                }
-            }
-            if (entry instanceof Tools){
-                return new Result(false,"you can't remove "+name+"becuse it is a tool");
             }
 
-            //TODO برای غذا و چیزهایی که در آینده ممکنه به اینونتوری اضافه بشه
+            if (entry.getKey() instanceof ForagingCrops){
+                if (((ForagingCrops) entry.getKey()).getType().getDisplayName().equals(name)){
+                    return increaseMoney(entry.getValue(),((ForagingCrops) entry.getKey()).getType().getPrice(), entry.getKey(), name,entry.getValue());
+                }
+            }
+            if (entry.getKey() instanceof Tools){
+                return new Result(false,"you can't remove "+name+"because it is a tool");
+            }
+
         }
         return null;
     }
@@ -961,15 +976,15 @@ public class GameController {
     }
 
     public Result addFishToInventory(FishingPole fishingPole) {
+        Inventory inventory=currentPlayer.getBackPack().inventory;
         double random = Math.random();
         int x = (int) (random * currentWeather.getFishing() * (currentPlayer.getLevelFishing() + 2));
         int numberOfFish = Math.min(6, x);
         StringBuilder result = new StringBuilder("number of Fishes: " + numberOfFish + "\n");
+        ArrayList<Fish> fishes = new ArrayList<>();
 
         for (int i = 0; i < numberOfFish; i++) {
 
-            //TODO بعد از هر if باید ماهی رو به inventory اضافه کنیم
-            //TODO اضافه کردن مهارت ماهیگیری فراموش نشه
             double rand = Math.random();
             double quantity = (random * (currentPlayer.getLevelFishing() + 2) * fishingPole.fishingPoleType.getCoefficient()) / (7 - currentWeather.getFishing());
             Quantity fishQuantity = productQuantity(quantity);
@@ -979,15 +994,19 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Herring, fishQuantity);
+                        fishes.add(springFish);
                         result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Sunfish, fishQuantity);
+                        fishes.add(summerFish);
                         result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Sardine, fishQuantity);
+                        fishes.add(fallFish);
                         result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Perch, fishQuantity);
+                        fishes.add(winterFish);
                         result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
@@ -1000,15 +1019,19 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Flounder, fishQuantity);
+                        fishes.add(springFish);
                         result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Tilapia, fishQuantity);
+                        fishes.add(summerFish);
                         result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Salmon, fishQuantity);
+                        fishes.add(fallFish);
                         result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Midnight_Carp, fishQuantity);
+                        fishes.add(winterFish);
                         result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
@@ -1018,15 +1041,19 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Lionfish, fishQuantity);
+                        fishes.add(springFish);
                         result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Dorado, fishQuantity);
+                        fishes.add(summerFish);
                         result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Sardine, fishQuantity);
+                        fishes.add(fallFish);
                         result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Squid, fishQuantity);
+                        fishes.add(winterFish);
                         result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
@@ -1036,15 +1063,19 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Herring, fishQuantity);
+                        fishes.add(springFish);
                         result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Sunfish, fishQuantity);
+                        fishes.add(summerFish);
                         result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Shad, fishQuantity);
+                        fishes.add(fallFish);
                         result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Tuna, fishQuantity);
+                        fishes.add(winterFish);
                         result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
@@ -1056,15 +1087,19 @@ public class GameController {
                 switch (currentDate.getSeason()) {
                     case Spring:
                         Fish springFish = new Fish(FishType.Ghostfish, fishQuantity);
+                        fishes.add(springFish);
                         result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                     case Summer:
                         Fish summerFish = new Fish(FishType.Rainbow_Trout, fishQuantity);
+                        fishes.add(summerFish);
                         result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                     case Fall:
                         Fish fallFish = new Fish(FishType.Blue_Discus, fishQuantity);
+                        fishes.add(fallFish);
                         result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                     case Winter:
                         Fish winterFish = new Fish(FishType.Perch, fishQuantity);
+                        fishes.add(winterFish);
                         result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     default:
                         break;
@@ -1077,15 +1112,19 @@ public class GameController {
                     switch (currentDate.getSeason()){
                         case Spring:
                             Fish springFish= new Fish(FishType.Legend,fishQuantity);
+                            fishes.add(springFish);
                             result.append(springFish.getFishType().getName()).append(springFish.getQuantity()).append("\n");
                         case Summer:
                             Fish summerFish= new Fish(FishType.Dorado,fishQuantity);
+                            fishes.add(summerFish);
                             result.append(summerFish.getFishType().getName()).append(summerFish.getQuantity()).append("\n");
                         case Fall:
                             Fish fallFish= new Fish(FishType.Squid,fishQuantity);
+                            fishes.add(fallFish);
                             result.append(fallFish.getFishType().getName()).append(fallFish.getQuantity()).append("\n");
                         case Winter:
                             Fish winterFish= new Fish(FishType.Tuna,fishQuantity);
+                            fishes.add(winterFish);
                             result.append(winterFish.getFishType().getName()).append(winterFish.getQuantity()).append("\n");
                     }
 
@@ -1093,14 +1132,27 @@ public class GameController {
             }
         }
 
-        //TODO اضافه کردن مهارت ماهیگیری
+        boolean top=currentPlayer.getLevelFishing() == 4;
+        currentPlayer.increaseHealth(-Math.min ( ((FishingPole) currentPlayer.currentTool).fishingPoleType.costEnergy(top) , currentPlayer.getHealth()) ) ;
+        currentPlayer.increaseFishingAbility(5);
+        for (Fish fish : fishes) {
+            if (currentPlayer.getBackPack().getType().getRemindCapacity() !=0) {
+                inventory.Items.put(fish , 1);
+            }
+        }
 
         return new Result(true, result.toString());
     }
 
 
     public Result Fishing(String fishingPoleType) {
+        if (!(currentPlayer.currentTool instanceof FishingPole)) {
+            return new Result(false, "your current tool is not a FishingPole!");
+        }
+
         if (!checkCoordinateForFishing()) {
+            boolean top=currentPlayer.getLevelFishing() == 4;
+            currentPlayer.increaseHealth(-Math.min ( ((FishingPole) currentPlayer.currentTool).fishingPoleType.costEnergy(top) , currentPlayer.getHealth()) ) ;
             return new Result(false, "you can't fishing because lake is not around you");
         }
         if (isFishingPoleTypeExist(fishingPoleType) == null) {

@@ -21,12 +21,8 @@ public class TrashCan extends Tools {
 
     public static void removeItem (int money , HashMap<Items,Integer> x, Items items, Integer amount){
         App.currentPlayer.increaseMoney(money);
-        if (amount == null || x.get(items)==amount){
-            x.remove(items);
-        }
-        else {
-            x.compute(items, (k, l) -> l - amount);
-        }
+        x.compute(items, (k, l) -> l - amount);
+        x.entrySet().removeIf(e -> e.getValue() <= 0);
     } // اسمش باید عوض یشه هم ورودی منابعی که باید برگردونده بشه رو بگیره و درصد برگشت هم که از تو اینام بدست میاد
 
 
