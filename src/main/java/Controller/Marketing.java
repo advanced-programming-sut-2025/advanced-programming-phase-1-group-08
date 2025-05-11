@@ -28,10 +28,10 @@ import static model.App.*;
 public class Marketing {
 
     public MarketType findEnteredShopType() {
-        for (Market market : markets) {
-            if (currentPlayer.getPositionX() >= market.getTopLeftX() && currentPlayer.getPositionY() >= market.getTopLeftY()) {
-                if (currentPlayer.getPositionX() < market.getTopLeftX() + market.getWidth() && currentPlayer.getPositionY() < market.getTopLeftY()) {
-                    return market.getMarketType();
+        for (MarketType market : MarketType.values()) {
+            if (currentPlayer.getPositionX() >= market.getTopleftx() && currentPlayer.getPositionY() >= market.getToplefty()) {
+                if (currentPlayer.getPositionX() < market.getTopleftx() + market.getWidth() && currentPlayer.getPositionY() < market.getToplefty() + market.getHeight() ) {
+                    return market;
                 }
             }
         }

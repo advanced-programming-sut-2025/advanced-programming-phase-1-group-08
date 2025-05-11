@@ -1,5 +1,5 @@
 package model.Enum.ItemType;
 
 public enum WallType {
-    House, GreenHouse,Farm,Mine;
+    House, GreenHouse,Farm,Mine , Npc;
 }

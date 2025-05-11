@@ -11,14 +11,14 @@ import model.Plants.ForagingCrops;
 import model.Plants.TreesProdct;
 
 import java.util.*;
+import java.util.regex.Matcher;
 
 import static Controller.GameController.isNeighbor;
 import static java.lang.Math.floor;
 import static java.lang.Math.random;
 import static model.App.*;
 import static model.App.currentPlayer;
-import static model.Color_Eraser.RED;
-import static model.Color_Eraser.RESET;
+import static model.Color_Eraser.*;
 import static model.SaveData.UserDataBase.findUserByUsername;
 
 public class Trade {
@@ -85,8 +85,55 @@ public class Trade {
         return (sender.equals(u1) && receiver.equals(u2)) || (sender.equals(u2) && receiver.equals(u1));
     }
 
-    public static Result CheckTradeRespond() {
+    public static Result CheckTradeRespond(String input, int ID) {
+        Matcher matcher = TradeMenuCommands.tradeResponse.getMatcher(input);
+        if (matcher == null)
+            return new Result(false, RED+"Please Respond in Correct Format!"+RESET);
 
+        String response = matcher.group("response");
+
+        int id = Integer.parseInt(matcher.group("id"));
+        if (findTradeByID(id) == null)
+            return new Result(false, RED+"Wrong ID!"+RESET);
+        if (!(id == ID))
+            return new Result(false, RED+"Respond to THIS Trade, Not Other Trades!");
+
+        Trade trade = findTradeByID(id);
+        HumanCommunications f = getFriendship(currentPlayer, trade.sender);
+        if (f == null)
+            return new Result(false, RED+"Friendship Not Found!"+RESET);
+
+        if (response.equalsIgnoreCase("reject")) {
+            f.reduceXP(30);
+            return new Result(true, RED+"Rejected"+RESET + GREEN+"Successfully."+RESET);
+        }
+        else if (!response.equalsIgnoreCase("accept"))
+            return new Result(false, RED+"Please Respond in Correct Format!"+RESET);
+
+        // if Accepted:
+
+        Inventory receiverInventory = currentPlayer.getBackPack().inventory;
+        char P_or_T = trade.receiverGivesPorT;
+        if (P_or_T == 'p' && currentPlayer.getMoney() < trade.receiverAmount) {
+            f.reduceXP(30);
+            return new Result(false, RED+"Not Enough Money to Accept!"+RESET);
+        }
+        else if (!(P_or_T == 't' || P_or_T == 'p'))
+            return new Result(false, RED+"Invalid Trade!"+RESET);
+
+
+        //todo اینجا ترید واقعی انجام میشه و از هردو کم یا زیاد میشه پس اول چک کن رسیور اون آیتمو داره اگه داشت اوکیش کن و بعدشم برای حالت پولی اوکیش کن (برای هردو طرف)
+
+        if (P_or_T == 't') {
+
+        }
+        else {
+
+        }
+
+
+        f.addXP(50);
+        return new Result(true, GREEN+"Accepted Successfully."+RESET);
     }
 
     public static Result checkTradeRequest(String input, char P_or_T) { // TODO make id   چک کن اگه موقع قبول کردن آفر فقططط آفر پول نداشت ارور بده
