@@ -122,8 +122,6 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.showTreeInfo.getMather(input)) != null)
             System.out.println(controller.info(matcher.group("name").trim()));
 
-
-
         else if (GameMenuCommands.questsList.getMather(input) != null)
             System.out.println(controller.questsNPCList());
 
@@ -143,6 +141,20 @@ public class GameMenu implements AppMenu {
 
 
 
+        else if (GameMenuCommands.showTool.getMather(input) != null)
+            System.out.println(controller.showCurrentTool());
+
+        else if (GameMenuCommands.toolsAvailable.getMather(input) != null)
+            System.out.println(controller.availableTools());
+
+        else if ((matcher = GameMenuCommands.toolsEquip.getMather(input)) != null)
+            System.out.println(controller.toolsEquip(matcher.group("name").trim()));
+
+        else if ((matcher = GameMenuCommands.toolsUpgrade.getMather(input)) != null)
+            System.out.println(controller.upgradeTool(matcher.group("name").trim()));
+
+        else if ((matcher = GameMenuCommands.toolsUse.getMather(input)) != null)
+            System.out.println(controller.useTools(matcher.group("name").trim()));
 
 
         else if (input.matches("\\s*exit\\s*game\\s*"))

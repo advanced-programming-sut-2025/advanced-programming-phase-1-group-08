@@ -841,87 +841,6 @@ public class GameController {
         return null;
     }
 
-    public Result toolsEquip (String name){
-        name=name.replaceAll("\\s+","");
-        Inventory inventory=currentPlayer.getBackPack().inventory;
-
-        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
-            if (entry instanceof Axe) {
-                if (((Axe) entry).axeType.equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-            else if (entry instanceof FishingPole){
-                if (((FishingPole) entry).fishingPoleType.equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-            else if (entry instanceof Hoe){
-                if (((Hoe) entry).getType().equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-            else if (entry instanceof PickAxe){
-                if (((PickAxe) entry).pickAxeType.equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-            else if (entry instanceof WateringCan){
-                if (((WateringCan) entry).wateringCanType.equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-
-            else if (entry instanceof Tools){
-                if (((Tools) entry).getName().equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-        }
-
-        return new Result(false,"there is no such tool");
-    }
-
-    public Result showCurrentTool(){
-        Tools currentTool=currentPlayer.currentTool;
-        return switch (currentTool) {
-            case null -> new Result(false, "there is no current tool in your hands");
-            case Axe axe -> new Result(true, "current tool: " + axe.axeType);
-            case FishingPole fishingPole -> new Result(true, "current tool: " + fishingPole.fishingPoleType);
-            case Hoe hoe -> new Result(true, "current tool: " + hoe.getType());
-            case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType);
-            case PickAxe pickAxe -> new Result(true, "current tool: " + pickAxe.pickAxeType);
-            default -> new Result(true, "current tool: " + currentTool.getName());
-        };
-    }
-
-    public Result availableTools() {
-        Inventory inventory = currentPlayer.getBackPack().inventory;
-        StringBuilder result = new StringBuilder();
-        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-            if (entry instanceof Axe) {
-                result.append(((Axe) entry).axeType).append("\n");
-            } else if (entry instanceof FishingPole) {
-                result.append(((FishingPole) entry).fishingPoleType).append("\n");
-            } else if (entry instanceof Hoe) {
-                result .append ( ((Hoe) entry).getType() ) .append("\n");
-            } else if (entry instanceof WateringCan) {
-                result.append(((WateringCan) entry).wateringCanType).append("\n");
-            } else if (entry instanceof PickAxe) {
-                result .append(((PickAxe) entry).pickAxeType) .append( "\n");
-            } else if (entry instanceof Tools) {
-                result.append(((Tools) entry).getName()).append("\n");
-            }
-        }
-        return new Result(true, result.toString());
-    }
-
     public boolean checkCoordinateForFishing(){
         int [] x={1,1,1,0,0,-1,-1,-1};
         int [] y={1,0,-1,1,-1,-1,0,1};
@@ -2398,7 +2317,7 @@ public class GameController {
 
 
 
-                                                    // energy & Date
+                                                                // energy & Date
     private void setEnergyInMorning () {
         for (User user : players) {
 
@@ -2459,7 +2378,7 @@ public class GameController {
     }
 
 
-                                                    // Automatic Plant task
+                                                                 // Automatic Plant task
     private void crowAttack () {
 
         for (Farm farm : farms) {
@@ -2678,7 +2597,7 @@ public class GameController {
         }
     }
 
-                                                    // other plant task
+                                                                   // other plant task
     private String showTree (Tree tree) {
 
 
@@ -2796,7 +2715,7 @@ public class GameController {
         return new Result(false, RED + "You don't have this seed!" + RESET);
     }
 
-                                                    // Tools
+                                                                   // Tools
     private Result useHoe (int dir) {
 
 
@@ -2915,7 +2834,7 @@ public class GameController {
     }
 
 
-                                                    // NPC task
+                                                                    // NPC task
     private void NPCAutomatTask () {
 
         User saveUser = currentPlayer;
@@ -3210,7 +3129,7 @@ public class GameController {
 
 
 
-                                                    // input command Date
+                                                                  // input command Date
     public Result showTime () {
         return new Result(true, BLUE +"Time : "+RESET
                 + currentDate.getHour()+ ":00");
@@ -3304,7 +3223,7 @@ public class GameController {
         return new Result(true, BLUE+"Whoa! Infinite energy mode activated!"+RESET);
     }
 
-                                                    // input command plant
+                                                                   // input command plant
     public Result planting (String name, String direction) {
 
         if (!checkDirection(direction))
@@ -3482,7 +3401,7 @@ public class GameController {
         return new Result(true, BLUE+"The plant has been fertilized! ✨"+RESET);
     }
 
-                                                    // input tools command
+                                                                   // input tools command
     public Result howMuchWater () {
 
         Inventory inventory = currentPlayer.getBackPack().inventory;
@@ -3493,6 +3412,94 @@ public class GameController {
                         +RESET+((WateringCan) entry).getReminderCapacity());
 
         return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
+    }
+    public Result toolsEquip (String name){
+
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
+            if (entry instanceof Axe) {
+                if (((Axe) entry).axeType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof FishingPole){
+                if (((FishingPole) entry).fishingPoleType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof Hoe){
+                if (((Hoe) entry).getType().equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof PickAxe){
+                if (((PickAxe) entry).pickAxeType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof WateringCan){
+                if (((WateringCan) entry).wateringCanType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+
+            else if (entry instanceof Tools){
+                if (((Tools) entry).getName().equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+        }
+
+        return new Result(false,"there is no such tool");
+    }
+    public Result showCurrentTool() {
+
+        Tools currentTool = currentPlayer.currentTool;
+
+        return switch (currentTool) {
+
+            case Axe axe -> new Result(true, "current tool: " + axe.axeType.name());
+            case null    -> new Result(false, "there is no current tool in your hands");
+            case Hoe hoe -> new Result(true, "current tool: " + hoe.getType().getDisplayName());
+            case PickAxe pickAxe -> new Result(true, "current tool: " + pickAxe);
+
+            case FishingPole fishingPole -> new Result(true, "current tool: " +
+                    fishingPole.fishingPoleType.getName());
+            case WateringCan wateringCan -> new Result(true, "current tool: " +
+                    wateringCan.wateringCanType.getDisplayName());
+            default -> new Result(true, "current tool: " + currentTool.getName());
+        };
+    }
+    public Result availableTools() {
+
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        StringBuilder result = new StringBuilder();
+        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+            if (entry instanceof Axe) {
+                result.append(((Axe) entry).axeType.name()).append("\n");
+            } else if (entry instanceof FishingPole) {
+                result.append(((FishingPole) entry).fishingPoleType).append("\n");
+            } else if (entry instanceof Hoe) {
+                result .append ( ((Hoe) entry).getType() ) .append("\n");
+            } else if (entry instanceof WateringCan) {
+                result.append(((WateringCan) entry).wateringCanType).append("\n");
+            } else if (entry instanceof PickAxe) {
+                result .append(((PickAxe) entry).pickAxeType) .append( "\n");
+            } else if (entry instanceof Tools) {
+                result.append(((Tools) entry).getName()).append("\n");
+            }
+        }
+        return new Result(true, result.toString());
+    }
+    public Result upgradeTool (String name) {
+
     }
     public Result useTools (String direction) {
 
@@ -3507,7 +3514,7 @@ public class GameController {
         return null; // TODO
     }
 
-                                                    // input NPC command
+                                                                    // input NPC command
     public Result meetNPC (String name) {
 
         NPC npc;

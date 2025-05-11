@@ -46,11 +46,13 @@ public enum GameMenuCommands {
 
                                                         // Tools
     howMuchWater  ("(?i)\\s*how\\s*much\\s*water\\s*"),
-
-
+    showTool      ("(?i)\\s*tools\\s*show\\s*current\\s*"),
+    toolsAvailable("(?i)\\s*tools\\s*show\\s*available\\s*"),
+    toolsEquip    ("(?i)\\s*tools\\s*equip\\s*(?<name>\\S+)\\s*"),
+    toolsUpgrade  ("(?i)\\s*tools\\s*upgrade\\s*(?<name>\\S+)\\s*"),
+    toolsUse      ("(?i)\\s*tools\\s*use\\s*-d\\s*(?<direction>\\d+)\\s*"),
 
                                                         // NPC
-
     questsList   ("(?i)\\s*quests\\s*list\\s*"),
     meetNPC      ("(?i)\\s*meet\\s*NPC\\s*(?<name>\\S+)\\s*"),
     giftNPC      ("(?i)\\s*gift\\s*NPC\\s*(?<name>\\S+)\\s*-i\\s*(?<item>.+)\\s*"),
@@ -61,11 +63,8 @@ public enum GameMenuCommands {
     walk("walk\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     inventoryShow("inventory\\s+show\\s*"),
     removeItem("^inventory\\s+trash\\s+-i\\s+(?<item>.+?)(?= -n|$)(?: -n (?<number>\\d+))?$"),
-    toolsEquip("tools\\s+equip\\s+(?<name>\\S.*)\\s*"),
     currentTool("tools\\s+show\\s+current\\s*"),
     availableTool("tools\\s+show\\s+available\\s*"),
-    toolsUpgrade("tools\\s+upgrade\\s+(?<name>\\S.*)\\s*"),
-    toolsUse("tools\\s+use\\s+-d\\s+(?<direction>\\S.*)\\s*"),
     fishing("fishing\\s+-p\\s+(?<name>\\S.*)\\s*"),
     buyAnimal("(?i)buy\\s+animal\\s+-a\\s+(?<animal>\\S.*)\\s+-n\\s+(?<name>\\S.*)\\s*"),
     buildBarnOrCage("build\\s+-a\\s+(?<name>\\S.*)\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),

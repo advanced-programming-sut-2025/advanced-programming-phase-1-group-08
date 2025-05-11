@@ -2,11 +2,11 @@ package model.ToolsPackage;
 
 public class Shear extends Tools {
 
-    public static final int coinNeeded=1000;
-    private static int remindInShop=1;
+    public static final int coinNeeded = 1000;
+    private static int remindInShop = 1;
 
     public Shear(){
-        super("Shear", 0);
+        super("Shear");
     }
 
     @Override

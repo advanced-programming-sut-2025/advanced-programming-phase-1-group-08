@@ -2,18 +2,35 @@ package model.ToolsPackage;
 
 import model.Enum.ToolsType.PickAxeType;
 
+import static model.App.currentPlayer;
+import static model.App.currentWeather;
+
 public class PickAxe extends Tools {
 
-    public PickAxe(){
-        super("PickAxe", 0);
+    private PickAxeType type;
+
+    public PickAxe(PickAxeType type){
+        super("PickAxe");
+        this.type = type;
     }
 
-    public PickAxeType pickAxeType=PickAxeType.PrimaryPickAxe;
+    public PickAxeType getType() {
 
-    public void use (){}
+        return type;
+    }
+    public void setType(PickAxeType type) {
+
+        this.type = type;
+    }
 
     @Override
-    public int healthCost() { // TODO
-        return 0;
+    public int healthCost() {
+
+        double x = currentWeather.getEnergyCostCoefficient();
+
+        if (currentPlayer.getLevelMining() == 4)
+            return Math.max((int) (this.type.getEnergyCost()*x)+1, 0);
+
+        return Math.max((int) (this.type.getEnergyCost()*x), 0);
     }
 }
