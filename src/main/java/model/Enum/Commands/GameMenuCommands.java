@@ -85,7 +85,9 @@ public enum GameMenuCommands {
     artisanGet("(?i)artisan\\s+get\\s+(?<name>\\S.*)\\s*"),
     sell("(?i)sell\\s+(?<name>\\S.*)\\s*"),
     sellByCount("(?i)sell\\s+(?<name>\\S.*)\\s+-n\\s+(?<count>\\d+)\\s*"),
-
+    cheatSetFriendship("(?i)cheat\\s+set\\s+\\friendship\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
+    addDollar("(?i)cheat\\s+add\\s+(?<amount>\\d+)\\s+dollars\\s*"),
+    addItem("cheat\\s+add\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     ;
 
 
