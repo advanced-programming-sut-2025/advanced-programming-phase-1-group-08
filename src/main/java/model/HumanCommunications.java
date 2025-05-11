@@ -9,6 +9,7 @@ import model.Enum.ItemType.MarketItemType;
 import model.Enum.ItemType.Quantity;
 import model.Animall.Fish;
 import model.Animall.Animalproduct;
+import model.OtherItem.MarketItem;
 import model.Plants.AllCrops;
 import model.Plants.ForagingCrops;
 import model.Plants.TreesProdct;
@@ -135,6 +136,7 @@ public class HumanCommunications {
         }
 
         addXP(10);
+        if (currentPlayer.getSpouse().equals(other)) addXP(50);
         updateLevel();
 
         Set<User> key = new HashSet<>(Arrays.asList(me, other));
@@ -297,6 +299,9 @@ public class HumanCommunications {
 
 
         otherInventory.Items.put(items, amount);
+
+        if (currentPlayer.getSpouse().equals(other)) addXP(50); // بقیش جای دیگه اد شده
+
         return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
     }
 
@@ -319,6 +324,7 @@ public class HumanCommunications {
 
 
         addXP(60);
+        if (currentPlayer.getSpouse().equals(other)) addXP(50);
         updateLevel(); // to get Updated
         return new Result(true, GREEN+"You Hugged " + other.getNickname() + "."+RESET);
     }
@@ -383,8 +389,10 @@ public class HumanCommunications {
         Inventory myInventory = currentPlayer.getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
-        if (currentPlayer.getGender().equals(other.getGender()))
-            return new Result(false, RED+"No Gay Marriage in Iran!"+RESET);
+        if (currentPlayer.getGender().equalsIgnoreCase("female"))
+            return new Result(false, RED+"Proposal is a Guy job!"+RESET);
+        if (currentPlayer.getGender().equalsIgnoreCase(other.getGender()))
+            return new Result(false, RED+"No Gay Marriage in Islamic Village!"+RESET);
 
         if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
             return new Result(false, PURPLE+"Get Closer Honey!"+RESET);
@@ -398,19 +406,18 @@ public class HumanCommunications {
             if (entry instanceof MarketItem) {
                 if (((MarketItem) entry).getType().equals(MarketItemType.WeddingRing)) {
                     IHaveRing = true;
-                    myInventory.Items.put(entry.getKey(), entry.getValue() - 1);
-                    if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
+//                    myInventory.Items.put(entry.getKey(), entry.getValue() - 1); ممکنه قبول نکنه اینجا جاش نیست
                     break;
                 }
             }
         }
+        myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+
         if (!IHaveRing)
             return new Result(false, RED+"You Don't Have Ring to Propose!"+RESET);
 
-
+        Marriage.sendProposal(currentPlayer, other);
         return new Result(true, GREEN+"You Proposed Successfully!"+RESET);
-
-        //TODO
     }
 
     // LEVEL FOUR
@@ -426,17 +433,31 @@ public class HumanCommunications {
         else
             other = player1;
 
+        currentPlayer.setSpouse(other);
+        other.setSpouse(currentPlayer);
+
         Inventory otherInventory = other.getBackPack().inventory;
+        Inventory myInventory = currentPlayer.getBackPack().inventory;
 
+        FriendshipLevel = 4;
+        setXP(0);
+        int totalMoney = currentPlayer.getMoney() + other.getMoney();
+        currentPlayer.setMoney(totalMoney/2);
+        other.setMoney(totalMoney/2);
 
-        //TODO زمین ها و پولهاشون مال هردو میشه
-
+        for (Map.Entry <Items , Integer> entry : myInventory.Items.entrySet() ) {
+            if (entry instanceof MarketItem) {
+                if (((MarketItem)entry).getType().equals(MarketItemType.WeddingRing)) {
+                    myInventory.Items.put(entry.getKey(), entry.getValue() - 1);
+                    break;
+                }
+            }
+        }
 
         for (Map.Entry <Items , Integer> entry : otherInventory.Items.entrySet() ) {
             if (entry instanceof MarketItem) {
                 if (((MarketItem)entry).getType().equals(MarketItemType.WeddingRing)) {
                     otherInventory.Items.put(entry.getKey(), entry.getValue() + 1);
-                    System.out.println(GREEN+"HAPPY MARRIAGE!"+RESET);
                     return;
                 }
             }
@@ -444,17 +465,7 @@ public class HumanCommunications {
 
 
         otherInventory.Items.put(new MarketItem(MarketItemType.WeddingRing), 1);
-        FriendshipLevel = 4;
-        System.out.println(GREEN+"HAPPY MARRIAGE!"+RESET);
+
     }
 
-    public void divorce() {
-        //todo
-
-
-        updateLevel();
-        SUCCESSFULPropose = false;
-    }
-
-    // TODO اون پاراگراف بین سطح های دوستی و تعاملات
 }

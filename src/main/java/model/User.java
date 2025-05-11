@@ -24,6 +24,7 @@ public class User {
     private final String gender;
     private SecurityQuestions MySecurityQuestion;
     private String MySecurityAnswer;
+    private int daysDepressedLeft = 0;
 
     // TODO وقتی بازی تموم میشه این سه تارو ست کنیم
     private int max_point = 0;
@@ -190,8 +191,15 @@ public class User {
     public int getMoney() {
         return money;
     }
-    public void increaseMoney (int amount) {
+    public void setMoney (int amount) {
         this.money += amount;
+    }
+    public void increaseMoney (int amount) {
+        if (this.getSpouse() == null) this.money += amount;
+        else {
+            this.money += (amount / 2);
+            this.getSpouse().setMoney(this.getSpouse().getMoney() + (amount / 2));
+        }
     }
 
     public int getLevelFarming() {
@@ -323,5 +331,17 @@ public class User {
     @Override
     public int hashCode() {
         return username.hashCode();
+    }
+
+    public int getDaysDepressedLeft() {
+        return daysDepressedLeft;
+    }
+
+    public void setDaysDepressedLeft(int daysDepressedLeft) {
+        this.daysDepressedLeft = daysDepressedLeft;
+    }
+
+    public void setSpouse(User spouse) {
+        Spouse = spouse;
     }
 }

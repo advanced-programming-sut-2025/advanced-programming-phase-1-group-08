@@ -2106,10 +2106,9 @@ public class GameController {
                                 //بخش ریت کردن هدیه ها
                                 if (m.getText().endsWith("Rate it out of 5!")) {
                                     HumanCommunications f = getFriendship(currentPlayer, m.getSender());
-                                    while (true) {
+                                    do {
                                         assert f != null;
-                                        if (f.rateGifts().IsSuccess()) break;
-                                    }
+                                    } while (!f.rateGifts().IsSuccess());
                                 }
                             }
                         }
@@ -2132,11 +2131,26 @@ public class GameController {
                                     System.out.println(result.massage());
                                 } while (!result.IsSuccess());
                                 t.setResponded(true);
-
-                                if () // تاثیر روی دوستی + خط بالا
                             }
                         }
                     }
+                    System.out.println(GREEN+"Trades Done!"+RESET);
+
+                    // proposals
+                    for (List<MessageHandling> messages : conversations.values()) {
+                        for (MessageHandling m : messages) {
+                            if (m.getReceiver().getUsername().equals(currentPlayer.getUsername()) && !m.isSeen() && m.getText().endsWith("Do You Accept to be his Wife?")) {
+                                m.print();
+                                m.setSeen(true);
+                                Result result;
+                                do {
+                                    result = Marriage.proposalResponse(m.getSender(), m.getReceiver());
+                                    System.out.println(result.massage());
+                                } while (!result.IsSuccess());
+                            }
+                        }
+                    }
+
                     return;
                 }
                 if (Objects.equals(user.getUsername(), old.getUsername()))
@@ -2258,6 +2272,32 @@ public class GameController {
         Result result = f.buyFlowers();
         System.out.println(result);
     }
+    public void propose(String input) {
+        String username = GameMenuCommands.propose.getMather(input).group("username");
+        User wife = findUserByUsername(username);
+        if (!players.contains(wife)) {
+            System.out.println(RED+"Username is Unavailable!"+RESET);
+            return;
+        }
+        if (username.equals(currentPlayer.getUsername())) {
+            System.out.println("You can't Propose to " + RED+"Yourself"+RESET + "!");
+            return;
+        }
+        HumanCommunications f = getFriendship(currentPlayer, wife);
+        if (f == null) {
+            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            return;
+        }
+
+        String ring = GameMenuCommands.propose.getMather(input).group("ring");
+        if (ring.equalsIgnoreCase("ring") || ring.equalsIgnoreCase("wedding ring") || ring.equalsIgnoreCase("wedding")) {
+            System.out.println(RED+"Wrong Ring Name!"+RESET);
+        }
+
+        Result result = f.propose();
+        System.out.println(result);
+
+    }
     public void loadGame () {
         // TODO ذخیره جزییات بازی و لود بازی
         setTime(false);
@@ -2372,11 +2412,19 @@ public class GameController {
                                                                 // energy & Date
     private void setEnergyInMorning () {
         for (User user : players) {
-
-            if (user.getHealth() > 0)
-                user.setHealth(user.getMAX_HEALTH());
-            else
-                user.setHealth((user.getMAX_HEALTH()*3)/4);
+            if (user.getDaysDepressedLeft() == 0) {
+                if (user.getHealth() > 0)
+                    user.setHealth(user.getMAX_HEALTH());
+                else
+                    user.setHealth((user.getMAX_HEALTH() * 3) / 4);
+            }
+            else {
+                user.setDaysDepressedLeft(user.getDaysDepressedLeft() - 1);
+                if (user.getHealth() > 0)
+                    user.setHealth((user.getMAX_HEALTH()) / 2);
+                else
+                    user.setHealth((user.getMAX_HEALTH() * 3) / 8);
+            }
         }
     }
     private void setTime (boolean gameIsNew) {

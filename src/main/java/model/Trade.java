@@ -23,9 +23,6 @@ import static model.SaveData.UserDataBase.findUserByUsername;
 
 public class Trade {
 
-    //todo اگه ترید قبول شد دوستیو زیاد کن
-
-
     private final User sender;
     private final User receiver;
 
