@@ -48,9 +48,9 @@ public class GameMenu implements AppMenu {
             TradeController tradeController = new TradeController();
             tradeController.tradeStart();
         }
-//
-//        else if (GameMenuCommands.propose.getMather(input) != null)
-//            controller.propose(input); //TODO
+
+        else if (GameMenuCommands.propose.getMather(input) != null)
+            controller.propose(input);
 
         else if (GameMenuCommands.giveFlower.getMather(input) != null)
             controller.giveFlowers(input);

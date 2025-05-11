@@ -1,0 +1,75 @@
+package model;
+
+import model.Enum.Commands.GameMenuCommands;
+
+import java.util.*;
+
+import static model.App.*;
+import static model.Color_Eraser.*;
+
+public class Marriage {
+    private final User husband;
+    private final User wife;
+    private boolean responded = false;
+
+    public Marriage(User husband, User wife) {
+        this.husband = husband;
+        this.wife = wife;
+    }
+
+    public User getHusband() {
+        return husband;
+    }
+    public User getWife(){ return wife; }
+
+    public boolean isResponded() {
+        return responded;
+    }
+
+    public void setResponded(boolean responded) {
+        this.responded = responded;
+    }
+
+    public void print() {
+        System.out.println("Proposal: " + husband.getNickname() + " Wants to Marry You. Do You Accept to be his Wife?");
+    }
+
+    public boolean isBetween(User u1, User u2) {
+        return (husband.equals(u1) && wife.equals(u2)) || (husband.equals(u2) && wife.equals(u1));
+    }
+
+    public static void sendProposal(User from, User to) {
+        Set<User> key = new HashSet<>(Arrays.asList(from, to));
+        conversations.putIfAbsent(key, new ArrayList<>());
+        conversations.get(key).add(new MessageHandling(from, to, PURPLE+"Proposal: " + from.getNickname() + " Wants to Marry You. Do You Accept to be his Wife?"+RESET));
+    }
+    public static Result proposalResponse(User man, User woman) { //todo به لیست اضافه کنی
+        Scanner scanner = new Scanner(System.in);
+        String respond = scanner.nextLine();
+        String response = GameMenuCommands.proposalRespond.getMather(respond).group("response");
+        String tempUsername = GameMenuCommands.proposalRespond.getMather(respond).group("username");
+
+        if (GameMenuCommands.proposalRespond.getMather(respond) == null || response == null)
+            return new Result(false, RED+"Respond in Correct Format!"+RESET);
+        if (!tempUsername.equals(man.getUsername()))
+            return new Result(false, RED+"Username Doesn't Match!"+RESET);
+        if (!(response.equalsIgnoreCase("accept") || response.equalsIgnoreCase("reject")))
+            return new Result(false, RED+"Unavailable Response!"+RESET);
+
+        boolean accepted = response.equalsIgnoreCase("accept");
+
+        HumanCommunications f = getFriendship(man, woman);
+
+        assert f != null;
+        if (accepted) {
+            f.marry();
+            return new Result(true, GREEN+"Congrats! I Announce You Man and Wife:)"+RESET);
+        }
+        else {
+            f.reduceXP(10000);
+            man.setDaysDepressedLeft(7);
+            return new Result(true, RED+"You Rejected"+RESET + GREEN+" Successfully."+RESET);
+        }
+    }
+
+}

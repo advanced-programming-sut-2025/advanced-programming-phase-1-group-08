@@ -758,6 +758,7 @@ public class Marketing {
             case JojaMart -> {purchaseFromJojaMart(name, amount);}
             case PierreGeneralStore -> {purchaseFromPierre(name, amount);}
             case FishShop ->{purchaseFromFishShop(name, amount);}
+            case Blacksmith ->
         }
         return null;
     }
