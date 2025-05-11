@@ -62,7 +62,7 @@ public enum TreesProductType {
                 .append(BLUE+"\nStages: "+RESET).append("7-7-7-7")
                 .append(BLUE+"\nTotal Harvest Time: "+RESET).append("28")
                 .append(BLUE+"\nOne Time: "+RESET).append("False")
-                .append(BLUE+"\nRegrowth Time: 28"+RESET)
+                .append(BLUE+"\nRegrowth Time: "+RESET+"28")
                 .append(BLUE+"\nBase Sell Price: "+RESET).append(type.getPrice())
                 .append(BLUE+"\nIs Edible: "+RESET).append(type.isEdible())
                 .append(BLUE+"\nBase Energy: "+RESET).append(type.energy)

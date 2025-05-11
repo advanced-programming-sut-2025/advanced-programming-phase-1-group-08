@@ -1,11 +1,11 @@
 package model;
 
-import model.Enum.AllPlants.ForagingCropsType;
 import model.Enum.ItemType.AnimalProductType;
 import model.Enum.ItemType.FishType;
 import model.Enum.ItemType.MarketItemType;
 import model.Enum.ItemType.Quantity;
-import model.Plants.ForagingCrops;
+import model.Animall.Fish;
+import model.Animall.Animalproduct;
 
 import java.util.*;
 
@@ -59,7 +59,7 @@ public class HumanCommunications {
     public User getPlayer2() {
         return player2;
     }
-
+    //TODO وقتی مکانیزم کاهش لول رو زدی یادت باشه این بولین های اول رو فالس کنی با کم شدن لول
     public void updateLevel() {
         if (FriendshipLevel == 0 && getXP() >= 100) {
             increaseLevel();
@@ -162,8 +162,17 @@ public class HumanCommunications {
     } //TODO اگه بازیکن مورد نظر وجود نداشت پیغام مناسب چاپ بشه و اگه مقدار یا آیتم نامعتبر بودن ارور بده
 
     // LEVEL ONE TASKS
-    public void rateGifts(){
+    public Result rateGifts(){
+        Scanner scanner = new Scanner(System.in);
+        int rate = scanner.nextInt();
+        if (!(rate >= 1 && rate <= 5))
+            return new Result(false, RED+"Just Enter a Digit! (1 to 5)"+RESET);
 
+        int x = ((rate - 3) * 30) + 15;
+        setXP(getXP() + x);
+        updateLevel();
+
+        return new Result(true, GREEN+"Rated Successfully."+RESET);
     }
     public Result sendGifts(String username, String item, int amount) {
         User other;
@@ -437,7 +446,7 @@ public class HumanCommunications {
             assert type != null;
             if (type.equals("MarketItemType")) {
                 if (entry instanceof MarketItem) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         IHaveThat = true;
                         myInventory.Items.put(entry.getKey(), entry.getValue() - amount);
                         if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
@@ -447,7 +456,7 @@ public class HumanCommunications {
             }
             else if (type.equals("FishType")) {
                 if (entry instanceof Fish) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         IHaveThat = true;
                         myInventory.Items.put(entry.getKey(), entry.getValue() - amount);
                         if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
@@ -457,7 +466,7 @@ public class HumanCommunications {
             }
             else if (type.equals("AnimalProductType")) {
                 if (entry instanceof Animalproduct) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         IHaveThat = true;
                         myInventory.Items.put(entry.getKey(), entry.getValue() - amount);
                         if (entry.getValue() == 0) myInventory.Items.remove(entry.getKey());
@@ -475,7 +484,7 @@ public class HumanCommunications {
         for (Map.Entry <Items , Integer> entry : myInventory.Items.entrySet() ) {
             if (type.equals("MarketItemType")) {
                 if (entry instanceof MarketItem) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         otherInventory.Items.put(entry.getKey(), entry.getValue() + amount);
                         return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
                     }
@@ -483,7 +492,7 @@ public class HumanCommunications {
             }
             else if (type.equals("FishType")) {
                 if (entry instanceof Fish) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         otherInventory.Items.put(entry.getKey(), entry.getValue() + amount);
                         return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
                     }
@@ -491,7 +500,7 @@ public class HumanCommunications {
             }
             else if (type.equals("AnimalProductType")) {
                 if (entry instanceof Animalproduct) {
-                    if (entry.getKey().equals(items)) {
+                    if (entry.getKey().toString().equals(items.toString())) {
                         otherInventory.Items.put(entry.getKey(), entry.getValue() + amount);
                         return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
                     }
@@ -502,8 +511,6 @@ public class HumanCommunications {
 
         otherInventory.Items.put(items, amount);
         return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
-
-        //TODO اگه ریزالت ترو بود مجبورش کن ریت کنه
     }
 
     // LEVEL TWO TASKS

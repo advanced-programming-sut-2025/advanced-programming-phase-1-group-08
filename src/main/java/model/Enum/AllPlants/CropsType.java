@@ -13,7 +13,7 @@ public enum CropsType {
     Cauliflower     ("Cauliflower", true,    175,75, ForagingSeedsType.CauliflowerSeeds, true),
     CoffeeBean      ("Coffee Bean", false,   15,  0, ForagingSeedsType.CoffeeBean, false),
     Garlic          ("Garlic",      true,    60, 20, ForagingSeedsType.GarlicSeeds, true),
-    GreenBean       ("GreenBean",   true,    40, 25, ForagingSeedsType.BeanStarter , true),
+    GreenBean       ("Green Bean",   true,   40, 25, ForagingSeedsType.BeanStarter , true),
     Kale            ("Kale",        true,    110,50, ForagingSeedsType.KaleSeeds , true),
     Parsnip         ("Parsnip",     true,    35, 25, ForagingSeedsType.ParsnipSeeds , true),
     Potato          ("Potato",      true,    80, 25, ForagingSeedsType.PotatoSeeds , true),
@@ -38,7 +38,7 @@ public enum CropsType {
     Amaranth        ("Amaranth",    true,    150,50, ForagingSeedsType.AmaranthSeeds , true),
     Artichoke       ("Artichoke",   true,    160,30, ForagingSeedsType.ArtichokeSeeds , true),
     Beet            ("Beet",        true,    100,30, ForagingSeedsType.BeetSeeds , true),
-    BokChoy         ("BokChoy",     true,    80, 25, ForagingSeedsType.BokChoySeeds , true),
+    BokChoy         ("Bok Choy",     true,    80, 25, ForagingSeedsType.BokChoySeeds , true),
     Broccoli        ("Broccoli",    true,    70, 63, ForagingSeedsType.BroccoliSeeds , true),
     Cranberries     ("Cranberries", true,    75, 38, ForagingSeedsType.CranberrySeeds, false),
     Eggplant        ("Eggplant",    true,    60, 20, ForagingSeedsType.EggplantSeeds , true),
@@ -46,9 +46,9 @@ public enum CropsType {
     Grape           ("Grape",       true,    80, 38, ForagingSeedsType.GrapeStarter , false),
     Pumpkin         ("Pumpkin",     false,   320, 0, ForagingSeedsType.PumpkinSeeds , true),
     Yam             ("Yam",         true,    160,45, ForagingSeedsType.YamSeeds , true),
-    SweetGemBerry   ("SweetGemBerry",false,  3000,0, ForagingSeedsType.RareSeed , false),
+    SweetGemBerry   ("Sweet Gem Berry",false,  3000,0, ForagingSeedsType.RareSeed , false),
     Powdermelon     ("Powdermelon",true,     60, 63, ForagingSeedsType.PowdermelonSeeds , false),
-    AncientFruit    ("AncientFruit",false,   550, 0, ForagingSeedsType.AncientSeeds , false);
+    AncientFruit    ("Ancient Fruit",false,   550, 0, ForagingSeedsType.AncientSeeds , false);
 
     private final String displayName;
     private final boolean isEdible;
@@ -93,10 +93,19 @@ public enum CropsType {
 
         builder.deleteCharAt(builder.length() - 1);
 
-        builder.append(BLUE+"\nTotal Harvest Time: "+RESET).append(type.seedsType.getGrowthStages())
+        int total = 0;
+        for (Integer integer : type.seedsType.getStageDays())
+            total += integer;
+
+
+        builder.append(BLUE+"\nTotal Harvest Time: "+RESET).append(total)
                 .append(BLUE+"\nOne Time: "+RESET).append(type.seedsType.isOneTimeUse())
-                .append(BLUE+"\nRegrowth Time:"+RESET)
-                .append(BLUE+"\nBase Sell Price: "+RESET).append(type.getPrice())
+                .append(BLUE+"\nRegrowth Time: "+RESET);
+
+        if (!type.seedsType.isOneTimeUse())
+            builder.append(type.seedsType.getRegrowthTime());
+
+        builder.append(BLUE+"\nBase Sell Price: "+RESET).append(type.getPrice())
                 .append(BLUE+"\nIs Edible: "+RESET).append(type.isEdible)
                 .append(BLUE+"\nBase Energy: "+RESET).append(type.energy)
                 .append(BLUE+"\nSeason: "+RESET);
