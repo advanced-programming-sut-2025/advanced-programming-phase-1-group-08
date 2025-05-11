@@ -3015,9 +3015,12 @@ public class GameController {
                 if (checkAmountProductAvailable(new ForagingMinerals(DIAMOND), 1) ||
                     currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
 
+                    int number = 2;
+                    if (currentPlayer.getFriendshipLevel(npc) > 1)
+                        number *= 2;
                     advanceItem(key, -value);
-                    advanceItem(new ForagingMinerals(DIAMOND), 2);
-                    return new Result(true, BRIGHT_BLUE+"You got 2 Diamond"+RESET);
+                    advanceItem(new ForagingMinerals(DIAMOND), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Diamond"+RESET);
                 }
                 return new Result(true, RED+"Inventory is full"+RESET);
             }
@@ -3027,16 +3030,27 @@ public class GameController {
                 return new Result(true, BRIGHT_BLUE+"Your friendship level with Abigail increased"+RESET);
             }
             case Harvey -> {
-                currentPlayer.increaseMoney(750);
-                return new Result(true, "Your got +750 money");
+
+                int number = 750;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
             }
             case Lia -> {
-                currentPlayer.increaseMoney(500);
-                return new Result(true, "Your got +500 money");
+                int number = 500;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
             }
             case Robin -> {
-                currentPlayer.increaseMoney(2000);
-                return new Result(true, "Your got +2000 money");
+
+                int number = 2000;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
             }
             default -> {
                 return new Result(true, "");
@@ -3059,13 +3073,18 @@ public class GameController {
         switch (npc) {
 
             case Sebastian -> {
-
-                currentPlayer.increaseMoney(5000);
-                return new Result(true, "Your got +5000 money");
+                int number = 5000;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
             }
             case Abigail -> {
-                currentPlayer.increaseMoney(500);
-                return new Result(true, "Your got +500 money");
+                int number = 500;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
             }
             case Harvey -> {
                 currentPlayer.increaseFriendshipPoint(NPC.Abigail, 200);
@@ -3078,13 +3097,16 @@ public class GameController {
 
                     advanceItem(key, -value);
                     advanceItem(new MarketItem(MarketItemType.PancakesRecipe), 1);
-                    return new Result(true, BRIGHT_BLUE+"You got 2 Diamond"+RESET);
+                    return new Result(true, BRIGHT_BLUE+"You got 1 Pancakes Recipe"+RESET);
                 }
                 return new Result(true, RED+"Inventory is full"+RESET);
             }
             case Robin -> {
-                currentPlayer.increaseMoney(1000);
-                return new Result(true, "Your got +1000 money");
+                int number = 1000;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
             }
             default -> {
                 return new Result(true, "");
@@ -3115,31 +3137,36 @@ public class GameController {
 
                 if (checkAmountProductAvailable(new ForagingMinerals(QUARTZ), 1) ||
                         currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-
+                    int number = 50;
+                    if (currentPlayer.getFriendshipLevel(npc) > 1)
+                        number *= 2;
                     advanceItem(key, -value);
-                    advanceItem(new ForagingMinerals(QUARTZ), 50);
-                    return new Result(true, BRIGHT_BLUE+"You got 50 Quartz"+RESET);
+                    advanceItem(new ForagingMinerals(QUARTZ), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Quartz"+RESET);
                 }
                 return new Result(true, RED+"Inventory is full"+RESET);
             }
             case Abigail -> {
                 if (checkAmountProductAvailable(new CraftingItem(CraftType.IridiumSprinkler), 1) ||
                         currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-
+                    int number = 1;
+                    if (currentPlayer.getFriendshipLevel(npc) > 1)
+                        number *= 2;
                     advanceItem(key, -value);
-                    advanceItem(new CraftingItem(CraftType.IridiumSprinkler), 1);
-                    return new Result(true, BRIGHT_BLUE+"You got Iridium sprinkler"+RESET);
+                    advanceItem(new CraftingItem(CraftType.IridiumSprinkler), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Iridium sprinkler"+RESET);
                 }
                 return new Result(true, RED+"Inventory is full"+RESET);
             }
             case Harvey -> {
                 if (checkAmountProductAvailable(new MarketItem(MarketItemType.Salad), 1) ||
                         currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-
+                    int number = 5;
+                    if (currentPlayer.getFriendshipLevel(npc) > 1)
+                        number *= 2;
                     advanceItem(key, -value);
-                    advanceItem(new MarketItem(MarketItemType.Salad), 5);
-                    advanceItem(new CraftingItem(CraftType.IridiumSprinkler), 1);
-                    return new Result(true, BRIGHT_BLUE+"You got 5 salad"+RESET);
+                    advanceItem(new MarketItem(MarketItemType.Salad), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" salad"+RESET);
                 }
                 return new Result(true, RED+"Inventory is full"+RESET);
             }
@@ -3147,16 +3174,21 @@ public class GameController {
 
                 if (checkAmountProductAvailable(new CraftingItem(CraftType.DeluxeScarecrow), 1) ||
                         currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-
+                    int number = 1;
+                    if (currentPlayer.getFriendshipLevel(npc) > 1)
+                        number *= 2;
                     advanceItem(key, -value);
-                    advanceItem(new CraftingItem(CraftType.DeluxeScarecrow), 1);
-                    return new Result(true, BRIGHT_BLUE+"You got ⅾeⅼuxe sⅽareⅽrow"+RESET);
+                    advanceItem(new CraftingItem(CraftType.DeluxeScarecrow), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" ⅾeⅼuxe sⅽareⅽrow"+RESET);
                 }
                 return new Result(true, RED+"Inventory is full"+RESET);
             }
             case Robin -> {
-                currentPlayer.increaseMoney(1500);
-                return new Result(true, "Your got +1500 money");
+                int number = 1500;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
             }
             default -> {
                 return new Result(true, "");
@@ -3574,27 +3606,4 @@ public class GameController {
         };
     }
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
