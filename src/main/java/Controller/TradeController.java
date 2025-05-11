@@ -10,15 +10,12 @@ import model.Plants.AllCrops;
 import model.Plants.ForagingCrops;
 import model.Plants.TreesProdct;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import static model.App.*;
 import static model.Color_Eraser.*;
+import static model.SaveData.UserDataBase.findUserByUsername;
 import static model.Trade.checkTradeRequest;
-import static model.Trade.tradeUsers;
 
 
 public class TradeController {
@@ -27,26 +24,41 @@ public class TradeController {
         System.out.println("Players To Trade With: ");
         for (User p: players) {
             if (!p.getUsername().equals(currentPlayer.getUsername())) {
-                tradeUsers.add(p);
+                //todo tradeUsers.add(p);
                 System.out.println(p.getNickname());
             }
         }
-
+        User other;
         Scanner scanner = new Scanner(System.in);
         String input;
+        Trade trade = null;
         while (true) {
             input = scanner.nextLine();
             Result result = null;
             if (TradeMenuCommands.tradeP.getMatcher(input) != null) {
                 result = checkTradeRequest(input, 'p');
+                other = findUserByUsername(TradeMenuCommands.tradeP.getMatcher(input).group("username"));
+
+                if (TradeMenuCommands.tradeP.getMatcher(input).group("type").equals("offer"))
+                    trade = new Trade(currentPlayer, other, 't', 'p', TradeMenuCommands.tradeP.getMatcher(input).group("item"), TradeMenuCommands.tradeP.getMatcher(input).group("price"),
+                                        Integer.parseInt(TradeMenuCommands.tradeP.getMatcher(input).group("amount")), Integer.parseInt(TradeMenuCommands.tradeP.getMatcher(input).group("price")));
+                else if (TradeMenuCommands.tradeP.getMatcher(input).group("type").equals("request"))
+                    trade = new Trade(currentPlayer, other, 'p', 't', TradeMenuCommands.tradeP.getMatcher(input).group("price"), TradeMenuCommands.tradeP.getMatcher(input).group("item"),
+                                        Integer.parseInt(TradeMenuCommands.tradeP.getMatcher(input).group("price")), Integer.parseInt(TradeMenuCommands.tradeP.getMatcher(input).group("amount")));
+
             }
             else if (TradeMenuCommands.tradeTI.getMatcher(input) != null) {
                 result = checkTradeRequest(input, 't');
+                other = findUserByUsername(TradeMenuCommands.tradeTI.getMatcher(input).group("username"));
+
+                trade = new Trade(currentPlayer, other, 't', 't', TradeMenuCommands.tradeP.getMatcher(input).group("item"), TradeMenuCommands.tradeP.getMatcher(input).group("targetItem"),
+                                    Integer.parseInt(TradeMenuCommands.tradeTI.getMatcher(input).group("amount")), Integer.parseInt(TradeMenuCommands.tradeTI.getMatcher(input).group("targetAmount")));
+
             }
             else {
                 System.out.println(RED+"Invalid Trade!"+RESET);
+                continue;
             }
-            assert result != null;
             if (!result.IsSuccess()) {
                 System.out.println(result.massage());
             }
@@ -54,6 +66,14 @@ public class TradeController {
                 break;
         }
 
+        try {
+            Set<User> key = new HashSet<>(Arrays.asList(currentPlayer, other));
+            trades.putIfAbsent(key, new ArrayList<>());
+            trades.get(key).add(trade);
+        } catch (Exception e) {
+            System.out.println(RED+"Not Correct Format! Try Again."+RESET);
+            return;
+        }
 
     }
 }

@@ -9,20 +9,84 @@ import model.Plants.AllCrops;
 import model.Plants.ForagingCrops;
 import model.Plants.TreesProdct;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static Controller.GameController.isNeighbor;
+import static java.lang.Math.floor;
+import static java.lang.Math.random;
 import static model.App.*;
 import static model.App.currentPlayer;
 import static model.Color_Eraser.RED;
 import static model.Color_Eraser.RESET;
+import static model.SaveData.UserDataBase.findUserByUsername;
 
 public class Trade {
-    public static List<User> tradeUsers = new ArrayList<>();
 
-    private User accountParty; // طرف حساب ترید کدوم پلیره؟
-    // تابع make offer و receive offer
+    //todo اگه ترید قبول شد دوستیو زیاد کن
+
+
+    private final User sender;
+    private final User receiver;
+
+    private final String senderGivesWhat;
+    private final String receiverGivesWhat;
+    private boolean responded = false;
+    private int id = (int) floor(random()/100);
+    private final char senderGivesPorT;
+    private final char receiverGivesPorT;
+    private final int senderAmount;
+    private final int receiverAmount;
+
+    public Trade(User from, User to, char senderGivesPorT, char receiverGivesPorT, String senderGivesWhat, String receiverGivesWhat, int senderAmount, int receiverAmount) {
+        this.sender = from;
+        this.receiver = to;
+        this.senderGivesWhat = senderGivesWhat;
+        this.receiverGivesWhat = receiverGivesWhat;
+        this.senderGivesPorT = senderGivesPorT;
+        this.receiverGivesPorT = receiverGivesPorT;
+        this.senderAmount = senderAmount;
+        this.receiverAmount = receiverAmount;
+    }
+
+    public static Trade findTradeByID (int id) {
+        Trade foundTrade = null;
+        for (Map.Entry<Set<User>, List<Trade>> entry : trades.entrySet()) {
+            List<Trade> tradeList = entry.getValue();
+            for (Trade trade : tradeList) {
+                if (trade.getId() == id) {
+                    foundTrade = trade;
+                    break;
+                }
+            }
+            if (foundTrade != null) break;
+        }
+        return foundTrade;
+    }
+
+    public User getReceiver() {
+        return receiver;
+    }
+    public User getSender(){ return sender; }
+
+    public boolean isResponded() {
+        return responded;
+    }
+
+    public void setResponded(boolean responded) {
+        this.responded = responded;
+    }
+
+    public void print() {
+        System.out.println("Trade ID: " + id + "\n Trade Content: " + sender.getNickname() + " Sends " + senderGivesWhat + " to " + receiver.getNickname() + " to Get " + receiverGivesWhat);
+    }
+
+    public boolean isBetween(User u1, User u2) {
+        return (sender.equals(u1) && receiver.equals(u2)) || (sender.equals(u2) && receiver.equals(u1));
+    }
+
+    public static Result CheckTradeRespond() {
+
+    }
 
     public static Result checkTradeRequest(String input, char P_or_T) { // TODO make id   چک کن اگه موقع قبول کردن آفر فقططط آفر پول نداشت ارور بده
         String username;
@@ -64,7 +128,6 @@ public class Trade {
             if (items == null || targetItem == null)
                 return new Result(false, RED+"Incorrect Item Format!"+RESET);
         }
-
         if (currentPlayer.getUsername().equals(username))
             return new Result(false, RED+"You Can't Trade With Yourself!"+RESET);
 
@@ -77,6 +140,8 @@ public class Trade {
         }
         if (!userFound)
             return new Result(false, RED+"User Not Found!"+RESET);
+        if (!isNeighbor(currentPlayer.getPositionX(), currentPlayer.getPositionY(), Objects.requireNonNull(findUserByUsername(username)).getPositionX(), Objects.requireNonNull(findUserByUsername(username)).getPositionY()))
+            return new Result(false, RED+"Get Closer To Trade!"+RESET);
         if (!(type.trim().equalsIgnoreCase("offer") || type.trim().equalsIgnoreCase("request")))
             return new Result(false, RED+"Type Doesn't Match!"+RESET);
         if (P_or_T == 'p' && type.trim().equalsIgnoreCase("request") && price > currentPlayer.getMoney())
@@ -132,5 +197,13 @@ public class Trade {
 
 
         return new Result(true, "");
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -10,6 +10,8 @@ import model.Enum.AllPlants.TreesProductType;
 import model.MapThings.Wood;
 import model.Plants.*;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public enum ArtisanType {
@@ -20,14 +22,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 96;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct artisanProduct=new ArtisanProduct(Honey);
-            craftingItem.getBuffer().put(artisanProduct , App.currentDate)
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 96);
+            craftingItem.getBuffer().put(artisanProduct , x);
         }
 
         @Override
@@ -42,14 +41,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 3;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct cheese=new ArtisanProduct(Cheese);
-            craftingItem.getBuffer().put(cheese , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 3);
+            craftingItem.getBuffer().put(cheese , x);
         }
 
         @Override
@@ -78,14 +74,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 3;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct GoatCheese=new ArtisanProduct(Goat_Cheese);
-            craftingItem.getBuffer().put(GoatCheese, App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 3);
+            craftingItem.getBuffer().put(GoatCheese , x);
         }
 
         @Override
@@ -116,14 +109,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 24;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem beer=new MarketItem(MarketItemType.Beer);
-            craftingItem.getBuffer().put(beer , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 24);
+            craftingItem.getBuffer().put(beer , x);
         }
 
         @Override
@@ -153,15 +143,13 @@ public enum ArtisanType {
             return 13;
         }
 
-        @Override
-        public int takeTime() {
-            return 10;
-        }
 
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem vinegar=new MarketItem(MarketItemType.Vinegar);
-            craftingItem.getBuffer().put(vinegar , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 10);
+            craftingItem.getBuffer().put(vinegar , x);
         }
 
         @Override
@@ -191,15 +179,13 @@ public enum ArtisanType {
             return 75;
         }
 
-        @Override
-        public int takeTime() {
-            return 2;
-        }
 
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem coffee=new MarketItem(MarketItemType.Coffee);
-            craftingItem.getBuffer().put(coffee , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 2);
+            craftingItem.getBuffer().put(coffee , x);
         }
 
         @Override
@@ -231,14 +217,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 96;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct juice=new ArtisanProduct(Juice);
-            craftingItem.getBuffer().put(juice , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 96);
+            craftingItem.getBuffer().put(juice , x);
         }
 
         @Override
@@ -273,15 +256,13 @@ public enum ArtisanType {
             return 100;
         }
 
-        @Override
-        public int takeTime() {
-            return 10;
-        }
 
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct mead=new ArtisanProduct(Mead);
-            craftingItem.getBuffer().put(mead , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 10);
+            craftingItem.getBuffer().put(mead , x);
         }
 
         @Override
@@ -312,14 +293,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 72;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct pale=new ArtisanProduct(Pale_Ale);
-            craftingItem.getBuffer().put(pale , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 72);
+            craftingItem.getBuffer().put(pale , x);
         }
 
         @Override
@@ -349,15 +327,13 @@ public enum ArtisanType {
             TreesProductType type = TreesProductType.valueOf(name);
             return (7 * type.getEnergy() ) / 4;
         }
-        @Override
-        public int takeTime() {
-            return 168;
-        }
 
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct wine=new ArtisanProduct(Wine);
-            craftingItem.getBuffer().put(wine , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 168);
+            craftingItem.getBuffer().put(wine , x);
         }
 
         @Override
@@ -386,14 +362,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 12;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DriedMushrooms=new ArtisanProduct(Dried_Mushrooms);
-            craftingItem.getBuffer().put(DriedMushrooms , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 12);
+            craftingItem.getBuffer().put(DriedMushrooms , x);
         }
 
         @Override
@@ -427,14 +400,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 12;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DriedFruit=new ArtisanProduct(Dried_Fruit);
-            craftingItem.getBuffer().put(DriedFruit , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 12);
+            craftingItem.getBuffer().put(DriedFruit , x);
         }
 
         @Override
@@ -465,14 +435,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 12;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct raisins=new ArtisanProduct(Raisins);
-            craftingItem.getBuffer().put(raisins , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 12);
+            craftingItem.getBuffer().put(raisins , x);
         }
 
         @Override
@@ -505,14 +472,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 1;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ForagingMinerals coal = new ForagingMinerals(ForagingMineralsType.COAL);
-            craftingItem.getBuffer().put(coal , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 1);
+            craftingItem.getBuffer().put(coal , x);
         }
 
         @Override
@@ -543,14 +507,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 4;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct cloth=new ArtisanProduct(Cloth);
-            craftingItem.getBuffer().put(cloth , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 4);
+            craftingItem.getBuffer().put(cloth , x);
         }
 
         @Override
@@ -588,14 +549,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 3;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct mayonnaise=new ArtisanProduct(Mayonnaise);
-            craftingItem.getBuffer().put(mayonnaise , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 3);
+            craftingItem.getBuffer().put(mayonnaise , x);
         }
 
         @Override
@@ -627,14 +585,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 3;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DuckMayonnaise=new ArtisanProduct(Duck_Mayonnaise);
-            craftingItem.getBuffer().put(DuckMayonnaise , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 3);
+            craftingItem.getBuffer().put(DuckMayonnaise , x);
         }
 
         @Override
@@ -666,14 +621,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 3;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DinosaurMayonnaise=new ArtisanProduct(Dinosaur_Mayonnaise);
-            craftingItem.getBuffer().put(DinosaurMayonnaise , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 3);
+            craftingItem.getBuffer().put(DinosaurMayonnaise , x);
         }
 
         @Override
@@ -705,14 +657,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 6;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct TruffleOil=new ArtisanProduct(Truffle_Oil);
-            craftingItem.getBuffer().put(TruffleOil , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 6);
+            craftingItem.getBuffer().put(TruffleOil , x);
         }
 
         @Override
@@ -743,14 +692,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 6;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem oil=new MarketItem(MarketItemType.Oil);
-            craftingItem.getBuffer().put(oil , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 6);
+            craftingItem.getBuffer().put(oil , x);
         }
 
         @Override
@@ -792,14 +738,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 6;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct pickles=new ArtisanProduct(Pickles);
-            craftingItem.getBuffer().put(pickles , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 6);
+            craftingItem.getBuffer().put(pickles , x);
         }
 
         @Override
@@ -834,14 +777,11 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 72;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct jelly=new ArtisanProduct(Jelly);
-            craftingItem.getBuffer().put(jelly , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 72);
+            craftingItem.getBuffer().put(jelly , x);
         }
 
         @Override
@@ -869,13 +809,11 @@ public enum ArtisanType {
             return 15;
         }
 
-        @Override
-        public int takeTime() {
-            return 1;
-        }
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct smokedFish=new ArtisanProduct(Smoked_Fish);
-            craftingItem.getBuffer().put(smokedFish , App.currentDate);
+            HashMap<DateHour, Integer> x=new HashMap<>();
+            x.put(App.currentDate.clone() , 1);
+            craftingItem.getBuffer().put(smokedFish , x);
         }
 
         @Override
@@ -927,27 +865,30 @@ public enum ArtisanType {
         }
 
         @Override
-        public int takeTime() {
-            return 4;
-        }
-
-        @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             if (name.equals("Copper_Ore")) {
                 BarsAndOres copperBar=new BarsAndOres(BarsAndOreType.CopperBar);
-                craftingItem.getBuffer().put(copperBar , App.currentDate);
+                HashMap<DateHour, Integer> x=new HashMap<>();
+                x.put(App.currentDate.clone() , 4);
+                craftingItem.getBuffer().put(copperBar , x);
             }
             if (name.equals("Iron_Ore")) {
                 BarsAndOres ironBar =new BarsAndOres(BarsAndOreType.IronBar);
-                craftingItem.getBuffer().put(ironBar, App.currentDate);
+                HashMap<DateHour, Integer> x=new HashMap<>();
+                x.put(App.currentDate.clone() , 4);
+                craftingItem.getBuffer().put(ironBar , x);
             }
             if (name.equals("Gold_Ore")) {
                 BarsAndOres goldBar=new BarsAndOres(BarsAndOreType.GoldBar);
-                craftingItem.getBuffer().put(goldBar , App.currentDate);
+                HashMap<DateHour, Integer> x=new HashMap<>();
+                x.put(App.currentDate.clone() , 4);
+                craftingItem.getBuffer().put(goldBar , x);
             }
             if (name.equals("Iridium_Ore")) {
                 BarsAndOres iridiumBar=new BarsAndOres(BarsAndOreType.IridiumBar);
-                craftingItem.getBuffer().put(iridiumBar , App.currentDate);
+                HashMap<DateHour, Integer> x=new HashMap<>();
+                x.put(App.currentDate.clone() , 4);
+                craftingItem.getBuffer().put(iridiumBar , x);
             }
         }
 
@@ -982,7 +923,6 @@ public enum ArtisanType {
     private final String name;
     private final CraftType craftType;
     public abstract int getEnergy(String name);
-    public abstract int takeTime();
     public abstract void creatArtesian(String name , CraftingItem craftingItem);
     public abstract boolean checkIngredient(String first , String second);
 

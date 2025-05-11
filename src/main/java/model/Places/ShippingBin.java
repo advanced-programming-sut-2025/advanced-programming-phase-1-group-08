@@ -1,6 +1,12 @@
 package model.Places;
 
+import Controller.GameController;
+import model.App;
+import model.Items;
 import model.MapThings.GameObject;
+import model.MapThings.Tile;
+
+import java.util.ArrayList;
 
 public class ShippingBin extends GameObject {
     private static final int width=1;
@@ -11,6 +17,8 @@ public class ShippingBin extends GameObject {
 
     private final int topLeftX;
     private final int topLeftY;
+
+    public ArrayList<Items> binContents=new ArrayList<>();
 
     public ShippingBin(int topLeftX , int topLeftY) {
         this.topLeftX = topLeftX;
@@ -45,5 +53,24 @@ public class ShippingBin extends GameObject {
     }
     public static void incrementRemindInShop(int amount) {
         ShippingBin.remindInShop += amount;
+    }
+
+    public static ShippingBin isNearShippingBin() {
+        int [] dirx={0,0,1,1,1,-1,-1,-1};
+        int [] diry={1,-1,0,1,-1,0,1,-1};
+        GameController gameController=new GameController();
+
+        for (int x = App.currentPlayer.getPositionX() ; x<App.currentPlayer.getPositionX()+ dirx.length ; x++) {
+            for (int y=App.currentPlayer.getPositionY() ; y<App.currentPlayer.getPositionY()+ diry.length ; y++) {
+                Tile tile=gameController.getTileByCoordinates(x, y);
+                if (tile == null) {
+                    continue;
+                }
+                if (tile.getGameObject() instanceof ShippingBin) {
+                    return (ShippingBin) tile.getGameObject();
+                }
+            }
+        }
+        return null;
     }
 }
