@@ -1834,7 +1834,7 @@ public class GameController {
                     System.out.println("Displaying Unseen Messages...");
                     for (List<MessageHandling> messages : conversations.values()) {
                         for (MessageHandling m : messages) {
-                            if (m.getReceiver().equals(currentPlayer) && !m.isSeen()) {
+                            if (m.getReceiver().getUsername().equals(currentPlayer.getUsername()) && !m.isSeen()) {
                                 m.print();
                                 m.setSeen(true);
 
@@ -1850,6 +1850,28 @@ public class GameController {
                         }
                     }
                     System.out.println(GREEN+"Unseen Messages Displayed."+RESET);
+
+                    System.out.println("Displaying Trade Requests/Offers...");
+                    for (List<Trade> tradeList: trades.values()) {
+                        for (Trade t: tradeList) {
+                            if (t.getReceiver().getUsername().equals(currentPlayer.getUsername()) && !t.isResponded()) {
+                                t.print();
+
+                                System.out.println("What's Your Response?");
+                                Scanner scanner = new Scanner(System.in);
+                                String respond;
+                                Result result;
+                                do {
+                                    respond = scanner.nextLine();
+                                    result = Trade.CheckTradeRespond(respond, t.getId());
+                                    System.out.println(result.massage());
+                                } while (!result.IsSuccess());
+                                t.setResponded(true);
+
+                                if () // تاثیر روی دوستی + خط بالا
+                            }
+                        }
+                    }
                     return;
                 }
                 if (Objects.equals(user.getUsername(), old.getUsername()))
