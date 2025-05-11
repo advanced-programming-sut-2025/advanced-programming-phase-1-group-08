@@ -5,7 +5,11 @@ import model.Enum.AllPlants.ForagingMineralsType;
 import model.Enum.AllPlants.TreesSourceType;
 import model.Enum.ItemType.CraftType;
 import model.Enum.ItemType.MarketItemType;
+import model.MapThings.BasicRock;
 import model.MapThings.Wood;
+import model.OtherItem.BarsAndOres;
+import model.OtherItem.CraftingItem;
+import model.OtherItem.MarketItem;
 import model.Plants.ForagingMinerals;
 import model.Plants.TreeSource;
 

@@ -15,6 +15,7 @@ import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
 import model.Enum.WeatherTime.Weather;
 import model.MapThings.*;
+import model.OtherItem.*;
 import model.Places.*;
 import model.Plants.*;
 import model.ToolsPackage.*;
@@ -853,87 +854,6 @@ public class GameController {
 
         }
         return null;
-    }
-
-    public Result toolsEquip (String name){
-        name=name.replaceAll("\\s+","");
-        Inventory inventory=currentPlayer.getBackPack().inventory;
-
-        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
-            if (entry instanceof Axe) {
-                if (((Axe) entry).axeType.equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-            else if (entry instanceof FishingPole){
-                if (((FishingPole) entry).fishingPoleType.equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-            else if (entry instanceof Hoe){
-                if (((Hoe) entry).getType().equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-            else if (entry instanceof PickAxe){
-                if (((PickAxe) entry).pickAxeType.equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-            else if (entry instanceof WateringCan){
-                if (((WateringCan) entry).wateringCanType.equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-
-            else if (entry instanceof Tools){
-                if (((Tools) entry).getName().equals(name)){
-                    currentPlayer.currentTool=(Tools) entry;
-                    return new Result(true,"now current tool is "+name);
-                }
-            }
-        }
-
-        return new Result(false,"there is no such tool");
-    }
-
-    public Result showCurrentTool(){
-        Tools currentTool=currentPlayer.currentTool;
-        return switch (currentTool) {
-            case null -> new Result(false, "there is no current tool in your hands");
-            case Axe axe -> new Result(true, "current tool: " + axe.axeType);
-            case FishingPole fishingPole -> new Result(true, "current tool: " + fishingPole.fishingPoleType);
-            case Hoe hoe -> new Result(true, "current tool: " + hoe.getType());
-            case WateringCan wateringCan -> new Result(true, "current tool: " + wateringCan.wateringCanType);
-            case PickAxe pickAxe -> new Result(true, "current tool: " + pickAxe.pickAxeType);
-            default -> new Result(true, "current tool: " + currentTool.getName());
-        };
-    }
-
-    public Result availableTools() {
-        Inventory inventory = currentPlayer.getBackPack().inventory;
-        StringBuilder result = new StringBuilder();
-        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-            if (entry instanceof Axe) {
-                result.append(((Axe) entry).axeType).append("\n");
-            } else if (entry instanceof FishingPole) {
-                result.append(((FishingPole) entry).fishingPoleType).append("\n");
-            } else if (entry instanceof Hoe) {
-                result .append ( ((Hoe) entry).getType() ) .append("\n");
-            } else if (entry instanceof WateringCan) {
-                result.append(((WateringCan) entry).wateringCanType).append("\n");
-            } else if (entry instanceof PickAxe) {
-                result .append(((PickAxe) entry).pickAxeType) .append( "\n");
-            } else if (entry instanceof Tools) {
-                result.append(((Tools) entry).getName()).append("\n");
-            }
-        }
-        return new Result(true, result.toString());
     }
 
     public boolean checkCoordinateForFishing(){
@@ -2179,7 +2099,7 @@ public class GameController {
                     System.out.println("Displaying Unseen Messages...");
                     for (List<MessageHandling> messages : conversations.values()) {
                         for (MessageHandling m : messages) {
-                            if (m.getReceiver().equals(currentPlayer) && !m.isSeen()) {
+                            if (m.getReceiver().getUsername().equals(currentPlayer.getUsername()) && !m.isSeen()) {
                                 m.print();
                                 m.setSeen(true);
 
@@ -2195,6 +2115,28 @@ public class GameController {
                         }
                     }
                     System.out.println(GREEN+"Unseen Messages Displayed."+RESET);
+
+                    System.out.println("Displaying Trade Requests/Offers...");
+                    for (List<Trade> tradeList: trades.values()) {
+                        for (Trade t: tradeList) {
+                            if (t.getReceiver().getUsername().equals(currentPlayer.getUsername()) && !t.isResponded()) {
+                                t.print();
+
+                                System.out.println("What's Your Response?");
+                                Scanner scanner = new Scanner(System.in);
+                                String respond;
+                                Result result;
+                                do {
+                                    respond = scanner.nextLine();
+                                    result = Trade.CheckTradeRespond(respond, t.getId());
+                                    System.out.println(result.massage());
+                                } while (!result.IsSuccess());
+                                t.setResponded(true);
+
+                                if () // تاثیر روی دوستی + خط بالا
+                            }
+                        }
+                    }
                     return;
                 }
                 if (Objects.equals(user.getUsername(), old.getUsername()))
@@ -2427,7 +2369,7 @@ public class GameController {
 
 
 
-                                                    // energy & Date
+                                                                // energy & Date
     private void setEnergyInMorning () {
         for (User user : players) {
 
@@ -2488,7 +2430,7 @@ public class GameController {
     }
 
 
-                                                    // Automatic Plant task
+                                                                 // Automatic Plant task
     private void crowAttack () {
 
         for (Farm farm : farms) {
@@ -2707,7 +2649,7 @@ public class GameController {
         }
     }
 
-                                                    // other plant task
+                                                                   // other plant task
     private String showTree (Tree tree) {
 
 
@@ -2825,7 +2767,7 @@ public class GameController {
         return new Result(false, RED + "You don't have this seed!" + RESET);
     }
 
-                                                    // Tools
+                                                                   // Tools
     private Result useHoe (int dir) {
 
 
@@ -2944,15 +2886,26 @@ public class GameController {
     }
 
 
-                                                    // NPC task
+                                                                    // NPC task
     private void NPCAutomatTask () {
+
+        User saveUser = currentPlayer;
 
         for (User user : players)
             for (NPC npc : NPC.values()) {
+
+                currentPlayer = user;
                 user.setTodayTalking(npc, false);
                 user.setTodayGifting(npc, false);
                 user.setLevel3Date(npc, currentDate);
+
+                if (user.getFriendshipLevel(npc) == 3 && Math.random() > 0.5)
+                    if (user.getBackPack().getType().getRemindCapacity() > 0 ||
+                            checkAmountProductAvailable(npc.getGiftItem(), 1))
+
+                        advanceItem(npc.getGiftItem(), 1);
             }
+        currentPlayer = saveUser;
     }
     private String padRight(String text, int length) {
         if (text.length() >= length) return text.substring(0, length);
@@ -2962,14 +2915,17 @@ public class GameController {
 
         StringBuilder sb = new StringBuilder();
 
-        int width = 100;
+        int width = 120;
         String title = BRIGHT_BLUE + npc.getName() + RESET;
         String quest2;
         String quest3;
         ArrayList<String> requests = new ArrayList<>();
+        ArrayList<Integer> numbers = new ArrayList<>(npc.getRequests().values());
 
-        for (Items item : npc.getRequest().keySet())
+        for (Items item : npc.getRequests().keySet())
             requests.add(item.toString());
+
+
 
         int padding = (width - 2 - title.length()) / 2;
         sb.append("|")
@@ -2979,20 +2935,23 @@ public class GameController {
                 .append("|\n");
 
         sb.append("|").append(" ".repeat(width - 2)).append("|\n");
+        sb.append("|").append(" ".repeat(width - 2)).append("|\n");
 
+        sb.append("| ").append(padRight("Quest 1 :", width - 3)).append("|\n\n");
 
-        sb.append("| ").append(padRight("Quest 1 :", width - 3)).append("|\n");
+        String result = numbers.getFirst()+" "+requests.getFirst() + " ---> " + npc.getReward(1);
+        sb.append("|").append(" ".repeat(10)).append(padRight(result, width - 3)).append("|\n\n");
 
-        sb.append("|").append(" ".repeat(10)).append(padRight(requests.getFirst(), width - 3)).append("|\n");
 
         if (currentPlayer.getFriendshipLevel(npc) >= 1)
             quest2 = "Quest 2 :";
         else
             quest2 = "Quest 2 : (unlock at friendship level 1)";
 
-        sb.append("| ").append(padRight(quest2, width - 3)).append("|\n");
+        sb.append("| ").append(padRight(quest2, width - 3)).append("|\n\n");
 
-        sb.append("|").append(" ".repeat(quest2.length()+1)).append(padRight(requests.getFirst(), width - 3)).append("|\n");
+        String result2 = numbers.getFirst()+" "+requests.get(1) + " ---> " + npc.getReward(2);
+        sb.append("|").append(" ".repeat(10)).append(padRight(result2, width - 3)).append("|\n\n");
 
         int dif = getDayDifferent(currentPlayer.getLevel3Date(npc), currentDate);
 
@@ -3002,13 +2961,14 @@ public class GameController {
             else
                 quest3 = "Quest 3 : (unlock in " + dif + " days later";
         }
-        else {
+        else
             quest3 = "Quest 3 : (unlock at friendship level 3)";
-        }
-        sb.append("| ").append(padRight(quest3, width - 3)).append("|\n");
 
-        sb.append("|").append(" ".repeat(quest3.length()+1)).
-                append(padRight(requests.getFirst(), width - 3)).append("|\n\n");
+        sb.append("| ").append(padRight(quest3, width - 3)).append("|\n\n");
+
+        String result3 = numbers.getFirst()+" "+requests.get(2) + " ---> " + npc.getReward(3);
+        sb.append("|").append(" ".repeat(10)).
+                append(padRight(result3, width - 3)).append("|\n\n");
 
         return sb.toString();
     }
@@ -3020,11 +2980,208 @@ public class GameController {
                 "| " + padRight(npc.getName() + " : " +
                 currentPlayer.getFriendshipLevel(npc), width - 3) + "|\n";
     }
+    private Result doTask1 (NPC npc) {
+
+
+        Map.Entry<Items, Integer> entry = new ArrayList<>(npc.getRequests().entrySet()).getFirst();
+        Items key = entry.getKey();
+        int value = entry.getValue();
+
+        if (!checkAmountProductAvailable(key, value))
+            return new Result(false, RED+"You don't have enough source"+RESET);
+
+        switch (npc) {
+
+            case Sebastian -> {
+
+                if (checkAmountProductAvailable(new ForagingMinerals(DIAMOND), 1) ||
+                    currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
+
+                    int number = 2;
+                    if (currentPlayer.getFriendshipLevel(npc) > 1)
+                        number *= 2;
+                    advanceItem(key, -value);
+                    advanceItem(new ForagingMinerals(DIAMOND), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Diamond"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Abigail -> {
+
+                currentPlayer.increaseFriendshipPoint(NPC.Abigail, 200);
+                return new Result(true, BRIGHT_BLUE+"Your friendship level with Abigail increased"+RESET);
+            }
+            case Harvey -> {
+
+                int number = 750;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            case Lia -> {
+                int number = 500;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            case Robin -> {
+
+                int number = 2000;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            default -> {
+                return new Result(true, "");
+            }
+        }
+
+    }
+    private Result doTask2 (NPC npc) {
+
+        if (currentPlayer.getFriendshipLevel(npc) < 1)
+            return new Result(false, RED+"Your friendship with "+npc.getName()+" needs to grow"+RESET);
+
+        Map.Entry<Items, Integer> entry = new ArrayList<>(npc.getRequests().entrySet()).get(1);
+        Items key = entry.getKey();
+        int value = entry.getValue();
+
+        if (!checkAmountProductAvailable(key, value))
+            return new Result(false, RED+"You don't have enough source"+RESET);
+
+        switch (npc) {
+
+            case Sebastian -> {
+                int number = 5000;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            case Abigail -> {
+                int number = 500;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            case Harvey -> {
+                currentPlayer.increaseFriendshipPoint(NPC.Abigail, 200);
+                return new Result(true, BRIGHT_BLUE+"Your friendship level with Harvey increased"+RESET);
+            }
+            case Lia -> {
+
+                if (checkAmountProductAvailable(new MarketItem(MarketItemType.PancakesRecipe), 1) ||
+                        currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
+
+                    advanceItem(key, -value);
+                    advanceItem(new MarketItem(MarketItemType.PancakesRecipe), 1);
+                    return new Result(true, BRIGHT_BLUE+"You got 1 Pancakes Recipe"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Robin -> {
+                int number = 1000;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            default -> {
+                return new Result(true, "");
+            }
+        }
+    }
+    private Result doTask3 (NPC npc) {
+
+        int dif = getDayDifferent(currentPlayer.getLevel3Date(npc), currentDate);
+
+        if (currentPlayer.getFriendshipLevel(npc) >= 3) {
+            if (dif < npc.getRequest3DayNeeded())
+                return new Result(false, RED+"Quest is lock\n" +
+                        "Unlock in " + dif + " days later"+RESET);
+        } else
+            return new Result(false, RED+"Your friendship with "+npc.getName()+" needs to grow"+RESET);
+
+        Map.Entry<Items, Integer> entry = new ArrayList<>(npc.getRequests().entrySet()).get(2);
+        Items key = entry.getKey();
+        int value = entry.getValue();
+
+        if (!checkAmountProductAvailable(key, value))
+            return new Result(false, RED+"You don't have enough source"+RESET);
+
+        switch (npc) {
+
+            case Sebastian -> {
+
+                if (checkAmountProductAvailable(new ForagingMinerals(QUARTZ), 1) ||
+                        currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
+                    int number = 50;
+                    if (currentPlayer.getFriendshipLevel(npc) > 1)
+                        number *= 2;
+                    advanceItem(key, -value);
+                    advanceItem(new ForagingMinerals(QUARTZ), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Quartz"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Abigail -> {
+                if (checkAmountProductAvailable(new CraftingItem(CraftType.IridiumSprinkler), 1) ||
+                        currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
+                    int number = 1;
+                    if (currentPlayer.getFriendshipLevel(npc) > 1)
+                        number *= 2;
+                    advanceItem(key, -value);
+                    advanceItem(new CraftingItem(CraftType.IridiumSprinkler), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Iridium sprinkler"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Harvey -> {
+                if (checkAmountProductAvailable(new MarketItem(MarketItemType.Salad), 1) ||
+                        currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
+                    int number = 5;
+                    if (currentPlayer.getFriendshipLevel(npc) > 1)
+                        number *= 2;
+                    advanceItem(key, -value);
+                    advanceItem(new MarketItem(MarketItemType.Salad), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" salad"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Lia -> {
+
+                if (checkAmountProductAvailable(new CraftingItem(CraftType.DeluxeScarecrow), 1) ||
+                        currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
+                    int number = 1;
+                    if (currentPlayer.getFriendshipLevel(npc) > 1)
+                        number *= 2;
+                    advanceItem(key, -value);
+                    advanceItem(new CraftingItem(CraftType.DeluxeScarecrow), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" ⅾeⅼuxe sⅽareⅽrow"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Robin -> {
+                int number = 1500;
+                if (currentPlayer.getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                currentPlayer.increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            default -> {
+                return new Result(true, "");
+            }
+        }
+    }
 
 
 
 
-                                                    // input command Date
+                                                                  // input command Date
     public Result showTime () {
         return new Result(true, BLUE +"Time : "+RESET
                 + currentDate.getHour()+ ":00");
@@ -3118,7 +3275,7 @@ public class GameController {
         return new Result(true, BLUE+"Whoa! Infinite energy mode activated!"+RESET);
     }
 
-                                                    // input command plant
+                                                                   // input command plant
     public Result planting (String name, String direction) {
 
         if (!checkDirection(direction))
@@ -3296,7 +3453,7 @@ public class GameController {
         return new Result(true, BLUE+"The plant has been fertilized! ✨"+RESET);
     }
 
-                                                    // input tools command
+                                                                   // input tools command
     public Result howMuchWater () {
 
         Inventory inventory = currentPlayer.getBackPack().inventory;
@@ -3307,6 +3464,94 @@ public class GameController {
                         +RESET+((WateringCan) entry).getReminderCapacity());
 
         return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
+    }
+    public Result toolsEquip (String name){
+
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
+            if (entry instanceof Axe) {
+                if (((Axe) entry).axeType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof FishingPole){
+                if (((FishingPole) entry).fishingPoleType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof Hoe){
+                if (((Hoe) entry).getType().equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof PickAxe){
+                if (((PickAxe) entry).pickAxeType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+            else if (entry instanceof WateringCan){
+                if (((WateringCan) entry).wateringCanType.equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+
+            else if (entry instanceof Tools){
+                if (((Tools) entry).getName().equals(name)){
+                    currentPlayer.currentTool=(Tools) entry;
+                    return new Result(true,"now current tool is "+name);
+                }
+            }
+        }
+
+        return new Result(false,"there is no such tool");
+    }
+    public Result showCurrentTool() {
+
+        Tools currentTool = currentPlayer.currentTool;
+
+        return switch (currentTool) {
+
+            case Axe axe -> new Result(true, "current tool: " + axe.axeType.name());
+            case null    -> new Result(false, "there is no current tool in your hands");
+            case Hoe hoe -> new Result(true, "current tool: " + hoe.getType().getDisplayName());
+            case PickAxe pickAxe -> new Result(true, "current tool: " + pickAxe);
+
+            case FishingPole fishingPole -> new Result(true, "current tool: " +
+                    fishingPole.fishingPoleType.getName());
+            case WateringCan wateringCan -> new Result(true, "current tool: " +
+                    wateringCan.wateringCanType.getDisplayName());
+            default -> new Result(true, "current tool: " + currentTool.getName());
+        };
+    }
+    public Result availableTools() {
+
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        StringBuilder result = new StringBuilder();
+        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+            if (entry instanceof Axe) {
+                result.append(((Axe) entry).axeType.name()).append("\n");
+            } else if (entry instanceof FishingPole) {
+                result.append(((FishingPole) entry).fishingPoleType).append("\n");
+            } else if (entry instanceof Hoe) {
+                result .append ( ((Hoe) entry).getType() ) .append("\n");
+            } else if (entry instanceof WateringCan) {
+                result.append(((WateringCan) entry).wateringCanType).append("\n");
+            } else if (entry instanceof PickAxe) {
+                result .append(((PickAxe) entry).pickAxeType) .append( "\n");
+            } else if (entry instanceof Tools) {
+                result.append(((Tools) entry).getName()).append("\n");
+            }
+        }
+        return new Result(true, result.toString());
+    }
+    public Result upgradeTool (String name) {
+
     }
     public Result useTools (String direction) {
 
@@ -3321,7 +3566,7 @@ public class GameController {
         return null; // TODO
     }
 
-                                                    // input NPC command
+                                                                    // input NPC command
     public Result meetNPC (String name) {
 
         NPC npc;
@@ -3379,17 +3624,17 @@ public class GameController {
         }
         return new Result(false, BRIGHT_BLUE+"Your gift successfully sent to "
                 + BRIGHT_GREEN + npc.getName() + RESET);
-    }
+    } // TODO check location
     public Result questsNPCList () {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("+").append("-".repeat(100 - 2)).append("+\n");
+        sb.append("+").append("-".repeat(120 - 2)).append("+\n");
 
         for (NPC npc : NPC.values())
             sb.append(OneNPCQuestsList(npc));
 
-        sb.append("+").append("-".repeat(100 - 2)).append("+");
+        sb.append("+").append("-".repeat(120 - 2)).append("+");
 
         return new Result(true, sb.toString());
     }
@@ -3406,28 +3651,30 @@ public class GameController {
 
         return new Result(true, sb.toString());
     }
+    public Result doQuest (String name, String index) {
 
+        int ID;
+        try {
+            ID = Integer.parseInt(index);
+        } catch (Exception e) {
+            return new Result(false, RED+"Index is invalid"+RESET);
+        }
+
+        NPC npc;
+        try {
+            npc = NPC.valueOf(name);
+        } catch (Exception e) {
+            return new Result(false, RED+"You're looking for someone who isn't real"+RESET);
+        }
+        if (!npc.isInHisHome(currentPlayer.getPositionX(), currentPlayer.getPositionY()))
+            return new Result(false, RED+"You should go to their place first"+RESET);
+
+        return switch (ID) {
+            case 1 -> doTask1(npc);
+            case 2 -> doTask2(npc);
+            case 3 -> doTask3(npc);
+            default -> new Result(false, RED + "Index is invalid" + RESET);
+        };
+    }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

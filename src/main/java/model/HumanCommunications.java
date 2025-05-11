@@ -6,6 +6,7 @@ import model.Enum.ItemType.MarketItemType;
 import model.Enum.ItemType.Quantity;
 import model.Animall.Fish;
 import model.Animall.Animalproduct;
+import model.OtherItem.MarketItem;
 
 import java.util.*;
 

@@ -1,15 +1,16 @@
-package model;
+package model.OtherItem;
 
+import model.DateHour;
 import model.Enum.ItemType.CraftType;
+import model.Items;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class CraftingItem extends Items {
     private CraftType craftType;
     private int x;
     private int y;
-    private HashMap<Items , HashMap<DateHour , Integer>> buffer=new HashMap<Items, HashMap<DateHour, Integer>>();
+    private HashMap<Items , HashMap<DateHour, Integer>> buffer=new HashMap<Items, HashMap<DateHour, Integer>>();
 
     public CraftingItem(CraftType craftType) {
         this.craftType = craftType;

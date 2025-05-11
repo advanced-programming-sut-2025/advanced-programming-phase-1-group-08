@@ -6,17 +6,23 @@ import model.Animall.Fish;
 import model.Enum.WeatherTime.Weather;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.ItemType.*;
+import model.MapThings.BasicRock;
 import model.MapThings.Wood;
+import model.OtherItem.ArtisanProduct;
+import model.OtherItem.BarsAndOres;
+import model.OtherItem.MarketItem;
 import model.Plants.AllCrops;
 import model.Plants.MixedSeeds;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public enum NPC {
 
-    Sebastian("Sebastian", Map.of(new BarsAndOres(BarsAndOreType.IronOre), 50,
-            new BasicRock(), 150 ), 42, 45, 6, 5, 10) {
+    Sebastian("Sebastian", new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.IronOre), 50,
+            new BasicRock(), 150 )), 42, 45, 6, 5,
+            new MarketItem(MarketItemType.Oil), 10) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -68,11 +74,23 @@ public enum NPC {
 //            }
             else return items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Pizza);
         }
+
+        @Override
+        public String getReward (int index) {
+
+            return switch (index) {
+                case 1 -> "2 Diamond";
+                case 2 -> "5000 coin";
+                case 3 -> "50 Quartz";
+                default -> "";
+            };
+        }
     }, // TODO
 
-    Abigail("Abigail",  Map.of(new BarsAndOres(BarsAndOreType.GoldBar), 1,
+    Abigail("Abigail",  new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.GoldBar), 1,
             new AllCrops(CropsType.Pumpkin), 1,
-            new AllCrops(CropsType.Wheat),   50), 51, 45, 6, 5, 20) {
+            new AllCrops(CropsType.Wheat),   50)), 51, 45, 6, 5,
+            new MarketItem(MarketItemType.Bouquet), 20) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -119,11 +137,23 @@ public enum NPC {
             }
             else return items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Coffee);
         }
+
+        @Override
+        public String getReward (int index) {
+
+            return switch (index) {
+                case 1 -> "+1 friendship level";
+                case 2 -> "500 coin";
+                case 3 -> "Iridium Sprinkler";
+                default -> "";
+            };
+        }
     },
 
-    Harvey("Harvey", Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
+    Harvey("Harvey", new LinkedHashMap<>(Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
             new AllCrops(CropsType.Kale), 12,
-            new ArtisanProduct(ArtisanType.Wine),   1), 32, 52, 6, 5, 15) {
+            new ArtisanProduct(ArtisanType.Wine),   1)), 32, 52, 6, 5,
+            new MarketItem(MarketItemType.Bread), 15) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -170,11 +200,23 @@ public enum NPC {
 
             else return items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Coffee);
         }
+
+        @Override
+        public String getReward (int index) {
+
+            return switch (index) {
+                case 1 -> "750 coin";
+                case 2 -> "+1 friendship level";
+                case 3 -> "5 salad";
+                default -> "";
+            };
+        }
     },
 
-    Lia("Lia",  Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
+    Lia("Lia",  new LinkedHashMap<>(Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
             new Wood(), 200,
-            new BasicRock(),   200), 42, 52, 6, 5, 25) {
+            new BasicRock(),   200)), 42, 52, 6, 5,
+            new MarketItem(MarketItemType.Salad), 25) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -221,11 +263,23 @@ public enum NPC {
 
             else return items instanceof ArtisanProduct && ((ArtisanProduct) items).getType().equals(ArtisanType.Wine);
         }
+
+        @Override
+        public String getReward (int index) {
+
+            return switch (index) {
+                case 1 -> "500 coin";
+                case 2 -> "Pancakes Recipe";
+                case 3 -> "ⅾeⅼuxe sⅽareⅽrow";
+                default -> "";
+            };
+        }
     },
 
-    Robin("Robin",  Map.of(new BarsAndOres(BarsAndOreType.IronBar), 10,
+    Robin("Robin",  new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.IronBar), 10,
             new Wood(), 80,
-            new MixedSeeds(),   10), 51, 52, 6, 5, 18) {
+            new MixedSeeds(),   10)), 51, 52, 6, 5,
+            new MarketItem(MarketItemType.Coffee), 18) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -272,6 +326,17 @@ public enum NPC {
 
             else return items instanceof BarsAndOres && ((BarsAndOres) items).getType().equals(BarsAndOreType.IronBar);
         }
+
+        @Override
+        public String getReward (int index) {
+
+            return switch (index) {
+                case 1 -> "2000 coin";
+                case 2 -> "1000 coin";
+                case 3 -> "1500 coin";
+                default -> "";
+            };
+        }
     };
 
     private final String name;
@@ -279,21 +344,26 @@ public enum NPC {
     private final int Hight;
     private final int topLeftX;
     private final int topLeftY;
+    private final Items giftItem;
     private final int request3DayNeeded;
-    private final Map<Items, Integer> Request;
+    private final LinkedHashMap<Items, Integer> Request;
 
 
     public abstract boolean isItFavorite (Items items);
     public abstract String getDialogue(int level, Weather weather);
+    public abstract String getReward (int index);
 
 
-    NPC (String name, Map<Items, Integer> request, int topLeftX, int topLeftY, int width, int height, int request3DayNeeded) {
+    NPC (String name, LinkedHashMap<Items, Integer> request, int topLeftX, int topLeftY,
+         int width, int height, Items giftItem, int request3DayNeeded) {
+
         Request = request;
         this.name = name;
         Width = width;
         Hight = height;
         this.topLeftX = topLeftX;
         this.topLeftY = topLeftY;
+        this.giftItem = giftItem;
         this.request3DayNeeded = request3DayNeeded;
     }
 
@@ -321,6 +391,9 @@ public enum NPC {
     public int getTopLeftY() {
         return topLeftY;
     }
+    public Items getGiftItem() {
+        return giftItem;
+    }
 
     public static NPC wallOrDoor (int x, int y) {
         for (NPC npc : NPC.values()) {
@@ -338,8 +411,9 @@ public enum NPC {
 
         return request3DayNeeded;
     }
-    public Map<Items, Integer> getRequest() {
+    public LinkedHashMap<Items, Integer> getRequests() {
 
         return Request;
     }
+
 }

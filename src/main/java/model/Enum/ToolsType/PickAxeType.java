@@ -2,80 +2,30 @@ package model.Enum.ToolsType;
 
 public enum PickAxeType {
 
-    PrimaryPickAxe{
-        @Override
-        public int costEnergy(boolean succesfully, boolean mining){
-            if (!succesfully && mining){
-                return 3;
-            }
-            else if (!succesfully || mining){
-                return 4;
-            }
-            else {
-                return 5;
-            }
-        }
-    },
+    primaryPickAxe  ("Primary PickAxe", -5),
 
-    CopperyPickAxe{
-        @Override
-        public int costEnergy(boolean succesfully, boolean mining){
-            if (!succesfully && mining){
-                return 2;
-            }
-            else if (!succesfully || mining){
-                return 3;
-            }
-            else {
-                return 4;
-            }
-        }
-    },
+    copperyPickAxe  ("Coppery PickAxe", -4),
 
-    IronPickAxe{
-        @Override
-        public int costEnergy(boolean succesfully, boolean mining){
-            if (!succesfully && mining){
-                return 1;
-            }
-            else if (!succesfully || mining){
-                return 2;
-            }
-            else {
-                return 3;
-            }
-        }
-    },
+    ironPickAxe     ("Iron PickAxe",    -3),
 
-    GoldenPickAxe{
-        @Override
-        public int costEnergy(boolean succesfully, boolean mining){
-            if (!succesfully && mining){
-                return 0;
-            }
-            else if (!succesfully || mining){
-                return 1;
-            }
-            else {
-                return 2;
-            }
-        }
-    },
+    goldenPickAxe   ("Golden PickAxe",  -2),
 
-    IridiumPickAxe{
-        @Override
-        public int costEnergy(boolean succesfully, boolean mining){
-            if (!succesfully && mining){
-                return 0;
-            }
-            else if (!succesfully || mining){
-                return 0;
-            }
-            else {
-                return 1;
-            }
-        }
-    };
+    iridiumPickAxe  ("Iridium PickAxe", -1);
 
-    public abstract int costEnergy(boolean successfully, boolean mining/* is Mining is at top level?*/ );
+    private final int energyCost;
+    private final String displayName;
+
+    PickAxeType (String displayName, int energyCost) {
+        this.displayName = displayName;
+        this.energyCost = energyCost;
+    }
+
+    public int getEnergyCost() {
+
+        return energyCost;
+    }
+    public String getDisplayName() {
+
+        return displayName;
+    }
 }

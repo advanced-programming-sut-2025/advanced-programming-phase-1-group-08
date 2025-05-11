@@ -13,7 +13,7 @@ public class WateringCan extends Tools {
 
     public WateringCan(WateringCanType type) {
 
-        super("WateringCan", 0);
+        super("WateringCan");
         this.wateringCanType = type;
         reminderCapacity = this.wateringCanType.getCapacity();
     }

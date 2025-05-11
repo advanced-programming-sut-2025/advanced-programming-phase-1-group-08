@@ -1,8 +1,7 @@
-package model;
+package model.OtherItem;
 
 import model.Enum.ItemType.ArtisanType;
-
-import java.util.ArrayList;
+import model.Items;
 
 public class ArtisanProduct extends Items {
     private ArtisanType type;

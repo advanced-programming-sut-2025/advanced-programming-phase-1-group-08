@@ -122,10 +122,39 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.showTreeInfo.getMather(input)) != null)
             System.out.println(controller.info(matcher.group("name").trim()));
 
+        else if (GameMenuCommands.questsList.getMather(input) != null)
+            System.out.println(controller.questsNPCList());
+
+        else if (GameMenuCommands.friendshipNPCList.getMather(input) != null)
+            System.out.println(controller.friendshipNPCList());
+
+        else if ((matcher = GameMenuCommands.meetNPC.getMather(input)) != null)
+            System.out.println(controller.meetNPC(matcher.group("name").trim()));
+
+        else if ((matcher = GameMenuCommands.questsFinish.getMather(input)) != null)
+            System.out.println(controller.doQuest(matcher.group("name").trim(),
+                    matcher.group("index").trim()));
+
+        else if ((matcher = GameMenuCommands.giftNPC.getMather(input)) != null)
+            System.out.println(controller.giftNPC(matcher.group("name").trim(),
+                    matcher.group("item").trim()));
 
 
 
+        else if (GameMenuCommands.showTool.getMather(input) != null)
+            System.out.println(controller.showCurrentTool());
 
+        else if (GameMenuCommands.toolsAvailable.getMather(input) != null)
+            System.out.println(controller.availableTools());
+
+        else if ((matcher = GameMenuCommands.toolsEquip.getMather(input)) != null)
+            System.out.println(controller.toolsEquip(matcher.group("name").trim()));
+
+        else if ((matcher = GameMenuCommands.toolsUpgrade.getMather(input)) != null)
+            System.out.println(controller.upgradeTool(matcher.group("name").trim()));
+
+        else if ((matcher = GameMenuCommands.toolsUse.getMather(input)) != null)
+            System.out.println(controller.useTools(matcher.group("name").trim()));
 
 
         else if (input.matches("\\s*exit\\s*game\\s*"))
