@@ -10,15 +10,13 @@ import model.MapThings.Wood;
 import model.Plants.AllCrops;
 import model.Plants.MixedSeeds;
 
-import java.awt.image.ImageProducer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public enum NPC {
 
     Sebastian("Sebastian", Map.of(new BarsAndOres(BarsAndOreType.IronOre), 50,
-            new BasicRock(), 150 )) {
+            new BasicRock(), 150 ), 1, 1, 1, 1, 10) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -74,7 +72,7 @@ public enum NPC {
 
     Abigail("Abigail",  Map.of(new BarsAndOres(BarsAndOreType.GoldBar), 1,
             new AllCrops(CropsType.Pumpkin), 1,
-            new AllCrops(CropsType.Wheat),   50)) {
+            new AllCrops(CropsType.Wheat),   50), 1, 1, 1, 1, 20) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -125,7 +123,7 @@ public enum NPC {
 
     Harvey("Harvey", Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
             new AllCrops(CropsType.Kale), 12,
-            new ArtisanProduct(ArtisanType.Wine),   1)) {
+            new ArtisanProduct(ArtisanType.Wine),   1), 1, 1, 1, 1, 15) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -176,7 +174,7 @@ public enum NPC {
 
     Lia("Lia",  Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
             new Wood(), 200,
-            new BasicRock(),   200)) {
+            new BasicRock(),   200), 1, 1, 1, 1, 25) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -227,7 +225,7 @@ public enum NPC {
 
     Robin("Robin",  Map.of(new BarsAndOres(BarsAndOreType.IronBar), 10,
             new Wood(), 80,
-            new MixedSeeds(),   10)) {
+            new MixedSeeds(),   10), 1, 1, 1, 1, 18) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -277,6 +275,11 @@ public enum NPC {
     };
 
     private final String name;
+    private final int Width;
+    private final int Length;
+    private final int topLeftX;
+    private final int topLeftY;
+    private final int request3DayNeeded;
     private final Map<Items, Integer> Request;
 
 
@@ -284,9 +287,14 @@ public enum NPC {
     public abstract String getDialogue(int level, Weather weather);
 
 
-    NPC (String name, Map<Items, Integer> request) {
-        this.name = name;
+    NPC (String name, Map<Items, Integer> request, int topLeftX, int topLeftY, int width, int length, int request3DayNeeded) {
         Request = request;
+        this.name = name;
+        Width = width;
+        Length = length;
+        this.topLeftX = topLeftX;
+        this.topLeftY = topLeftY;
+        this.request3DayNeeded = request3DayNeeded;
     }
 
     public String getName() {
@@ -294,4 +302,19 @@ public enum NPC {
         return name;
     }
 
+
+    public boolean isInHisHome (int x, int y) {
+
+        return x >= this.topLeftX && x <= this.topLeftX + this.Length &&
+                y >= this.topLeftY && y <= this.topLeftY + this.Width;
+    }
+
+    public int getRequest3DayNeeded() {
+
+        return request3DayNeeded;
+    }
+    public Map<Items, Integer> getRequest() {
+
+        return Request;
+    }
 }
