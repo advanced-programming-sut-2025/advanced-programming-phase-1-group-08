@@ -1,9 +1,8 @@
 package model.Enum.ItemType;
 
-import Controller.CraftingController;
 import model.*;
+import model.OtherItem.MarketItem;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public enum CraftType {

@@ -52,9 +52,9 @@ public enum GameMenuCommands {
                                                         // NPC
 
     questsList   ("(?i)\\s*quests\\s*list\\s*"),
-    meetNPC      ("(?i)\\s*meet\\s*NPC\\s*(?<npc_name>\\S+)\\s*"),
-    questsFinish ("(?i)\\s*quests\\s*finish\\s*-i\\s*(?<index>\\d+)\\s*"),
-    giftNPC      ("(?i)\\s*gift\\s*NPC\\s*(?<npc_name>\\S+)\\s*-i\\s*(?<item>.+)\\s*"),
+    meetNPC      ("(?i)\\s*meet\\s*NPC\\s*(?<name>\\S+)\\s*"),
+    giftNPC      ("(?i)\\s*gift\\s*NPC\\s*(?<name>\\S+)\\s*-i\\s*(?<item>.+)\\s*"),
+    questsFinish ("(?i)\\s*quests\\s*-n\\s*(?<name>\\S+)\\s*finish\\s*-i\\s*(?<index>\\d+)\\s*"),
     friendshipNPCList ("(?i)\\s*friendship\\s*NPC\\s*list\\s*"),
 
 

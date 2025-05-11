@@ -1,6 +1,7 @@
-package model;
+package model.OtherItem;
 
 import model.Enum.ItemType.MarketItemType;
+import model.Items;
 
 public class MarketItem extends Items {
     private MarketItemType type;

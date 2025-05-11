@@ -1,4 +1,4 @@
-package model;
+package model.OtherItem;
 
 import model.MapThings.GameObject;
 

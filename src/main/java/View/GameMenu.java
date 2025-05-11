@@ -124,6 +124,23 @@ public class GameMenu implements AppMenu {
 
 
 
+        else if (GameMenuCommands.questsList.getMather(input) != null)
+            System.out.println(controller.questsNPCList());
+
+        else if (GameMenuCommands.friendshipNPCList.getMather(input) != null)
+            System.out.println(controller.friendshipNPCList());
+
+        else if ((matcher = GameMenuCommands.meetNPC.getMather(input)) != null)
+            System.out.println(controller.meetNPC(matcher.group("name").trim()));
+
+        else if ((matcher = GameMenuCommands.questsFinish.getMather(input)) != null)
+            System.out.println(controller.doQuest(matcher.group("name").trim(),
+                    matcher.group("index").trim()));
+
+        else if ((matcher = GameMenuCommands.giftNPC.getMather(input)) != null)
+            System.out.println(controller.giftNPC(matcher.group("name").trim(),
+                    matcher.group("item").trim()));
+
 
 
 

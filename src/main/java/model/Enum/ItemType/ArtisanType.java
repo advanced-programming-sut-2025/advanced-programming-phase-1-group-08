@@ -8,9 +8,12 @@ import model.Enum.AllPlants.ForagingMineralsType;
 import model.Enum.AllPlants.ForagingSeedsType;
 import model.Enum.AllPlants.TreesProductType;
 import model.MapThings.Wood;
+import model.OtherItem.ArtisanProduct;
+import model.OtherItem.BarsAndOres;
+import model.OtherItem.CraftingItem;
+import model.OtherItem.MarketItem;
 import model.Plants.*;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
