@@ -1,6 +1,6 @@
 package model.Places;
 
-import model.Fridge;
+import model.OtherItem.Fridge;
 import model.MapThings.GameObject;
 import model.MapThings.door;
 

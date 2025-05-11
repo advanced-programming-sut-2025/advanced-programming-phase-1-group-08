@@ -4,11 +4,11 @@ import model.Enum.ToolsType.FishingPoleType;
 
 public class FishingPole extends Tools {
 
-    public FishingPole(){
-        super("FishingPole", 0);
+    public FishingPole() {
+        super("FishingPole");
     }
 
-    public FishingPoleType fishingPoleType=null;
+    public FishingPoleType fishingPoleType = null;
 
     public void use (){}
 

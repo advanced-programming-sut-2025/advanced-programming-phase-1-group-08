@@ -1,10 +1,6 @@
 package model.ToolsPackage;
 
 import model.Enum.ToolsType.HoeType;
-import model.Enum.WeatherTime.Weather;
-import model.MapThings.Tile;
-
-import java.util.ArrayList;
 
 import static model.App.*;
 
@@ -13,7 +9,7 @@ public class Hoe extends Tools {
     private HoeType type;
 
     public Hoe (HoeType type) {
-        super("Hoe", 0);
+        super("Hoe");
         this.type = type;
     }
 
@@ -31,8 +27,9 @@ public class Hoe extends Tools {
         double x = currentWeather.getEnergyCostCoefficient();
 
         if (currentPlayer.getLevelFarming() == 4)
-            return (int) (this.type.getEnergyCost()*x)+1;
-        return (int) (this.type.getEnergyCost()*x);
+            return Math.max((int) (this.type.getEnergyCost()*x)+1, 0);
+
+        return Math.max((int) (this.type.getEnergyCost()*x), 0);
     }
 
 }
