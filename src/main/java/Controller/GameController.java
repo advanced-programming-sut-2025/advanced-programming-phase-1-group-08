@@ -36,6 +36,20 @@ public class GameController {
 
     Random rand = new Random();
 
+    public Result addDollar(int amount) {
+        currentPlayer.increaseMoney(amount - currentPlayer.getMoney());
+        return new Result(true , "your money cheated successfully");
+    }
+
+    public Result addItem(int amount) {
+        Inventory inventory= currentPlayer.getBackPack().inventory;
+
+        if (currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+            return new Result(false , "you can't add an item to your inventory because there is no remind capacity");
+        }
+        for (ArtisanProduct artisanProduct )
+    }
+
     public ArrayList<Tile> sortMap(ArrayList<Tile> Map) {
         Collections.sort(Map , (a,b) -> {
             if (a.getY() != b.getY()) return Integer.compare(a.getY(), b.getY());
@@ -196,57 +210,52 @@ public class GameController {
     }   ///        الان اینونتوری ساخته میشه از همه چی توش گذاشتی همون اول ؟
 
 
-    public void createInitialMine(int id, int x, int y){
+    public void createInitialMine( int x, int y , int topLeftX, int topLeftY, int width , int height) {
         Farm farm = currentPlayer.getFarm();
-        if (id == 1) {
-            Mine mine = new Mine(23, 2);
-            door MineDoor = new door();
-            MineDoor.setDoor(Door.Mine);
-            MineDoor.setCharactor('D');
-            mine.setCharactor('M');
-            Walkable walkable = new Walkable();
-            walkable.setCharactor('.');
 
-            for (int i = 23; i < 29; i++) {
-                for (int j = 2; j < 8; j++) {
-                    if (i == 26 && j == 5) {
-                        Tile tile = new Tile(i + 60 * x, j + 60 * y, MineDoor);
-                        farm.Farm.add(tile);
-                        bigMap.add(tile);
-                    } else if (i == 23 || i == 28 || j == 2 || j == 7) {
-                        Tile tile = new Tile(i + 60 * x, j + 60 * y, mine);
-                        farm.Farm.add(tile);
-                        bigMap.add(tile);
-                    } else {
-                        Tile tile = new Tile(i + 60 * x, j + 60 * y, walkable);
-                        farm.Farm.add(tile);
-                        bigMap.add(tile);
-                    }
-                }
-            }
-            farm.setMine(mine);
-        } else if (id == 2) {
+        Mine mine = new Mine(topLeftX + 60 *x , topLeftY + 60 * y ,width , height);
+        door MineDoor = new door();
+        MineDoor.setDoor(Door.Mine);
+        MineDoor.setCharactor('D');
+        mine.setCharactor('M');
+        Walkable walkable = new Walkable();
+        walkable.setCharactor('.');
 
-        }
-    }
-    public void createInitialLake(int id, int x, int y) {
-        Farm farm = currentPlayer.getFarm();
-        if (id == 1) {
-            Lake lake = new Lake();
-            lake.setCharactor('L');
-            for (int i = 2; i < 7; i++) {
-                for (int j = 23; j < 29; j++) {
-                    Tile tile = new Tile(i + 60 * x, j + 60 * y, lake);
+        for (int i = topLeftX + 60 * x ; i < topLeftX + 60*x + width; i++) {
+            for (int j = topLeftY + 60 * y; j < topLeftY + 60 * y + height; j++) {
+                if (i == topLeftX + 60 * x + width / 2 && j == topLeftY + 60*y + height-1) {
+                    Tile tile = new Tile(i, j, MineDoor);
+                    farm.Farm.add(tile);
+                    bigMap.add(tile);
+                } else if (i == topLeftX + 6*x || i == topLeftX + 60*x + width-1 || j == topLeftY + 60*y || j == topLeftY + 60*y + height-1) {
+                    Tile tile = new Tile(i, j, mine);
+                    farm.Farm.add(tile);
+                    bigMap.add(tile);
+                } else {
+                    Tile tile = new Tile(i, j, walkable);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
                 }
             }
-            farm.setLake(lake);
-        } else if (id == 2) {
-
         }
+        farm.setMine(mine);
     }
-    public void createInitialHouse(int id, int x, int y) {
+
+    public void createInitialLake( int x, int y , int topLeftX , int topLeftY , int width , int height) {
+        Farm farm = currentPlayer.getFarm();
+        Lake lake = new Lake(topLeftX, topLeftY, width, height);
+        lake.setCharactor('L');
+        for (int i = topLeftX + 60 * x; i < topLeftX + 60 * x + width; i++) {
+            for (int j = topLeftY + 60 * y; j < topLeftY + 60 * y + height; j++) {
+                Tile tile = new Tile(i, j, lake);
+                farm.Farm.add(tile);
+                bigMap.add(tile);
+            }
+        }
+        farm.setLake(lake);
+
+    }
+    public void createInitialHouse(int id, int x, int y , int topLeftX , int topLeftY , int width , int height) {
         Farm farm = currentPlayer.getFarm();
         Wall wall = new Wall();
         wall.setWallType(WallType.House);
@@ -254,42 +263,30 @@ public class GameController {
         door houseDoor = new door();
         houseDoor.setDoor(Door.House);
         houseDoor.setCharactor('D');
-
-        for (int i = 12; i < 19; i++) {
-            for (int j = 0; j < 7; j++) {
-                if (i == 12 || i == 18) {
-                    Tile tile = new Tile(i + 60 * x, j + 60 * y, wall);
-                    farm.Farm.add(tile);
-                    bigMap.add(tile);
-                } else if (i == 15 && j == 6) {
-                    Tile tile = new Tile(i + 60 * x, j + 60 * y, houseDoor);
-                    farm.Farm.add(tile);
-                    bigMap.add(tile);
-                } else {
-                    if (j == 0 || j == 6) {
-                        Tile tile = new Tile(i + 60 * x, j + 60 * y, wall);
-                        farm.Farm.add(tile);
-                        bigMap.add(tile);
-                    }
-                }
-            }
-        }
-
-
-        Fridge fridge = new Fridge(18 + 60 * x, 6 + 60 * y);
+        Fridge fridge= new Fridge(topLeftX + 60 * x + width -2 , topLeftY + 60 * y + height - 2);
         fridge.setCharactor('F');
-        Home home = new Home(13 + 60 * x, 1 + 60 * y, fridge);
+        Home home = new Home(topLeftX + 60 * x, topLeftY + 60 * y,width,height, fridge);
         home.setCharactor('H');
         home.houseDoor = houseDoor;
 
-        for (int i = 13; i < 18; i++) {
-            for (int j = 1; j < 6; j++) {
-                if (i == 18 && j == 5) {
-                    Tile tile = new Tile(i + 60 * x, j + 60 * y, fridge);
+        for (int i = topLeftX + 60 * x; i < topLeftX + 60 * x + width ; i++) {
+            for (int j = topLeftY + 60 * y; j < topLeftY + 60 * y + height ; j++) {
+                if (i == topLeftX + 60 * x + width / 2 && j == topLeftY + 60 * y + height-1) {
+                    Tile tile = new Tile(i, j, houseDoor);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
-                } else {
-                    Tile tile = new Tile(i + 60 * x, j + 60 * y, home);
+                }
+                if (i == topLeftX + 60 * x + width -2 && j == topLeftY + 60 * y + height-2) {
+                    Tile tile = new Tile(i, j, fridge);
+                    farm.Farm.add(tile);
+                    bigMap.add(tile);
+                }
+                if (i == topLeftX || i == topLeftX + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
+                    Tile tile = new Tile(i, j, wall);
+                    farm.Farm.add(tile);
+                    bigMap.add(tile);
+                }  else {
+                    Tile tile = new Tile(i, j, home);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
                 }
@@ -297,7 +294,7 @@ public class GameController {
         }
         farm.setHome(home);
     }
-    public void createInitialGreenHouse(int id, int x, int y) {
+    public void createInitialGreenHouse(int x, int y , int topLeftX , int topLeftY , int width , int height) {
         Farm farm = currentPlayer.getFarm();
         Wall GreenWall = new Wall();
         GreenWall.setWallType(WallType.GreenHouse);
@@ -305,45 +302,31 @@ public class GameController {
         door greenHouseDoor=new door();
         greenHouseDoor.setDoor(Door.GreenHouse);
         greenHouseDoor.setCharactor('D');
-
-        for (int i=0;i<8;i++){
-            for (int j=0;j<9;j++) {
-                if (i==0 || i==7){
-                    if (j==4 && i==7){
-                        Tile tile = new Tile(i +60*x, j +60*y, greenHouseDoor);
-                        farm.Farm.add(tile);
-                        bigMap.add(tile);
-                    }
-                    else {
-                        Tile tile = new Tile(i +60*x, j +60*y, GreenWall);
-                        farm.Farm.add(tile);
-                        bigMap.add(tile);
-                    }
-                }
-                else {
-                    if (j==0 || j==8){
-                        Tile tile = new Tile(i +60*x, j+60*y, GreenWall);
-                        farm.Farm.add(tile);
-                        bigMap.add(tile);
-                    }
-                }
-            }
-        }
-
-        GreenHouse greenHouse=new GreenHouse(1 + 60*x,1 + 60*y);
+        GreenHouse greenHouse=new GreenHouse(topLeftX + 60*x,topLeftY + 60*y , width , height);
         greenHouse.setCharactor('G');
         WaterTank waterTank=new WaterTank(100);
-        waterTank.setWaterTank('W'); // اینجا عدد میخواد چرا حروف دادی؟
         greenHouse.setWaterTank(waterTank);
-        for (int i=1 ; i<7 ; i++){
-            for (int j=1 ; j<8 ; j++) {
-                if (i==1 && j==3){
-                    Tile tile=new Tile(i + 60*x,j + 60*y,waterTank);
+
+        for (int i= topLeftX + 60 * x ; i< topLeftX + 60 * x + width; i++){
+            for (int j=topLeftY + 60 * y ; j<topLeftY + 60 * y + height ; j++) {
+                if (i==topLeftX + 60 * x + width/2 && j==topLeftY + 60 * y + height-1) {
+                    Tile tile = new Tile(i, j, greenHouseDoor);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
                 }
+                if (i== topLeftX + 60*x + width/2 && j==topLeftY + 60*y + 1) {
+                    Tile tile = new Tile(i, j, waterTank);
+                    farm.Farm.add(tile);
+                    bigMap.add(tile);
+                }
+                if (i == topLeftX || i == topLeftX + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
+                    Tile tile = new Tile(i, j, GreenWall);
+                    farm.Farm.add(tile);
+                    bigMap.add(tile);
+                }
+
                 else {
-                    Tile tile=new Tile(i + 60*x,j + 60*y,greenHouse);
+                    Tile tile = new Tile(i, j, greenHouse);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
                 }
@@ -354,20 +337,58 @@ public class GameController {
     public Farm createInitialFarm(int id){
         long seed=System.currentTimeMillis();
         Farm farm= currentPlayer.getFarm();
+        Mine mine=null;
+        Lake lake=null;
+        Home home=null;
+        GreenHouse greenHouse=null;
+        Fridge fridge=null;
+
+        if (id ==1 ) {
+            mine = new Mine (23 , 2 , 6 , 6);
+            lake = new Lake(2 , 23 , 5 , 6);
+            home= new Home(12 , 13 , 7 , 7 , fridge);
+            greenHouse= new GreenHouse(2 , 2 , 8 , 9);
+        }
+        if (id ==2 ) {
+            mine = new Mine (20 , 5 , 6 , 6);
+            lake = new Lake(4 , 11 , 5 , 6);
+            home= new Home(16 , 15 , 7 , 7 , fridge);
+            greenHouse= new GreenHouse(5 , 20 , 8 , 7);
+        }
+        boolean createMine=false;
+        boolean createLake=false;
+        boolean createHome=false;
+        boolean createGreenHouse=false;
 
         for (int i=0 ; i<30 ;i++){
             for (int j=0 ; j<30 ; j++) {
-                if (i>=23 && i<29 && j>=2 && j<8){
-                    createInitialMine(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                if (i >= mine.getStartX() && i<mine.getStartX() + mine.getWidth() && j>=mine.getStartY() && j< mine.getStartY() + mine.getHeight() ) {
+                    if (! createMine) {
+                        createInitialMine(currentPlayer.topLeftX, currentPlayer.topLeftY, mine.getStartX(), mine.getStartY(), mine.getWidth(), mine.getHeight());
+                        createMine = true;
+                    }
                 }
-                else if(1<i && i<7 && j>22 && j<29){
-                    createInitialLake(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                else if(i >= lake.getTopLeftX() && i< lake.getTopLeftX() + lake.getWidth() && j>=lake.getTopLeftY() && j< lake.getTopLeftY() + lake.getHeight()) {
+                    if (! createLake) {
+                        createInitialLake(currentPlayer.topLeftX, currentPlayer.topLeftY, lake.getTopLeftX(), lake.getTopLeftY(), lake.getWidth(), lake.getHeight());
+                        createLake = true;
+                    }
                 }
-                else if(i>=12 && i<19 && j<7){
-                    createInitialHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                else if(i>=greenHouse.getCoordinateX()  && i < greenHouse.getCoordinateX() + greenHouse.getWidth()
+                        && j>=greenHouse.getCoordinateY() && j<greenHouse.getCoordinateY() + greenHouse.getWidth() ) {
+
+                    if (! createGreenHouse) {
+                        createInitialGreenHouse(currentPlayer.topLeftX, currentPlayer.topLeftY, greenHouse.getCoordinateX(), greenHouse.getCoordinateY(),
+                                greenHouse.getWidth(), greenHouse.getLength());
+
+                        createGreenHouse = true;
+                    }
                 }
-                else if (i<8 && j<9){
-                    createInitialGreenHouse(id,currentPlayer.topLeftX,currentPlayer.topLeftY);
+                else if (i >= home.getTopLeftX() && i<home.getTopLeftX() + home.getWidth() && j >= home.getTopLeftY() && j<home.getTopLeftY() + home.getLength() ) {
+                    if (! createHome) {
+                        createInitialGreenHouse(currentPlayer.topLeftX, currentPlayer.topLeftY, home.getTopLeftX(), home.getTopLeftY(), home.getWidth(), home.getLength());
+                        createHome = true;
+                    }
                 }
                 else {
                     MapGenerator(i,j,seed);
@@ -751,7 +772,7 @@ public class GameController {
                 output.append(((TreeSource) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Axe ){
-                output.append(((Axe) entry.getKey()).axeType.name()).append('\n');
+                output.append(((Axe) entry.getKey()).getType().name()).append('\n');
             }
             else if (entry.getKey() instanceof FishingPole){
                 output.append(((FishingPole) entry.getKey()).fishingPoleType.name()).append('\n');
@@ -760,7 +781,7 @@ public class GameController {
                 output.append(((Hoe) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof PickAxe){
-                output.append(((PickAxe) entry.getKey()).pickAxeType.name()).append('\n');
+                output.append(((PickAxe) entry.getKey()).getType().name()).append('\n');
             }
             else if (entry.getKey() instanceof WateringCan){
                 output.append(((WateringCan) entry.getKey()).wateringCanType.getDisplayName()).append('\n');
@@ -1413,6 +1434,15 @@ public class GameController {
         return new Result(true, "you fed "+name+" successfully!");
     }
 
+    public Result cheatSetFriendship( String name , Integer amount ) {
+        Animal animal=getAnimalByName(name);
+        if (animal==null) {
+            return new Result(false , "animal not found!");
+        }
+        animal.increaseFriendShip(amount - animal.getFriendShip());
+        return new Result(true, "friendship cheated successfully!");
+    }
+
     public boolean animalIsOnBarnOrCage(Animal animal) {
         BarnOrCage barnOrCage=null;
         for (BarnOrCage barnOrCage1 : currentPlayer.BarnOrCages) {
@@ -1568,7 +1598,7 @@ public class GameController {
         if (animal == null) {
             return new Result(false , "Animal not found");
         }
-
+        currentPlayer.increaseMoney(animal.getType().getPrice());
         return removeAnimal(animal);
 
     }
