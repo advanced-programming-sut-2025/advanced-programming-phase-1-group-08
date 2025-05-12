@@ -1,30 +1,37 @@
 package model.Enum.ToolsType;
 
 import model.App;
+import model.Enum.ItemType.BarsAndOreType;
 import model.Inventory;
+import model.OtherItem.BarsAndOres;
 import model.ToolsPackage.Axe;
 import model.ToolsPackage.PickAxe;
+import model.Enum.ItemType.BarsAndOreType.*;
+
+import static model.Enum.ItemType.BarsAndOreType.*;
 
 public enum PickAxeType {
 
-    primaryPickAxe  ("Primary PickAxe", -5 , 0),
+    primaryPickAxe  ("Primary PickAxe", -5 , 0 , null),
 
-    copperyPickAxe  ("Coppery PickAxe", -4 , 2000),
+    copperyPickAxe  ("Coppery PickAxe", -4 , 2000 , CopperBar),
 
-    ironPickAxe     ("Iron PickAxe",    -3 , 5000),
+    ironPickAxe     ("Iron PickAxe",    -3 , 5000 , IronBar),
 
-    goldenPickAxe   ("Golden PickAxe",  -2 , 10000),
+    goldenPickAxe   ("Golden PickAxe",  -2 , 10000 , GoldBar),
 
-    iridiumPickAxe  ("Iridium PickAxe", -1 , 25000);
+    iridiumPickAxe  ("Iridium PickAxe", -1 , 25000 , IridiumBar);
 
     private final int energyCost;
     private final String displayName;
     private final int price;
+    private final BarsAndOreType barsAndOreType;
 
-    PickAxeType (String displayName, int energyCost, int price) {
+    PickAxeType (String displayName, int energyCost, int price , BarsAndOreType barsAndOreType) {
         this.displayName = displayName;
         this.energyCost = energyCost;
         this.price = price;
+        this.barsAndOreType = barsAndOreType;
     }
 
     public int getEnergyCost() {
@@ -51,11 +58,11 @@ public enum PickAxeType {
 
     public static boolean checkIngredient(PickAxeType pickAxeType) {
         Inventory inventory = App.currentPlayer.getBackPack().inventory;
-        PickAxe pickAxe=new PickAxe(pickAxeType);
-        if (inventory.Items.containsKey(pickAxe)) {
-            Integer value=inventory.Items.get(pickAxe);
-            if (value >= 5) {
-                inventory.Items.put(pickAxe,value-5);
+        BarsAndOres barsAndOres= new BarsAndOres(pickAxeType.barsAndOreType);
+        if (inventory.Items.containsKey(barsAndOres)) {
+            Integer value=inventory.Items.get(barsAndOres);
+            if (value >= 5 && App.currentPlayer.getMoney() >= pickAxeType.getPrice()) {
+                inventory.Items.put(barsAndOres,value-5);
                 inventory.Items.entrySet().removeIf(entry -> entry.getValue().equals(0));
                 return true;
             }

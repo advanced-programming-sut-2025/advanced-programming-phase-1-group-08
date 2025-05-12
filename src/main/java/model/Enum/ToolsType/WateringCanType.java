@@ -1,32 +1,37 @@
 package model.Enum.ToolsType;
 
 import model.App;
+import model.Enum.ItemType.BarsAndOreType;
 import model.Inventory;
+import model.OtherItem.BarsAndOres;
 import model.ToolsPackage.Axe;
 import model.ToolsPackage.WateringCan;
+import static model.Enum.ItemType.BarsAndOreType.*;
 
 public enum WateringCanType {
 
-    PrimaryWateringCan  ("Primary Watering Can",-5, 40 , 0),
+    PrimaryWateringCan  ("Primary Watering Can",-5, 40 , 0 , null),
 
-    CopperyWateringCan  ("Coppery Watering Can",-4, 55 , 2000),
+    CopperyWateringCan  ("Coppery Watering Can",-4, 55 , 2000 , CopperBar),
 
-    IronWateringCan     ("Iron Watering Can",   -3, 70 , 5000),
+    IronWateringCan     ("Iron Watering Can",   -3, 70 , 5000 , IronBar),
 
-    GoldenWateringCan   ("Golden Watering Can", -2, 85 , 10000),
+    GoldenWateringCan   ("Golden Watering Can", -2, 85 , 10000 , GoldBar),
 
-    IridiumWateringCan  ("Iridium Watering Can",-1, 100 , 25000);
+    IridiumWateringCan  ("Iridium Watering Can",-1, 100 , 25000 , IridiumBar);
 
     private final String displayName;
     private final int energyCost;
     private final int capacity;
     private final int Price;
+    private final BarsAndOreType barsAndOreType;
 
-    WateringCanType(String displayName, int energyCost, int capacity , int Price) {
+    WateringCanType(String displayName, int energyCost, int capacity , int Price , BarsAndOreType barsAndOreType) {
         this.displayName = displayName;
         this.energyCost = energyCost;
         this.capacity = capacity;
         this.Price = Price;
+        this.barsAndOreType = barsAndOreType;
     }
 
     public int getEnergyCost() {
@@ -57,11 +62,11 @@ public enum WateringCanType {
 
     public static boolean checkIngredient(WateringCanType wateringCanType) {
         Inventory inventory = App.currentPlayer.getBackPack().inventory;
-        WateringCan wateringCan=new WateringCan(wateringCanType);
-        if (inventory.Items.containsKey(wateringCan)) {
-            Integer value=inventory.Items.get(wateringCan);
-            if (value >= 5) {
-                inventory.Items.put(wateringCan,value-5);
+        BarsAndOres barsAndOres= new BarsAndOres(wateringCanType.barsAndOreType);
+        if (inventory.Items.containsKey(barsAndOres)) {
+            Integer value=inventory.Items.get(barsAndOres);
+            if (value >= 5 && App.currentPlayer.getMoney() >= wateringCanType.getPrice()) {
+                inventory.Items.put(barsAndOres,value-5);
                 inventory.Items.entrySet().removeIf(entry -> entry.getValue().equals(0));
                 return true;
             }
@@ -69,4 +74,5 @@ public enum WateringCanType {
         }
         return false;
     }
+
 }

@@ -16,10 +16,6 @@ import static model.Color_Eraser.*;
 
 public class GameMenu implements AppMenu {
 
-
-    int i=0;
-
-
     GameController controller = new GameController();
     Matcher matcher;
 
@@ -178,6 +174,63 @@ public class GameMenu implements AppMenu {
             controller.exitGame();
         else if (input.matches("\\s*force\\s*terminate\\s*"))
             controller.forceTerminate();
+
+
+        else if((matcher=GameMenuCommands.walk.getMather(input)) != null)
+            System.out.println(controller.walk(Integer.parseInt(matcher.group(1).trim()) , Integer.parseInt(matcher.group(2).trim()) ));
+
+        else if((matcher=GameMenuCommands.inventoryShow.getMather(input)) != null)
+            System.out.println(controller.showInventory());
+
+        else if((matcher=GameMenuCommands.removeItem.getMather(input)) != null)
+            System.out.println(controller.removeItemToTrashcan(matcher.group(1).trim(), null));
+
+        else if ((matcher=GameMenuCommands.removeItemFlagn.getMather(input)) != null)
+            System.out.println(controller.removeItemToTrashcan(matcher.group(1).trim(), matcher.group(2).trim()) );
+
+        else if ((matcher=GameMenuCommands.currentTool.getMather(input)) != null)
+            System.out.println(controller.showCurrentTool());
+
+        else if ((matcher=GameMenuCommands.availableTool.getMather(input)) != null)
+            System.out.println(controller.availableTools());
+
+        else if ((matcher=GameMenuCommands.fishing.getMather(input)) != null)
+            System.out.println(matcher.group(1).trim());
+
+        else if ((matcher=GameMenuCommands.pet.getMather(input)) != null)
+            System.out.println(controller.pet(matcher.group(1).trim()));
+
+        else if ((matcher=GameMenuCommands.animals.getMather(input)) != null)
+            System.out.println(controller.animals());
+
+        else if ((matcher=GameMenuCommands.shepherdAnimals.getMather(input)) != null) {
+            System.out.println(controller.shepherdAnimals(matcher.group(2).trim() , matcher.group(3).trim() , matcher.group(1).trim()));
+        }
+
+        else if ((matcher=GameMenuCommands.feedHay.getMather(input)) != null)
+            System.out.println(controller.feedHay(matcher.group("name").trim()));
+
+        else if ((matcher=GameMenuCommands.produces.getMather(input)) != null)
+            System.out.println(controller.produces());
+
+        else if ((matcher=GameMenuCommands.collectProduct.getMather(input)) != null)
+            System.out.println(controller.getProductAnimals(matcher.group("name").trim()));
+
+        else if ((matcher=GameMenuCommands.sellAnimal.getMather(input)) != null)
+            System.out.println(controller.sellAnimal(matcher.group("name").trim()));
+
+        else if ((matcher=GameMenuCommands.placeItem.getMather(input)) != null)
+            System.out.println(controller.placeItem(matcher.group("name").trim() , matcher.group(2).trim()));
+
+        else if ((matcher=GameMenuCommands.artisan.getMather(input)) != null)
+            System.out.println(controller.ArtisanUse(matcher.group(1).trim() , matcher.group(2).trim() , null));
+
+        else if ((matcher=GameMenuCommands.artisanUse.getMather(input)) != null)
+            System.out.println(controller.ArtisanUse(matcher.group(1).trim() , matcher.group(2).trim() , matcher.group(3).trim() ));
+
+        else if ((matcher=GameMenuCommands.artisanGet.getMather(input)) != null)
+            System.out.println(controller.ArtisanGetProduct(matcher.group(1).trim()));
+
         else
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
