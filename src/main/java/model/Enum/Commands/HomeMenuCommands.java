@@ -3,7 +3,7 @@ package model.Enum.Commands;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum HomeMenuCommands {
+public enum HomeMenuCommands implements Command {
     startCooking     ("\\s*start\\s*cooking\\s*"),
     fridgePut        ("\\s*cooking\\s*refrigerator\\s*put\\s*(?<item>.+)"),
     fridgePick       ("\\s*cooking\\s*refrigerator\\s*pick\\s*(?<item>.+)"),
@@ -15,6 +15,7 @@ public enum HomeMenuCommands {
     HomeMenuCommands(String string) {
         this.string = string;
     }
+
     @Override
     public Matcher getMatcher(String input) {
         Matcher matcher = Pattern.compile(this.string).matcher(input);

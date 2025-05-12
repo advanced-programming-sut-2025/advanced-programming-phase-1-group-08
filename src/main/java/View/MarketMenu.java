@@ -15,22 +15,22 @@ public class MarketMenu implements AppMenu {
     public void check(Scanner scanner) {
         String input = scanner.nextLine();
 
-        if ((matcher= GameMenuCommands.buyAnimal.getMather(input)) != null)
+        if ((matcher= GameMenuCommands.buyAnimal.getMatcher(input)) != null)
             System.out.println(marketing.buyAnimal(matcher.group(0).trim() , matcher.group(1).trim()));
 
-        else if ((matcher=GameMenuCommands.buildBarnOrCage.getMather(input)) != null) {
+        else if ((matcher=GameMenuCommands.buildBarnOrCage.getMatcher(input)) != null) {
             Integer x=Integer.parseInt(matcher.group(2).trim());
             Integer y=Integer.parseInt(matcher.group(3).trim());
             System.out.println(marketing.createBarnOrCage( x , y , matcher.group(1).trim()));
         }
 
-        else if ((matcher=GameMenuCommands.showAllProducts.getMather(input)) != null)
+        else if ((matcher=GameMenuCommands.showAllProducts.getMatcher(input)) != null)
             System.out.println(marketing.showAllProducts(1));
 
-        else if ((matcher=GameMenuCommands.showAvailableProducts.getMather(input)) != null)
+        else if ((matcher=GameMenuCommands.showAvailableProducts.getMatcher(input)) != null)
             System.out.println(marketing.showAllProducts(2));
 
-        else if ((matcher=GameMenuCommands.purchase.getMather(input)) != null) {
+        else if ((matcher=GameMenuCommands.purchase.getMatcher(input)) != null) {
             Integer amount=null;
             if(matcher.group(2) != null) {
                 amount=Integer.parseInt(matcher.group(2).trim());

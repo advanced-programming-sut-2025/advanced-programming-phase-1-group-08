@@ -3,10 +3,12 @@ package model.Enum.Commands;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum GameMenuCommands {
+public enum GameMenuCommands implements Command{
 
 
-    makeNewGame   ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
+    makeNewGame   ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+" +
+            "(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
+    openHomeMenu("\\s*(?i)menu\\s*home\\s*menu\\s*"),
     nextTurn      ("\\s*(?i)next\\s*turn\\s*"),
 
                                                         //  relation
@@ -95,7 +97,6 @@ public enum GameMenuCommands {
     cheatSetFriendship("(?i)cheat\\s+set\\s+\\friendship\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     addDollar("(?i)cheat\\s+add\\s+(?<amount>\\d+)\\s+dollars\\s*"),
     addItem("cheat\\s+add\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
-    openHomeMenu("\\s*(?i)menu\\s*home\\s*menu\\s*"),
     // todo Eat!
     ;
 
@@ -106,7 +107,8 @@ public enum GameMenuCommands {
         this.pattern = pattern;
     }
 
-    public Matcher getMather(String input) {
+    @Override
+    public Matcher getMatcher(String input) {
         Matcher matcher = Pattern.compile(this.pattern).matcher(input);
         return matcher.matches() ? matcher : null;
     }

@@ -11,6 +11,7 @@ import model.ToolsPackage.Tools;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static model.App.currentDate;
 
@@ -25,6 +26,7 @@ public class User {
     private SecurityQuestions MySecurityQuestion;
     private String MySecurityAnswer;
     private int daysDepressedLeft = 0;
+    private List<Recipe> recipes = Recipe.createAllRecipes();
 
     // TODO وقتی بازی تموم میشه این سه تارو ست کنیم
     private int max_point = 0;
@@ -150,6 +152,15 @@ public class User {
     public void setPositionY(int positionY) {
         this.positionY = positionY;
     }
+    public void setSleepTile(Tile sleepTile) {
+
+        SleepTile = sleepTile;
+    }
+    public Tile getSleepTile() {
+
+        return SleepTile;
+    }
+
 
     public User getSpouse() {
         return Spouse;
@@ -343,5 +354,13 @@ public class User {
 
     public void setSpouse(User spouse) {
         Spouse = spouse;
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
     }
 }
