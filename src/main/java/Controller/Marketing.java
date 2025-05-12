@@ -301,6 +301,86 @@ public class Marketing {
 
     }
 
+    public Result createBarnOrCage(int topLeftX, int topLeftY, String name) {
+        BarnORCageType barnORCageType=null;
+        for (BarnORCageType x : BarnORCageType.values()) {
+            if (x.name().equals(name)) {
+                barnORCageType=x;
+            }
+        }
+
+        if (barnORCageType==null) {
+            return new Result(false , "No such type of BarnORCage!");
+        }
+
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        GameController gameController = new GameController();
+
+        if (findEnteredShopType() != MarketType.MarnieRanch) {
+            return new Result(false , "you can't create a barn or cage because you are not in Marnie's Ranch Market");
+        }
+
+        if (!gameController.checkTilesForCreateBarnOrCage(topLeftX, topLeftY, barnORCageType.getWidth(), barnORCageType.getHeight())) {
+            return new Result(false, "you can't create barn or cage on this coordinate!");
+        }
+
+        int Wood = 0;
+        int Stone= 0;
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof Wood) {
+                Wood=entry.getValue();
+            }
+            if (entry.getKey() instanceof BasicRock) {
+                Stone=entry.getValue();
+            }
+        }
+
+        if (barnORCageType.getWoodNeeded() > Wood) {
+            return new Result(false , "you can't create barn or cage because you don't have enough wood!");
+        }
+        if (barnORCageType.getStoneNeeded() > Stone) {
+            return new Result(false , "you can't create barn or cage because you don't have enough stone!");
+        }
+        if (barnORCageType.getPrice() > currentPlayer.getMoney() ) {
+            return new Result(false , "you can't create barn or cage because you don't have enough money!");
+        }
+
+        BarnOrCage barnOrCage = new BarnOrCage(barnORCageType, topLeftX, topLeftY);
+
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof Wood) {
+                entry.setValue(entry.getValue() - Wood);
+            }
+            if (entry.getKey() instanceof BasicRock) {
+                entry.setValue(entry.getValue() - Stone);
+            }
+        }
+
+
+        currentPlayer.increaseMoney(- barnORCageType.getPrice());
+
+        if (barnORCageType.equals(BarnORCageType.Barn) || barnORCageType.equals(BarnORCageType.BigBarn)
+                || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
+            barnOrCage.setCharactor('b');
+        }
+        else {
+            barnOrCage.setCharactor('c');
+        }
+
+        for (int i = topLeftX; i < topLeftX + barnORCageType.getWidth(); i++) {
+            for (int j = topLeftY; j < topLeftY + barnORCageType.getHeight(); j++) {
+
+                if (i == topLeftX || i == topLeftX + barnORCageType.getWidth() -1 || j == topLeftY || j == topLeftY + barnORCageType.getHeight() -1) {
+                    Tile tile = gameController.getTileByCoordinates(i , j );
+                    tile.setGameObject(barnOrCage);
+                }
+            }
+        }
+
+        return new Result(true, barnORCageType.getName() + "created successfully!");
+
+    }
+
     public Result purchaseFromBlackSmith(String name , Integer amount) {
         Inventory inventory = currentPlayer.getBackPack().inventory;
         if (amount == null) {

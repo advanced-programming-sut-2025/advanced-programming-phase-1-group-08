@@ -1,30 +1,38 @@
 package model.Enum.ToolsType;
 
 import model.App;
+import model.Enum.ItemType.BarsAndOreType;
 import model.Inventory;
+import model.OtherItem.BarsAndOres;
 import model.ToolsPackage.Axe;
 import model.ToolsPackage.Hoe;
+import model.OtherItem.BarsAndOres.*;
+import model.Enum.ItemType.BarsAndOreType.*;
+
+import static model.Enum.ItemType.BarsAndOreType.*;
 
 public enum HoeType {
 
-    primaryHoe  ("Primary Hoe", -5 , 0),
+    primaryHoe  ("Primary Hoe", -5 , 0 , null),
 
-    copperyHoe  ("Coppery Hoe", -4 , 2000),
+    copperyHoe  ("Coppery Hoe", -4 , 2000 , CopperBar),
 
-    ironHoe     ("Iron Hoe",    -3 , 5000),
+    ironHoe     ("Iron Hoe",    -3 , 5000 , IronBar),
 
-    goldenHoe   ("Golden Hoe",  -2 , 10000),
+    goldenHoe   ("Golden Hoe",  -2 , 10000 , GoldBar),
 
-    iridiumHoe  ("Iridium Hoe", -1 , 25000);
+    iridiumHoe  ("Iridium Hoe", -1 , 25000 , IridiumBar);
 
     private final int energyCost;
     private final String displayName;
     private final int price;
+    private final BarsAndOreType barsAndOreType;
 
-    HoeType(String displayName, int energyCost , int price) {
+    HoeType(String displayName, int energyCost , int price , BarsAndOreType barsAndOreType) {
         this.displayName = displayName;
         this.energyCost = energyCost;
         this.price = price;
+        this.barsAndOreType = barsAndOreType;
     }
 
     public int getEnergyCost() {
@@ -39,7 +47,7 @@ public enum HoeType {
         return price;
     }
 
-    public HoeType getNextType(HoeType type) {
+    public static HoeType getNextType(HoeType type) {
         if (type == HoeType.primaryHoe) {
             return HoeType.copperyHoe;
         }
@@ -57,11 +65,11 @@ public enum HoeType {
 
     public static boolean checkIngredient(HoeType hoeType) {
         Inventory inventory = App.currentPlayer.getBackPack().inventory;
-        Hoe hoe =new Hoe(hoeType);
-        if (inventory.Items.containsKey(hoe)) {
-            Integer value=inventory.Items.get(hoe);
-            if (value >= 5) {
-                inventory.Items.put(hoe,value-5);
+        BarsAndOres barsAndOres= new BarsAndOres(hoeType.barsAndOreType);
+        if (inventory.Items.containsKey(barsAndOres)) {
+            Integer value=inventory.Items.get(barsAndOres);
+            if (value >= 5 && App.currentPlayer.getMoney() >= hoeType.getPrice()) {
+                inventory.Items.put(barsAndOres,value-5);
                 inventory.Items.entrySet().removeIf(entry -> entry.getValue().equals(0));
                 return true;
             }
