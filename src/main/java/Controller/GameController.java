@@ -2731,6 +2731,7 @@ public class GameController {
     }
     private void greenHouse () {
 
+        // check
         // TODO
     }
 
@@ -3738,7 +3739,6 @@ public class GameController {
                 return new Result(true, BRIGHT_BLUE+"Shear successfully picked up"+RESET);
             }
         }
-
         return new Result(false,"there is no such tool");
     }
     public Result showCurrentTool() {
@@ -3820,7 +3820,7 @@ public class GameController {
         else if (tools instanceof PickAxe)
             return usePickAxe(dir);
 
-        return new Result(false, RED+"please pick up a tools"+RESET);
+        return new Result(false, RED + "please pick up a tools" + RESET);
     }
 
                                                                     // input NPC command
