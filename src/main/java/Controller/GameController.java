@@ -2320,14 +2320,15 @@ public class GameController {
 
             currentPlayer = user;
             while (true) {
-                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
-                String choiceString = scanner.nextLine();
-                String[] splitChoice = choiceString.trim().split("\\s+");
-                int choice = Integer.parseInt(splitChoice[2]);
-                if (choice != 1 && choice != 2) {
-                    System.out.println("Choose between 1 and 2!");
-                    continue;
-                }
+//                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
+//                String choiceString = scanner.nextLine();
+//                String[] splitChoice = choiceString.trim().split("\\s+");
+//                int choice = Integer.parseInt(splitChoice[2]);
+//                if (choice != 1 && choice != 2) {
+//                    System.out.println("Choose between 1 and 2!");
+//                    continue;
+//                }
+                int choice = 1;
                 createInitialFarm(choice);
 
                 if (counter == 1) {
