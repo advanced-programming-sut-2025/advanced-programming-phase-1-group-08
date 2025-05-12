@@ -11,6 +11,7 @@ import java.util.Scanner;
 import static Controller.RegisterController.*;
 
 public class LoginController {
+
     public Result LoginRes(String username, String password) {
         if (UserDataBase.findUserByUsername(username) != null) {
             User user = UserDataBase.findUserByUsername(username);
@@ -73,11 +74,3 @@ public class LoginController {
         return new Result(false , "Username Doesn't Exist!");
     }
 }
-
-
-
-
-
-
-
-

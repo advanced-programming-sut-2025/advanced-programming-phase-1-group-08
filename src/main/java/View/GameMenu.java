@@ -26,6 +26,9 @@ public class GameMenu implements AppMenu {
 
         String input = scanner.nextLine();
 
+
+        controller.AutomaticFunctionAfterAnyAct();
+
         if (GameMenuCommands.makeNewGame.getMather(input) != null)
             controller.startNewGame(input);
 
@@ -111,13 +114,16 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.howMuchWater());
 
         else if ((matcher = GameMenuCommands.createThor.getMather(input)) != null)
-            System.out.println(controller.thor(matcher.group("x").trim(), matcher.group("y").trim()));
+            System.out.println(controller.thor(matcher.group("x").trim(),
+                    matcher.group("y").trim()));
 
         else if ((matcher = GameMenuCommands.showPlant.getMather(input)) != null)
-            System.out.println(controller.showPlant(matcher.group("x").trim(), matcher.group("y").trim()));
+            System.out.println(controller.showPlant(matcher.group("x").trim(),
+                    matcher.group("y").trim()));
 
         else if ((matcher = GameMenuCommands.fertilize.getMather(input)) != null)
-            System.out.println(controller.fertilize(matcher.group("fertilizer").trim(), matcher.group("direction").trim()));
+            System.out.println(controller.fertilize(matcher.group("fertilizer")
+                    .trim(), matcher.group("direction").trim()));
 
         else if ((matcher = GameMenuCommands.showTreeInfo.getMather(input)) != null)
             System.out.println(controller.info(matcher.group("name").trim()));
@@ -138,8 +144,6 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.giftNPC.getMather(input)) != null)
             System.out.println(controller.giftNPC(matcher.group("name").trim(),
                     matcher.group("item").trim()));
-
-
 
         else if (GameMenuCommands.showTool.getMather(input) != null)
             System.out.println(controller.showCurrentTool());

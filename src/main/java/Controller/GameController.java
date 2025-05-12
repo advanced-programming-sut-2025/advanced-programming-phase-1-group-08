@@ -207,7 +207,7 @@ public class GameController {
         }
         Tile targetTile = bigMap.get(90 * y + x);
         return targetTile;
-    }   ///        الان اینونتوری ساخته میشه از همه چی توش گذاشتی همون اول ؟
+    }
 
 
     public void createInitialMine( int x, int y , int topLeftX, int topLeftY, int width , int height) {
@@ -2116,14 +2116,17 @@ public class GameController {
         initializePlayer();
     }
     public void nextTurn () {
+
         User old = currentPlayer;
         boolean done = false;
         boolean temp = false;
         int wrongAttempts = 0;
+
         while (wrongAttempts <= 5) {
             for (User user : players) {
                 if (temp) {
                     currentPlayer = user;
+                    AutomaticFunctionAfterOneTurn();
                     System.out.println(currentPlayer.getNickname() + "'s turn.");
 
                     // Display Unseen Messages...
@@ -2189,7 +2192,6 @@ public class GameController {
                 wrongAttempts++;
             }
         }
-
         System.out.println(RED+"Couldn't find the next Player!"+RESET);
     }
     public void DisplayFriendships () {
@@ -2375,15 +2377,16 @@ public class GameController {
                     NPC.Harvey, 0,
                     NPC.Robin, 0)));
 
-           for (NPC npc : NPC.values()) {
+            for (NPC npc : NPC.values()) {
                user.setTodayTalking(npc, false);
                user.setTodayGifting(npc, false);
            }
-           advanceItem(new Scythe(), 1);
-           advanceItem(new Hoe(HoeType.primaryHoe), 1);
-           advanceItem(new Axe(AxeType.primaryAxe), 1);
-           advanceItem(new PickAxe(PickAxeType.primaryPickAxe), 1);
-           advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
+            advanceItem(new Scythe(), 1);
+            advanceItem(new Hoe(HoeType.primaryHoe), 1);
+            advanceItem(new Axe(AxeType.primaryAxe), 1);
+            advanceItem(new PickAxe(PickAxeType.primaryPickAxe), 1);
+            advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
+            advanceItem(new TrashCan(TrashCanType.primarytTrashCan), 1);
         }
     }
 
@@ -2411,7 +2414,6 @@ public class GameController {
             tile.getGameObject().startDayAutomaticTask();
 
         doWeatherTask();
-        setProtect();
         crowAttack(); // قبل محصول دادن درخت باید باشه
         // TODO بازیکنا برن خونشون , غش کردن
         // TODO محصول کاشته بشه و رشد محصولا یه روز بره بالاتر
@@ -2432,9 +2434,69 @@ public class GameController {
     public void AutomaticFunctionAfterAnyAct () {
 
         checkForGiant();
+        checkForProtect();
         for (User user : players)
             user.checkHealth();
 
+
+
+    }
+
+    public void checkForProtect() {
+
+        for (int x = 0 ; x < 90 ; x++)
+            for (int y = 0 ; y < 90 ; y++) {
+
+                Tile tile = getTileByCoordinates(x, y);
+                GameObject object1 = tile.getGameObject();
+
+                if (object1 instanceof Tree)
+                    ((Tree) object1).setProtected(false);
+
+                if (object1 instanceof ForagingSeeds)
+                    ((ForagingSeeds) object1).setProtected(false);
+
+                if (object1 instanceof GiantProduct)
+                    ((GiantProduct) object1).setProtected(false);
+
+                if (object1 instanceof ForagingCrops)
+                    ((ForagingCrops) object1).setProtected(false);
+            }
+
+        for (int x = 0 ; x < 90 ; x++)
+            for (int y = 0 ; y < 90 ; y++) {
+
+                GameObject object = getTileByCoordinates(x, y).getGameObject();
+
+                if (object instanceof CraftingItem &&
+                        (( ((CraftingItem) object).getCraftType().equals(CraftType.Scarecrow)) ||
+                                ((CraftingItem) object).getCraftType().equals(CraftType.DeluxeScarecrow) )) {
+
+                    int r = 12;
+                    if (((CraftingItem) object).getCraftType().equals(CraftType.Scarecrow))
+                        r = 8;
+
+                    for (int i = Math.min(x - (r / 2), 1); i < x + r; i++)
+                        for (int j = Math.min(y - (r / 2), 1); j < y + r; j++)
+                            if ((i - x) * (i - x) + (j - y) * (j - y) <= r * r) {
+
+                                Tile tile = getTileByCoordinates(i, j);
+                                GameObject object1 = tile.getGameObject();
+
+                                if (object1 instanceof Tree)
+                                    ((Tree) object1).setProtected(true);
+
+                                if (object1 instanceof ForagingSeeds)
+                                    ((ForagingSeeds) object1).setProtected(true);
+
+                                if (object1 instanceof GiantProduct)
+                                    ((GiantProduct) object1).setProtected(true);
+
+                                if (object1 instanceof ForagingCrops)
+                                    ((ForagingCrops) object1).setProtected(true);
+                            }
+                }
+            }
     }
 
 
@@ -2461,9 +2523,6 @@ public class GameController {
 
         currentDate = new DateHour(Season.Spring, 1, 9, 1980);
         currentWeather = Weather.Sunny;
-
-    }
-    private void setAbilitiesLevel () {
 
     }
     private void doSeasonAutomaticTask () {
@@ -2684,28 +2743,6 @@ public class GameController {
 
 
     }
-    private void setProtect (int x, int y, int r) {
-
-        for (int i = Math.min(x-(r/2), 1); i < x+r ; i++ )
-            for (int j = Math.min(y-(r/2), 1); j < y+r ; j++ )
-                if ((i-x)*(i-x) + (j-y)*(j-y) <= r*r) {
-
-                    Tile tile = getTileByCoordinates(i , j);
-                    GameObject object = tile.getGameObject();
-
-                    if (object instanceof Tree)
-                        ((Tree) object).setProtected(true);
-
-                    if (object instanceof ForagingSeeds)
-                        ((ForagingSeeds) object).setProtected(true);
-
-                    if (object instanceof GiantProduct)
-                        ((GiantProduct) object).setProtected(true);
-
-                    if (object instanceof ForagingCrops)
-                        ((ForagingCrops) object).setProtected(true);
-                }
-    }
     private boolean checkTileForPlant (Tile tile) {
 
         GameObject object = tile.getGameObject();
@@ -2915,6 +2952,7 @@ public class GameController {
         }
         if (object instanceof Tree) {
 
+            currentPlayer.increaseFarmingAbility(10);
             if (((Tree) object).isHaveFruit()) {
 
                 TreeType type = ((Tree) object).getType();
@@ -2935,6 +2973,7 @@ public class GameController {
         }
         if (object instanceof ForagingCrops) {
 
+            currentPlayer.increaseFarmingAbility(10);
             ForagingCropsType type = ((ForagingCrops) object).getType();
 
             if (currentPlayer.getBackPack().getType().getRemindCapacity() >
@@ -2951,6 +2990,8 @@ public class GameController {
 
         }
         if (object instanceof ForagingSeeds) {
+
+            currentPlayer.increaseFarmingAbility(10);
             if (((ForagingSeeds) object).isHaveProduct()) {
 
                 ForagingSeedsType type = ((ForagingSeeds) object).getType();
@@ -2967,6 +3008,8 @@ public class GameController {
                 return new Result(false, RED + "Still growing..." + RESET);
         }
         if (object instanceof GiantProduct) {
+
+            currentPlayer.increaseFarmingAbility(10);
             if (((GiantProduct) object).isHaveProduct()) {
 
                 ForagingSeedsType type = ((GiantProduct) object).getType();
@@ -3030,12 +3073,17 @@ public class GameController {
 
         if (object instanceof ForagingMinerals) {
 
+            currentPlayer.increaseMiningAbility(10);
             if (((ForagingMinerals) object).getType().equals(COPPER)) {
 
-                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.CopperOre), 1) ||
+                int x = 1;
+                if (currentPlayer.getLevelMining() >= 2)
+                    x = 2;
+
+                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.CopperOre), x) ||
                         currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
                     advanceItem(new BarsAndOres(BarsAndOreType.CopperOre), 1);
-                    return new Result(false, BRIGHT_BLUE + "+1 Cooper ore" + RESET);
+                    return new Result(false, BRIGHT_BLUE + x+" Cooper ore added" + RESET);
                 }
                 else {
                     tile.setGameObject(new Walkable());
@@ -3044,10 +3092,14 @@ public class GameController {
             }
             if (((ForagingMinerals) object).getType().equals(GOLD)) {
 
-                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.GoldOre), 1) ||
+                int x = 1;
+                if (currentPlayer.getLevelMining() >= 2)
+                    x = 2;
+
+                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.GoldOre), x) ||
                         currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
                     advanceItem(new BarsAndOres(BarsAndOreType.GoldOre), 1);
-                    return new Result(false, BRIGHT_BLUE + "+1 Gold ore" + RESET);
+                    return new Result(false, BRIGHT_BLUE + x + " Gold ore added" + RESET);
                 }
                 else {
                     tile.setGameObject(new Walkable());
@@ -3056,10 +3108,14 @@ public class GameController {
             }
             if (((ForagingMinerals) object).getType().equals(IRIDIUM)) {
 
-                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.IridiumOre), 1) ||
+                int x = 1;
+                if (currentPlayer.getLevelMining() >= 2)
+                    x = 2;
+
+                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.IridiumOre), x) ||
                         currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
                     advanceItem(new BarsAndOres(BarsAndOreType.IridiumOre), 1);
-                    return new Result(false, BRIGHT_BLUE + "+1 Iridium ore" + RESET);
+                    return new Result(false, BRIGHT_BLUE + x + " Iridium ore added" + RESET);
                 }
                 else {
                     tile.setGameObject(new Walkable());
@@ -3068,10 +3124,14 @@ public class GameController {
             }
             if (((ForagingMinerals) object).getType().equals(IRON)) {
 
-                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.IronOre), 1) ||
+                int x = 1;
+                if (currentPlayer.getLevelMining() >= 2)
+                    x = 2;
+
+                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.IronOre), x) ||
                         currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
                     advanceItem(new BarsAndOres(BarsAndOreType.IronOre), 1);
-                    return new Result(false, BRIGHT_BLUE + "+1 Iron ore" + RESET);
+                    return new Result(false, BRIGHT_BLUE + x + " Iron ore added" + RESET);
                 }
                 else {
                     tile.setGameObject(new Walkable());
@@ -3079,11 +3139,16 @@ public class GameController {
                 }
             }
             else {
-                if (checkAmountProductAvailable(new ForagingMinerals(((ForagingMinerals) object).getType()), 1) || // TODO همه سنگ معدنا قراره یه چا بگیرن ؟
+
+                int x = 1;
+                if (currentPlayer.getLevelMining() >= 2)
+                    x = 2;
+
+                if (checkAmountProductAvailable(new ForagingMinerals(((ForagingMinerals) object).getType()), x) ||
                         currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
                      advanceItem(new ForagingMinerals(((ForagingMinerals) object).getType()), 1);
-                     return new Result(false, BRIGHT_BLUE + "+1 " +
-                             ((ForagingMinerals) object).getType().getDisplayName()+RESET);
+                     return new Result(false, BRIGHT_BLUE + x +
+                             ((ForagingMinerals) object).getType().getDisplayName() + " added" + RESET);
                 }
                 else {
                     tile.setGameObject(new Walkable());
