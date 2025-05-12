@@ -2731,6 +2731,7 @@ public class GameController {
     }
     private void greenHouse () {
 
+        // check
         // TODO
     }
 
@@ -3825,7 +3826,7 @@ public class GameController {
         else if (tools instanceof PickAxe)
             return usePickAxe(dir);
 
-        return new Result(false, RED+"please pick up a tools"+RESET);
+        return new Result(false, RED + "please pick up a tools" + RESET);
     }
 
                                                                     // input NPC command
