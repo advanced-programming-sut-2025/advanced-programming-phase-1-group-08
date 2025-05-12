@@ -2060,7 +2060,6 @@ public class GameController {
     }
 
     public void nextTurn () {
-
         User old = currentPlayer;
         boolean done = false;
         boolean temp = false;

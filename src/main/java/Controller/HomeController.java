@@ -1,10 +1,10 @@
 package Controller;
 
+import model.*;
 import model.Enum.Commands.HomeMenuCommands;
-import model.Items;
+import model.Enum.ItemType.MarketItemType;
 import model.OtherItem.Fridge;
-import model.Result;
-import model.User;
+import model.OtherItem.MarketItem;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -92,13 +92,58 @@ public class HomeController {
 
         return new Result(true, GREEN+"Done!"+RESET);
     }
+    public static Recipe findRecipeByName (String name) {
+        for (Recipe recipe: currentPlayer.getRecipes()) {
+            if (recipe.getName().equals(name))
+                return recipe;
+        }
+        return null;
+    }
     public static Result foodPrepare (String input) {
         if (NotInHome(currentPlayer))
             return new Result(false, RED+"You're Not in Your Home!"+RESET);
+
+        String foodName = HomeMenuCommands.foodPrepare.getMatcher(input).group("food");
+        if (foodName == null)
+            return new Result(false, RED+"Wrong Food Name!"+RESET);
+
+        Inventory myInventory = currentPlayer.getBackPack().inventory;
+
+        //TODO check recipe
+        Recipe recipe = findRecipeByName(foodName);
+        if (recipe == null)
+            return new Result(false, RED+"Recipe Unavailable!"+RESET);
+        if (!recipe.isUsable()) {
+            boolean temp = false;
+
+        }
+        //TODO check ingredients
+
+        //TODO check inventory space for food
+
+        //TODO decrease ingredients
+
+        //TODO add food to inventory
+
+        //TODO lower default energy
+
+        //TODO Buffs for usages
     }
     public static Result recipeDisplay () {
         if (NotInHome(currentPlayer))
             return new Result(false, RED+"You're Not in Your Home!"+RESET);
+
+        try {
+            System.out.println("Displaying Recipes...");
+            for (Recipe recipe: currentPlayer.getRecipes()) {
+                // TODO if usable:
+                if (recipe.isUsable())
+                    recipe.print();
+            }
+            return new Result(true, GREEN+"Done!"+RESET);
+        } catch (Exception e) {
+            return new Result(false, RED+"Unknown Error!"+RESET);
+        }
     }
     public static void cook () {
         if (NotInHome(currentPlayer)) {

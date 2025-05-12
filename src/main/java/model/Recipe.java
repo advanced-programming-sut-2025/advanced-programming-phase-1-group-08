@@ -43,6 +43,9 @@ public class Recipe {
         }
     }
 
+    public String getName() {
+        return name;
+    }
 
     public boolean isUsable() { return usable; }
     public void setUsable(boolean usable) { this.usable = usable; }
@@ -56,6 +59,9 @@ public class Recipe {
     public double getPrice() { return sellPrice_golds; }
     public void setPrice(int price) { this.sellPrice_golds = price; }
 
+    public void print() {
+        System.out.println("Recipe: " + name.toUpperCase());
+    }
     public static List<Recipe> createAllRecipes() {
 
         HashMap<Items, Integer> FriedEggIngredients = new HashMap<>();
