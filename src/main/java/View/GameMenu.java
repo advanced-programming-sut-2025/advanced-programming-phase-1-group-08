@@ -160,6 +160,10 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.toolsUse.getMather(input)) != null)
             System.out.println(controller.useTools(matcher.group("name").trim()));
 
+        else if ((matcher = GameMenuCommands.wateringPlant.getMather(input)) != null)
+            System.out.println(controller.WateringPlant(matcher.group("direction").trim()));
+
+
 
         else if (input.matches("\\s*exit\\s*game\\s*"))
             controller.exitGame();

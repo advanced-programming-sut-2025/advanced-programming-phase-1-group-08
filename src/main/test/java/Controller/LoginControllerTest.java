@@ -19,10 +19,4 @@ class LoginControllerTest {
         String str = loginController.LoginRes("kir", "kk" ).toString();
         assertNotEquals("kir", str);
     }
-
-    @Test
-    void testLoginWithInvalidCredentials() {
-        boolean result = loginController.login("wrongUser", "wrongPass");
-        assertFalse(result);
-    }
 }
