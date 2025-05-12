@@ -49,7 +49,7 @@ public enum MarketType {
         return toplefty;
     }
 
-    public static MarketType isInMarket(int x , int y) {
+    public static MarketType wallOrDoor(int x , int y) {
         for (MarketType marketType : MarketType.values()) {
             boolean b = y < marketType.getToplefty() + marketType.getHeight();
             if (x == marketType.topleftx && y >= marketType.getToplefty() && b) {

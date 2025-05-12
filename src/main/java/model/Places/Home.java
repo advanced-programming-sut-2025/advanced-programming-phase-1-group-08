@@ -6,6 +6,8 @@ import model.MapThings.door;
 
 import java.util.ArrayList;
 
+import static model.Color_Eraser.*;
+
 public class Home extends GameObject {
     private final int width;
     private final int length;
@@ -41,5 +43,10 @@ public class Home extends GameObject {
 
     public Fridge getFridge() {
         return fridge;
+    }
+
+    @Override
+    public String getIcon() {
+        return BG_YELLOW + ".";
     }
 }

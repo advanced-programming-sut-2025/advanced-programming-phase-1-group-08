@@ -5,6 +5,8 @@ import model.MapThings.GameObject;
 
 import java.util.ArrayList;
 
+import static model.Color_Eraser.BROWN;
+
 public class BarnOrCage extends GameObject {
 
     private BarnORCageType barnORCageType;
@@ -28,5 +30,15 @@ public class BarnOrCage extends GameObject {
 
     public ArrayList<Animal> getAnimals() {
         return animals;
+    }
+
+    @Override
+    public String getIcon() {
+        if (barnORCageType.equals(BarnORCageType.Barn) || barnORCageType.equals(BarnORCageType.BigBarn) || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
+            return BROWN +"B ";
+        }
+        else {
+            return BROWN +"C ";
+        }
     }
 }

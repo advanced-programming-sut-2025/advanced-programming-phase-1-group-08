@@ -13,4 +13,8 @@ public class GameObject {
 
     public void startDayAutomaticTask() {}
     public void turnByTurnAutomaticTask() {}
+
+    public String getIcon() {
+        return "";
+    }
 }

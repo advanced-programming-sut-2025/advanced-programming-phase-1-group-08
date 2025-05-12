@@ -1,5 +1,8 @@
 package model.MapThings;
 
+
+import static model.Color_Eraser.*;
+
 public class WaterTank extends GameObject {
 
         private int amount;
@@ -17,4 +20,9 @@ public class WaterTank extends GameObject {
         public int getAmount() {
             return amount;
         }
+
+    @Override
+    public String getIcon() {
+        return BRIGHT_BLUE+"@";
+    }
 }

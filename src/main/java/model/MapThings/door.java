@@ -2,6 +2,7 @@ package model.MapThings;
 
 
 import model.Enum.Door;
+import static model.Color_Eraser.*;
 
 public class door extends GameObject {
     private Door door;
@@ -14,4 +15,8 @@ public class door extends GameObject {
         return door;
     }
 
+    @Override
+    public String getIcon() {
+        return BRIGHT_BROWN+"D";
+    }
 }
