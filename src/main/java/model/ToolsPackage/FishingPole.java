@@ -8,7 +8,7 @@ public class FishingPole extends Tools {
         super("FishingPole");
     }
 
-    public FishingPoleType fishingPoleType = null;
+    public FishingPoleType type = null;
 
     public void use (){}
 

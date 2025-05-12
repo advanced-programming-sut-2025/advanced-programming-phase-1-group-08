@@ -154,7 +154,7 @@ public class RegisterController {
                 return new Result(false , passIsStrong(Password));
             if (!Password.equals(ConfirmPass)) {
                 System.out.println("Password Doesn't Match the Confirmation!");
-                System.out.println("ReEnter Password and Password Confirmation in a Line Or Type 'back' to Return.");
+                System.out.println("ReEnter Password and Password Confirmation in a Line Or type 'back' to Return.");
                 Scanner scanner = new Scanner(System.in);
                 while (true) {
                     String PassRetry = scanner.nextLine();
@@ -163,7 +163,7 @@ public class RegisterController {
                     String[] words = PassRetry.trim().split("\\s+");
                     if (words.length != 2) {
                         System.out.println("Wrong Format!");
-                        System.out.println("ReEnter Password and Password Confirmation in a Line Or Type 'back' to Return.");
+                        System.out.println("ReEnter Password and Password Confirmation in a Line Or type 'back' to Return.");
                         continue;
                     }
 
@@ -174,7 +174,7 @@ public class RegisterController {
                     }
                     // if didn't match again
                     System.out.println("Password Doesn't Match");
-                    System.out.println("ReEnter Password and Password Confirmation in a Line Or Type 'back' to Return.");
+                    System.out.println("ReEnter Password and Password Confirmation in a Line Or type 'back' to Return.");
                 }
             }
         }

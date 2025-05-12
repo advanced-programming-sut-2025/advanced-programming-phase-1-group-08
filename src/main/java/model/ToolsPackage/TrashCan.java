@@ -8,15 +8,14 @@ import java.util.HashMap;
 
 public class TrashCan extends Tools {
 
-    public TrashCanType Type = TrashCanType.primarytTrashCan;
-
-    public TrashCan(TrashCanType type){
+    public TrashCanType type;
+    public TrashCan(TrashCanType Type) {
         super("TrashCan");
-        this.Type = type;
+        this.type=Type;
     }
 
     public void setType(TrashCanType type) {
-        Type = type;
+        this.type = type;
     }
 
 
