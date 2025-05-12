@@ -60,7 +60,7 @@ public enum TrashCanType {
 
     public static boolean checkIngredient(TrashCanType trashCanType) {
         Inventory inventory = App.currentPlayer.getBackPack().inventory;
-        TrashCan trashCan=new TrashCan(trashCanType);
+        TrashCan trashCan = new TrashCan(trashCanType);
         if (inventory.Items.containsKey(trashCan)) {
             Integer value=inventory.Items.get(trashCan);
             if (value >= 5) {

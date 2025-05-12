@@ -17,7 +17,9 @@ public class GameMenu {
 
 
     @Test
-    void testGameMenu() {
+    void testShowTimeWithWhiteSpace() {
+
+        String input = gameMenu.
 
     }
 
