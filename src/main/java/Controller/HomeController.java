@@ -116,8 +116,8 @@ public class HomeController {
                 System.out.println(result.massage());
             }
             else if (HomeMenuCommands.fridgePick.getMatcher(input) != null) {
-                result = fridgePick();
-                System.out.println(result.massage(input));
+                result = fridgePick(input);
+                System.out.println(result.massage());
             }
             else if (HomeMenuCommands.fridgePut.getMatcher(input) != null) {
                 result = fridgePut(input);
