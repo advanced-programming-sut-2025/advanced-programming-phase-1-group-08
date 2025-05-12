@@ -32,4 +32,21 @@ public class Market extends GameObject {
     public MarketType getMarketType() {
         return marketType;
     }
+
+    @Override
+    public String getIcon() {
+        return super.getIcon();
+    }
+
+    public static MarketType isInMarket(int x , int y) {
+        for (MarketType marketType : MarketType.values()) {
+            int tlx=marketType.getTopleftx();
+            int tly=marketType.getToplefty();
+            if(x > tlx && x < tlx + marketType.getWidth() -1 && y > tly && y < tly + marketType.getHeight() - 1) {
+                return marketType;
+            }
+        }
+        return null;
+
+    }
 }

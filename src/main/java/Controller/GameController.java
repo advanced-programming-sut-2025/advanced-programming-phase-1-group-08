@@ -255,7 +255,8 @@ public class GameController {
         farm.setLake(lake);
 
     }
-    public void createInitialHouse(int id, int x, int y , int topLeftX , int topLeftY , int width , int height) {
+
+    public void createInitialHouse(int x, int y , int topLeftX , int topLeftY , int width , int height) {
         Farm farm = currentPlayer.getFarm();
         Wall wall = new Wall();
         wall.setWallType(WallType.House);
@@ -294,6 +295,7 @@ public class GameController {
         }
         farm.setHome(home);
     }
+
     public void createInitialGreenHouse(int x, int y , int topLeftX , int topLeftY , int width , int height) {
         Farm farm = currentPlayer.getFarm();
         Wall GreenWall = new Wall();
@@ -334,6 +336,7 @@ public class GameController {
         }
         farm.setGreenHouse(greenHouse);
     }
+
     public Farm createInitialFarm(int id){
         long seed=System.currentTimeMillis();
         Farm farm= currentPlayer.getFarm();
@@ -386,7 +389,7 @@ public class GameController {
                 }
                 else if (i >= home.getTopLeftX() && i<home.getTopLeftX() + home.getWidth() && j >= home.getTopLeftY() && j<home.getTopLeftY() + home.getLength() ) {
                     if (! createHome) {
-                        createInitialGreenHouse(currentPlayer.topLeftX, currentPlayer.topLeftY, home.getTopLeftX(), home.getTopLeftY(), home.getWidth(), home.getLength());
+                        createInitialHouse(currentPlayer.topLeftX, currentPlayer.topLeftY, home.getTopLeftX(), home.getTopLeftY(), home.getWidth(), home.getLength());
                         createHome = true;
                     }
                 }
@@ -461,7 +464,6 @@ public class GameController {
         door dor=new door();
         dor.setDoor(Door.Npc);
         Marketing marketing=new Marketing();
-        Walkable walkable=new Walkable();
 
         for (int i=30 ; i<60 ; i++) {
             for (int j=30 ; j<60 ; j++) {
@@ -475,8 +477,8 @@ public class GameController {
                         bigMap.add(tile);
                     }
                 }
-                else if (MarketType.isInMarket(i, j) != null) {
-                    MarketType marketType = MarketType.isInMarket(i, j);
+                else if (MarketType.wallOrDoor(i, j) != null) {
+                    MarketType marketType = MarketType.wallOrDoor(i, j);
                     if (i== marketType.getTopleftx() + marketType.getWidth() - 1 && j==marketType.getToplefty() +2) {
                         Tile tile=new Tile(i , j , dor);
                         bigMap.add(tile);
@@ -486,6 +488,14 @@ public class GameController {
                         bigMap.add(tile);
                     }
                 }
+                else if (Market.isInMarket(i , j) != null) {
+                    Walkable walkable=new Walkable();
+                    MarketType marketType = Market.isInMarket(i, j);
+                    walkable.setGrassOrFiber(marketType.getName());
+                    Tile tile=new Tile(i , j , walkable);
+                    bigMap.add(tile);
+                }
+
                 else if (NPC.wallOrDoor(i, j) != null) {
                     NPC npc = NPC.wallOrDoor(i, j);
                     if (i == npc.getTopLeftX() + npc.getWidth() -1 && j==npc.getTopLeftY() + 2) {
@@ -497,12 +507,31 @@ public class GameController {
                         bigMap.add(tile);
                     }
                 }
+                else if (isInNpc(i , j) != null) {
+                    NPC npc = isInNpc(i, j);
+                    Walkable walkable=new Walkable();
+                    walkable.setGrassOrFiber(npc.getName());
+                    Tile tile=new Tile(i , j , walkable);
+                    bigMap.add(tile);
+                }
                 else {
+                    Walkable walkable=new Walkable();
                     Tile tile=new Tile(i , j , walkable);
                     bigMap.add(tile);
                 }
             }
         }
+    }
+
+    public NPC isInNpc(int x , int y) {
+        for (NPC npc : NPC.values()) {
+            int tlx=npc.getTopLeftX();
+            int tly=npc.getTopLeftY();
+            if (x > tlx && x < tlx + npc.getWidth() - 1 && y > tly && y < tly + npc.getHeight() - 1 ) {
+                return npc;
+            }
+        }
+        return null;
     }
 
 
@@ -575,43 +604,19 @@ public class GameController {
 
     }
 
-    public void print(Farm farm){
+    public Result print(int startX , int startY , int size){
         int x=currentPlayer.topLeftX;
         int y=currentPlayer.topLeftY;
+        StringBuilder result = new StringBuilder();
 
-        for (int i=60 * x ; i<60 * x +30 ; i++) {
-            for (int j = 60 * y; j < 60 * y + 30; j++) {
-
-                Tile tile = getTileByCoordinates(j, i);
-
-                if (tile.getGameObject() instanceof Walkable) {
-                    System.out.print(WHITE + tile.getGameObject().getCharactor() + RESET+" ");
-                } else if (tile.getGameObject() instanceof BasicRock) {
-                    System.out.print(GRAY + tile.getGameObject().getCharactor() + RESET+" ");
-                } else if (tile.getGameObject() instanceof Tree) {
-                    System.out.print(GREEN + tile.getGameObject().getCharactor() + RESET+" ");
-                } else if (tile.getGameObject() instanceof Lake) {
-                    System.out.print(BLUE + tile.getGameObject().getCharactor() + RESET+" ");
-                } else if (tile.getGameObject() instanceof Mine) {
-                    System.out.print(RED + tile.getGameObject().getCharactor() + RESET+" ");
-                } else if (tile.getGameObject() instanceof Wall) {
-                    System.out.print(WHITE + tile.getGameObject().getCharactor() + RESET+" ");
-                } else if (tile.getGameObject() instanceof Home) {
-                    System.out.print(YELLOW + tile.getGameObject().getCharactor() + RESET+" ");
-                } else if (tile.getGameObject() instanceof door) {
-                    System.out.print(Brown + tile.getGameObject().getCharactor() + RESET+" ");
-                } else if (tile.getGameObject() instanceof GreenHouse) {
-                    System.out.print(GRAY + tile.getGameObject().getCharactor() + RESET+" ");
-                } else if (tile.getGameObject() instanceof Fridge) {
-                    System.out.print(WHITE + tile.getGameObject().getCharactor() + RESET+" ");
-                } else if (tile.getGameObject() instanceof WaterTank) {
-                    System.out.print(BLUE + tile.getGameObject().getCharactor() + RESET+" ");
-                }
+        for (int i=startX ; i<startX + size ; i++) {
+            for (int j = startY; j < startY + size; j++) {
+                Tile tile = getTileByCoordinates(i, j);
+                result.append(tile.getGameObject().getIcon()).append(RESET).append(" ");
             }
-            System.out.println();
-
+            result.append("\n");
         }
-
+        return new Result(true , result.toString());
     }
 
 
@@ -3822,7 +3827,7 @@ public class GameController {
     }
 
     public Result upgradeTool (String name) {
-         MarketType marketType=MarketType.isInMarket(currentPlayer.getPositionX() , currentPlayer.getPositionY());
+         MarketType marketType=MarketType.wallOrDoor(currentPlayer.getPositionX() , currentPlayer.getPositionY());
          if (marketType!=MarketType.Blacksmith) {
              return new Result(false , "you are not in BlackSmith Market. please go there");
          }

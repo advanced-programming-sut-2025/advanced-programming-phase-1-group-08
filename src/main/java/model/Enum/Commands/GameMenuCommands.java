@@ -63,7 +63,9 @@ public enum GameMenuCommands {
     friendshipNPCList ("(?i)\\s*friendship\\s*NPC\\s*list\\s*"),
 
 
+
     walk("walk\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
+    printMap("(?i)print\\s+map\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s+-s\\s+(?<size>\\d+)\\s*"),
     inventoryShow("inventory\\s+show\\s*"),
     removeItem("inventory\\s+trash\\s+-i\\s+(?<item>\\S.*)\\s*"),
     removeItemFlagn("inventory\\s+trash\\s+-i\\s+(?<item>\\S.*)\\s+-n\\s+(?<amount>\\d+)\\s*"),

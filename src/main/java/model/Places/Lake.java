@@ -2,6 +2,8 @@ package model.Places;
 
 import model.MapThings.GameObject;
 
+import static model.Color_Eraser.*;
+
 public class Lake extends GameObject {
     private final int topLeftX;
     private final int topLeftY;
@@ -25,5 +27,10 @@ public class Lake extends GameObject {
     }
     public int getHeight() {
         return height;
+    }
+
+    @Override
+    public String getIcon() {
+        return BG_BRIGHT_BLUE+"L ";
     }
 }

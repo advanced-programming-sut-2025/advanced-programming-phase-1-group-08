@@ -2,6 +2,8 @@ package model.Places;
 
 import model.MapThings.GameObject;
 
+import static model.Color_Eraser.*;
+
 public class Mine extends GameObject {
 
     private final int startX;
@@ -29,4 +31,8 @@ public class Mine extends GameObject {
         return height;
     }
 
+    @Override
+    public String getIcon() {
+        return RED+"M";
+    }
 }

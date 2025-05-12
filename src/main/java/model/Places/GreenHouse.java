@@ -60,4 +60,5 @@ public class GreenHouse extends GameObject {
     public int getCoordinateY() {
         return coordinateY;
     }
+
 }
