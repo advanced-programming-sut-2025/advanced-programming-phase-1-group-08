@@ -96,7 +96,7 @@ public class CraftingController {
         }
 
         if (type == null) {
-            return new Result(false , "No such Craft Type");
+            return new Result(false , "No such Craft type");
         }
         if (App.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
             return new Result(false , "Not enough Capacity in your BackPack");

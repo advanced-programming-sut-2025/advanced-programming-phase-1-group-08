@@ -3,6 +3,7 @@ package Controller;
 import model.*;
 import model.Animall.Animal;
 import model.Animall.BarnOrCage;
+import model.Enum.AllPlants.ForagingMineralsType;
 import model.Enum.AllPlants.ForagingSeedsType;
 import model.Enum.AllPlants.TreesSourceType;
 import model.Enum.ItemType.*;
@@ -11,10 +12,11 @@ import model.MapThings.BasicRock;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
 import model.MapThings.Wood;
+import model.OtherItem.BarsAndOres;
 import model.OtherItem.MarketItem;
-import model.Places.Market;
 import model.Places.ShippingBin;
 import model.Places.Well;
+import model.Plants.ForagingMinerals;
 import model.Plants.ForagingSeeds;
 import model.Plants.TreeSource;
 import model.ToolsPackage.FishingPole;
@@ -61,6 +63,15 @@ public class Marketing {
             result.append("Shear").append(", Price: ").append(Shear.getCoinNeeded()).append("\n");
         }
 
+        return new Result(true , result.toString());
+    }
+
+    public Result BlackSmithProducts() {
+        StringBuilder result=new StringBuilder();
+        result.append("Copper Ore, ").append("Price: ").append("75\n");
+        result.append("Iron Ore, ").append("Price: ").append("150\n");
+        result.append("Gold Ore, ").append("Price: ").append("400\n");
+        result.append("Coal, ").append("Price: ").append("150\n");
         return new Result(true , result.toString());
     }
 
@@ -221,6 +232,7 @@ public class Marketing {
             case JojaMart -> {return JojaMartProducts(id) ; }
             case PierreGeneralStore -> {return PierreProducts(id) ; }
             case FishShop -> {return FishSoupProducts(id) ; }
+            case Blacksmith -> {return  BlackSmithProducts() ;}
         }
 
         return null;
@@ -286,6 +298,75 @@ public class Marketing {
         }
 
         return new Result(true , "you bought this animal successfully");
+
+    }
+
+    public Result purchaseFromBlackSmith(String name , Integer amount) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        if (amount == null) {
+            amount = 1;
+        }
+        if (name.equals("Coal") ) {
+            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof ForagingMinerals) {
+                    if (((ForagingMinerals) entry.getKey()).getType().equals(ForagingMineralsType.COAL)) {
+                        if (currentPlayer.getMoney() >= 150 * amount) {
+                            currentPlayer.increaseMoney( - 150 * amount);
+                            inventory.Items.put(entry.getKey(), entry.getValue() + amount);
+                            return new Result(true, name + "was purchased successfully");
+                        }
+                        else {
+                            return new Result(false , "Not enough money to purchase "+name);
+                        }
+                    }
+                }
+            }
+            if (currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
+                if (currentPlayer.getMoney() >= 150 * amount) {
+                    currentPlayer.increaseMoney( - 150 * amount);
+                    ForagingMinerals Coal = new ForagingMinerals(ForagingMineralsType.COAL);
+                    return new Result(true, name + "was purchased successfully");
+                }
+                else {
+                    return new Result(false , "Not enough money to purchase "+name);
+                }
+            }
+            return new Result(false , "not enough capacity in your backpack");
+        }
+        BarsAndOres b = null;
+        for (BarsAndOreType barsAndOreType : BarsAndOreType.values()) {
+            if (barsAndOreType.name().equals(name) && barsAndOreType.getMarketType() != null) {
+                b = new BarsAndOres(barsAndOreType);
+                break;
+            }
+        }
+        if (b == null) {
+            return new Result(false , "Products Not found");
+        }
+        for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof BarsAndOres) {
+                if (((BarsAndOres) entry.getKey()).getType().equals(b.getType())) {
+                    if (currentPlayer.getMoney() >= ((BarsAndOres) entry.getKey()).getType().getPrice() * amount) {
+                        currentPlayer.increaseMoney( - ((BarsAndOres) entry.getKey()).getType().getPrice() * amount);
+                        inventory.Items.put(entry.getKey(), entry.getValue() + amount);
+                        return new Result(true, name + "was purchased successfully");
+                    }
+                    else {
+                        return new Result(false , "Not enough money to purchase "+name);
+                    }
+                }
+            }
+        }
+        if (currentPlayer.getBackPack().getType().getRemindInShop() > 0) {
+            if (currentPlayer.getMoney() >= b.getType().getPrice() * amount) {
+                inventory.Items.put(b, amount);
+                return new Result(true, name + "was purchased successfully");
+            }
+            else {
+                return new Result(false , "Not enough money to purchase "+name);
+            }
+        }
+        return new Result(false , "not enough capacity in your backpack");
 
     }
 
@@ -677,7 +758,7 @@ public class Marketing {
         }
 
         FishingPole fishingPole = new FishingPole();
-        fishingPole.fishingPoleType = poleType;
+        fishingPole.type = poleType;
         inventory.Items.put(fishingPole, amount);
         poleType.incrementShopLimit(-amount);
 
@@ -758,7 +839,7 @@ public class Marketing {
             case JojaMart -> {purchaseFromJojaMart(name, amount);}
             case PierreGeneralStore -> {purchaseFromPierre(name, amount);}
             case FishShop ->{purchaseFromFishShop(name, amount);}
-            case Blacksmith ->
+            case Blacksmith -> {purchaseFromBlackSmith(name, amount);}
         }
         return null;
     }

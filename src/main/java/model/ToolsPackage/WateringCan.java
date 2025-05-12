@@ -1,21 +1,20 @@
 package model.ToolsPackage;
 
 import model.Enum.ToolsType.WateringCanType;
-import model.Enum.WeatherTime.Weather;
 
 import static model.App.currentPlayer;
 import static model.App.currentWeather;
 
 public class WateringCan extends Tools {
 
-    private WateringCanType wateringCanType;
+    private WateringCanType type;
     private int reminderCapacity;
 
     public WateringCan(WateringCanType type) {
 
         super("WateringCan");
-        this.wateringCanType = type;
-        reminderCapacity = this.wateringCanType.getCapacity();
+        this.type = type;
+        reminderCapacity = this.type.getCapacity();
     }
 
 
@@ -25,17 +24,17 @@ public class WateringCan extends Tools {
         double x = currentWeather.getEnergyCostCoefficient();
 
         if (currentPlayer.getLevelFarming() == 4)
-            return (int) (this.wateringCanType.getEnergyCost()*x)+1;
-        return (int) (this.wateringCanType.getEnergyCost()*x);
+            return (int) (this.type.getEnergyCost()*x)+1;
+        return (int) (this.type.getEnergyCost()*x);
     }
 
-    public WateringCanType getWateringCanType() {
+    public WateringCanType getType() {
 
-        return wateringCanType;
+        return type;
     }
-    public void setWateringCanType(WateringCanType wateringCanType) {
+    public void setType(WateringCanType type) {
 
-        this.wateringCanType = wateringCanType;
+        this.type = type;
     }
 
     public int getReminderCapacity() {
@@ -48,14 +47,14 @@ public class WateringCan extends Tools {
     }
     public void makeFullWater () {
 
-        this.reminderCapacity = this.wateringCanType.getCapacity();
+        this.reminderCapacity = this.type.getCapacity();
     }
     public void checkForWater () {
 
         if (this.reminderCapacity < 0)
             this.reminderCapacity = 0;
-        if (this.reminderCapacity > this.wateringCanType.getCapacity())
-            this.reminderCapacity = this.wateringCanType.getCapacity();
+        if (this.reminderCapacity > this.type.getCapacity())
+            this.reminderCapacity = this.type.getCapacity();
     }
     public void increaseReminderCapacity (int amount) {
 

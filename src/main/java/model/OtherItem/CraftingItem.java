@@ -1,8 +1,15 @@
 package model.OtherItem;
 
+import Controller.GameController;
 import model.DateHour;
 import model.Enum.ItemType.CraftType;
 import model.Items;
+import model.MapThings.GameObject;
+import model.MapThings.Tile;
+import model.Plants.ForagingCrops;
+import model.Plants.ForagingSeeds;
+import model.Plants.GiantProduct;
+import model.Plants.Tree;
 
 import java.util.HashMap;
 
@@ -42,5 +49,15 @@ public class CraftingItem extends Items {
     }
 
     @Override
-    public void
+    public void turnByTurnAutomaticTask() {
+
+        if (this.craftType.equals(CraftType.Scarecrow))
+            this.setProtect(8);
+        if (this.craftType.equals(CraftType.DeluxeScarecrow))
+            this.setProtect(12);
+    }
+    public void setProtect (int r) {
+
+
+    }
 }
