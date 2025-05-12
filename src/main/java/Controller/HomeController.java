@@ -2,6 +2,7 @@ package Controller;
 
 import model.*;
 import model.Enum.Commands.HomeMenuCommands;
+import model.Enum.FoodTypes;
 import model.Enum.ItemType.MarketItemType;
 import model.OtherItem.Fridge;
 import model.OtherItem.MarketItem;
@@ -134,10 +135,29 @@ public class HomeController {
                 return new Result(false, RED+"Not Enough Ingredients!"+RESET);
         }
 
-        //TODO check inventory space for food
+        // check inventory space for food
+        FoodTypes t = recipe.getType();
+        boolean inventorySpace = Food.checkInventorySpaceForFood(t);
+        if (!inventorySpace)
+            return new Result(false, RED+"No Space in Inventory!"+RESET);
+
+
+        // lower default energy
+        if (currentPlayer.getHealth() >= 3)
+            currentPlayer.setHealth(currentPlayer.getHealth() - 3);
+        else return new Result(false, "Not Enough Energy!");
+
+
+
+        // add food to inventory
         GameController controller = new GameController();
-        if (controller.checkAmountProductAvailable(new ForagingMinerals(DIAMOND), 1) ||
-                currentPlayer.getBackPack().getType().getRemindCapacity() > 0){}
+        Items i = new Food(t);
+        if (controller.checkAmountProductAvailable(i, 1)) {
+            myInventory.Items.put(i, myInventory.Items.get(i) + 1);
+        }
+        else myInventory.Items.put(i, 1);
+
+
         // decrease ingredients
         for (Map.Entry<Items, Integer> e: ingredients.entrySet()) {
             GameController controller2 = new GameController();
@@ -149,11 +169,11 @@ public class HomeController {
             }
 
         }
-        //TODO add food to inventory
 
-        //TODO lower default energy
 
-        //TODO Buffs for usages
+
+
+        return new Result(true, GREEN+"cooked Properly!"+RESET);
     }
     public static Result recipeDisplay () {
         if (NotInHome(currentPlayer))
@@ -162,7 +182,6 @@ public class HomeController {
         try {
             System.out.println("Displaying Recipes...");
             for (Recipe recipe: currentPlayer.getRecipes()) {
-                // TODO if usable:
                 if (recipe.isUsable())
                     recipe.print();
             }

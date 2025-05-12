@@ -8,6 +8,7 @@ import model.Animall.Fish;
 import model.Enum.AllPlants.*;
 import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Door;
+import model.Enum.FoodTypes;
 import model.Enum.ItemType.*;
 import model.Enum.NPC;
 import model.Enum.ToolsType.*;
@@ -1989,7 +1990,7 @@ public class GameController {
         }
     }
 
-    public void startNewGame (String input) {
+    public void startNewGame (String input) { //TODO اکسپشن خط های اول
 
         String user1name = GameMenuCommands.makeNewGame.getMatcher(input).group("username1");
         String user2name = GameMenuCommands.makeNewGame.getMatcher(input).group("username2"); // could be null
@@ -2011,19 +2012,19 @@ public class GameController {
             }
         }
 
-        if (findUserByUsername(user1name).isCurrently_in_game()){
+        if (Objects.requireNonNull(findUserByUsername(user1name)).isCurrently_in_game()){
             System.out.println("User Currently in Game!");
             return;
         }
 
         if (user2name != null) {
-            if (findUserByUsername(user2name).isCurrently_in_game()) {
+            if (Objects.requireNonNull(findUserByUsername(user2name)).isCurrently_in_game()) {
                 System.out.println("User Not Found!");
                 return;
             }
         }
         if (user3name != null) {
-            if (findUserByUsername(user3name).isCurrently_in_game()) {
+            if (Objects.requireNonNull(findUserByUsername(user3name)).isCurrently_in_game()) {
                 System.out.println("User Not Found!");
                 return;
             }
@@ -2284,6 +2285,35 @@ public class GameController {
         System.out.println(result);
 
     }
+    public void eatFood (String foodName) {
+        // find recipe and it's type
+        Recipe recipe = Recipe.findRecipeByName(foodName);
+        if (recipe == null) {
+            System.out.println(RED+"Food Name Unavailable!"+RESET);
+        }
+        assert recipe != null;
+        FoodTypes type = recipe.getType();
+
+        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Fridge fridge = currentPlayer.getFarm().getHome().getFridge();
+        // decrease from inventory or fridge
+        GameController controller = new GameController();
+        Items i = new Food(type);
+        if (controller.checkAmountProductAvailable(i, 1)) {
+            myInventory.Items.put(i, myInventory.Items.get(i) - 1);
+            myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+        } else if (fridge.items.containsKey(i) && fridge.items.get(i) >= 1) {
+            fridge.items.put(i, fridge.items.get(i) - 1);
+            fridge.items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+        } else {
+            System.out.println(RED+"None of This Item in Fridge or Inventory!"+RESET);
+            return;
+        }
+        // implement food energy
+        currentPlayer.setHealth(currentPlayer.getHealth() + recipe.getEnergy());
+        // implement Buffs
+        recipe.applyEffect(currentPlayer);
+    }
     public void exitGame () {
         if (currentPlayer != currentUser) {
             System.out.println("Access Denied!");
@@ -2393,8 +2423,27 @@ public class GameController {
     }
     public void AutomaticFunctionAfterOneTurn () {
 
-        if (currentUser == currentPlayer)
+        if (currentUser == currentPlayer) {
             passedOfTime(0, 1);
+
+            // Buff implementation
+            if (currentPlayer.Buff_maxEnergy_100_hoursLeft == 0) currentPlayer.setMAX_HEALTH(200);
+            if (currentPlayer.Buff_maxEnergy_50_hoursLeft == 0) currentPlayer.setMAX_HEALTH(200);
+            if (currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
+                currentPlayer.setMAX_HEALTH(300);
+                currentPlayer.setHealth(currentPlayer.getHealth() + 100);
+                currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentPlayer.Buff_maxEnergy_100_hoursLeft --);
+            }
+            if (currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
+                currentPlayer.setMAX_HEALTH(250);
+                currentPlayer.setHealth(currentPlayer.getHealth() + 50);
+                currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentPlayer.Buff_maxEnergy_50_hoursLeft --);
+            }
+            if (currentPlayer.Buff_mining_hoursLeft > 0) currentPlayer.setBuff_mining_hoursLeft(currentPlayer.Buff_mining_hoursLeft --);
+            if (currentPlayer.Buff_fishing_hoursLeft > 0) currentPlayer.setBuff_fishing_hoursLeft(currentPlayer.Buff_fishing_hoursLeft --);
+            if (currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.setBuff_farming_hoursLeft(currentPlayer.Buff_farming_hoursLeft --);
+            if (currentPlayer.Buff_foraging_hoursLeft > 0) currentPlayer.setBuff_foraging_hoursLeft(currentPlayer.Buff_foraging_hoursLeft --);
+        }
 
         for (Tile tile : bigMap)
             tile.getGameObject().turnByTurnAutomaticTask();
@@ -3950,6 +3999,21 @@ public class GameController {
                 return new Result(false, RED+"you are not in your hand"+RESET);
 
             currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+            if (currentPlayer.currentTool.healthCost() != 0) {
+                // TODO چند تا ایف زیر فقط آرگومان های بیرونیشون (فرمتشو نمیدونم) بزن بعدش از کامنت درش بیار
+//                if (currentPlayer.currentTool -> "fishing") {
+//                    if (currentPlayer.Buff_fishing_hoursLeft > 0) currentPlayer.increaseHealth(1);
+//                }
+//                else if (currentPlayer.currentTool -> "foraging") {
+//                    if (currentPlayer.Buff_foraging_hoursLeft > 0) currentPlayer.increaseHealth(1);
+//                }
+//                else if (currentPlayer.currentTool -> "mining") {
+//                    if (currentPlayer.Buff_mining_hoursLeft > 0) currentPlayer.increaseHealth(1);
+//                }
+//                else if (currentPlayer.currentTool -> "farming") {
+//                    if (currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
+//                }
+            }
         }
 
         if (!checkDirection(direction))

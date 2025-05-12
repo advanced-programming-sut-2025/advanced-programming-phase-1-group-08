@@ -28,6 +28,62 @@ public class User {
     private int daysDepressedLeft = 0;
     private List<Recipe> recipes = Recipe.createAllRecipes();
 
+    // buffs
+    public int Buff_maxEnergy_100_hoursLeft = 0;
+    public void setBuff_maxEnergy_100_hoursLeft (int x) {
+        Buff_maxEnergy_100_hoursLeft = x;
+        setBuff_maxEnergy_50_hoursLeft(0);
+        setBuff_foraging_hoursLeft(0);
+        setBuff_farming_hoursLeft(0);
+        setBuff_fishing_hoursLeft(0);
+        setBuff_mining_hoursLeft(0);
+    }
+    public int Buff_maxEnergy_50_hoursLeft = 0;
+    public void setBuff_maxEnergy_50_hoursLeft (int x) {
+        Buff_maxEnergy_50_hoursLeft = x;
+        setBuff_maxEnergy_100_hoursLeft(0);
+        setBuff_foraging_hoursLeft(0);
+        setBuff_farming_hoursLeft(0);
+        setBuff_fishing_hoursLeft(0);
+        setBuff_mining_hoursLeft(0);
+    }
+    public int Buff_foraging_hoursLeft = 0;
+    public void setBuff_foraging_hoursLeft (int x) {
+        Buff_foraging_hoursLeft = x;
+        setBuff_maxEnergy_50_hoursLeft(0);
+        setBuff_maxEnergy_100_hoursLeft(0);
+        setBuff_farming_hoursLeft(0);
+        setBuff_fishing_hoursLeft(0);
+        setBuff_mining_hoursLeft(0);
+    }
+    public int Buff_farming_hoursLeft = 0;
+    public void setBuff_farming_hoursLeft (int x) {
+        Buff_farming_hoursLeft = x;
+        setBuff_maxEnergy_50_hoursLeft(0);
+        setBuff_foraging_hoursLeft(0);
+        setBuff_maxEnergy_100_hoursLeft(0);
+        setBuff_fishing_hoursLeft(0);
+        setBuff_mining_hoursLeft(0);
+    }
+    public int Buff_fishing_hoursLeft = 0;
+    public void setBuff_fishing_hoursLeft (int x) {
+        Buff_fishing_hoursLeft = x;
+        setBuff_maxEnergy_50_hoursLeft(0);
+        setBuff_foraging_hoursLeft(0);
+        setBuff_farming_hoursLeft(0);
+        setBuff_maxEnergy_100_hoursLeft(0);
+        setBuff_mining_hoursLeft(0);
+    }
+    public int Buff_mining_hoursLeft = 0;
+    public void setBuff_mining_hoursLeft (int x) {
+        Buff_mining_hoursLeft = x;
+        setBuff_maxEnergy_50_hoursLeft(0);
+        setBuff_foraging_hoursLeft(0);
+        setBuff_farming_hoursLeft(0);
+        setBuff_fishing_hoursLeft(0);
+        setBuff_maxEnergy_100_hoursLeft(0);
+    }
+
     // TODO وقتی بازی تموم میشه این سه تارو ست کنیم
     private int max_point = 0;
     private int games_played = 0;

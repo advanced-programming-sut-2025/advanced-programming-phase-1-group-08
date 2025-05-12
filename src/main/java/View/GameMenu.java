@@ -38,6 +38,9 @@ public class GameMenu implements AppMenu {
                 System.out.println(RED+"You're Not in Your Home!"+RESET);
         }
 
+        else if (GameMenuCommands.eatFood.getMatcher(input) != null)
+            controller.eatFood(input);
+
         else if (GameMenuCommands.friendships.getMatcher(input) != null)
             controller.DisplayFriendships();
 
@@ -229,16 +232,16 @@ public class GameMenu implements AppMenu {
         else if ((matcher=GameMenuCommands.artisanGet.getMatcher(input)) != null)
             System.out.println(controller.ArtisanGetProduct(matcher.group(1).trim()));
 
-        else if ((matcher=GameMenuCommands.sell.getMather(input)) != null)
+        else if ((matcher=GameMenuCommands.sell.getMatcher(input)) != null)
             System.out.println(controller.sell(matcher.group("name").trim() , -1));
 
-        else if ((matcher=GameMenuCommands.sellByCount.getMather(input)) != null)
+        else if ((matcher=GameMenuCommands.sellByCount.getMatcher(input)) != null)
             System.out.println(controller.sell(matcher.group("name").trim() , Integer.parseInt(matcher.group(2).trim()) ));
 
-        else if ((matcher=GameMenuCommands.cheatSetFriendship.getMather(input)) != null)
+        else if ((matcher=GameMenuCommands.cheatSetFriendship.getMatcher(input)) != null)
             System.out.println(controller.cheatSetFriendship(matcher.group(1).trim() , Integer.parseInt(matcher.group(2).trim()) ));
 
-        else if ((matcher=GameMenuCommands.addDollar.getMather(input)) != null)
+        else if ((matcher=GameMenuCommands.addDollar.getMatcher(input)) != null)
             System.out.println(controller.addDollar(Integer.parseInt(matcher.group(1).trim())));
 
         //TODO چیت کد اضافه کردن آیتم.
