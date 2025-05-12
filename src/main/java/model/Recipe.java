@@ -119,7 +119,7 @@ public class Recipe {
         pumpkinPieIng.put(new MarketItem(MarketItemType.Sugar), 1);
         Recipe pumpkinPie = new Recipe(
                 "pumpkin pie",
-                false,
+                true,
                 pumpkinPieIng,
                 225,
                 385,
@@ -131,7 +131,7 @@ public class Recipe {
         spaghettiIng.put(new MarketItem(MarketItemType.WheatFlour), 1);
         Recipe spaghetti = new Recipe(
                 "spaghetti",
-                false,
+                true,
                 spaghettiIng,
                 75,
                 120,
@@ -229,7 +229,7 @@ public class Recipe {
         fruitSaladIng.put(new TreesProdct(TreesProductType.Apricot), 1);
         Recipe fruitSalad = new Recipe(
                 "fruit salad",
-                false,
+                true,
                 fruitSaladIng,
                 263,
                 450,
@@ -241,7 +241,7 @@ public class Recipe {
         redPlateIng.put(new AllCrops(CropsType.Radish), 1);
         Recipe redPlate = new Recipe(
                 "red plate",
-                false,
+                true,
                 redPlateIng,
                 240,
                 400,

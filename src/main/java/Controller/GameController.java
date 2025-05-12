@@ -94,7 +94,7 @@ public class GameController {
             return false;
         }
     }
-    private boolean checkAmountProductAvailable (Items items, int number) {
+    public boolean checkAmountProductAvailable (Items items, int number) {
 
         Inventory inventory = currentPlayer.getBackPack().inventory;
 

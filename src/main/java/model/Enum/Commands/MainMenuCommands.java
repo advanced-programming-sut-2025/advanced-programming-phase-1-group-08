@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public enum MainMenuCommands implements Command{
     logout   ("\\s*user\\s+logout\\s*"),
     goToProfileMenu("\\s*go\\s+to\\s+profile\\s+menu\\s*"),
-    goToGameMenu("\\s*go\\s+to\\s+main\\s+menu\\s*"),
+    goToGameMenu("\\s*go\\s+to\\s+game\\s+menu\\s*"),
     goToAvatarMenu("\\s*go\\s+to\\s+avatar\\s+menu\\s*");
     private final String string;
 
