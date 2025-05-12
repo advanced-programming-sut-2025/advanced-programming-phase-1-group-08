@@ -150,6 +150,15 @@ public class User {
     public void setPositionY(int positionY) {
         this.positionY = positionY;
     }
+    public void setSleepTile(Tile sleepTile) {
+
+        SleepTile = sleepTile;
+    }
+    public Tile getSleepTile() {
+
+        return SleepTile;
+    }
+
 
     public User getSpouse() {
         return Spouse;

@@ -23,7 +23,7 @@ public class Color_Eraser {
     public static final String BRIGHT_RED     = "\u001B[91m";
     public static final String BRIGHT_GREEN   = "\u001B[92m";
     public static final String BRIGHT_YELLOW  = "\u001B[93m";
-    public static final String BRIGHT_BROWN = "\u001B[38;2;205;133;63m";
+    public static final String BRIGHT_BROWN   = "\u001B[38;2;205;133;63m";
     public static final String BRIGHT_BLUE    = "\u001B[94m";
     public static final String BRIGHT_PURPLE  = "\u001B[95m";
     public static final String BRIGHT_CYAN    = "\u001B[96m";

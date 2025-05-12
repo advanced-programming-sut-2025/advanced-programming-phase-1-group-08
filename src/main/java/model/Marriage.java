@@ -46,10 +46,10 @@ public class Marriage {
     public static Result proposalResponse(User man, User woman) { //todo به لیست اضافه کنی
         Scanner scanner = new Scanner(System.in);
         String respond = scanner.nextLine();
-        String response = GameMenuCommands.proposalRespond.getMather(respond).group("response");
-        String tempUsername = GameMenuCommands.proposalRespond.getMather(respond).group("username");
+        String response = GameMenuCommands.proposalRespond.getMatcher(respond).group("response");
+        String tempUsername = GameMenuCommands.proposalRespond.getMatcher(respond).group("username");
 
-        if (GameMenuCommands.proposalRespond.getMather(respond) == null || response == null)
+        if (GameMenuCommands.proposalRespond.getMatcher(respond) == null || response == null)
             return new Result(false, RED+"Respond in Correct Format!"+RESET);
         if (!tempUsername.equals(man.getUsername()))
             return new Result(false, RED+"Username Doesn't Match!"+RESET);

@@ -92,44 +92,45 @@ public class HomeController {
 
         return new Result(true, GREEN+"Done!"+RESET);
     }
-    public static Result foodPrepare (String input) {
-        if (NotInHome(currentPlayer))
-            return new Result(false, RED+"You're Not in Your Home!"+RESET);
-    }
-    public static Result recipeDisplay () {
-        if (NotInHome(currentPlayer))
-            return new Result(false, RED+"You're Not in Your Home!"+RESET);
-    }
-    public static void cook () {
-        if (NotInHome(currentPlayer)) {
-            System.out.println(RED + "You're Not in Your Home!" + RESET);
-            return;
-        }
-
-        String input;
-        Scanner scanner = new Scanner(System.in);
-        Result result;
-        while (true) {
-            input = scanner.nextLine();
-            if (HomeMenuCommands.showRecipes.getMatcher(input) != null) {
-                result = recipeDisplay();
-                System.out.println(result.massage());
-            }
-            else if (HomeMenuCommands.fridgePick.getMatcher(input) != null) {
-                result = fridgePick(input);
-                System.out.println(result.massage());
-            }
-            else if (HomeMenuCommands.fridgePut.getMatcher(input) != null) {
-                result = fridgePut(input);
-                System.out.println(result);
-            }
-            else if (HomeMenuCommands.foodPrepare.getMatcher(input) != null) {
-                result = foodPrepare(input);
-                System.out.println(result);
-            }
-            else if (input.equalsIgnoreCase("exit"))
-                return;
-            else System.out.println(RED+"Invalid Command in Cooking Section!(type exit to quit)"+RESET);
-        }
-    }
+//    public static Result foodPrepare (String input) {
+//        if (NotInHome(currentPlayer))
+//            return new Result(false, RED+"You're Not in Your Home!"+RESET);
+//
+//    }
+//    public static Result recipeDisplay () {
+//        if (NotInHome(currentPlayer))
+//            return new Result(false, RED+"You're Not in Your Home!"+RESET);
+//    }
+//    public static void cook () {
+//        if (NotInHome(currentPlayer)) {
+//            System.out.println(RED + "You're Not in Your Home!" + RESET);
+//            return;
+//        }
+//
+//        String input;
+//        Scanner scanner = new Scanner(System.in);
+//        Result result;
+//        while (true) {
+//            input = scanner.nextLine();
+//            if (HomeMenuCommands.showRecipes.getMatcher(input) != null) {
+//                result = recipeDisplay();
+//                System.out.println(result.massage());
+//            }
+//            else if (HomeMenuCommands.fridgePick.getMatcher(input) != null) {
+//                result = fridgePick(input);
+//                System.out.println(result.massage());
+//            }
+//            else if (HomeMenuCommands.fridgePut.getMatcher(input) != null) {
+//                result = fridgePut(input);
+//                System.out.println(result);
+//            }
+//            else if (HomeMenuCommands.foodPrepare.getMatcher(input) != null) {
+//                result = foodPrepare(input);
+//                System.out.println(result);
+//            }
+//            else if (input.equalsIgnoreCase("exit"))
+//                return;
+//            else System.out.println(RED+"Invalid Command in Cooking Section!(type exit to quit)"+RESET);
+//        }
+//    }
 }
