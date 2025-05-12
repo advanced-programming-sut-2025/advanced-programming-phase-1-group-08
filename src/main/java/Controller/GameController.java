@@ -2351,7 +2351,7 @@ public class GameController {
         setEnergyInMorning();
         createRandomForaging();
         createRandomMinerals();
-        NPCAutomatTask();
+        NPAutomateTask();
         unloadAndReward();
 
         for (Tile tile : bigMap)
@@ -3131,7 +3131,7 @@ public class GameController {
     }
 
                                                                     // NPC task
-    private void NPCAutomatTask () {
+    private void NPAutomateTask() {
 
         User saveUser = currentPlayer;
 
@@ -3423,8 +3423,6 @@ public class GameController {
     }
 
 
-
-
                                                                   // input command Date
     public Result showTime () {
         return new Result(true, BLUE +"Time : "+RESET
@@ -3527,6 +3525,12 @@ public class GameController {
 
         int dir = Integer.parseInt(direction);
 
+        Tile tile = getTileByDir(dir);
+
+        if ((!currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
+                !currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
+            return new Result(false, RED+"You must select your tile"+RESET);
+
         if (name.matches("\\s*(?i)Mixed\\s*seed(s)?\\s*"))
             return plantMixedSeed(dir);
 
@@ -3557,6 +3561,10 @@ public class GameController {
 
         Tile tile = getTileByDir(dir);
         GameObject object = tile.getGameObject();
+
+        if ((!currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
+                !currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
+            return new Result(false, RED+"You must select your tile"+RESET);
 
         if (((WateringCan) currentPlayer.currentTool).getReminderCapacity() < 1)
             return new Result(false, RED+"ظرفت خالیه مشتی"+RESET);
@@ -3610,8 +3618,10 @@ public class GameController {
         int x1 = Integer.parseInt(x);
         int y1 = Integer.parseInt(y);
 
-        if (!currentPlayer.getFarm().isInFarm(x1, y1))
-            return new Result(false, RED+"Pick from your own farm!"+RESET);
+        if ((!currentPlayer.getFarm().isInFarm(x1, y1)) &&
+                !currentPlayer.getSpouse().getFarm().isInFarm(x1, y1))
+            return new Result(false, RED+"You must select your tile"+RESET);
+
         if (isInGreenHouse(getTileByCoordinates(x1, y1)))
             return new Result(false, RED+"Lightning can’t hit the greenhouse"+RESET);
 
@@ -3619,6 +3629,9 @@ public class GameController {
         return new Result(true, BLUE+"A lightning bolt hits!"+RESET);
     }
     public Result buildGreenHouse () {
+
+        if (currentPlayer.getFarm().getGreenHouse().isCreated())
+            return new Result(false, BRIGHT_BLUE+"The greenhouse has been build!"+RESET);
 
         if (!checkAmountProductAvailable(new Wood(), GreenHouse.requiredWood))
             return new Result(false, RED+"You don't have enough wood!"+RESET);
@@ -3668,6 +3681,10 @@ public class GameController {
         if (tile.getGameObject() instanceof GiantProduct)
             return new Result(true, showGiant((GiantProduct) tile.getGameObject()));
 
+        if ((!currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
+                !currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
+            return new Result(false, RED+"You must select your tile"+RESET);
+
         return new Result(false, RED+"That tile don't have plant!"+RESET);
 
     }
@@ -3691,6 +3708,10 @@ public class GameController {
         }
         if (!checkAmountProductAvailable(new MarketItem(type), 1))
             return new Result(false, RED+"You don't have enough "+type.getName()+RESET);
+
+        if ((!currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
+                !currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
+            return new Result(false, RED+"You must select your tile"+RESET);
 
         advanceItem(new MarketItem(type), -1);
         fertilizePlant(type, tile);
@@ -3906,8 +3927,12 @@ public class GameController {
     }
     public Result useTools (String direction) {
 
-        if (!currentPlayer.isHealthUnlimited())
+        if (!currentPlayer.isHealthUnlimited()) {
+            if (currentPlayer.getHealth() < currentPlayer.currentTool.healthCost())
+                return new Result(false, RED+"you are not in your hand"+RESET);
+
             currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
+        }
 
         if (!checkDirection(direction))
             return new Result(false, RED+"Direction is invalid"+RESET);
@@ -3992,7 +4017,7 @@ public class GameController {
         }
         return new Result(false, BRIGHT_BLUE+"Your gift successfully sent to "
                 + BRIGHT_GREEN + npc.getName() + RESET);
-    } // TODO check location
+    }
     public Result questsNPCList () {
 
         StringBuilder sb = new StringBuilder();
@@ -4044,5 +4069,4 @@ public class GameController {
             default -> new Result(false, RED + "Index is invalid" + RESET);
         };
     }
-
 }

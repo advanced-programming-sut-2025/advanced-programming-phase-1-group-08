@@ -16,10 +16,6 @@ import static model.Color_Eraser.*;
 
 public class GameMenu implements AppMenu {
 
-
-    int i=0;
-
-
     GameController controller = new GameController();
     Matcher matcher;
 

@@ -1,6 +1,7 @@
 package Controller;
 
 import model.*;
+import model.Enum.AllPlants.ForagingCropsType;
 import model.Enum.AllPlants.ForagingMineralsType;
 import model.Enum.AllPlants.TreesSourceType;
 import model.Enum.ItemType.CraftType;
@@ -10,7 +11,9 @@ import model.MapThings.Wood;
 import model.OtherItem.BarsAndOres;
 import model.OtherItem.CraftingItem;
 import model.OtherItem.MarketItem;
+import model.Plants.ForagingCrops;
 import model.Plants.ForagingMinerals;
+import model.Plants.ForagingSeeds;
 import model.Plants.TreeSource;
 
 import java.util.HashMap;
@@ -39,8 +42,10 @@ public class CraftingController {
             if (name.equals("Stone") && entry.getKey() instanceof BasicRock) {
                 return entry.getKey();
             }
-            //TODO برای Fiber باید بزنیم
-
+            if (entry.getKey() instanceof ForagingCrops &&
+                    ((ForagingCrops) entry.getKey()).getType().equals(ForagingCropsType.Fiber)) {
+                return entry.getKey();
+            }
 
             if (entry.getKey() instanceof TreeSource) {
                 if (((TreeSource) entry.getKey()).getType().name().equals(name)) {
