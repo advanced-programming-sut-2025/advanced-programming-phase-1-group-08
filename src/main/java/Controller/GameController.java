@@ -3334,7 +3334,9 @@ public class GameController {
 
                     advanceItem(key, -value);
                     advanceItem(new MarketItem(MarketItemType.PancakesRecipe), 1);
-
+                    Recipe recipe = HomeController.findRecipeByName("Pancakes");
+                    assert recipe != null;
+                    recipe.setUsable(true);
                     return new Result(true, BRIGHT_BLUE+"You got 1 Pancakes Recipe"+RESET);
                 }
                 return new Result(true, RED+"Inventory is full"+RESET);
