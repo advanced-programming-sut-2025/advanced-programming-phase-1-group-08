@@ -10,7 +10,7 @@ import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Door;
 import model.Enum.ItemType.*;
 import model.Enum.NPC;
-import model.Enum.ToolsType.FishingPoleType;
+import model.Enum.ToolsType.*;
 import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
 import model.Enum.WeatherTime.Weather;
@@ -1661,6 +1661,7 @@ public class GameController {
 
 
     private Result placeScarecrow(Tile tile , String name, Items items) {
+
         Inventory inventory = currentPlayer.getBackPack().inventory;
         if (currentPlayer.getFarm().isInHome(currentPlayer.getPositionX(), currentPlayer.getPositionY())) {
             return new Result(false , "you can't place "+name+" in your Home because it is not for this place");
@@ -1669,13 +1670,13 @@ public class GameController {
         if (name.equals("Scarecrow")) {
             tile.setGameObject(items);
             inventory.Items.compute(items , (k,v) -> v-1);
-            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() ==0);
+            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() == 0);
             return new Result(true , "Scarecrow successfully placed");
         }
         else  {
             tile.setGameObject(items);
             inventory.Items.compute(items , (k,v) -> v-1);
-            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() ==0);
+            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() == 0);
             return new Result(true , "Deluxe Scarecrow successfully placed");
         }
     }
@@ -2098,8 +2099,7 @@ public class GameController {
             }
         }
 
-        setTime(true);
-        setWeather(true);
+        setTimeAndWeather();
         currentPlayer = currentUser;
 
         // Form Friendships
@@ -2113,6 +2113,7 @@ public class GameController {
 //        friendships.get(0).addXp(150);  // این باعث میشه لول بره بالا
 //        friendships.get(0).printInfo();
 
+        initializePlayer();
     }
     public void nextTurn () {
         User old = currentPlayer;
@@ -2328,11 +2329,6 @@ public class GameController {
         System.out.println(result);
 
     }
-    public void loadGame () {
-        // TODO ذخیره جزییات بازی و لود بازی
-        setTime(false);
-        setWeather(false);
-    }
     public void exitGame () {
         if (currentPlayer != currentUser) {
             System.out.println("Access Denied!");
@@ -2370,7 +2366,6 @@ public class GameController {
 
 
     private void initializePlayer () {
-        // TODO ابزار
 
         for (User user : players) {
             user.setFriendshipPoint(new HashMap<>(Map.of(
@@ -2384,6 +2379,11 @@ public class GameController {
                user.setTodayTalking(npc, false);
                user.setTodayGifting(npc, false);
            }
+           advanceItem(new Scythe(), 1);
+           advanceItem(new Hoe(HoeType.primaryHoe), 1);
+           advanceItem(new Axe(AxeType.primaryAxe), 1);
+           advanceItem(new PickAxe(PickAxeType.primaryPickAxe), 1);
+           advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
         }
     }
 
@@ -2457,22 +2457,11 @@ public class GameController {
             }
         }
     }
-    private void setTime (boolean gameIsNew) {
+    private void setTimeAndWeather () {
 
-        if (gameIsNew)
-            currentDate = new DateHour(Season.Spring, 1, 9, 1980);
-        else {
-            // TODO
-        }
-    }
-    private void setWeather (boolean gameIsNew) {
+        currentDate = new DateHour(Season.Spring, 1, 9, 1980);
+        currentWeather = Weather.Sunny;
 
-        if (gameIsNew)
-            currentWeather = Weather.Sunny;
-
-        else {
-            // TODO
-        }
     }
     private void setAbilitiesLevel () {
 
@@ -2528,6 +2517,7 @@ public class GameController {
 
                         GameObject object = tile.getGameObject();
                         if (isInGreenHouse(tile)) {
+                            continue;
                         }
 
                         else if (object instanceof Tree && !((Tree) object).isProtected())
@@ -2590,29 +2580,7 @@ public class GameController {
 
         return (currentPlayer.getHealth() <= 0 && !currentPlayer.isHealthUnlimited());
     }
-    private void fertilizePlant (MarketItemType fertilizeType , Tile tile) {
 
-        GameObject gameObject = tile.getGameObject();
-
-        if (gameObject instanceof GiantProduct)
-            ((GiantProduct) gameObject).setFertilize(fertilizeType);
-        if (gameObject instanceof Tree)
-            ((Tree) gameObject).setFertilize(fertilizeType);
-        if (gameObject instanceof ForagingSeeds)
-            ((ForagingSeeds) gameObject).setFertilize(fertilizeType);
-
-    }
-    private boolean checkTileForPlant (Tile tile) {
-
-        GameObject object = tile.getGameObject();
-
-        if (object instanceof Tree)
-            return true;
-        if (object instanceof GiantProduct)
-            return true;
-
-        return object instanceof ForagingSeeds;
-    } // محصولای خودرو حساب نیستن
     private void lightningStrike (Tile selected) {
 
         GameObject object = selected.getGameObject();
@@ -2716,15 +2684,54 @@ public class GameController {
 
 
     }
-    private void setProtect () {
+    private void setProtect (int x, int y, int r) {
+
+        for (int i = Math.min(x-(r/2), 1); i < x+r ; i++ )
+            for (int j = Math.min(y-(r/2), 1); j < y+r ; j++ )
+                if ((i-x)*(i-x) + (j-y)*(j-y) <= r*r) {
+
+                    Tile tile = getTileByCoordinates(i , j);
+                    GameObject object = tile.getGameObject();
+
+                    if (object instanceof Tree)
+                        ((Tree) object).setProtected(true);
+
+                    if (object instanceof ForagingSeeds)
+                        ((ForagingSeeds) object).setProtected(true);
+
+                    if (object instanceof GiantProduct)
+                        ((GiantProduct) object).setProtected(true);
+
+                    if (object instanceof ForagingCrops)
+                        ((ForagingCrops) object).setProtected(true);
+                }
+    }
+    private boolean checkTileForPlant (Tile tile) {
+
+        GameObject object = tile.getGameObject();
+
+        if (object instanceof Tree)
+            return true;
+        if (object instanceof GiantProduct)
+            return true;
+
+        return object instanceof ForagingSeeds;
+    } // محصولای خودرو حساب نیستن
+    private void fertilizePlant (MarketItemType fertilizeType , Tile tile) {
+
+        GameObject gameObject = tile.getGameObject();
+
+        if (gameObject instanceof GiantProduct)
+            ((GiantProduct) gameObject).setFertilize(fertilizeType);
+        if (gameObject instanceof Tree)
+            ((Tree) gameObject).setFertilize(fertilizeType);
+        if (gameObject instanceof ForagingSeeds)
+            ((ForagingSeeds) gameObject).setFertilize(fertilizeType);
 
     }
     private void greenHouse () {
 
-        for (User user : players) {
-            GreenHouse greenHouse = user.getFarm().getGreenHouse();
-
-        }
+        // TODO
     }
 
                                                                    // other plant task
@@ -2990,6 +2997,20 @@ public class GameController {
 
             if (checkAmountProductAvailable(new Wood(), 1) ||
                     currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
+
+                if (((Tree) object).getType().equals(TreeType.MapleTree) ||
+                        ((Tree) object).getType().equals(TreeType.MysticTree))
+
+                    if (checkAmountProductAvailable(
+                            new TreesProdct(((Tree) object).getType().getProductType()), 1) ||
+                            currentPlayer.getBackPack().getType().getRemindCapacity() > 1) {
+
+                        advanceItem(new Wood(), 5);
+                        advanceItem(new TreesProdct(((Tree) object).getType().getProductType()), 1);
+                        return new Result(false, BRIGHT_BLUE + "+5 wood  +1 " +
+                                ((Tree) object).getType().getProductType().getDisplayName()+RESET);
+                    }
+
                 advanceItem(new Wood(), 5);
                 return new Result(false, BRIGHT_BLUE+"+5 wood"+RESET);
             }
