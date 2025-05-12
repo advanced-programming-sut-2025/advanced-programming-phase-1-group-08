@@ -33,7 +33,7 @@ public class LoginController {
                 String response = scanner.nextLine();
 
                 if (response.equals(user.getMySecurityAnswer())) {
-                    System.out.println("Great, Now Enter Your New Password.(Type random for Random Pass)");
+                    System.out.println("Great, Now Enter Your New Password.(type random for Random Pass)");
                     String choice = scanner.nextLine();
 
                     if (choice.equals("random")) {

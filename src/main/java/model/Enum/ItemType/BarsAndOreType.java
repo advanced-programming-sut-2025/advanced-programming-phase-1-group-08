@@ -2,29 +2,41 @@ package model.Enum.ItemType;
 
 public enum BarsAndOreType {
 
-    CopperBar("Copper Bar"),
+    CopperBar("Copper Bar" , null , 0),
 
-    IronBar("Iron Bar"),
+    IronBar("Iron Bar" , null , 0),
 
-    GoldBar("Gold Bar"),
+    GoldBar("Gold Bar" , null , 0),
 
-    IridiumBar("Iridium Bar"),
+    IridiumBar("Iridium Bar" , null , 0),
 
-    CopperOre("Copper Ore"),
+    CopperOre("Copper Ore" , MarketType.Blacksmith , 75),
 
-    IronOre("Iron Ore"),
+    IronOre("Iron Ore" , MarketType.Blacksmith , 150),
 
-    GoldOre("Gold Ore"),
+    GoldOre("Gold Ore" , MarketType.Blacksmith , 400),
 
-    IridiumOre("Iridium Ore");
+    IridiumOre("Iridium Ore" , null , 0);
 
     private final String name;
+    private final MarketType marketType;
+    private final int Price;
 
-    BarsAndOreType(String name) {
+    BarsAndOreType(String name , MarketType marketType , int Price) {
         this.name = name;
+        this.marketType = marketType;
+        this.Price = Price;
     }
 
     public String getName() {
         return name;
     }
+
+    public MarketType getMarketType() {
+        return marketType;
+    }
+    public int getPrice() {
+        return Price;
+    }
+
 }

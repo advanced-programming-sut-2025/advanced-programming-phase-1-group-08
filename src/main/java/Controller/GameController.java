@@ -775,7 +775,7 @@ public class GameController {
                 output.append(((Axe) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof FishingPole){
-                output.append(((FishingPole) entry.getKey()).fishingPoleType.name()).append('\n');
+                output.append(((FishingPole) entry.getKey()).type.name()).append('\n');
             }
             else if (entry.getKey() instanceof Hoe){
                 output.append(((Hoe) entry.getKey()).getType().getDisplayName()).append('\n');
@@ -784,10 +784,10 @@ public class GameController {
                 output.append(((PickAxe) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof WateringCan){
-                output.append(((WateringCan) entry.getKey()).getWateringCanType().getDisplayName()).append('\n');
+                output.append(((WateringCan) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof TrashCan){
-                output.append(((TrashCan) entry.getKey()).Type.name()).append('\n');
+                output.append(((TrashCan) entry.getKey()).type.name()).append('\n');
             }
             else if (entry.getKey() instanceof Tools){
                 output.append(((Tools) entry.getKey()).getName()).append(": ").append(entry.getValue()).append('\n');
@@ -816,7 +816,7 @@ public class GameController {
         int percent=0;
         for (Map.Entry<Items,Integer> entry: currentPlayer.getBackPack().inventory.Items.entrySet()) {
             if (entry.getKey() instanceof TrashCan){
-                percent= ((TrashCan) entry.getKey()).Type.getPercent();
+                percent= ((TrashCan) entry.getKey()).type.getPercent();
                 break;
             }
         }
@@ -893,7 +893,7 @@ public class GameController {
         Inventory inventory=currentPlayer.getBackPack().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
             if (entry instanceof FishingPole){
-                if (((FishingPole) entry).fishingPoleType.getName().equals(name)){
+                if (((FishingPole) entry).type.getName().equals(name)){
                     return (FishingPole) entry;
                 }
             }
@@ -927,10 +927,10 @@ public class GameController {
         for (int i = 0; i < numberOfFish; i++) {
 
             double rand = Math.random();
-            double quantity = (random * (currentPlayer.getLevelFishing() + 2) * fishingPole.fishingPoleType.getCoefficient()) / (7 - currentWeather.getFishing());
+            double quantity = (random * (currentPlayer.getLevelFishing() + 2) * fishingPole.type.getCoefficient()) / (7 - currentWeather.getFishing());
             Quantity fishQuantity = productQuantity(quantity);
 
-            if (fishingPole.fishingPoleType.equals(FishingPoleType.TrainingRod)) {
+            if (fishingPole.type.equals(FishingPoleType.TrainingRod)) {
 
                 switch (currentDate.getSeason()) {
                     case Spring:
@@ -1074,7 +1074,7 @@ public class GameController {
         }
 
         boolean top=currentPlayer.getLevelFishing() == 4;
-        currentPlayer.increaseHealth(-Math.min ( ((FishingPole) currentPlayer.currentTool).fishingPoleType.costEnergy(top) , currentPlayer.getHealth()) ) ;
+        currentPlayer.increaseHealth(-Math.min ( ((FishingPole) currentPlayer.currentTool).type.costEnergy(top) , currentPlayer.getHealth()) ) ;
         currentPlayer.increaseFishingAbility(5);
         for (Fish fish : fishes) {
             if (currentPlayer.getBackPack().getType().getRemindCapacity() !=0) {
@@ -1093,7 +1093,7 @@ public class GameController {
 
         if (!checkCoordinateForFishing()) {
             boolean top=currentPlayer.getLevelFishing() == 4;
-            currentPlayer.increaseHealth(-Math.min ( ((FishingPole) currentPlayer.currentTool).fishingPoleType.costEnergy(top) , currentPlayer.getHealth()) ) ;
+            currentPlayer.increaseHealth(-Math.min ( ((FishingPole) currentPlayer.currentTool).type.costEnergy(top) , currentPlayer.getHealth()) ) ;
             return new Result(false, "you can't fishing because lake is not around you");
         }
         if (isFishingPoleTypeExist(fishingPoleType) == null) {
@@ -2883,9 +2883,9 @@ public class GameController {
             int amount = ((WaterTank) object).getAmount();
             WateringCan wateringCan = (WateringCan) currentPlayer.currentTool;
 
-            if (amount > wateringCan.getWateringCanType().getCapacity() - wateringCan.getReminderCapacity()) {
+            if (amount > wateringCan.getType().getCapacity() - wateringCan.getReminderCapacity()) {
 
-                int remine = wateringCan.getWateringCanType().getCapacity() - wateringCan.getReminderCapacity();
+                int remine = wateringCan.getType().getCapacity() - wateringCan.getReminderCapacity();
                 wateringCan.makeFullWater();
                 ((WaterTank) object).increaseAmount(-remine);
                 return new Result(true, BLUE+"The Watering can is now full. Time to water" +
@@ -3738,7 +3738,6 @@ public class GameController {
                 return new Result(true, BRIGHT_BLUE+"Shear successfully picked up"+RESET);
             }
         }
-
         return new Result(false,"there is no such tool");
     }
     public Result showCurrentTool() {
@@ -3756,9 +3755,9 @@ public class GameController {
             case PickAxe pickAxe -> new Result(true, "current tool: " +
                     pickAxe.getType().getDisplayName());
             case FishingPole fishingPole -> new Result(true, "current tool: " +
-                    fishingPole.fishingPoleType.getName());
+                    fishingPole.type.getName());
             case WateringCan wateringCan -> new Result(true, "current tool: " +
-                    wateringCan.getWateringCanType().getDisplayName());
+                    wateringCan.getType().getDisplayName());
             default -> new Result(true, "current tool: " + currentTool.getName());
         };
     }
@@ -3773,13 +3772,13 @@ public class GameController {
                 result.append(((Axe) entry).getType().getDisplayName()).append("\n");
 
             else if (entry instanceof FishingPole)
-                result.append(((FishingPole) entry).fishingPoleType).append("\n");
+                result.append(((FishingPole) entry).type).append("\n");
 
             else if (entry instanceof Hoe)
                 result.append(((Hoe) entry).getType().getDisplayName()).append("\n");
 
             else if (entry instanceof WateringCan)
-                result.append(((WateringCan) entry).getWateringCanType()).append("\n");
+                result.append(((WateringCan) entry).getType()).append("\n");
 
             else if (entry instanceof PickAxe)
                 result.append(((PickAxe) entry).getType().getDisplayName()).append("\n");
@@ -3791,6 +3790,12 @@ public class GameController {
         return new Result(true, result.toString());
     }
     public Result upgradeTool (String name) {
+         MarketType marketType=MarketType.isInMarket(currentPlayer.getPositionX() , currentPlayer.getPositionY());
+         if (marketType!=MarketType.Blacksmith) {
+             return new Result(false , "you are not in BlackSmith Market. please go there");
+         }
+
+         if (name.equals("Trash"))
 
     }
     public Result useTools (String direction) {

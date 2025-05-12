@@ -394,7 +394,7 @@ public class Trade {
         if (!isNeighbor(currentPlayer.getPositionX(), currentPlayer.getPositionY(), Objects.requireNonNull(findUserByUsername(username)).getPositionX(), Objects.requireNonNull(findUserByUsername(username)).getPositionY()))
             return new Result(false, RED+"Get Closer To Trade!"+RESET);
         if (!(type.trim().equalsIgnoreCase("offer") || type.trim().equalsIgnoreCase("request")))
-            return new Result(false, RED+"Type Doesn't Match!"+RESET);
+            return new Result(false, RED+"type Doesn't Match!"+RESET);
         if (P_or_T == 'p' && type.trim().equalsIgnoreCase("request") && price > currentPlayer.getMoney())
             return new Result(false, RED+"Not Enough Money For this Request!"+RESET);
 
