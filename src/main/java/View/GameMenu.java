@@ -22,13 +22,20 @@ public class GameMenu implements AppMenu {
 
         String input = scanner.nextLine();
 
-
-        controller.AutomaticFunctionAfterAnyAct();
+        System.out.println("Welcome to the game menu");
+        System.out.println();
+        System.out.println();
 
         if (GameMenuCommands.makeNewGame.getMatcher(input) != null)
             controller.startNewGame(input);
 
-        else if (GameMenuCommands.nextTurn.getMatcher(input) != null)
+        else if ((matcher = GameMenuCommands.printMap.getMatcher(input)) != null) {
+            System.out.println(controller.print(
+                    Integer.parseInt(matcher.group(1).trim()),
+                    Integer.parseInt(matcher.group(2).trim()),
+                    Integer.parseInt(matcher.group(3).trim())));
+        }
+       else if (GameMenuCommands.nextTurn.getMatcher(input) != null)
             controller.nextTurn();
 
         else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null) {
@@ -175,7 +182,8 @@ public class GameMenu implements AppMenu {
 
 
         else if((matcher=GameMenuCommands.walk.getMatcher(input)) != null)
-            System.out.println(controller.walk(Integer.parseInt(matcher.group(1).trim()) , Integer.parseInt(matcher.group(2).trim()) ));
+            System.out.println(controller.walk(Integer.parseInt(matcher.group(1).trim())
+                    , Integer.parseInt(matcher.group(2).trim()) ));
 
         else if((matcher=GameMenuCommands.inventoryShow.getMatcher(input)) != null)
             System.out.println(controller.showInventory());
@@ -202,7 +210,8 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.animals());
 
         else if ((matcher=GameMenuCommands.shepherdAnimals.getMatcher(input)) != null) {
-            System.out.println(controller.shepherdAnimals(matcher.group(2).trim() , matcher.group(3).trim() , matcher.group(1).trim()));
+            System.out.println(controller.shepherdAnimals(matcher.group(2).trim()
+                    , matcher.group(3).trim() , matcher.group(1).trim()));
         }
 
         else if ((matcher=GameMenuCommands.feedHay.getMatcher(input)) != null)
@@ -229,21 +238,22 @@ public class GameMenu implements AppMenu {
         else if ((matcher=GameMenuCommands.artisanGet.getMatcher(input)) != null)
             System.out.println(controller.ArtisanGetProduct(matcher.group(1).trim()));
 
-        else if ((matcher=GameMenuCommands.sell.getMather(input)) != null)
+        else if ((matcher=GameMenuCommands.sell.getMatcher(input)) != null)
             System.out.println(controller.sell(matcher.group("name").trim() , -1));
 
-        else if ((matcher=GameMenuCommands.sellByCount.getMather(input)) != null)
+        else if ((matcher=GameMenuCommands.sellByCount.getMatcher(input)) != null)
             System.out.println(controller.sell(matcher.group("name").trim() , Integer.parseInt(matcher.group(2).trim()) ));
 
-        else if ((matcher=GameMenuCommands.cheatSetFriendship.getMather(input)) != null)
+        else if ((matcher=GameMenuCommands.cheatSetFriendship.getMatcher(input)) != null)
             System.out.println(controller.cheatSetFriendship(matcher.group(1).trim() , Integer.parseInt(matcher.group(2).trim()) ));
 
-        else if ((matcher=GameMenuCommands.addDollar.getMather(input)) != null)
+        else if ((matcher=GameMenuCommands.addDollar.getMatcher(input)) != null)
             System.out.println(controller.addDollar(Integer.parseInt(matcher.group(1).trim())));
 
         //TODO چیت کد اضافه کردن آیتم.
         else
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
+        controller.AutomaticFunctionAfterAnyAct();
     }
 }

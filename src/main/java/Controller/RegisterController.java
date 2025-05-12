@@ -15,21 +15,19 @@ import java.util.regex.Pattern;
 import static model.App.currentUser;
 
 public class RegisterController {
+
     public static boolean CheckName(String name) {
         return name != null && name.matches("^[a-zA-Z0-9-]+$");
     }
-
     public static boolean emailCheck(String email) {
         return email != null &&
                  email.matches("^(?=[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9])(?:(?!\\.\\.)[a-zA-Z0-9._-])" +
                          "+@(?=[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9])(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z0-9-]{2,}$");
     }
-
     public static boolean passCheck(String password) {
         String correctPattern = "^[a-zA-Z0-9!#$%^\\&*\\(\\)=+\\{\\}\\[\\]\\|\\/\\\\:;'\"<>,\\?\\-]+$";
         return password != null && Pattern.compile(correctPattern).matcher(password).matches();
     }
-
     public static String passIsStrong(String pass) {
         if (pass.length() < 8)
             return "Password Must Have at Least 8 Characters!";
@@ -43,12 +41,10 @@ public class RegisterController {
             return "Password Must Have at Least One Special Character!";
         return null;
     }
-
     public static boolean usernameCheck(String username) {
         String correctPattern = "\\s*[a-zA-Z][a-zA-Z0-9-]{3,9}\\s*";
         return username != null && Pattern.compile(correctPattern).matcher(username).matches();
     }
-
     public static boolean isUnique(String username) {
         for (User user : App.users) {
             if (user.getUsername().equals(username))
@@ -56,7 +52,6 @@ public class RegisterController {
         }
         return true;
     }
-
     public static String SuggestUsername(String oldUsername) {
         String username = oldUsername;
         do {
@@ -64,7 +59,6 @@ public class RegisterController {
         } while (!isUnique(username));
         return username;
     }
-
     public static String generateRandomPass() {
         String possibleDigits = "0123456789";
         String possibleUppers = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -96,7 +90,6 @@ public class RegisterController {
 
         return sb.toString();
     }
-
     public void PickSecurityQA () {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Now Choose a Security Question and Answer It.");
