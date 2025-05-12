@@ -38,4 +38,8 @@ public class Home extends GameObject {
     public int getWidth() {
         return width;
     }
+
+    public Fridge getFridge() {
+        return fridge;
+    }
 }

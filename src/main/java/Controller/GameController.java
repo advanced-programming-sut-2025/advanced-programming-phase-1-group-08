@@ -2115,6 +2115,7 @@ public class GameController {
 
         initializePlayer();
     }
+
     public void nextTurn () {
         User old = currentPlayer;
         boolean done = false;

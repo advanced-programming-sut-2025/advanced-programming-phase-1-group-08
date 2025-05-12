@@ -48,8 +48,11 @@ public class Farm {
         return (x >= this.x && x < this.x+width &&
                 y >= this.y && y < this.y+height);
     }
-    public boolean isInHome(int x, int y) {
+    public boolean isInHome (int x, int y) {
         return (x>= home.getTopLeftX() && x < home.getTopLeftX() + home.getWidth()
                 && y>=home.getTopLeftY() && y < home.getTopLeftY() + home.getLength());
+    }
+    public Home getHome () {
+        return home;
     }
 }

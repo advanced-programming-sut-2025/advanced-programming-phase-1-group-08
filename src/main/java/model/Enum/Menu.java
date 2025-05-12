@@ -13,6 +13,7 @@ public enum Menu {
     LoginMenu(new LoginMenu()),
     ExitMenu(new ExitMenu()),
     MainMenu(new MainMenu()),
+    HomeMenu(new HomeMenu()),
     GameMenu(new GameMenu());
 
 

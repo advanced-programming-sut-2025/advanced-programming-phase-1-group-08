@@ -1,15 +1,17 @@
 package View;
 
 import Controller.GameController;
+import Controller.HomeController;
 import Controller.TradeController;
 import model.Enum.Commands.GameMenuCommands;
+import model.Enum.Menu;
 import model.Result;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
-import static model.App.currentPlayer;
-import static model.App.getCurrentMenu;
+import static Controller.HomeController.NotInHome;
+import static model.App.*;
 import static model.Color_Eraser.*;
 
 public class GameMenu implements AppMenu {
@@ -31,6 +33,13 @@ public class GameMenu implements AppMenu {
 
         else if (GameMenuCommands.nextTurn.getMather(input) != null)
             controller.nextTurn();
+
+        else if (GameMenuCommands.openHomeMenu.getMather(input) != null) {
+            if (!NotInHome(currentUser))
+                currentMenu = Menu.HomeMenu;
+            else
+                System.out.println(RED+"You're Not in Your Home!"+RESET);
+        }
 
         else if (GameMenuCommands.friendships.getMather(input) != null)
             controller.DisplayFriendships();
