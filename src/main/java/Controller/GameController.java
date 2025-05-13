@@ -2389,6 +2389,61 @@ public class GameController {
 
     public void passedOfTime (int day, int hour) {
 
+        if (day == 0) {
+            if (currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
+                currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentPlayer.Buff_maxEnergy_100_hoursLeft - hour);
+                if (currentPlayer.Buff_maxEnergy_100_hoursLeft < 0)
+                    currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
+            }
+            if (currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
+                currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentPlayer.Buff_maxEnergy_50_hoursLeft - hour);
+                if (currentPlayer.Buff_maxEnergy_50_hoursLeft < 0)
+                    currentPlayer.setBuff_maxEnergy_50_hoursLeft(0);
+            }
+            if (currentPlayer.Buff_farming_hoursLeft > 0) {
+                currentPlayer.setBuff_farming_hoursLeft(currentPlayer.Buff_farming_hoursLeft - hour);
+                if (currentPlayer.Buff_farming_hoursLeft < 0)
+                    currentPlayer.setBuff_farming_hoursLeft(0);
+            }
+            if (currentPlayer.Buff_foraging_hoursLeft > 0) {
+                currentPlayer.setBuff_foraging_hoursLeft(currentPlayer.Buff_foraging_hoursLeft - hour);
+                if (currentPlayer.Buff_foraging_hoursLeft < 0)
+                    currentPlayer.setBuff_foraging_hoursLeft(0);
+            }
+            if (currentPlayer.Buff_fishing_hoursLeft > 0) {
+                currentPlayer.setBuff_fishing_hoursLeft(currentPlayer.Buff_fishing_hoursLeft - hour);
+                if (currentPlayer.Buff_fishing_hoursLeft < 0)
+                    currentPlayer.setBuff_fishing_hoursLeft(0);
+            }
+            if (currentPlayer.Buff_mining_hoursLeft > 0) {
+                currentPlayer.setBuff_mining_hoursLeft(currentPlayer.Buff_mining_hoursLeft - hour);
+                if (currentPlayer.Buff_mining_hoursLeft < 0)
+                    currentPlayer.setBuff_mining_hoursLeft(0);
+            }
+
+
+
+
+            // Buff implementation
+            if (currentPlayer.Buff_maxEnergy_100_hoursLeft == 0) currentPlayer.setMAX_HEALTH(200);
+            if (currentPlayer.Buff_maxEnergy_50_hoursLeft == 0) currentPlayer.setMAX_HEALTH(200);
+            if (currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
+                currentPlayer.setMAX_HEALTH(300);
+                currentPlayer.setHealth(currentPlayer.getHealth() + 100);
+                currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentPlayer.Buff_maxEnergy_100_hoursLeft --);
+            }
+            if (currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
+                currentPlayer.setMAX_HEALTH(250);
+                currentPlayer.setHealth(currentPlayer.getHealth() + 50);
+                currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentPlayer.Buff_maxEnergy_50_hoursLeft --);
+            }
+            if (currentPlayer.Buff_mining_hoursLeft > 0) currentPlayer.setBuff_mining_hoursLeft(currentPlayer.Buff_mining_hoursLeft --);
+            if (currentPlayer.Buff_fishing_hoursLeft > 0) currentPlayer.setBuff_fishing_hoursLeft(currentPlayer.Buff_fishing_hoursLeft --);
+            if (currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.setBuff_farming_hoursLeft(currentPlayer.Buff_farming_hoursLeft --);
+            if (currentPlayer.Buff_foraging_hoursLeft > 0) currentPlayer.setBuff_foraging_hoursLeft(currentPlayer.Buff_foraging_hoursLeft --);
+
+        }
+
         DateHour dateHour = currentDate.clone();
 
         currentDate.increaseHour(hour);
@@ -2425,24 +2480,6 @@ public class GameController {
 
         if (currentUser == currentPlayer) {
             passedOfTime(0, 1);
-
-            // Buff implementation
-            if (currentPlayer.Buff_maxEnergy_100_hoursLeft == 0) currentPlayer.setMAX_HEALTH(200);
-            if (currentPlayer.Buff_maxEnergy_50_hoursLeft == 0) currentPlayer.setMAX_HEALTH(200);
-            if (currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
-                currentPlayer.setMAX_HEALTH(300);
-                currentPlayer.setHealth(currentPlayer.getHealth() + 100);
-                currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentPlayer.Buff_maxEnergy_100_hoursLeft --);
-            }
-            if (currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
-                currentPlayer.setMAX_HEALTH(250);
-                currentPlayer.setHealth(currentPlayer.getHealth() + 50);
-                currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentPlayer.Buff_maxEnergy_50_hoursLeft --);
-            }
-            if (currentPlayer.Buff_mining_hoursLeft > 0) currentPlayer.setBuff_mining_hoursLeft(currentPlayer.Buff_mining_hoursLeft --);
-            if (currentPlayer.Buff_fishing_hoursLeft > 0) currentPlayer.setBuff_fishing_hoursLeft(currentPlayer.Buff_fishing_hoursLeft --);
-            if (currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.setBuff_farming_hoursLeft(currentPlayer.Buff_farming_hoursLeft --);
-            if (currentPlayer.Buff_foraging_hoursLeft > 0) currentPlayer.setBuff_foraging_hoursLeft(currentPlayer.Buff_foraging_hoursLeft --);
         }
 
         for (Tile tile : bigMap)
@@ -4007,6 +4044,7 @@ public class GameController {
 //                else if (currentPlayer.currentTool -> "foraging") {
 //                    if (currentPlayer.Buff_foraging_hoursLeft > 0) currentPlayer.increaseHealth(1);
 //                }
+
 //                else if (currentPlayer.currentTool -> "mining") {
 //                    if (currentPlayer.Buff_mining_hoursLeft > 0) currentPlayer.increaseHealth(1);
 //                }
@@ -4023,21 +4061,25 @@ public class GameController {
 
         Tools tools = currentPlayer.currentTool;
 
-        if (tools instanceof Axe)
+        if (tools instanceof Axe) {
             return useAxe(dir);
-        else if (tools instanceof Hoe)
+        } else if (tools instanceof Hoe) {
+            if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useHoe(dir);
-        else if (tools instanceof MilkPail)
+        } else if (tools instanceof MilkPail) {
+            if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useMilkPail(dir);
-        else if (tools instanceof Scythe)
+        } else if (tools instanceof Scythe) {
+            if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useScythe(dir);
-        else if (tools instanceof Shear)
+        } else if (tools instanceof Shear) {
+            if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useShear(dir);
-        else if (tools instanceof WateringCan)
+        } else if (tools instanceof WateringCan) {
             return useWateringCan(dir);
-        else if (tools instanceof PickAxe)
+        } else if (tools instanceof PickAxe) {
             return usePickAxe(dir);
-
+        }
         return new Result(false, RED + "please pick up a tools" + RESET);
     }
 
