@@ -1,4 +1,4 @@
-package model.MapThings;
+package model.Plants;
 
 
 import model.Items;
@@ -12,5 +12,10 @@ public class Wood extends Items {
     @Override
     public String getIcon() {
         return BRIGHT_BROWN + "|";
+    }
+
+    @Override
+    public String getName() {
+        return "Wood";
     }
 }

@@ -19,4 +19,9 @@ public class TreesProdct extends Items {
     public TreesProductType getType() {
         return type;
     }
+
+    @Override
+    public String getName() {
+        return type.getDisplayName();
+    }
 }

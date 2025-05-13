@@ -8,7 +8,7 @@ import model.Enum.ItemType.MarketItemType;
 import model.Enum.Menu;
 import model.Enum.WeatherTime.Weather;
 import model.MapThings.Tile;
-import model.OtherItem.MarketItem;
+import model.Places.MarketItem;
 import model.Places.Farm;
 import model.Places.Market;
 import model.Plants.AllCrops;

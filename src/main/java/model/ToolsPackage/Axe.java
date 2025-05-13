@@ -33,4 +33,9 @@ public class Axe extends Tools {
 
         return Math.max((int) (this.type.getEnergyCost()*x), 0);
     }
+
+    @Override
+    public String getName() {
+        return type.getDisplayName();
+    }
 }

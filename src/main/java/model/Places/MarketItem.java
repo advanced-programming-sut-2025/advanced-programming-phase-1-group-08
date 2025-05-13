@@ -1,4 +1,4 @@
-package model.OtherItem;
+package model.Places;
 
 import model.Enum.ItemType.MarketItemType;
 import model.Items;
@@ -11,5 +11,10 @@ public class MarketItem extends Items {
     }
     public MarketItemType getType() {
         return type;
+    }
+
+    @Override
+    public String getName() {
+        return type.getName();
     }
 }

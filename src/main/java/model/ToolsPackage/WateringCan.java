@@ -62,9 +62,7 @@ public class WateringCan extends Tools {
     }
 
     @Override
-    public String getName () {
-
-        System.out.println("      1     ");
+    public String getName() {
         return type.getDisplayName();
     }
 }

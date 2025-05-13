@@ -8,17 +8,14 @@ import model.Enum.AllPlants.TreesProductType;
 import model.Enum.FoodTypes;
 import model.Enum.ItemType.*;
 import model.OtherItem.ArtisanProduct;
-import model.OtherItem.MarketItem;
+import model.Places.MarketItem;
 import model.Plants.AllCrops;
 import model.Plants.ForagingCrops;
 import model.Plants.TreesProdct;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
-import static model.App.AllFromDisplayNames;
 import static model.App.currentPlayer;
 
 public class Recipe {

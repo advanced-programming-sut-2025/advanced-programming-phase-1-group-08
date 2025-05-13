@@ -7,11 +7,11 @@ import model.Enum.AllPlants.CropsType;
 import model.Enum.AllPlants.ForagingMineralsType;
 import model.Enum.AllPlants.ForagingSeedsType;
 import model.Enum.AllPlants.TreesProductType;
-import model.MapThings.Wood;
+import model.Plants.Wood;
 import model.OtherItem.ArtisanProduct;
 import model.OtherItem.BarsAndOres;
-import model.OtherItem.CraftingItem;
-import model.OtherItem.MarketItem;
+import model.ToolsPackage.CraftingItem;
+import model.Places.MarketItem;
 import model.Plants.*;
 
 import java.util.HashMap;

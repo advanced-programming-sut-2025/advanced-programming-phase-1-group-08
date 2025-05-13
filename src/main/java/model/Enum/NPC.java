@@ -6,11 +6,11 @@ import model.Animall.Fish;
 import model.Enum.WeatherTime.Weather;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.ItemType.*;
-import model.MapThings.BasicRock;
-import model.MapThings.Wood;
+import model.Plants.BasicRock;
+import model.Plants.Wood;
 import model.OtherItem.ArtisanProduct;
 import model.OtherItem.BarsAndOres;
-import model.OtherItem.MarketItem;
+import model.Places.MarketItem;
 import model.Plants.AllCrops;
 import model.Plants.MixedSeeds;
 

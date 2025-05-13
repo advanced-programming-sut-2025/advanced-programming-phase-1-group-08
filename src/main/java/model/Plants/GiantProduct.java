@@ -149,4 +149,10 @@ public class GiantProduct extends Items {
         return neighbors;
     }
 
+    @Override
+    public String getName() {
+        return "dl";
+    }
+
+
 }

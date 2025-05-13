@@ -20,4 +20,9 @@ public class Fish extends Items {
     public Quantity getQuantity() {
         return quantity;
     }
+
+    @Override
+    public String getName() {
+        return fishType.getName();
+    }
 }

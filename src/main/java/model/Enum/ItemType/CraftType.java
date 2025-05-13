@@ -1,7 +1,7 @@
 package model.Enum.ItemType;
 
 import model.*;
-import model.OtherItem.MarketItem;
+import model.Places.MarketItem;
 
 import java.util.Map;
 

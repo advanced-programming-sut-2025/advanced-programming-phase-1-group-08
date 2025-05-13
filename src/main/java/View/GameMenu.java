@@ -168,7 +168,7 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.upgradeTool(matcher.group("name").trim()));
 
         else if ((matcher = GameMenuCommands.toolsUse.getMatcher(input)) != null)
-            System.out.println(controller.useTools(matcher.group("name").trim()));
+            System.out.println(controller.useTools(matcher.group(1).trim()));
 
         else if ((matcher = GameMenuCommands.wateringPlant.getMatcher(input)) != null)
             System.out.println(controller.WateringPlant(matcher.group("direction").trim()));
@@ -236,7 +236,8 @@ public class GameMenu implements AppMenu {
         else if ((matcher=GameMenuCommands.addDollar.getMatcher(input)) != null)
             System.out.println(controller.addDollar(Integer.parseInt(matcher.group(1).trim())));
 
-
+        else if ((matcher=GameMenuCommands.addItem.getMatcher(input)) != null)
+            System.out.println(controller.addItem(matcher.group(1) , Integer.parseInt(matcher.group(2).trim())));
 
 
         else if (input.matches("\\s*exit\\s*game\\s*"))
@@ -245,11 +246,11 @@ public class GameMenu implements AppMenu {
             controller.forceTerminate();
 
 
-            //TODO چیت کد اضافه کردن آیتم.
+
         else
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
         controller.AutomaticFunctionAfterAnyAct();
-        System.out.println(currentPlayer.getNickname() + ": ");
+        System.out.println(currentPlayer.getNickname() + ": "+currentPlayer.getPositionX() + " " + currentPlayer.getPositionY() +" "+ currentPlayer.getHealth());
     }
 }

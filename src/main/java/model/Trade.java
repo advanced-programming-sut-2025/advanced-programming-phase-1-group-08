@@ -5,7 +5,7 @@ import model.Enum.AllPlants.ForagingCropsType;
 import model.Enum.AllPlants.TreesProductType;
 import model.Enum.Commands.TradeMenuCommands;
 import model.Enum.ItemType.MarketItemType;
-import model.OtherItem.MarketItem;
+import model.Places.MarketItem;
 import model.Plants.AllCrops;
 import model.Plants.ForagingCrops;
 import model.Plants.TreesProdct;

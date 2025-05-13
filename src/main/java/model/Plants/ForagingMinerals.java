@@ -19,4 +19,9 @@ public class ForagingMinerals extends Items {
     public String getIcon () {
         return this.type.getCharacter();
     }
+
+    @Override
+    public String getName() {
+        return type.getDisplayName();
+    }
 }

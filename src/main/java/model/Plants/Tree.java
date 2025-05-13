@@ -146,4 +146,9 @@ public class Tree extends Items {
             delete();
 
     }
+
+    @Override
+    public String getName() {
+        return type.getDisplayName();
+    }
 }

@@ -35,4 +35,9 @@ public class ForagingCrops extends Items {
             if (tile.getGameObject().equals(this))
                 tile.setGameObject(new Walkable());
     }
+
+    @Override
+    public String getName() {
+        return type.getDisplayName();
+    }
 }

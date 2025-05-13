@@ -14,4 +14,9 @@ public class Scythe extends Tools {
 
         return Math.max((int) (2*currentWeather.getEnergyCostCoefficient()), 0);
     }
+
+    @Override
+    public String getName() {
+        return "Scythe";
+    }
 }

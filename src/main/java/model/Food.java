@@ -21,4 +21,9 @@ public class Food extends Items{
         return controller.checkAmountProductAvailable(new Food(type), 1) ||
                 currentPlayer.getBackPack().getType().getRemindCapacity() > 0;
     }
+
+    @Override
+    public String getName() {
+        return type.name();
+    }
 }

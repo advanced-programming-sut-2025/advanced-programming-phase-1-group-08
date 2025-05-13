@@ -1,4 +1,4 @@
-package model.MapThings;
+package model.Plants;
 
 import model.Items;
 
@@ -11,5 +11,10 @@ public class BasicRock extends Items {
     @Override
     public String getIcon() {
         return GRAY+"s";
+    }
+
+    @Override
+    public String getName() {
+        return "Stone";
     }
 }

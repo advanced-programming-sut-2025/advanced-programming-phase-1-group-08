@@ -42,14 +42,62 @@ public class GameController {
         return new Result(true , "your money cheated successfully");
     }
 
-//    public Result addItem(int amount) {
-//        Inventory inventory= currentPlayer.getBackPack().inventory;
-//
-//        if (currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
-//            return new Result(false , "you can't add an item to your inventory because there is no remind capacity");
-//        }
-//        for (ArtisanProduct artisanProduct )
-//    }
+
+
+    public Result addItem(String name ,int amount) {
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+        ItemRegistry itemRegistry = new ItemRegistry();
+        Items items=null;
+        if (currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+            return new Result(false , "not enough capacity in your BackPack");
+        }
+
+        itemRegistry.scanItems("model.Plants");
+        if ((items=itemRegistry.nameToItemMap.get(name)) != null) {
+            if (inventory.Items.containsKey(items)) {
+                inventory.Items.compute(items , (k,v) -> v+amount);
+            }
+            else {
+                inventory.Items.put(items, amount);
+            }
+            return new Result(true , name + " created successfully");
+        }
+
+        itemRegistry.scanItems("model.Places");
+        if ((items=itemRegistry.nameToItemMap.get(name)) != null) {
+            if (inventory.Items.containsKey(items)) {
+                inventory.Items.compute(items , (k,v) -> v+amount);
+            }
+            else {
+                inventory.Items.put(items, amount);
+            }
+            return new Result(true , name + " created successfully");
+        }
+
+        itemRegistry.scanItems("model.ToolsPackage");
+        if ((items=itemRegistry.nameToItemMap.get(name)) != null) {
+            if (inventory.Items.containsKey(items)) {
+                inventory.Items.compute(items , (k,v) -> v+amount);
+            }
+            else {
+                inventory.Items.put(items, amount);
+            }
+            return new Result(true , name + " created successfully");
+        }
+
+        itemRegistry.scanItems("model.OtherItem");
+        if ((items=itemRegistry.nameToItemMap.get(name)) != null) {
+            if (inventory.Items.containsKey(items)) {
+                inventory.Items.compute(items , (k,v) -> v+amount);
+            }
+            else {
+                inventory.Items.put(items, amount);
+            }
+            return new Result(true , name + " created successfully");
+        }
+
+        return new Result(false , name + "not found!");
+    }
 
     public ArrayList<Tile> sortMap(ArrayList<Tile> Map) {
         Map.sort((a, b) -> {
@@ -104,25 +152,25 @@ public class GameController {
 //            if (entry instanceof MixedSeeds && items instanceof MixedSeeds)
 //                return entry.getValue() >= number;
 //            if (entry instanceof AllCrops && items instanceof AllCrops &&
-//                    ((AllCrops) entry).getType().equals(((AllCrops) items).getType()))
+//                    ((AllCrops) entry).getAnimalProductType().equals(((AllCrops) items).getAnimalProductType()))
 //                return entry.getValue() >= number;
 //            if (entry instanceof ForagingSeeds && items instanceof ForagingSeeds &&
-//                    ((ForagingSeeds) entry).getType().equals(((ForagingSeeds) items).getType()))
+//                    ((ForagingSeeds) entry).getAnimalProductType().equals(((ForagingSeeds) items).getAnimalProductType()))
 //                return entry.getValue() >= number;
 //            if (entry instanceof TreesProdct && items instanceof TreesProdct &&
-//                    ((TreesProdct) entry).getType().equals(((TreesProdct) items).getType()))
+//                    ((TreesProdct) entry).getAnimalProductType().equals(((TreesProdct) items).getAnimalProductType()))
 //                return entry.getValue() >= number;
 //            if (entry instanceof TreeSource && items instanceof TreeSource &&
-//                    ((TreeSource) entry).getType().equals(((TreeSource) items).getType()))
+//                    ((TreeSource) entry).getAnimalProductType().equals(((TreeSource) items).getAnimalProductType()))
 //                return entry.getValue() >= number;
 //            if (entry instanceof ForagingCrops && items instanceof ForagingCrops &&
-//                    ((ForagingCrops) entry).getType().equals(((ForagingCrops) items).getType()))
+//                    ((ForagingCrops) entry).getAnimalProductType().equals(((ForagingCrops) items).getAnimalProductType()))
 //                return entry.getValue() >= number;
 //            if (entry instanceof ForagingMinerals && items instanceof ForagingMinerals &&
-//                    ((ForagingMinerals) entry).getType().equals(((ForagingMinerals) items).getType()))
+//                    ((ForagingMinerals) entry).getAnimalProductType().equals(((ForagingMinerals) items).getAnimalProductType()))
 //                return entry.getValue() >= number;
 //            if (entry instanceof MarketItem && items instanceof MarketItem &&
-//                    ((MarketItem) entry).getType().equals(((MarketItem) items).getType()))
+//                    ((MarketItem) entry).getAnimalProductType().equals(((MarketItem) items).getAnimalProductType()))
 //                return entry.getValue() >= number;
 //
 //        }
@@ -136,50 +184,57 @@ public class GameController {
 
         Inventory inventory = currentPlayer.getBackPack().inventory;
 
-        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()) {
-
-            if (entry instanceof MixedSeeds && items instanceof MixedSeeds) {
-                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                return;
-
-            } else if (entry instanceof AllCrops && items instanceof AllCrops &&
-                    ((AllCrops) entry).getType().equals(((AllCrops) items).getType())) {
-                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                return;
-
-            } else if (entry instanceof ForagingSeeds && items instanceof ForagingSeeds &&
-                    ((ForagingSeeds) entry).getType().equals(((ForagingSeeds) items).getType())) {
-                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                return;
-
-            } else if (entry instanceof TreesProdct && items instanceof TreesProdct &&
-                    ((TreesProdct) entry).getType().equals(((TreesProdct) items).getType())) {
-                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                return;
-
-            } else if (entry instanceof TreeSource && items instanceof TreeSource &&
-                    ((TreeSource) entry).getType().equals(((TreeSource) items).getType())) {
-                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                return;
-
-            } else if (entry instanceof ForagingCrops && items instanceof ForagingCrops &&
-                    ((ForagingCrops) entry).getType().equals(((ForagingCrops) items).getType())) {
-                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                return;
-
-            } else if (entry instanceof ForagingMinerals && items instanceof ForagingMinerals &&
-                    ((ForagingMinerals) entry).getType().equals(((ForagingMinerals) items).getType())) {
-                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                return;
-
-            } else if (entry instanceof MarketItem && items instanceof MarketItem &&
-                    ((MarketItem) entry).getType().equals(((MarketItem) items).getType())) {
-                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                return;
-            }
-        }
+////        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()) {
+////
+////            if (entry instanceof MixedSeeds && items instanceof MixedSeeds) {
+////                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
+////                return;
+////
+////            } else if (entry instanceof AllCrops && items instanceof AllCrops &&
+////                    ((AllCrops) entry).getAnimalProductType().equals(((AllCrops) items).getAnimalProductType())) {
+////                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
+////                return;
+////
+////            } else if (entry instanceof ForagingSeeds && items instanceof ForagingSeeds &&
+////                    ((ForagingSeeds) entry).getAnimalProductType().equals(((ForagingSeeds) items).getAnimalProductType())) {
+////                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
+////                return;
+////
+////            } else if (entry instanceof TreesProdct && items instanceof TreesProdct &&
+////                    ((TreesProdct) entry).getAnimalProductType().equals(((TreesProdct) items).getAnimalProductType())) {
+////                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
+////                return;
+//
+//            } else if (entry instanceof TreeSource && items instanceof TreeSource &&
+//                    ((TreeSource) entry).getAnimalProductType().equals(((TreeSource) items).getAnimalProductType())) {
+//                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
+//                return;
+//
+//            } else if (entry instanceof ForagingCrops && items instanceof ForagingCrops &&
+//                    ((ForagingCrops) entry).getAnimalProductType().equals(((ForagingCrops) items).getAnimalProductType())) {
+//                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
+//                return;
+//
+//            } else if (entry instanceof ForagingMinerals && items instanceof ForagingMinerals &&
+//                    ((ForagingMinerals) entry).getAnimalProductType().equals(((ForagingMinerals) items).getAnimalProductType())) {
+//                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
+//                return;
+//
+//            } else if (entry instanceof MarketItem && items instanceof MarketItem &&
+//                    ((MarketItem) entry).getAnimalProductType().equals(((MarketItem) items).getAnimalProductType())) {
+//                inventory.Items.put(entry.getKey(), entry.getValue() + amount);
+//                return;
+//            }
+//        }
         inventory.Items.put(items, amount);
+        if (inventory.Items.containsKey(items)) {
+            inventory.Items.compute(items, (k, x) -> x + amount);
+        }
+        else {
+            inventory.Items.put(items, amount);
+        }
     } // برای کم کردن الو چک بشه اون تعداد داریم یا نه
+
 
 
     public Tile getTileByDir (int dir) {
@@ -704,14 +759,8 @@ public class GameController {
                 if (checkConditionsForWalk(x + current.x,y + current.y) !=null) {
                     continue;
                 }
-                int turnCost= (i+1==current.direction) ? 0:10;
-                int totalEnergy=current.Energy;
-                if (turnCost == 0) {
-                    totalEnergy++;
-                }
-                else {
-                    totalEnergy+=turnCost;
-                }
+                int turnCost= (i+1==current.direction) ? 1:10;
+                int totalEnergy=current.Energy + turnCost;
                 queue.add(new State(x+current.x , y+current.y , i+1 , totalEnergy));
             }
         }
@@ -746,6 +795,11 @@ public class GameController {
             if (user.getFarm().equals(farm)){
                 if (user.getSpouse() != null) {
                     if (!user.getSpouse().equals(currentPlayer) && !user.equals(currentPlayer)) {
+                        return new Result(false, "you can't go to this farm");
+                    }
+                }
+                else {
+                    if (! user.equals(currentPlayer)) {
                         return new Result(false, "you can't go to this farm");
                     }
                 }
@@ -839,10 +893,13 @@ public class GameController {
                 output.append(((Animalproduct) entry.getKey()).getAnimalProductType().getName()).append(": ").append(((Animalproduct) entry.getKey()).getQuantity().getName()).append('\n');
             }
             else if (entry.getKey() instanceof CraftingItem) {
-                output.append(((CraftingItem) entry.getKey()).getCraftType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append(((CraftingItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof ArtisanProduct) {
                 output.append(((ArtisanProduct) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof BarsAndOres) {
+                output.append(((BarsAndOres) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
         }
 
@@ -1642,7 +1699,7 @@ public class GameController {
         Inventory inventory = currentPlayer.getBackPack().inventory;
 
         if (items instanceof CraftingItem) {
-            if (((CraftingItem) items).getCraftType().equals(CraftType.BeeHouse)) {
+            if (((CraftingItem) items).getType().equals(CraftType.BeeHouse)) {
 
                 if (currentPlayer.getFarm().isInHome(tile.getX(), tile.getY())) {
                     return new Result(false , "you should place Bee House in Farm!");
@@ -1746,7 +1803,7 @@ public class GameController {
                     continue;
                 }
                 if (tile.getGameObject() instanceof CraftingItem) {
-                    if (((CraftingItem) tile.getGameObject()).getCraftType().getName().equals(name)) {
+                    if (((CraftingItem) tile.getGameObject()).getType().getName().equals(name)) {
                         return (CraftingItem) tile.getGameObject();
                     }
                 }
@@ -1774,8 +1831,8 @@ public class GameController {
 
         for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
             if (entry.getKey() instanceof CraftingItem) {
-                if (((CraftingItem) entry.getKey()).getCraftType().getName().equals(newArtistName)) {
-                    craftType=((CraftingItem) entry.getKey()).getCraftType();
+                if (((CraftingItem) entry.getKey()).getType().getName().equals(newArtistName)) {
+                    craftType=((CraftingItem) entry.getKey()).getType();
                 }
             }
         }
@@ -2278,8 +2335,8 @@ public class GameController {
             }
             else {
                 Home home = user.getFarm().getHome();
-                user.setPositionX( 60 * user.topLeftX + home.getTopLeftX() + home.getWidth() / 2);
-                user.setPositionY( 60 * user.topLeftY + home.getTopLeftY() + home.getLength());
+                user.setPositionX(home.getTopLeftX() + home.getWidth() / 2);
+                user.setPositionY(home.getTopLeftY() + home.getLength());
             }
         }
     }
@@ -2444,23 +2501,23 @@ public class GameController {
 
             currentPlayer = user;
             while (true) {
-//                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
-//                String choiceString = scanner.nextLine();
-//                String[] splitChoice = choiceString.trim().split("\\s+");
-//
-//                int choice;
-//                try {
-//                    choice = Integer.parseInt(splitChoice[2]);
-//                } catch (Exception e) {
-//                    System.out.println("Please put a integer between 1 and 2!");
-//                    continue;
-//                }
-//                if (choice != 1 && choice != 2) {
-//                    System.out.println("Choose between 1 and 2!");
-//                    continue;
-//                }
+                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
+                String choiceString = scanner.nextLine();
+                String[] splitChoice = choiceString.trim().split("\\s+");
 
-                int choice = 1; // TODO باید پاک بشه
+                int choice;
+                try {
+                    choice = Integer.parseInt(splitChoice[2]);
+                } catch (Exception e) {
+                    System.out.println("Please put a integer between 1 and 2!");
+                    continue;
+                }
+                if (choice != 1 && choice != 2) {
+                    System.out.println("Choose between 1 and 2!");
+                    continue;
+                }
+
+                //int choice = 1; // TODO باید پاک بشه
 
                 if (counter == 1) {
                     user.topLeftX = 0;
@@ -2703,11 +2760,11 @@ public class GameController {
                 GameObject object = getTileByCoordinates(x, y).getGameObject();
 
                 if (object instanceof CraftingItem &&
-                        (( ((CraftingItem) object).getCraftType().equals(CraftType.Scarecrow)) ||
-                                ((CraftingItem) object).getCraftType().equals(CraftType.DeluxeScarecrow) )) {
+                        (( ((CraftingItem) object).getType().equals(CraftType.Scarecrow)) ||
+                                ((CraftingItem) object).getType().equals(CraftType.DeluxeScarecrow) )) {
 
                     int r = 12;
-                    if (((CraftingItem) object).getCraftType().equals(CraftType.Scarecrow))
+                    if (((CraftingItem) object).getType().equals(CraftType.Scarecrow))
                         r = 8;
 
                     for (int i = Math.min(x - (r / 2), 1); i < x + r; i++)
@@ -3277,7 +3334,7 @@ public class GameController {
         }
         else if (object instanceof CraftingItem) {
 
-            String str = ((CraftingItem) object).getCraftType().getName();
+            String str = ((CraftingItem) object).getType().getName();
             tile.setGameObject(new Walkable());
             return new Result(false, RED+"You Destroy "+str+RESET);
         }

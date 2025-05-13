@@ -11,10 +11,6 @@ public abstract class Tools extends Items {
         this.name = name;
     }
 
-    public String getName() {
-        System.out.println(" hala madrid ");
-        return name;
-    }
 
     public abstract int healthCost ();
 }
