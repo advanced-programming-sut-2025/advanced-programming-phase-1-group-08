@@ -21,8 +21,8 @@ public class AppView {
 //            currentMenu = Menu.MainMenu;
 //        } else {
 //            currentMenu = Menu.RegisterMenu;
-//            System.out.println("Welcome To The SignUp Menu!");
-//            System.out.println("In This Menu You Can Register, Go to LogInPage or Quit The Program");
+//            System.out.println("\nWelcome To The SignUp Menu!");
+//            System.out.println("In This Menu You Can Register, Go to LogInPage or Quit The Program\n");
 //        }
 
         currentMenu = Menu.GameMenu;
