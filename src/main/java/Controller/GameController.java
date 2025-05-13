@@ -8,6 +8,7 @@ import model.Animall.Fish;
 import model.Enum.AllPlants.*;
 import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Door;
+import model.Enum.FoodTypes;
 import model.Enum.ItemType.*;
 import model.Enum.NPC;
 import model.Enum.ToolsType.*;
@@ -702,6 +703,7 @@ public class GameController {
                 || (tile.getGameObject() instanceof Walkable)
                 || tile.getGameObject() instanceof GreenHouse;
     }
+
     public Result checkConditionsForWalk(int goalX, int goalY){
         Tile tile = getTileByCoordinates(goalX, goalY);
         Farm farm = null;
@@ -841,6 +843,9 @@ public class GameController {
         return new Result(true , amount + " "+name+" "+"removed from your inventory");
 
     }
+
+
+
     public Result removeItemToTrashcan (String name, String amount){
         Integer number=null;
         if (amount != null) {
@@ -899,6 +904,7 @@ public class GameController {
         }
         return false;
     }
+
     public FishingPole isFishingPoleTypeExist(String name){
         Inventory inventory=currentPlayer.getBackPack().inventory;
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
@@ -910,6 +916,7 @@ public class GameController {
         }
         return null;
     }
+
     public Quantity productQuantity(double quantity){
 
         if (quantity <= 0.5) {
@@ -924,6 +931,7 @@ public class GameController {
 
         return Quantity.Iridium;
     }
+
     public Result addFishToInventory(FishingPole fishingPole) {
         Inventory inventory=currentPlayer.getBackPack().inventory;
         double random = Math.random();
@@ -1092,6 +1100,8 @@ public class GameController {
 
         return new Result(true, result.toString());
     }
+
+
     public Result Fishing(String fishingPoleType) {
         if (!(currentPlayer.currentTool instanceof FishingPole)) {
             return new Result(false, "your current tool is not a FishingPole!");
@@ -1128,6 +1138,11 @@ public class GameController {
         }
         return true;
     }
+
+
+
+
+
     public Result createWell(int topLeftX , int topLeftY) {
         Inventory inventory = currentPlayer.getBackPack().inventory;
         Marketing marketing = new Marketing();
@@ -1241,6 +1256,7 @@ public class GameController {
         }
         return null;
     }
+
     public Result pet(String petName) {
         int [] x={1,1,1,0,0,-1,-1,-1};
         int [] y={1,0,-1,1,-1,-1,0,1};
@@ -1258,6 +1274,7 @@ public class GameController {
         }
         return new Result(false,petName+"  doesn't exist!");
     }
+
     public Result animals() {
         StringBuilder result= new StringBuilder();
         for (BarnOrCage barnOrCage : currentPlayer.BarnOrCages) {
@@ -1268,6 +1285,7 @@ public class GameController {
         }
         return new Result(true, result.toString());
     }
+
     public Result shepherdAnimals(String x1, String y1, String name) {
 
         int goalX=Integer.parseInt(x1);
@@ -1314,6 +1332,7 @@ public class GameController {
         }
         return new Result(false , "there is no way for animal to go to this coordinate!");
     }
+
     private Result checkShepherdAnimals(int goalX, int goalY, String name) {
         if (goalX < 0 || goalX >90 || goalY < 0 || goalY >90) {
             return new Result(false , "you can't shepherd animals out of bounds!");
@@ -1344,6 +1363,7 @@ public class GameController {
         return null;
 
     }
+
     public boolean checkTileForAnimalWalking(int x, int y) {
         Tile tile = getTileByCoordinates(x + 60 * currentPlayer.topLeftX, y + 60 * currentPlayer.topLeftY);
         if (tile == null) {
@@ -1354,6 +1374,7 @@ public class GameController {
         }
         return true;
     }
+
     public Result feedHay(String name) {
         Animal animal=getAnimalByName(name);
         if (animal==null) {
@@ -2166,6 +2187,35 @@ public class GameController {
         System.out.println(result);
 
     }
+    public void eatFood (String foodName) {
+        // find recipe and it's type
+        Recipe recipe = Recipe.findRecipeByName(foodName);
+        if (recipe == null) {
+            System.out.println(RED+"Food Name Unavailable!"+RESET);
+        }
+        assert recipe != null;
+        FoodTypes type = recipe.getType();
+
+        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Fridge fridge = currentPlayer.getFarm().getHome().getFridge();
+        // decrease from inventory or fridge
+        GameController controller = new GameController();
+        Items i = new Food(type);
+        if (controller.checkAmountProductAvailable(i, 1)) {
+            myInventory.Items.put(i, myInventory.Items.get(i) - 1);
+            myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+        } else if (fridge.items.containsKey(i) && fridge.items.get(i) >= 1) {
+            fridge.items.put(i, fridge.items.get(i) - 1);
+            fridge.items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+        } else {
+            System.out.println(RED+"None of This Item in Fridge or Inventory!"+RESET);
+            return;
+        }
+        // implement food energy
+        currentPlayer.setHealth(currentPlayer.getHealth() + recipe.getEnergy());
+        // implement Buffs
+        recipe.applyEffect(currentPlayer);
+    }
     public void exitGame () {
         if (currentPlayer != currentUser) {
             System.out.println("Access Denied!");
@@ -2248,6 +2298,61 @@ public class GameController {
 
 
     public void passedOfTime (int day, int hour) {
+
+        if (day == 0) {
+            if (currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
+                currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentPlayer.Buff_maxEnergy_100_hoursLeft - hour);
+                if (currentPlayer.Buff_maxEnergy_100_hoursLeft < 0)
+                    currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
+            }
+            if (currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
+                currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentPlayer.Buff_maxEnergy_50_hoursLeft - hour);
+                if (currentPlayer.Buff_maxEnergy_50_hoursLeft < 0)
+                    currentPlayer.setBuff_maxEnergy_50_hoursLeft(0);
+            }
+            if (currentPlayer.Buff_farming_hoursLeft > 0) {
+                currentPlayer.setBuff_farming_hoursLeft(currentPlayer.Buff_farming_hoursLeft - hour);
+                if (currentPlayer.Buff_farming_hoursLeft < 0)
+                    currentPlayer.setBuff_farming_hoursLeft(0);
+            }
+            if (currentPlayer.Buff_foraging_hoursLeft > 0) {
+                currentPlayer.setBuff_foraging_hoursLeft(currentPlayer.Buff_foraging_hoursLeft - hour);
+                if (currentPlayer.Buff_foraging_hoursLeft < 0)
+                    currentPlayer.setBuff_foraging_hoursLeft(0);
+            }
+            if (currentPlayer.Buff_fishing_hoursLeft > 0) {
+                currentPlayer.setBuff_fishing_hoursLeft(currentPlayer.Buff_fishing_hoursLeft - hour);
+                if (currentPlayer.Buff_fishing_hoursLeft < 0)
+                    currentPlayer.setBuff_fishing_hoursLeft(0);
+            }
+            if (currentPlayer.Buff_mining_hoursLeft > 0) {
+                currentPlayer.setBuff_mining_hoursLeft(currentPlayer.Buff_mining_hoursLeft - hour);
+                if (currentPlayer.Buff_mining_hoursLeft < 0)
+                    currentPlayer.setBuff_mining_hoursLeft(0);
+            }
+
+
+
+
+            // Buff implementation
+            if (currentPlayer.Buff_maxEnergy_100_hoursLeft == 0) currentPlayer.setMAX_HEALTH(200);
+            if (currentPlayer.Buff_maxEnergy_50_hoursLeft == 0) currentPlayer.setMAX_HEALTH(200);
+            if (currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
+                currentPlayer.setMAX_HEALTH(300);
+                currentPlayer.setHealth(currentPlayer.getHealth() + 100);
+                currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentPlayer.Buff_maxEnergy_100_hoursLeft --);
+            }
+            if (currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
+                currentPlayer.setMAX_HEALTH(250);
+                currentPlayer.setHealth(currentPlayer.getHealth() + 50);
+                currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentPlayer.Buff_maxEnergy_50_hoursLeft --);
+            }
+            if (currentPlayer.Buff_mining_hoursLeft > 0) currentPlayer.setBuff_mining_hoursLeft(currentPlayer.Buff_mining_hoursLeft --);
+            if (currentPlayer.Buff_fishing_hoursLeft > 0) currentPlayer.setBuff_fishing_hoursLeft(currentPlayer.Buff_fishing_hoursLeft --);
+            if (currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.setBuff_farming_hoursLeft(currentPlayer.Buff_farming_hoursLeft --);
+            if (currentPlayer.Buff_foraging_hoursLeft > 0) currentPlayer.setBuff_foraging_hoursLeft(currentPlayer.Buff_foraging_hoursLeft --);
+
+        }
 
         DateHour dateHour = currentDate.clone();
 
@@ -3976,21 +4081,25 @@ public class GameController {
 
         Tools tools = currentPlayer.currentTool;
 
-        if (tools instanceof Axe)
+        if (tools instanceof Axe) {
             return useAxe(dir);
-        else if (tools instanceof Hoe)
+        } else if (tools instanceof Hoe) {
+            if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useHoe(dir);
-        else if (tools instanceof MilkPail)
+        } else if (tools instanceof MilkPail) {
+            if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useMilkPail(dir);
-        else if (tools instanceof Scythe)
+        } else if (tools instanceof Scythe) {
+            if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useScythe(dir);
-        else if (tools instanceof Shear)
+        } else if (tools instanceof Shear) {
+            if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useShear(dir);
-        else if (tools instanceof WateringCan)
+        } else if (tools instanceof WateringCan) {
             return useWateringCan(dir);
-        else if (tools instanceof PickAxe)
+        } else if (tools instanceof PickAxe) {
             return usePickAxe(dir);
-
+        }
         return new Result(false, RED + "please pick up a tools" + RESET);
     }
 

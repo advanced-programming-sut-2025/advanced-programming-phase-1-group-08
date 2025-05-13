@@ -5,6 +5,7 @@ import model.Animall.Fish;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.AllPlants.ForagingCropsType;
 import model.Enum.AllPlants.TreesProductType;
+import model.Enum.FoodTypes;
 import model.Enum.ItemType.*;
 import model.OtherItem.ArtisanProduct;
 import model.OtherItem.MarketItem;
@@ -22,16 +23,19 @@ import static model.App.currentPlayer;
 
 public class Recipe {
 
-    private String name;
+    private final String name;
     private boolean usable = false;
+    private final FoodTypes type;
     private HashMap<Items, Integer> ingredients = new HashMap<>(); // مقدار لازم از هر آیتم
     private int energyNeeded;
     private int sellPrice_golds;
-    private Effect effect;
+    private final Effect effect;
 
-    public Recipe(String name, boolean usable, HashMap<Items, Integer> ingredients, int energyNeeded, int price,
+    public Recipe(String name, boolean usable, FoodTypes type, HashMap<Items, Integer> ingredients, int energyNeeded, int price,
                   Effect effect) {
+        this.name = name;
         this.usable = usable;
+        this.type = type;
         this.ingredients = ingredients;
         this.energyNeeded = energyNeeded;
         this.sellPrice_golds = price;
@@ -69,6 +73,7 @@ public class Recipe {
         Recipe FriedEgg = new Recipe(
                 "fried egg",
                 true,
+                FoodTypes.friedEgg,
                 FriedEggIngredients,
                 50,
                 35,
@@ -82,6 +87,7 @@ public class Recipe {
         Recipe bakedFish = new Recipe(
                 "baked fish",
                 true,
+                FoodTypes.bakedFish,
                 bakedFishIngredients,
                 75,
                 100,
@@ -94,6 +100,7 @@ public class Recipe {
         Recipe salad = new Recipe(
                 "salad",
                 true,
+                FoodTypes.salad,
                 saladIngredients,
                 113,
                 110,
@@ -106,6 +113,7 @@ public class Recipe {
         Recipe omelet = new Recipe(
                 "omelet",
                 false,
+                FoodTypes.omelet,
                 omeletIngredients,
                 100,
                 125,
@@ -120,6 +128,7 @@ public class Recipe {
         Recipe pumpkinPie = new Recipe(
                 "pumpkin pie",
                 true,
+                FoodTypes.pumpkinPie,
                 pumpkinPieIng,
                 225,
                 385,
@@ -132,6 +141,7 @@ public class Recipe {
         Recipe spaghetti = new Recipe(
                 "spaghetti",
                 true,
+                FoodTypes.spaghetti,
                 spaghettiIng,
                 75,
                 120,
@@ -145,6 +155,7 @@ public class Recipe {
         Recipe pizza = new Recipe(
                 "pizza",
                 false,
+                FoodTypes.pizza,
                 pizzaIng,
                 150,
                 300,
@@ -156,6 +167,7 @@ public class Recipe {
         Recipe tortilla = new Recipe(
                 "tortilla",
                 false,
+                FoodTypes.tortilla,
                 tortillaIng,
                 50,
                 50,
@@ -169,6 +181,7 @@ public class Recipe {
         Recipe makiRoll = new Recipe(
                 "maki roll",
                 false,
+                FoodTypes.makiRoll,
                 makiRollIng,
                 100,
                 220,
@@ -180,10 +193,11 @@ public class Recipe {
         Recipe tripleShotEspresso = new Recipe(
                 "triple shot espresso",
                 false,
+                FoodTypes.tripleShotEspresso,
                 coffeeIng,
                 200,
                 450,
-                null // TODO
+                User -> currentPlayer.setBuff_maxEnergy_100_hoursLeft(5)
         );
 
         HashMap<Items, Integer> cookieIng = new HashMap<>();
@@ -193,6 +207,7 @@ public class Recipe {
         Recipe cookie = new Recipe(
                 "cookie",
                 false,
+                FoodTypes.cookie,
                 cookieIng,
                 90,
                 140,
@@ -205,10 +220,11 @@ public class Recipe {
         Recipe hashBrowns = new Recipe(
                 "hash browns",
                 false,
+                FoodTypes.hashBrowns,
                 hashBrownsIng,
                 90,
                 120,
-                null // TODO
+                User -> currentPlayer.setBuff_farming_hoursLeft(5)
         );
 
         HashMap<Items, Integer> pancakesIng = new HashMap<>();
@@ -217,10 +233,11 @@ public class Recipe {
         Recipe pancakes = new Recipe(
                 "pancakes",
                 false,
+                FoodTypes.pancakes,
                 pancakesIng,
                 90,
                 80,
-                null // TODO
+                User -> currentPlayer.setBuff_foraging_hoursLeft(11)
         );
 
         HashMap<Items, Integer> fruitSaladIng = new HashMap<>();
@@ -230,6 +247,7 @@ public class Recipe {
         Recipe fruitSalad = new Recipe(
                 "fruit salad",
                 true,
+                FoodTypes.fruitSalad,
                 fruitSaladIng,
                 263,
                 450,
@@ -242,10 +260,11 @@ public class Recipe {
         Recipe redPlate = new Recipe(
                 "red plate",
                 true,
+                FoodTypes.redPlate,
                 redPlateIng,
                 240,
                 400,
-                null // TODO
+                User -> currentPlayer.setBuff_maxEnergy_50_hoursLeft(3)
         );
 
         HashMap<Items, Integer> breadIng = new HashMap<>();
@@ -253,6 +272,7 @@ public class Recipe {
         Recipe bread = new Recipe(
                 "bread",
                 false,
+                FoodTypes.bread,
                 breadIng,
                 50,
                 60,
@@ -266,6 +286,7 @@ public class Recipe {
         Recipe salmonDinner = new Recipe(
                 "salmon dinner",
                 false,
+                FoodTypes.salmonDinner,
                 salmonDinnerIng,
                 125,
                 300,
@@ -276,8 +297,9 @@ public class Recipe {
         vegetableMedleyIng.put(new AllCrops(CropsType.Tomato), 1);
         vegetableMedleyIng.put(new AllCrops(CropsType.Beet), 1);
         Recipe vegetableMedley  = new Recipe(
-                "vegetable medley ",
+                "vegetable medley",
                 false,
+                FoodTypes.vegetableMedley,
                 vegetableMedleyIng,
                 165,
                 120,
@@ -291,10 +313,11 @@ public class Recipe {
         Recipe survivalBurger  = new Recipe(
                 "survival burger",
                 false,
+                FoodTypes.survivalBurger,
                 survivalBurgerIng,
                 125,
                 180,
-                null // TODO
+                User -> currentPlayer.setBuff_foraging_hoursLeft(5)
         );
 
         HashMap<Items, Integer> seaFormPuddingIng  = new HashMap<>();
@@ -303,10 +326,11 @@ public class Recipe {
         Recipe seaFormPudding  = new Recipe(
                 "seaform pudding",
                 false,
+                FoodTypes.seaformPudding,
                 seaFormPuddingIng,
                 175,
                 300,
-                null // TODO
+                User -> currentPlayer.setBuff_fishing_hoursLeft(10)
         );
 
         HashMap<Items, Integer> minersTreatIng  = new HashMap<>();
@@ -316,10 +340,11 @@ public class Recipe {
         Recipe minersTreat  = new Recipe(
                 "miner's treat",
                 false,
+                FoodTypes.minersTreat,
                 minersTreatIng,
                 125,
                 200,
-                null // TODO
+                User -> currentPlayer.setBuff_mining_hoursLeft(5)
         );
 
         return List.of(FriedEgg, bakedFish, salad, omelet, pumpkinPie, spaghetti, pizza, tortilla, makiRoll
@@ -327,5 +352,18 @@ public class Recipe {
                 , salmonDinner, vegetableMedley, survivalBurger, seaFormPudding, minersTreat);
     }
 
+    public FoodTypes getType() {
+        return type;
+    }
+
+    public static Recipe findRecipeByName(String name) {
+
+        for (Recipe recipe: currentPlayer.getRecipes()) {
+            if (recipe.getName().equals(name) || recipe.getName().replace(" ", "").equals(name.toLowerCase()))
+                return recipe;
+        }
+
+        return null;
+    }
 }
 

@@ -42,6 +42,9 @@ public class GameMenu implements AppMenu {
                 System.out.println(RED+"You're Not in Your Home!"+RESET);
         }
 
+        else if (GameMenuCommands.eatFood.getMatcher(input) != null)
+            controller.eatFood(input);
+
         else if (GameMenuCommands.friendships.getMatcher(input) != null)
             controller.DisplayFriendships();
 
