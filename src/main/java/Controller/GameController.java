@@ -2312,6 +2312,7 @@ public class GameController {
             Home home = user.getFarm().getHome();
             user.setPositionX( 60 * user.topLeftX + home.getTopLeftX() + home.getWidth() / 2);
             user.setPositionY( 60 * user.topLeftY + home.getTopLeftY() + home.getLength());
+            user.increaseMoney(500 - user.getMoney());
         }
         currentPlayer = user1;
     }
@@ -2380,9 +2381,9 @@ public class GameController {
         currentDate.increaseDay(day);
 
         if (currentDate.getHour() > 22)
-            currentDate.increaseHour(24 - currentDate.getHour() + 9);
+            passedOfTime(0, 24 - currentDate.getHour() + 9);
         if (currentDate.getHour() < 9)
-            currentDate.increaseHour( 9 - currentDate.getHour());
+            passedOfTime(0, 9 - currentDate.getHour());
 
         for (int i = 0 ; i < getDayDifferent(dateHour, currentDate) ; i++)
             startDay();
@@ -2494,6 +2495,7 @@ public class GameController {
         initializePlayer();
         startDay();
     }
+
     public void startDay () {
 
         doSeasonAutomaticTask();
@@ -2559,7 +2561,6 @@ public class GameController {
 
         currentWeather = Weather.valueOf(tomorrowWeather.toString());
         tomorrowWeather = currentDate.getSeason().getWeather();
-
     }
     private void doWeatherTask () {
 
@@ -2755,11 +2756,32 @@ public class GameController {
         return matchingTiles.get(random.nextInt(matchingTiles.size()));
 
     }
+    private boolean checkInAllFarm (int x, int y) {
+
+        for (User user : players)
+            if (user.getFarm().isInFarm(x, y))
+                return true;
+        return false;
+    }
+    private boolean canGrowGrass (Tile tile) {
+
+        int x = tile.getX();
+        int y = tile.getY();
+
+        if (!checkInAllFarm(tile.getX(), tile.getY()))
+            return false;
+
+        for (User user : players)
+            if (user.getFarm().isInHome(x, y) || user.getFarm().isInMine(x, y))
+                return false;
+
+        return true;
+    }
     private void createRandomForaging () {
 
         for (Tile tile : bigMap) {
             if (tile.getGameObject() instanceof Walkable &&
-                    ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed") && Math.random() <= 0.01)
+                    ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed") && Math.random() <= 0.09)
                 if (Math.random() <= 0.5) {
 
                     List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
@@ -2784,7 +2806,7 @@ public class GameController {
                 }
             else if (tile.getGameObject() instanceof Walkable &&
                     ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk") &&
-                    Math.random() <= 0.2) {
+                    canGrowGrass(tile) && Math.random() <= 0.08) {
 
                 if (Math.random() <= 0.5)
                     ((Walkable) tile.getGameObject()).setGrassOrFiber("Fiber");
@@ -2795,45 +2817,47 @@ public class GameController {
     }
     private void createRandomMinerals () {
 
-        int x1 = currentPlayer.getFarm().getMine().getStartX()+1;
-        int y1 = currentPlayer.getFarm().getMine().getStartY()+1;
+        for (User user : players) {
 
-        if (Math.random() < RUBY.getProbability())
-            getTileByCoordinates(x1, y1).setGameObject(new ForagingMinerals(RUBY));
-        if (Math.random() < COAL.getProbability())
-            getTileByCoordinates(x1+1, y1).setGameObject(new ForagingMinerals(COAL));
-        if (Math.random() < IRON.getProbability())
-            getTileByCoordinates(x1+2, y1).setGameObject(new ForagingMinerals(IRON));
-        if (Math.random() < TOPAZ.getProbability())
-            getTileByCoordinates(x1+3, y1).setGameObject(new ForagingMinerals(TOPAZ));
-        if (Math.random() < GOLD.getProbability())
-            getTileByCoordinates(x1, y1+1).setGameObject(new ForagingMinerals(GOLD));
-        if (Math.random() < JADE.getProbability())
-            getTileByCoordinates(x1+1, y1+1).setGameObject(new ForagingMinerals(JADE));
-        if (Math.random() < IRIDIUM.getProbability())
-            getTileByCoordinates(x1+2, y1+1).setGameObject(new ForagingMinerals(IRIDIUM));
-        if (Math.random() < QUARTZ.getProbability())
-            getTileByCoordinates(x1+3, y1+1).setGameObject(new ForagingMinerals(QUARTZ));
-        if (Math.random() < EMERALD.getProbability())
-            getTileByCoordinates(x1, y1+2).setGameObject(new ForagingMinerals(EMERALD));
-        if (Math.random() < COPPER.getProbability())
-            getTileByCoordinates(x1+1, y1+2).setGameObject(new ForagingMinerals(COPPER));
-        if (Math.random() < DIAMOND.getProbability())
-            getTileByCoordinates(x1+2, y1+2).setGameObject(new ForagingMinerals(DIAMOND));
-        if (Math.random() < AMETHYST.getProbability())
-            getTileByCoordinates(x1+3, y1+2).setGameObject(new ForagingMinerals(AMETHYST));
-        if (Math.random() < AQUAMARINE.getProbability())
-            getTileByCoordinates(x1, y1+3).setGameObject(new ForagingMinerals(AQUAMARINE));
-        if (Math.random() < FROZEN_TEAR.getProbability())
-            getTileByCoordinates(x1+1, y1+3).setGameObject(new ForagingMinerals(FROZEN_TEAR));
-        if (Math.random() < FIRE_QUARTZ.getProbability())
-            getTileByCoordinates(x1+2, y1+3).setGameObject(new ForagingMinerals(FIRE_QUARTZ));
-        if (Math.random() < PRISMATIC_SHARD.getProbability())
-            getTileByCoordinates(x1+2, y1+3).setGameObject(new ForagingMinerals(PRISMATIC_SHARD));
-        if (Math.random() < EARTH_CRYSTAL.getProbability())
-            getTileByCoordinates(x1+3, y1+3).setGameObject(new ForagingMinerals(EARTH_CRYSTAL));
+            int x1 = user.getFarm().getMine().getStartX() + 1;
+            int y1 = user.getFarm().getMine().getStartY() + 1;
 
+            if (Math.random() < RUBY.getProbability())
+                getTileByCoordinates(x1, y1).setGameObject(new ForagingMinerals(RUBY));
+            if (Math.random() < COAL.getProbability())
+                getTileByCoordinates(x1 + 1, y1).setGameObject(new ForagingMinerals(COAL));
+            if (Math.random() < IRON.getProbability())
+                getTileByCoordinates(x1 + 2, y1).setGameObject(new ForagingMinerals(IRON));
+            if (Math.random() < TOPAZ.getProbability())
+                getTileByCoordinates(x1 + 3, y1).setGameObject(new ForagingMinerals(TOPAZ));
+            if (Math.random() < GOLD.getProbability())
+                getTileByCoordinates(x1, y1 + 1).setGameObject(new ForagingMinerals(GOLD));
+            if (Math.random() < JADE.getProbability())
+                getTileByCoordinates(x1 + 1, y1 + 1).setGameObject(new ForagingMinerals(JADE));
+            if (Math.random() < IRIDIUM.getProbability())
+                getTileByCoordinates(x1 + 2, y1 + 1).setGameObject(new ForagingMinerals(IRIDIUM));
+            if (Math.random() < QUARTZ.getProbability())
+                getTileByCoordinates(x1 + 3, y1 + 1).setGameObject(new ForagingMinerals(QUARTZ));
+            if (Math.random() < EMERALD.getProbability())
+                getTileByCoordinates(x1, y1 + 2).setGameObject(new ForagingMinerals(EMERALD));
+            if (Math.random() < COPPER.getProbability())
+                getTileByCoordinates(x1 + 1, y1 + 2).setGameObject(new ForagingMinerals(COPPER));
+            if (Math.random() < DIAMOND.getProbability())
+                getTileByCoordinates(x1 + 2, y1 + 2).setGameObject(new ForagingMinerals(DIAMOND));
+            if (Math.random() < AMETHYST.getProbability())
+                getTileByCoordinates(x1 + 3, y1 + 2).setGameObject(new ForagingMinerals(AMETHYST));
+            if (Math.random() < AQUAMARINE.getProbability())
+                getTileByCoordinates(x1, y1 + 3).setGameObject(new ForagingMinerals(AQUAMARINE));
+            if (Math.random() < FROZEN_TEAR.getProbability())
+                getTileByCoordinates(x1 + 1, y1 + 3).setGameObject(new ForagingMinerals(FROZEN_TEAR));
+            if (Math.random() < FIRE_QUARTZ.getProbability())
+                getTileByCoordinates(x1 + 2, y1 + 3).setGameObject(new ForagingMinerals(FIRE_QUARTZ));
+            if (Math.random() < PRISMATIC_SHARD.getProbability())
+                getTileByCoordinates(x1 + 2, y1 + 3).setGameObject(new ForagingMinerals(PRISMATIC_SHARD));
+            if (Math.random() < EARTH_CRYSTAL.getProbability())
+                getTileByCoordinates(x1 + 3, y1 + 3).setGameObject(new ForagingMinerals(EARTH_CRYSTAL));
 
+        }
     }
     private boolean checkTileForPlant (Tile tile) {
 

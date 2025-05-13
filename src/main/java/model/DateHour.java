@@ -110,39 +110,39 @@ public class DateHour implements Cloneable {
             if (season1.equals(Season.Spring))
                 return 0;
             if (season1.equals(Season.Summer))
-                return 28;
+                return -28;
             if (season1.equals(Season.Fall))
-                return 56;
+                return -56;
             else
-                return 84;
+                return -84;
         }
         if (season2.equals(Season.Summer)) {
             if (season1.equals(Season.Spring))
-                return -28;
+                return 28;
             if (season1.equals(Season.Summer))
                 return 0;
-            if (season1.equals(Season.Winter))
-                return 28;
+            if (season1.equals(Season.Fall))
+                return -28;
             else
-                return 56;
+                return -56;
         }
         if (season2.equals(Season.Fall)) {
             if (season1.equals(Season.Spring))
-                return -56;
+                return 56;
             if (season1.equals(Season.Summer))
-                return -28;
-            if (season1.equals(Season.Winter))
+                return 28;
+            if (season1.equals(Season.Fall))
                 return 0;
             else
-                return 28;
+                return -28;
         }
         else {
             if (season1.equals(Season.Spring))
-                return -84;
+                return 84;
             if (season1.equals(Season.Summer))
-                return -56;
-            if (season1.equals(Season.Winter))
-                return -28;
+                return 56;
+            if (season1.equals(Season.Fall))
+                return 28;
             else
                 return 0;
         }
