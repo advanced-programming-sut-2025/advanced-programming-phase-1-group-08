@@ -47,7 +47,7 @@ public class User {
     private final HashMap<NPC, Boolean> todayTalking = new HashMap<>();
     private final HashMap<NPC, Boolean> todayGifting = new HashMap<>();
 
-    public HashMap<Items , DateHour> buffer=new HashMap<>();//برای برداشت محصولات فرآوری شده استفاده میشود
+    public HashMap<Items , DateHour> buffer = new HashMap<>();//برای برداشت محصولات فرآوری شده استفاده میشود
 
     private final BackPack backPack = new BackPack();
     public Tools currentTool;

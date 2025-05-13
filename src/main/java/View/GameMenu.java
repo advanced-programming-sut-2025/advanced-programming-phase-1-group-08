@@ -22,9 +22,6 @@ public class GameMenu implements AppMenu {
 
         String input = scanner.nextLine();
 
-        System.out.println("Welcome to the game menu");
-        System.out.println();
-        System.out.println();
 
         if (GameMenuCommands.makeNewGame.getMatcher(input) != null)
             controller.startNewGame(input);
