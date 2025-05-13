@@ -51,10 +51,14 @@ public class GameController {
 //    }
 
     public ArrayList<Tile> sortMap(ArrayList<Tile> Map) {
-        Collections.sort(Map , (a,b) -> {
+        Map.sort((a, b) -> {
             if (a.getY() != b.getY()) return Integer.compare(a.getY(), b.getY());
             return Integer.compare(a.getX(), b.getX());
         });
+//        for (Tile t : Map) {
+//            System.out.println(t.getX() + " " + t.getY());
+//        }
+//        getTileByCoordinates(5 , 5);
 
         return Map;
     }
@@ -210,7 +214,7 @@ public class GameController {
         if (x<0 || y<0 || x>=90 || y>=90) {
             return null;
         }
-        Tile targetTile = bigMap.get(90 * y + x);
+        Tile targetTile = bigMap.get( 90 * y + x);
         return targetTile;
     }
 
@@ -226,13 +230,13 @@ public class GameController {
         Walkable walkable = new Walkable();
         walkable.setCharactor('.');
 
-        for (int i = topLeftX + 60 * x ; i < topLeftX + 60*x + width; i++) {
-            for (int j = topLeftY + 60 * y; j < topLeftY + 60 * y + height; j++) {
+        for (int i = topLeftX + (60 * x) ; i < topLeftX + (60*x) + width; i++) {
+            for (int j = topLeftY + (60 * y); j < topLeftY + (60 * y) + height; j++) {
                 if (i == topLeftX + 60 * x + width / 2 && j == topLeftY + 60*y + height-1) {
                     Tile tile = new Tile(i, j, MineDoor);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
-                } else if (i == topLeftX + 6*x || i == topLeftX + 60*x + width-1 || j == topLeftY + 60*y || j == topLeftY + 60*y + height-1) {
+                } else if (i == topLeftX + 60*x || i == topLeftX + 60*x + width-1 || j == topLeftY + 60*y || j == topLeftY + 60*y + height-1) {
                     Tile tile = new Tile(i, j, mine);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
@@ -281,12 +285,12 @@ public class GameController {
                     farm.Farm.add(tile);
                     bigMap.add(tile);
                 }
-                if (i == topLeftX + 60 * x + width -2 && j == topLeftY + 60 * y + height-2) {
+                else if (i == topLeftX + 60 * x + width -2 && j == topLeftY + 60 * y + height-2) {
                     Tile tile = new Tile(i, j, fridge);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
                 }
-                if (i == topLeftX || i == topLeftX + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
+                else if (i == topLeftX + 60 * x || i == topLeftX + 60 * x + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
                     Tile tile = new Tile(i, j, wall);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
@@ -313,19 +317,19 @@ public class GameController {
         WaterTank waterTank=new WaterTank(100);
         greenHouse.setWaterTank(waterTank);
 
-        for (int i= topLeftX + 60 * x ; i< topLeftX + 60 * x + width; i++){
+        for (int i= topLeftX + (60 * x) ; i< topLeftX + 60 * x + width; i++){
             for (int j=topLeftY + 60 * y ; j<topLeftY + 60 * y + height ; j++) {
                 if (i==topLeftX + 60 * x + width/2 && j==topLeftY + 60 * y + height-1) {
                     Tile tile = new Tile(i, j, greenHouseDoor);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
                 }
-                if (i== topLeftX + 60*x + width/2 && j==topLeftY + 60*y + 1) {
+                else if (i== topLeftX + 60*x + width/2 && j==topLeftY + 60*y + 1) {
                     Tile tile = new Tile(i, j, waterTank);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
                 }
-                if (i == topLeftX || i == topLeftX + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
+                else if (i == topLeftX + 60 * x || i == topLeftX + 60 * x + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
                     Tile tile = new Tile(i, j, GreenWall);
                     farm.Farm.add(tile);
                     bigMap.add(tile);
@@ -353,7 +357,7 @@ public class GameController {
 
         if (id ==1 ) {
             mine = new Mine (23 , 2 , 6 , 6);
-            lake = new Lake(2 , 23 , 5 , 6);
+            lake = new Lake(2 , 21 , 5 , 6);
             home= new Home(12 , 13 , 7 , 7 , fridge);
             greenHouse= new GreenHouse(2 , 2 , 8 , 9);
         }
@@ -367,6 +371,7 @@ public class GameController {
         boolean createLake=false;
         boolean createHome=false;
         boolean createGreenHouse=false;
+
 
         for (int i=0 ; i<30 ;i++){
             for (int j=0 ; j<30 ; j++) {
@@ -384,7 +389,7 @@ public class GameController {
                     }
                 }
                 else if(i>=greenHouse.getCoordinateX()  && i < greenHouse.getCoordinateX() + greenHouse.getWidth()
-                        && j>=greenHouse.getCoordinateY() && j<greenHouse.getCoordinateY() + greenHouse.getWidth() ) {
+                        && j>=greenHouse.getCoordinateY() && j<greenHouse.getCoordinateY() + greenHouse.getLength() ) {
 
                     if (! createGreenHouse) {
                         createInitialGreenHouse(currentPlayer.topLeftX, currentPlayer.topLeftY, greenHouse.getCoordinateX(), greenHouse.getCoordinateY(),
@@ -428,7 +433,11 @@ public class GameController {
         }
         for (int i=30 ; i<60 ; i++) {
             for (int j=0 ; j<30 ; j++) {
-                if (j != 15) {
+                if (i==45 && j >= 16) {
+                    Tile tile=new Tile(i , j , walkable);
+                    bigMap.add(tile);
+                }
+                else if (j != 15) {
                     Tile tile=new Tile(i , j , unWalkable);
                     bigMap.add(tile);
                 }
@@ -436,7 +445,12 @@ public class GameController {
         }
         for (int i=0 ; i<30 ; i++) {
             for (int j=30 ; j<60 ; j++) {
-                if (i!=15) {
+
+                if (j==45 && i>=16) {
+                    Tile tile=new Tile(i , j , walkable);
+                    bigMap.add(tile);
+                }
+                else if (i!=15) {
                     Tile tile=new Tile(i , j , unWalkable);
                     bigMap.add(tile);
                 }
@@ -444,7 +458,11 @@ public class GameController {
         }
         for (int i=30 ; i<60 ; i++) {
             for (int j=60 ; j<90 ; j++) {
-                if (j!=75) {
+                if (i==45 && j <= 74) {
+                    Tile tile=new Tile(i , j , walkable);
+                    bigMap.add(tile);
+                }
+                else if (j!=75) {
                     Tile tile=new Tile(i , j , unWalkable);
                     bigMap.add(tile);
                 }
@@ -452,7 +470,11 @@ public class GameController {
         }
         for (int i=60 ; i<90 ; i++) {
             for (int j=30 ; j<60 ; j++) {
-                if (i!=75) {
+                if (j == 45 && i <= 74) {
+                    Tile tile=new Tile(i , j , walkable);
+                    bigMap.add(tile);
+                }
+                else if (i!=75) {
                     Tile tile=new Tile(i , j , unWalkable);
                     bigMap.add(tile);
                 }
@@ -541,26 +563,25 @@ public class GameController {
 
     public void MapGenerator(int i,int j,long seed){
         if (i==0 || i==29 || j==0 || j==29){
-            if (i==15 && j==29){
+            if ((i==15 && j==29) || (i==15 && j==0 ) ){
                 door FarmDoor=new door();
                 FarmDoor.setDoor(Door.Farm);
                 FarmDoor.setCharactor('D');
-                Tile tile=new Tile(i + 60*currentPlayer.topLeftX,j + 30*currentPlayer.topLeftY,FarmDoor);
+                Tile tile=new Tile(i + 60*currentPlayer.topLeftX,j + 60*currentPlayer.topLeftY,FarmDoor);
                 currentPlayer.getFarm().Farm.add(tile);
                 bigMap.add(tile);
             }
-            else if (i==29 && j==15){
+            else if ((i==29 && j==15) || (i==0 && j==15)){
                 door FarmDoor=new door();
                 FarmDoor.setDoor(Door.Farm);
                 FarmDoor.setCharactor('D');
-                Tile tile=new Tile(i + 30*currentPlayer.topLeftX,j + 60*currentPlayer.topLeftY,FarmDoor);
+                Tile tile=new Tile(i + 60*currentPlayer.topLeftX,j + 60*currentPlayer.topLeftY,FarmDoor);
                 currentPlayer.getFarm().Farm.add(tile);
                 bigMap.add(tile);
             }
             else {
-                Walkable walkable = new Walkable();
-                walkable.setCharactor('.');
-                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, walkable);
+                Wall wall = new Wall();
+                Tile tile = new Tile(i + 60 * currentPlayer.topLeftX, j + 60 * currentPlayer.topLeftY, wall);
                 currentPlayer.getFarm().Farm.add(tile);
                 bigMap.add(tile);
             }
@@ -614,8 +635,13 @@ public class GameController {
 
         for (int i=startX ; i<startX + size ; i++) {
             for (int j = startY; j < startY + size; j++) {
-                Tile tile = getTileByCoordinates(i, j);
-                result.append(tile.getGameObject().getIcon()).append(RESET).append(" ");
+                Tile tile = getTileByCoordinates(j, i);
+                if (tile.getGameObject() instanceof UnWalkable) {
+                    result.append(tile.getGameObject().getIcon()).append(RESET);
+                }
+                else {
+                    result.append(tile.getGameObject().getIcon()).append(RESET).append(" ");
+                }
             }
             result.append("\n");
         }
@@ -718,8 +744,10 @@ public class GameController {
         }
         for (User user : players) {
             if (user.getFarm().equals(farm)){
-                if (!user.getSpouse().equals(currentPlayer) && !user.equals(currentPlayer)){
-                    return new Result(false,"you can't go to this farm");
+                if (user.getSpouse() != null) {
+                    if (!user.getSpouse().equals(currentPlayer) && !user.equals(currentPlayer)) {
+                        return new Result(false, "you can't go to this farm");
+                    }
                 }
             }
         }
@@ -2328,7 +2356,7 @@ public class GameController {
                     System.out.println("Choose between 1 and 2!");
                     continue;
                 }
-                createInitialFarm(choice);
+
 
                 if (counter == 1) {
                     user.topLeftX = 0;
@@ -2346,7 +2374,9 @@ public class GameController {
                     user.topLeftX = 1;
                     user.topLeftY = 1;
                 }
+                createInitialFarm(choice);
                 counter++;
+
 
                 break;
             }

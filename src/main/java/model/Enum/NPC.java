@@ -400,7 +400,13 @@ public enum NPC {
             if (x == npc.getTopLeftX() && y >= npc.getTopLeftY() && y < npc.getTopLeftY() + npc.getHeight()) {
                 return npc;
             }
-            if (x==npc.getTopLeftX() + npc.getWidth() -1 && y >= npc.getTopLeftX() && y < npc.getTopLeftY() + npc.getHeight()) {
+            if (x==npc.getTopLeftX() + npc.getWidth() -1 && y >= npc.getTopLeftY() && y < npc.getTopLeftY() + npc.getHeight()) {
+                return npc;
+            }
+            if (y == npc.getTopLeftY() && x >= npc.getTopLeftX() && x < npc.getTopLeftX() + npc.getWidth()) {
+                return npc;
+            }
+            if (y== npc.getTopLeftY() + npc.getHeight() -1 && x >= npc.getTopLeftX() && x < npc.getTopLeftX() + npc.getWidth()) {
                 return npc;
             }
         }
