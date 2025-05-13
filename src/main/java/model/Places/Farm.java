@@ -45,8 +45,8 @@ public class Farm {
                 y < greenHouse.getCoordinateY() + greenHouse.getWidth());
     }
     public boolean isInFarm (int x, int y) {
-        return (x >= this.x && x < this.x+width &&
-                y >= this.y && y < this.y+height);
+        return (x > this.x && x < this.x+width &&
+                y > this.y && y < this.y+height);
     }
     public boolean isInMine (int x, int y) {
         return (x >= mine.getStartX() &&
