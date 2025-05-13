@@ -1,8 +1,6 @@
 package model.Enum.WeatherTime;
 
-// برای فصل ها و مشخص کردن اب و هوا
 
-import static model.App.currentDate;
 import static model.Color_Eraser.*;
 
 public enum Season {
@@ -52,7 +50,7 @@ public enum Season {
             if (randomNumber > 0.2 && randomNumber < 0.4)
                 return Weather.Rainy;
 
-            return Weather.Stormy;
+            return Weather.Sunny;
         }
     },
     Summer("☀️Summer☀️") {

@@ -2313,6 +2313,7 @@ public class GameController {
             Home home = user.getFarm().getHome();
             user.setPositionX( 60 * user.topLeftX + home.getTopLeftX() + home.getWidth() / 2);
             user.setPositionY( 60 * user.topLeftY + home.getTopLeftY() + home.getLength());
+            user.increaseMoney(500 - user.getMoney());
         }
         currentPlayer = user1;
     }
@@ -2381,9 +2382,9 @@ public class GameController {
         currentDate.increaseDay(day);
 
         if (currentDate.getHour() > 22)
-            currentDate.increaseHour(24 - currentDate.getHour() + 9);
+            passedOfTime(0, 24 - currentDate.getHour() + 9);
         if (currentDate.getHour() < 9)
-            currentDate.increaseHour( 9 - currentDate.getHour());
+            passedOfTime(0, 9 - currentDate.getHour());
 
         for (int i = 0 ; i < getDayDifferent(dateHour, currentDate) ; i++)
             startDay();
@@ -2495,6 +2496,7 @@ public class GameController {
         initializePlayer();
         startDay();
     }
+
     public void startDay () {
 
         doSeasonAutomaticTask();
@@ -2560,7 +2562,6 @@ public class GameController {
 
         currentWeather = Weather.valueOf(tomorrowWeather.toString());
         tomorrowWeather = currentDate.getSeason().getWeather();
-
     }
     private void doWeatherTask () {
 
@@ -2756,6 +2757,17 @@ public class GameController {
         return matchingTiles.get(random.nextInt(matchingTiles.size()));
 
     }
+    private boolean canGrowGrass (Tile tile) {
+
+        int x = tile.getX();
+        int y = tile.getY();
+
+        for (User user : players)
+            if (user.getFarm().isInFarm(x , y))
+                if (!user.getFarm().isInHome(x, y) && !user.getFarm().isInMine(x, y))
+                    return true;
+        return false;
+    }
     private void createRandomForaging () {
 
         for (Tile tile : bigMap) {
@@ -2785,7 +2797,7 @@ public class GameController {
                 }
             else if (tile.getGameObject() instanceof Walkable &&
                     ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk") &&
-                    Math.random() <= 0.2) {
+                    canGrowGrass(tile) && Math.random() <= 0.2) {
 
                 if (Math.random() <= 0.5)
                     ((Walkable) tile.getGameObject()).setGrassOrFiber("Fiber");

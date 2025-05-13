@@ -48,6 +48,12 @@ public class Farm {
         return (x >= this.x && x < this.x+width &&
                 y >= this.y && y < this.y+height);
     }
+    public boolean isInMine (int x, int y) {
+        return (x >= mine.getStartX() &&
+                y >= mine.getStartY() &&
+                x < mine.getStartX() + mine.getWidth() &&
+                y < mine.getStartY() + mine.getHeight());
+    }
     public boolean isInHome (int x, int y) {
         return (x>= home.getTopLeftX() && x < home.getTopLeftX() + home.getWidth()
                 && y>=home.getTopLeftY() && y < home.getTopLeftY() + home.getLength());
