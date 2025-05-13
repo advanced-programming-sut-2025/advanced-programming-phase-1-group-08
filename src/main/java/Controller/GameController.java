@@ -670,6 +670,8 @@ public class GameController {
             }
             if (checkConditionsForWalk(tile.getX() , tile.getY()) !=null) {
                 State state=new State(startX , startY , dir , 0);
+                queue.add(state);
+                visited.add(state);
                 break;
             }
         }
@@ -679,6 +681,7 @@ public class GameController {
 
         while (!queue.isEmpty()) {
             State current = queue.poll();
+            System.out.println(current.x + " " + current.y);
             if (current.x == goalX && current.y == goalY) {
                 if (currentPlayer.isHealthUnlimited()){
                     currentPlayer.setPositionX(goalX);
@@ -700,7 +703,7 @@ public class GameController {
             for (int i=0 ; i<8 ; i++) {
                 int x=dirx[i];
                 int y=diry[i];
-                if (checkConditionsForWalk(x,y) ==null) {
+                if (checkConditionsForWalk(x + current.x,y = current.y) !=null) {
                     continue;
                 }
                 int turnCost= (i+1==current.direction) ? 0:10;
@@ -711,7 +714,7 @@ public class GameController {
                 else {
                     totalEnergy+=turnCost;
                 }
-                queue.add(new State(x , y , i+1 , totalEnergy));
+                queue.add(new State(x+current.x , y+current.y , i+1 , totalEnergy));
             }
         }
 
@@ -728,6 +731,7 @@ public class GameController {
 
     public Result checkConditionsForWalk(int goalX, int goalY){
         Tile tile = getTileByCoordinates(goalX, goalY);
+        System.out.println(tile.getX() + " " + tile.getY());
         Farm farm = null;
 
         if (goalX <0 || goalX >90 || goalY <0 || goalY >90) {
