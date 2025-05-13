@@ -406,6 +406,8 @@ public class GameController {
                 }
             }
         }
+        farm.setX(60 * currentPlayer.topLeftX);
+        farm.setY(60 * currentPlayer.topLeftY);
         farms.add(farm);
     }
 
@@ -668,11 +670,9 @@ public class GameController {
             if (tile == null ) {
                 continue;
             }
-            if (checkConditionsForWalk(tile.getX() , tile.getY()) !=null) {
+            if (checkConditionsForWalk(tile.getX() , tile.getY()) ==null) {
                 State state=new State(startX , startY , dir , 0);
                 queue.add(state);
-                visited.add(state);
-                break;
             }
         }
 
@@ -681,7 +681,6 @@ public class GameController {
 
         while (!queue.isEmpty()) {
             State current = queue.poll();
-            System.out.println(current.x + " " + current.y);
             if (current.x == goalX && current.y == goalY) {
                 if (currentPlayer.isHealthUnlimited()){
                     currentPlayer.setPositionX(goalX);
@@ -703,7 +702,7 @@ public class GameController {
             for (int i=0 ; i<8 ; i++) {
                 int x=dirx[i];
                 int y=diry[i];
-                if (checkConditionsForWalk(x + current.x,y = current.y) !=null) {
+                if (checkConditionsForWalk(x + current.x,y + current.y) !=null) {
                     continue;
                 }
                 int turnCost= (i+1==current.direction) ? 0:10;
@@ -730,13 +729,13 @@ public class GameController {
     }
 
     public Result checkConditionsForWalk(int goalX, int goalY){
-        Tile tile = getTileByCoordinates(goalX, goalY);
-        System.out.println(tile.getX() + " " + tile.getY());
-        Farm farm = null;
-
-        if (goalX <0 || goalX >90 || goalY <0 || goalY >90) {
+        if (goalX <0 || goalX >=90 || goalY <0 || goalY >=90) {
             return new Result(false,"you can't walk out of bounds");
         }
+
+        Tile tile = getTileByCoordinates(goalX, goalY);
+        Farm farm = null;
+
 
         for (Farm farms : farms) {
             if (farms.Farm.contains(tile)) {
