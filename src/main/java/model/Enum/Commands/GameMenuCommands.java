@@ -6,11 +6,12 @@ import java.util.regex.Pattern;
 public enum GameMenuCommands implements Command{
 
 
-//    makeNewGame   ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+" +
+//    makeNewGame     ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+" +
 //            "(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
-    makeNewGame ("\\s*game\\s+new\\s*"),
-    openHomeMenu("\\s*(?i)menu\\s*home\\s*menu\\s*"),
-    nextTurn      ("\\s*(?i)next\\s*turn\\s*"),
+    makeNewGame     ("\\s*game\\s*new"),
+    openHomeMenu    ("\\s*(?i)menu\\s*home\\s*menu\\s*"),
+    nextTurn        ("\\s*(?i)next\\s*turn\\s*"),
+    eatFood         ("\\s*(?i)eat\\s*(?<food>.+)"),
 
                                                         //  relation
     friendships   ("\\s*(?i)friendships\\s*"),
@@ -98,7 +99,6 @@ public enum GameMenuCommands implements Command{
     cheatSetFriendship("(?i)cheat\\s+set\\s+\\friendship\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     addDollar("(?i)cheat\\s+add\\s+(?<amount>\\d+)\\s+dollars\\s*"),
     addItem("cheat\\s+add\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
-    // todo Eat!
     ;
 
 

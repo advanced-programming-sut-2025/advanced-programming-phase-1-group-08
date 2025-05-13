@@ -24,7 +24,7 @@ public enum Season {
 
             double randomNumber = Math.random();
 
-            if (randomNumber < 0.15 && currentDate.getDate() != 28)
+            if (randomNumber < 0.15 )
                 return Weather.Snowy;
 
             return Weather.Sunny;

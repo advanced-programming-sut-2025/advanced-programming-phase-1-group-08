@@ -22,9 +22,6 @@ public class GameMenu implements AppMenu {
 
         String input = scanner.nextLine();
 
-        System.out.println("Welcome to the game menu");
-        System.out.println();
-        System.out.println();
 
         if (GameMenuCommands.makeNewGame.getMatcher(input) != null)
             controller.startNewGame(input);
@@ -44,6 +41,9 @@ public class GameMenu implements AppMenu {
             else
                 System.out.println(RED+"You're Not in Your Home!"+RESET);
         }
+
+        else if (GameMenuCommands.eatFood.getMatcher(input) != null)
+            controller.eatFood(input);
 
         else if (GameMenuCommands.friendships.getMatcher(input) != null)
             controller.DisplayFriendships();
