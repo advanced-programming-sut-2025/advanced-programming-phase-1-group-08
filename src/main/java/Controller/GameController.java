@@ -2332,8 +2332,6 @@ public class GameController {
             }
 
 
-
-
             // Buff implementation
             if (currentPlayer.Buff_maxEnergy_100_hoursLeft == 0) currentPlayer.setMAX_HEALTH(200);
             if (currentPlayer.Buff_maxEnergy_50_hoursLeft == 0) currentPlayer.setMAX_HEALTH(200);
@@ -2353,6 +2351,8 @@ public class GameController {
             if (currentPlayer.Buff_foraging_hoursLeft > 0) currentPlayer.setBuff_foraging_hoursLeft(currentPlayer.Buff_foraging_hoursLeft --);
 
         }
+        else
+            currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
 
         DateHour dateHour = currentDate.clone();
 
