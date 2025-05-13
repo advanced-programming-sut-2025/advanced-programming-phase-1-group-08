@@ -2484,6 +2484,7 @@ public class GameController {
 //        }
         currentPlayer = new User("user1", "Erfan1", "erfansedaghat23", "male", 0, 0, "22");
         players.add(currentPlayer); // اینجا یوزر بود زدم پلیر
+        currentUser = currentPlayer;
         players.add(new User("user2", "Erfan2", "erfansedaghat23", "male", 0, 0, "22"));
         players.add(new User("user3", "Erfan3", "erfansedaghat23", "male", 0, 0, "22"));
         players.add(new User("user4", "Erfan4", "erfansedaghat23", "male", 0, 0, "22"));
@@ -3068,7 +3069,6 @@ public class GameController {
                                                                    // Tools
     private Result useHoe (int dir) {
 
-
         Tile tile = getTileByDir(dir);
 
         if (tile.getGameObject() instanceof Walkable &&
@@ -3120,10 +3120,16 @@ public class GameController {
         GameObject object = tile.getGameObject();
 
         if (object instanceof Walkable) {
-            if (((Walkable) object).getGrassOrFiber().equals("Fibre"))
-                advanceItem(new ForagingCrops(ForagingCropsType.Fiber), 1);
+            if (((Walkable) object).getGrassOrFiber().equals("Fibre")) {
 
-            ((Walkable) object).setGrassOrFiber("Walk");
+                ((Walkable) object).setGrassOrFiber("Walk");
+                advanceItem(new ForagingCrops(ForagingCropsType.Fiber), 1);
+                return new Result(true, BRIGHT_BLUE + "You got 1 fiber"+RESET);
+            }
+            if (((Walkable) object).getGrassOrFiber().equals("Grass")) {
+                ((Walkable) object).setGrassOrFiber("Walk");
+                return new Result(true, BRIGHT_BLUE + "You pulled out the grass" + RESET);
+            }
         }
         if (object instanceof Tree) {
 
@@ -4197,8 +4203,11 @@ public class GameController {
             if (currentPlayer.getHealth() < currentPlayer.currentTool.healthCost())
                 return new Result(false, RED+"you are not in your hand"+RESET);
 
+            System.out.println("    checker    ");
             currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
         }
+
+        System.out.println(currentPlayer.getHealth());
 
         if (!checkDirection(direction))
             return new Result(false, RED+"Direction is invalid"+RESET);
@@ -4207,9 +4216,9 @@ public class GameController {
 
         Tools tools = currentPlayer.currentTool;
 
-        if (tools instanceof Axe) {
+        if (tools instanceof Axe)
             return useAxe(dir);
-        } else if (tools instanceof Hoe) {
+        else if (tools instanceof Hoe) {
             if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useHoe(dir);
         } else if (tools instanceof MilkPail) {
@@ -4218,14 +4227,20 @@ public class GameController {
         } else if (tools instanceof Scythe) {
             if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useScythe(dir);
-        } else if (tools instanceof Shear) {
+        }
+        else if (tools instanceof Shear) {
             if (currentPlayer.currentTool.healthCost() > 0 && currentPlayer.Buff_farming_hoursLeft > 0) currentPlayer.increaseHealth(1);
             return useShear(dir);
-        } else if (tools instanceof WateringCan) {
-            return useWateringCan(dir);
-        } else if (tools instanceof PickAxe) {
-            return usePickAxe(dir);
         }
+        else if (tools instanceof WateringCan)
+            return useWateringCan(dir);
+        else if (tools instanceof PickAxe)
+            return usePickAxe(dir);
+
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         return new Result(false, RED + "please pick up a tools" + RESET);
     }
 
@@ -4338,5 +4353,16 @@ public class GameController {
             case 3 -> doTask3(npc);
             default -> new Result(false, RED + "Index is invalid" + RESET);
         };
+    }
+
+
+
+    public Result getObject (String direction) {
+
+        return new Result(true, PURPLE + getTileByDir(Integer.parseInt(direction)).getGameObject().toString() + RESET);
+    }
+    public Result getObject2 (String x, String y) {
+
+        return new Result(true, PURPLE + getTileByCoordinates(Integer.parseInt(x), Integer.parseInt(y)).getGameObject().toString() + RESET);
     }
 }

@@ -5,6 +5,10 @@ import java.util.regex.Pattern;
 
 public enum GameMenuCommands implements Command{
 
+                                                    // Debug command
+
+    getGameObject   ("\\s*(?i)object\\s*(?<dir>\\d+)\\s*"),
+    getGameObject2  ("\\s*(?i)object\\s*(?<x>\\d+)\\s*(?<y>\\d+)\\s*"),
 
 //    makeNewGame     ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+" +
 //            "(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
@@ -46,8 +50,8 @@ public enum GameMenuCommands implements Command{
     showTreeInfo  ("(?i)\\s*info\\s*-n\\s*(?<name>.+)\\s*"),
     wateringPlant ("(?i)\\s*water\\s*(?<direction>\\d+)\\s*"),
     showFruitInfo ("(?i)\\s*craft\\s*info\\s*-n\\s*(?<name>.+)\\s*"),
-    createThor    ("(?i)\\s*cheat\\s*thor\\s*-l(?<x>\\d+),(?<y>\\d+)\\s*"),
     showPlant     ("(?i)\\s*show\\s*plant\\s*-l\\s*(?<x>\\d+),\\s*(?<y>\\d+)\\s*"),
+    createThor    ("(?i)\\s*cheat\\s*thor\\s*-l\\s*(?<x>\\d+)\\s*,\\s*(?<y>\\d+)\\s*"),
     planting      ("(?i)\\s*plant\\s*-s\\s*(?<seed>.+)\\s*-d\\s*(?<direction>\\d+)\\s*"),
     fertilize     ("(?i)\\s*fertilize\\s*-f\\s*(?<fertilizer>.+)\\s*-d\\s*(?<direction>\\d+)\\s*"),
 

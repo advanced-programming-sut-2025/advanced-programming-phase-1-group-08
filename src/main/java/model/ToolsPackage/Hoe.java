@@ -27,9 +27,9 @@ public class Hoe extends Tools {
         double x = currentWeather.getEnergyCostCoefficient();
 
         if (currentPlayer.getLevelFarming() == 4)
-            return Math.max((int) (this.type.getEnergyCost()*x)+1, 0);
+            return Math.min((int) (this.type.getEnergyCost()*x)+1, 0);
 
-        return Math.max((int) (this.type.getEnergyCost()*x), 0);
+        return Math.min((int) (this.type.getEnergyCost()*x), 0);
     }
 
     @Override
