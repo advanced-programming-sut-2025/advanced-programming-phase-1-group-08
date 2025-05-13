@@ -12,6 +12,7 @@ public abstract class Tools extends Items {
     }
 
     public String getName() {
+        System.out.println(" hala madrid ");
         return name;
     }
 

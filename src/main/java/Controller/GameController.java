@@ -125,7 +125,6 @@ public class GameController {
 //                    ((MarketItem) entry).getType().equals(((MarketItem) items).getType()))
 //                return entry.getValue() >= number;
 //
-//
 //        }
         if (inventory.Items.containsKey(items)) {
             int amount = inventory.Items.get(items);
@@ -2445,15 +2444,23 @@ public class GameController {
 
             currentPlayer = user;
             while (true) {
-                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
-                String choiceString = scanner.nextLine();
-                String[] splitChoice = choiceString.trim().split("\\s+");
-                int choice = Integer.parseInt(splitChoice[2]);
-                if (choice != 1 && choice != 2) {
-                    System.out.println("Choose between 1 and 2!");
-                    continue;
-                }
+//                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
+//                String choiceString = scanner.nextLine();
+//                String[] splitChoice = choiceString.trim().split("\\s+");
+//
+//                int choice;
+//                try {
+//                    choice = Integer.parseInt(splitChoice[2]);
+//                } catch (Exception e) {
+//                    System.out.println("Please put a integer between 1 and 2!");
+//                    continue;
+//                }
+//                if (choice != 1 && choice != 2) {
+//                    System.out.println("Choose between 1 and 2!");
+//                    continue;
+//                }
 
+                int choice = 1; // TODO باید پاک بشه
 
                 if (counter == 1) {
                     user.topLeftX = 0;
@@ -2473,8 +2480,6 @@ public class GameController {
                 }
                 createInitialFarm(choice);
                 counter++;
-
-
                 break;
             }
         }
@@ -2511,7 +2516,9 @@ public class GameController {
 
         doWeatherTask();
         crowAttack(); // قبل محصول دادن درخت باید باشه
-        }
+
+    }
+
     public void AutomaticFunctionAfterOneTurn () {
 
         if (currentUser == currentPlayer)
@@ -3609,6 +3616,16 @@ public class GameController {
     }
 
 
+
+
+
+
+
+
+
+
+
+
                                                                   // input command Date
     public Result showTime () {
         return new Result(true, BLUE +"Time : "+RESET
@@ -3655,7 +3672,7 @@ public class GameController {
 
         if (currentPlayer.getHealth() > amount2) {
             currentPlayer.setHealth(amount2);
-            return new Result(true, BLUE+"Your Energy decrease to :" +RESET+amount2);
+            return new Result(true, BLUE+"Your Energy decrease to : " +RESET+amount2);
         }
         else if (currentPlayer.getHealth() < amount2) {
             currentPlayer.setHealth(amount2);
@@ -3696,6 +3713,12 @@ public class GameController {
         }
         passedOfTime(amount, 0);
         return new Result(true, BLUE+"Date change to : "+RED+currentDate.getYear()+RESET+" "+currentDate.getNameSeason()+" "+currentDate.getDate());
+    }
+    public Result showEnergy () {
+
+        if (currentPlayer.isHealthUnlimited())
+            return new Result(false, BRIGHT_BLUE + "Your energy is unlimited" + RESET);
+        return new Result(true,BRIGHT_BLUE+"Your energy is : "+currentPlayer.getHealth()+RESET);
     }
     public Result EnergyUnlimited () {
 
@@ -3922,35 +3945,35 @@ public class GameController {
 
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()) {
 
-            if (entry instanceof Axe && name.equals("Axe")) {
+            if (entry.getKey() instanceof Axe && name.equals("Axe")) {
                 currentPlayer.currentTool = (Tools) entry.getKey();
                 return new Result(true, BRIGHT_BLUE+"Axe successfully picked up"+RESET);
             }
-            else if (entry instanceof FishingPole && name.equals("FishingPole")){
+            else if (entry.getKey() instanceof FishingPole && name.equals("FishingPole")){
                 currentPlayer.currentTool = (Tools) entry.getKey();
                 return new Result(true, BRIGHT_BLUE+"FishingPole successfully picked up"+RESET);
             }
-            else if (entry instanceof Hoe && name.equals("Hoe")){
+            else if (entry.getKey() instanceof Hoe && name.equals("Hoe")){
                 currentPlayer.currentTool = (Tools) entry.getKey();
                 return new Result(true, BRIGHT_BLUE+"Hoe successfully picked up"+RESET);
             }
-            else if (entry instanceof PickAxe && name.equals("PickAxe")){
+            else if (entry.getKey() instanceof PickAxe && name.equals("PickAxe")){
                 currentPlayer.currentTool = (Tools) entry.getKey();
                 return new Result(true, BRIGHT_BLUE+"PickAxe successfully picked up"+RESET);
             }
-            else if (entry instanceof WateringCan && name.equals("WateringCan")){
+            else if (entry.getKey() instanceof WateringCan && name.equals("WateringCan")){
                 currentPlayer.currentTool = (Tools) entry.getKey();
                 return new Result(true, BRIGHT_BLUE+"WateringCan successfully picked up"+RESET);
             }
-            else if (entry instanceof MilkPail && name.equals("MilkPail")){
+            else if (entry.getKey() instanceof MilkPail && name.equals("MilkPail")){
                 currentPlayer.currentTool = (Tools) entry.getKey();
                 return new Result(true, BRIGHT_BLUE+"MilkPail successfully picked up"+RESET);
             }
-            else if (entry instanceof Scythe && name.equals("Scythe")){
+            else if (entry.getKey() instanceof Scythe && name.equals("Scythe")){
                 currentPlayer.currentTool = (Tools) entry.getKey();
                 return new Result(true, BRIGHT_BLUE+"Scythe successfully picked up"+RESET);
             }
-            else if (entry instanceof Shear && name.equals("Shear")){
+            else if (entry.getKey() instanceof Shear && name.equals("Shear")){
                 currentPlayer.currentTool = (Tools) entry.getKey();
                 return new Result(true, BRIGHT_BLUE+"Shear successfully picked up"+RESET);
             }
@@ -3985,25 +4008,26 @@ public class GameController {
 
         for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
 
-            if (entry instanceof Axe)
-                result.append(((Axe) entry).getType().getDisplayName()).append("\n");
+            if (entry.getKey() instanceof Axe)
+                 result.append(BRIGHT_BLUE).append(((Axe) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
 
-            else if (entry instanceof FishingPole)
-                result.append(((FishingPole) entry).type).append("\n");
+            else if (entry.getKey() instanceof FishingPole)
+                result.append(BRIGHT_RED).append(((FishingPole) entry.getKey()).type).append(RESET).append("\n");
 
-            else if (entry instanceof Hoe)
-                result.append(((Hoe) entry).getType().getDisplayName()).append("\n");
+            else if (entry.getKey() instanceof Hoe)
+                result.append(BRIGHT_PURPLE).append(((Hoe) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
 
-            else if (entry instanceof WateringCan)
-                result.append(((WateringCan) entry).getType()).append("\n");
+            else if (entry.getKey() instanceof WateringCan)
+                result.append(BRIGHT_GREEN).append(((WateringCan) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
 
-            else if (entry instanceof PickAxe)
-                result.append(((PickAxe) entry).getType().getDisplayName()).append("\n");
+            else if (entry.getKey() instanceof PickAxe)
+                result.append(BRIGHT_CYAN).append(((PickAxe) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
 
-            else if (entry instanceof Tools)
-                result.append(((Tools) entry).getName()).append("\n");
-
+            else if (entry.getKey() instanceof Tools)
+                result.append(BRIGHT_BROWN).append(((Tools) entry.getKey()).getName()).append(RESET).append("\n");
         }
+        if (result.isEmpty())
+            return new Result(false, RED + "You don't have any tools" + RESET);
         return new Result(true, result.toString());
     }
     public Result upgradeTool (String name) {

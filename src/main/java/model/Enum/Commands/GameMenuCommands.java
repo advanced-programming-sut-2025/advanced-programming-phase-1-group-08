@@ -39,7 +39,7 @@ public enum GameMenuCommands implements Command{
                                                         // energy
     showEnergy    ("(?i)\\s*energy\\s*show\\s*"),
     energyUnlimit ("(?i)\\s*energy\\s*unlimited\\s*"),
-    setEnergy     ("(?i)\\s*energy\\s*set\\s*-v\\s*(?<amount>\\d+)\\s*"),
+    setEnergy     ("(?i)\\s*energy\\s*set\\s*-v\\s*(?<amount>-?\\d+)\\s*"),
 
                                                         // plants
     buildGreenHouse    ("(?i)\\s*greenhouse\\s*build\\s*"),
@@ -72,7 +72,7 @@ public enum GameMenuCommands implements Command{
     printMap("(?i)print\\s+map\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s+-s\\s+(?<size>\\d+)\\s*"),
     inventoryShow("inventory\\s+show\\s*"),
     removeItem("inventory\\s+trash\\s+-i\\s+(?<item>\\S.*)\\s*"),
-    removeItemFlagn("inventory\\s+trash\\s+-i\\s+(?<item>\\S.*)\\s+-n\\s+(?<amount>\\d+)\\s*"),
+    removeItemFlags("inventory\\s+trash\\s+-i\\s+(?<item>\\S.*)\\s+-n\\s+(?<amount>\\d+)\\s*"),
     currentTool("tools\\s+show\\s+current\\s*"),
     availableTool("tools\\s+show\\s+available\\s*"),
     fishing("fishing\\s+-p\\s+(?<name>\\S.*)\\s*"),
@@ -98,7 +98,7 @@ public enum GameMenuCommands implements Command{
     sellByCount("(?i)sell\\s+(?<name>\\S.*)\\s+-n\\s+(?<count>\\d+)\\s*"),
     cheatSetFriendship("(?i)cheat\\s+set\\s+\\friendship\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     addDollar("(?i)cheat\\s+add\\s+(?<amount>\\d+)\\s+dollars\\s*"),
-    addItem("cheat\\s+add\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
+    addItem("(?i)\\*cheat\\s+add\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     ;
 
 
