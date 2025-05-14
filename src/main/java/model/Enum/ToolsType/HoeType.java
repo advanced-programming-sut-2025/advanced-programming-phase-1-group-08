@@ -4,10 +4,8 @@ import model.App;
 import model.Enum.ItemType.BarsAndOreType;
 import model.Inventory;
 import model.OtherItem.BarsAndOres;
-import model.ToolsPackage.Axe;
-import model.ToolsPackage.Hoe;
-import model.OtherItem.BarsAndOres.*;
-import model.Enum.ItemType.BarsAndOreType.*;
+
+
 
 import static model.Enum.ItemType.BarsAndOreType.*;
 

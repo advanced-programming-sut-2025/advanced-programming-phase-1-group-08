@@ -268,7 +268,7 @@ public class GameMenu implements AppMenu {
 
 
         else if (input.matches("(?i)\\s*add\\s*money\\s*"))
-            currentPlayer.increaseMoney(10000);
+            currentGame.currentPlayer.increaseMoney(10000);
 
 
         //TODO چیت کد اضافه کردن آیتم.
@@ -278,7 +278,10 @@ public class GameMenu implements AppMenu {
         controller.AutomaticFunctionAfterAnyAct();
         System.out.println(currentGame.currentPlayer.getNickname() + " : " +
                 currentGame.currentPlayer.getPositionX()+ " , " + currentGame.currentPlayer.getPositionY() +
-                "   money : " + currentPlayer.getMoney());
+                "   money : " + currentGame.currentPlayer.getMoney());
 
+        System.out.println("farming  : "+currentGame.currentPlayer.getFarmingAbility());
+        System.out.println("mining   : "+currentGame.currentPlayer.getMiningAbility());
+        System.out.println("foraging : "+currentGame.currentPlayer.getForagingAbility());
     }
 }

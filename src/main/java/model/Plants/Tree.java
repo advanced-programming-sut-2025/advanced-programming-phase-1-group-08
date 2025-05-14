@@ -84,7 +84,7 @@ public class Tree extends Items {
     }
     public TreeType getType() {
 
-        return type;
+        return this.type;
     }
     public String   getIcon () {
 

@@ -611,9 +611,6 @@ public class GameController {
         }
         return null;
     }
-
-
-
     public void MapGenerator(int i,int j,long seed){
         if (i==0 || i==29 || j==0 || j==29){
             if ((i==15 && j==29) || (i==15 && j==0 ) ){
@@ -680,17 +677,26 @@ public class GameController {
         }
 
     }
+    private User getUserByLocation (int j, int i) {
+
+        for (User user : currentGame.players)
+            if (j == user.getPositionX() && i == user.getPositionY())
+                return user;
+        return null;
+    }
 
     public Result print(int startX , int startY , int size){
-        int x=currentGame.currentPlayer.topLeftX;
-        int y=currentGame.currentPlayer.topLeftY;
+
+        User user;
+
         StringBuilder result = new StringBuilder();
 
         for (int i=startX ; i<startX + size ; i++) {
             for (int j = startY; j < startY + size; j++) {
-                if (i == currentGame.currentPlayer.getPositionX() && j == currentGame.currentPlayer.getPositionY()) {
-                    result.append(currentGame.currentPlayer.getIcon).append(" ");
-                }
+
+                if ((user = getUserByLocation(j, i) )!= null)
+                    result.append(user.getIcon()).append(" ");
+
                 else {
                     Tile tile = getTileByCoordinates(j, i);
                     if (tile.getGameObject() instanceof UnWalkable) {
@@ -2683,7 +2689,7 @@ public class GameController {
 
 
                                                                  // Automatic Plant task
-    private void crowAttack () {
+    private void    crowAttack () {
 
         for (Farm farm : currentGame.farms) {
 
@@ -2727,7 +2733,7 @@ public class GameController {
             }
         }
     }
-    private void checkForGiant () {
+    private void    checkForGiant () {
 
         for (int i = 0; i < 89 ; i++)
             for (int j = 0; j < 89 ; j++) {
@@ -2761,7 +2767,7 @@ public class GameController {
                     }
             }
     }
-    private void checkForProtect() {
+    private void    checkForProtect() {
 
         for (int x = 0 ; x < 90 ; x++)
             for (int y = 0 ; y < 90 ; y++) {
@@ -2821,7 +2827,7 @@ public class GameController {
 
         return (currentGame.currentPlayer.getHealth() <= 0 && !currentGame.currentPlayer.isHealthUnlimited());
     }
-    private void lightningStrike (Tile selected) {
+    private void    lightningStrike (Tile selected) {
 
         GameObject object = selected.getGameObject();
 
@@ -2833,7 +2839,7 @@ public class GameController {
             selected.setGameObject(new Walkable());
 
     }
-    private Tile selectTileForThor (Farm farm) {
+    private Tile    selectTileForThor (Farm farm) {
 
         List<Tile> matchingTiles = farm.Farm.stream()
                 .filter(tile -> (tile.getGameObject() instanceof Tree ||
@@ -2868,7 +2874,7 @@ public class GameController {
 
         return true;
     }
-    private void createRandomForaging () {
+    private void    createRandomForaging () {
 
         for (Tile tile : currentGame.bigMap) {
             if (tile.getGameObject() instanceof Walkable &&
@@ -2906,48 +2912,39 @@ public class GameController {
             }
         }
     }
-    private void createRandomMinerals () {
-
+    private void    createRandomMinerals () {
         for (User user : currentGame.players) {
-
             int x1 = user.getFarm().getMine().getStartX() + 1;
             int y1 = user.getFarm().getMine().getStartY() + 1;
 
-            if (Math.random() < RUBY.getProbability())
-                getTileByCoordinates(x1, y1).setGameObject(new ForagingMinerals(RUBY));
-            if (Math.random() < COAL.getProbability())
-                getTileByCoordinates(x1 + 1, y1).setGameObject(new ForagingMinerals(COAL));
-            if (Math.random() < IRON.getProbability())
-                getTileByCoordinates(x1 + 2, y1).setGameObject(new ForagingMinerals(IRON));
-            if (Math.random() < TOPAZ.getProbability())
-                getTileByCoordinates(x1 + 3, y1).setGameObject(new ForagingMinerals(TOPAZ));
-            if (Math.random() < GOLD.getProbability())
-                getTileByCoordinates(x1, y1 + 1).setGameObject(new ForagingMinerals(GOLD));
-            if (Math.random() < JADE.getProbability())
-                getTileByCoordinates(x1 + 1, y1 + 1).setGameObject(new ForagingMinerals(JADE));
-            if (Math.random() < IRIDIUM.getProbability())
-                getTileByCoordinates(x1 + 2, y1 + 1).setGameObject(new ForagingMinerals(IRIDIUM));
-            if (Math.random() < QUARTZ.getProbability())
-                getTileByCoordinates(x1 + 3, y1 + 1).setGameObject(new ForagingMinerals(QUARTZ));
-            if (Math.random() < EMERALD.getProbability())
-                getTileByCoordinates(x1, y1 + 2).setGameObject(new ForagingMinerals(EMERALD));
-            if (Math.random() < COPPER.getProbability())
-                getTileByCoordinates(x1 + 1, y1 + 2).setGameObject(new ForagingMinerals(COPPER));
-            if (Math.random() < DIAMOND.getProbability())
-                getTileByCoordinates(x1 + 2, y1 + 2).setGameObject(new ForagingMinerals(DIAMOND));
-            if (Math.random() < AMETHYST.getProbability())
-                getTileByCoordinates(x1 + 3, y1 + 2).setGameObject(new ForagingMinerals(AMETHYST));
-            if (Math.random() < AQUAMARINE.getProbability())
-                getTileByCoordinates(x1, y1 + 3).setGameObject(new ForagingMinerals(AQUAMARINE));
-            if (Math.random() < FROZEN_TEAR.getProbability())
-                getTileByCoordinates(x1 + 1, y1 + 3).setGameObject(new ForagingMinerals(FROZEN_TEAR));
-            if (Math.random() < FIRE_QUARTZ.getProbability())
-                getTileByCoordinates(x1 + 2, y1 + 3).setGameObject(new ForagingMinerals(FIRE_QUARTZ));
-            if (Math.random() < PRISMATIC_SHARD.getProbability())
-                getTileByCoordinates(x1 + 2, y1 + 3).setGameObject(new ForagingMinerals(PRISMATIC_SHARD));
-            if (Math.random() < EARTH_CRYSTAL.getProbability())
-                getTileByCoordinates(x1 + 3, y1 + 3).setGameObject(new ForagingMinerals(EARTH_CRYSTAL));
+            List<int[]> positions = new ArrayList<>();
+            for (int dx = 0; dx < 4; dx++) {
+                for (int dy = 0; dy < 4; dy++) {
+                    positions.add(new int[]{x1 + dx, y1 + dy});
+                }
+            }
 
+            Collections.shuffle(positions); // ترتیب تایل‌ها رو رندوم می‌کنیم
+
+            List<ForagingMineralsType> minerals = Arrays.asList(
+                    RUBY, COAL, IRON, TOPAZ, GOLD, JADE, IRIDIUM,
+                    QUARTZ, EMERALD, COPPER, DIAMOND, AMETHYST,
+                    AQUAMARINE, FROZEN_TEAR, FIRE_QUARTZ,
+                    PRISMATIC_SHARD, EARTH_CRYSTAL
+            );
+
+            int posIndex = 0;
+            for (ForagingMineralsType mineral : minerals) {
+                while (posIndex < positions.size()) {
+                    int[] pos = positions.get(posIndex++);
+                    Tile tile = getTileByCoordinates(pos[0], pos[1]);
+
+                    if (tile.getGameObject() instanceof Walkable && Math.random() < mineral.getProbability()) {
+                        tile.setGameObject(new ForagingMinerals(mineral));
+                        break; // بریم سراغ ماده بعدی
+                    }
+                }
+            }
         }
     }
     private boolean checkTileForPlant (Tile tile) {
@@ -2961,7 +2958,7 @@ public class GameController {
 
         return object instanceof ForagingSeeds;
     } // محصولای خودرو حساب نیستن
-    private void fertilizePlant (MarketItemType fertilizeType , Tile tile) {
+    private void    fertilizePlant (MarketItemType fertilizeType , Tile tile) {
 
         GameObject gameObject = tile.getGameObject();
 
@@ -3030,8 +3027,16 @@ public class GameController {
                 ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
                 tile.getGameObject() instanceof GreenHouse) {
 
-            tile.setGameObject(new Tree(type1.getTreeType(), currentGame.currentDate));
-            advanceItem(new TreeSource(type1), 1);
+            Tree tree = new Tree(type1.getTreeType(), currentGame.currentDate);
+            tile.setGameObject(tree);
+            advanceItem(new TreeSource(type1), -1);
+            System.out.println();
+            System.out.println(tile.getGameObject().toString());
+            System.out.println(type1.getDisplayName());
+            System.out.println(type1.getTreeType().getDisplayName());
+            System.out.println(type1.getTreeType());
+            System.out.println(tree.getType());
+            System.out.println();
             return new Result(true, BLUE+"The tree begins its journey"+RESET);
         }
         else
@@ -3847,11 +3852,27 @@ public class GameController {
             return plantMixedSeed(dir);
 
         try {
-            ForagingSeedsType type = ForagingSeedsType.fromDisplayName(name);
+            ForagingSeedsType type = ForagingSeedsType.fromDisplayName(name.trim());
             return plantForagingSeed(type, dir);
         } catch (Exception e) {
             try {
-                TreesSourceType type2 = TreesSourceType.fromDisplayName(name);
+
+                for (TreeType t : TreeType.values())
+                    System.out.println(t.name());
+
+                for (TreesSourceType t : TreesSourceType.values())
+                    System.out.println(t.name() + t.getTreeType());
+
+                TreesSourceType type2 = TreesSourceType.fromDisplayName(name.trim());
+                System.out.println("    in the try   ");
+                System.out.println("enum name: " + type2.name());
+                System.out.println("enum ordinal: " + type2.ordinal());
+                System.out.println(TreesSourceType.Mystic_Tree_Seeds.getTreeType());
+                System.out.println(TreesSourceType.Mystic_Tree_Seeds.getTreeType().getDisplayName());
+                System.out.println(type2.getDisplayName());
+                System.out.println(type2.getTreeType());
+                System.out.println(type2.getTreeType().getDisplayName());
+                System.out.println("     finish try   ");
                 return plantTree(type2, dir);
             } catch (Exception e2) {
                 return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
@@ -4276,9 +4297,6 @@ public class GameController {
         else if (tools instanceof PickAxe)
             return usePickAxe(dir);
 
-        System.out.println("farming  : "+currentGame.currentPlayer.getFarmingAbility());
-        System.out.println("mining   : "+currentGame.currentPlayer.getMiningAbility());
-        System.out.println("foraging : "+currentGame.currentPlayer.getForagingAbility());
         return new Result(false, RED + "please pick up a tools" + RESET);
     }
 
