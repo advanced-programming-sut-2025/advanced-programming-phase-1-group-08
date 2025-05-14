@@ -27,7 +27,6 @@ public enum GameMenuCommands implements Command{
     sendGift      ("\\s*(?i)gift\\s*-u\\s*(?<username>\\S+)-i\\s*(?<item>\\S+)-a\\s*(?<amount>.+)\\s*"),
     trade         ("\\s*(?i)start\\s*trade\\s*"),
     proposalRespond("\\s*respond\\s*(?<response>\\S+)-u\\s*(?<username>.+)\\s*"),
-
                                                         //  Date Time weather
     showTomorrowWeather("\\s*(?i)weather\\s*forecast\\s*"),
     showTime      ("\\s*(?i)time\\s*"),

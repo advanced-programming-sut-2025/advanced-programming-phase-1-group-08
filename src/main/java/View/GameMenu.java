@@ -253,12 +253,19 @@ public class GameMenu implements AppMenu {
 
 
 
-            //TODO چیت کد اضافه کردن آیتم.
+
+        else if (input.matches("(?i)\\s*add\\s*money\\s*"))
+            currentPlayer.increaseMoney(10000);
+
+
+        //TODO چیت کد اضافه کردن آیتم.
         else
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
         controller.AutomaticFunctionAfterAnyAct();
-        System.out.println(currentPlayer.getNickname() + " : " + currentPlayer.getPositionX()+ " , " + currentPlayer.getPositionY());
+        System.out.println(currentPlayer.getNickname() + " : " +
+                currentPlayer.getPositionX()+ " , " + currentPlayer.getPositionY() +
+                "   money : " + currentPlayer.getMoney());
 
     }
 }

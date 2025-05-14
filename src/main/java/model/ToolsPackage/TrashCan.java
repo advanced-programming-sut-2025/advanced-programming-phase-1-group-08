@@ -1,7 +1,7 @@
 package model.ToolsPackage;
 
 import model.App;
-import model.Enum.ItemType.TrashCanType;
+import model.Enum.ToolsType.TrashCanType;
 import model.Items;
 
 import java.util.HashMap;

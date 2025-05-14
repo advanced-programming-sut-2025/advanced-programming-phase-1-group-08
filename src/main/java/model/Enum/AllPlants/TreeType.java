@@ -1,7 +1,5 @@
 package model.Enum.AllPlants;
 
-import model.Enum.WeatherTime.Season;
-
 import static model.Color_Eraser.*;
 import static model.Enum.AllPlants.TreesSourceType.*;
 

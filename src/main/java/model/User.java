@@ -96,6 +96,7 @@ public class User {
     private Tile SleepTile;
     private User Spouse;  // شخصی که باهاش ازدواج کرده
     private boolean healthUnlimited;
+    private String icon;
 
 
     private HashMap<NPC, Integer>    friendshipPoint = new HashMap<>();
@@ -216,7 +217,14 @@ public class User {
 
         return SleepTile;
     }
+    public String getIcon() {
 
+        return icon;
+    }
+    public void setIcon(String icon) {
+
+        this.icon = icon;
+    }
 
     public User getSpouse() {
         return Spouse;
@@ -326,6 +334,18 @@ public class User {
         this.miningAbility += amount;
     }
 
+    public int getFarmingAbility() {
+        return farmingAbility;
+    }
+    public int getMiningAbility() {
+        return miningAbility;
+    } // TODO اینا باید پاک شن و برای دیباگن
+    public int getForagingAbility() {
+        return foragingAbility;
+    }
+    public int getFishingAbility() {
+        return fishingAbility;
+    }
 
     public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {
 

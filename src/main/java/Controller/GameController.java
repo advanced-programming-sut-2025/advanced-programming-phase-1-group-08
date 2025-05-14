@@ -838,7 +838,7 @@ public class GameController {
     public Result showInventory(){
         Inventory inventory= currentPlayer.getBackPack().inventory;
         StringBuilder output = new StringBuilder();
-        output.append("Items:").append('\n');
+        output.append("\nItems :").append("\n\n");
 
         for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet()){
             if (entry.getKey() instanceof BasicRock){
@@ -881,7 +881,7 @@ public class GameController {
                 output.append(((TrashCan) entry.getKey()).type.name()).append('\n');
             }
             else if (entry.getKey() instanceof Tools){
-                output.append(((Tools) entry.getKey()).getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append(entry.getKey().getName()).append('\n');
             }
             else if (entry.getKey() instanceof MarketItem) {
                 output.append(((MarketItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
@@ -2363,7 +2363,7 @@ public class GameController {
             advanceItem(new Axe(AxeType.primaryAxe), 1);
             advanceItem(new PickAxe(PickAxeType.primaryPickAxe), 1);
             advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
-            advanceItem(new TrashCan(TrashCanType.primarytTrashCan), 1);
+            advanceItem(new TrashCan(TrashCanType.primaryTrashCan), 1);
 
             Home home = user.getFarm().getHome();
             user.setPositionX( 60 * user.topLeftX + home.getTopLeftX() + home.getWidth() / 2);
@@ -2502,37 +2502,41 @@ public class GameController {
 
             currentPlayer = user;
             while (true) {
-                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
-                String choiceString = scanner.nextLine();
-                String[] splitChoice = choiceString.trim().split("\\s+");
+//                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
+//                String choiceString = scanner.nextLine();
+//                String[] splitChoice = choiceString.trim().split("\\s+");
+//
+//                int choice;
+//                try {
+//                    choice = Integer.parseInt(splitChoice[2]);
+//                } catch (Exception e) {
+//                    System.out.println("Please put a integer between 1 and 2!");
+//                    continue;
+//                }
+//                if (choice != 1 && choice != 2) {
+//                    System.out.println("Choose between 1 and 2!");
+//                    continue;
+//                }
 
-                int choice;
-                try {
-                    choice = Integer.parseInt(splitChoice[2]);
-                } catch (Exception e) {
-                    System.out.println("Please put a integer between 1 and 2!");
-                    continue;
-                }
-                if (choice != 1 && choice != 2) {
-                    System.out.println("Choose between 1 and 2!");
-                    continue;
-                }
-
-                //int choice = 1; // TODO باید پاک بشه
+                int choice = 1; // TODO باید پاک بشه
 
                 if (counter == 1) {
+                    user.setIcon(BRIGHT_CYAN + "∆" + RESET);
                     user.topLeftX = 0;
                     user.topLeftY = 0;
                 }
                 else if (counter == 2) {
+                    user.setIcon(BRIGHT_PURPLE + "∆" + RESET);
                     user.topLeftX = 1;
                     user.topLeftY = 0;
                 }
                 else if (counter == 3) {
+                    user.setIcon(BRIGHT_RED + "∆" + RESET);
                     user.topLeftX = 0;
                     user.topLeftY = 1;
                 }
                 else if (counter == 4) {
+                    user.setIcon(BRIGHT_YELLOW + "∆" + RESET);
                     user.topLeftX = 1;
                     user.topLeftY = 1;
                 }
@@ -2809,10 +2813,9 @@ public class GameController {
     private Tile selectTileForThor (Farm farm) {
 
         List<Tile> matchingTiles = farm.Farm.stream()
-                .filter(tile -> tile.getGameObject() instanceof Tree ||
-                        tile.getGameObject() instanceof ForagingSeeds &&
-                                !farm.isInGreenHouse(tile.getX(), tile.getY()))
-                .toList();
+                .filter(tile -> (tile.getGameObject() instanceof Tree ||
+                                    tile.getGameObject() instanceof ForagingSeeds) &&
+                                !farm.isInGreenHouse(tile.getX(), tile.getY())) .toList();
 
         if (matchingTiles.isEmpty())
             return null;
@@ -2837,7 +2840,7 @@ public class GameController {
             return false;
 
         for (User user : players)
-            if (user.getFarm().isInHome(x, y) || user.getFarm().isInMine(x, y))
+            if (user.getFarm().isInHome(x, y) || user.getFarm().isInMine(x, y) || user.getFarm().isInGreenHouse(x, y))
                 return false;
 
         return true;
@@ -2996,8 +2999,13 @@ public class GameController {
                 return new Result(false, RED+"You can't plant this tree in "
                         + RESET + currentDate.getSeason());
 
-        if (tile.getGameObject() instanceof Walkable &&
-                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) {
+        GameObject object = tile.getGameObject();
+        if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
+            return new Result(false, RED+"First you must create green House"+RESET);
+
+        if ((tile.getGameObject() instanceof Walkable &&
+                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
+                tile.getGameObject() instanceof GreenHouse) {
 
             tile.setGameObject(new Tree(type1.getTreeType(), currentDate));
             advanceItem(new TreeSource(type1), 1);
@@ -3020,14 +3028,18 @@ public class GameController {
                     inventory.Items.put(entry.getKey(), entry.getValue() - 1);
                     Tile tile = getTileByDir(dir);
 
-                    if (tile.getGameObject() instanceof Walkable &&
-                            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) {
+                    GameObject object = tile.getGameObject();
+                    if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
+                        return new Result(false, RED+"First you must create green House"+RESET);
+
+                    if ((tile.getGameObject() instanceof Walkable &&
+                            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
+                            tile.getGameObject() instanceof GreenHouse) {
 
                         tile.setGameObject(new ForagingSeeds(type, currentDate));
 
                     } else
                         return new Result(false, RED+"First, you must plow the tile."+RESET);
-
                 }
                 else
                     return new Result(false, RED + "You don't have Mixed seed!" + RESET);
@@ -3036,12 +3048,12 @@ public class GameController {
     }
     private Result plantForagingSeed (ForagingSeedsType type, int dir) {
 
-        Inventory inventory=currentPlayer.getBackPack().inventory;
+        Inventory inventory = currentPlayer.getBackPack().inventory;
 
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
 
-            if (entry instanceof ForagingSeeds && ((ForagingSeeds) entry).getType().equals(type)) {
-                if (inventory.Items.get(entry) > 0) {
+            if (entry.getKey() instanceof ForagingSeeds && ((ForagingSeeds) entry.getKey()).getType().equals(type)) {
+                if (entry.getValue() > 0) {
 
                     Tile tile = getTileByDir(dir);
 
@@ -3050,8 +3062,13 @@ public class GameController {
                             return new Result(false, RED+"You can't plant this tree in "
                                     + RESET + currentDate.getSeason());
 
-                    if (tile.getGameObject() instanceof Walkable &&
-                            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) {
+                    GameObject object = tile.getGameObject();
+                    if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
+                        return new Result(false, RED+"First you must create green House"+RESET);
+
+                    if ((tile.getGameObject() instanceof Walkable &&
+                            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
+                            tile.getGameObject() instanceof GreenHouse) {
 
                         tile.setGameObject(new ForagingSeeds(type, currentDate));
                         inventory.Items.put(entry.getKey(), entry.getValue() - 1);
@@ -3807,11 +3824,11 @@ public class GameController {
             return plantMixedSeed(dir);
 
         try {
-            ForagingSeedsType type = ForagingSeedsType.valueOf(name);
+            ForagingSeedsType type = ForagingSeedsType.fromDisplayName(name);
             return plantForagingSeed(type, dir);
         } catch (Exception e) {
             try {
-                TreesSourceType type2 = TreesSourceType.valueOf(name);
+                TreesSourceType type2 = TreesSourceType.fromDisplayName(name);
                 return plantTree(type2, dir);
             } catch (Exception e2) {
                 return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
@@ -4203,11 +4220,10 @@ public class GameController {
             if (currentPlayer.getHealth() < currentPlayer.currentTool.healthCost())
                 return new Result(false, RED+"you are not in your hand"+RESET);
 
-            System.out.println("    checker    ");
             currentPlayer.increaseHealth(currentPlayer.currentTool.healthCost());
         }
 
-        System.out.println(currentPlayer.getHealth());
+        System.out.println("Energy : "+currentPlayer.getHealth());
 
         if (!checkDirection(direction))
             return new Result(false, RED+"Direction is invalid"+RESET);
@@ -4237,10 +4253,9 @@ public class GameController {
         else if (tools instanceof PickAxe)
             return usePickAxe(dir);
 
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
+        System.out.println("farming  : "+currentPlayer.getFarmingAbility());
+        System.out.println("mining   : "+currentPlayer.getMiningAbility());
+        System.out.println("foraging : "+currentPlayer.getForagingAbility());
         return new Result(false, RED + "please pick up a tools" + RESET);
     }
 

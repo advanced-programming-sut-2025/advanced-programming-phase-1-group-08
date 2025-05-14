@@ -4,7 +4,6 @@ import model.DateHour;
 import model.Enum.AllPlants.TreeType;
 import model.Enum.ItemType.MarketItemType;
 import model.Items;
-import model.MapThings.GameObject;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
 
