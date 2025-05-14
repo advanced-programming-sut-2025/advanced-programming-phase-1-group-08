@@ -1,4 +1,4 @@
-package model.Animall;
+package model.Plants;
 
 import model.Enum.ItemType.AnimalProductType;
 import model.Enum.ItemType.Quantity;

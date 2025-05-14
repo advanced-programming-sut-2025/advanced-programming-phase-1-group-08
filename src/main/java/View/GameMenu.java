@@ -36,14 +36,20 @@ public class GameMenu implements AppMenu {
             controller.nextTurn();
 
         else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null) {
-            if (!NotInHome(currentGame.currentPlayer))
+            if (!NotInHome(currentGame.currentPlayer)) {
                 currentMenu = Menu.HomeMenu;
+                System.out.println(BLUE+"Home Menu!"+RESET);
+            }
             else
                 System.out.println(RED+"You're Not in Your Home!"+RESET);
+
         }
 
         else if (GameMenuCommands.eatFood.getMatcher(input) != null)
             controller.eatFood(input);
+
+        else if (GameMenuCommands.recipeUnlock.getMatcher(input) != null)
+            controller.unlockRecipe(input);
 
         else if (GameMenuCommands.friendships.getMatcher(input) != null)
             controller.DisplayFriendships();
@@ -268,7 +274,7 @@ public class GameMenu implements AppMenu {
 
 
         else if (input.matches("(?i)\\s*add\\s*money\\s*"))
-            currentPlayer.increaseMoney(10000);
+            currentGame.currentPlayer.increaseMoney(10000);
 
 
         //TODO چیت کد اضافه کردن آیتم.
@@ -278,7 +284,7 @@ public class GameMenu implements AppMenu {
         controller.AutomaticFunctionAfterAnyAct();
         System.out.println(currentGame.currentPlayer.getNickname() + " : " +
                 currentGame.currentPlayer.getPositionX()+ " , " + currentGame.currentPlayer.getPositionY() +
-                "   money : " + currentPlayer.getMoney());
+                "   money : " + currentGame.currentPlayer.getMoney());
 
     }
 }

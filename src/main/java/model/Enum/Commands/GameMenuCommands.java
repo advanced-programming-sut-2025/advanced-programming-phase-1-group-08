@@ -16,6 +16,7 @@ public enum GameMenuCommands implements Command{
     openHomeMenu    ("\\s*(?i)menu\\s*home\\s*menu\\s*"),
     nextTurn        ("\\s*(?i)next\\s*turn\\s*"),
     eatFood         ("\\s*(?i)eat\\s*(?<food>.+)"),
+    recipeUnlock    ("\\s*(?i)recipe\\s*unlock\\s*(?<food>\\S.+)\\s*"),
 
                                                         //  relation
     friendships   ("\\s*(?i)friendships\\s*"),

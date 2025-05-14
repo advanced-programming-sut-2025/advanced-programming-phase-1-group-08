@@ -2,9 +2,9 @@ package Controller;
 
 import model.*;
 import model.Animall.Animal;
-import model.Animall.Animalproduct;
+import model.Plants.Animalproduct;
 import model.Animall.BarnOrCage;
-import model.Animall.Fish;
+import model.Plants.Fish;
 import model.Enum.AllPlants.*;
 import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Door;
@@ -23,6 +23,7 @@ import model.SaveData.PasswordHashUtil;
 import model.ToolsPackage.*;
 
 import java.util.*;
+import java.util.regex.Matcher;
 
 import static model.App.*;
 import static model.Color_Eraser.*;
@@ -48,14 +49,15 @@ public class GameController {
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         ItemRegistry itemRegistry = new ItemRegistry();
         Items items=null;
-        if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
-            return new Result(false , "not enough capacity in your BackPack");
-        }
+
 
         itemRegistry.scanItems("model.Plants");
         if ((items=itemRegistry.nameToItemMap.get(name)) != null) {
             if (inventory.Items.containsKey(items)) {
                 inventory.Items.compute(items , (k,v) -> v+amount);
+            }
+            else if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                return new Result(false , "Not Enough Capacity!");
             }
             else {
                 inventory.Items.put(items, amount);
@@ -68,6 +70,9 @@ public class GameController {
             if (inventory.Items.containsKey(items)) {
                 inventory.Items.compute(items , (k,v) -> v+amount);
             }
+            else if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                return new Result(false , "Not Enough Capacity!");
+            }
             else {
                 inventory.Items.put(items, amount);
             }
@@ -79,6 +84,9 @@ public class GameController {
             if (inventory.Items.containsKey(items)) {
                 inventory.Items.compute(items , (k,v) -> v+amount);
             }
+            else if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                return new Result(false , "Not Enough Capacity!");
+            }
             else {
                 inventory.Items.put(items, amount);
             }
@@ -89,6 +97,9 @@ public class GameController {
         if ((items=itemRegistry.nameToItemMap.get(name)) != null) {
             if (inventory.Items.containsKey(items)) {
                 inventory.Items.compute(items , (k,v) -> v+amount);
+            }
+            else if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                return new Result(false , "Not Enough Capacity!");
             }
             else {
                 inventory.Items.put(items, amount);
@@ -688,8 +699,8 @@ public class GameController {
 
         for (int i=startX ; i<startX + size ; i++) {
             for (int j = startY; j < startY + size; j++) {
-                if (i == currentGame.currentPlayer.getPositionX() && j == currentGame.currentPlayer.getPositionY()) {
-                    result.append(currentGame.currentPlayer.getIcon).append(" ");
+                if (j == currentGame.currentPlayer.getPositionX() && i == currentGame.currentPlayer.getPositionY()) {
+                    result.append(currentGame.currentPlayer.getIcon()).append(" ");
                 }
                 else {
                     Tile tile = getTileByCoordinates(j, i);
@@ -729,7 +740,7 @@ public class GameController {
                 continue;
             }
             if (checkConditionsForWalk(tile.getX() , tile.getY()) ==null) {
-                State state=new State(startX , startY , dir , 0);
+                State state=new State(startX , startY , -1, 0);
                 queue.add(state);
             }
         }
@@ -763,7 +774,7 @@ public class GameController {
                 if (checkConditionsForWalk(x + current.x,y + current.y) !=null) {
                     continue;
                 }
-                int turnCost= (i+1==current.direction) ? 1:10;
+                int turnCost= (i + 1 == current.direction || current.direction== - 1) ? 1:10;
                 int totalEnergy=current.Energy + turnCost;
                 queue.add(new State(x+current.x , y+current.y , i+1 , totalEnergy));
             }
@@ -842,10 +853,13 @@ public class GameController {
     public Result showInventory(){
         Inventory inventory= currentGame.currentPlayer.getBackPack().inventory;
         StringBuilder output = new StringBuilder();
-        output.append("\nItems :").append("\n\n");
+        output.append(BLUE+"\nItems"+RESET + " :").append("\n");
 
         for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet()){
-            if (entry.getKey() instanceof BasicRock){
+            if (entry.getKey() instanceof Food) {
+                output.append(((Food) entry.getKey()).getType().getName() + ": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof BasicRock){
                 output.append("Stone: ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Wood){
@@ -865,6 +879,9 @@ public class GameController {
             }
             else if (entry.getKey() instanceof TreeSource){
                 output.append(((TreeSource) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof TreesProdct) {
+                output.append(entry.getKey().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Axe ){
                 output.append(((Axe) entry.getKey()).getType().getDisplayName()).append('\n');
@@ -972,7 +989,7 @@ public class GameController {
                 }
             }
             if (entry.getKey() instanceof Tools){
-                return new Result(false,"you can't remove "+name+"because it is a tool");
+                return new Result(false,"you can't remove "+name+" because it is a tool");
             }
 
         }
@@ -2269,13 +2286,41 @@ public class GameController {
         System.out.println(result);
 
     }
-    public void eatFood (String foodName) {
+    public void unlockRecipe(String input) {
+        Matcher matcher = GameMenuCommands.recipeUnlock.getMatcher(input);
+        if (matcher == null) {
+            System.out.println(RED+"Oops!"+RESET);
+            return;
+        }
+        String foodName = matcher.group("food");
+        if (foodName == null) {
+            System.out.println(RED+"Oops!"+RESET);
+            return;
+        }
+        Recipe recipe = Recipe.findRecipeByName(foodName);
+        if (recipe == null) {
+            System.out.println(RED+"Food Name Unavailable!"+RESET);
+            return;
+        }
+        recipe.setUsable(true);
+        System.out.println(GREEN+"Done!"+RESET);
+
+    }
+    public void eatFood (String input) {
+        Matcher matcher = GameMenuCommands.eatFood.getMatcher(input);
+        if (matcher == null) {
+            System.out.println(RED+"Unknown Error!"+RESET);
+            return;
+        }
+        String foodName = matcher.group("food");
+
         // find recipe and it's type
         Recipe recipe = Recipe.findRecipeByName(foodName);
         if (recipe == null) {
             System.out.println(RED+"Food Name Unavailable!"+RESET);
+            return;
         }
-        assert recipe != null;
+
         FoodTypes type = recipe.getType();
 
         Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
@@ -2297,6 +2342,8 @@ public class GameController {
         currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + recipe.getEnergy());
         // implement Buffs
         recipe.applyEffect(currentGame.currentPlayer);
+
+        System.out.println(GREEN+"Eaten Successfully."+RESET);
     }
     public void exitGame () {
         if (currentGame.currentPlayer != currentUser) {
@@ -2421,12 +2468,12 @@ public class GameController {
             if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft == 0) currentGame.currentPlayer.setMAX_HEALTH(200);
             if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft == 0) currentGame.currentPlayer.setMAX_HEALTH(200);
             if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
-                currentGame.currentPlayer.setMAX_HEALTH(300);
+                currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 100);
                 currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 100);
                 currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft --);
             }
             if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
-                currentGame.currentPlayer.setMAX_HEALTH(250);
+                currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 50);
                 currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 50);
                 currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft --);
             }
@@ -3775,11 +3822,11 @@ public class GameController {
 
         if (currentGame.currentPlayer.getHealth() > amount2) {
             currentGame.currentPlayer.setHealth(amount2);
-            return new Result(true, BLUE+"Your Energy decrease to : " +RESET+amount2);
+            return new Result(true, BLUE+"Your Energy decreased to : " +RESET+amount2);
         }
         else if (currentGame.currentPlayer.getHealth() < amount2) {
             currentGame.currentPlayer.setHealth(amount2);
-            return new Result(true, BLUE+"Your Energy increase to :" +RESET+amount2);
+            return new Result(true, BLUE+"Your Energy increased to : " +RESET+amount2);
         } else
             return new Result(false, "Your energy level at this moment is this amount.");
     }

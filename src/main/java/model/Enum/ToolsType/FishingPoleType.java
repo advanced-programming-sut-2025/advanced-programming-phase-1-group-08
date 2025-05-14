@@ -1,11 +1,5 @@
 package model.Enum.ToolsType;
 
-import model.Animall.Fish;
-import model.App;
-import model.Enum.ItemType.MarketType;
-
-import java.util.ArrayList;
-
 import static model.App.currentGame;
 
 

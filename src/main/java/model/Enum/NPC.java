@@ -1,8 +1,8 @@
 package model.Enum;
 
 import model.*;
-import model.Animall.Animalproduct;
-import model.Animall.Fish;
+import model.Plants.Animalproduct;
+import model.Plants.Fish;
 import model.Enum.WeatherTime.Weather;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.ItemType.*;

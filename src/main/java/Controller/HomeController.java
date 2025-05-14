@@ -11,6 +11,7 @@ import model.Plants.Food;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 
 import static model.App.*;
 import static model.Color_Eraser.*;
@@ -26,7 +27,11 @@ public class HomeController {
         if (NotInHome(currentGame.currentPlayer))
             return new Result(false, RED+"You're Not in Your Home!"+RESET);
 
-        Items item = AllFromDisplayNames(HomeMenuCommands.fridgePut.getMatcher(input).group("item"));
+
+        Matcher matcher = HomeMenuCommands.fridgePick.getMatcher(input);
+        if (matcher == null)
+            return new Result(false, RED+"Wrong Command!"+RESET);
+        Items item = AllFromDisplayNames(matcher.group("item"));
         if (item == null)
             return new Result(false, RED+"Item Not Found!"+RESET);
 
@@ -43,7 +48,7 @@ public class HomeController {
             }
         }
         if (!foundInFridge)
-            return new Result(false, RED+"You don't have it in Fridge!"+RESET);
+            return new Result(false, RED+"You Don't Have it in Fridge!"+RESET);
 
         boolean alreadyInInventory = false;
         for (Map.Entry<Items, Integer> entry: currentGame.currentPlayer.getBackPack().inventory.Items.entrySet()) {
@@ -170,11 +175,13 @@ public class HomeController {
             }
 
         }
+        fridge.items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+        myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
 
 
 
 
-        return new Result(true, GREEN+"cooked Properly!"+RESET);
+        return new Result(true, GREEN+"Cooked Properly!"+RESET);
     }
     public static Result recipeDisplay () {
         if (NotInHome(currentGame.currentPlayer))
@@ -213,8 +220,6 @@ public class HomeController {
             System.out.println(RED + "You're Not in Your Home!" + RESET);
             return;
         }
-
-
 
 
         // رسپی های عرفان
@@ -336,9 +341,7 @@ public class HomeController {
         }
 
 
-
-
-
+        System.out.println(BLUE+"Welcome to the Kitchen!"+RESET);
         String input;
         Scanner scanner = new Scanner(System.in);
         Result result;

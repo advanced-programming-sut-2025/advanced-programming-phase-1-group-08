@@ -1,7 +1,7 @@
 package model.Enum.ItemType;
 
-import model.Animall.Animalproduct;
-import model.Animall.Fish;
+import model.Plants.Animalproduct;
+import model.Plants.Fish;
 import model.App;
 import model.Inventory;
 import model.Items;

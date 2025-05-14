@@ -2,10 +2,10 @@ package model.Enum.ItemType;
 
 public enum Quantity {
 
-    Normal("regular",1),
     Silver("silver",1.25),
     Golden("gold",1.5),
-    Iridium("Iridium",2);
+    Iridium("Iridium",2),
+    Normal("regular",1);
 
     private final String name;
     private final double value;
