@@ -6,6 +6,7 @@ import model.Enum.FoodTypes;
 import model.Enum.ItemType.MarketItemType;
 import model.OtherItem.Fridge;
 import model.Places.MarketItem;
+import model.Plants.Food;
 
 import java.util.HashMap;
 import java.util.Map;

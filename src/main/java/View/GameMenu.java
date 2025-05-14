@@ -36,7 +36,7 @@ public class GameMenu implements AppMenu {
             controller.nextTurn();
 
         else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null) {
-            if (!NotInHome(currentUser))
+            if (!NotInHome(currentGame.currentPlayer))
                 currentMenu = Menu.HomeMenu;
             else
                 System.out.println(RED+"You're Not in Your Home!"+RESET);
@@ -253,10 +253,10 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.addItem(matcher.group(1) , Integer.parseInt(matcher.group(2).trim())));
 
 
-        else if (input.matches("\\s*exit\\s*game\\s*"))
-            controller.exitGame();
-        else if (input.matches("\\s*force\\s*terminate\\s*"))
-            controller.forceTerminate();
+//        else if (input.matches("\\s*exit\\s*game\\s*"))
+//            controller.exitGame();
+//        else if (input.matches("\\s*force\\s*terminate\\s*"))
+//            controller.forceTerminate();
 
 
         else if ((matcher = GameMenuCommands.getGameObject.getMatcher(input)) != null)

@@ -10,7 +10,6 @@ import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Door;
 import model.Enum.FoodTypes;
 import model.Enum.ItemType.*;
-import model.Enum.Menu;
 import model.Enum.NPC;
 import model.Enum.ToolsType.*;
 import model.Enum.WeatherTime.Season;
@@ -31,7 +30,6 @@ import static model.DateHour.getDayDifferent;
 import static model.Enum.AllPlants.ForagingMineralsType.*;
 
 import static model.Enum.AllPlants.ForagingMineralsType.RUBY;
-import static model.SaveData.UserDataBase.findUserB;
 import static model.SaveData.UserDataBase.findUserByUsername;
 
 
@@ -98,7 +96,7 @@ public class GameController {
             return new Result(true , name + " created successfully");
         }
 
-        return new Result(false , name + "not found!");
+        return new Result(false , name + " not found!");
     }
 
     public ArrayList<Tile> sortMap(ArrayList<Tile> Map) {
@@ -690,12 +688,16 @@ public class GameController {
 
         for (int i=startX ; i<startX + size ; i++) {
             for (int j = startY; j < startY + size; j++) {
-                Tile tile = getTileByCoordinates(j, i);
-                if (tile.getGameObject() instanceof UnWalkable) {
-                    result.append(tile.getGameObject().getIcon()).append(RESET);
+                if (i == currentGame.currentPlayer.getPositionX() && j == currentGame.currentPlayer.getPositionY()) {
+                    result.append(currentGame.currentPlayer.getIcon).append(" ");
                 }
                 else {
-                    result.append(tile.getGameObject().getIcon()).append(RESET).append(" ");
+                    Tile tile = getTileByCoordinates(j, i);
+                    if (tile.getGameObject() instanceof UnWalkable) {
+                        result.append(tile.getGameObject().getIcon()).append(RESET);
+                    } else {
+                        result.append(tile.getGameObject().getIcon()).append(RESET).append(" ");
+                    }
                 }
             }
             result.append("\n");

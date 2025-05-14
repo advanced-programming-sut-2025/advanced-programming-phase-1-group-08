@@ -1,11 +1,12 @@
-package model;
+package model.Plants;
 
 import Controller.GameController;
 import model.Enum.FoodTypes;
+import model.Items;
 
 import static model.App.currentGame;
 
-public class Food extends Items{
+public class Food extends Items {
     private final FoodTypes type;
 
     public Food(FoodTypes type) {
