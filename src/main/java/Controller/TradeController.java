@@ -22,8 +22,8 @@ public class TradeController {
 
     public void tradeStart () {
         System.out.println("Players To Trade With: ");
-        for (User p: players) {
-            if (!p.getUsername().equals(currentPlayer.getUsername())) {
+        for (User p: currentGame.players) {
+            if (!p.getUsername().equals(currentGame.currentPlayer.getUsername())) {
                 //todo tradeUsers.add(p);
                 System.out.println(p.getNickname());
             }
@@ -40,10 +40,10 @@ public class TradeController {
                 other = findUserByUsername(TradeMenuCommands.tradeP.getMatcher(input).group("username"));
 
                 if (TradeMenuCommands.tradeP.getMatcher(input).group("type").equals("offer"))
-                    trade = new Trade(currentPlayer, other, 't', 'p', TradeMenuCommands.tradeP.getMatcher(input).group("item"), TradeMenuCommands.tradeP.getMatcher(input).group("price"),
+                    trade = new Trade(currentGame.currentPlayer, other, 't', 'p', TradeMenuCommands.tradeP.getMatcher(input).group("item"), TradeMenuCommands.tradeP.getMatcher(input).group("price"),
                                         Integer.parseInt(TradeMenuCommands.tradeP.getMatcher(input).group("amount")), Integer.parseInt(TradeMenuCommands.tradeP.getMatcher(input).group("price")));
                 else if (TradeMenuCommands.tradeP.getMatcher(input).group("type").equals("request"))
-                    trade = new Trade(currentPlayer, other, 'p', 't', TradeMenuCommands.tradeP.getMatcher(input).group("price"), TradeMenuCommands.tradeP.getMatcher(input).group("item"),
+                    trade = new Trade(currentGame.currentPlayer, other, 'p', 't', TradeMenuCommands.tradeP.getMatcher(input).group("price"), TradeMenuCommands.tradeP.getMatcher(input).group("item"),
                                         Integer.parseInt(TradeMenuCommands.tradeP.getMatcher(input).group("price")), Integer.parseInt(TradeMenuCommands.tradeP.getMatcher(input).group("amount")));
 
             }
@@ -51,7 +51,7 @@ public class TradeController {
                 result = checkTradeRequest(input, 't');
                 other = findUserByUsername(TradeMenuCommands.tradeTI.getMatcher(input).group("username"));
 
-                trade = new Trade(currentPlayer, other, 't', 't', TradeMenuCommands.tradeP.getMatcher(input).group("item"), TradeMenuCommands.tradeP.getMatcher(input).group("targetItem"),
+                trade = new Trade(currentGame.currentPlayer, other, 't', 't', TradeMenuCommands.tradeP.getMatcher(input).group("item"), TradeMenuCommands.tradeP.getMatcher(input).group("targetItem"),
                                     Integer.parseInt(TradeMenuCommands.tradeTI.getMatcher(input).group("amount")), Integer.parseInt(TradeMenuCommands.tradeTI.getMatcher(input).group("targetAmount")));
 
             }
@@ -67,9 +67,9 @@ public class TradeController {
         }
 
         try {
-            Set<User> key = new HashSet<>(Arrays.asList(currentPlayer, other));
-            trades.putIfAbsent(key, new ArrayList<>());
-            trades.get(key).add(trade);
+            Set<User> key = new HashSet<>(Arrays.asList(currentGame.currentPlayer, other));
+            currentGame.trades.putIfAbsent(key, new ArrayList<>());
+            currentGame.trades.get(key).add(trade);
         } catch (Exception e) {
             System.out.println(RED+"Not Correct Format! Try Again."+RESET);
             return;

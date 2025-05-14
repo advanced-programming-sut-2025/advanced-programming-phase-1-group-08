@@ -36,7 +36,7 @@ public class GameMenu implements AppMenu {
             controller.nextTurn();
 
         else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null) {
-            if (!NotInHome(currentUser))
+            if (!NotInHome(currentGame.currentPlayer))
                 currentMenu = Menu.HomeMenu;
             else
                 System.out.println(RED+"You're Not in Your Home!"+RESET);
@@ -173,6 +173,19 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.wateringPlant.getMatcher(input)) != null)
             System.out.println(controller.WateringPlant(matcher.group("direction").trim()));
 
+
+        else if (input.matches("\\s*show\\s*current\\s*menu\\s*"))
+            System.out.println("Game Menu");
+        else if (input.matches("\\s*menu\\s*exit")) {
+            currentMenu = Menu.MainMenu;
+            System.out.println(GREEN+"Done!"+RESET);
+        }
+        else if (input.matches("\\s*exit\\s*game\\s*"))
+            controller.exitGame();
+        else if (input.matches("\\s*force\\s*terminate\\s*"))
+            controller.forceTerminate();
+
+
         else if((matcher=GameMenuCommands.walk.getMatcher(input)) != null)
             System.out.println(controller.walk(Integer.parseInt(matcher.group(1).trim())
                     , Integer.parseInt(matcher.group(2).trim()) ));
@@ -240,10 +253,10 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.addItem(matcher.group(1) , Integer.parseInt(matcher.group(2).trim())));
 
 
-        else if (input.matches("\\s*exit\\s*game\\s*"))
-            controller.exitGame();
-        else if (input.matches("\\s*force\\s*terminate\\s*"))
-            controller.forceTerminate();
+//        else if (input.matches("\\s*exit\\s*game\\s*"))
+//            controller.exitGame();
+//        else if (input.matches("\\s*force\\s*terminate\\s*"))
+//            controller.forceTerminate();
 
 
         else if ((matcher = GameMenuCommands.getGameObject.getMatcher(input)) != null)
@@ -263,8 +276,8 @@ public class GameMenu implements AppMenu {
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
         controller.AutomaticFunctionAfterAnyAct();
-        System.out.println(currentPlayer.getNickname() + " : " +
-                currentPlayer.getPositionX()+ " , " + currentPlayer.getPositionY() +
+        System.out.println(currentGame.currentPlayer.getNickname() + " : " +
+                currentGame.currentPlayer.getPositionX()+ " , " + currentGame.currentPlayer.getPositionY() +
                 "   money : " + currentPlayer.getMoney());
 
     }

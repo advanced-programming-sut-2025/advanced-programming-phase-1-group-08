@@ -175,7 +175,7 @@ public class DateHour implements Cloneable {
             }
         }
         int nowSeason =0;
-        switch (App.currentDate.getSeason()) {
+        switch (App.currentGame.currentDate.getSeason()) {
             case Spring -> {
                 nowSeason =1;
             }
@@ -191,7 +191,7 @@ public class DateHour implements Cloneable {
         }
 
         int firstHour= first.year * 2688 + firstSeason * 672 + (first.getDate() -1)*24 + first.getHour();
-        int secondHour= App.currentDate.year * 2688 + nowSeason * 672 + (App.currentDate.getDate() -1 ) * 24 + App.currentDate.getHour();
+        int secondHour= App.currentGame.currentDate.year * 2688 + nowSeason * 672 + (App.currentGame.currentDate.getDate() -1 ) * 24 + App.currentGame.currentDate.getHour();
 
         return secondHour - firstHour;
     }

@@ -28,7 +28,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct artisanProduct=new ArtisanProduct(Honey);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 96);
+            x.put(App.currentGame.currentDate.clone() , 96);
             craftingItem.getBuffer().put(artisanProduct , x);
         }
 
@@ -47,7 +47,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct cheese=new ArtisanProduct(Cheese);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 3);
+            x.put(App.currentGame.currentDate.clone() , 3);
             craftingItem.getBuffer().put(cheese , x);
         }
 
@@ -57,7 +57,7 @@ public enum ArtisanType {
             if (! newName.equals("Milk") && ! newName.equals("Large Milk")) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
                     if (((Animalproduct) entry.getKey()).getAnimalProductType().getName().equals(newName)) {
@@ -80,7 +80,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct GoatCheese=new ArtisanProduct(Goat_Cheese);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 3);
+            x.put(App.currentGame.currentDate.clone() , 3);
             craftingItem.getBuffer().put(GoatCheese , x);
         }
 
@@ -90,7 +90,7 @@ public enum ArtisanType {
             if (! newName.equals("Goat Milk") && ! newName.equals("Large Goat Milk")) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
 
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
@@ -115,7 +115,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem beer=new MarketItem(MarketItemType.Beer);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 24);
+            x.put(App.currentGame.currentDate.clone() , 24);
             craftingItem.getBuffer().put(beer , x);
         }
 
@@ -124,7 +124,7 @@ public enum ArtisanType {
             if (! first.equals("Wheat") ) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof AllCrops) {
                     if (((AllCrops) entry.getKey()).getType().equals(CropsType.Wheat)) {
@@ -151,7 +151,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem vinegar=new MarketItem(MarketItemType.Vinegar);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 10);
+            x.put(App.currentGame.currentDate.clone() , 10);
             craftingItem.getBuffer().put(vinegar , x);
         }
 
@@ -160,7 +160,7 @@ public enum ArtisanType {
             if (! first.equals("Rice") ) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof MarketItem) {
                     if (((MarketItem) entry.getKey()).getType().equals(MarketItemType.Rice)) {
@@ -187,7 +187,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem coffee=new MarketItem(MarketItemType.Coffee);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 2);
+            x.put(App.currentGame.currentDate.clone() , 2);
             craftingItem.getBuffer().put(coffee , x);
         }
 
@@ -196,7 +196,7 @@ public enum ArtisanType {
             if (! first.equals("Coffee_Bean") ) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof AllCrops) {
                     if (((AllCrops) entry.getKey()).getType().equals(CropsType.CoffeeBean) && entry.getValue() >= 5) {
@@ -223,14 +223,14 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct juice=new ArtisanProduct(Juice);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 96);
+            x.put(App.currentGame.currentDate.clone() , 96);
             craftingItem.getBuffer().put(juice , x);
         }
 
         @Override
         public boolean checkIngredient(String first, String second) {
             String newName=name().replace('_',' ' );
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof AllCrops) {
 
@@ -264,7 +264,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct mead=new ArtisanProduct(Mead);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 10);
+            x.put(App.currentGame.currentDate.clone() , 10);
             craftingItem.getBuffer().put(mead , x);
         }
 
@@ -273,7 +273,7 @@ public enum ArtisanType {
             if (! first.equals("Honey") ) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof ArtisanProduct) {
                     if (((ArtisanProduct) entry.getKey()).getType().equals(Honey)) {
@@ -299,7 +299,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct pale=new ArtisanProduct(Pale_Ale);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 72);
+            x.put(App.currentGame.currentDate.clone() , 72);
             craftingItem.getBuffer().put(pale , x);
         }
 
@@ -308,7 +308,7 @@ public enum ArtisanType {
             if (! first.equals("Hops")) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof AllCrops) {
                     if (((AllCrops) entry.getKey()).getType().equals(CropsType.Hops)) {
@@ -335,14 +335,14 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct wine=new ArtisanProduct(Wine);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 168);
+            x.put(App.currentGame.currentDate.clone() , 168);
             craftingItem.getBuffer().put(wine , x);
         }
 
         @Override
         public boolean checkIngredient(String first, String second) {
             String newName= first.replace('_',' ' );
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof TreesProdct) {
                     if (((TreesProdct) entry.getKey()).getType().getDisplayName().equals(newName)) {
@@ -368,14 +368,14 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DriedMushrooms=new ArtisanProduct(Dried_Mushrooms);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 12);
+            x.put(App.currentGame.currentDate.clone() , 12);
             craftingItem.getBuffer().put(DriedMushrooms , x);
         }
 
         @Override
         public boolean checkIngredient(String first, String second) {
             String newName= first.replace('_',' ' );
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
 
                 if (entry.getKey() instanceof ForagingCrops) {
@@ -406,14 +406,14 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DriedFruit=new ArtisanProduct(Dried_Fruit);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 12);
+            x.put(App.currentGame.currentDate.clone() , 12);
             craftingItem.getBuffer().put(DriedFruit , x);
         }
 
         @Override
         public boolean checkIngredient(String first, String second) {
             String newName= first.replace('_',' ' );
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof TreesProdct) {
                     if (((TreesProdct) entry.getKey()).getType().getDisplayName().equals(newName)) {
@@ -441,7 +441,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct raisins=new ArtisanProduct(Raisins);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 12);
+            x.put(App.currentGame.currentDate.clone() , 12);
             craftingItem.getBuffer().put(raisins , x);
         }
 
@@ -450,7 +450,7 @@ public enum ArtisanType {
             if (! first.equals("Grapes")) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof AllCrops) {
                     if (((AllCrops) entry.getKey()).getType().equals(CropsType.Grape)) {
@@ -478,7 +478,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ForagingMinerals coal = new ForagingMinerals(ForagingMineralsType.COAL);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 1);
+            x.put(App.currentGame.currentDate.clone() , 1);
             craftingItem.getBuffer().put(coal , x);
         }
 
@@ -487,7 +487,7 @@ public enum ArtisanType {
             if (! first.equals("Wood")) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Wood) {
                     if (entry.getValue() >= 10 ) {
@@ -513,7 +513,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct cloth=new ArtisanProduct(Cloth);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 4);
+            x.put(App.currentGame.currentDate.clone() , 4);
             craftingItem.getBuffer().put(cloth , x);
         }
 
@@ -522,7 +522,7 @@ public enum ArtisanType {
             if (! first.equals("Wool")) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
                     if (((Animalproduct) entry.getKey()).getAnimalProductType().equals(AnimalProductType.rabbits_Wool)) {
@@ -555,7 +555,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct mayonnaise=new ArtisanProduct(Mayonnaise);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 3);
+            x.put(App.currentGame.currentDate.clone() , 3);
             craftingItem.getBuffer().put(mayonnaise , x);
         }
 
@@ -565,7 +565,7 @@ public enum ArtisanType {
             if (! newName.equals("Egg") && ! newName.equals("Large Egg")) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
                     if (((Animalproduct) entry.getKey()).getAnimalProductType().getName().equals(newName)) {
@@ -591,7 +591,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DuckMayonnaise=new ArtisanProduct(Duck_Mayonnaise);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 3);
+            x.put(App.currentGame.currentDate.clone() , 3);
             craftingItem.getBuffer().put(DuckMayonnaise , x);
         }
 
@@ -601,7 +601,7 @@ public enum ArtisanType {
             if (! newName.equals("Duck Egg") ) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
                     if (((Animalproduct) entry.getKey()).getAnimalProductType().equals(AnimalProductType.duckEgg)) {
@@ -627,7 +627,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DinosaurMayonnaise=new ArtisanProduct(Dinosaur_Mayonnaise);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 3);
+            x.put(App.currentGame.currentDate.clone() , 3);
             craftingItem.getBuffer().put(DinosaurMayonnaise , x);
         }
 
@@ -637,7 +637,7 @@ public enum ArtisanType {
             if (! newName.equals(AnimalProductType.dinosaurEgg.getName()) ) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
                     if (((Animalproduct) entry.getKey()).getAnimalProductType().equals(AnimalProductType.dinosaurEgg)) {
@@ -663,7 +663,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct TruffleOil=new ArtisanProduct(Truffle_Oil);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 6);
+            x.put(App.currentGame.currentDate.clone() , 6);
             craftingItem.getBuffer().put(TruffleOil , x);
         }
 
@@ -672,7 +672,7 @@ public enum ArtisanType {
             if (! first.equals(AnimalProductType.Truffle.getName())) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
                     if (((Animalproduct) entry.getKey()).getAnimalProductType().equals(AnimalProductType.Truffle)) {
@@ -698,7 +698,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem oil=new MarketItem(MarketItemType.Oil);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 6);
+            x.put(App.currentGame.currentDate.clone() , 6);
             craftingItem.getBuffer().put(oil , x);
         }
 
@@ -708,7 +708,7 @@ public enum ArtisanType {
             if (! newName.equals("Corn") && ! newName.equals("Sunflower") && ! newName.equals("Sunflower Seeds") ) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof AllCrops) {
                     if (((AllCrops) entry.getKey()).getType().equals(CropsType.Corn) || ((AllCrops) entry.getKey()).getType().equals(CropsType.Sunflower)) {
@@ -744,14 +744,14 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct pickles=new ArtisanProduct(Pickles);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 6);
+            x.put(App.currentGame.currentDate.clone() , 6);
             craftingItem.getBuffer().put(pickles , x);
         }
 
         @Override
         public boolean checkIngredient(String first, String second) {
             String newName= first.replace('_' , ' ');
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof AllCrops) {
 
@@ -783,14 +783,14 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct jelly=new ArtisanProduct(Jelly);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 72);
+            x.put(App.currentGame.currentDate.clone() , 72);
             craftingItem.getBuffer().put(jelly , x);
         }
 
         @Override
         public boolean checkIngredient(String first, String second) {
             String newName= first.replace('_' , ' ');
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof TreesProdct) {
 
@@ -815,7 +815,7 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct smokedFish=new ArtisanProduct(Smoked_Fish);
             HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentDate.clone() , 1);
+            x.put(App.currentGame.currentDate.clone() , 1);
             craftingItem.getBuffer().put(smokedFish , x);
         }
 
@@ -833,7 +833,7 @@ public enum ArtisanType {
                 return false;
             }
 
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Fish && fish==null) {
                     if (((Fish) entry.getKey()).getFishType().getName().equals(newFirstName)) {
@@ -872,25 +872,25 @@ public enum ArtisanType {
             if (name.equals("Copper_Ore")) {
                 BarsAndOres copperBar=new BarsAndOres(BarsAndOreType.CopperBar);
                 HashMap<DateHour, Integer> x=new HashMap<>();
-                x.put(App.currentDate.clone() , 4);
+                x.put(App.currentGame.currentDate.clone() , 4);
                 craftingItem.getBuffer().put(copperBar , x);
             }
             if (name.equals("Iron_Ore")) {
                 BarsAndOres ironBar =new BarsAndOres(BarsAndOreType.IronBar);
                 HashMap<DateHour, Integer> x=new HashMap<>();
-                x.put(App.currentDate.clone() , 4);
+                x.put(App.currentGame.currentDate.clone() , 4);
                 craftingItem.getBuffer().put(ironBar , x);
             }
             if (name.equals("Gold_Ore")) {
                 BarsAndOres goldBar=new BarsAndOres(BarsAndOreType.GoldBar);
                 HashMap<DateHour, Integer> x=new HashMap<>();
-                x.put(App.currentDate.clone() , 4);
+                x.put(App.currentGame.currentDate.clone() , 4);
                 craftingItem.getBuffer().put(goldBar , x);
             }
             if (name.equals("Iridium_Ore")) {
                 BarsAndOres iridiumBar=new BarsAndOres(BarsAndOreType.IridiumBar);
                 HashMap<DateHour, Integer> x=new HashMap<>();
-                x.put(App.currentDate.clone() , 4);
+                x.put(App.currentGame.currentDate.clone() , 4);
                 craftingItem.getBuffer().put(iridiumBar , x);
             }
         }
@@ -903,7 +903,7 @@ public enum ArtisanType {
             if (! newSecond.equals(ForagingMineralsType.COAL.getDisplayName())) {
                 return false;
             }
-            Inventory inventory=App.currentPlayer.getBackPack().inventory;
+            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof BarsAndOres) {
 

@@ -16,7 +16,8 @@ import model.Plants.TreesProdct;
 import java.util.HashMap;
 import java.util.List;
 
-import static model.App.currentPlayer;
+import static model.App.currentGame;
+
 
 public class Recipe {
 
@@ -194,7 +195,7 @@ public class Recipe {
                 coffeeIng,
                 200,
                 450,
-                User -> currentPlayer.setBuff_maxEnergy_100_hoursLeft(5)
+                User -> currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(5)
         );
 
         HashMap<Items, Integer> cookieIng = new HashMap<>();
@@ -221,7 +222,7 @@ public class Recipe {
                 hashBrownsIng,
                 90,
                 120,
-                User -> currentPlayer.setBuff_farming_hoursLeft(5)
+                User -> currentGame.currentPlayer.setBuff_farming_hoursLeft(5)
         );
 
         HashMap<Items, Integer> pancakesIng = new HashMap<>();
@@ -234,7 +235,7 @@ public class Recipe {
                 pancakesIng,
                 90,
                 80,
-                User -> currentPlayer.setBuff_foraging_hoursLeft(11)
+                User -> currentGame.currentPlayer.setBuff_foraging_hoursLeft(11)
         );
 
         HashMap<Items, Integer> fruitSaladIng = new HashMap<>();
@@ -261,7 +262,7 @@ public class Recipe {
                 redPlateIng,
                 240,
                 400,
-                User -> currentPlayer.setBuff_maxEnergy_50_hoursLeft(3)
+                User -> currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(3)
         );
 
         HashMap<Items, Integer> breadIng = new HashMap<>();
@@ -314,7 +315,7 @@ public class Recipe {
                 survivalBurgerIng,
                 125,
                 180,
-                User -> currentPlayer.setBuff_foraging_hoursLeft(5)
+                User -> currentGame.currentPlayer.setBuff_foraging_hoursLeft(5)
         );
 
         HashMap<Items, Integer> seaFormPuddingIng  = new HashMap<>();
@@ -327,7 +328,7 @@ public class Recipe {
                 seaFormPuddingIng,
                 175,
                 300,
-                User -> currentPlayer.setBuff_fishing_hoursLeft(10)
+                User -> currentGame.currentPlayer.setBuff_fishing_hoursLeft(10)
         );
 
         HashMap<Items, Integer> minersTreatIng  = new HashMap<>();
@@ -341,7 +342,7 @@ public class Recipe {
                 minersTreatIng,
                 125,
                 200,
-                User -> currentPlayer.setBuff_mining_hoursLeft(5)
+                User -> currentGame.currentPlayer.setBuff_mining_hoursLeft(5)
         );
 
         return List.of(FriedEgg, bakedFish, salad, omelet, pumpkinPie, spaghetti, pizza, tortilla, makiRoll
@@ -355,7 +356,7 @@ public class Recipe {
 
     public static Recipe findRecipeByName(String name) {
 
-        for (Recipe recipe: currentPlayer.getRecipes()) {
+        for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
             if (recipe.getName().equals(name) || recipe.getName().replace(" ", "").equals(name.toLowerCase()))
                 return recipe;
         }

@@ -13,7 +13,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static model.App.currentDate;
+import static model.App.currentGame;
+
 
 public class User {
 
@@ -359,8 +360,8 @@ public class User {
 
         int level = Math.min(friendshipPoint.get(npc)%200, 3);
 
-        if (level == 3 && level3Date.get(npc) == currentDate)
-            level3Date.put(npc, currentDate.clone());
+        if (level == 3 && level3Date.get(npc) == currentGame.currentDate)
+            level3Date.put(npc, currentGame.currentDate.clone());
 
         return level;
     }

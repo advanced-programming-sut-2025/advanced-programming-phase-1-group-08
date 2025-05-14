@@ -1,11 +1,12 @@
-package model;
+package model.Plants;
 
 import Controller.GameController;
 import model.Enum.FoodTypes;
+import model.Items;
 
-import static model.App.currentPlayer;
+import static model.App.currentGame;
 
-public class Food extends Items{
+public class Food extends Items {
     private final FoodTypes type;
 
     public Food(FoodTypes type) {
@@ -19,7 +20,7 @@ public class Food extends Items{
     public static boolean checkInventorySpaceForFood(FoodTypes type) {
         GameController controller = new GameController();
         return controller.checkAmountProductAvailable(new Food(type), 1) ||
-                currentPlayer.getBackPack().getType().getRemindCapacity() > 0;
+                currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0;
     }
 
     @Override

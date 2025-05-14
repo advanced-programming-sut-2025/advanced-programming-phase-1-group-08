@@ -64,11 +64,11 @@ public enum HoeType {
     }
 
     public static boolean checkIngredient(HoeType hoeType) {
-        Inventory inventory = App.currentPlayer.getBackPack().inventory;
+        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         BarsAndOres barsAndOres= new BarsAndOres(hoeType.barsAndOreType);
         if (inventory.Items.containsKey(barsAndOres)) {
             Integer value=inventory.Items.get(barsAndOres);
-            if (value >= 5 && App.currentPlayer.getMoney() >= hoeType.getPrice()) {
+            if (value >= 5 && App.currentGame.currentPlayer.getMoney() >= hoeType.getPrice()) {
                 inventory.Items.put(barsAndOres,value-5);
                 inventory.Items.entrySet().removeIf(entry -> entry.getValue().equals(0));
                 return true;

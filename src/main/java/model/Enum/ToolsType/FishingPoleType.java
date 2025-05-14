@@ -6,7 +6,8 @@ import model.Enum.ItemType.MarketType;
 
 import java.util.ArrayList;
 
-import static model.App.currentPlayer;
+import static model.App.currentGame;
+
 
 public enum FishingPoleType {
 
@@ -20,7 +21,7 @@ public enum FishingPoleType {
 
         @Override
         public int costEnergy(boolean Fishing) {
-            boolean a = currentPlayer.Buff_fishing_hoursLeft > 0;
+            boolean a = currentGame.currentPlayer.Buff_fishing_hoursLeft > 0;
             if (Fishing && a) {
                 return 6;
             }
@@ -50,7 +51,7 @@ public enum FishingPoleType {
 
         @Override
         public int costEnergy(boolean Fishing) {
-            if (Fishing && currentPlayer.Buff_fishing_hoursLeft > 0)
+            if (Fishing && currentGame.currentPlayer.Buff_fishing_hoursLeft > 0)
                 return 6;
             if (Fishing) {
                 return 7;
@@ -76,7 +77,7 @@ public enum FishingPoleType {
 
         @Override
         public int costEnergy(boolean Fishing) {
-            if (Fishing && currentPlayer.Buff_fishing_hoursLeft > 0)
+            if (Fishing && currentGame.currentPlayer.Buff_fishing_hoursLeft > 0)
                 return 4;
             if (Fishing) {
                 return 5;
@@ -102,7 +103,7 @@ public enum FishingPoleType {
 
         @Override
         public int costEnergy(boolean Fishing) {
-            if (Fishing && currentPlayer.Buff_fishing_hoursLeft > 0)
+            if (Fishing && currentGame.currentPlayer.Buff_fishing_hoursLeft > 0)
                 return 2;
             if (Fishing) {
                 return 3;
@@ -152,7 +153,7 @@ public enum FishingPoleType {
     }
 
     public boolean checkAbility(int amount){
-        if (currentPlayer.getLevelFishing()>=amount){
+        if (currentGame.currentPlayer.getLevelFishing()>=amount){
             return true;
         }
         return false;

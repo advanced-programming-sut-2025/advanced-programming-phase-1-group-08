@@ -3,11 +3,16 @@ package Controller;
 import View.RegisterMenu;
 import model.App;
 import model.Result;
+import model.SaveData.SessionManager;
+import model.SaveData.UserBasicInfo;
+import model.SaveData.UserDataBase;
 import model.User;
 
+import java.util.List;
 import java.util.Scanner;
 
 import static Controller.RegisterController.*;
+import static model.SaveData.UserDataBase.loadUsers;
 
 public class ProfileController {
 
@@ -21,6 +26,15 @@ public class ProfileController {
 
 
         App.currentUser.setUsername(username);
+        List<UserBasicInfo> users = loadUsers();
+        for (UserBasicInfo user: users) {
+            if (user.getUsername().equals(App.currentUser.getUsername())) {
+                user.setUsername(username);
+                SessionManager.saveSession(user.getUsername(), SessionManager.isLoggedIn());
+                UserDataBase.saveUsers(users);
+            }
+        }
+
         return new Result(true, "Username Successfully Changed.");
     }
 

@@ -9,8 +9,9 @@ import model.MapThings.Walkable;
 
 import java.util.ArrayList;
 
-import static model.App.bigMap;
-import static model.App.currentDate;
+
+
+import static model.App.currentGame;
 import static model.Color_Eraser.*;
 import static model.DateHour.decreaseDay;
 import static model.DateHour.getDayDifferent;
@@ -52,13 +53,13 @@ public class GiantProduct extends Items {
         if (item.equals(MarketItemType.QuantityRetainingSoil))
             numFertilize++;
         if (item.equals(MarketItemType.BasicRetainingSoil))
-            lastWater = currentDate.clone();
+            lastWater = currentGame.currentDate.clone();
 
     }
     public void setStage  () {
 
         int days = 0;
-        DateHour dateHour = currentDate.clone();
+        DateHour dateHour = currentGame.currentDate.clone();
         dateHour.increaseDay(numFertilize);
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
@@ -75,25 +76,25 @@ public class GiantProduct extends Items {
 
 
 
-        DateHour dateHour = currentDate.clone();
+        DateHour dateHour = currentGame.currentDate.clone();
         dateHour.increaseDay(numFertilize);
-        this.haveProduct = type.getSeason().contains(currentDate.getSeason()) &&
+        this.haveProduct = type.getSeason().contains(currentGame.currentDate.getSeason()) &&
                 getDayDifferent(birthDay, dateHour) > type.getRegrowthTime() &&
                 this.stage == this.type.getGrowthStages();
     }
     public boolean checkForDeath () {
 
-        return getDayDifferent(lastWater, currentDate) > 1;
+        return getDayDifferent(lastWater, currentGame.currentDate) > 1;
     }
     public void harvest () {
 
-        for (Tile tile : bigMap)
+        for (Tile tile : currentGame.bigMap)
             if (neighbors.contains(tile))
                 tile.setGameObject(new Walkable());
     }
     public void delete () {
 
-        for (Tile tile : bigMap)
+        for (Tile tile : currentGame.bigMap)
             if (tile.getGameObject().equals(this))
                 tile.setGameObject(new Walkable());
     }
