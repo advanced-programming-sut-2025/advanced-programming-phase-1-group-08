@@ -2097,7 +2097,7 @@ public class GameController {
                     System.out.println(currentGame.currentPlayer.getNickname() + "'s turn.");
 
                     // Display Unseen Messages...
-                    System.out.println("Displaying Unseen Messages...");
+                    System.out.println("\nDisplaying Unseen Messages...");
                     for (List<MessageHandling> messages : currentGame.conversations.values()) {
                         for (MessageHandling m : messages) {
                             if (m.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !m.isSeen()) {
@@ -2114,28 +2114,28 @@ public class GameController {
                             }
                         }
                     }
-                    System.out.println(GREEN+"Unseen Messages Displayed."+RESET);
+                    System.out.println(GREEN+"Unseen Messages Displayed.\n"+RESET);
 
-                    System.out.println("Displaying Trade Requests/Offers...");
-                    for (List<Trade> tradeList: currentGame.trades.values()) {
-                        for (Trade t: tradeList) {
-                            if (t.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !t.isResponded()) {
-                                t.print();
-
-                                System.out.println("What's Your Response?");
-                                Scanner scanner = new Scanner(System.in);
-                                String respond;
-                                Result result;
-                                do {
-                                    respond = scanner.nextLine();
-                                    result = Trade.CheckTradeRespond(respond, t.getId());
-                                    System.out.println(result.massage());
-                                } while (!result.IsSuccess());
-                                t.setResponded(true);
-                            }
-                        }
-                    }
-                    System.out.println(GREEN+"Trades Done!"+RESET);
+//                    System.out.println("Displaying Trade Requests/Offers...");
+//                    for (List<Trade> tradeList: currentGame.trades.values()) {
+//                        for (Trade t: tradeList) {
+//                            if (t.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !t.isResponded()) {
+//                                t.print();
+//
+//                                System.out.println("What's Your Response?");
+//                                Scanner scanner = new Scanner(System.in);
+//                                String respond;
+//                                Result result;
+//                                do {
+//                                    respond = scanner.nextLine();
+//                                    result = Trade.CheckTradeRespond(respond, t.getId());
+//                                    System.out.println(result.massage());
+//                                } while (!result.IsSuccess());
+//                                t.setResponded(true);
+//                            }
+//                        }
+//                    }
+//                    System.out.println(GREEN+"Trades Done!"+RESET);
 
                     // proposals
                     for (List<MessageHandling> messages : currentGame.conversations.values()) {
