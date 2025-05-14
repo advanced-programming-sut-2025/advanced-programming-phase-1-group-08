@@ -131,14 +131,16 @@ public class HumanCommunications {
         }
 
         addXP(10);
-        if (currentGame.currentPlayer.getSpouse().equals(other)) addXP(50);
+        if (currentGame.currentPlayer.getSpouse() != null)
+            if (currentGame.currentPlayer.getSpouse().equals(other)) addXP(50);
+
         updateLevel();
 
         Set<User> key = new HashSet<>(Arrays.asList(me, other));
         currentGame.conversations.putIfAbsent(key, new ArrayList<>());
         currentGame.conversations.get(key).add(new MessageHandling(me, other, text));
 
-        return new Result(true, GREEN+"You Sent a Message to " + other + "."+RESET);
+        return new Result(true, GREEN+"You Sent a Message to " + other.getNickname() + "."+RESET);
     }
     public Result talkingHistory() {
         Set<User> key = new HashSet<>(Arrays.asList(player1, player2));

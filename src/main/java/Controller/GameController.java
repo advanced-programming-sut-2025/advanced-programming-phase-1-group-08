@@ -2172,7 +2172,16 @@ public class GameController {
     public void talking (String input) {
         String destinationUsername = GameMenuCommands.talking.getMatcher(input).group("username");
         String message = GameMenuCommands.talking.getMatcher(input).group("message");
-        if (!currentGame.players.contains(findUserByUsername(destinationUsername))) {
+        User destinationUser = null;
+        boolean found = false;
+        for (User player: currentGame.players) {
+            if (player.getUsername().equals(destinationUsername)) {
+                found = true;
+                destinationUser = player;
+                break;
+            }
+        }
+        if (!found) {
             System.out.println(RED+"Username is Unavailable!"+RESET);
             return;
         }
@@ -2180,7 +2189,7 @@ public class GameController {
             System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
             return;
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, findUserByUsername(destinationUsername));
+        HumanCommunications f = getFriendship(currentGame.currentPlayer, destinationUser);
         if (f == null) {
             System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
@@ -2190,7 +2199,16 @@ public class GameController {
     }
     public void DisplayingTalkHistory (String input) {
         String username = GameMenuCommands.talkHistory.getMatcher(input).group("username");
-        if (!currentGame.players.contains(findUserByUsername(username))) {
+        User destinationUser = null;
+        boolean found = false;
+        for (User player: currentGame.players) {
+            if (player.getUsername().equals(username)) {
+                found = true;
+                destinationUser = player;
+                break;
+            }
+        }
+        if (!found) {
             System.out.println(RED+"Username is Unavailable!"+RESET);
             return;
         }
@@ -2198,7 +2216,7 @@ public class GameController {
             System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
             return;
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, findUserByUsername(username));
+        HumanCommunications f = getFriendship(currentGame.currentPlayer, destinationUser);
         if (f == null) {
             System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
