@@ -3,7 +3,7 @@ package model;
 import Controller.GameController;
 import model.Enum.FoodTypes;
 
-import static model.App.currentPlayer;
+import static model.App.currentGame;
 
 public class Food extends Items{
     private final FoodTypes type;
@@ -19,6 +19,6 @@ public class Food extends Items{
     public static boolean checkInventorySpaceForFood(FoodTypes type) {
         GameController controller = new GameController();
         return controller.checkAmountProductAvailable(new Food(type), 1) ||
-                currentPlayer.getBackPack().getType().getRemindCapacity() > 0;
+                currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0;
     }
 }

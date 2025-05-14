@@ -8,8 +8,9 @@ import model.MapThings.GameObject;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
 
-import static model.App.bigMap;
-import static model.App.currentDate;
+
+
+import static model.App.currentGame;
 import static model.DateHour.decreaseDay;
 import static model.DateHour.getDayDifferent;
 
@@ -58,13 +59,13 @@ public class Tree extends Items {
         if (item.equals(MarketItemType.QuantityRetainingSoil))
             numFertilize++;
         if (item.equals(MarketItemType.BasicRetainingSoil))
-            lastWater = currentDate.clone();
+            lastWater = currentGame.currentDate.clone();
 
     }
     private void setStage () {
 
-        DateHour dateHour = decreaseDay(numFertilize, currentDate);
-        int defDays = getDayDifferent(this.birthDay, currentDate);
+        DateHour dateHour = decreaseDay(numFertilize, currentGame.currentDate);
+        int defDays = getDayDifferent(this.birthDay, currentGame.currentDate);
 
         if (defDays > 0 && defDays < 7)
             stage = 1;
@@ -117,19 +118,19 @@ public class Tree extends Items {
 
     private boolean checkForDeath () {
 
-        return getDayDifferent(lastWater, currentDate) > 3;
+        return getDayDifferent(lastWater, currentGame.currentDate) > 3;
     }
     private void setHaveFruit () {
 
-        DateHour dateHour = currentDate.clone();
+        DateHour dateHour = currentGame.currentDate.clone();
         dateHour.increaseDay(numFertilize);
 
-        this.haveFruit = this.type.getSourceType().getSeason().contains(currentDate.getSeason()) &&
+        this.haveFruit = this.type.getSourceType().getSeason().contains(currentGame.currentDate.getSeason()) &&
                 getDayDifferent(lastFruit, dateHour) > 6;
     }
     public void delete () {
 
-        for (Tile tile : bigMap)
+        for (Tile tile : currentGame.bigMap)
             if (tile.getGameObject().equals(this))
                 tile.setGameObject(new Walkable());
     }

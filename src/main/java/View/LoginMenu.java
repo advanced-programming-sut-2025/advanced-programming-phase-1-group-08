@@ -30,7 +30,8 @@ public class LoginMenu extends AppView implements AppMenu {
                 if (UserDataBase.findUserByUsername(LoginCommands.Login.getMatcher(input).group("username").trim()) != null) {
                     User user = UserDataBase.findUserByUsername(LoginCommands.Login.getMatcher(input).group("username").trim());
                     App.currentUser = user;
-                    SessionManager.saveSession(user, LoginCommands.Login.getMatcher(input).group(3) != null && LoginCommands.Login.getMatcher(input).group(3).equals(" --stay-logged-in"));
+                    assert user != null;
+                    SessionManager.saveSession(user.getUsername(), LoginCommands.Login.getMatcher(input).group(3) != null && LoginCommands.Login.getMatcher(input).group(3).equals(" --stay-logged-in"));
                 }
             }
         }

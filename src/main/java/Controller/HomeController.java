@@ -22,7 +22,7 @@ public class HomeController {
 
 
     public static Result fridgePick (String input) {
-        if (NotInHome(currentPlayer))
+        if (NotInHome(currentGame.currentPlayer))
             return new Result(false, RED+"You're Not in Your Home!"+RESET);
 
         Items item = AllFromDisplayNames(HomeMenuCommands.fridgePut.getMatcher(input).group("item"));
@@ -30,7 +30,7 @@ public class HomeController {
             return new Result(false, RED+"Item Not Found!"+RESET);
 
 
-        Fridge fridge = currentPlayer.getFarm().getHome().getFridge();
+        Fridge fridge = currentGame.currentPlayer.getFarm().getHome().getFridge();
 
         boolean foundInFridge = false;
         for (Map.Entry<Items, Integer> e: fridge.items.entrySet()) { // از یخچال بردار
@@ -45,21 +45,21 @@ public class HomeController {
             return new Result(false, RED+"You don't have it in Fridge!"+RESET);
 
         boolean alreadyInInventory = false;
-        for (Map.Entry<Items, Integer> entry: currentPlayer.getBackPack().inventory.Items.entrySet()) {
+        for (Map.Entry<Items, Integer> entry: currentGame.currentPlayer.getBackPack().inventory.Items.entrySet()) {
             if (entry.getKey().equals(item)) {
-                currentPlayer.getBackPack().inventory.Items.put(entry.getKey(), entry.getValue() + 1);
+                currentGame.currentPlayer.getBackPack().inventory.Items.put(entry.getKey(), entry.getValue() + 1);
                 alreadyInInventory = true;
                 break;
             }
         }
         if (!alreadyInInventory)
-            currentPlayer.getBackPack().inventory.Items.put(item, 1);
+            currentGame.currentPlayer.getBackPack().inventory.Items.put(item, 1);
 
         return new Result(true, GREEN+"Done!"+RESET);
 
     }
     public static Result fridgePut (String input) {
-        if (NotInHome(currentPlayer))
+        if (NotInHome(currentGame.currentPlayer))
             return new Result(false, RED+"You're Not in Your Home!"+RESET);
 
         Items item = AllFromDisplayNames(HomeMenuCommands.fridgePut.getMatcher(input).group("item"));
@@ -67,10 +67,10 @@ public class HomeController {
             return new Result(false, RED+"Item Not Found!"+RESET);
 
         boolean foundInInventory = false;
-        for (Map.Entry<Items, Integer> e: currentPlayer.getBackPack().inventory.Items.entrySet()) {
+        for (Map.Entry<Items, Integer> e: currentGame.currentPlayer.getBackPack().inventory.Items.entrySet()) {
             if (e.getKey().equals(item)) {
-                currentPlayer.getBackPack().inventory.Items.put(e.getKey(), e.getValue() - 1);
-                currentPlayer.getBackPack().inventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+                currentGame.currentPlayer.getBackPack().inventory.Items.put(e.getKey(), e.getValue() - 1);
+                currentGame.currentPlayer.getBackPack().inventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
                 foundInInventory = true;
                 break;
             }
@@ -79,7 +79,7 @@ public class HomeController {
             return new Result(false, RED+"You Don't Have it in Inventory!"+RESET);
 
 
-        Fridge fridge = currentPlayer.getFarm().getHome().getFridge();
+        Fridge fridge = currentGame.currentPlayer.getFarm().getHome().getFridge();
 
         boolean alreadyInFridge = false;
         for (Map.Entry<Items, Integer> entry: fridge.items.entrySet()) {
@@ -95,21 +95,21 @@ public class HomeController {
         return new Result(true, GREEN+"Done!"+RESET);
     }
     public static Recipe findRecipeByName (String name) {
-        for (Recipe recipe: currentPlayer.getRecipes()) {
+        for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
             if (recipe.getName().equals(name))
                 return recipe;
         }
         return null;
     }
     public static Result foodPrepare (String input) {
-        if (NotInHome(currentPlayer))
+        if (NotInHome(currentGame.currentPlayer))
             return new Result(false, RED+"You're Not in Your Home!"+RESET);
 
         String foodName = HomeMenuCommands.foodPrepare.getMatcher(input).group("food");
         if (foodName == null)
             return new Result(false, RED+"Wrong Food Name!"+RESET);
 
-        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
 
         Recipe recipe = findRecipeByName(foodName);
         if (recipe == null)
@@ -118,7 +118,7 @@ public class HomeController {
             return new Result(false, RED+"Recipe is Locked!"+RESET);
 
         // check ingredients
-        Fridge fridge = currentPlayer.getFarm().getHome().getFridge();
+        Fridge fridge = currentGame.currentPlayer.getFarm().getHome().getFridge();
         boolean r = true;
         HashMap<Items, Integer> ingredients = recipe.getIngredients();
         for (Map.Entry<Items, Integer> e: ingredients.entrySet()) {
@@ -143,8 +143,8 @@ public class HomeController {
 
 
         // lower default energy
-        if (currentPlayer.getHealth() >= 3)
-            currentPlayer.setHealth(currentPlayer.getHealth() - 3);
+        if (currentGame.currentPlayer.getHealth() >= 3)
+            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() - 3);
         else return new Result(false, "Not Enough Energy!");
 
 
@@ -176,12 +176,12 @@ public class HomeController {
         return new Result(true, GREEN+"cooked Properly!"+RESET);
     }
     public static Result recipeDisplay () {
-        if (NotInHome(currentPlayer))
+        if (NotInHome(currentGame.currentPlayer))
             return new Result(false, RED+"You're Not in Your Home!"+RESET);
 
         try {
             System.out.println("Displaying Recipes...");
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.isUsable())
                     recipe.print();
             }
@@ -208,7 +208,7 @@ public class HomeController {
 
 
     public static void cook () {
-        if (NotInHome(currentPlayer)) {
+        if (NotInHome(currentGame.currentPlayer)) {
             System.out.println(RED + "You're Not in Your Home!" + RESET);
             return;
         }
@@ -217,32 +217,32 @@ public class HomeController {
 
 
         // رسپی های عرفان
-        if (currentPlayer.getLevelMining() >= 1) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+        if (currentGame.currentPlayer.getLevelMining() >= 1) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("miner's treat")) {
                     recipe.setUsable(true);
                     break;
                 }
             }
         }
-        if (currentPlayer.getLevelForaging() >= 2) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+        if (currentGame.currentPlayer.getLevelForaging() >= 2) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("vegetable medley")) {
                     recipe.setUsable(true);
                     break;
                 }
             }
         }
-        if (currentPlayer.getLevelForaging() >= 3) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+        if (currentGame.currentPlayer.getLevelForaging() >= 3) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("survival burger")) {
                     recipe.setUsable(true);
                     break;
                 }
             }
         }
-        if (currentPlayer.getLevelFishing() >= 3) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+        if (currentGame.currentPlayer.getLevelFishing() >= 3) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("seaform pudding")) {
                     recipe.setUsable(true);
                     break;
@@ -251,10 +251,10 @@ public class HomeController {
         }
 
         // رسپی های محمدرضا
-        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
         MarketItem marketItem = new MarketItem(findSource("omelet"));
         if (myInventory.Items.containsKey(marketItem)) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("omelet")) {
                     recipe.setUsable(true);
                     break;
@@ -263,7 +263,7 @@ public class HomeController {
         }
         MarketItem marketItem4 = new MarketItem(findSource("pizza"));
         if (myInventory.Items.containsKey(marketItem4)) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("pizza")) {
                     recipe.setUsable(true);
                     break;
@@ -272,7 +272,7 @@ public class HomeController {
         }
         MarketItem marketItem5 = new MarketItem(findSource("tortilla"));
         if (myInventory.Items.containsKey(marketItem5)) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("tortilla")) {
                     recipe.setUsable(true);
                     break;
@@ -281,7 +281,7 @@ public class HomeController {
         }
         MarketItem marketItem6 = new MarketItem(findSource("maki roll"));
         if (myInventory.Items.containsKey(marketItem6)) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("maki roll")) {
                     recipe.setUsable(true);
                     break;
@@ -290,7 +290,7 @@ public class HomeController {
         }
         MarketItem marketItem7 = new MarketItem(findSource("triple shot espresso"));
         if (myInventory.Items.containsKey(marketItem7)) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("triple shot espresso")) {
                     recipe.setUsable(true);
                     break;
@@ -299,7 +299,7 @@ public class HomeController {
         }
         MarketItem marketItem8 = new MarketItem(findSource("cookie"));
         if (myInventory.Items.containsKey(marketItem8)) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("cookie")) {
                     recipe.setUsable(true);
                     break;
@@ -308,7 +308,7 @@ public class HomeController {
         }
         MarketItem marketItem9 = new MarketItem(findSource("hash browns"));
         if (myInventory.Items.containsKey(marketItem9)) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("hash browns")) {
                     recipe.setUsable(true);
                     break;
@@ -317,7 +317,7 @@ public class HomeController {
         }
         MarketItem marketItem10 = new MarketItem(findSource("pancakes"));
         if (myInventory.Items.containsKey(marketItem10)) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("pancakes")) {
                     recipe.setUsable(true);
                     break;
@@ -326,7 +326,7 @@ public class HomeController {
         }
         MarketItem marketItem13 = new MarketItem(findSource("bread"));
         if (myInventory.Items.containsKey(marketItem13)) {
-            for (Recipe recipe: currentPlayer.getRecipes()) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
                 if (recipe.getName().equals("bread")) {
                     recipe.setUsable(true);
                     break;

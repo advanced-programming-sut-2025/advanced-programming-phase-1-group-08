@@ -2,8 +2,7 @@ package model.ToolsPackage;
 
 import model.Enum.ToolsType.WateringCanType;
 
-import static model.App.currentPlayer;
-import static model.App.currentWeather;
+import static model.App.*;
 
 public class WateringCan extends Tools {
 
@@ -21,9 +20,9 @@ public class WateringCan extends Tools {
 
     public int healthCost() {
 
-        double x = currentWeather.getEnergyCostCoefficient();
+        double x = currentGame.currentWeather.getEnergyCostCoefficient();
 
-        if (currentPlayer.getLevelFarming() == 4)
+        if (currentGame.currentPlayer.getLevelFarming() == 4)
             return (int) (this.type.getEnergyCost()*x)+1;
         return (int) (this.type.getEnergyCost()*x);
     }

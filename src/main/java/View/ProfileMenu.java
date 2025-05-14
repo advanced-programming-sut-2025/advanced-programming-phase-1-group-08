@@ -20,7 +20,7 @@ public class ProfileMenu implements AppMenu{
         if (ProfileCommands.userInfo.getMatcher(input) != null) {
             System.out.println("Username: " + App.currentUser.getUsername());
             System.out.println("Nickname: " + App.currentUser.getNickname());
-            System.out.println("Most Points Collected: " + App.currentUser.getMax_point());
+            System.out.println("Most Golds Collected: " + App.currentUser.getMax_point());
             System.out.println("Total Games Played: " + App.currentUser.getGames_played());
         }
         else if (ProfileCommands.changeUsername.getMatcher(input) != null) {

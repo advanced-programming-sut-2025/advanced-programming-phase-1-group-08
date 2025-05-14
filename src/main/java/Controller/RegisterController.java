@@ -4,15 +4,19 @@ import model.App;
 import model.Enum.Commands.RegisterCommands;
 import model.Enum.SecurityQuestions;
 import model.Result;
+import model.SaveData.UserBasicInfo;
+import model.SaveData.UserDataBase;
 import model.User;
 import model.User.*;
 
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static model.App.currentUser;
+
 
 public class RegisterController {
 
@@ -46,7 +50,8 @@ public class RegisterController {
         return username != null && Pattern.compile(correctPattern).matcher(username).matches();
     }
     public static boolean isUnique(String username) {
-        for (User user : App.users) {
+//        return UserDataBase.findUserByUsername(username) != null;
+        for (UserBasicInfo user: UserDataBase.loadUsers()) {
             if (user.getUsername().equals(username))
                 return false;
         }
@@ -57,6 +62,7 @@ public class RegisterController {
         do {
             username = username + "-";
         } while (!isUnique(username));
+
         return username;
     }
     public static String generateRandomPass() {
@@ -90,7 +96,7 @@ public class RegisterController {
 
         return sb.toString();
     }
-    public void PickSecurityQA () {
+    public void PickSecurityQA (String Username, String Password, String NickName, String Email, String Gender) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Now Choose a Security Question and Answer It.");
         System.out.println("1: What's My Favorite Animal?");
@@ -112,9 +118,15 @@ public class RegisterController {
             if (!answer.equals(confirm)) {
                 System.out.println("Answer and confirmation do not match! Try Again.");
             } else {
+
+
+                System.out.println("Security question and answer set successfully!");
+
+                //Add User
+                MySecQ = SecurityQuestions.values()[questionNumber - 1];
+                App.AddNewUser(Username, Password, NickName, Email, Gender, MySecQ.getQuestionText() , answer);
                 currentUser.setMySecurityQuestion(SecurityQuestions.values()[questionNumber - 1]);
                 currentUser.setMySecurityAnswer(answer);
-                System.out.println("Security question and answer set successfully!");
             }
         }
         else {
@@ -203,10 +215,8 @@ public class RegisterController {
             return new Result(false, "Gender Has to be Male or Female");
 
 
-        App.AddNewUser(Username, Password, NickName, Email, Gender);
-
         do {
-            PickSecurityQA();
+            PickSecurityQA(Username, Password, NickName, Email, Gender); // it adds the user automatically
         } while (currentUser.getMySecurityAnswer() == null);
 
 

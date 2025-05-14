@@ -2,7 +2,8 @@ package model.Enum.WeatherTime;
 
 // برای فصل ها و مشخص کردن اب و هوا
 
-import static model.App.currentDate;
+
+import static model.App.currentGame;
 import static model.Color_Eraser.*;
 
 public enum Season {
@@ -24,7 +25,7 @@ public enum Season {
 
             double randomNumber = Math.random();
 
-            if (randomNumber < 0.15 && currentDate.getDate() != 28)
+            if (randomNumber < 0.15 && currentGame.currentDate.getDate() != 28)
                 return Weather.Snowy;
 
             return Weather.Sunny;

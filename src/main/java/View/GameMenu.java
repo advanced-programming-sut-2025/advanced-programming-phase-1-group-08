@@ -22,10 +22,6 @@ public class GameMenu implements AppMenu {
 
         String input = scanner.nextLine();
 
-        System.out.println("Welcome to the game menu");
-        System.out.println();
-        System.out.println();
-
         if (GameMenuCommands.makeNewGame.getMatcher(input) != null)
             controller.startNewGame(input);
 
@@ -105,7 +101,7 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.setWeather(matcher.group("Weather").trim()));
 
         else if (GameMenuCommands.showEnergy.getMatcher(input) != null)
-            System.out.println(CYAN+"Your Energy : "+currentPlayer.getHealth()+ RESET);
+            System.out.println(CYAN+"Your Energy : "+currentGame.currentPlayer.getHealth()+ RESET);
 
         else if ((matcher = GameMenuCommands.setEnergy.getMatcher(input)) != null)
             System.out.println(controller.setEnergy(matcher.group("amount").trim()));
@@ -177,7 +173,12 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.WateringPlant(matcher.group("direction").trim()));
 
 
-
+        else if (input.matches("\\s*show\\s*current\\s*menu\\s*"))
+            System.out.println("Game Menu");
+        else if (input.matches("\\s*menu\\s*exit")) {
+            currentMenu = Menu.MainMenu;
+            System.out.println(GREEN+"Done!"+RESET);
+        }
         else if (input.matches("\\s*exit\\s*game\\s*"))
             controller.exitGame();
         else if (input.matches("\\s*force\\s*terminate\\s*"))
@@ -257,6 +258,7 @@ public class GameMenu implements AppMenu {
         else
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
-        controller.AutomaticFunctionAfterAnyAct();
+        if (currentGame.currentPlayer != null)
+            controller.AutomaticFunctionAfterAnyAct();
     }
 }

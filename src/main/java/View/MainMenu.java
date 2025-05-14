@@ -49,7 +49,7 @@ public class MainMenu implements AppMenu{
                 App.currentMenu = Menu.AvatarMenu;
             }
         }
-        else if (input.matches("\\s*show\\s*current\\s*menu"))
+        else if (input.matches("\\s*show\\s*current\\s*menu\\s*"))
             System.out.println("Main Menu");
         else
             System.out.println("invalid command!");

@@ -1,6 +1,7 @@
 package model.Enum;
 
 import View.*;
+import model.App;
 
 import java.util.Scanner;
 

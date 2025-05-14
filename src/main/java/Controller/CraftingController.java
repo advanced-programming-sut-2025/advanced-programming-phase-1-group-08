@@ -22,7 +22,7 @@ import java.util.Map;
 public class CraftingController {
 
     public static Items numberOfIngrediants(String name) {
-        Inventory inventory = App.currentPlayer.getBackPack().inventory;
+        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
 
         for (Map.Entry < Items , Integer> entry : inventory.Items.entrySet()) {
             if (entry.getKey() instanceof ForagingMinerals) {
@@ -68,10 +68,10 @@ public class CraftingController {
     }
 
     public Result showCraftingRecipe() {
-        Inventory inventory = App.currentPlayer.getBackPack().inventory;
+        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         StringBuilder output = new StringBuilder();
 
-        if (! App.currentPlayer.getFarm().isInHome(App.currentPlayer.getPositionX(),App.currentPlayer.getPositionY())) {
+        if (! App.currentGame.currentPlayer.getFarm().isInHome(App.currentGame.currentPlayer.getPositionX(),App.currentGame.currentPlayer.getPositionY())) {
             return new Result(false, "you are not in home");
         }
 
@@ -86,7 +86,7 @@ public class CraftingController {
 
 
     public Result craftingCraft(String name) {
-        Inventory inventory = App.currentPlayer.getBackPack().inventory;
+        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         CraftType type=null;
         HashMap<Items , Integer> ingrediant = new HashMap();
 
@@ -96,14 +96,14 @@ public class CraftingController {
             }
         }
 
-        if (!App.currentPlayer.getFarm().isInHome(App.currentPlayer.getPositionX(), App.currentPlayer.getPositionY())) {
+        if (!App.currentGame.currentPlayer.getFarm().isInHome(App.currentGame.currentPlayer.getPositionX(), App.currentGame.currentPlayer.getPositionY())) {
             return new Result(false, "You are not in Home");
         }
 
         if (type == null) {
             return new Result(false , "No such Craft type");
         }
-        if (App.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+        if (App.currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
             return new Result(false , "Not enough Capacity in your BackPack");
         }
         if (!type.checkLevel()) {
@@ -160,7 +160,7 @@ public class CraftingController {
         inventory.Items.put(newCraft, 1);
 
         inventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
-        App.currentPlayer.increaseHealth(-2);
+        App.currentGame.currentPlayer.increaseHealth(-2);
 
         return new Result(true , "you created " +newCraft.getCraftType().getName() + " successfully");
 

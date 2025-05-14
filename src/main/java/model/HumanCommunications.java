@@ -124,9 +124,9 @@ public class HumanCommunications {
     // LEVEL ZERO TASKS
     public Result talk(String text) {
 
-        User me = currentPlayer;
+        User me = currentGame.currentPlayer;
         User other;
-        if (player1.getUsername().equals(currentPlayer.getUsername()))
+        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
             other = player2;
         else
             other = player1;
@@ -136,18 +136,18 @@ public class HumanCommunications {
         }
 
         addXP(10);
-        if (currentPlayer.getSpouse().equals(other)) addXP(50);
+        if (currentGame.currentPlayer.getSpouse().equals(other)) addXP(50);
         updateLevel();
 
         Set<User> key = new HashSet<>(Arrays.asList(me, other));
-        conversations.putIfAbsent(key, new ArrayList<>());
-        conversations.get(key).add(new MessageHandling(me, other, text));
+        currentGame.conversations.putIfAbsent(key, new ArrayList<>());
+        currentGame.conversations.get(key).add(new MessageHandling(me, other, text));
 
         return new Result(true, GREEN+"You Sent a Message to " + other + "."+RESET);
     }
     public Result talkingHistory() {
         Set<User> key = new HashSet<>(Arrays.asList(player1, player2));
-        List<MessageHandling> messages = conversations.getOrDefault(key, new ArrayList<>());
+        List<MessageHandling> messages = currentGame.conversations.getOrDefault(key, new ArrayList<>());
         System.out.println("📜 Chat between " + player1.getNickname() + " and " + player2.getNickname() + ":");
         for (MessageHandling m : messages) {
             m.print();
@@ -170,12 +170,12 @@ public class HumanCommunications {
     }
     public Result sendGifts(String username, String item, int amount) {
         User other;
-        if (player1.getUsername().equals(currentPlayer.getUsername()))
+        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
             other = player2;
         else
             other = player1;
 
-        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
         if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
@@ -300,7 +300,7 @@ public class HumanCommunications {
 
         otherInventory.Items.put(items, amount);
 
-        if (currentPlayer.getSpouse().equals(other)) addXP(50); // بقیش جای دیگه اد شده
+        if (currentGame.currentPlayer.getSpouse().equals(other)) addXP(50); // بقیش جای دیگه اد شده
 
         return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
     }
@@ -309,7 +309,7 @@ public class HumanCommunications {
     public Result Hug() {
 
         User other;
-        if (player1.getUsername().equals(currentPlayer.getUsername()))
+        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
             other = player2;
         else
             other = player1;
@@ -324,18 +324,18 @@ public class HumanCommunications {
 
 
         addXP(60);
-        if (currentPlayer.getSpouse().equals(other)) addXP(50);
+        if (currentGame.currentPlayer.getSpouse().equals(other)) addXP(50);
         updateLevel(); // to get Updated
         return new Result(true, GREEN+"You Hugged " + other.getNickname() + "."+RESET);
     }
     public Result buyFlowers() {
         User other;
-        if (player1.getUsername().equals(currentPlayer.getUsername()))
+        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
             other = player2;
         else
             other = player1;
 
-        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
         if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
@@ -381,17 +381,17 @@ public class HumanCommunications {
     // LEVEL THREE TASKS
     public Result propose() {
         User other;
-        if (player1.getUsername().equals(currentPlayer.getUsername()))
+        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
             other = player2;
         else
             other = player1;
 
-        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
-        if (currentPlayer.getGender().equalsIgnoreCase("female"))
+        if (currentGame.currentPlayer.getGender().equalsIgnoreCase("female"))
             return new Result(false, RED+"Proposal is a Guy job!"+RESET);
-        if (currentPlayer.getGender().equalsIgnoreCase(other.getGender()))
+        if (currentGame.currentPlayer.getGender().equalsIgnoreCase(other.getGender()))
             return new Result(false, RED+"No Gay Marriage in Islamic Village!"+RESET);
 
         if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
@@ -416,7 +416,7 @@ public class HumanCommunications {
         if (!IHaveRing)
             return new Result(false, RED+"You Don't Have Ring to Propose!"+RESET);
 
-        Marriage.sendProposal(currentPlayer, other);
+        Marriage.sendProposal(currentGame.currentPlayer, other);
         return new Result(true, GREEN+"You Proposed Successfully!"+RESET);
     }
 
@@ -428,21 +428,21 @@ public class HumanCommunications {
         }
 
         User other;
-        if (player1.getUsername().equals(currentPlayer.getUsername()))
+        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
             other = player2;
         else
             other = player1;
 
-        currentPlayer.setSpouse(other);
-        other.setSpouse(currentPlayer);
+        currentGame.currentPlayer.setSpouse(other);
+        other.setSpouse(currentGame.currentPlayer);
 
         Inventory otherInventory = other.getBackPack().inventory;
-        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
 
         FriendshipLevel = 4;
         setXP(0);
-        int totalMoney = currentPlayer.getMoney() + other.getMoney();
-        currentPlayer.setMoney(totalMoney/2);
+        int totalMoney = currentGame.currentPlayer.getMoney() + other.getMoney();
+        currentGame.currentPlayer.setMoney(totalMoney/2);
         other.setMoney(totalMoney/2);
 
         for (Map.Entry <Items , Integer> entry : myInventory.Items.entrySet() ) {

@@ -40,8 +40,8 @@ public class Marriage {
 
     public static void sendProposal(User from, User to) {
         Set<User> key = new HashSet<>(Arrays.asList(from, to));
-        conversations.putIfAbsent(key, new ArrayList<>());
-        conversations.get(key).add(new MessageHandling(from, to, PURPLE+"Proposal: " + from.getNickname() + " Wants to Marry You. Do You Accept to be his Wife?"+RESET));
+        currentGame.conversations.putIfAbsent(key, new ArrayList<>());
+        currentGame.conversations.get(key).add(new MessageHandling(from, to, PURPLE+"Proposal: " + from.getNickname() + " Wants to Marry You. Do You Accept to be his Wife?"+RESET));
     }
     public static Result proposalResponse(User man, User woman) { //todo به لیست اضافه کنی
         Scanner scanner = new Scanner(System.in);
