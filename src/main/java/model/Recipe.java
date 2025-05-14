@@ -16,7 +16,8 @@ import model.Plants.TreesProdct;
 import java.util.HashMap;
 import java.util.List;
 
-import static model.App.currentPlayer;
+import static model.App.currentGame;
+
 
 public class Recipe {
 

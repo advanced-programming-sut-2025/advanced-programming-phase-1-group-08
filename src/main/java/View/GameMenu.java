@@ -271,7 +271,7 @@ public class GameMenu implements AppMenu {
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
         controller.AutomaticFunctionAfterAnyAct();
-        System.out.println(currentPlayer.getNickname() + " : " + currentPlayer.getPositionX()+ " , " + currentPlayer.getPositionY());
+        System.out.println(currentGame.currentPlayer.getNickname() + " : " + currentGame.currentPlayer.getPositionX()+ " , " + currentGame.currentPlayer.getPositionY());
 
     }
 }
