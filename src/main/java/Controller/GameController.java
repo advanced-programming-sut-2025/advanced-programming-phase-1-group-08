@@ -692,16 +692,26 @@ public class GameController {
 
     }
 
+    private User getUserByLocation (int j, int i) {
+
+        for (User user : currentGame.players)
+            if (j == user.getPositionX() && i == user.getPositionY())
+                return user;
+        return null;
+    }
+
     public Result print(int startX , int startY , int size){
-        int x=currentGame.currentPlayer.topLeftX;
-        int y=currentGame.currentPlayer.topLeftY;
+
+        User user;
+
         StringBuilder result = new StringBuilder();
 
         for (int i=startX ; i<startX + size ; i++) {
             for (int j = startY; j < startY + size; j++) {
-                if (j == currentGame.currentPlayer.getPositionX() && i == currentGame.currentPlayer.getPositionY()) {
-                    result.append(currentGame.currentPlayer.getIcon()).append(" ");
-                }
+
+                if ((user = getUserByLocation(j, i) )!= null)
+                    result.append(user.getIcon()).append(" ");
+
                 else {
                     Tile tile = getTileByCoordinates(j, i);
                     if (tile.getGameObject() instanceof UnWalkable) {
@@ -715,6 +725,7 @@ public class GameController {
         }
         return new Result(true , result.toString());
     }
+
 
 
     public Result walk(int goalX, int goalY) {
