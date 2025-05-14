@@ -14,4 +14,9 @@ public class TreeSource extends Items {
     public TreesSourceType getType() {
         return type;
     }
+
+    @Override
+    public String getName() {
+        return type.getDisplayName();
+    }
 }

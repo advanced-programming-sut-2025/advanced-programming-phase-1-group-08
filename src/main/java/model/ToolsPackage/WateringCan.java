@@ -59,4 +59,9 @@ public class WateringCan extends Tools {
 
         this.reminderCapacity += amount;
     }
+
+    @Override
+    public String getName() {
+        return type.getDisplayName();
+    }
 }

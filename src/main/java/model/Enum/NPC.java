@@ -6,11 +6,11 @@ import model.Animall.Fish;
 import model.Enum.WeatherTime.Weather;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.ItemType.*;
-import model.MapThings.BasicRock;
-import model.MapThings.Wood;
+import model.Plants.BasicRock;
+import model.Plants.Wood;
 import model.OtherItem.ArtisanProduct;
 import model.OtherItem.BarsAndOres;
-import model.OtherItem.MarketItem;
+import model.Places.MarketItem;
 import model.Plants.AllCrops;
 import model.Plants.MixedSeeds;
 
@@ -400,7 +400,13 @@ public enum NPC {
             if (x == npc.getTopLeftX() && y >= npc.getTopLeftY() && y < npc.getTopLeftY() + npc.getHeight()) {
                 return npc;
             }
-            if (x==npc.getTopLeftX() + npc.getWidth() -1 && y >= npc.getTopLeftX() && y < npc.getTopLeftY() + npc.getHeight()) {
+            if (x==npc.getTopLeftX() + npc.getWidth() -1 && y >= npc.getTopLeftY() && y < npc.getTopLeftY() + npc.getHeight()) {
+                return npc;
+            }
+            if (y == npc.getTopLeftY() && x >= npc.getTopLeftX() && x < npc.getTopLeftX() + npc.getWidth()) {
+                return npc;
+            }
+            if (y== npc.getTopLeftY() + npc.getHeight() -1 && x >= npc.getTopLeftX() && x < npc.getTopLeftX() + npc.getWidth()) {
                 return npc;
             }
         }

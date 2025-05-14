@@ -173,4 +173,9 @@ public class ForagingSeeds extends Items {
         if (checkForDeath())
             delete();
     }
+
+    @Override
+    public String getName() {
+        return type.getDisplayName();
+    }
 }

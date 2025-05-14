@@ -1,31 +1,24 @@
-package model.OtherItem;
+package model.ToolsPackage;
 
-import Controller.GameController;
 import model.DateHour;
 import model.Enum.ItemType.CraftType;
 import model.Items;
-import model.MapThings.GameObject;
-import model.MapThings.Tile;
-import model.Plants.ForagingCrops;
-import model.Plants.ForagingSeeds;
-import model.Plants.GiantProduct;
-import model.Plants.Tree;
 
 import java.util.HashMap;
 
 public class CraftingItem extends Items {
-    private CraftType craftType;
+    private final CraftType type;
     private int x;
     private int y;
     private HashMap<Items , HashMap<DateHour, Integer>> buffer=new HashMap<Items, HashMap<DateHour, Integer>>();
 
     public CraftingItem(CraftType craftType) {
-        this.craftType = craftType;
+        this.type = craftType;
     }
 
 
-    public CraftType getCraftType() {
-        return craftType;
+    public CraftType getType() {
+        return type;
     }
 
     public int getY() {
@@ -51,13 +44,18 @@ public class CraftingItem extends Items {
     @Override
     public void turnByTurnAutomaticTask() {
 
-        if (this.craftType.equals(CraftType.Scarecrow))
+        if (this.type.equals(CraftType.Scarecrow))
             this.setProtect(8);
-        if (this.craftType.equals(CraftType.DeluxeScarecrow))
+        if (this.type.equals(CraftType.DeluxeScarecrow))
             this.setProtect(12);
     }
     public void setProtect (int r) {
 
 
+    }
+
+    @Override
+    public String getName() {
+        return type.getName();
     }
 }

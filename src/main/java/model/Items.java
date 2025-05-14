@@ -5,7 +5,7 @@ import model.MapThings.GameObject;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-public class Items extends GameObject {
+public abstract class Items extends GameObject {
 
     @Override
     public boolean equals(Object obj) {
@@ -54,5 +54,7 @@ public class Items extends GameObject {
         }
         return null;
     }
+
+    public abstract String getName();
 
 }

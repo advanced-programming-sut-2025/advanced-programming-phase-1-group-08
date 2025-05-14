@@ -32,4 +32,8 @@ public class TrashCan extends Tools {
         return 0;
     }
 
+    @Override
+    public String getName() {
+        return type.name();
+    }
 }

@@ -9,10 +9,7 @@ public class Shear extends Tools {
         super("Shear");
     }
 
-    @Override
-    public String getName() {
-        return "Shear";
-    }
+
 
     public void use (){}
 
@@ -36,5 +33,10 @@ public class Shear extends Tools {
     @Override
     public int healthCost() { // TODO
         return 0;
+    }
+
+    @Override
+    public String getName() {
+        return "Shear";
     }
 }

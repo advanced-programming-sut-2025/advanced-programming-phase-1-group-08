@@ -11,9 +11,6 @@ public abstract class Tools extends Items {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
 
     public abstract int healthCost ();
 }

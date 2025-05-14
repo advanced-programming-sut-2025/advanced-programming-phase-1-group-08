@@ -12,5 +12,8 @@ public class ArtisanProduct extends Items {
         return type;
     }
 
-
+    @Override
+    public String getName() {
+        return type.getName();
+    }
 }

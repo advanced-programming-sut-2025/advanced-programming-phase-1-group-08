@@ -3,7 +3,6 @@ package View;
 import Controller.MainController;
 import model.App;
 import model.Enum.Commands.MainMenuCommands;
-import model.Enum.Commands.RegisterCommands;
 import model.Enum.Menu;
 import model.Result;
 

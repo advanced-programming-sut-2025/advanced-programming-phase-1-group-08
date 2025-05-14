@@ -24,6 +24,8 @@ public class AllCrops extends Items {
         this.price = price;
     }
 
-
-
+    @Override
+    public String getName() {
+        return type.getDisplayName();
+    }
 }

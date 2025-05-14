@@ -4,6 +4,6 @@ public class UnWalkable extends GameObject {
 
     @Override
     public String getIcon() {
-        return BG_BRIGHT_GREEN+" ";
+        return GREEN+"R ";
     }
 }

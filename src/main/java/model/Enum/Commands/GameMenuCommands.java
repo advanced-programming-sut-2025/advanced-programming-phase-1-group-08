@@ -5,9 +5,14 @@ import java.util.regex.Pattern;
 
 public enum GameMenuCommands implements Command{
 
+                                                    // Debug command
 
-    makeNewGame     ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+" +
-            "(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
+    getGameObject   ("\\s*(?i)object\\s*(?<dir>\\d+)\\s*"),
+    getGameObject2  ("\\s*(?i)object\\s*(?<x>\\d+)\\s*(?<y>\\d+)\\s*"),
+
+//    makeNewGame     ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+" +
+//            "(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
+    makeNewGame     ("\\s*game\\s*new"),
     openHomeMenu    ("\\s*(?i)menu\\s*home\\s*menu\\s*"),
     nextTurn        ("\\s*(?i)next\\s*turn\\s*"),
     eatFood         ("\\s*(?i)eat\\s*(?<food>.+)"),
@@ -38,15 +43,15 @@ public enum GameMenuCommands implements Command{
                                                         // energy
     showEnergy    ("(?i)\\s*energy\\s*show\\s*"),
     energyUnlimit ("(?i)\\s*energy\\s*unlimited\\s*"),
-    setEnergy     ("(?i)\\s*energy\\s*set\\s*-v\\s*(?<amount>\\d+)\\s*"),
+    setEnergy     ("(?i)\\s*energy\\s*set\\s*-v\\s*(?<amount>-?\\d+)\\s*"),
 
                                                         // plants
     buildGreenHouse    ("(?i)\\s*greenhouse\\s*build\\s*"),
     showTreeInfo  ("(?i)\\s*info\\s*-n\\s*(?<name>.+)\\s*"),
     wateringPlant ("(?i)\\s*water\\s*(?<direction>\\d+)\\s*"),
     showFruitInfo ("(?i)\\s*craft\\s*info\\s*-n\\s*(?<name>.+)\\s*"),
-    createThor    ("(?i)\\s*cheat\\s*thor\\s*-l(?<x>\\d+),(?<y>\\d+)\\s*"),
     showPlant     ("(?i)\\s*show\\s*plant\\s*-l\\s*(?<x>\\d+),\\s*(?<y>\\d+)\\s*"),
+    createThor    ("(?i)\\s*cheat\\s*thor\\s*-l\\s*(?<x>\\d+)\\s*,\\s*(?<y>\\d+)\\s*"),
     planting      ("(?i)\\s*plant\\s*-s\\s*(?<seed>.+)\\s*-d\\s*(?<direction>\\d+)\\s*"),
     fertilize     ("(?i)\\s*fertilize\\s*-f\\s*(?<fertilizer>.+)\\s*-d\\s*(?<direction>\\d+)\\s*"),
 
@@ -71,7 +76,7 @@ public enum GameMenuCommands implements Command{
     printMap("(?i)print\\s+map\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s+-s\\s+(?<size>\\d+)\\s*"),
     inventoryShow("inventory\\s+show\\s*"),
     removeItem("inventory\\s+trash\\s+-i\\s+(?<item>\\S.*)\\s*"),
-    removeItemFlagn("inventory\\s+trash\\s+-i\\s+(?<item>\\S.*)\\s+-n\\s+(?<amount>\\d+)\\s*"),
+    removeItemFlags("inventory\\s+trash\\s+-i\\s+(?<item>\\S.*)\\s+-n\\s+(?<amount>\\d+)\\s*"),
     currentTool("tools\\s+show\\s+current\\s*"),
     availableTool("tools\\s+show\\s+available\\s*"),
     fishing("fishing\\s+-p\\s+(?<name>\\S.*)\\s*"),
@@ -97,7 +102,7 @@ public enum GameMenuCommands implements Command{
     sellByCount("(?i)sell\\s+(?<name>\\S.*)\\s+-n\\s+(?<count>\\d+)\\s*"),
     cheatSetFriendship("(?i)cheat\\s+set\\s+\\friendship\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     addDollar("(?i)cheat\\s+add\\s+(?<amount>\\d+)\\s+dollars\\s*"),
-    addItem("cheat\\s+add\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
+    addItem("(?i)\\s*cheat\\s+add\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     ;
 
 

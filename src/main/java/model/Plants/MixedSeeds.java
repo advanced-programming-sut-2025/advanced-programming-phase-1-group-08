@@ -76,4 +76,9 @@ public class MixedSeeds extends Items {
 
         return ForagingSeedsType.CornSeeds;
     }
+
+    @Override
+    public String getName() {
+        return "dnkjs";
+    }
 }

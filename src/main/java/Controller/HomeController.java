@@ -5,7 +5,7 @@ import model.Enum.Commands.HomeMenuCommands;
 import model.Enum.FoodTypes;
 import model.Enum.ItemType.MarketItemType;
 import model.OtherItem.Fridge;
-import model.OtherItem.MarketItem;
+import model.Places.MarketItem;
 
 import java.util.HashMap;
 import java.util.Map;

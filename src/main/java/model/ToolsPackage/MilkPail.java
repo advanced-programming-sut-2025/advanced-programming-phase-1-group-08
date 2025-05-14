@@ -31,4 +31,9 @@ public class MilkPail extends Tools {
     public int healthCost() { // TODO
         return 0;
     }
+
+    @Override
+    public String getIcon() {
+        return "MilkPail";
+    }
 }

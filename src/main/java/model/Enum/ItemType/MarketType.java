@@ -52,10 +52,17 @@ public enum MarketType {
     public static MarketType wallOrDoor(int x , int y) {
         for (MarketType marketType : MarketType.values()) {
             boolean b = y < marketType.getToplefty() + marketType.getHeight();
+            boolean a= x < marketType.getTopleftx() + marketType.getWidth();
             if (x == marketType.topleftx && y >= marketType.getToplefty() && b) {
                 return marketType;
             }
-            if (x== marketType.topleftx + marketType.getWidth() && y >= marketType.getToplefty() && b) {
+            if (x== marketType.topleftx + marketType.getWidth() - 1 && y >= marketType.getToplefty() && b) {
+                return marketType;
+            }
+            if (y == marketType.toplefty && x >= marketType.getTopleftx() && a) {
+                return marketType;
+            }
+            if (y== marketType.toplefty + marketType.getHeight() - 1 && x >= marketType.getTopleftx() && a) {
                 return marketType;
             }
         }

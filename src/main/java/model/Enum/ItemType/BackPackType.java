@@ -12,7 +12,7 @@ import java.util.Set;
 
 public enum BackPackType {
     primary("primary",12,0 ,0) {
-
+      //TODO باید ظرفیتش رو درست کنم بزارم همون 12
     },
 
     LargePack("Large Pack" , 24 , 2000 , 1) {

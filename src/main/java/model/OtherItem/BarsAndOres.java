@@ -13,4 +13,9 @@ public class BarsAndOres extends Items {
     public BarsAndOreType getType() {
         return type;
     }
+
+    @Override
+    public String getName() {
+        return type.getName();
+    }
 }

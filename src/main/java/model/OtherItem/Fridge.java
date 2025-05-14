@@ -5,6 +5,8 @@ import model.MapThings.GameObject;
 
 import java.util.HashMap;
 
+import static model.Color_Eraser.YELLOW;
+
 public class Fridge extends GameObject {
     //ArrayList<GameObject>
     private int x;
@@ -31,4 +33,8 @@ public class Fridge extends GameObject {
         this.y = y;
     }
 
+    @Override
+    public String getIcon() {
+        return YELLOW +"F";
+    }
 }

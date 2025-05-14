@@ -27,9 +27,14 @@ public class Axe extends Tools {
 
         double x = currentGame.currentWeather.getEnergyCostCoefficient();
 
-        if (currentGame.currentPlayer.getLevelMining() == 4)
-            return Math.max((int) (this.type.getEnergyCost()*x)+1, 0);
+        if (currentPlayer.getLevelMining() == 4)
+            return Math.min((int) (this.type.getEnergyCost()*x)+1, 0);
 
-        return Math.max((int) (this.type.getEnergyCost()*x), 0);
+        return Math.min((int) (this.type.getEnergyCost()*x), 0);
+    }
+
+    @Override
+    public String getName() {
+        return type.getDisplayName();
     }
 }

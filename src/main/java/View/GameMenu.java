@@ -22,6 +22,7 @@ public class GameMenu implements AppMenu {
 
         String input = scanner.nextLine();
 
+
         if (GameMenuCommands.makeNewGame.getMatcher(input) != null)
             controller.startNewGame(input);
 
@@ -101,7 +102,7 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.setWeather(matcher.group("Weather").trim()));
 
         else if (GameMenuCommands.showEnergy.getMatcher(input) != null)
-            System.out.println(CYAN+"Your Energy : "+currentGame.currentPlayer.getHealth()+ RESET);
+            System.out.println(controller.showEnergy());
 
         else if ((matcher = GameMenuCommands.setEnergy.getMatcher(input)) != null)
             System.out.println(controller.setEnergy(matcher.group("amount").trim()));
@@ -167,7 +168,7 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.upgradeTool(matcher.group("name").trim()));
 
         else if ((matcher = GameMenuCommands.toolsUse.getMatcher(input)) != null)
-            System.out.println(controller.useTools(matcher.group("name").trim()));
+            System.out.println(controller.useTools(matcher.group("direction").trim()));
 
         else if ((matcher = GameMenuCommands.wateringPlant.getMatcher(input)) != null)
             System.out.println(controller.WateringPlant(matcher.group("direction").trim()));
@@ -195,14 +196,8 @@ public class GameMenu implements AppMenu {
         else if((matcher=GameMenuCommands.removeItem.getMatcher(input)) != null)
             System.out.println(controller.removeItemToTrashcan(matcher.group(1).trim(), null));
 
-        else if ((matcher=GameMenuCommands.removeItemFlagn.getMatcher(input)) != null)
+        else if ((matcher=GameMenuCommands.removeItemFlags.getMatcher(input)) != null)
             System.out.println(controller.removeItemToTrashcan(matcher.group(1).trim(), matcher.group(2).trim()) );
-
-        else if ((matcher=GameMenuCommands.currentTool.getMatcher(input)) != null)
-            System.out.println(controller.showCurrentTool());
-
-        else if ((matcher=GameMenuCommands.availableTool.getMatcher(input)) != null)
-            System.out.println(controller.availableTools());
 
         else if ((matcher=GameMenuCommands.fishing.getMatcher(input)) != null)
             System.out.println(matcher.group(1).trim());
@@ -254,11 +249,29 @@ public class GameMenu implements AppMenu {
         else if ((matcher=GameMenuCommands.addDollar.getMatcher(input)) != null)
             System.out.println(controller.addDollar(Integer.parseInt(matcher.group(1).trim())));
 
-        //TODO چیت کد اضافه کردن آیتم.
+        else if ((matcher=GameMenuCommands.addItem.getMatcher(input)) != null)
+            System.out.println(controller.addItem(matcher.group(1) , Integer.parseInt(matcher.group(2).trim())));
+
+
+        else if (input.matches("\\s*exit\\s*game\\s*"))
+            controller.exitGame();
+        else if (input.matches("\\s*force\\s*terminate\\s*"))
+            controller.forceTerminate();
+
+
+        else if ((matcher = GameMenuCommands.getGameObject.getMatcher(input)) != null)
+            System.out.println(controller.getObject(matcher.group("dir").trim()));
+        else if ((matcher = GameMenuCommands.getGameObject2.getMatcher(input)) != null)
+            System.out.println(controller.getObject2(matcher.group("x").trim(), matcher.group("y").trim()));
+
+
+
+            //TODO چیت کد اضافه کردن آیتم.
         else
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
-        if (currentGame.currentPlayer != null)
-            controller.AutomaticFunctionAfterAnyAct();
+        controller.AutomaticFunctionAfterAnyAct();
+        System.out.println(currentPlayer.getNickname() + " : " + currentPlayer.getPositionX()+ " , " + currentPlayer.getPositionY());
+
     }
 }

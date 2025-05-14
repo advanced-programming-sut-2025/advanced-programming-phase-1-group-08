@@ -16,4 +16,9 @@ public class FishingPole extends Tools {
     public int healthCost() { // TODO
         return 0;
     }
+
+    @Override
+    public String getName() {
+        return type.getName();
+    }
 }

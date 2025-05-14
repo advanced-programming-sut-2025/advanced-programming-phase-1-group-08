@@ -6,14 +6,13 @@ import model.Enum.AllPlants.ForagingMineralsType;
 import model.Enum.AllPlants.TreesSourceType;
 import model.Enum.ItemType.CraftType;
 import model.Enum.ItemType.MarketItemType;
-import model.MapThings.BasicRock;
-import model.MapThings.Wood;
+import model.Plants.BasicRock;
+import model.Plants.Wood;
 import model.OtherItem.BarsAndOres;
-import model.OtherItem.CraftingItem;
-import model.OtherItem.MarketItem;
+import model.ToolsPackage.CraftingItem;
+import model.Places.MarketItem;
 import model.Plants.ForagingCrops;
 import model.Plants.ForagingMinerals;
-import model.Plants.ForagingSeeds;
 import model.Plants.TreeSource;
 
 import java.util.HashMap;
@@ -53,7 +52,7 @@ public class CraftingController {
                 }
             }
             if (entry.getKey() instanceof CraftingItem) {
-                if (((CraftingItem) entry.getKey()).getCraftType().getName().equals(name)) {
+                if (((CraftingItem) entry.getKey()).getType().getName().equals(name)) {
                     return entry.getKey();
                 }
             }
@@ -149,7 +148,7 @@ public class CraftingController {
         }
 
         for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-            if (entry.getKey() instanceof CraftingItem && ((CraftingItem) entry.getKey()).getCraftType().equals(type)) {
+            if (entry.getKey() instanceof CraftingItem && ((CraftingItem) entry.getKey()).getType().equals(type)) {
                 entry.setValue(entry.getValue() + 1);
                 return new Result(true , "You created "+type.getName()+" Successfully!");
             }
@@ -162,7 +161,7 @@ public class CraftingController {
         inventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
         App.currentGame.currentPlayer.increaseHealth(-2);
 
-        return new Result(true , "you created " +newCraft.getCraftType().getName() + " successfully");
+        return new Result(true , "you created " +newCraft.getType().getName() + " successfully");
 
     }
 
