@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static model.App.currentGame;
 import static model.Color_Eraser.*;
 import static model.Enum.AllPlants.CropsType.*;
 
@@ -36,7 +37,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 37;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Spring)){
                         return 30;
                     }
                     return 45;
@@ -94,7 +95,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 100;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Spring)){
                         return 80;
                     }
                     return 120;
@@ -149,7 +150,7 @@ public enum ForagingSeedsType {
         public int getPrice( MarketType marketType) {
             switch (marketType) {
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                    if (App.currentGame.currentDate.getSeason().equals(Season.Spring)){
                         return 40;
                     }
                     return 60;
@@ -180,7 +181,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 75;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Spring)){
                         return 60;
                     }
                     return 90;
@@ -211,7 +212,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 87;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Spring)){
                         return 70;
                     }
                     return 105;
@@ -242,7 +243,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 25;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                    if (App.currentGame.currentDate.getSeason().equals(Season.Spring)){
                         return 20;
                     }
                     return 30;
@@ -273,7 +274,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 62;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Spring)){
                         return 50;
                     }
                     return 75;
@@ -355,7 +356,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 25;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Spring)){
                         return 20;
                     }
                     return 30;
@@ -386,7 +387,7 @@ public enum ForagingSeedsType {
         public int getPrice( MarketType marketType) {
             switch (marketType) {
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Spring)){
                         return 40;
                     }
                     return 60;
@@ -416,7 +417,7 @@ public enum ForagingSeedsType {
         public int getPrice( MarketType marketType) {
             switch (marketType) {
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Summer)){
                         return 80;
                     }
                     return 120;
@@ -448,7 +449,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 187;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Summer)){
                         return 150;
                     }
                     return 225;
@@ -479,7 +480,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 75;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Summer)){
                         return 60;
                     }
                     return 90;
@@ -511,7 +512,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 50;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Summer)){
                         return 40;
                     }
                     return 60;
@@ -542,7 +543,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 100;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Summer)){
                         return 80;
                     }
                     return 120;
@@ -574,7 +575,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 125;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Summer)){
                         return 100;
                     }
                     return 150;
@@ -605,7 +606,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 50;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Summer)){
                         return 40;
                     }
                     return 60;
@@ -635,7 +636,7 @@ public enum ForagingSeedsType {
         public int getPrice( MarketType marketType) {
             switch (marketType) {
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Summer)){
                         return 100;
                     }
                     return 150;
@@ -691,7 +692,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 62;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Summer)){
                         return 50;
                     }
                     return 75;
@@ -747,7 +748,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 125;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Summer)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Summer)){
                         return 200;
                     }
                     return 300;
@@ -779,7 +780,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 62;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Spring)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Spring)){
                         return 50;
                     }
                     return 75;
@@ -810,7 +811,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 12;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Fall)){
                         return 10;
                     }
                     return 15;
@@ -841,7 +842,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 87;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Fall)){
                         return 70;
                     }
                     return 105;
@@ -871,7 +872,7 @@ public enum ForagingSeedsType {
         public int getPrice( MarketType marketType) {
             switch (marketType) {
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Fall)){
                         return 30;
                     }
                     return 45;
@@ -925,7 +926,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 62;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Fall)){
                         return 50;
                     }
                     return 75;
@@ -978,7 +979,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 300;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Fall)){
                         return 240;
                     }
                     return 360;
@@ -1008,7 +1009,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 25;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Fall)){
                         return 20;
                     }
                     return 30;
@@ -1038,7 +1039,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 250;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Fall)){
                         return 200;
                     }
                     return 300;
@@ -1066,7 +1067,7 @@ public enum ForagingSeedsType {
         public int getPrice( MarketType marketType) {
             switch (marketType) {
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Fall)){
                         return 60;
                     }
                     return 90;
@@ -1096,7 +1097,7 @@ public enum ForagingSeedsType {
         public int getPrice( MarketType marketType) {
             switch (marketType) {
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Fall)){
                         return 100;
                     }
                     return 150;
@@ -1126,7 +1127,7 @@ public enum ForagingSeedsType {
             switch (marketType) {
                 case JojaMart -> {return 75;}
                 case PierreGeneralStore -> {
-                    if (App.currentDate.getSeason().equals(Season.Fall)){
+                    if (currentGame.currentDate.getSeason().equals(Season.Fall)){
                         return 60;
                     }
                     return 90;
@@ -1276,5 +1277,11 @@ public enum ForagingSeedsType {
 
     public List<MarketType> getMarketTypes() {
         return marketTypes;
+    }
+    public static ForagingSeedsType fromDisplayName(String displayName) {
+        for (ForagingSeedsType type : ForagingSeedsType.values())
+            if (type.getDisplayName().equals(displayName))
+                return type;
+        throw new IllegalArgumentException(RED+"wrong name!"+RESET);
     }
 }

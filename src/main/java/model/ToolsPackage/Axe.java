@@ -2,8 +2,7 @@ package model.ToolsPackage;
 
 import model.Enum.ToolsType.AxeType;
 
-import static model.App.currentPlayer;
-import static model.App.currentWeather;
+import static model.App.*;
 
 public class Axe extends Tools {
 
@@ -26,12 +25,12 @@ public class Axe extends Tools {
     @Override
     public int healthCost() {
 
-        double x = currentWeather.getEnergyCostCoefficient();
+        double x = currentGame.currentWeather.getEnergyCostCoefficient();
 
-        if (currentPlayer.getLevelMining() == 4)
-            return Math.max((int) (this.type.getEnergyCost()*x)+1, 0);
+        if (currentGame.currentPlayer.getLevelMining() == 4)
+            return Math.min((int) (this.type.getEnergyCost()*x)+1, 0);
 
-        return Math.max((int) (this.type.getEnergyCost()*x), 0);
+        return Math.min((int) (this.type.getEnergyCost()*x), 0);
     }
 
     @Override

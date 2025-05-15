@@ -4,12 +4,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum TradeMenuCommands implements Command{
-    tradeP      ("\\s*(?i)trade\\s*-u\\s*(?<username>\\S+)-t\\s*(?<type>\\S+)-i\\s*(?<item>\\S+)-a\\s*(?<amount>\\S+)-p\\s*(?<price>.+)"),
-    tradeTI     ("\\s*(?i)trade\\s*-u\\s*(?<username>\\S+)-t\\s*(?<type>\\S+)-i\\s*(?<item>\\S+)-a\\s*(?<amount>\\S+)-ti\\s*(?<targetItem>\\S+)-ta\\s*(?<targetAmount>.+)"),
-    tradeResponse   ("\\s*(?i)trade\\s*response\\s*(?<response>\\S+)(?<id>.+)")
+    tradeP      ("(?i)\\s*Trade\\s*-u\\s*(?<username>\\S+)\\s*-t\\s*(?<type>\\S+)\\s*-i\\s*(?<item>\\S+)\\s*-a\\s*(?<amount>\\S+)\\s*-p\\s*(?<price>.+)"),
+    tradeTI     ("(?i)\\s*trade\\s*-u\\s*(?<username>\\S+)\\s*-t\\s*(?<type>\\S+)\\s*-i\\s*(?<item>\\S+)\\s*-a\\s*(?<amount>\\S+)\\s*-ti\\s*(?<targetItem>\\S+)\\s*-ta\\s*(?<targetAmount>.+)"),
+    tradeResponse   ("\\s*(?i)trade\\s*response\\s*(?<response>\\S+)\\s*(?<id>.+)")
 
     ;
-
 
     private final String string;
     TradeMenuCommands(String string) {

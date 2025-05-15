@@ -5,6 +5,9 @@ import model.Enum.WeatherTime.Season;
 import java.util.ArrayList;
 import java.util.List;
 
+import static model.Color_Eraser.RED;
+import static model.Color_Eraser.RESET;
+
 public enum TreesSourceType {
 
     Apricot_Sapling     (TreeType.ApricotTree,    0.0, "Apricot Sapling"){
@@ -197,4 +200,10 @@ public enum TreesSourceType {
         return displayName;
     }
     public abstract ArrayList<Season> getSeason();
+    public static TreesSourceType fromDisplayName(String displayName) {
+        for (TreesSourceType type : TreesSourceType.values())
+            if (type.getDisplayName().equals(displayName))
+                return type;
+        throw new IllegalArgumentException(RED+"wrong name!"+RESET);
+    }
 }

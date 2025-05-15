@@ -5,6 +5,10 @@ import java.util.regex.Pattern;
 
 public enum GameMenuCommands implements Command{
 
+                                                    // Debug command
+
+    getGameObject   ("\\s*(?i)object\\s*(?<dir>\\d+)\\s*"),
+    getGameObject2  ("\\s*(?i)object\\s*(?<x>\\d+)\\s*(?<y>\\d+)\\s*"),
 
 //    makeNewGame     ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+" +
 //            "(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
@@ -12,18 +16,18 @@ public enum GameMenuCommands implements Command{
     openHomeMenu    ("\\s*(?i)menu\\s*home\\s*menu\\s*"),
     nextTurn        ("\\s*(?i)next\\s*turn\\s*"),
     eatFood         ("\\s*(?i)eat\\s*(?<food>.+)"),
+    recipeUnlock    ("\\s*(?i)recipe\\s*unlock\\s*(?<food>\\S.+)\\s*"),
 
                                                         //  relation
     friendships   ("\\s*(?i)friendships\\s*"),
     hug           ("\\s*(?i)hug\\s*-u\\s*(?<username>.+)\\s*"),
     giveFlower    ("\\s*(?i)flower\\s*-u\\s*(?<username>.+)\\s*"),
-    talkHistory   ("\\s*(?i)talk\\s*history\\s*(?<username>.+)\\s*"),
-    talking       ("\\s*(?i)talk\\s*-u\\s*(?<username>\\S+)-m\\s*(?<message>.+)\\s*"),
+    talkHistory   ("\\s*(?i)talk\\s*history\\s*-u\\s*(?<username>.+)\\s*"),
+    talking       ("(?i)\\s*talk\\s*-u\\s*(?<username>\\S+)\\s*-m\\s*(?<message>.+)"),
     propose       ("\\s*(?i)ask\\s*marriage\\s*-u\\s*(?<username>\\S)-r\\s*(?<ring>.+)"),
     sendGift      ("\\s*(?i)gift\\s*-u\\s*(?<username>\\S+)-i\\s*(?<item>\\S+)-a\\s*(?<amount>.+)\\s*"),
     trade         ("\\s*(?i)start\\s*trade\\s*"),
     proposalRespond("\\s*respond\\s*(?<response>\\S+)-u\\s*(?<username>.+)\\s*"),
-
                                                         //  Date Time weather
     showTomorrowWeather("\\s*(?i)weather\\s*forecast\\s*"),
     showTime      ("\\s*(?i)time\\s*"),
@@ -46,8 +50,8 @@ public enum GameMenuCommands implements Command{
     showTreeInfo  ("(?i)\\s*info\\s*-n\\s*(?<name>.+)\\s*"),
     wateringPlant ("(?i)\\s*water\\s*(?<direction>\\d+)\\s*"),
     showFruitInfo ("(?i)\\s*craft\\s*info\\s*-n\\s*(?<name>.+)\\s*"),
-    createThor    ("(?i)\\s*cheat\\s*thor\\s*-l(?<x>\\d+),(?<y>\\d+)\\s*"),
     showPlant     ("(?i)\\s*show\\s*plant\\s*-l\\s*(?<x>\\d+),\\s*(?<y>\\d+)\\s*"),
+    createThor    ("(?i)\\s*cheat\\s*thor\\s*-l\\s*(?<x>\\d+)\\s*,\\s*(?<y>\\d+)\\s*"),
     planting      ("(?i)\\s*plant\\s*-s\\s*(?<seed>.+)\\s*-d\\s*(?<direction>\\d+)\\s*"),
     fertilize     ("(?i)\\s*fertilize\\s*-f\\s*(?<fertilizer>.+)\\s*-d\\s*(?<direction>\\d+)\\s*"),
 

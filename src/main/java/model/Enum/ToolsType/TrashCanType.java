@@ -1,41 +1,39 @@
-package model.Enum.ItemType;
+package model.Enum.ToolsType;
 
 import model.App;
-import model.Enum.ToolsType.AxeType;
-import model.Enum.ToolsType.PickAxeType;
+import model.Enum.ItemType.BarsAndOreType;
 import model.Inventory;
 import model.OtherItem.BarsAndOres;
-import model.ToolsPackage.Axe;
-import model.ToolsPackage.TrashCan;
+
 import static model.Enum.ItemType.BarsAndOreType.*;
 
 public enum TrashCanType {
 
-    primarytTrashCan(0 , null) {
+    primaryTrashCan("Primary Trash Can",    0, null) {
         @Override
         public int getPercent() {
             return 0;
         }
     },
-    CopperTrashCan(1000 , CopperBar) {
+    CopperTrashCan ("Copper Trash Can",  1000, CopperBar) {
         @Override
         public int getPercent() {
             return 15;
         }
     },
-    SteelTrashCan(2500 , IronBar) {
+    SteelTrashCan  ("Steel Trash Can",   2500, IronBar) {
         @Override
         public int getPercent() {
             return 30;
         }
     },
-    GoldTrashCan(5000 , GoldBar) {
+    GoldTrashCan   ("Gold Trash Can",    5000, GoldBar) {
         @Override
         public int getPercent() {
             return 45;
         }
     },
-    IridiumTrashCan(12500 , IridiumBar) {
+    IridiumTrashCan("Iridium Trash Can",12500, IridiumBar) {
         @Override
         public int getPercent() {
             return 60;
@@ -44,9 +42,11 @@ public enum TrashCanType {
 
     public abstract int getPercent();
     private final int Price;
+    private final String displayName;
     private final BarsAndOreType BarsAndOreType;
 
-    private TrashCanType(int price , BarsAndOreType BarsAndOreType) {
+    private TrashCanType(String displayName, int price , BarsAndOreType BarsAndOreType) {
+        this.displayName = displayName;
         this.Price = price;
         this.BarsAndOreType = BarsAndOreType;
     }
@@ -56,7 +56,7 @@ public enum TrashCanType {
 
     public static TrashCanType nextTrashCanType(TrashCanType trashCanType) {
         return switch (trashCanType) {
-            case primarytTrashCan -> CopperTrashCan;
+            case primaryTrashCan -> CopperTrashCan;
             case CopperTrashCan -> SteelTrashCan;
             case SteelTrashCan -> GoldTrashCan;
             case GoldTrashCan -> IridiumTrashCan;
@@ -65,11 +65,11 @@ public enum TrashCanType {
     }
 
     public static boolean checkIngredient(TrashCanType trashCanType) {
-        Inventory inventory = App.currentPlayer.getBackPack().inventory;
+        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         BarsAndOres barsAndOres= new BarsAndOres(trashCanType.BarsAndOreType);
         if (inventory.Items.containsKey(barsAndOres)) {
             Integer value=inventory.Items.get(barsAndOres);
-            if (value >= 5 && App.currentPlayer.getMoney() >= trashCanType.getPrice()) {
+            if (value >= 5 && App.currentGame.currentPlayer.getMoney() >= trashCanType.getPrice()) {
                 inventory.Items.put(barsAndOres,value-5);
                 inventory.Items.entrySet().removeIf(entry -> entry.getValue().equals(0));
                 return true;

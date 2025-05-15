@@ -37,6 +37,16 @@ public class HomeMenu extends AppView implements AppMenu{
             System.out.println(homeController.goToCraftingMenu());
 
 
+        else if((matcher = GameMenuCommands.inventoryShow.getMatcher(input)) != null) {
+            GameController controller = new GameController();
+            System.out.println(controller.showInventory());
+        }
+
+        else if ((matcher=GameMenuCommands.addItem.getMatcher(input)) != null) {
+            GameController controller = new GameController();
+            System.out.println(controller.addItem(matcher.group(1), Integer.parseInt(matcher.group(2).trim())));
+        }
+
 
 
         else

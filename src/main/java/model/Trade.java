@@ -17,9 +17,7 @@ import static Controller.GameController.isNeighbor;
 import static java.lang.Math.floor;
 import static java.lang.Math.random;
 import static model.App.*;
-import static model.App.currentPlayer;
 import static model.Color_Eraser.*;
-import static model.SaveData.UserDataBase.findUserByUsername;
 
 public class Trade {
 
@@ -29,7 +27,7 @@ public class Trade {
     private final String senderGivesWhat;
     private final String receiverGivesWhat;
     private boolean responded = false;
-    private int id = (int) floor(random()/100);
+    private int id;
     private final char senderGivesPorT;
     private final char receiverGivesPorT;
     private final int senderAmount;
@@ -44,11 +42,12 @@ public class Trade {
         this.receiverGivesPorT = receiverGivesPorT;
         this.senderAmount = senderAmount;
         this.receiverAmount = receiverAmount;
+        this.id = (int) (random()*100);
     }
 
     public static Trade findTradeByID (int id) {
         Trade foundTrade = null;
-        for (Map.Entry<Set<User>, List<Trade>> entry : trades.entrySet()) {
+        for (Map.Entry<Set<User>, List<Trade>> entry : currentGame.trades.entrySet()) {
             List<Trade> tradeList = entry.getValue();
             for (Trade trade : tradeList) {
                 if (trade.getId() == id) {
@@ -96,20 +95,20 @@ public class Trade {
             return new Result(false, RED+"Respond to THIS Trade, Not Other Trades!");
 
         Trade trade = findTradeByID(id);
-        HumanCommunications f = getFriendship(currentPlayer, trade.sender);
+        HumanCommunications f = getFriendship(currentGame.currentPlayer, trade.sender);
         if (f == null)
             return new Result(false, RED+"Friendship Not Found!"+RESET);
 
         if (response.equalsIgnoreCase("reject")) {
             f.reduceXP(30);
-            return new Result(true, RED+"Rejected"+RESET + GREEN+"Successfully."+RESET);
+            return new Result(true, RED+"Rejected"+RESET + GREEN+" Successfully."+RESET);
         }
         else if (!response.equalsIgnoreCase("accept"))
             return new Result(false, RED+"Please Respond in Correct Format!"+RESET);
 
         // if Accepted:
 
-        Inventory receiverInventory = currentPlayer.getBackPack().inventory;
+        Inventory receiverInventory = currentGame.currentPlayer.getBackPack().inventory;
         char receiver_P_or_T = trade.receiverGivesPorT;
 
         Inventory senderInventory = trade.sender.getBackPack().inventory;
@@ -120,7 +119,7 @@ public class Trade {
 
 
         if (trade.senderGivesPorT == 'p') {
-            currentPlayer.increaseMoney(trade.receiverAmount);
+            currentGame.currentPlayer.increaseMoney(trade.receiverAmount);
             trade.sender.increaseMoney(-trade.receiverAmount);
         }
         if (trade.senderGivesPorT == 't') {
@@ -213,13 +212,13 @@ public class Trade {
 
         }
         if (receiver_P_or_T == 'p') {
-            if (currentPlayer.getMoney() < trade.receiverAmount) {
+            if (currentGame.currentPlayer.getMoney() < trade.receiverAmount) {
                 f.reduceXP(30);
                 return new Result(false, RED+"Not Enough Money to Accept!"+RESET);
             }
 
             // تبادل پول
-            currentPlayer.increaseMoney(-trade.receiverAmount);
+            currentGame.currentPlayer.increaseMoney(-trade.receiverAmount);
             trade.sender.increaseMoney(trade.receiverAmount);
         }
 
@@ -379,27 +378,28 @@ public class Trade {
             if (items == null || targetItem == null)
                 return new Result(false, RED+"Incorrect Item Format!"+RESET);
         }
-        if (currentPlayer.getUsername().equals(username))
+        if (currentGame.currentPlayer.getUsername().equals(username))
             return new Result(false, RED+"You Can't Trade With Yourself!"+RESET);
 
+        User mentionedPlayer = null;
         boolean userFound = false;
-        for (User p: players) {
+        for (User p: currentGame.players) {
             if (p.getUsername().equals(username)){
                 userFound = true;
+                mentionedPlayer = p;
                 break;
             }
         }
         if (!userFound)
             return new Result(false, RED+"User Not Found!"+RESET);
-        if (!isNeighbor(currentPlayer.getPositionX(), currentPlayer.getPositionY(), Objects.requireNonNull(findUserByUsername(username)).getPositionX(), Objects.requireNonNull(findUserByUsername(username)).getPositionY()))
+        if (!isNeighbor(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY(), mentionedPlayer.getPositionX(), mentionedPlayer.getPositionY()))
             return new Result(false, RED+"Get Closer To Trade!"+RESET);
         if (!(type.trim().equalsIgnoreCase("offer") || type.trim().equalsIgnoreCase("request")))
             return new Result(false, RED+"type Doesn't Match!"+RESET);
-        if (P_or_T == 'p' && type.trim().equalsIgnoreCase("request") && price > currentPlayer.getMoney())
+        if (P_or_T == 'p' && type.trim().equalsIgnoreCase("request") && price > currentGame.currentPlayer.getMoney())
             return new Result(false, RED+"Not Enough Money For this Request!"+RESET);
 
-
-        Inventory myInventory = currentPlayer.getBackPack().inventory;
+        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
 
         if ((P_or_T == 'p' && type.trim().equalsIgnoreCase("offer")) || P_or_T == 't') {
             for (Map.Entry<Items, Integer> entry : myInventory.Items.entrySet()) {

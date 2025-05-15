@@ -5,7 +5,8 @@ import model.Items;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
 
-import static model.App.bigMap;
+import static model.App.currentGame;
+
 
 public class ForagingCrops extends Items {
 
@@ -31,7 +32,7 @@ public class ForagingCrops extends Items {
 
     public void delete () {
 
-        for (Tile tile : bigMap)
+        for (Tile tile : currentGame.bigMap)
             if (tile.getGameObject().equals(this))
                 tile.setGameObject(new Walkable());
     }

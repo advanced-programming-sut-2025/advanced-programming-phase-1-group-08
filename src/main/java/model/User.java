@@ -1,5 +1,6 @@
 package model;
 
+import Controller.GameController;
 import model.Animall.BarnOrCage;
 import model.Enum.NPC;
 import model.Enum.SecurityQuestions;
@@ -13,7 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static model.App.currentDate;
+import static model.App.currentGame;
+
 
 public class User {
 
@@ -37,6 +39,11 @@ public class User {
         Buff_farming_hoursLeft = 0;
         Buff_fishing_hoursLeft = 0;
         Buff_mining_hoursLeft = 0;
+        // Buff implementation
+        if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
+            currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 100);
+            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 100);
+        }
     }
     public int Buff_maxEnergy_50_hoursLeft = 0;
     public void setBuff_maxEnergy_50_hoursLeft (int x) {
@@ -46,6 +53,11 @@ public class User {
         Buff_farming_hoursLeft = 0;
         Buff_fishing_hoursLeft = 0;
         Buff_mining_hoursLeft = 0;
+        // Buff implementation
+        if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
+            currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 50);
+            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 50);
+        }
     }
     public int Buff_foraging_hoursLeft = 0;
     public void setBuff_foraging_hoursLeft (int x) {
@@ -64,6 +76,8 @@ public class User {
         Buff_maxEnergy_100_hoursLeft = 0;
         Buff_fishing_hoursLeft = 0;
         Buff_mining_hoursLeft = 0;
+        GameController controller = new GameController();
+        controller.passedOfTime(0, 0);
     }
     public int Buff_fishing_hoursLeft = 0;
     public void setBuff_fishing_hoursLeft (int x) {
@@ -73,6 +87,8 @@ public class User {
         Buff_farming_hoursLeft = 0;
         Buff_maxEnergy_100_hoursLeft = 0;
         Buff_mining_hoursLeft = 0;
+        GameController controller = new GameController();
+        controller.passedOfTime(0, 0);
     }
     public int Buff_mining_hoursLeft = 0;
     public void setBuff_mining_hoursLeft (int x) {
@@ -82,6 +98,8 @@ public class User {
         Buff_farming_hoursLeft = 0;
         Buff_fishing_hoursLeft = 0;
         Buff_maxEnergy_100_hoursLeft = 0;
+        GameController controller = new GameController();
+        controller.passedOfTime(0, 0);
     }
 
     // TODO وقتی بازی تموم میشه این سه تارو ست کنیم
@@ -96,6 +114,7 @@ public class User {
     private Tile SleepTile;
     private User Spouse;  // شخصی که باهاش ازدواج کرده
     private boolean healthUnlimited;
+    private String icon;
 
 
     private HashMap<NPC, Integer>    friendshipPoint = new HashMap<>();
@@ -216,7 +235,14 @@ public class User {
 
         return SleepTile;
     }
+    public String getIcon() {
 
+        return icon;
+    }
+    public void setIcon(String icon) {
+
+        this.icon = icon;
+    }
 
     public User getSpouse() {
         return Spouse;
@@ -326,6 +352,18 @@ public class User {
         this.miningAbility += amount;
     }
 
+    public int getFarmingAbility() {
+        return farmingAbility;
+    }
+    public int getMiningAbility() {
+        return miningAbility;
+    } // TODO اینا باید پاک شن و برای دیباگن
+    public int getForagingAbility() {
+        return foragingAbility;
+    }
+    public int getFishingAbility() {
+        return fishingAbility;
+    }
 
     public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {
 
@@ -339,8 +377,8 @@ public class User {
 
         int level = Math.min(friendshipPoint.get(npc)%200, 3);
 
-        if (level == 3 && level3Date.get(npc) == currentDate)
-            level3Date.put(npc, currentDate.clone());
+        if (level == 3 && level3Date.get(npc) == currentGame.currentDate)
+            level3Date.put(npc, currentGame.currentDate.clone());
 
         return level;
     }

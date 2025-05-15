@@ -1,27 +1,27 @@
 package model.Enum;
 
 public enum FoodTypes {
-    friedEgg(35 , "Fried egg"),
+    friedEgg(35 , "Fried Egg"),
     bakedFish(100 , "Baked Fish"),
     salad(110 , "Salad"),
     omelet(125,"Omelet"),
-    pumpkinPie(385 , "pumpkine pie"),
-    spaghetti(120 , "spaghetti"),
-    pizza(300 , "pizza"),
+    pumpkinPie(385 , "Pumpkin Pie"),
+    spaghetti(120 , "Spaghetti"),
+    pizza(300 , "Pizza"),
     tortilla(50 , "Tortilla"),
     makiRoll(220 , "Maki Roll"),
     tripleShotEspresso(450 , "Triple Shot Espresso"),
     cookie(140 , "Cookie"),
-    hashBrowns(120, "hash browns"),
-    pancakes(80 , "pancakes"),
-    fruitSalad(450 , "fruit salad"),
-    redPlate(400 , "red plate"),
-    bread(60 , "bread"),
-    salmonDinner(300 , "salmon dinner"),
-    vegetableMedley(120 , "vegetable medley"),
-    survivalBurger(180 , "survival burger"),
-    seaformPudding(300 , "seaform pudding"),
-    minersTreat(200 , "miners treat");
+    hashBrowns(120, "Hash Browns"),
+    pancakes(80 , "Pancakes"),
+    fruitSalad(450 , "Fruit Salad"),
+    redPlate(400 , "Red Plate"),
+    bread(60 , "Bread"),
+    salmonDinner(300 , "Salmon Dinner"),
+    vegetableMedley(120 , "Vegetable Medley"),
+    survivalBurger(180 , "Survival Burger"),
+    seaformPudding(300 , "Seaform Pudding"),
+    minersTreat(200 , "Miner's Treat");
 
     private final int sellPrice;
     private final String name;

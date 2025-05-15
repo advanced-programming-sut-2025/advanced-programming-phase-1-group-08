@@ -60,8 +60,8 @@ public class ShippingBin extends GameObject {
         int [] diry={1,-1,0,1,-1,0,1,-1};
         GameController gameController=new GameController();
 
-        for (int x = App.currentPlayer.getPositionX() ; x<App.currentPlayer.getPositionX()+ dirx.length ; x++) {
-            for (int y=App.currentPlayer.getPositionY() ; y<App.currentPlayer.getPositionY()+ diry.length ; y++) {
+        for (int x = App.currentGame.currentPlayer.getPositionX() ; x<App.currentGame.currentPlayer.getPositionX()+ dirx.length ; x++) {
+            for (int y=App.currentGame.currentPlayer.getPositionY() ; y<App.currentGame.currentPlayer.getPositionY()+ diry.length ; y++) {
                 Tile tile=gameController.getTileByCoordinates(x, y);
                 if (tile == null) {
                     continue;

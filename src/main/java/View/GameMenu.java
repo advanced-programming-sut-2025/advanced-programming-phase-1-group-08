@@ -42,6 +42,9 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.eatFood.getMatcher(input) != null)
             controller.eatFood(input);
 
+        else if (GameMenuCommands.recipeUnlock.getMatcher(input) != null)
+            controller.unlockRecipe(input);
+
         else if (GameMenuCommands.friendships.getMatcher(input) != null)
             controller.DisplayFriendships();
 
@@ -163,10 +166,23 @@ public class GameMenu implements AppMenu {
 
 
         else if ((matcher = GameMenuCommands.toolsUse.getMatcher(input)) != null)
-            System.out.println(controller.useTools(matcher.group(1).trim()));
+            System.out.println(controller.useTools(matcher.group("direction").trim()));
 
         else if ((matcher = GameMenuCommands.wateringPlant.getMatcher(input)) != null)
             System.out.println(controller.WateringPlant(matcher.group("direction").trim()));
+
+
+        else if (input.matches("\\s*show\\s*current\\s*menu\\s*"))
+            System.out.println("Game Menu");
+        else if (input.matches("\\s*menu\\s*exit")) {
+            currentMenu = Menu.MainMenu;
+            System.out.println(GREEN+"Done!"+RESET);
+        }
+        else if (input.matches("\\s*exit\\s*game\\s*"))
+            controller.exitGame();
+        else if (input.matches("\\s*force\\s*terminate\\s*"))
+            controller.forceTerminate();
+
 
         else if((matcher=GameMenuCommands.walk.getMatcher(input)) != null)
             System.out.println(controller.walk(Integer.parseInt(matcher.group(1).trim())
@@ -239,18 +255,32 @@ public class GameMenu implements AppMenu {
 
 
 
-        else if (input.matches("\\s*exit\\s*game\\s*"))
-            controller.exitGame();
-        else if (input.matches("\\s*force\\s*terminate\\s*"))
-            controller.forceTerminate();
+//        else if (input.matches("\\s*exit\\s*game\\s*"))
+//            controller.exitGame();
+//        else if (input.matches("\\s*force\\s*terminate\\s*"))
+//            controller.forceTerminate();
+
+
+        else if ((matcher = GameMenuCommands.getGameObject.getMatcher(input)) != null)
+            System.out.println(controller.getObject(matcher.group("dir").trim()));
+        else if ((matcher = GameMenuCommands.getGameObject2.getMatcher(input)) != null)
+            System.out.println(controller.getObject2(matcher.group("x").trim(), matcher.group("y").trim()));
 
 
 
+
+        else if (input.matches("(?i)\\s*add\\s*money\\s*"))
+            currentGame.currentPlayer.increaseMoney(10000);
+
+
+        //TODO چیت کد اضافه کردن آیتم.
         else
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
         controller.AutomaticFunctionAfterAnyAct();
-        System.out.println(currentPlayer.getNickname() + ": "+currentPlayer.getPositionX() + " " + currentPlayer.getPositionY() +
-                " money: "+ currentPlayer.getMoney() + "Energy: "+currentPlayer.getHealth());
+        System.out.println(currentGame.currentPlayer.getNickname() + " : " +
+                currentGame.currentPlayer.getPositionX()+ " , " + currentGame.currentPlayer.getPositionY() +
+                "   money : " + currentGame.currentPlayer.getMoney());
+
     }
 }

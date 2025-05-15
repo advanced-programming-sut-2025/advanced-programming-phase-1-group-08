@@ -1,13 +1,17 @@
 package View;
 
+import model.App;
 import model.Enum.Menu;
+import model.SaveData.AppTest;
 import model.SaveData.SessionManager;
+import model.SaveData.UserBasicInfo;
 import model.User;
 
 import java.util.Scanner;
 
-import static model.App.currentMenu;
-import static model.App.getCurrentMenu;
+import static model.App.*;
+import static model.Color_Eraser.BLUE;
+import static model.Color_Eraser.RESET;
 
 
 public class AppView {
@@ -15,19 +19,24 @@ public class AppView {
     public void run() {
         Scanner scanner = new Scanner(System.in);
 
-//        if (SessionManager.isLoggedIn()) {
-//            User user = SessionManager.getLoggedInUser();
-//            System.out.println("Welcome back, " + user.getUsername());
-//            currentMenu = Menu.MainMenu;
-//        } else {
-//            currentMenu = Menu.RegisterMenu;
-//            System.out.println("\nWelcome To The SignUp Menu!");
-//            System.out.println("In This Menu You Can Register, Go to LogInPage or Quit The Program\n");
-//        }
+        if (SessionManager.isLoggedIn()) {
+            // TODO initialize currentGame by loading data
+            UserBasicInfo userB = SessionManager.getLoggedInUser();
+            assert userB != null;
+            System.out.println();
+            System.out.println();
+            System.out.println(BLUE+"Welcome back, " + userB.getNickname()+RESET);
+            App.currentUser = new User(userB.getUsername(), userB.getNickname(), userB.getEmail(), userB.getGender(), 0, 200, userB.getHashpass());
+            App.currentMenu = Menu.MainMenu;
 
-        currentMenu = Menu.GameMenu;
+        } else {
+            App.currentMenu = Menu.RegisterMenu;
+            System.out.println("\nWelcome To The SignUp Menu!");
+            System.out.println("In This Menu You Can Register, Go to LogInPage or Quit The Program\n");
+        }
+
         do {
-            getCurrentMenu().checkCommand(scanner);
-        } while (getCurrentMenu() != Menu.ExitMenu);
+            App.getCurrentMenu().checkCommand(scanner);
+        } while (App.getCurrentMenu() != Menu.ExitMenu);
     }
 }

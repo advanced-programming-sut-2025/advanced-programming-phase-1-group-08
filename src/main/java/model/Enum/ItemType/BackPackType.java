@@ -2,6 +2,8 @@ package model.Enum.ItemType;
 
 import model.Animall.Animalproduct;
 import model.Plants.Fish;
+import model.Plants.Animalproduct;
+import model.Plants.Fish;
 import model.App;
 import model.Inventory;
 import model.Items;
@@ -63,7 +65,7 @@ public enum BackPackType {
 
     public int getRemindCapacity() {
         int x=0;
-        Inventory inventory = App.currentPlayer.getBackPack().inventory;
+        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         Set<FishType> fishTypes=new HashSet<>();
         Set<AnimalProductType> animalProductTypes=new HashSet<>();
         for (Map.Entry < Items , Integer > entry : inventory.Items.entrySet()) {
@@ -78,7 +80,7 @@ public enum BackPackType {
             }
         }
 
-        return App.currentPlayer.getBackPack().getType().getCapacity() - x - fishTypes.size() - animalProductTypes.size() ;
+        return App.currentGame.currentPlayer.getBackPack().getType().getCapacity() - x - fishTypes.size() - animalProductTypes.size() ;
     }
 
 
