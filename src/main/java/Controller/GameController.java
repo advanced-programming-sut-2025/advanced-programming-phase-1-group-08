@@ -819,70 +819,70 @@ public class GameController {
 
         for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet()){
             if (entry.getKey() instanceof Food) {
-                output.append(((Food) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((Food) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof BasicRock){
-                output.append("Stone: ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append("Stone: ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Wood){
-                output.append("Wood: ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append("Wood: ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof ForagingMinerals){
-                output.append(((ForagingMinerals) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((ForagingMinerals) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof ForagingSeeds){
-                output.append(((ForagingSeeds) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((ForagingSeeds) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof AllCrops){
-                output.append(((AllCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((AllCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof ForagingCrops) {
-                output.append(((ForagingCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((ForagingCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof TreeSource){
-                output.append(((TreeSource) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((TreeSource) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof TreesProdct) {
-                output.append(entry.getKey().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(entry.getKey().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Axe ){
-                output.append(((Axe) entry.getKey()).getType().getDisplayName()).append('\n');
+                output.append("\t-> ").append(((Axe) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof FishingPole){
-                output.append(((FishingPole) entry.getKey()).type.name()).append('\n');
+                output.append("\t-> ").append(((FishingPole) entry.getKey()).type.name()).append('\n');
             }
             else if (entry.getKey() instanceof Hoe){
-                output.append(((Hoe) entry.getKey()).getType().getDisplayName()).append('\n');
+                output.append("\t-> ").append(((Hoe) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof PickAxe){
-                output.append(((PickAxe) entry.getKey()).getType().getDisplayName()).append('\n');
+                output.append("\t-> ").append(((PickAxe) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof WateringCan){
-                output.append(((WateringCan) entry.getKey()).getType().getDisplayName()).append('\n');
+                output.append("\t-> ").append(((WateringCan) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof TrashCan){
-                output.append(((TrashCan) entry.getKey()).type.getDisplayName()).append('\n');
+                output.append("\t-> ").append(((TrashCan) entry.getKey()).type.getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof Tools){
-                output.append(entry.getKey().getName()).append('\n');
+                output.append("\t-> ").append(entry.getKey().getName()).append('\n');
             }
             else if (entry.getKey() instanceof MarketItem) {
-                output.append(((MarketItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((MarketItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Fish) {
-                output.append(((Fish) entry.getKey()).getType().getName()).append(": ") .append(((Fish) entry.getKey()).getQuantity().getName()).append(" ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((Fish) entry.getKey()).getType().getName()).append(": ") .append(((Fish) entry.getKey()).getQuantity().getName()).append(" ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Animalproduct) {
-                output.append(((Animalproduct) entry.getKey()).getType().getName()).append(": ").append(((Animalproduct) entry.getKey()).getQuantity().getName()).append('\n');
+                output.append("\t-> ").append(((Animalproduct) entry.getKey()).getType().getName()).append(": ").append(((Animalproduct) entry.getKey()).getQuantity().getName()).append('\n');
             }
             else if (entry.getKey() instanceof CraftingItem) {
-                output.append(((CraftingItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((CraftingItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof ArtisanProduct) {
-                output.append(((ArtisanProduct) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((ArtisanProduct) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof BarsAndOres) {
-                output.append(((BarsAndOres) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((BarsAndOres) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
         }
 
@@ -4069,7 +4069,7 @@ public class GameController {
             return new Result(false, RED+"Time is incorrect!"+RESET);
         }
         passedOfTime(amount, 0);
-        return new Result(true, BLUE+"Date change to : "+RED+currentGame.currentDate.getYear()+RESET+" "+currentGame.currentDate.getNameSeason()+" "+currentGame.currentDate.getDate());
+        return new Result(true, BLUE+"Date changed to : "+RED+currentGame.currentDate.getYear()+RESET+" "+currentGame.currentDate.getNameSeason()+" "+currentGame.currentDate.getDate());
     }
     public Result showEnergy () {
 

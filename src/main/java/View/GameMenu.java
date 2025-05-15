@@ -287,12 +287,12 @@ public class GameMenu implements AppMenu {
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
         controller.AutomaticFunctionAfterAnyAct();
-        System.out.println(currentGame.currentPlayer.getNickname() + " : " +
-                currentGame.currentPlayer.getPositionX()+ " , " + currentGame.currentPlayer.getPositionY() +
-                "   money : " + currentGame.currentPlayer.getMoney());
-
+        System.out.println("-----------------");
+        System.out.println("-> " + currentGame.currentPlayer.getNickname() + GREEN+"\t$" + currentGame.currentPlayer.getMoney() + "$"+RESET);
+        System.out.println("(" + currentGame.currentPlayer.getPositionX()+ ", " + currentGame.currentPlayer.getPositionY() + ")");
         System.out.println("farming  : "+currentGame.currentPlayer.getFarmingAbility());
         System.out.println("mining   : "+currentGame.currentPlayer.getMiningAbility());
         System.out.println("foraging : "+currentGame.currentPlayer.getForagingAbility());
+        System.out.println("-----------------");
     }
 }

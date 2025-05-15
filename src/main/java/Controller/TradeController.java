@@ -19,6 +19,19 @@ import static model.Trade.checkTradeRequest;
 
 public class TradeController {
 
+    private boolean tempCheck (Result result) {
+        if (result.massage().contains("Not Enough Money to Accept!"))
+            return true;
+        if (result.massage().contains("Item Not Found in Inventory!"))
+            return true;
+        if (result.massage().contains("Not Enough Item!"))
+            return true;
+        if (result.massage().contains("OK!"))
+            return true;
+
+        return false;
+    }
+
     public void tradeStart () {
         System.out.println("\nDisplaying Trade Requests/Offers...");
         for (List<Trade> tradeList: currentGame.trades.values()) {
@@ -34,8 +47,9 @@ public class TradeController {
                         respond = scanner.nextLine();
                         result = Trade.CheckTradeRespond(respond, t.getId());
                         System.out.println(result.massage());
-                    } while (!result.IsSuccess());
-                    t.setResponded(true);
+                    } while (!(result.IsSuccess() || tempCheck(result)));
+                    if (result.IsSuccess())
+                        t.setResponded(true);
                 }
             }
         }
@@ -58,10 +72,15 @@ public class TradeController {
         Result result = null;
         while (true) {
             input = scanner.nextLine();
+
             if (input.matches("\\s*exit\\s*"))
                 return;
             if (TradeMenuCommands.tradeP.getMatcher(input) != null) {
                 result = checkTradeRequest(input, 'p');
+                if (!result.IsSuccess()) {
+                    System.out.println(result.massage());
+                    continue;
+                }
                 String pUsername = TradeMenuCommands.tradeP.getMatcher(input).group("username");
                 if (pUsername == null) {
                     System.out.println(RED+"User Not Found!"+RESET);
@@ -87,7 +106,11 @@ public class TradeController {
             }
             else if (TradeMenuCommands.tradeTI.getMatcher(input) != null) {
                 result = checkTradeRequest(input, 't');
-                String pUsername = TradeMenuCommands.tradeP.getMatcher(input).group("username");
+                if (!result.IsSuccess()) {
+                    System.out.println(result.massage());
+                    continue;
+                }
+                String pUsername = TradeMenuCommands.tradeTI.getMatcher(input).group("username");
                 if (pUsername == null) {
                     System.out.println(RED+"User Not Found!"+RESET);
                     return;
@@ -102,7 +125,7 @@ public class TradeController {
                     return;
                 }
 
-                trade = new Trade(currentGame.currentPlayer, other, 't', 't', TradeMenuCommands.tradeP.getMatcher(input).group("item"), TradeMenuCommands.tradeP.getMatcher(input).group("targetItem"),
+                trade = new Trade(currentGame.currentPlayer, other, 't', 't', TradeMenuCommands.tradeTI.getMatcher(input).group("item"), TradeMenuCommands.tradeTI.getMatcher(input).group("targetItem"),
                                     Integer.parseInt(TradeMenuCommands.tradeTI.getMatcher(input).group("amount")), Integer.parseInt(TradeMenuCommands.tradeTI.getMatcher(input).group("targetAmount")));
 
             }
@@ -110,22 +133,17 @@ public class TradeController {
                 System.out.println(RED+"Invalid Trade!"+RESET);
                 continue;
             }
-            if (!result.IsSuccess()) {
-                System.out.println(result.massage());
-            }
-            if (result.IsSuccess())
-                break;
+            break;
         }
 
-        if (result.IsSuccess()) {
-            try {
-                Set<User> key = new HashSet<>(Arrays.asList(currentGame.currentPlayer, other));
-                currentGame.trades.putIfAbsent(key, new ArrayList<>());
-                currentGame.trades.get(key).add(trade);
-            } catch (Exception e) {
-                System.out.println(RED + "Not Correct Format! Try Again." + RESET);
-                return;
-            }
+        try {
+            Set<User> key = new HashSet<>(Arrays.asList(currentGame.currentPlayer, other));
+            currentGame.trades.putIfAbsent(key, new ArrayList<>());
+            currentGame.trades.get(key).add(trade);
+            System.out.println(GREEN + "Trade Offer/Request Sent Successfully." + RESET);
+        } catch (Exception e) {
+            System.out.println(RED + "Not Correct Format! Try Again." + RESET);
+            return;
         }
 
     }

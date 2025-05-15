@@ -30,4 +30,6 @@ public class Fish extends Items {
     public int getSellPrice() {
         return (int) ( type.getPrice() * quantity.getValue());
     }
+
+
 }

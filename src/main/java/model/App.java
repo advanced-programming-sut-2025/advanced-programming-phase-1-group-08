@@ -1,9 +1,8 @@
 package model;
 
 
-import model.Enum.AllPlants.CropsType;
-import model.Enum.AllPlants.ForagingCropsType;
-import model.Enum.AllPlants.TreesProductType;
+import model.Enum.AllPlants.*;
+import model.Enum.ItemType.AnimalProductType;
 import model.Enum.ItemType.MarketItemType;
 import model.Enum.Menu;
 import model.Enum.WeatherTime.Weather;
@@ -11,9 +10,7 @@ import model.MapThings.Tile;
 import model.Places.MarketItem;
 import model.Places.Farm;
 import model.Places.Market;
-import model.Plants.AllCrops;
-import model.Plants.ForagingCrops;
-import model.Plants.TreesProdct;
+import model.Plants.*;
 import model.SaveData.PasswordHashUtil;
 import model.SaveData.UserBasicInfo;
 
@@ -107,7 +104,22 @@ public class App {
                         return items;
                     }
                     catch (Exception exception) {
-                        return null;
+                        try {
+                            items = new ForagingMinerals(ForagingMineralsType.fromDisplayName(name));
+                            return items;
+                        } catch (Exception e2) {
+                            try {
+                                items = new ForagingSeeds(ForagingSeedsType.fromDisplayName(name));
+                                return items;
+                            } catch (Exception e3) {
+                                try {
+                                    items = new TreeSource(TreesSourceType.fromDisplayName(name));
+                                    return items;
+                                } catch (Exception e4) {
+                                    return null;
+                                }
+                            }
+                        }
                     }
                 }
             }
