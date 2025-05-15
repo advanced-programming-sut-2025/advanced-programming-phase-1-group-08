@@ -1,7 +1,7 @@
 package model;
 
 import model.Animall.Animalproduct;
-import model.Animall.Fish;
+import model.Plants.Fish;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.AllPlants.ForagingCropsType;
 import model.Enum.AllPlants.TreesProductType;

@@ -36,4 +36,9 @@ public class MilkPail extends Tools {
     public String getIcon() {
         return "MilkPail";
     }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
 }

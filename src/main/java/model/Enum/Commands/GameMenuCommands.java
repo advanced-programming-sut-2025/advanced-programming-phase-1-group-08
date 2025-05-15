@@ -56,7 +56,6 @@ public enum GameMenuCommands implements Command{
     showTool      ("(?i)\\s*tools\\s*show\\s*current\\s*"),
     toolsAvailable("(?i)\\s*tools\\s*show\\s*available\\s*"),
     toolsEquip    ("(?i)\\s*tools\\s*equip\\s*(?<name>\\S+)\\s*"),
-    toolsUpgrade  ("(?i)\\s*tools\\s*upgrade\\s*(?<name>\\S+)\\s*"),
     toolsUse      ("(?i)\\s*tools\\s*use\\s*-d\\s*(?<direction>\\d+)\\s*"),
 
                                                         // NPC
@@ -76,8 +75,6 @@ public enum GameMenuCommands implements Command{
     currentTool("tools\\s+show\\s+current\\s*"),
     availableTool("tools\\s+show\\s+available\\s*"),
     fishing("fishing\\s+-p\\s+(?<name>\\S.*)\\s*"),
-    buyAnimal("(?i)buy\\s+animal\\s+-a\\s+(?<animal>\\S.*)\\s+-n\\s+(?<name>\\S.*)\\s*"),
-    buildBarnOrCage("build\\s+-a\\s+(?<name>\\S.*)\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
     pet("pet\\s+-n\\s+(?<name>\\S.*)\\s*"),
     animals("\\s*animals\\s*"),
     shepherdAnimals("shepherd\\s+animals\\s+-n\\s+(?<name>\\S.*)\\s+-l\\s+(?<X>\\d+),(?<Y>\\d+)\\s*"),
@@ -85,11 +82,6 @@ public enum GameMenuCommands implements Command{
     produces("\\s*produces\\s*"),
     collectProduct("collect\\s+product\\s+-n\\s+(?<name>\\S.*)\\s*"),
     sellAnimal("sell\\s+animal\\s+-n\\s+(?<name>\\S.*)\\s*"),
-    showAllProducts("(?i)show\\s+all\\s+products\\s*"),
-    showAvailableProducts("(?i)show\\s+all\\s+available\\s+products\\s*"),
-    purchase("^(?i)purchase\\s+(.+?)(?:\\s+-n\\s+(\\d+))?$"),
-    craftingRecipe("(?i)crafting\\s+show\\s+recipes\\s*"),
-    craftingCraft("(?i)crafting\\s+craft\\s+(?<name>\\S.*)\\s*"),
     placeItem("place\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-d\\s+(?<direction>\\d+)\\s*"),
     artisan("(?i)artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<first>\\S+)\\s*"),
     artisanUse("(?i)artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<first>\\S+)\\s+(?<second>\\S+)\\s*"),
@@ -99,6 +91,7 @@ public enum GameMenuCommands implements Command{
     cheatSetFriendship("(?i)cheat\\s+set\\s+\\friendship\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     addDollar("(?i)cheat\\s+add\\s+(?<amount>\\d+)\\s+dollars\\s*"),
     addItem("(?i)\\s*cheat\\s+add\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
+    MarketMenu("(?i)menu\\s+market\\s+menu\\s*"),
     ;
 
 

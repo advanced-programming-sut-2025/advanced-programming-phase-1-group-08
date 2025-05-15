@@ -2,7 +2,7 @@ package model.Enum;
 
 import model.*;
 import model.Animall.Animalproduct;
-import model.Animall.Fish;
+import model.Plants.Fish;
 import model.Enum.WeatherTime.Weather;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.ItemType.*;
@@ -63,13 +63,13 @@ public enum NPC {
         public boolean isItFavorite (Items items) {
 
             if (items instanceof Animalproduct &&
-                    ((((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.rabbits_Wool))||
-                    ((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.sheeps_Wool))) {
+                    ((((Animalproduct) items).getType().equals(AnimalProductType.rabbits_Wool))||
+                    ((Animalproduct) items).getType().equals(AnimalProductType.sheeps_Wool))) {
                 return true;
             }
 //            else if (items instanceof Animalproduct && TODO
-//                    ((((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.rabbits_Wool))||
-//                            ((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.sheeps_Wool))) {
+//                    ((((Animalproduct) items).getType().equals(AnimalProductType.rabbits_Wool))||
+//                            ((Animalproduct) items).getType().equals(AnimalProductType.sheeps_Wool))) {
 //                return true;
 //            }
             else return items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Pizza);

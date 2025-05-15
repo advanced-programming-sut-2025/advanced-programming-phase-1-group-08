@@ -8,7 +8,8 @@ public enum HomeMenuCommands implements Command {
     fridgePut        ("\\s*cooking\\s*refrigerator\\s*put\\s*(?<item>.+)"),
     fridgePick       ("\\s*cooking\\s*refrigerator\\s*pick\\s*(?<item>.+)"),
     showRecipes      ("\\s*cooking\\s*show\\s*recipes\\s*"),
-    foodPrepare      ("\\s*cooking\\s*prepare\\s*(?<food>.+)");
+    foodPrepare      ("\\s*cooking\\s*prepare\\s*(?<food>.+)"),
+    startCrafting ("\\s*start\\s*crafting\\s*");
 
 
     private final String string;

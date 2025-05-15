@@ -65,4 +65,9 @@ public class WateringCan extends Tools {
     public String getName() {
         return type.getDisplayName();
     }
+
+    @Override
+    public int getSellPrice() {
+        return type.getPrice();
+    }
 }

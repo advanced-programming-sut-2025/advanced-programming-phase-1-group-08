@@ -36,10 +36,7 @@ public class GameMenu implements AppMenu {
             controller.nextTurn();
 
         else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null) {
-            if (!NotInHome(currentUser))
-                currentMenu = Menu.HomeMenu;
-            else
-                System.out.println(RED+"You're Not in Your Home!"+RESET);
+            System.out.println(controller.goToHomeMenu() );
         }
 
         else if (GameMenuCommands.eatFood.getMatcher(input) != null)
@@ -164,8 +161,6 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.toolsEquip.getMatcher(input)) != null)
             System.out.println(controller.toolsEquip(matcher.group("name").trim()));
 
-        else if ((matcher = GameMenuCommands.toolsUpgrade.getMatcher(input)) != null)
-            System.out.println(controller.upgradeTool(matcher.group("name").trim()));
 
         else if ((matcher = GameMenuCommands.toolsUse.getMatcher(input)) != null)
             System.out.println(controller.useTools(matcher.group(1).trim()));
@@ -187,7 +182,7 @@ public class GameMenu implements AppMenu {
             System.out.println(controller.removeItemToTrashcan(matcher.group(1).trim(), matcher.group(2).trim()) );
 
         else if ((matcher=GameMenuCommands.fishing.getMatcher(input)) != null)
-            System.out.println(matcher.group(1).trim());
+            System.out.println(controller.Fishing(matcher.group(1).trim()));
 
         else if ((matcher=GameMenuCommands.pet.getMatcher(input)) != null)
             System.out.println(controller.pet(matcher.group(1).trim()));
@@ -239,6 +234,10 @@ public class GameMenu implements AppMenu {
         else if ((matcher=GameMenuCommands.addItem.getMatcher(input)) != null)
             System.out.println(controller.addItem(matcher.group(1) , Integer.parseInt(matcher.group(2).trim())));
 
+        else if ((matcher=GameMenuCommands.MarketMenu.getMatcher(input)) != null)
+            System.out.println(controller.goToMarketMenu());
+
+
 
         else if (input.matches("\\s*exit\\s*game\\s*"))
             controller.exitGame();
@@ -251,6 +250,7 @@ public class GameMenu implements AppMenu {
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
         controller.AutomaticFunctionAfterAnyAct();
-        System.out.println(currentPlayer.getNickname() + ": "+currentPlayer.getPositionX() + " " + currentPlayer.getPositionY() +" "+ currentPlayer.getHealth());
+        System.out.println(currentPlayer.getNickname() + ": "+currentPlayer.getPositionX() + " " + currentPlayer.getPositionY() +
+                " money: "+ currentPlayer.getMoney() + "Energy: "+currentPlayer.getHealth());
     }
 }

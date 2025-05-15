@@ -6,7 +6,6 @@ import model.Items;
 public class AllCrops extends Items {
 
     private CropsType type;
-    private int price;
 
     public AllCrops(CropsType type) {
         this.type = type;
@@ -20,12 +19,15 @@ public class AllCrops extends Items {
     public CropsType getType() {
         return type;
     }
-    public void setPrice(int price) {
-        this.price = price;
-    }
+
 
     @Override
     public String getName() {
         return type.getDisplayName();
+    }
+
+    @Override
+    public int getSellPrice() {
+        return type.getPrice();
     }
 }

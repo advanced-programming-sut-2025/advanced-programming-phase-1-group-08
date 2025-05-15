@@ -1,7 +1,7 @@
 package model.Enum.ItemType;
 
 import model.Animall.Animalproduct;
-import model.Animall.Fish;
+import model.Plants.Fish;
 import model.App;
 import model.Inventory;
 import model.Items;
@@ -11,15 +11,15 @@ import java.util.Map;
 import java.util.Set;
 
 public enum BackPackType {
-    primary("primary",12,0 ,0) {
+    primary("primary",12,0 ,0 , 0) {
       //TODO باید ظرفیتش رو درست کنم بزارم همون 12
     },
 
-    LargePack("Large Pack" , 24 , 2000 , 1) {
+    LargePack("Large Pack" , 24 , 2000 , 1 , 1) {
 
     },
 
-    DeluxePack("Deluxe Pack" , Integer.MAX_VALUE , 10000 , 1) {
+    DeluxePack("Deluxe Pack" , Integer.MAX_VALUE , 10000 , 1 , 1) {
 
     };
 
@@ -29,11 +29,12 @@ public enum BackPackType {
     private final int InitialShopLimit;
     private int remindInShop;
 
-    BackPackType(String name, int capacity, int price, int InitialShopLimit) {
+    BackPackType(String name, int capacity, int price, int InitialShopLimit , int remindInShop) {
         this.name = name;
         this.capacity = capacity;
         this.price = price;
         this.InitialShopLimit = InitialShopLimit;
+        this.remindInShop = remindInShop;
     }
     public String getName() {
         return name;
@@ -67,10 +68,10 @@ public enum BackPackType {
         Set<AnimalProductType> animalProductTypes=new HashSet<>();
         for (Map.Entry < Items , Integer > entry : inventory.Items.entrySet()) {
             if (entry.getKey() instanceof Fish) {
-                fishTypes.add(((Fish) entry.getKey()).getFishType());
+                fishTypes.add(((Fish) entry.getKey()).getType());
             }
             else if (entry.getKey() instanceof Animalproduct) {
-                animalProductTypes.add(((Animalproduct) entry.getKey()).getAnimalProductType());
+                animalProductTypes.add(((Animalproduct) entry.getKey()).getType());
             }
             else {
                 x++;

@@ -154,5 +154,8 @@ public class GiantProduct extends Items {
         return "dl";
     }
 
-
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
 }

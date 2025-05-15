@@ -7,7 +7,8 @@ import model.Enum.AllPlants.ForagingMineralsType;
 import model.Enum.AllPlants.ForagingSeedsType;
 import model.Enum.AllPlants.TreesSourceType;
 import model.Enum.ItemType.*;
-import model.Enum.ToolsType.FishingPoleType;
+import model.Enum.Menu;
+import model.Enum.ToolsType.*;
 import model.Plants.BasicRock;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
@@ -19,13 +20,13 @@ import model.Places.Well;
 import model.Plants.ForagingMinerals;
 import model.Plants.ForagingSeeds;
 import model.Plants.TreeSource;
-import model.ToolsPackage.FishingPole;
-import model.ToolsPackage.MilkPail;
-import model.ToolsPackage.Shear;
+import model.ToolsPackage.*;
 
 import java.util.Map;
 
 import static model.App.*;
+import static model.Color_Eraser.BLUE;
+import static model.Color_Eraser.RESET;
 
 public class Marketing {
 
@@ -826,6 +827,10 @@ public class Marketing {
             return new Result(false ,"for buy this fishing pole you should be at least in level " + poleType.getLevel());
         }
 
+        if (amount > currentPlayer.getBackPack().getType().getRemindCapacity()) {
+            return new Result(false , "Not enough capacity in your backpack");
+        }
+
         for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
             if (entry.getKey() instanceof FishingPole) {
                 inventory.Items.remove(entry.getKey());
@@ -833,14 +838,12 @@ public class Marketing {
             }
         }
 
-        if (amount > currentPlayer.getBackPack().getType().getRemindCapacity()) {
-            return new Result(false , "Not enough capacity in your backpack");
-        }
 
         FishingPole fishingPole = new FishingPole();
         fishingPole.type = poleType;
         inventory.Items.put(fishingPole, amount);
         poleType.incrementShopLimit(-amount);
+        currentPlayer.increaseMoney(- amount * poleType.getPrice());
 
         return new Result(true , "You bought " + poleType.name() +" successfully");
 
@@ -905,6 +908,111 @@ public class Marketing {
 
     }
 
+    public Result upgradeTool (String name) {
+        MarketType marketType=MarketType.isInMarket(currentPlayer.getPositionX() , currentPlayer.getPositionY());
+        if (marketType!=MarketType.Blacksmith) {
+            return new Result(false , "you are not in BlackSmith Market. please go there");
+        }
+        Inventory inventory = currentPlayer.getBackPack().inventory;
+
+        if ( name.equals("Axe") ) {
+            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof Axe) {
+                    AxeType axeType = AxeType.getNextType(((Axe) entry.getKey()).getType());
+                    if (axeType == null) {
+                        return new Result(false , name + "is at top level");
+                    }
+                    else if (AxeType.checkIngredient(axeType)) {
+                        ((Axe) entry.getKey()).setType(axeType);
+                        currentPlayer.increaseMoney( - axeType.getPrice());
+                        return new Result(true , name + "updated successfully");
+                    }
+                    else {
+                        return new Result(false , "Not enough ingredient or money");
+                    }
+                }
+            }
+        }
+
+        if ( name.equals("Hoe") ) {
+            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof Hoe) {
+                    HoeType hoeType=HoeType.getNextType(((Hoe) entry.getKey()).getType());
+                    if (hoeType == null) {
+                        return new Result(false , name + "is at top level");
+                    }
+                    else if (HoeType.checkIngredient(hoeType)) {
+                        ((Hoe) entry.getKey()).setType(hoeType);
+                        currentPlayer.increaseMoney( - hoeType.getPrice());
+                        return new Result(true , name + "updated successfully");
+                    }
+                    else {
+                        return new Result(false , "Not enough ingredient or money");
+                    }
+                }
+            }
+        }
+
+        if ( name.equals("PickAxe") ) {
+            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof PickAxe) {
+                    PickAxeType pickAxeType=PickAxeType.getPickAxeType(((PickAxe) entry.getKey()).getType());
+                    if (pickAxeType == null) {
+                        return new Result(false , name + "is at top level");
+                    }
+                    else if (PickAxeType.checkIngredient(pickAxeType)) {
+                        ((PickAxe) entry.getKey()).setType(pickAxeType);
+                        currentPlayer.increaseMoney( - pickAxeType.getPrice());
+                        return new Result(true , name + "updated successfully");
+                    }
+                    else {
+                        return new Result(false , "Not enough ingredient or money");
+                    }
+                }
+            }
+        }
+
+        if ( name.equals("WateringCan") ) {
+            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof WateringCan) {
+                    WateringCanType wateringCanType=WateringCanType.getWateringCanType(((WateringCan) entry.getKey()).getType());
+                    if (wateringCanType == null) {
+                        return new Result(false , name + "is at top level");
+                    }
+                    else if (WateringCanType.checkIngredient(wateringCanType)) {
+                        ((WateringCan) entry.getKey()).setType(wateringCanType);
+                        currentPlayer.increaseMoney( - wateringCanType.getPrice());
+                        return new Result(true , name + "updated successfully");
+                    }
+                    else {
+                        return new Result(false , "Not enough ingredient or money");
+                    }
+                }
+            }
+        }
+
+        if ( name.equals("TrashCan") ) {
+            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof TrashCan) {
+                    TrashCanType trashCanType = TrashCanType.nextTrashCanType(((TrashCan) entry.getKey()).type);
+                    if (trashCanType == null) {
+                        return new Result(false , name + "is at top level");
+                    }
+                    else if (TrashCanType.checkIngredient(trashCanType)) {
+                        ((TrashCan) entry.getKey()).setType(trashCanType);
+                        currentPlayer.increaseMoney( - trashCanType.getPrice());
+                        return new Result(true , name + " updated successfully");
+                    }
+                    else {
+                        return new Result(false , "Not enough ingredient or money");
+                    }
+                }
+            }
+        }
+
+        return new Result(false , name + " not found");
+    }
+
 
     public Result purchase(String name , Integer amount) {
         MarketType marketType = findEnteredShopType();
@@ -912,15 +1020,24 @@ public class Marketing {
         if (marketType == null) {
             return new Result(false , "you are not in any shop");
         }
+        //System.out.println(marketType.getName());
         switch (marketType) {
-            case MarnieRanch -> {purchaseFromMarnieRanch(name, amount);}
-            case StardropSaloon -> {purchaseFromStardrop(name, amount);}
-            case CarpenterShop -> {purchaseFromCarpenter(name, amount);}
+            case MarnieRanch -> {
+                return purchaseFromMarnieRanch(name, amount);
+            }
+            case StardropSaloon -> { return purchaseFromStardrop(name, amount);}
+            case CarpenterShop -> { return purchaseFromCarpenter(name, amount);}
             case JojaMart -> {purchaseFromJojaMart(name, amount);}
-            case PierreGeneralStore -> {purchaseFromPierre(name, amount);}
-            case FishShop ->{purchaseFromFishShop(name, amount);}
-            case Blacksmith -> {purchaseFromBlackSmith(name, amount);}
+            case PierreGeneralStore -> { return purchaseFromPierre(name, amount);}
+            case FishShop ->{return purchaseFromFishShop(name, amount);}
+            case Blacksmith -> {return purchaseFromBlackSmith(name, amount);}
+            default -> {return new Result(false , name + " not found"); }
         }
         return null;
+    }
+
+    public Result goToGameMenu() {
+        currentMenu= Menu.GameMenu;
+        return new Result(true , BLUE+"Back to game menu" + RESET);
     }
 }

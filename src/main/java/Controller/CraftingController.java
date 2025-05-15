@@ -6,6 +6,7 @@ import model.Enum.AllPlants.ForagingMineralsType;
 import model.Enum.AllPlants.TreesSourceType;
 import model.Enum.ItemType.CraftType;
 import model.Enum.ItemType.MarketItemType;
+import model.Enum.Menu;
 import model.Plants.BasicRock;
 import model.Plants.Wood;
 import model.OtherItem.BarsAndOres;
@@ -18,48 +19,17 @@ import model.Plants.TreeSource;
 import java.util.HashMap;
 import java.util.Map;
 
+import static model.Color_Eraser.BLUE;
+import static model.Color_Eraser.RESET;
+
 public class CraftingController {
 
     public static Items numberOfIngrediants(String name) {
         Inventory inventory = App.currentPlayer.getBackPack().inventory;
 
         for (Map.Entry < Items , Integer> entry : inventory.Items.entrySet()) {
-            if (entry.getKey() instanceof ForagingMinerals) {
-                if (((ForagingMinerals) entry.getKey()).getType().equals(ForagingMineralsType.COAL)) {
-                    return entry.getKey();
-                }
-            }
-
-            if (entry.getKey() instanceof BarsAndOres) {
-                if (((BarsAndOres) entry.getKey()).getType().getName().equals(name)) {
-                    return entry.getKey();
-                }
-            }
-            if (name.equals("Wood") && entry.getKey() instanceof Wood) {
+            if (entry.getKey().getName().equals(name)) {
                 return entry.getKey();
-            }
-            if (name.equals("Stone") && entry.getKey() instanceof BasicRock) {
-                return entry.getKey();
-            }
-            if (entry.getKey() instanceof ForagingCrops &&
-                    ((ForagingCrops) entry.getKey()).getType().equals(ForagingCropsType.Fiber)) {
-                return entry.getKey();
-            }
-
-            if (entry.getKey() instanceof TreeSource) {
-                if (((TreeSource) entry.getKey()).getType().name().equals(name)) {
-                    return entry.getKey();
-                }
-            }
-            if (entry.getKey() instanceof CraftingItem) {
-                if (((CraftingItem) entry.getKey()).getType().getName().equals(name)) {
-                    return entry.getKey();
-                }
-            }
-            if (entry.getKey() instanceof MarketItem) {
-                if (((MarketItem) entry.getKey()).getType().getName().equals(name)) {
-                    return entry.getKey();
-                }
             }
         }
 
@@ -163,6 +133,11 @@ public class CraftingController {
 
         return new Result(true , "you created " +newCraft.getType().getName() + " successfully");
 
+    }
+
+    public Result goToGameMenu() {
+        App.currentMenu= Menu.GameMenu;
+        return new Result(true , BLUE + "Back to Game Menu" + RESET);
     }
 
 

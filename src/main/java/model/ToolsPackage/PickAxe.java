@@ -38,4 +38,9 @@ public class PickAxe extends Tools {
     public String getName() {
         return type.getDisplayName();
     }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
 }

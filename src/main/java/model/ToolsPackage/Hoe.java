@@ -36,4 +36,9 @@ public class Hoe extends Tools {
     public String getName() {
         return type.name();
     }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
 }

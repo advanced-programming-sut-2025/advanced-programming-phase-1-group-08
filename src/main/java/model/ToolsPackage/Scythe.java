@@ -19,4 +19,9 @@ public class Scythe extends Tools {
     public String getName() {
         return "Scythe";
     }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
 }

@@ -10,12 +10,17 @@ import model.Enum.Menu;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
+import static model.Color_Eraser.BLUE;
+import static model.Color_Eraser.RESET;
+
 public class HomeMenu extends AppView implements AppMenu{
 
 
     CraftingController craftingController=new CraftingController();
+    HomeController homeController=new HomeController();
     @Override
     public void check(Scanner scanner) {
+        boolean startCrafting = false;
         String input = scanner.nextLine();
         Matcher matcher;
         if (HomeMenuCommands.startCooking.getMatcher(input) != null) {
@@ -28,11 +33,9 @@ public class HomeMenu extends AppView implements AppMenu{
         else if (input.toLowerCase().matches("\\s*exit\\s*"))
             App.currentMenu = Menu.GameMenu;
 
-        else if ((matcher= GameMenuCommands.craftingRecipe.getMatcher(input)) != null)
-            System.out.println(craftingController.showCraftingRecipe());
+        else if ((matcher=HomeMenuCommands.startCrafting.getMatcher(input))!=null)
+            System.out.println(homeController.goToCraftingMenu());
 
-        else if ((matcher=GameMenuCommands.craftingCraft.getMatcher(input)) != null)
-            System.out.println(craftingController.craftingCraft(matcher.group("name").trim()));
 
 
 

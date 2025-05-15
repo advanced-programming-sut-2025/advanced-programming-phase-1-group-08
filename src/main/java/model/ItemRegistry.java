@@ -1,6 +1,7 @@
 package model;
 
 import javassist.tools.reflect.Reflection;
+import model.Enum.ItemType.Quantity;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;
@@ -37,6 +38,20 @@ import java.util.Set;
                             handled = true;
                             break;
                         }
+                        if (params.length == 2 && params[0].isEnum() && params[1] == Quantity.class) {
+                            Class<?> enumType = params[0];
+                            Object[] enumConstants = enumType.getEnumConstants();
+
+                            for (Object enumValue : enumConstants) {
+                                for (Quantity quantityVal : Quantity.values()) {
+                                    Items instance = (Items) constructor.newInstance(enumValue, quantityVal);
+                                    nameToItemMap.put(instance.getName(), instance);
+                                }
+                            }
+                            handled = true;
+                            break;
+                        }
+
                     }
 
                     if (!handled) {

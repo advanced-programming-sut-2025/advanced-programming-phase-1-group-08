@@ -2,7 +2,7 @@ package model.Enum.ItemType;
 
 import model.*;
 import model.Animall.Animalproduct;
-import model.Animall.Fish;
+import model.Plants.Fish;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.AllPlants.ForagingMineralsType;
 import model.Enum.AllPlants.ForagingSeedsType;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum ArtisanType {
-    Honey("Honey" , CraftType.BeeHouse) {
+    Honey("Honey" , CraftType.BeeHouse , 350) {
         @Override
         public int getEnergy(String name) {
             return 75;
@@ -37,7 +37,7 @@ public enum ArtisanType {
             return true;
         }
     },
-    Cheese("Cheese" , CraftType.ChessPress) {
+    Cheese("Cheese" , CraftType.ChessPress , 345) {
         @Override
         public int getEnergy(String name) {
             return 100;
@@ -60,7 +60,7 @@ public enum ArtisanType {
             Inventory inventory=App.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getAnimalProductType().getName().equals(newName)) {
+                    if (((Animalproduct) entry.getKey()).getType().getName().equals(newName)) {
                         inventory.Items.remove(entry.getKey());
                         return true;
                     }
@@ -70,7 +70,7 @@ public enum ArtisanType {
         }
     },
 
-    Goat_Cheese("Goat Cheese" , CraftType.ChessPress) {
+    Goat_Cheese("Goat Cheese" , CraftType.ChessPress , 600) {
         @Override
         public int getEnergy(String name) {
             return 100;
@@ -94,7 +94,7 @@ public enum ArtisanType {
 
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getAnimalProductType().getName().equals(newName)) {
+                    if (((Animalproduct) entry.getKey()).getType().getName().equals(newName)) {
                         inventory.Items.remove(entry.getKey());
                         return true;
                     }
@@ -105,7 +105,7 @@ public enum ArtisanType {
         }
     },
 
-    Beer("Beer" , CraftType.Keg) {
+    Beer("Beer" , CraftType.Keg , 200) {
         @Override
         public int getEnergy(String name) {
             return 50;
@@ -140,7 +140,7 @@ public enum ArtisanType {
         }
     },
 
-    Vinegar("Vinegar" , CraftType.Keg) {
+    Vinegar("Vinegar" , CraftType.Keg , 100) {
         @Override
         public int getEnergy(String name) {
             return 13;
@@ -176,7 +176,7 @@ public enum ArtisanType {
         }
     },
 
-    Coffee("Coffee" , CraftType.Keg) {
+    Coffee("Coffee" , CraftType.Keg , 150) {
         @Override
         public int getEnergy(String name) {
             return 75;
@@ -212,7 +212,7 @@ public enum ArtisanType {
         }
     },
 
-    Juice("Juice" , CraftType.Keg) {
+    Juice("Juice" , CraftType.Keg , 300) {
         @Override
         public int getEnergy(String name) {
             CropsType cropsType = CropsType.valueOf(name);
@@ -253,7 +253,7 @@ public enum ArtisanType {
         }
     },
 
-    Mead("Mead",CraftType.Keg) {
+    Mead("Mead",CraftType.Keg , 300) {
         @Override
         public int getEnergy(String name) {
             return 100;
@@ -289,7 +289,7 @@ public enum ArtisanType {
         }
     },
 
-    Pale_Ale("Pale Ale",CraftType.Keg) {
+    Pale_Ale("Pale Ale",CraftType.Keg , 300) {
         @Override
         public int getEnergy(String name) {
             return 50;
@@ -324,7 +324,7 @@ public enum ArtisanType {
         }
     },
 
-    Wine("Wine" , CraftType.Keg) {
+    Wine("Wine" , CraftType.Keg , 400) {
         @Override
         public int getEnergy(String name) {
             TreesProductType type = TreesProductType.valueOf(name);
@@ -358,7 +358,7 @@ public enum ArtisanType {
         }
     },
 
-    Dried_Mushrooms("Dried Mushrooms" , CraftType.Dehydrator) {
+    Dried_Mushrooms("Dried Mushrooms" , CraftType.Dehydrator , 400) {
         @Override
         public int getEnergy(String name) {
             return 50;
@@ -396,7 +396,7 @@ public enum ArtisanType {
         }
     },
 
-    Dried_Fruit("Dried Fruit" , CraftType.Dehydrator) {
+    Dried_Fruit("Dried Fruit" , CraftType.Dehydrator , 425) {
         @Override
         public int getEnergy(String name) {
             return 75;
@@ -431,7 +431,7 @@ public enum ArtisanType {
         }
     },
 
-    Raisins("Raisins" , CraftType.Dehydrator) {
+    Raisins("Raisins" , CraftType.Dehydrator , 600) {
         @Override
         public int getEnergy(String name) {
             return 125;
@@ -468,7 +468,7 @@ public enum ArtisanType {
         }
     },
 
-    Coal("Coal",CraftType.CharcoalKlin) {
+    Coal("Coal",CraftType.CharcoalKlin , 50) {
         @Override
         public int getEnergy(String name) {
             return 0;
@@ -503,7 +503,7 @@ public enum ArtisanType {
         }
     },
 
-    Cloth("Cloth",CraftType.Loom) {
+    Cloth("Cloth",CraftType.Loom , 470) {
         @Override
         public int getEnergy(String name) {
             return 0;
@@ -525,14 +525,14 @@ public enum ArtisanType {
             Inventory inventory=App.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getAnimalProductType().equals(AnimalProductType.rabbits_Wool)) {
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.rabbits_Wool)) {
                         inventory.Items.put(entry.getKey() , entry.getValue()-1);
                         if (entry.getValue()==0) {
                             inventory.Items.remove(entry.getKey());
                         }
                         return true;
                     }
-                    if (((Animalproduct) entry.getKey()).getAnimalProductType().equals(AnimalProductType.sheeps_Wool)) {
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.sheeps_Wool)) {
                         inventory.Items.put(entry.getKey() , entry.getValue()-1);
                         if (entry.getValue()==0) {
                             inventory.Items.remove(entry.getKey());
@@ -545,7 +545,7 @@ public enum ArtisanType {
         }
     },
 
-    Mayonnaise("Mayonnaise" , CraftType.MayonnaiseMachine) {
+    Mayonnaise("Mayonnaise" , CraftType.MayonnaiseMachine , 237) {
         @Override
         public int getEnergy(String name) {
             return 50;
@@ -568,7 +568,7 @@ public enum ArtisanType {
             Inventory inventory=App.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getAnimalProductType().getName().equals(newName)) {
+                    if (((Animalproduct) entry.getKey()).getType().getName().equals(newName)) {
                         inventory.Items.put(entry.getKey() , entry.getValue()-1);
                         if (entry.getValue()==0) {
                             inventory.Items.remove(entry.getKey());
@@ -581,7 +581,7 @@ public enum ArtisanType {
         }
     },
 
-    Duck_Mayonnaise("Duck Mayonnaise" , CraftType.MayonnaiseMachine) {
+    Duck_Mayonnaise("Duck Mayonnaise" , CraftType.MayonnaiseMachine , 37) {
         @Override
         public int getEnergy(String name) {
             return 75;
@@ -604,7 +604,7 @@ public enum ArtisanType {
             Inventory inventory=App.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getAnimalProductType().equals(AnimalProductType.duckEgg)) {
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.duckEgg)) {
                         inventory.Items.put(entry.getKey() , entry.getValue()-1);
                         if (entry.getValue()==0) {
                             inventory.Items.remove(entry.getKey());
@@ -617,7 +617,8 @@ public enum ArtisanType {
         }
     },
 
-    Dinosaur_Mayonnaise("Dinosaur Mayonnaise" , CraftType.MayonnaiseMachine) {
+    Dinosaur_Mayonnaise("Dinosaur Mayonnaise" , CraftType.MayonnaiseMachine , 800
+    ) {
         @Override
         public int getEnergy(String name) {
             return 125;
@@ -640,7 +641,7 @@ public enum ArtisanType {
             Inventory inventory=App.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getAnimalProductType().equals(AnimalProductType.dinosaurEgg)) {
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.dinosaurEgg)) {
                         inventory.Items.put(entry.getKey() , entry.getValue()-1);
                         if (entry.getValue()==0) {
                             inventory.Items.remove(entry.getKey());
@@ -653,7 +654,7 @@ public enum ArtisanType {
         }
     },
 
-    Truffle_Oil("Truffle Oil" , CraftType.OilMaker) {
+    Truffle_Oil("Truffle Oil" , CraftType.OilMaker , 1065) {
         @Override
         public int getEnergy(String name) {
             return 6;
@@ -675,7 +676,7 @@ public enum ArtisanType {
             Inventory inventory=App.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getAnimalProductType().equals(AnimalProductType.Truffle)) {
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.Truffle)) {
                         inventory.Items.put(entry.getKey() , entry.getValue()-1);
                         if (entry.getValue()==0) {
                             inventory.Items.remove(entry.getKey());
@@ -688,7 +689,7 @@ public enum ArtisanType {
         }
     },
 
-    Oil("Oil", CraftType.OilMaker) {
+    Oil("Oil", CraftType.OilMaker , 100) {
         @Override
         public int getEnergy(String name) {
             return 13;
@@ -733,7 +734,7 @@ public enum ArtisanType {
         }
     },
 
-    Pickles("Pickles" , CraftType.PreservesJar) {
+    Pickles("Pickles" , CraftType.PreservesJar , 200) {
         @Override
         public int getEnergy(String name) {
             CropsType cropsType = CropsType.valueOf(name);
@@ -772,7 +773,7 @@ public enum ArtisanType {
         }
     },
 
-    Jelly("Jelly" , CraftType.PreservesJar) {
+    Jelly("Jelly" , CraftType.PreservesJar , 200) {
         @Override
         public int getEnergy(String name) {
             TreesProductType type = TreesProductType.valueOf(name);
@@ -806,7 +807,7 @@ public enum ArtisanType {
             return false;
         }
     },
-    Smoked_Fish("Smoked Fish" , CraftType.FishSmoker) {
+    Smoked_Fish("Smoked Fish" , CraftType.FishSmoker , 300) {
         @Override
         public int getEnergy(String name) {
             return 15;
@@ -836,7 +837,7 @@ public enum ArtisanType {
             Inventory inventory=App.currentPlayer.getBackPack().inventory;
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Fish && fish==null) {
-                    if (((Fish) entry.getKey()).getFishType().getName().equals(newFirstName)) {
+                    if (((Fish) entry.getKey()).getType().getName().equals(newFirstName)) {
                         fish = (Fish) entry.getKey();
                     }
                 }
@@ -861,7 +862,7 @@ public enum ArtisanType {
         }
     },
 
-    AnyMetalBar("Any_Metal_Bar" , CraftType.Furnace) {
+    AnyMetalBar("Any_Metal_Bar" , CraftType.Furnace , 100) {
         @Override
         public int getEnergy(String name) {
             return 0;
@@ -928,10 +929,12 @@ public enum ArtisanType {
     public abstract int getEnergy(String name);
     public abstract void creatArtesian(String name , CraftingItem craftingItem);
     public abstract boolean checkIngredient(String first , String second);
+    private final int price;
 
-    ArtisanType(String name, CraftType craftType) {
+    ArtisanType(String name, CraftType craftType , int price) {
         this.name = name;
         this.craftType = craftType;
+        this.price = price;
     }
 
     public String getName() {
@@ -940,5 +943,9 @@ public enum ArtisanType {
 
     public CraftType getCraftType() {
         return craftType;
+    }
+
+    public int getPrice() {
+        return price;
     }
 }

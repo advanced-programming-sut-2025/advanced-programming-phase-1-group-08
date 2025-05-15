@@ -58,4 +58,14 @@ public class CraftingItem extends Items {
     public String getName() {
         return type.getName();
     }
+
+    @Override
+    public int getSellPrice() {
+        return type.getSellPrice();
+    }
+
+    @Override
+    public String getIcon() {
+        return type.getIcon();
+    }
 }
