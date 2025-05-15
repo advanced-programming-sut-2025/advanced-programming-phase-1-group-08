@@ -19,16 +19,17 @@ public enum GameMenuCommands implements Command{
     eatFood         ("\\s*(?i)eat\\s*(?<food>.+)"),
     recipeUnlock    ("\\s*(?i)recipe\\s*unlock\\s*(?<food>\\S.+)\\s*"),
 
-                                                        //  relation
+                                                        //  relationships
     friendships   ("\\s*(?i)friendships\\s*"),
+    addXpCheat    ("\\s*(?i)add\\s*xp\\s*(?<xp>\\S+)\\s*(?<other>.+)"),
     hug           ("\\s*(?i)hug\\s*-u\\s*(?<username>.+)\\s*"),
     giveFlower    ("\\s*(?i)flower\\s*-u\\s*(?<username>.+)\\s*"),
     talkHistory   ("\\s*(?i)talk\\s*history\\s*-u\\s*(?<username>.+)\\s*"),
     talking       ("(?i)\\s*talk\\s*-u\\s*(?<username>\\S+)\\s*-m\\s*(?<message>.+)"),
-    propose       ("\\s*(?i)ask\\s*marriage\\s*-u\\s*(?<username>\\S)-r\\s*(?<ring>.+)"),
+    propose       ("\\s*(?i)ask\\s*marriage\\s*-u\\s*(?<username>\\S+)\\s*-r\\s*(?<ring>\\S.+)\\s*"),
     sendGift      ("\\s*(?i)gift\\s*-u\\s*(?<username>\\S+)\\s*-i\\s*(?<item>\\S+)\\s*-a\\s*(?<amount>.+)\\s*"),
     trade         ("\\s*(?i)start\\s*trade\\s*"),
-    proposalRespond("\\s*respond\\s*(?<response>\\S+)-u\\s*(?<username>.+)\\s*"),
+    proposalRespond("\\s*respond\\s*(?<response>\\S+)\\s*-u\\s*(?<username>.+)\\s*"),
 
                                                         //  Date Time weather
     showTomorrowWeather("\\s*(?i)weather\\s*forecast\\s*"),
@@ -96,6 +97,7 @@ public enum GameMenuCommands implements Command{
     sellByCount("(?i)sell\\s+(?<name>\\S.*)\\s+-n\\s+(?<count>\\d+)\\s*"),
     cheatSetFriendship("(?i)cheat\\s+set\\s+\\friendship\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     addDollar("(?i)cheat\\s+add\\s+(?<amount>\\d+)\\s+dollars\\s*"),
+    setDollar("(?i)cheat\\s*set\\s*(?<amount>\\d+)\\s+dollars\\s*"),
     addItem("(?i)\\s*cheat\\s+add\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     MarketMenu("(?i)menu\\s+market\\s+menu\\s*"),
     ;

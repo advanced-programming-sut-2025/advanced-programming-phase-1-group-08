@@ -42,6 +42,10 @@ public class GameController {
     Random rand = new Random();
 
     public Result addDollar(int amount) {
+        currentGame.currentPlayer.increaseMoney(amount);
+        return new Result(true , "your money cheated successfully");
+    }
+    public Result setDollar(int amount) {
         currentGame.currentPlayer.increaseMoney(amount - currentGame.currentPlayer.getMoney());
         return new Result(true , "your money cheated successfully");
     }
@@ -820,70 +824,70 @@ public class GameController {
 
         for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet()){
             if (entry.getKey() instanceof Food) {
-                output.append(((Food) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((Food) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof BasicRock){
-                output.append("Stone: ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append("Stone: ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Wood){
-                output.append("Wood: ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append("Wood: ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof ForagingMinerals){
-                output.append(((ForagingMinerals) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((ForagingMinerals) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof ForagingSeeds){
-                output.append(((ForagingSeeds) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((ForagingSeeds) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof AllCrops){
-                output.append(((AllCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((AllCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof ForagingCrops) {
-                output.append(((ForagingCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((ForagingCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof TreeSource){
-                output.append(((TreeSource) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((TreeSource) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof TreesProdct) {
-                output.append(entry.getKey().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(entry.getKey().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Axe ){
-                output.append(((Axe) entry.getKey()).getType().getDisplayName()).append('\n');
+                output.append("\t-> ").append(((Axe) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof FishingPole){
-                output.append(((FishingPole) entry.getKey()).type.name()).append('\n');
+                output.append("\t-> ").append(((FishingPole) entry.getKey()).type.name()).append('\n');
             }
             else if (entry.getKey() instanceof Hoe){
-                output.append(((Hoe) entry.getKey()).getType().getDisplayName()).append('\n');
+                output.append("\t-> ").append(((Hoe) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof PickAxe){
-                output.append(((PickAxe) entry.getKey()).getType().getDisplayName()).append('\n');
+                output.append("\t-> ").append(((PickAxe) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof WateringCan){
-                output.append(((WateringCan) entry.getKey()).getType().getDisplayName()).append('\n');
+                output.append("\t-> ").append(((WateringCan) entry.getKey()).getType().getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof TrashCan){
-                output.append(((TrashCan) entry.getKey()).type.getDisplayName()).append('\n');
+                output.append("\t-> ").append(((TrashCan) entry.getKey()).type.getDisplayName()).append('\n');
             }
             else if (entry.getKey() instanceof Tools){
-                output.append(entry.getKey().getName()).append('\n');
+                output.append("\t-> ").append(entry.getKey().getName()).append('\n');
             }
             else if (entry.getKey() instanceof MarketItem) {
-                output.append(((MarketItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((MarketItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Fish) {
-                output.append(((Fish) entry.getKey()).getType().getName()).append(": ") .append(((Fish) entry.getKey()).getQuantity().getName()).append(" ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((Fish) entry.getKey()).getType().getName()).append(": ") .append(((Fish) entry.getKey()).getQuantity().getName()).append(" ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Animalproduct) {
-                output.append(((Animalproduct) entry.getKey()).getType().getName()).append("(").append(((Animalproduct) entry.getKey()).getQuantity().getName()).append("): ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((Animalproduct) entry.getKey()).getType().getName()).append("(").append(((Animalproduct) entry.getKey()).getQuantity().getName()).append("): ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof CraftingItem) {
-                output.append(((CraftingItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((CraftingItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof ArtisanProduct) {
-                output.append(((ArtisanProduct) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((ArtisanProduct) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof BarsAndOres) {
-                output.append(((BarsAndOres) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+                output.append("\t-> ").append(((BarsAndOres) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
             }
         }
 
@@ -2189,6 +2193,8 @@ public class GameController {
                     for (List<MessageHandling> messages : currentGame.conversations.values()) {
                         for (MessageHandling m : messages) {
                             if (m.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !m.isSeen()) {
+                                if (m.getText().contains("Proposal"))
+                                    break;
                                 m.print();
                                 m.setSeen(true);
 
@@ -2204,31 +2210,10 @@ public class GameController {
                     }
                     System.out.println(GREEN+"Unseen Messages Displayed.\n"+RESET);
 
-//                    System.out.println("Displaying Trade Requests/Offers...");
-//                    for (List<Trade> tradeList: currentGame.trades.values()) {
-//                        for (Trade t: tradeList) {
-//                            if (t.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !t.isResponded()) {
-//                                t.print();
-//
-//                                System.out.println("What's Your Response?");
-//                                Scanner scanner = new Scanner(System.in);
-//                                String respond;
-//                                Result result;
-//                                do {
-//                                    respond = scanner.nextLine();
-//                                    result = Trade.CheckTradeRespond(respond, t.getId());
-//                                    System.out.println(result.massage());
-//                                } while (!result.IsSuccess());
-//                                t.setResponded(true);
-//                            }
-//                        }
-//                    }
-//                    System.out.println(GREEN+"Trades Done!"+RESET);
-
                     // proposals
                     for (List<MessageHandling> messages : currentGame.conversations.values()) {
                         for (MessageHandling m : messages) {
-                            if (m.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !m.isSeen() && m.getText().endsWith("Do You Accept to be his Wife?")) {
+                            if (m.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !m.isSeen() && m.getText().contains("Proposal")) {
                                 m.print();
                                 m.setSeen(true);
                                 Result result;
@@ -2256,6 +2241,13 @@ public class GameController {
             if (f.getPlayer1().getUsername().equals(targetName) || f.getPlayer2().getUsername().equals(targetName))
                 f.printInfo();
         }
+    }
+    public void cheatAddXp (String input) {
+        int xp = Integer.parseInt(GameMenuCommands.addXpCheat.getMatcher(input).group("xp"));
+        String otherName = GameMenuCommands.addXpCheat.getMatcher(input).group("other");
+        User other = findPlayerInGame(otherName);
+        HumanCommunications f = getFriendship(currentGame.currentPlayer, other);
+        f.addXP(xp);
     }
     public void talking (String input) {
         String destinationUsername = GameMenuCommands.talking.getMatcher(input).group("username");
@@ -2314,7 +2306,7 @@ public class GameController {
     }
     public void hug (String input) {
         String username = GameMenuCommands.hug.getMatcher(input).group("username");
-        if (!currentGame.players.contains(findUserByUsername(username))) {
+        if (!currentGame.players.contains(findPlayerInGame(username))) {
             System.out.println(RED+"Username is Unavailable!"+RESET);
             return;
         }
@@ -2322,7 +2314,7 @@ public class GameController {
             System.out.println("You can't Hug " + RED+"Yourself"+RESET + "!");
             return;
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, findUserByUsername(username));
+        HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
         if (f == null) {
             System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
@@ -2339,15 +2331,15 @@ public class GameController {
             System.out.println("Invalid Command!");
             return;
         }
-        if (!currentGame.players.contains(findUserByUsername(username))) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
+        if (!currentGame.players.contains(findPlayerInGame(username))) {
+            System.out.println(RED+"Username '" + username + "' is Unavailable!"+RESET);
             return;
         }
         if (username.equals(currentGame.currentPlayer.getUsername())) {
             System.out.println("You can't Send Gifts to " + RED+"Yourself"+RESET + "!");
             return;
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, findUserByUsername(username));
+        HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
         if (f == null) {
             System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
@@ -2356,12 +2348,15 @@ public class GameController {
 
         Result result = f.sendGifts(username, item, amount);
         System.out.println(result);
-        if (result.IsSuccess())
-            new MessageHandling(currentGame.currentPlayer, findUserByUsername(username), currentGame.currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!");
+        if (result.IsSuccess()) {
+            Set<User> key = new HashSet<>(Arrays.asList(currentGame.currentPlayer, findPlayerInGame(username)));
+            currentGame.conversations.putIfAbsent(key, new ArrayList<>());
+            currentGame.conversations.get(key).add(new MessageHandling(currentGame.currentPlayer, findPlayerInGame(username), currentGame.currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!"));
+        }
     }
     public void giveFlowers (String input) {
         String username = GameMenuCommands.giveFlower.getMatcher(input).group("username");
-        if (!currentGame.players.contains(findUserByUsername(username))) {
+        if (!currentGame.players.contains(findPlayerInGame(username))) {
             System.out.println(RED+"Username is Unavailable!"+RESET);
             return;
         }
@@ -2369,7 +2364,7 @@ public class GameController {
             System.out.println("You can't give Flower to " + RED+"Yourself"+RESET + "!");
             return;
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, findUserByUsername(username));
+        HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
         if (f == null) {
             System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
@@ -2379,8 +2374,8 @@ public class GameController {
     }
     public void propose(String input) {
         String username = GameMenuCommands.propose.getMatcher(input).group("username");
-        User wife = findUserByUsername(username);
-        if (!currentGame.players.contains(wife)) {
+        User wife = findPlayerInGame(username);
+        if (wife == null) {
             System.out.println(RED+"Username is Unavailable!"+RESET);
             return;
         }
@@ -2395,8 +2390,10 @@ public class GameController {
         }
 
         String ring = GameMenuCommands.propose.getMatcher(input).group("ring");
-        if (ring.equalsIgnoreCase("ring") || ring.equalsIgnoreCase("wedding ring") || ring.equalsIgnoreCase("wedding")) {
+        if (!(ring.equalsIgnoreCase("ring") || ring.equalsIgnoreCase("wedding ring") || ring.equalsIgnoreCase("wedding"))) {
             System.out.println(RED+"Wrong Ring Name!"+RESET);
+            System.out.println("'"+ring+"'");
+            return;
         }
 
         Result result = f.propose();
@@ -2751,7 +2748,7 @@ public class GameController {
 //        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
 //        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
         currentGame.players.add(new User("Ario", "ArioTR", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
-        currentGame.players.add(new User("Ario2", "ArioTR2", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
+        currentGame.players.add(new User("Erfan1", "Erfan2", "ario.ebr@gmail.com", "female", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
         currentGame.players.add(new User("Ario3", "ArioTR3", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
         currentGame.players.add(new User("Ario4", "ArioTR4", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
         setTimeAndWeather();
