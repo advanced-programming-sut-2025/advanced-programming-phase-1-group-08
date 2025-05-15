@@ -63,8 +63,10 @@ public class Tree extends Items {
     }
     private void setStage () {
 
-        DateHour dateHour = decreaseDay(numFertilize, currentGame.currentDate);
-        int defDays = getDayDifferent(this.birthDay, currentGame.currentDate);
+        DateHour dateHour = currentGame.currentDate.clone();
+        dateHour.increaseDay(numFertilize);
+
+        int defDays = getDayDifferent(this.birthDay, dateHour);
 
         if (defDays > 0 && defDays < 7)
             stage = 1;
@@ -72,7 +74,7 @@ public class Tree extends Items {
             stage = 2;
         else if (defDays > 14 && defDays < 21)
             stage = 3;
-        else if (defDays > 21 && defDays < 28)
+        else if (defDays > 21)
             stage = 4;
 
     }

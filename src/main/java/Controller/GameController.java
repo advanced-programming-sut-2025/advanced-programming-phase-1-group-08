@@ -2601,19 +2601,97 @@ public class GameController {
         else
             currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
 
+
         DateHour dateHour = currentGame.currentDate.clone();
 
-        currentGame.currentDate.increaseHour(hour);
-        currentGame.currentDate.increaseDay(day);
+        dateHour.increaseHour(hour);
+        dateHour.increaseDay(day);
 
-        if (currentGame.currentDate.getHour() > 22)
-            passedOfTime(0, 24 - currentGame.currentDate.getHour() + 9);
-        if (currentGame.currentDate.getHour() < 9)
-            passedOfTime(0, 9 - currentGame.currentDate.getHour());
+        if (dateHour.getHour() > 22)
+            passedOfTime(getDayDifferent(dateHour, currentGame.currentDate), 24 - dateHour.getHour() + 9);
+        if (dateHour.getHour() < 9)
+            passedOfTime(getDayDifferent(dateHour, currentGame.currentDate), 9 - dateHour.getHour());
 
-        for (int i = 0 ; i < getDayDifferent(dateHour, currentGame.currentDate) ; i++)
+        for (int i = 0 ; i < getDayDifferent(currentGame.currentDate, dateHour) ; i++) {
+            currentGame.currentDate.increaseDay(1);
             startDay();
+        }
+        currentGame.currentDate.increaseHour(dateHour.getHour() - currentGame.currentDate.getHour());
     }
+    public void passedOfTimeOriginal (int day, int hour) {
+//
+//        if (day == 0) {
+//            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
+//                currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft - hour);
+//                if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft < 0)
+//                    currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
+//            }
+//            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
+//                currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft - hour);
+//                if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft < 0)
+//                    currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(0);
+//            }
+//            if (currentGame.currentPlayer.Buff_farming_hoursLeft > 0) {
+//                currentGame.currentPlayer.setBuff_farming_hoursLeft(currentGame.currentPlayer.Buff_farming_hoursLeft - hour);
+//                if (currentGame.currentPlayer.Buff_farming_hoursLeft < 0)
+//                    currentGame.currentPlayer.setBuff_farming_hoursLeft(0);
+//            }
+//            if (currentGame.currentPlayer.Buff_foraging_hoursLeft > 0) {
+//                currentGame.currentPlayer.setBuff_foraging_hoursLeft(currentGame.currentPlayer.Buff_foraging_hoursLeft - hour);
+//                if (currentGame.currentPlayer.Buff_foraging_hoursLeft < 0)
+//                    currentGame.currentPlayer.setBuff_foraging_hoursLeft(0);
+//            }
+//            if (currentGame.currentPlayer.Buff_fishing_hoursLeft > 0) {
+//                currentGame.currentPlayer.setBuff_fishing_hoursLeft(currentGame.currentPlayer.Buff_fishing_hoursLeft - hour);
+//                if (currentGame.currentPlayer.Buff_fishing_hoursLeft < 0)
+//                    currentGame.currentPlayer.setBuff_fishing_hoursLeft(0);
+//            }
+//            if (currentGame.currentPlayer.Buff_mining_hoursLeft > 0) {
+//                currentGame.currentPlayer.setBuff_mining_hoursLeft(currentGame.currentPlayer.Buff_mining_hoursLeft - hour);
+//                if (currentGame.currentPlayer.Buff_mining_hoursLeft < 0)
+//                    currentGame.currentPlayer.setBuff_mining_hoursLeft(0);
+//            }
+//
+//
+//
+//
+//            // Buff implementation
+//            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft == 0) currentGame.currentPlayer.setMAX_HEALTH(200);
+//            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft == 0) currentGame.currentPlayer.setMAX_HEALTH(200);
+//            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
+//                currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 100);
+//                currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 100);
+//                currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft --);
+//            }
+//            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
+//                currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 50);
+//                currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 50);
+//                currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft --);
+//            }
+//            if (currentGame.currentPlayer.Buff_mining_hoursLeft > 0) currentGame.currentPlayer.setBuff_mining_hoursLeft(currentGame.currentPlayer.Buff_mining_hoursLeft --);
+//            if (currentGame.currentPlayer.Buff_fishing_hoursLeft > 0) currentGame.currentPlayer.setBuff_fishing_hoursLeft(currentGame.currentPlayer.Buff_fishing_hoursLeft --);
+//            if (currentGame.currentPlayer.Buff_farming_hoursLeft > 0) currentGame.currentPlayer.setBuff_farming_hoursLeft(currentGame.currentPlayer.Buff_farming_hoursLeft --);
+//            if (currentGame.currentPlayer.Buff_foraging_hoursLeft > 0) currentGame.currentPlayer.setBuff_foraging_hoursLeft(currentGame.currentPlayer.Buff_foraging_hoursLeft --);
+//
+//        }
+//        else
+//            currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
+//
+//        DateHour dateHour = currentGame.currentDate.clone();
+//
+//        currentGame.currentDate.increaseHour(hour);
+//        currentGame.currentDate.increaseDay(day);
+//
+//        for (int i = 0 ; i < getDayDifferent(dateHour, currentGame.currentDate) ; i++)
+//            startDay();
+//
+//        if (currentGame.currentDate.getHour() > 22)
+//            passedOfTime(0, 24 - currentGame.currentDate.getHour() + 9);
+//        if (currentGame.currentDate.getHour() < 9)
+//            passedOfTime(0, 9 - currentGame.currentDate.getHour());
+
+    }
+
     public void startNewGame (String input) {
         System.out.println(RED+"Starting New Game..."+RESET);
 
@@ -3347,8 +3425,9 @@ public class GameController {
 
                 ((Tree) object).setLastFruit(currentGame.currentDate);
                 currentGame.currentPlayer.increaseFarmingAbility(5);
+                ((Tree) object).setLastFruit(currentGame.currentDate);
                 return new Result(true, BLUE + "You got " + type.getHarvestYield()
-                        + type.getProductType().getDisplayName() + RESET);
+                        + " " + type.getProductType().getDisplayName() + RESET);
             } else
                 return new Result(true, RED + "This tree doesn't have fruit" + RESET);
         }
@@ -4422,6 +4501,9 @@ public class GameController {
 
         Tools tools = currentGame.currentPlayer.currentTool;
 
+        if (currentGame.currentPlayer.currentTool == null)
+            return new Result(false, RED + "please pick up a tools" + RESET);
+
         if (tools instanceof Axe)
             return useAxe(dir);
         else if (tools instanceof Hoe) {
@@ -4569,32 +4651,39 @@ public class GameController {
     }
     public void plantCreator () {
 
-        for (int i = 21 ; i >= 19; i--)
-            for (int j = 25 ; j >= 23 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
+//        for (int i = 21 ; i >= 19; i--)
+//            for (int j = 25 ; j >= 23 ; j--)
+//                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
+//
+//        for (int i = 25 ; i >= 23; i--)
+//            for (int j = 25 ; j >= 23 ; j--)
+//                getTileByCoordinates(i, j).setGameObject(new ForagingSeeds(ForagingSeedsType.CornSeeds, currentGame.currentDate));
+//
+//        int x = 18;
+//        for (int j = 26 ; j >= 22 ; j--)
+//            getTileByCoordinates(x, j).setGameObject(new Walkable());
+//
+//        x = 26;
+//        for (int j = 26 ; j >= 22 ; j--)
+//            getTileByCoordinates(x, j).setGameObject(new Walkable());
+//
+//        x = 22;
+//        for (int j = 26 ; j >= 22 ; j--)
+//            getTileByCoordinates(x, j).setGameObject(new Walkable());
+//
+//        x = 14;
+//        for (int j = 26 ; j >= 22 ; j--)
+//            getTileByCoordinates(x, j).setGameObject(new Walkable());
+//
+//        for (int i = 17 ; i >= 15; i--)
+//            for (int j = 25 ; j >= 23 ; j--)
+//                getTileByCoordinates(i, j).setGameObject(new Tree(TreeType.CherryTree, currentGame.currentDate));
 
-        for (int i = 25 ; i >= 23; i--)
-            for (int j = 25 ; j >= 23 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingSeeds(ForagingSeedsType.CornSeeds, currentGame.currentDate));
-        int x = 18;
-        for (int j = 26 ; j >= 22 ; j--)
-            getTileByCoordinates(x, j).setGameObject(new Walkable());
-
-        x = 26;
-        for (int j = 26 ; j >= 22 ; j--)
-            getTileByCoordinates(x, j).setGameObject(new Walkable());
-
-        x = 22;
-        for (int j = 26 ; j >= 22 ; j--)
-            getTileByCoordinates(x, j).setGameObject(new Walkable());
-
-        x = 14;
-        for (int j = 26 ; j >= 22 ; j--)
-            getTileByCoordinates(x, j).setGameObject(new Walkable());
-
-        for (int i = 17 ; i >= 15; i--)
-            for (int j = 25 ; j >= 23 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new Tree(TreeType.CherryTree, currentGame.currentDate));
-
+        for (int i = 20; i < 25; i++)
+            for (int j = 20; j < 25; j++) {
+                Walkable w = new Walkable();
+                w.setGrassOrFiber("Plowed");
+                getTileByCoordinates(i, j).setGameObject(w);
+            }
     }
 }

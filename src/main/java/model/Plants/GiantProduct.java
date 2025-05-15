@@ -64,9 +64,10 @@ public class GiantProduct extends Items {
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
-            if (defDays > days && (days+this.type.getStageDate(i)) > defDays)
-                stage = i+1;
-            else
+            if (defDays > days && (days+this.type.getStageDate(i)) > defDays) {
+                stage = i + 1;
+                return;
+            } else
                 days += this.type.getStageDate(i);
         }
         if (defDays > 8 && stage == 1)
@@ -86,7 +87,7 @@ public class GiantProduct extends Items {
     }
     public boolean checkForDeath () {
 
-        return getDayDifferent(lastWater, currentGame.currentDate) > 1;
+        return getDayDifferent(lastWater, currentGame.currentDate) > 2;
     }
     public void harvest () {
 
