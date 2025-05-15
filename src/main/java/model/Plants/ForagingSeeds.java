@@ -33,6 +33,15 @@ public class ForagingSeeds extends Items {
         haveProduct = false;
         todayFertilize = false;
     }
+    public ForagingSeeds(ForagingSeedsType type) {
+
+        stage = 1;
+        numFertilize = 0;
+        this.type = type;
+        isProtected = false;
+        haveProduct = false;
+        todayFertilize = false;
+    }
 
     public ForagingSeedsType getType() {
 
