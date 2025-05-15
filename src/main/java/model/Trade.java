@@ -18,7 +18,6 @@ import static java.lang.Math.floor;
 import static java.lang.Math.random;
 import static model.App.*;
 import static model.Color_Eraser.*;
-import static model.SaveData.UserDataBase.findUserByUsername;
 
 public class Trade {
 
@@ -28,7 +27,7 @@ public class Trade {
     private final String senderGivesWhat;
     private final String receiverGivesWhat;
     private boolean responded = false;
-    private int id = (int) floor(random()/100);
+    private int id;
     private final char senderGivesPorT;
     private final char receiverGivesPorT;
     private final int senderAmount;
@@ -43,6 +42,7 @@ public class Trade {
         this.receiverGivesPorT = receiverGivesPorT;
         this.senderAmount = senderAmount;
         this.receiverAmount = receiverAmount;
+        this.id = (int) (random()*100);
     }
 
     public static Trade findTradeByID (int id) {
@@ -101,7 +101,7 @@ public class Trade {
 
         if (response.equalsIgnoreCase("reject")) {
             f.reduceXP(30);
-            return new Result(true, RED+"Rejected"+RESET + GREEN+"Successfully."+RESET);
+            return new Result(true, RED+"Rejected"+RESET + GREEN+" Successfully."+RESET);
         }
         else if (!response.equalsIgnoreCase("accept"))
             return new Result(false, RED+"Please Respond in Correct Format!"+RESET);
@@ -381,22 +381,23 @@ public class Trade {
         if (currentGame.currentPlayer.getUsername().equals(username))
             return new Result(false, RED+"You Can't Trade With Yourself!"+RESET);
 
+        User mentionedPlayer = null;
         boolean userFound = false;
         for (User p: currentGame.players) {
             if (p.getUsername().equals(username)){
                 userFound = true;
+                mentionedPlayer = p;
                 break;
             }
         }
         if (!userFound)
             return new Result(false, RED+"User Not Found!"+RESET);
-        if (!isNeighbor(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY(), Objects.requireNonNull(findUserByUsername(username)).getPositionX(), Objects.requireNonNull(findUserByUsername(username)).getPositionY()))
+        if (!isNeighbor(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY(), mentionedPlayer.getPositionX(), mentionedPlayer.getPositionY()))
             return new Result(false, RED+"Get Closer To Trade!"+RESET);
         if (!(type.trim().equalsIgnoreCase("offer") || type.trim().equalsIgnoreCase("request")))
             return new Result(false, RED+"type Doesn't Match!"+RESET);
         if (P_or_T == 'p' && type.trim().equalsIgnoreCase("request") && price > currentGame.currentPlayer.getMoney())
             return new Result(false, RED+"Not Enough Money For this Request!"+RESET);
-
 
         Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
 

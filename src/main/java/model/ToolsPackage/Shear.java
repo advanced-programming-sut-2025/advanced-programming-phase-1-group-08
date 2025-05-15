@@ -39,4 +39,9 @@ public class Shear extends Tools {
     public String getName() {
         return "Shear";
     }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
 }

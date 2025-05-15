@@ -13,4 +13,9 @@ public abstract class Tools extends Items {
 
 
     public abstract int healthCost ();
+
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
 }

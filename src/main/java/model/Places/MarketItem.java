@@ -17,4 +17,9 @@ public class MarketItem extends Items {
     public String getName() {
         return type.getName();
     }
+
+    @Override
+    public int getSellPrice() {
+        return type.getSellPrice();
+    }
 }

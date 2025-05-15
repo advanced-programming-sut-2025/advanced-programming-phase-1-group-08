@@ -1,11 +1,6 @@
 package model.Enum.ToolsType;
 
-import model.Animall.Fish;
-import model.App;
-import model.Enum.ItemType.MarketType;
-
-import java.util.ArrayList;
-
+import static model.App.currentPlayer;
 import static model.App.currentGame;
 
 
@@ -157,5 +152,16 @@ public enum FishingPoleType {
             return true;
         }
         return false;
+    }
+
+    public static FishingPoleType getFishingPoleType(String name){
+        return switch (name) {
+            case "Training Rod" -> TrainingRod;
+            case "Bamboo Pole" -> BambooPole;
+            case "Fiberglass Rod" -> FiberglassRod;
+            case "Iridium Rod" -> IridiumRod;
+            default -> null;
+        };
+
     }
 }

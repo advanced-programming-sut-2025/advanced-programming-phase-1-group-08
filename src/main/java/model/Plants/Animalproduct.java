@@ -1,4 +1,4 @@
-package model.Animall;
+package model.Plants;
 
 import model.Enum.ItemType.AnimalProductType;
 import model.Enum.ItemType.Quantity;
@@ -6,16 +6,16 @@ import model.Items;
 
 public class Animalproduct extends Items {
 
-    private final AnimalProductType AnimalProductType;
+    private final AnimalProductType type;
     private final Quantity quantity;
 
     public Animalproduct(AnimalProductType animalProductType, Quantity quantity) {
-        this.AnimalProductType = animalProductType;
+        this.type = animalProductType;
         this.quantity = quantity;
     }
 
-    public AnimalProductType getAnimalProductType() {
-        return AnimalProductType;
+    public AnimalProductType getType() {
+        return type;
     }
 
     public Quantity getQuantity() {
@@ -24,6 +24,11 @@ public class Animalproduct extends Items {
 
     @Override
     public String getName() {
-        return AnimalProductType.getName();
+        return type.getName();
+    }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
     }
 }

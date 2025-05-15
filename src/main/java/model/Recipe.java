@@ -1,7 +1,7 @@
 package model;
 
-import model.Animall.Animalproduct;
-import model.Animall.Fish;
+import model.Plants.Animalproduct;
+import model.Plants.Fish;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.AllPlants.ForagingCropsType;
 import model.Enum.AllPlants.TreesProductType;
@@ -69,7 +69,7 @@ public class Recipe {
         HashMap<Items, Integer> FriedEggIngredients = new HashMap<>();
         FriedEggIngredients.put(new Animalproduct(AnimalProductType.Egg, Quantity.Normal), 1);
         Recipe FriedEgg = new Recipe(
-                "fried egg",
+                "Fried Egg",
                 true,
                 FoodTypes.friedEgg,
                 FriedEggIngredients,
@@ -83,7 +83,7 @@ public class Recipe {
         bakedFishIngredients.put(new Fish(FishType.Salmon, Quantity.Normal), 1);
         bakedFishIngredients.put(new MarketItem(MarketItemType.WheatFlour), 1);
         Recipe bakedFish = new Recipe(
-                "baked fish",
+                "Baked Fish",
                 true,
                 FoodTypes.bakedFish,
                 bakedFishIngredients,
@@ -96,7 +96,7 @@ public class Recipe {
         saladIngredients.put(new ForagingCrops(ForagingCropsType.Leek), 1);
         saladIngredients.put(new ForagingCrops(ForagingCropsType.Dandelion), 1);
         Recipe salad = new Recipe(
-                "salad",
+                "Salad",
                 true,
                 FoodTypes.salad,
                 saladIngredients,
@@ -109,7 +109,7 @@ public class Recipe {
         omeletIngredients.put(new Animalproduct(AnimalProductType.Egg, Quantity.Normal), 1);
         omeletIngredients.put(new Animalproduct(AnimalProductType.milk, Quantity.Normal), 1);
         Recipe omelet = new Recipe(
-                "omelet",
+                "Omelet",
                 false,
                 FoodTypes.omelet,
                 omeletIngredients,
@@ -124,7 +124,7 @@ public class Recipe {
         pumpkinPieIng.put(new MarketItem(MarketItemType.WheatFlour), 1);
         pumpkinPieIng.put(new MarketItem(MarketItemType.Sugar), 1);
         Recipe pumpkinPie = new Recipe(
-                "pumpkin pie",
+                "Pumpkin pie",
                 true,
                 FoodTypes.pumpkinPie,
                 pumpkinPieIng,
@@ -137,7 +137,7 @@ public class Recipe {
         spaghettiIng.put(new AllCrops(CropsType.Tomato), 1);
         spaghettiIng.put(new MarketItem(MarketItemType.WheatFlour), 1);
         Recipe spaghetti = new Recipe(
-                "spaghetti",
+                "Spaghetti",
                 true,
                 FoodTypes.spaghetti,
                 spaghettiIng,
@@ -151,7 +151,7 @@ public class Recipe {
         pizzaIng.put(new MarketItem(MarketItemType.WheatFlour), 1);
         pizzaIng.put(new ArtisanProduct(ArtisanType.Cheese), 1);
         Recipe pizza = new Recipe(
-                "pizza",
+                "Pizza",
                 false,
                 FoodTypes.pizza,
                 pizzaIng,
@@ -163,7 +163,7 @@ public class Recipe {
         HashMap<Items, Integer> tortillaIng = new HashMap<>();
         tortillaIng.put(new AllCrops(CropsType.Corn), 1);
         Recipe tortilla = new Recipe(
-                "tortilla",
+                "Tortilla",
                 false,
                 FoodTypes.tortilla,
                 tortillaIng,
@@ -177,7 +177,7 @@ public class Recipe {
         makiRollIng.put(new ForagingCrops(ForagingCropsType.Fiber), 1);
         makiRollIng.put(new Fish(FishType.Tilapia, Quantity.Normal), 1);
         Recipe makiRoll = new Recipe(
-                "maki roll",
+                "Maki Roll",
                 false,
                 FoodTypes.makiRoll,
                 makiRollIng,
@@ -189,7 +189,7 @@ public class Recipe {
         HashMap<Items, Integer> coffeeIng = new HashMap<>();
         coffeeIng.put(new MarketItem(MarketItemType.Coffee), 3);
         Recipe tripleShotEspresso = new Recipe(
-                "triple shot espresso",
+                "Triple Shot Espresso",
                 false,
                 FoodTypes.tripleShotEspresso,
                 coffeeIng,
@@ -203,7 +203,7 @@ public class Recipe {
         cookieIng.put(new MarketItem(MarketItemType.Sugar), 1);
         cookieIng.put(new Animalproduct(AnimalProductType.Egg, Quantity.Normal), 1);
         Recipe cookie = new Recipe(
-                "cookie",
+                "Cookie",
                 false,
                 FoodTypes.cookie,
                 cookieIng,
@@ -216,7 +216,7 @@ public class Recipe {
         hashBrownsIng.put(new MarketItem(MarketItemType.Oil), 1);
         hashBrownsIng.put(new AllCrops(CropsType.Potato), 1);
         Recipe hashBrowns = new Recipe(
-                "hash browns",
+                "Hash Browns",
                 false,
                 FoodTypes.hashBrowns,
                 hashBrownsIng,
@@ -229,7 +229,7 @@ public class Recipe {
         pancakesIng.put(new MarketItem(MarketItemType.WheatFlour), 1);
         pancakesIng.put(new Animalproduct(AnimalProductType.Egg, Quantity.Normal), 1);
         Recipe pancakes = new Recipe(
-                "pancakes",
+                "Pancakes",
                 false,
                 FoodTypes.pancakes,
                 pancakesIng,
@@ -243,7 +243,7 @@ public class Recipe {
         fruitSaladIng.put(new AllCrops(CropsType.Melon), 1);
         fruitSaladIng.put(new TreesProdct(TreesProductType.Apricot), 1);
         Recipe fruitSalad = new Recipe(
-                "fruit salad",
+                "Fruit Salad",
                 true,
                 FoodTypes.fruitSalad,
                 fruitSaladIng,
@@ -256,7 +256,7 @@ public class Recipe {
         redPlateIng.put(new AllCrops(CropsType.RedCabbage), 1);
         redPlateIng.put(new AllCrops(CropsType.Radish), 1);
         Recipe redPlate = new Recipe(
-                "red plate",
+                "Red Plate",
                 true,
                 FoodTypes.redPlate,
                 redPlateIng,
@@ -268,7 +268,7 @@ public class Recipe {
         HashMap<Items, Integer> breadIng = new HashMap<>();
         breadIng.put(new MarketItem(MarketItemType.WheatFlour), 1);
         Recipe bread = new Recipe(
-                "bread",
+                "Bread",
                 false,
                 FoodTypes.bread,
                 breadIng,
@@ -282,7 +282,7 @@ public class Recipe {
         salmonDinnerIng.put(new AllCrops(CropsType.Amaranth), 1);
         salmonDinnerIng.put(new AllCrops(CropsType.Kale), 1);
         Recipe salmonDinner = new Recipe(
-                "salmon dinner",
+                "Salmon Dinner",
                 false,
                 FoodTypes.salmonDinner,
                 salmonDinnerIng,
@@ -295,7 +295,7 @@ public class Recipe {
         vegetableMedleyIng.put(new AllCrops(CropsType.Tomato), 1);
         vegetableMedleyIng.put(new AllCrops(CropsType.Beet), 1);
         Recipe vegetableMedley  = new Recipe(
-                "vegetable medley",
+                "Vegetable Medley",
                 false,
                 FoodTypes.vegetableMedley,
                 vegetableMedleyIng,
@@ -309,7 +309,7 @@ public class Recipe {
         survivalBurgerIng.put(new AllCrops(CropsType.Carrot), 1);
         survivalBurgerIng.put(new AllCrops(CropsType.Eggplant), 1);
         Recipe survivalBurger  = new Recipe(
-                "survival burger",
+                "Survival Burger",
                 false,
                 FoodTypes.survivalBurger,
                 survivalBurgerIng,
@@ -322,7 +322,7 @@ public class Recipe {
         survivalBurgerIng.put(new Fish(FishType.Flounder, Quantity.Normal), 1);
         survivalBurgerIng.put(new Fish(FishType.Midnight_Carp, Quantity.Normal), 1);
         Recipe seaFormPudding  = new Recipe(
-                "seaform pudding",
+                "Seaform Pudding",
                 false,
                 FoodTypes.seaformPudding,
                 seaFormPuddingIng,
@@ -336,7 +336,7 @@ public class Recipe {
         minersTreatIng.put(new Animalproduct(AnimalProductType.milk, Quantity.Normal), 1);
         minersTreatIng.put(new MarketItem(MarketItemType.Sugar), 1);
         Recipe minersTreat  = new Recipe(
-                "miner's treat",
+                "Miner's Treat",
                 false,
                 FoodTypes.minersTreat,
                 minersTreatIng,

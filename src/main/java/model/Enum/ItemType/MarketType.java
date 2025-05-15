@@ -68,4 +68,16 @@ public enum MarketType {
         }
         return null;
     }
+
+    public static MarketType isInMarket(int x , int y) {
+        for (MarketType marketType : MarketType.values()) {
+            boolean b = y < marketType.getToplefty() + marketType.getHeight();
+            boolean a= x < marketType.getTopleftx() + marketType.getWidth();
+
+            if (x > marketType.getTopleftx() && y > marketType.getToplefty() && a && b) {
+                return marketType;
+            }
+        }
+        return null;
+    }
 }

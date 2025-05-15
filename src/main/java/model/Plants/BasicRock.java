@@ -17,4 +17,9 @@ public class BasicRock extends Items {
     public String getName() {
         return "Stone";
     }
+
+    @Override
+    public int getSellPrice() {
+        return 20;
+    }
 }
