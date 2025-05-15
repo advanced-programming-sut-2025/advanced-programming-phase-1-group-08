@@ -1,6 +1,7 @@
 package View;
 
 import Controller.CraftingController;
+import Controller.GameController;
 import Controller.HomeController;
 import model.App;
 import model.Enum.Commands.GameMenuCommands;

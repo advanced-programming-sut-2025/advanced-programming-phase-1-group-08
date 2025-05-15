@@ -69,6 +69,8 @@ public class GiantProduct extends Items {
             else
                 days += this.type.getStageDate(i);
         }
+        if (defDays > 8 && stage == 1)
+            stage = type.getGrowthStages();
     }
 
 
@@ -125,7 +127,7 @@ public class GiantProduct extends Items {
 
         return isProtected;
     }
-    public boolean isHaveProduct() {
+    public boolean  isHaveProduct() {
 
         return haveProduct;
     }
@@ -137,7 +139,7 @@ public class GiantProduct extends Items {
 
         return this.lastWater;
     }
-    public boolean isTodayFertilize() {
+    public boolean  isTodayFertilize() {
 
         return todayFertilize;
     }

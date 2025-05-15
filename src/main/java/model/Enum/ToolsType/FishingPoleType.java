@@ -1,6 +1,5 @@
 package model.Enum.ToolsType;
 
-import static model.App.currentPlayer;
 import static model.App.currentGame;
 
 

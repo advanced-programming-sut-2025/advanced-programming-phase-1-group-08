@@ -827,7 +827,7 @@ public class Marketing {
             return new Result(false ,"for buy this fishing pole you should be at least in level " + poleType.getLevel());
         }
 
-        if (amount > currentPlayer.getBackPack().getType().getRemindCapacity()) {
+        if (amount > currentGame.currentPlayer.getBackPack().getType().getRemindCapacity()) {
             return new Result(false , "Not enough capacity in your backpack");
         }
 
@@ -846,7 +846,7 @@ public class Marketing {
         fishingPole.type = poleType;
         inventory.Items.put(fishingPole, amount);
         poleType.incrementShopLimit(-amount);
-        currentPlayer.increaseMoney(- amount * poleType.getPrice());
+        currentGame.currentPlayer.increaseMoney(- amount * poleType.getPrice());
 
         return new Result(true , "You bought " + poleType.name() +" successfully");
 
@@ -912,11 +912,11 @@ public class Marketing {
     }
 
     public Result upgradeTool (String name) {
-        MarketType marketType=MarketType.isInMarket(currentPlayer.getPositionX() , currentPlayer.getPositionY());
+        MarketType marketType=MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());
         if (marketType!=MarketType.Blacksmith) {
             return new Result(false , "you are not in BlackSmith Market. please go there");
         }
-        Inventory inventory = currentPlayer.getBackPack().inventory;
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
 
         if ( name.equals("Axe") ) {
             for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
@@ -927,7 +927,7 @@ public class Marketing {
                     }
                     else if (AxeType.checkIngredient(axeType)) {
                         ((Axe) entry.getKey()).setType(axeType);
-                        currentPlayer.increaseMoney( - axeType.getPrice());
+                        currentGame.currentPlayer.increaseMoney( - axeType.getPrice());
                         return new Result(true , name + "updated successfully");
                     }
                     else {
@@ -946,7 +946,7 @@ public class Marketing {
                     }
                     else if (HoeType.checkIngredient(hoeType)) {
                         ((Hoe) entry.getKey()).setType(hoeType);
-                        currentPlayer.increaseMoney( - hoeType.getPrice());
+                        currentGame.currentPlayer.increaseMoney( - hoeType.getPrice());
                         return new Result(true , name + "updated successfully");
                     }
                     else {
@@ -965,7 +965,7 @@ public class Marketing {
                     }
                     else if (PickAxeType.checkIngredient(pickAxeType)) {
                         ((PickAxe) entry.getKey()).setType(pickAxeType);
-                        currentPlayer.increaseMoney( - pickAxeType.getPrice());
+                        currentGame.currentPlayer.increaseMoney( - pickAxeType.getPrice());
                         return new Result(true , name + "updated successfully");
                     }
                     else {
@@ -984,7 +984,7 @@ public class Marketing {
                     }
                     else if (WateringCanType.checkIngredient(wateringCanType)) {
                         ((WateringCan) entry.getKey()).setType(wateringCanType);
-                        currentPlayer.increaseMoney( - wateringCanType.getPrice());
+                        currentGame.currentPlayer.increaseMoney( - wateringCanType.getPrice());
                         return new Result(true , name + "updated successfully");
                     }
                     else {
@@ -1003,7 +1003,7 @@ public class Marketing {
                     }
                     else if (TrashCanType.checkIngredient(trashCanType)) {
                         ((TrashCan) entry.getKey()).setType(trashCanType);
-                        currentPlayer.increaseMoney( - trashCanType.getPrice());
+                        currentGame.currentPlayer.increaseMoney( - trashCanType.getPrice());
                         return new Result(true , name + " updated successfully");
                     }
                     else {

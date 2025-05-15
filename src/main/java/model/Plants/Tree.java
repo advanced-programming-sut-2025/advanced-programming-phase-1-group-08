@@ -124,13 +124,13 @@ public class Tree extends Items {
         DateHour dateHour = currentGame.currentDate.clone();
         dateHour.increaseDay(numFertilize);
 
-        this.haveFruit = this.type.getSourceType().getSeason().contains(currentGame.currentDate.getSeason()) &&
+        this.haveFruit = this.type.getSeason().contains(currentGame.currentDate.getSeason()) &&
                 getDayDifferent(lastFruit, dateHour) > 6;
     }
     public void delete () {
 
         for (Tile tile : currentGame.bigMap)
-            if (tile.getGameObject().equals(this))
+            if (tile.getGameObject() == this)
                 tile.setGameObject(new Walkable());
     }
 

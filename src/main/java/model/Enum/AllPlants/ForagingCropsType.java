@@ -99,14 +99,14 @@ public enum ForagingCropsType {
     public static String getInformation (ForagingCropsType type) {
 
         StringBuilder builder = new StringBuilder();
-        builder.append(BLUE+"Name : "+RESET).append(type.displayName)
-                .append(BLUE+"\nPrice : "+RESET).append(type.price)
-                .append(BLUE+"\nEnergy : "+RESET).append(type.energy)
+        builder.append(BLUE+"Name : "+BRIGHT_GREEN).append(type.displayName)
+                .append(BLUE+"\nPrice  : "+BRIGHT_RED).append(type.price)
+                .append(BLUE+"\nEnergy : "+BRIGHT_RED).append(type.energy)
                 .append(BLUE+"\nIcon : "+RESET).append(type.icon)
                 .append(BLUE+"\nSeasons : "+RESET);
 
         for (Season season : type.seasons)
-            builder.append(season).append(",");
+            builder.append(season.getDisplayName()).append(" ").append(RESET);
 
         builder.deleteCharAt(builder.length() - 1);
 

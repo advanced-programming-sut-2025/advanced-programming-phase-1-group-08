@@ -4,6 +4,7 @@ import Controller.GameController;
 import Controller.TradeController;
 import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Menu;
+import model.Result;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;

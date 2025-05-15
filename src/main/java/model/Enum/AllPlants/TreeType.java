@@ -1,51 +1,134 @@
 package model.Enum.AllPlants;
 
+import model.Enum.WeatherTime.Season;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static model.Color_Eraser.*;
-import static model.Enum.AllPlants.TreesSourceType.*;
 
 public enum TreeType {
 
-    ApricotTree     ("Apricot Tree",  Apricot_Sapling,  TreesProductType.Apricot,
-            1,BG_WHITE+BLACK+BOLD+"A"+RESET, BG_WHITE+BRIGHT_GREEN+BOLD+"A"+RESET),
-    CherryTree      ("Cherry Tree",   Cherry_Sapling,   TreesProductType.Cherry,
-            1,BG_WHITE+BLACK+BOLD+"C"+RESET, BG_WHITE+GREEN+BOLD+"C"+RESET),
-    BananaTree      ("Banana Tree",   Banana_Sapling,   TreesProductType.Banana,
-            1,BG_WHITE+BLACK+BOLD+"B"+RESET, BG_WHITE+GREEN+BOLD+"B"+RESET),
-    MangoTree       ("Mango Tree",    Mango_Sapling,    TreesProductType.Mango,
-            1,BG_WHITE+BLACK+BOLD+"M"+RESET, BG_WHITE+GREEN+BOLD+"M"+RESET),
-    OrangeTree      ("Orange Tree",   Orange_Sapling,   TreesProductType.Orange,
-            1,BG_WHITE+BLACK+BOLD+"O"+RESET, BG_WHITE+GREEN+BOLD+"O"+RESET),
-    PeachTree       ("Peach Tree",    Peach_Sapling,    TreesProductType.Peach,
-            1,BG_WHITE+BLACK+BOLD+"P"+RESET, BG_WHITE+GREEN+BOLD+"P"+RESET),
-    AppleTree       ("Apple Tree",    Apple_Sapling,    TreesProductType.Apple,
-            1,BG_WHITE+BLACK+BOLD+"A"+RESET, BG_WHITE+GREEN+BOLD+"A"+RESET),
-    OakTree         ("Oak Tree",      Acorns,           TreesProductType.OakResin,
-            7,BG_WHITE+BLACK+BOLD+"O"+RESET, BG_WHITE+GREEN+BOLD+"O"+RESET),
-    MapleTree       ("Maple Tree",    Maple_Seeds,      TreesProductType.MapleSyrup,
-            9,BG_WHITE+BLACK+BOLD+"M"+RESET, BG_WHITE+GREEN+BOLD+"M"+RESET),
-    PineTree        ("Pine Tree",     Pine_Cones,       TreesProductType.PineTar,
-            5,BG_WHITE+BLACK+BOLD+"P"+RESET, BG_WHITE+GREEN+BOLD+"P"+RESET),
-    MahoganyTree    ("Mahogany Tree", Mahogany_Seeds,   TreesProductType.Sap,
-            1,BG_WHITE+BRIGHT_WHITE+BOLD+"M"+RESET, BG_WHITE+BROWN+BOLD+"M"+RESET),
-    MysticTree      ("Mystic Tree",   Mystic_Tree_Seeds,TreesProductType.MysticSyrup,
-            7,BG_WHITE+PURPLE+BOLD+"M"+RESET, BG_WHITE+BROWN+BOLD+"M"+RESET),
-    MushroomTree    ("Mushroom Tree", Mushroom_Tree_Seeds,    TreesProductType.CommonMushroom,
-            1,BG_BLUE+BLACK+BOLD+"M"+RESET, BG_BLUE+GREEN+BOLD+"M"+RESET),
-    PomegranateTree ("Pomegranate Tree", Pomegranate_Sapling, TreesProductType.Pomegranate,
-            1,BG_WHITE+BROWN+BOLD+"P"+RESET, BG_WHITE+RED+BOLD+"P"+RESET);
+    ApricotTree     ("Apricot Tree", TreesProductType.Apricot,
+            1,BG_WHITE+BLACK+BOLD+"A"+RESET, BG_WHITE+BRIGHT_GREEN+BOLD+"A"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of( Season.Spring));
+        }
+    },
+    CherryTree      ("Cherry Tree", TreesProductType.Cherry,
+            1,BG_WHITE+BLACK+BOLD+"C"+RESET, BG_WHITE+GREEN+BOLD+"C"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of( Season.Spring));
+        }
+    },
+    BananaTree      ("Banana Tree", TreesProductType.Banana,
+            1,BG_WHITE+BLACK+BOLD+"B"+RESET, BG_WHITE+GREEN+BOLD+"B"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of(Season.Summer));
+        }
+    },
+    MangoTree       ("Mango Tree", TreesProductType.Mango,
+            1,BG_WHITE+BLACK+BOLD+"M"+RESET, BG_WHITE+GREEN+BOLD+"M"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of(Season.Summer));
+        }
+
+    },
+    OrangeTree      ("Orange Tree", TreesProductType.Orange,
+            1,BG_WHITE+BLACK+BOLD+"O"+RESET, BG_WHITE+GREEN+BOLD+"O"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of(Season.Summer));
+        }
+
+    },
+    PeachTree       ("Peach Tree", TreesProductType.Peach,
+            1,BG_WHITE+BLACK+BOLD+"P"+RESET, BG_WHITE+GREEN+BOLD+"P"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of(Season.Summer));
+        }
+
+    },
+    AppleTree       ("Apple Tree", TreesProductType.Apple,
+            1,BG_WHITE+BLACK+BOLD+"A"+RESET, BG_WHITE+GREEN+BOLD+"A"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of(Season.Fall));
+        }
+
+    },
+    OakTree         ("Oak Tree", TreesProductType.OakResin,
+            7,BG_WHITE+BLACK+BOLD+"O"+RESET, BG_WHITE+GREEN+BOLD+"O"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
+        }
+
+    },
+    MapleTree       ("Maple Tree", TreesProductType.MapleSyrup,
+            9,BG_WHITE+BLACK+BOLD+"M"+RESET, BG_WHITE+GREEN+BOLD+"M"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
+        }
+
+    },
+    PineTree        ("Pine Tree", TreesProductType.PineTar,
+            5,BG_WHITE+BLACK+BOLD+"P"+RESET, BG_WHITE+GREEN+BOLD+"P"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of(Season.Fall));
+        }
+
+    },
+    MahoganyTree    ("Mahogany Tree", TreesProductType.Sap,
+            1,BG_WHITE+BRIGHT_WHITE+BOLD+"M"+RESET, BG_WHITE+BROWN+BOLD+"M"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
+        }
+
+    },
+    MysticTree      ("Mystic Tree", TreesProductType.MysticSyrup,
+            7,BG_WHITE+PURPLE+BOLD+"M"+RESET, BG_WHITE+BROWN+BOLD+"M"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
+        }
+
+    },
+    MushroomTree    ("Mushroom Tree", TreesProductType.CommonMushroom,
+            1,BG_BLUE+BLACK+BOLD+"M"+RESET, BG_BLUE+GREEN+BOLD+"M"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
+        }
+
+    },
+    PomegranateTree ("Pomegranate Tree", TreesProductType.Pomegranate,
+            1,BG_WHITE+BROWN+BOLD+"P"+RESET, BG_WHITE+RED+BOLD+"P"+RESET) {
+        @Override
+        public ArrayList<Season> getSeason() {
+            return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
+        }
+
+    };
 
     private final String displayName;
-    private final TreesSourceType sourceType;
     private final TreesProductType productType;
     private final int harvestYield;
     private final String icon1;
     private final String icon2;
 
-    TreeType (String displayName, TreesSourceType sourceType, TreesProductType productType,
+    TreeType (String displayName, TreesProductType productType,
               int harvestYield, String icon1, String icon2) {
 
         this.displayName = displayName;
-        this.sourceType = sourceType;
         this.productType = productType;
         this.harvestYield = harvestYield;
         this.icon1 = icon1;
@@ -61,17 +144,15 @@ public enum TreeType {
         return icon2;
     }
     public String getDisplayName() {return displayName;}
-    public TreesSourceType getSourceType() {return sourceType;}
     public TreesProductType getProductType() {return productType;}
     public int getHarvestYield() {return harvestYield;}
     public static String getInformation (TreeType type) {
 
-        return BLUE+"Name :"+RESET + type.displayName +
-                BLUE+"\nFruit :"+RESET + type.productType.getDisplayName() +
-                BLUE+"\nSource : "+RESET + type.sourceType.getDisplayName() +
-                BLUE+"\nMature Icon   :"+RESET + type.icon2 +
-                BLUE+"\nSeedling Icon : "+RESET + type.icon1 +
-                BLUE+"\nFruit Harvest Cycle :"+RESET + type.harvestYield;
+        return BLUE+"Name : "+BRIGHT_PURPLE + type.displayName +
+                BLUE+"\nFruit : "+BRIGHT_PURPLE + type.productType.getDisplayName() +
+                BLUE+"\nMature Icon   : "+BRIGHT_PURPLE + type.icon2 +
+                BLUE+"\nSeedling Icon : "+BRIGHT_PURPLE + type.icon1 +
+                BLUE+"\nFruit Harvest Cycle : "+BRIGHT_PURPLE + type.harvestYield;
     }
 
     public static TreeType fromDisplayName(String displayName) {
@@ -80,4 +161,6 @@ public enum TreeType {
                 return type;
         throw new IllegalArgumentException(RED+"wrong name!"+RESET);
     }
+    public abstract ArrayList<Season> getSeason();
+
 }
