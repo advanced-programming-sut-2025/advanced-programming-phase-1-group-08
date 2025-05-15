@@ -1,5 +1,10 @@
 package model.Enum.ItemType;
 
+import model.Enum.AllPlants.TreesSourceType;
+
+import static model.Color_Eraser.RED;
+import static model.Color_Eraser.RESET;
+
 public enum AnimalProductType {
 
     Egg("Egg" , 50),
@@ -37,5 +42,12 @@ public enum AnimalProductType {
 
     public String getName() {
         return name;
+    }
+
+    public static AnimalProductType fromDisplayName(String displayName) {
+        for (AnimalProductType type : AnimalProductType.values())
+            if (type.getName().equals(displayName))
+                return type;
+        throw new IllegalArgumentException(RED+"wrong name!"+RESET);
     }
 }

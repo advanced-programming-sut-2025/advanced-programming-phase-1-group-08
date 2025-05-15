@@ -25,4 +25,6 @@ public class Fish extends Items {
     public String getName() {
         return fishType.getName();
     }
+
+
 }

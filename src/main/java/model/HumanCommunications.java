@@ -83,16 +83,16 @@ public class HumanCommunications {
 
         if (FriendshipLevel == 3 && getXP() < 0) {
             decreaseLevel();
-            setXP(300 - getXP());
+            setXP(300 + getXP());
             BOUQUETBought = false;
         }
         if (FriendshipLevel == 2 && getXP() < 0) {
             decreaseLevel();
-            setXP(200 - getXP());
+            setXP(200 + getXP());
         }
         if (FriendshipLevel == 1 && getXP() < 0) {
             decreaseLevel();
-            setXP(100 - getXP());
+            setXP(100 + getXP());
         }
         if (FriendshipLevel == 0 && getXP() < 0)
             setXP(0);

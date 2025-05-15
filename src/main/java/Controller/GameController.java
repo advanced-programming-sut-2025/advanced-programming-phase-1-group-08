@@ -3891,7 +3891,7 @@ public class GameController {
             return new Result(false, RED+"Time is incorrect!"+RESET);
         }
         passedOfTime(amount, 0);
-        return new Result(true, BLUE+"Date change to : "+RED+currentGame.currentDate.getYear()+RESET+" "+currentGame.currentDate.getNameSeason()+" "+currentGame.currentDate.getDate());
+        return new Result(true, BLUE+"Date changed to : "+RED+currentGame.currentDate.getYear()+RESET+" "+currentGame.currentDate.getNameSeason()+" "+currentGame.currentDate.getDate());
     }
     public Result showEnergy () {
 
