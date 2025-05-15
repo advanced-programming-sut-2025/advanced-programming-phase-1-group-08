@@ -30,12 +30,15 @@ public class GiantProduct extends Items {
 
     public GiantProduct (ForagingSeedsType type, DateHour currentDate, ArrayList<Tile> neighbors) {
 
-        setStage();
         numFertilize = 0;
         this.type = type;
         isProtected = false;
         this.neighbors = neighbors;
         birthDay = currentDate.clone();
+        lastWater = currentDate.clone();
+        todayFertilize = false;
+        checkHaveProduct();
+        setStage();
     }
 
     public void setProtected(boolean aProtected) {
@@ -76,8 +79,6 @@ public class GiantProduct extends Items {
 
 
     public void checkHaveProduct () {
-
-
 
         DateHour dateHour = currentGame.currentDate.clone();
         dateHour.increaseDay(numFertilize);

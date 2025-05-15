@@ -1,18 +1,13 @@
 package model.Enum;
 
 import model.*;
-import model.Plants.Animalproduct;
-import model.Plants.Fish;
+import model.Plants.*;
 import model.Enum.WeatherTime.Weather;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.ItemType.*;
-import model.Plants.BasicRock;
-import model.Plants.Wood;
 import model.OtherItem.ArtisanProduct;
 import model.OtherItem.BarsAndOres;
 import model.Places.MarketItem;
-import model.Plants.AllCrops;
-import model.Plants.MixedSeeds;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,6 +16,7 @@ import java.util.Map;
 public enum NPC {
 
     Sebastian("Sebastian", new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.IronOre), 50,
+            new Food(FoodTypes.pumpkinPie), 1,
             new BasicRock(), 150 )), 42, 45, 6, 5,
             new MarketItem(MarketItemType.Oil), 10) {
 
@@ -85,7 +81,7 @@ public enum NPC {
                 default -> "";
             };
         }
-    }, // TODO
+    },
 
     Abigail("Abigail",  new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.GoldBar), 1,
             new AllCrops(CropsType.Pumpkin), 1,
