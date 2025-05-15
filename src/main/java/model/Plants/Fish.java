@@ -6,16 +6,16 @@ import model.Items;
 
 public class Fish extends Items {
 
-    private FishType fishType;
+    private FishType type;
     private Quantity quantity;
 
     public Fish(FishType fishType, Quantity quantity) {
-        this.fishType = fishType;
+        this.type = fishType;
         this.quantity = quantity;
     }
 
-    public FishType getFishType() {
-        return fishType;
+    public FishType getType() {
+        return type;
     }
     public Quantity getQuantity() {
         return quantity;
@@ -23,7 +23,12 @@ public class Fish extends Items {
 
     @Override
     public String getName() {
-        return fishType.getName();
+        return type.getName();
+    }
+
+    @Override
+    public int getSellPrice() {
+        return (int) ( type.getPrice() * quantity.getValue());
     }
 
 

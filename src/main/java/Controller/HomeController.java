@@ -4,6 +4,7 @@ import model.*;
 import model.Enum.Commands.HomeMenuCommands;
 import model.Enum.FoodTypes;
 import model.Enum.ItemType.MarketItemType;
+import model.Enum.Menu;
 import model.OtherItem.Fridge;
 import model.Places.MarketItem;
 import model.Plants.Food;
@@ -367,5 +368,10 @@ public class HomeController {
                 return;
             else System.out.println(RED+"Invalid Command in Cooking Section!(type exit to quit)"+RESET);
         }
+    }
+
+    public Result goToCraftingMenu() {
+        App.currentMenu = Menu.CraftMenu;
+        return new Result(true , BLUE+"Welcome to craft menu" + RESET);
     }
 }

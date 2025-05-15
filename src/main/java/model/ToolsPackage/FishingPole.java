@@ -21,4 +21,9 @@ public class FishingPole extends Tools {
     public String getName() {
         return type.getName();
     }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
 }

@@ -81,4 +81,9 @@ public class MixedSeeds extends Items {
     public String getName() {
         return "dnkjs";
     }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
 }

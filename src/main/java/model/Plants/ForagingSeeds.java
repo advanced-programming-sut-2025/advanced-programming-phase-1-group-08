@@ -6,11 +6,7 @@ import model.Enum.ItemType.MarketItemType;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
 
-
-
-
 import static model.App.currentGame;
-import static model.DateHour.decreaseDay;
 import static model.DateHour.getDayDifferent;
 
 public class ForagingSeeds extends Items {
@@ -25,16 +21,7 @@ public class ForagingSeeds extends Items {
     private int numFertilize;
     private int stage;
 
-
-    public ForagingSeeds(ForagingSeedsType type) {
-        stage = 1;
-        numFertilize = 0;
-        this.type = type;
-        isProtected = false;
-        haveProduct = false;
-        todayFertilize = false;
-    }
-    public ForagingSeeds(ForagingSeedsType type, DateHour Date) { // TODO  باید بالایی کال بشه قبل کاشتن
+    public ForagingSeeds(ForagingSeedsType type, DateHour Date) {
 
         stage = 1;
         numFertilize = 0;
@@ -93,11 +80,14 @@ public class ForagingSeeds extends Items {
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
-            if (defDays > days && (days+this.type.getStageDate(i)) > defDays)
-                stage = i+1;
-            else
+            if (defDays > days && (days+this.type.getStageDate(i)) >= defDays) {
+                stage = i + 1;
+                return;
+            } else
                 days += this.type.getStageDate(i);
         }
+        if (defDays > 8 && stage == 1)
+            stage = type.getGrowthStages();
     }
     public void setFertilize (MarketItemType item) {
 
@@ -108,10 +98,6 @@ public class ForagingSeeds extends Items {
         if (item.equals(MarketItemType.BasicRetainingSoil))
             lastWater = currentGame.currentDate.clone();
 
-    }
-    public void setBirthDay  (DateHour birthDay) {
-
-        this.birthDay = birthDay.clone();
     }
     public void setLastWater (DateHour lastWater) {
 
@@ -132,15 +118,12 @@ public class ForagingSeeds extends Items {
 
         this.lastProduct = lastProduct.clone();
     }
-    public void setTodayFertilize(boolean todayFertilize) {
 
-        this.todayFertilize = todayFertilize;
-    }
 
 
     public boolean checkForDeath () {
 
-        return getDayDifferent( lastWater, currentGame.currentDate) > 1;
+        return getDayDifferent( lastWater, currentGame.currentDate) > 2;
     }
     public void checkHaveProduct () {
 
@@ -159,7 +142,7 @@ public class ForagingSeeds extends Items {
     public void delete () {
 
         for (Tile tile : currentGame.bigMap)
-            if (tile.getGameObject().equals(this))
+            if (tile.getGameObject() == (this))
                 tile.setGameObject(new Walkable());
     }
 
@@ -177,5 +160,10 @@ public class ForagingSeeds extends Items {
     @Override
     public String getName() {
         return type.getDisplayName();
+    }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
     }
 }

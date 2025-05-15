@@ -130,4 +130,9 @@ public class Animal extends GameObject {
     public void setProductType(AnimalProductType productType) {
         this.productType = productType;
     }
+
+    @Override
+    public String getIcon() {
+        return type.getIcon();
+    }
 }

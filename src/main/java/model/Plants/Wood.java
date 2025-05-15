@@ -18,4 +18,9 @@ public class Wood extends Items {
     public String getName() {
         return "Wood";
     }
+
+    @Override
+    public int getSellPrice() {
+        return 10;
+    }
 }

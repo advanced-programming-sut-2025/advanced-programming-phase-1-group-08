@@ -64,11 +64,14 @@ public class GiantProduct extends Items {
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
-            if (defDays > days && (days+this.type.getStageDate(i)) > defDays)
-                stage = i+1;
-            else
+            if (defDays > days && (days+this.type.getStageDate(i)) > defDays) {
+                stage = i + 1;
+                return;
+            } else
                 days += this.type.getStageDate(i);
         }
+        if (defDays > 8 && stage == 1)
+            stage = type.getGrowthStages();
     }
 
 
@@ -84,7 +87,7 @@ public class GiantProduct extends Items {
     }
     public boolean checkForDeath () {
 
-        return getDayDifferent(lastWater, currentGame.currentDate) > 1;
+        return getDayDifferent(lastWater, currentGame.currentDate) > 2;
     }
     public void harvest () {
 
@@ -125,7 +128,7 @@ public class GiantProduct extends Items {
 
         return isProtected;
     }
-    public boolean isHaveProduct() {
+    public boolean  isHaveProduct() {
 
         return haveProduct;
     }
@@ -137,7 +140,7 @@ public class GiantProduct extends Items {
 
         return this.lastWater;
     }
-    public boolean isTodayFertilize() {
+    public boolean  isTodayFertilize() {
 
         return todayFertilize;
     }
@@ -155,5 +158,8 @@ public class GiantProduct extends Items {
         return "dl";
     }
 
-
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
 }

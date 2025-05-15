@@ -2,11 +2,11 @@ package model.Enum.ItemType;
 
 public enum BarsAndOreType {
 
-    CopperBar("Copper Bar" , null , 0),
+    CopperBar("Copper Bar" , null , 750),
 
-    IronBar("Iron Bar" , null , 0),
+    IronBar("Iron Bar" , null , 1500),
 
-    GoldBar("Gold Bar" , null , 0),
+    GoldBar("Gold Bar" , null , 400),
 
     IridiumBar("Iridium Bar" , null , 0),
 

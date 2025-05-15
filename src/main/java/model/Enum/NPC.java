@@ -63,13 +63,13 @@ public enum NPC {
         public boolean isItFavorite (Items items) {
 
             if (items instanceof Animalproduct &&
-                    ((((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.rabbits_Wool))||
-                    ((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.sheeps_Wool))) {
+                    ((((Animalproduct) items).getType().equals(AnimalProductType.rabbits_Wool))||
+                    ((Animalproduct) items).getType().equals(AnimalProductType.sheeps_Wool))) {
                 return true;
             }
 //            else if (items instanceof Animalproduct && TODO
-//                    ((((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.rabbits_Wool))||
-//                            ((Animalproduct) items).getAnimalProductType().equals(AnimalProductType.sheeps_Wool))) {
+//                    ((((Animalproduct) items).getType().equals(AnimalProductType.rabbits_Wool))||
+//                            ((Animalproduct) items).getType().equals(AnimalProductType.sheeps_Wool))) {
 //                return true;
 //            }
             else return items instanceof MarketItem && ((MarketItem) items).getType().equals(MarketItemType.Pizza);

@@ -27,4 +27,9 @@ public class Food extends Items {
     public String getName() {
         return type.name();
     }
+
+    @Override
+    public int getSellPrice() {
+        return type.getSellPrice();
+    }
 }

@@ -79,4 +79,8 @@ public enum TrashCanType {
         return false;
     }
 
+    public String getDisplayName() {
+
+        return displayName;
+    }
 }

@@ -152,4 +152,15 @@ public enum FishingPoleType {
         }
         return false;
     }
+
+    public static FishingPoleType getFishingPoleType(String name){
+        return switch (name) {
+            case "Training Rod" -> TrainingRod;
+            case "Bamboo Pole" -> BambooPole;
+            case "Fiberglass Rod" -> FiberglassRod;
+            case "Iridium Rod" -> IridiumRod;
+            default -> null;
+        };
+
+    }
 }

@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 public abstract class Items extends GameObject {
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -19,10 +20,10 @@ public abstract class Items extends GameObject {
         boolean thisHasQuantity = hasField(this, "quantity");
         boolean otherHasQuantity = hasField(other, "quantity");
 
-        // ⛔️ اگر یکی type داشت و اون یکی نه → نابرابر
+        // ⛔ اگر یکی type داشت و اون یکی نه → نابرابر
         if (thisHasType != otherHasType) return false;
 
-        // ⛔️ اگر یکی quantity داشت و اون یکی نه → نابرابر
+        // ⛔ اگر یکی quantity داشت و اون یکی نه → نابرابر
         if (thisHasQuantity != otherHasQuantity) return false;
 
         // ✅ اگر هر دو type داشتن
@@ -96,6 +97,10 @@ public abstract class Items extends GameObject {
         }
         return false;
     }
+
+
+
     public abstract String getName();
+    public abstract int getSellPrice();
 
 }

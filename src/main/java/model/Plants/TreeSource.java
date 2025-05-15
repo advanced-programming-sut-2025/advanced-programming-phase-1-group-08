@@ -19,4 +19,9 @@ public class TreeSource extends Items {
     public String getName() {
         return type.getDisplayName();
     }
+
+    @Override
+    public int getSellPrice() {
+        return type.getPrice();
+    }
 }

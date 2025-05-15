@@ -63,8 +63,10 @@ public class Tree extends Items {
     }
     private void setStage () {
 
-        DateHour dateHour = decreaseDay(numFertilize, currentGame.currentDate);
-        int defDays = getDayDifferent(this.birthDay, currentGame.currentDate);
+        DateHour dateHour = currentGame.currentDate.clone();
+        dateHour.increaseDay(numFertilize);
+
+        int defDays = getDayDifferent(this.birthDay, dateHour);
 
         if (defDays > 0 && defDays < 7)
             stage = 1;
@@ -72,7 +74,7 @@ public class Tree extends Items {
             stage = 2;
         else if (defDays > 14 && defDays < 21)
             stage = 3;
-        else if (defDays > 21 && defDays < 28)
+        else if (defDays > 21)
             stage = 4;
 
     }
@@ -84,7 +86,7 @@ public class Tree extends Items {
     }
     public TreeType getType() {
 
-        return type;
+        return this.type;
     }
     public String   getIcon () {
 
@@ -124,13 +126,13 @@ public class Tree extends Items {
         DateHour dateHour = currentGame.currentDate.clone();
         dateHour.increaseDay(numFertilize);
 
-        this.haveFruit = this.type.getSourceType().getSeason().contains(currentGame.currentDate.getSeason()) &&
+        this.haveFruit = this.type.getSeason().contains(currentGame.currentDate.getSeason()) &&
                 getDayDifferent(lastFruit, dateHour) > 6;
     }
     public void delete () {
 
         for (Tile tile : currentGame.bigMap)
-            if (tile.getGameObject().equals(this))
+            if (tile.getGameObject() == this)
                 tile.setGameObject(new Walkable());
     }
 
@@ -150,5 +152,10 @@ public class Tree extends Items {
     @Override
     public String getName() {
         return type.getDisplayName();
+    }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
     }
 }
