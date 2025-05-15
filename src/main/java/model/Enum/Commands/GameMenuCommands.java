@@ -7,6 +7,7 @@ public enum GameMenuCommands implements Command{
 
                                                     // Debug command
 
+    remove          ("\\s*(?i)remove\\s*(?<dir>\\d+)\\s*"),
     getGameObject   ("\\s*(?i)object\\s*(?<dir>\\d+)\\s*"),
     getGameObject2  ("\\s*(?i)object\\s*(?<x>\\d+)\\s*(?<y>\\d+)\\s*"),
 

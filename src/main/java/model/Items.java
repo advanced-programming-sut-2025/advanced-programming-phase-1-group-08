@@ -20,10 +20,10 @@ public abstract class Items extends GameObject {
         boolean thisHasQuantity = hasField(this, "quantity");
         boolean otherHasQuantity = hasField(other, "quantity");
 
-        // ⛔ اگر یکی type داشت و اون یکی نه → نابرابر
+        // ⛔️ اگر یکی type داشت و اون یکی نه → نابرابر
         if (thisHasType != otherHasType) return false;
 
-        // ⛔ اگر یکی quantity داشت و اون یکی نه → نابرابر
+        // ⛔️ اگر یکی quantity داشت و اون یکی نه → نابرابر
         if (thisHasQuantity != otherHasQuantity) return false;
 
         // ✅ اگر هر دو type داشتن

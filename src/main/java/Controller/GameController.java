@@ -64,6 +64,7 @@ public class GameController {
 
 
     public Result addItem(String name ,int amount) {
+
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         ItemRegistry itemRegistry = new ItemRegistry();
         Items items=null;
@@ -2601,7 +2602,6 @@ public class GameController {
         else
             currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
 
-
         DateHour dateHour = currentGame.currentDate.clone();
 
         dateHour.increaseHour(hour);
@@ -2612,7 +2612,9 @@ public class GameController {
         if (dateHour.getHour() < 9)
             passedOfTime(getDayDifferent(dateHour, currentGame.currentDate), 9 - dateHour.getHour());
 
-        for (int i = 0 ; i < getDayDifferent(currentGame.currentDate, dateHour) ; i++) {
+        int number = getDayDifferent(currentGame.currentDate, dateHour);
+
+        for (int i = 0 ; i < number ; i++) {
             currentGame.currentDate.increaseDay(1);
             startDay();
         }
@@ -2867,7 +2869,7 @@ public class GameController {
         checkSprinkler();
     }
 
-                                                                // energy & Date
+                                            // energy & Date
     private void setEnergyInMorning () {
         for (User user : currentGame.players) {
             if (user.getDaysDepressedLeft() == 0) {
@@ -2887,7 +2889,7 @@ public class GameController {
     }
     private void setTimeAndWeather () {
 
-        currentGame.currentDate = new DateHour(Season.Spring, 1, 9, 1980);
+        currentGame.currentDate = new DateHour(Season.Fall, 1, 9, 1980); // TODO
         currentGame.tomorrowWeather = Weather.Sunny;
 
     }
@@ -2895,7 +2897,7 @@ public class GameController {
 
 //        currentGame.currentWeather = Weather.valueOf(currentGame.tomorrowWeather.toString());
 //        currentGame.tomorrowWeather = currentGame.currentDate.getSeason().getWeather();
-        currentGame.currentWeather = Weather.Rainy;
+        currentGame.currentWeather = Weather.Rainy; // TODO
         currentGame.tomorrowWeather = Weather.Rainy;
     }
     private void doWeatherTask () {
@@ -2925,8 +2927,7 @@ public class GameController {
         }
     }
 
-
-                                                                 // Automatic Plant task
+                                            // Automatic Plant task
     private void    crowAttack () {
 
         for (Farm farm : currentGame.farms) {
@@ -3212,7 +3213,7 @@ public class GameController {
 
     }
 
-                                                                   // other plant task
+                                             // other plant task
     private String showTree (Tree tree) {
 
 
@@ -3258,7 +3259,7 @@ public class GameController {
         if (!isInGreenHouse(tile))
             if (!type1.getSeason().contains(currentGame.currentDate.getSeason()))
                 return new Result(false, RED+"You can't plant this tree in "
-                        + RESET + currentGame.currentDate.getSeason());
+                        + currentGame.currentDate.getSeason());
 
         GameObject object = tile.getGameObject();
         if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
@@ -3320,12 +3321,15 @@ public class GameController {
 
                     if (!isInGreenHouse(tile))
                         if (!type.getSeason().contains(currentGame.currentDate.getSeason()))
-                            return new Result(false, RED+"You can't plant this tree in "
-                                    + RESET + currentGame.currentDate.getSeason());
+                            return new Result(false, RED+"You can't plant this seed in "
+                                    + currentGame.currentDate.getSeason()+ RESET);
 
                     GameObject object = tile.getGameObject();
                     if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
                         return new Result(false, RED+"First you must create green House"+RESET);
+
+                    if (tile.getGameObject() instanceof Walkable && (!((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")))
+                        return new Result(false, RED+"First, you must plow the tile"+RESET);
 
                     if ((tile.getGameObject() instanceof Walkable &&
                             ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
@@ -3336,7 +3340,7 @@ public class GameController {
                         return new Result(true, BLUE+"The earth welcomes your seed"+RESET);
 
                     } else
-                        return new Result(false, RED+"First, you must plow the tile"+RESET);
+                        return new Result(false, RED+"You can't plant in this tile"+RESET);
                 }
                 else
                     return new Result(false, RED + "You don't have this seed!" + RESET);
@@ -3344,7 +3348,7 @@ public class GameController {
         return new Result(false, RED + "You don't have this seed!" + RESET);
     }
 
-                                                                   // Tools
+                                              // Tools
     private Result useHoe (int dir) {
 
         Tile tile = getTileByDir(dir);
@@ -3652,7 +3656,7 @@ public class GameController {
             tile.setGameObject(new Walkable());
             return new Result(true , BLUE+ ((CraftingItem) object).getName() + " add to BackPack Successfully"+RESET);
         }
-        return new Result(false, RED+"There are no plant!"+RESET);
+        return new Result(false, RED+"There are no minerals!"+RESET);
     }
     private Result useShear (int dir) {
 
@@ -3671,7 +3675,7 @@ public class GameController {
         return new Result(false, RED+"There are no plant!"+RESET);
     }
 
-                                                                    // NPC task
+                                                // NPC task
     private void NPAutomateTask() {
 
         User saveUser = currentGame.currentPlayer;
@@ -3693,7 +3697,10 @@ public class GameController {
         currentGame.currentPlayer = saveUser;
     }
     private String padRight(String text, int length) {
-        if (text.length() >= length) return text.substring(0, length);
+
+        if (text.length() >= length)
+            return text.substring(0, length);
+
         return text + " ".repeat(length - text.length());
     }
     private String OneNPCQuestsList (NPC npc) {
@@ -3761,9 +3768,9 @@ public class GameController {
 
         int width = 60;
 
-        return "|" + " ".repeat(width - 2) + "|\n" +
-                "| " + padRight(npc.getName() + " : " +
-                currentGame.currentPlayer.getFriendshipLevel(npc), width - 3) + "|\n";
+        return RED+"|" + " ".repeat(width - 2) + "|\n" +
+                "| " +BRIGHT_BLUE + padRight(npc.getName() +RESET+ " : " + BRIGHT_GREEN +
+                currentGame.currentPlayer.getFriendshipLevel(npc), width + 6) + RED + "|\n" + RESET;
     }
     private Result doTask1 (NPC npc) {
 
@@ -4604,12 +4611,13 @@ public class GameController {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("+").append("-".repeat(100 - 2)).append("+\n");
+        sb.append("+").append(RED).append("-".repeat(60 - 2)).append(RESET).append("+\n");
 
         for (NPC npc : NPC.values())
             sb.append(OneNPCFriendshipList(npc));
 
-        sb.append("+").append("-".repeat(100 - 2)).append("+");
+        sb.append(RED + "|").append(" ".repeat(60 - 2)).append("|\n").
+                append(RESET).append("+").append(RED).append("-".repeat(60 - 2)).append(RESET).append("+");
 
         return new Result(true, sb.toString());
     }
@@ -4685,5 +4693,16 @@ public class GameController {
                 w.setGrassOrFiber("Plowed");
                 getTileByCoordinates(i, j).setGameObject(w);
             }
+    }
+    public void remove (int x) {
+
+        getTileByDir(x).setGameObject(new Walkable());
+    }
+    public void clear () {
+
+        for (User user : currentGame.players)
+            for (Tile tile : user.getFarm().Farm)
+                if (tile.getGameObject() instanceof Walkable || tile.getGameObject() instanceof Tree)
+                    tile.setGameObject(new Walkable());
     }
 }

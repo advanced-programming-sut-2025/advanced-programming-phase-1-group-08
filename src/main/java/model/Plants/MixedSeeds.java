@@ -6,6 +6,10 @@ import model.Items;
 
 public class MixedSeeds extends Items {
 
+    public MixedSeeds() {
+
+    }
+
     public ForagingSeedsType getSeeds (Season season) {
 
         double probability = Math.random();
@@ -79,7 +83,7 @@ public class MixedSeeds extends Items {
 
     @Override
     public String getName() {
-        return "dnkjs";
+        return "Mixed Seeds";
     }
 
     @Override

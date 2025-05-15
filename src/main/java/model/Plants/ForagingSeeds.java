@@ -21,6 +21,15 @@ public class ForagingSeeds extends Items {
     private int numFertilize;
     private int stage;
 
+    public ForagingSeeds (ForagingSeedsType type) {
+
+        stage = 1;
+        numFertilize = 0;
+        this.type = type;
+        isProtected = false;
+        haveProduct = false;
+        todayFertilize = false;
+    }
     public ForagingSeeds(ForagingSeedsType type, DateHour Date) {
 
         stage = 1;

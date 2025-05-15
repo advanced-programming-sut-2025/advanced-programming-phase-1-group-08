@@ -26,19 +26,18 @@ public class GameMenu implements AppMenu {
 
         if (GameMenuCommands.makeNewGame.getMatcher(input) != null)
             controller.startNewGame(input);
-
         else if ((matcher = GameMenuCommands.printMap.getMatcher(input)) != null) {
             System.out.println(controller.print(
                     Integer.parseInt(matcher.group(1).trim()),
                     Integer.parseInt(matcher.group(2).trim()),
                     Integer.parseInt(matcher.group(3).trim())));
         }
-       else if (GameMenuCommands.nextTurn.getMatcher(input) != null)
+
+        else if (GameMenuCommands.nextTurn.getMatcher(input) != null)
             controller.nextTurn();
 
-        else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null) {
+        else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null)
             System.out.println(controller.goToHomeMenu() );
-        }
 
         else if (GameMenuCommands.eatFood.getMatcher(input) != null)
             controller.eatFood(input);
@@ -267,11 +266,20 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.getGameObject2.getMatcher(input)) != null)
             System.out.println(controller.getObject2(matcher.group("x").trim(), matcher.group("y").trim()));
 
+        else if (input.matches("(i?)\\s*print\\s*"))
+            System.out.println(controller.print(0, 0, 30));
 
+        else if (input.matches("(i?)\\s*print\\s*all\\s*"))
+            System.out.println(controller.print(0, 0, 90));
 
+        else if ((matcher = GameMenuCommands.remove.getMatcher(input)) != null)
+            controller.remove(Integer.parseInt(matcher.group(1)));
 
         else if (input.matches("(?i)\\s*add\\s*money\\s*"))
             currentGame.currentPlayer.increaseMoney(10000);
+
+        else if (input.matches("\\s*clear\\s*"))
+            controller.clear();
 
 
         //TODO چیت کد اضافه کردن آیتم.
