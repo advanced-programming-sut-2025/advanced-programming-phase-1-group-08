@@ -1,5 +1,6 @@
 package Controller;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import model.*;
 import model.Animall.Animal;
 import model.Plants.Animalproduct;
@@ -872,7 +873,7 @@ public class GameController {
                 output.append("\t-> ").append(((Fish) entry.getKey()).getType().getName()).append(": ") .append(((Fish) entry.getKey()).getQuantity().getName()).append(" ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof Animalproduct) {
-                output.append("\t-> ").append(((Animalproduct) entry.getKey()).getType().getName()).append(": ").append(((Animalproduct) entry.getKey()).getQuantity().getName()).append('\n');
+                output.append("\t-> ").append(((Animalproduct) entry.getKey()).getType().getName()).append("(").append(((Animalproduct) entry.getKey()).getQuantity().getName()).append("): ").append(entry.getValue()).append('\n');
             }
             else if (entry.getKey() instanceof CraftingItem) {
                 output.append("\t-> ").append(((CraftingItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
@@ -2330,14 +2331,27 @@ public class GameController {
     }
 
     public void sendGifts (String input) {
-        String username = GameMenuCommands.sendGift.getMatcher(input).group("username");
-        String item = GameMenuCommands.sendGift.getMatcher(input).group("item");
-        int amount = Integer.parseInt(GameMenuCommands.sendGift.getMatcher(input).group("amount"));
+        String username;
+        String item;
+        int amount;
+        try {
+            username = GameMenuCommands.sendGift.getMatcher(input).group("username");
+            item = GameMenuCommands.sendGift.getMatcher(input).group("item");
+            amount = Integer.parseInt(GameMenuCommands.sendGift.getMatcher(input).group("amount"));
+        } catch (Exception e) {
+            System.out.println(RED+"Wrong Format Input!"+RESET);
+            return;
+        }
         if (username == null || item == null) {
             System.out.println("Invalid Command!");
             return;
         }
-        if (!currentGame.players.contains(findUserByUsername(username))) {
+        if (findPlayerInGame(username) == null) {
+            System.out.println(RED+"Invalid Username!"+RESET);
+            return;
+        }
+
+        if (!currentGame.players.contains(findPlayerInGame(username))) {
             System.out.println(RED+"Username is Unavailable!"+RESET);
             return;
         }
@@ -2345,7 +2359,7 @@ public class GameController {
             System.out.println("You can't Send Gifts to " + RED+"Yourself"+RESET + "!");
             return;
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, findUserByUsername(username));
+        HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
         if (f == null) {
             System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
@@ -2355,7 +2369,7 @@ public class GameController {
         Result result = f.sendGifts(username, item, amount);
         System.out.println(result);
         if (result.IsSuccess())
-            new MessageHandling(currentGame.currentPlayer, findUserByUsername(username), currentGame.currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!");
+            new MessageHandling(currentGame.currentPlayer, findPlayerInGame(username), currentGame.currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!");
     }
     public void giveFlowers (String input) {
         String username = GameMenuCommands.giveFlower.getMatcher(input).group("username");
