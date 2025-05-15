@@ -4,6 +4,7 @@ import Controller.GameController;
 import Controller.TradeController;
 import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Menu;
+import model.Result;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -282,5 +283,8 @@ public class GameMenu implements AppMenu {
                 currentGame.currentPlayer.getPositionX()+ " , " + currentGame.currentPlayer.getPositionY() +
                 "   money : " + currentGame.currentPlayer.getMoney());
 
+        System.out.println("farming  : "+currentGame.currentPlayer.getFarmingAbility());
+        System.out.println("mining   : "+currentGame.currentPlayer.getMiningAbility());
+        System.out.println("foraging : "+currentGame.currentPlayer.getForagingAbility());
     }
 }

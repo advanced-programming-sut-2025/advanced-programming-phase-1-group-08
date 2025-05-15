@@ -7,10 +7,11 @@ import java.util.List;
 
 import static model.Color_Eraser.RED;
 import static model.Color_Eraser.RESET;
+import static model.Enum.AllPlants.TreeType.*;
 
 public enum TreesSourceType {
 
-    Apricot_Sapling     (TreeType.ApricotTree,    0.0, "Apricot Sapling"){
+    Apricot_Sapling     (ApricotTree,    0.0, "Apricot Sapling"){
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -22,7 +23,7 @@ public enum TreesSourceType {
             return 2000;
         }
     }, // TODO    probability
-    Cherry_Sapling      (TreeType.CherryTree,     0.0, "Cherry Sapling") {
+    Cherry_Sapling      (CherryTree,     0.0, "Cherry Sapling") {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -34,7 +35,7 @@ public enum TreesSourceType {
             return 3400;
         }
     },
-    Banana_Sapling      (TreeType.BananaTree,     0.0, "Banana Sapling") {
+    Banana_Sapling      (BananaTree,     0.0, "Banana Sapling") {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -46,7 +47,7 @@ public enum TreesSourceType {
             return 0;
         }
     },
-    Mango_Sapling       (TreeType.MangoTree,      0.0, "Mango Sapling")  {
+    Mango_Sapling       (MangoTree,      0.0, "Mango Sapling")  {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -58,7 +59,7 @@ public enum TreesSourceType {
             return 0;
         }
     },
-    Orange_Sapling      (TreeType.OrangeTree,     0.0, "Orange Sapling") {
+    Orange_Sapling      (OrangeTree,     0.0, "Orange Sapling") {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -70,7 +71,7 @@ public enum TreesSourceType {
             return 4000;
         }
     },
-    Peach_Sapling       (TreeType.PeachTree,      0.0, "Peach Sapling")  {
+    Peach_Sapling       (PeachTree,      0.0, "Peach Sapling")  {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -82,8 +83,7 @@ public enum TreesSourceType {
             return 6000;
         }
     },
-    Apple_Sapling       (TreeType.AppleTree,      0.0, "Apple Sapling")  {
-
+    Apple_Sapling       (AppleTree,      0.0, "Apple Sapling")  {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
@@ -94,7 +94,7 @@ public enum TreesSourceType {
             return 4000;
         }
     },
-    Acorns              (TreeType.OakTree,        0.0, "Acorns")         {
+    Acorns              (OakTree,        0.0, "Acorns")         {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -106,7 +106,7 @@ public enum TreesSourceType {
             return 0;
         }
     },
-    Maple_Seeds         (TreeType.MapleTree,      0.0, "Maple Seeds")         {
+    Maple_Seeds         (MapleTree,      0.0, "Maple Seeds")         {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -118,7 +118,7 @@ public enum TreesSourceType {
             return 0;
         }
     },
-    Pomegranate_Sapling (TreeType.PomegranateTree,0.0, "Pomegranate Sapling") {
+    Pomegranate_Sapling (PomegranateTree,0.0, "Pomegranate Sapling") {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -130,7 +130,7 @@ public enum TreesSourceType {
             return 6000;
         }
     },
-    Pine_Cones          (TreeType.PineTree,       0.0, "Pine Cones")          {
+    Pine_Cones          (PineTree,       0.0, "Pine Cones")          {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -142,7 +142,7 @@ public enum TreesSourceType {
             return 0;
         }
     },
-    Mahogany_Seeds      (TreeType.MahoganyTree,   0.0, "Mahogany Seeds")      {
+    Mahogany_Seeds      (MahoganyTree,   0.0, "Mahogany Seeds")      {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -154,7 +154,7 @@ public enum TreesSourceType {
             return 0;
         }
     },
-    Mushroom_Tree_Seeds (TreeType.MushroomTree,   0.0, "Mushroom Tree Seeds") {
+    Mushroom_Tree_Seeds (MushroomTree,   0.0, "Mushroom Tree Seeds") {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -166,7 +166,7 @@ public enum TreesSourceType {
             return 0;
         }
     },
-    Mystic_Tree_Seeds   (TreeType.MysticTree,     0.0, "Mystic Tree Seeds")   {
+    Mystic_Tree_Seeds   (MysticTree,     0.0, "Mystic Tree Seeds")   {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -191,7 +191,7 @@ public enum TreesSourceType {
     }
 
     public TreeType getTreeType() {
-        return treeType;
+        return this.treeType;
     }
     public double getProbability() {
         return probability;

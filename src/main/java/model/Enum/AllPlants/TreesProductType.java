@@ -8,32 +8,114 @@ import static model.Color_Eraser.*;
 
 public enum TreesProductType {
 
-    Apricot     ("Apricot",   59,  true,  38,  TreeType.ApricotTree),
-    Cherry      ("Cherry",    80,  true,  38,  TreeType.CherryTree),
-    Banana      ("Banana",    150, true,  75,  TreeType.BananaTree),
-    Mango       ("Mango",     130, true,  100, TreeType.MangoTree),
-    Orange      ("Orange",    100, true,  38,  TreeType.OrangeTree),
-    Peach       ("Peach",     140, true,  38,  TreeType.PeachTree),
-    Apple       ("Apple",     100, true,  38,  TreeType.AppleTree),
-    OakResin    ("Oak Resin", 150, false, 0,   TreeType.OakTree),
-    MapleSyrup  ("Maple Syrup",200, false, 0,   TreeType.MapleTree),
-    PineTar     ("Pine Tar",  100, false, 0,   TreeType.PineTree),
-    Sap         ("Sap",       2,   false, -2,  TreeType.MahoganyTree),
-    MysticSyrup ("Mystic Syrup",1000,false, 500, TreeType.MysticTree),
-    Pomegranate ("Pomegranate",140, true,  38,  TreeType.PomegranateTree),
-    CommonMushroom("Common Mushroom",40,true,  38,  TreeType.MushroomTree);
+    Apricot     ("Apricot",   59,  true,  38) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.ApricotTree.getSeason();
+        }
+    },
+    Cherry      ("Cherry",    80,  true,  38) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.CherryTree.getSeason();
+        }
+    },
+    Banana      ("Banana",    150, true,  75) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.BananaTree.getSeason();
+        }
+    },
+    Mango       ("Mango",     130, true,  100) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.MangoTree.getSeason();
+        }
+    },
+    Orange      ("Orange",    100, true,  38) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.OrangeTree.getSeason();
+        }
+    },
+    Peach       ("Peach",     140, true,  38) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.PeachTree.getSeason();
+        }
+    },
+    Apple       ("Apple",     100, true,  38) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.AppleTree.getSeason();
+        }
+    },
+    OakResin    ("Oak Resin", 150, false, 0) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.OakTree.getSeason();
+        }
+    },
+    MapleSyrup  ("Maple Syrup",200, false, 0) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.MapleTree.getSeason();
+        }
+    },
+    PineTar     ("Pine Tar",  100, false, 0) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.PineTree.getSeason();
+        }
+    },
+    Sap         ("Sap",       2,   false, -2) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.MahoganyTree.getSeason();
+        }
+    },
+    MysticSyrup ("Mystic Syrup",1000,false, 500) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.MysticTree.getSeason();
+        }
+    },
+    Pomegranate ("Pomegranate",140, true,  38) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.PomegranateTree.getSeason();
+        }
+    },
+    CommonMushroom("Common Mushroom",40,true,  38) {
+
+        @Override
+        public ArrayList<Season> getSeason() {
+            return TreeType.MushroomTree.getSeason();
+        }
+    };
 
     private final String displayName;
     private final int price;
     private final boolean edible;
     private final int energy;
-    private final TreeType treeType;
 
-    TreesProductType (String displayName, int price, boolean edible, int energy, TreeType treeType) {
+    TreesProductType (String displayName, int price, boolean edible, int energy) {
         this.price = price;
         this.edible = edible;
         this.energy = energy;
-        this.treeType = treeType;
         this.displayName = displayName;
     }
 
@@ -46,9 +128,7 @@ public enum TreesProductType {
     public int getEnergy() {
         return energy;
     }
-    public TreeType getTreeType() {
-        return treeType;
-    }
+
     public String getDisplayName() {
         return displayName;
     }
@@ -58,7 +138,6 @@ public enum TreesProductType {
         StringBuilder builder = new StringBuilder();
 
         builder.append(BLUE+"Name: "+RESET).append(type.displayName)
-                .append(BLUE+"\nSource: "+RESET).append(type.treeType.getSourceType().getDisplayName())
                 .append(BLUE+"\nStages: "+RESET).append("7-7-7-7")
                 .append(BLUE+"\nTotal Harvest Time: "+RESET).append("28")
                 .append(BLUE+"\nOne Time: "+RESET).append("False")
@@ -68,7 +147,7 @@ public enum TreesProductType {
                 .append(BLUE+"\nBase Energy: "+RESET).append(type.energy)
                 .append(BLUE+"\nSeason: "+RESET);
 
-        ArrayList<Season> seasons = type.treeType.getSourceType().getSeason();
+        ArrayList<Season> seasons = type.getSeason();
         for (Season season : seasons) builder.append(season.getDisplayName()).append(" ");
 
         builder.append(BLUE+"\nCan Become Giant: "+RESET).append("No");
@@ -80,4 +159,6 @@ public enum TreesProductType {
                 return type;
         throw new IllegalArgumentException(RED+"wrong name!"+RESET);
     }
+    public abstract ArrayList<Season> getSeason ();
 }
+

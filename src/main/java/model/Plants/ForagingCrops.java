@@ -33,17 +33,22 @@ public class ForagingCrops extends Items {
     public void delete () {
 
         for (Tile tile : currentGame.bigMap)
-            if (tile.getGameObject().equals(this))
+            if (tile.getGameObject() == this)
                 tile.setGameObject(new Walkable());
     }
 
     @Override
-    public String getName() {
+    public String getName () {
         return type.getDisplayName();
     }
 
     @Override
     public int getSellPrice() {
         return type.getPrice();
+    }
+
+    @Override
+    public String getIcon () {
+        return this.type.getIcon();
     }
 }
