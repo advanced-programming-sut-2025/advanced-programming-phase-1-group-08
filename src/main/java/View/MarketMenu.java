@@ -7,6 +7,9 @@ import model.Enum.Commands.MarketMenuCommands;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
+import static model.Color_Eraser.RED;
+import static model.Color_Eraser.RESET;
+
 public class MarketMenu implements AppMenu {
 
     Marketing marketing=new Marketing();
@@ -17,7 +20,7 @@ public class MarketMenu implements AppMenu {
         String input = scanner.nextLine();
 
         if ((matcher= MarketMenuCommands.buyAnimal.getMatcher(input)) != null)
-            System.out.println(marketing.buyAnimal(matcher.group(0).trim() , matcher.group(1).trim()));
+            System.out.println(marketing.buyAnimal(matcher.group(1).trim() , matcher.group(2).trim()));
 
         else if ((matcher=MarketMenuCommands.buildBarnOrCage.getMatcher(input)) != null) {
             Integer x=Integer.parseInt(matcher.group(2).trim());
@@ -45,6 +48,8 @@ public class MarketMenu implements AppMenu {
         else if (input.equals("exit")) {
             System.out.println(marketing.goToGameMenu());
         }
+        else
+            System.out.println(RED + "Invalid Command" + RESET);
 
 
     }

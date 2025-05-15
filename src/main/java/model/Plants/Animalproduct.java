@@ -29,6 +29,6 @@ public class Animalproduct extends Items {
 
     @Override
     public int getSellPrice() {
-        return 0;
+        return (int) (type.getInitialPrice() * quantity.getValue() );
     }
 }

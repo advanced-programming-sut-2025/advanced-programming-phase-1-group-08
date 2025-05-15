@@ -243,8 +243,8 @@ public class Marketing {
 
     public void takeAnimalToBarnOrCage(Animal animal , BarnOrCage barnOrCage ) {
         GameController gameController = new GameController();
-        for (int x=barnOrCage.topLeftX ; x < barnOrCage.getBarnORCageType().getWidth() ; x++) {
-            for (int y=barnOrCage.topLeftY ; y< barnOrCage.getBarnORCageType().getHeight() ; y++) {
+        for (int x=barnOrCage.topLeftX + 1 ; x < barnOrCage.topLeftX+ barnOrCage.getBarnORCageType().getWidth() - 1 ; x++) {
+            for (int y=barnOrCage.topLeftY + 1 ; y< barnOrCage.topLeftY + barnOrCage.getBarnORCageType().getHeight() - 1 ; y++) {
 
                 Tile tile=gameController.getTileByCoordinates(x,y);
 
@@ -259,10 +259,10 @@ public class Marketing {
     }
 
 
-    public Result buyAnimal(String animal ,String name) {
+    public Result buyAnimal(String animal,String name) {
         AnimalType animalType=null;
         for (AnimalType animalType1 : AnimalType.values()) {
-            if (animalType1.name().equals(animal)) {
+            if (animalType1.getType().equals(animal)) {
                 animalType=animalType1;
             }
         }
@@ -271,8 +271,8 @@ public class Marketing {
         }
         for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
             for (Animal animals : barnOrCage.getAnimals()) {
-                if (animals.getName().equals(animal)) {
-                    return new Result(false , "You already have Animal with name "+animal);
+                if (animals.getName().equals(name)) {
+                    return new Result(false , "You already have Animal with name "+name);
                 }
             }
         }
@@ -297,6 +297,8 @@ public class Marketing {
         if (! canBuyAnimal) {
             return new Result(false , "you don't have enough capacity or suitable place for this animal");
         }
+
+        currentGame.currentPlayer.increaseMoney(- animalType.getPrice());
 
         return new Result(true , "you bought this animal successfully");
 
@@ -346,16 +348,19 @@ public class Marketing {
             return new Result(false , "you can't create barn or cage because you don't have enough money!");
         }
 
+
         BarnOrCage barnOrCage = new BarnOrCage(barnORCageType, topLeftX, topLeftY);
 
         for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
             if (entry.getKey() instanceof Wood) {
-                entry.setValue(entry.getValue() - Wood);
+                entry.setValue(entry.getValue() - barnORCageType.getWoodNeeded());
             }
             if (entry.getKey() instanceof BasicRock) {
-                entry.setValue(entry.getValue() - Stone);
+                entry.setValue(entry.getValue() - barnORCageType.getStoneNeeded());
             }
         }
+
+        inventory.Items.entrySet().removeIf(entry -> entry.getValue() == 0);
 
 
         currentGame.currentPlayer.increaseMoney(- barnORCageType.getPrice());
@@ -377,6 +382,8 @@ public class Marketing {
                 }
             }
         }
+
+        currentGame.currentPlayer.BarnOrCages.add(barnOrCage);
 
         return new Result(true, barnORCageType.getName() + "created successfully!");
 
@@ -827,7 +834,7 @@ public class Marketing {
             return new Result(false ,"for buy this fishing pole you should be at least in level " + poleType.getLevel());
         }
 
-        if (amount > currentPlayer.getBackPack().getType().getRemindCapacity()) {
+        if (amount > currentGame.currentPlayer.getBackPack().getType().getRemindCapacity()) {
             return new Result(false , "Not enough capacity in your backpack");
         }
 
@@ -846,7 +853,7 @@ public class Marketing {
         fishingPole.type = poleType;
         inventory.Items.put(fishingPole, amount);
         poleType.incrementShopLimit(-amount);
-        currentPlayer.increaseMoney(- amount * poleType.getPrice());
+        currentGame.currentPlayer.increaseMoney(- amount * poleType.getPrice());
 
         return new Result(true , "You bought " + poleType.name() +" successfully");
 
@@ -912,11 +919,11 @@ public class Marketing {
     }
 
     public Result upgradeTool (String name) {
-        MarketType marketType=MarketType.isInMarket(currentPlayer.getPositionX() , currentPlayer.getPositionY());
+        MarketType marketType=MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());
         if (marketType!=MarketType.Blacksmith) {
             return new Result(false , "you are not in BlackSmith Market. please go there");
         }
-        Inventory inventory = currentPlayer.getBackPack().inventory;
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
 
         if ( name.equals("Axe") ) {
             for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
@@ -927,7 +934,7 @@ public class Marketing {
                     }
                     else if (AxeType.checkIngredient(axeType)) {
                         ((Axe) entry.getKey()).setType(axeType);
-                        currentPlayer.increaseMoney( - axeType.getPrice());
+                        currentGame.currentPlayer.increaseMoney( - axeType.getPrice());
                         return new Result(true , name + "updated successfully");
                     }
                     else {
@@ -946,7 +953,7 @@ public class Marketing {
                     }
                     else if (HoeType.checkIngredient(hoeType)) {
                         ((Hoe) entry.getKey()).setType(hoeType);
-                        currentPlayer.increaseMoney( - hoeType.getPrice());
+                        currentGame.currentPlayer.increaseMoney( - hoeType.getPrice());
                         return new Result(true , name + "updated successfully");
                     }
                     else {
@@ -965,7 +972,7 @@ public class Marketing {
                     }
                     else if (PickAxeType.checkIngredient(pickAxeType)) {
                         ((PickAxe) entry.getKey()).setType(pickAxeType);
-                        currentPlayer.increaseMoney( - pickAxeType.getPrice());
+                        currentGame.currentPlayer.increaseMoney( - pickAxeType.getPrice());
                         return new Result(true , name + "updated successfully");
                     }
                     else {
@@ -984,7 +991,7 @@ public class Marketing {
                     }
                     else if (WateringCanType.checkIngredient(wateringCanType)) {
                         ((WateringCan) entry.getKey()).setType(wateringCanType);
-                        currentPlayer.increaseMoney( - wateringCanType.getPrice());
+                        currentGame.currentPlayer.increaseMoney( - wateringCanType.getPrice());
                         return new Result(true , name + "updated successfully");
                     }
                     else {
@@ -1003,7 +1010,7 @@ public class Marketing {
                     }
                     else if (TrashCanType.checkIngredient(trashCanType)) {
                         ((TrashCan) entry.getKey()).setType(trashCanType);
-                        currentPlayer.increaseMoney( - trashCanType.getPrice());
+                        currentGame.currentPlayer.increaseMoney( - trashCanType.getPrice());
                         return new Result(true , name + " updated successfully");
                     }
                     else {

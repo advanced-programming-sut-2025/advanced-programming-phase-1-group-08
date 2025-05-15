@@ -46,7 +46,7 @@ public class GameController {
     }
 
     public Result goToMarketMenu () {
-        if (MarketType.isInMarket(currentPlayer.getPositionX() , currentPlayer.getPositionY()) == null) {
+        if (MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY()) == null) {
             return new Result(false , "you are not in market");
         }
         currentMenu=Menu.MarketMenu;
@@ -54,7 +54,7 @@ public class GameController {
     }
 
     public Result goToHomeMenu() {
-        if ( !currentPlayer.getFarm().isInHome(currentPlayer.getPositionX() , currentPlayer.getPositionY())) {
+        if ( !currentGame.currentPlayer.getFarm().isInHome(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY())) {
             return new Result(false , RED+"You're Not in Your Home!"+RESET);
         }
         currentMenu=Menu.HomeMenu;
@@ -255,7 +255,6 @@ public class GameController {
 //                return;
 //            }
 //        }
-        inventory.Items.put(items, amount);
         if (inventory.Items.containsKey(items)) {
             inventory.Items.compute(items, (k, x) -> x + amount);
         }
@@ -670,7 +669,7 @@ public class GameController {
 
         }
         else {
-            if (i + 60 * currentPlayer.topLeftX == currentPlayer.getPositionX() && j + 60 * currentPlayer.topLeftY == currentPlayer.getPositionY()) {
+            if (i + 60 * currentGame.currentPlayer.topLeftX == currentGame.currentPlayer.getPositionX() && j + 60 * currentGame.currentPlayer.topLeftY == currentGame.currentPlayer.getPositionY()) {
                 return;
             }
             PerlinNoise perlinNoise = new PerlinNoise(seed);
@@ -728,12 +727,16 @@ public class GameController {
 
         for (int i=startX ; i<startX + size ; i++) {
             for (int j = startY; j < startY + size; j++) {
+                Tile tile = getTileByCoordinates(j, i);
 
                 if ((user = getUserByLocation(j, i) )!= null)
                     result.append(user.getIcon()).append(" ");
 
+                else if (tile.getGameObject() instanceof Animal) {
+                    result.append(tile.getGameObject().getIcon());
+                }
+
                 else {
-                    Tile tile = getTileByCoordinates(j, i);
                     if (tile.getGameObject() instanceof UnWalkable) {
                         result.append(tile.getGameObject().getIcon()).append(RESET);
                     } else {
@@ -1050,7 +1053,6 @@ public class GameController {
 
     public FishingPole isFishingPoleTypeExist(String name){
         Inventory inventory=currentGame.currentPlayer.getBackPack().inventory;
-        Inventory inventory=currentPlayer.getBackPack().inventory;
         FishingPoleType fishingPoleType=null;
         try {
             fishingPoleType=FishingPoleType.getFishingPoleType(name);
@@ -1095,7 +1097,7 @@ public class GameController {
         for (int i = 0; i < numberOfFish; i++) {
 
             double rand = Math.random() + 0.4;
-            double quantity = (rand * (currentPlayer.getLevelFishing() + 2) * fishingPole.type.getCoefficient()) / (7 - 2*currentWeather.getFishing());
+            double quantity = (rand * (currentGame.currentPlayer.getLevelFishing() + 2) * fishingPole.type.getCoefficient()) / (7 - 2*currentGame.currentWeather.getFishing());
             //System.out.println(quantity);
             Quantity fishQuantity = productQuantity(quantity);
 
@@ -1311,7 +1313,7 @@ public class GameController {
         }
         for (int i = x; i < x+width; i++) {
             for (int j = y; j < y+height; j++) {
-                Tile tile = getTileByCoordinates(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY);
+                Tile tile = getTileByCoordinates(i , j);
                 if (!(tile.getGameObject() instanceof Walkable)) {
                     return false;
                 }
@@ -1455,8 +1457,10 @@ public class GameController {
         StringBuilder result= new StringBuilder();
         for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
             for (Animal animal : barnOrCage.animals){
-                result.append(animal.getName()).append(" Friendship: ").append(animal.getFriendShip()).append(" petToday: ")
-                        .append(animal.isPetToday()).append("feedToday: ").append(animal.isFeedToday()).append("\n");
+                result.append(animal.getName())
+                        .append(" Friendship: ").append(animal.getFriendShip()).append('\n')
+                        .append(" petToday: ").append(animal.isPetToday()).append('\n')
+                        .append("feedToday: ").append(animal.isFeedToday()).append("\n");
             }
         }
         return new Result(true, result.toString());
@@ -1477,7 +1481,7 @@ public class GameController {
         int [] x = {1,1,1,0,0,-1,-1,-1};
         int [] y = {1,0,-1,1,-1,-1,0,1};
         Queue<Tile> queue = new LinkedList<>();
-        ArrayList<Tile> tiles = new ArrayList<>();
+        Set<Tile> tiles = new HashSet<>();
         for (int i = 0; i < 8; i++) {
             if (checkTileForAnimalWalking(animal.getPositionX() + x[i] , animal.getPositionY() + y[i] )) {
                 queue.add(getTileByCoordinates(animal.getPositionX() + x[i] , animal.getPositionY() + y[i]));
@@ -1493,11 +1497,14 @@ public class GameController {
                 getTileByCoordinates(animal.getPositionX(), animal.getPositionY() ).setGameObject(walkable);
                 animal.setPositionX(goalX);
                 animal.setPositionY(goalY);
-                return new Result(true, name + "shepherd successfully!");
+                return eatFiberByAnimal(animal);
             }
 
             for (int i = 0; i < 8; i++) {
                 if (! checkTileForAnimalWalking(tile.getX() + x[i] , tile.getY() + y[i] ) ) {
+                    continue;
+                }
+                if (getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i]) == null) {
                     continue;
                 }
                 if (tiles.contains(getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i]))) {
@@ -1507,6 +1514,29 @@ public class GameController {
             }
         }
         return new Result(false , "there is no way for animal to go to this coordinate!");
+    }
+
+    public Result eatFiberByAnimal(Animal animal) {
+        int [] x = {1,1,1,0,0,-1,-1,-1};
+        int [] y = {1,0,-1,1,-1,-1,0,1};
+
+        for (int i = 0; i < 8; i++) {
+            Tile tile = getTileByCoordinates(animal.getPositionX() + x[i] , animal.getPositionY() + y[i]);
+            if (tile == null) {
+                continue;
+            }
+            if (tile.getGameObject() instanceof Walkable) {
+                if (((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Fiber") ||
+                    ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Grass")) {
+                    tile.setGameObject(new Walkable());
+                    animal.setFeedToday(true);
+                }
+            }
+        }
+        if (animal.isFeedToday()) {
+            return new Result(true , BLUE+animal.getName() + " is fed successfully"+RESET);
+        }
+        return new Result(true , RED+animal.getName() + " Shepherd successfully"+RESET);
     }
 
     private Result checkShepherdAnimals(int goalX, int goalY, String name) {
@@ -1541,23 +1571,31 @@ public class GameController {
     }
 
     public boolean checkTileForAnimalWalking(int x, int y) {
-        Tile tile = getTileByCoordinates(x + 60 * currentGame.currentPlayer.topLeftX, y + 60 * currentGame.currentPlayer.topLeftY);
+        Tile tile = getTileByCoordinates(x , y );
         if (tile == null) {
             return false;
         }
-        if (!(tile.getGameObject() instanceof Walkable) || ! (tile.getGameObject() instanceof BarnOrCage)) {
+        if (!(tile.getGameObject() instanceof Walkable) && !(tile.getGameObject() instanceof BarnOrCage)) {
             return false;
         }
         return true;
     }
 
     public Result feedHay(String name) {
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         Animal animal=getAnimalByName(name);
         if (animal==null) {
             return new Result(false , "animal not found!");
         }
-        animal.setFeedToday(true);
-        return new Result(true, "you fed "+name+" successfully!");
+        MarketItem marketItem = new MarketItem(MarketItemType.Hay);
+        if (inventory.Items.containsKey(marketItem)) {
+            inventory.Items.compute(marketItem , (k,v) -> v-1);
+            inventory.Items.entrySet().removeIf(entry -> entry.getValue()==0);
+            animal.setFeedToday(true);
+            return new Result(true, BLUE+"you fed "+name+" successfully!" + RESET);
+        }
+
+        return new Result(false , RED + "You don't have Hay in your inventiry!" + RESET);
     }
     public Result cheatSetFriendship( String name , Integer amount ) {
         Animal animal=getAnimalByName(name);
@@ -1596,6 +1634,9 @@ public class GameController {
             for (Animal animal : barnOrCage.animals) {
                 if (! animal.isFeedToday()){
                     animal.increaseFriendShip(- 20);
+                }
+                if (animal.isFeedToday()) {
+                    animal.increaseFriendShip(8);
                 }
                 if (! animal.isPetToday()) {
                     animal.increaseFriendShip(- 10 * (animal.getFriendShip()/200));
@@ -1672,7 +1713,12 @@ public class GameController {
 
         Animalproduct animalproduct = new Animalproduct(animal.getProductType(), quantity);
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        inventory.Items.put(animalproduct , 1);
+        if (inventory.Items.containsKey(animalproduct)) {
+            inventory.Items.compute(animalproduct , (k,v) -> v+1);
+        }
+        else {
+            inventory.Items.put(animalproduct, 1);
+        }
         animal.setProductCollected(true);
 
         return new Result(true , "product "+ animal.getProductType().getName() + "collected successfully");
@@ -1721,7 +1767,7 @@ public class GameController {
 
 
     private Result placeBomb(Tile tile , String name , Items items) {
-        if (currentPlayer.getFarm().isInHome(tile.getX(), tile.getY())) {
+        if (currentGame.currentPlayer.getFarm().isInHome(tile.getX(), tile.getY())) {
             return new Result(false , "you can't place Bomb in your Home because it is dangerous");
         }
 
@@ -1854,13 +1900,13 @@ public class GameController {
                 for (int j=- domain /2 ; j < domain /2 ; j++) {
                     Tile tile1 = getTileByCoordinates(i + Sprinkler.getX(), j+Sprinkler.getY());
                     if (tile1.getGameObject() instanceof Tree ) {
-                        ((Tree) tile1.getGameObject()).setLastWater(currentDate.clone());
+                        ((Tree) tile1.getGameObject()).setLastWater(currentGame.currentDate.clone());
                     }
                     else if (tile1.getGameObject() instanceof ForagingSeeds) {
-                        ((ForagingSeeds) tile1.getGameObject()).setLastWater(currentDate.clone());
+                        ((ForagingSeeds) tile1.getGameObject()).setLastWater(currentGame.currentDate.clone());
                     }
                     else if (tile1.getGameObject() instanceof GiantProduct) {
-                        ((GiantProduct) tile1.getGameObject()).setLastWater(currentDate.clone());
+                        ((GiantProduct) tile1.getGameObject()).setLastWater(currentGame.currentDate.clone());
                     }
                 }
             }
@@ -3591,7 +3637,7 @@ public class GameController {
                 return new Result(false, RED + "Ops!!! you destroy Stone" + RESET);
         }
         else if (object instanceof CraftingItem) {
-            Inventory inventory=currentPlayer.getBackPack().inventory;
+            Inventory inventory=currentGame.currentPlayer.getBackPack().inventory;
             if (inventory.Items.containsKey(object)) {
                 inventory.Items.compute((Items) object, (k, v) -> v+1);
             }

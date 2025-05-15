@@ -35,10 +35,10 @@ public class BarnOrCage extends GameObject {
     @Override
     public String getIcon() {
         if (barnORCageType.equals(BarnORCageType.Barn) || barnORCageType.equals(BarnORCageType.BigBarn) || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
-            return BROWN +"B ";
+            return BROWN +"B";
         }
         else {
-            return BROWN +"C ";
+            return BROWN +"C";
         }
     }
 }

@@ -1,7 +1,6 @@
 package model.Enum.ItemType;
 
 import model.*;
-import model.Animall.Animalproduct;
 import model.Plants.Fish;
 import model.Enum.AllPlants.CropsType;
 import model.Enum.AllPlants.ForagingMineralsType;
