@@ -3,6 +3,7 @@ package model.Enum;
 import View.*;
 import model.App;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public enum Menu {
@@ -24,7 +25,7 @@ public enum Menu {
     Menu(AppMenu menu) {
         this.menu = menu;
     }
-    public void checkCommand(Scanner scanner) {
+    public void checkCommand(Scanner scanner) throws IOException {
         this.menu.check(scanner);
     }
 }

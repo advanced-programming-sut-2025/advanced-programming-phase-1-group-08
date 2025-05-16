@@ -9,6 +9,7 @@ import model.Enum.ItemType.BarnORCageType;
 import model.Enum.Menu;
 import model.Result;
 
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
@@ -22,7 +23,7 @@ public class GameMenu implements AppMenu {
     Matcher matcher;
 
     @Override
-    public void check(Scanner scanner) {
+    public void check(Scanner scanner) throws IOException {
 
         String input = scanner.nextLine();
 
@@ -30,18 +31,21 @@ public class GameMenu implements AppMenu {
         if (GameMenuCommands.makeNewGame.getMatcher(input) != null)
             controller.startNewGame(input);
 
+        else if (GameMenuCommands.back.getMatcher(input) != null)
+            System.out.println(controller.backToMainMenu().massage());
+
         else if ((matcher = GameMenuCommands.printMap.getMatcher(input)) != null) {
             System.out.println(controller.print(
                     Integer.parseInt(matcher.group(1).trim()),
                     Integer.parseInt(matcher.group(2).trim()),
                     Integer.parseInt(matcher.group(3).trim())));
         }
-       else if (GameMenuCommands.nextTurn.getMatcher(input) != null)
+
+        else if (GameMenuCommands.nextTurn.getMatcher(input) != null)
             controller.nextTurn();
 
-        else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null) {
+        else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null)
             System.out.println(controller.goToHomeMenu() );
-        }
 
         else if (GameMenuCommands.eatFood.getMatcher(input) != null)
             controller.eatFood(input);
@@ -52,6 +56,9 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.friendships.getMatcher(input) != null)
             controller.DisplayFriendships();
 
+        else if (GameMenuCommands.addXpCheat.getMatcher(input) != null)
+            controller.cheatAddXp(input);
+
         else if (GameMenuCommands.talking.getMatcher(input) != null)
             controller.talking(input);
 
@@ -60,6 +67,9 @@ public class GameMenu implements AppMenu {
 
         else if (GameMenuCommands.sendGift.getMatcher(input) != null)
             controller.sendGifts(input);
+
+//        else if (GameMenuCommands.giftList.getMatcher(input) != null)  پاکش نکنین!
+//            System.out.println(controller.giftList().massage());
 
         else if (GameMenuCommands.trade.getMatcher(input) != null) {
             TradeController tradeController = new TradeController();
@@ -251,6 +261,9 @@ public class GameMenu implements AppMenu {
         else if ((matcher=GameMenuCommands.addDollar.getMatcher(input)) != null)
             System.out.println(controller.addDollar(Integer.parseInt(matcher.group(1).trim())));
 
+        else if ((matcher=GameMenuCommands.setDollar.getMatcher(input)) != null)
+            System.out.println(controller.setDollar(Integer.parseInt(matcher.group(1).trim())));
+
         else if ((matcher=GameMenuCommands.addItem.getMatcher(input)) != null)
             System.out.println(controller.addItem(matcher.group(1) , Integer.parseInt(matcher.group(2).trim())));
 
@@ -270,31 +283,37 @@ public class GameMenu implements AppMenu {
         else if ((matcher = GameMenuCommands.getGameObject2.getMatcher(input)) != null)
             System.out.println(controller.getObject2(matcher.group("x").trim(), matcher.group("y").trim()));
 
+        else if (input.matches("(i?)\\s*print\\s*"))
+            System.out.println(controller.print(0, 0, 30));
 
+        else if (input.matches("(i?)\\s*print\\s*all\\s*"))
+            System.out.println(controller.print(0, 0, 90));
 
+        else if ((matcher = GameMenuCommands.remove.getMatcher(input)) != null)
+            controller.remove(Integer.parseInt(matcher.group(1)));
 
         else if (input.matches("(?i)\\s*add\\s*money\\s*"))
             currentGame.currentPlayer.increaseMoney(10000);
 
+        else if (input.matches("\\s*clear\\s*"))
+            controller.clear();
 
         //TODO چیت کد اضافه کردن آیتم.
         else
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
-        controller.AutomaticFunctionAfterAnyAct();
-        System.out.println(currentGame.currentPlayer.getNickname() + " : " +
-                currentGame.currentPlayer.getPositionX()+ " , " + currentGame.currentPlayer.getPositionY() +
-                "   money : " + currentGame.currentPlayer.getMoney());
 
-//        System.out.println("farming  : "+currentGame.currentPlayer.getFarmingAbility());
-//        System.out.println("mining   : "+currentGame.currentPlayer.getMiningAbility());
-//        System.out.println("foraging : "+currentGame.currentPlayer.getForagingAbility());
+        if (currentGame != null && currentGame.currentPlayer != null) {
+            Result result = controller.AutomaticFunctionAfterAnyAct();
 
-        for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
-            for (Animal animal : barnOrCage.animals) {
-                System.out.println("FriendShip: "+animal.getFriendShip());
-                System.out.println(animal.isFeedPreviousDay());
-                System.out.println(animal.isFeedToday());
+            System.out.println("-----------------");
+            System.out.println("-> " + currentGame.currentPlayer.getNickname() + GREEN + "  $" + currentGame.currentPlayer.getMoney() + "$" + RESET);
+            System.out.println("(" + currentGame.currentPlayer.getPositionX() + ", " + currentGame.currentPlayer.getPositionY() + ")");
+            System.out.println("-----------------");
+
+            if (!result.IsSuccess()) {
+                System.out.println(result);
+                controller.nextTurn();
             }
         }
     }

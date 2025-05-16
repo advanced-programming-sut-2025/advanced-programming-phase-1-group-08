@@ -150,7 +150,7 @@ public enum MarketItemType {
         }
     },
 
-    GrassStarterRecipe("Grass Starter_Recipe" , List.of( MarketType.PierreGeneralStore) , 0 , 1 , 0) {
+    GrassStarterRecipe("Grass Starter Recipe" , List.of( MarketType.PierreGeneralStore) , 0 , 1 , 0) {
         @Override
         public int getPrice(int id) {
             return 1000;
@@ -380,7 +380,7 @@ public enum MarketItemType {
             return 0;
         }
     },
-    HashbrownsRecipe("Hashbrowns Recipe", List.of(MarketType.StardropSaloon), 1 , 0 , 0) {
+    HashbrownsRecipe("Hash Browns Recipe", List.of(MarketType.StardropSaloon), 1 , 0 , 0) {
         @Override
         public int getPrice(int id) {
             return 50;

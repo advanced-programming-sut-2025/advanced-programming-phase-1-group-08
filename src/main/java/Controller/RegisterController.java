@@ -3,12 +3,15 @@ package Controller;
 import model.App;
 import model.Enum.Commands.RegisterCommands;
 import model.Enum.SecurityQuestions;
+import model.Game;
 import model.Result;
 import model.SaveData.UserBasicInfo;
 import model.SaveData.UserDataBase;
+import model.SaveData.UserStorage;
 import model.User;
 import model.User.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
@@ -49,15 +52,14 @@ public class RegisterController {
         String correctPattern = "\\s*[a-zA-Z][a-zA-Z0-9-]{3,9}\\s*";
         return username != null && Pattern.compile(correctPattern).matcher(username).matches();
     }
-    public static boolean isUnique(String username) {
-//        return UserDataBase.findUserByUsername(username) != null;
-        for (UserBasicInfo user: UserDataBase.loadUsers()) {
+    public static boolean isUnique(String username) throws IOException {
+        for (User user: UserStorage.loadUsers()) {
             if (user.getUsername().equals(username))
                 return false;
         }
         return true;
     }
-    public static String SuggestUsername(String oldUsername) {
+    public static String SuggestUsername(String oldUsername) throws IOException {
         String username = oldUsername;
         do {
             username = username + "-";
@@ -124,7 +126,7 @@ public class RegisterController {
 
                 //Add User
                 MySecQ = SecurityQuestions.values()[questionNumber - 1];
-                App.AddNewUser(Username, Password, NickName, Email, Gender, MySecQ.getQuestionText() , answer);
+                Game.AddNewUser(Username, Password, NickName, Email, Gender, MySecQ , answer);
                 currentUser.setMySecurityQuestion(SecurityQuestions.values()[questionNumber - 1]);
                 currentUser.setMySecurityAnswer(answer);
             }
@@ -135,7 +137,7 @@ public class RegisterController {
     }
 
 
-    public Result register (String Username , String Password , String ConfirmPass , String NickName , String Email, String Gender) {
+    public Result register (String Username , String Password , String ConfirmPass , String NickName , String Email, String Gender) throws IOException {
 
         // Handle Username
         if (!usernameCheck(Username))

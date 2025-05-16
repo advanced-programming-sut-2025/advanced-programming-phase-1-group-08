@@ -10,6 +10,7 @@ public class DateHour implements Cloneable {
     private int date; // چندمین روز فصل ( تاریخ )
     private int hour;
 
+    public DateHour(){}
 
     public DateHour(Season season, int seasonDay, int hour, int year) {
         this.season = season;

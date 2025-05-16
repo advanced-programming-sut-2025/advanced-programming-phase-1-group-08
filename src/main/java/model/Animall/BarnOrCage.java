@@ -11,8 +11,10 @@ public class BarnOrCage extends GameObject {
 
     private BarnORCageType barnORCageType;
     public ArrayList<Animal> animals = new ArrayList<>();
-    public final int topLeftX;
-    public final int topLeftY;
+    public int topLeftX;
+    public int topLeftY;
+
+    public BarnOrCage(){}
 
     public BarnOrCage(BarnORCageType barnORCageType , int topLeftX , int topLeftY) {
         this.barnORCageType = barnORCageType;

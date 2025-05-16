@@ -8,6 +8,7 @@ public class Tile { // TODO
 
     private GameObject gameObject;
 
+    public Tile(){}
 
     public Tile(int x, int y, GameObject gameObject) {
         this.x = x;

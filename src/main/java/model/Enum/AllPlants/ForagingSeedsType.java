@@ -617,7 +617,7 @@ public enum ForagingSeedsType {
     },
     RedCabbageSeeds ( "Red Cabbage Seeds",true, RedCabbage,10000,
             5, false, new int[]{2, 1, 2, 2, 2} ,0 ,5 ,
-            List.of(MarketType.PierreGeneralStore ) ) {
+            List.of(MarketType.PierreGeneralStore)) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -1087,11 +1087,10 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_BLACK+YELLOW+"p"+RESET;
+                return YELLOW+"p"+RESET;
             else
-                return BG_BRIGHT_BLACK+ORANGE+"p"+RESET;
+                return ORANGE+"p"+RESET;
         }
-
 
         @Override
         public int getPrice( MarketType marketType) {
@@ -1171,9 +1170,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_PURPLE+BRIGHT_CYAN+"p"+RESET;
+                return BRIGHT_CYAN+"p"+RESET;
             else
-                return BG_BRIGHT_PURPLE+CYAN+"p"+RESET;
+                return CYAN+"p"+RESET;
         }
 
         @Override

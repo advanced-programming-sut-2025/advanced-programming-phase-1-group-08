@@ -59,4 +59,11 @@ public enum ForagingMineralsType {
     public int getPrice()          {return price;}
     public String getDescription() {return description;}
     public double getProbability()     {return probability;}
+
+    public static ForagingMineralsType fromDisplayName(String displayName) {
+        for (ForagingMineralsType type : ForagingMineralsType.values())
+            if (type.getDisplayName().equalsIgnoreCase(displayName))
+                return type;
+        throw new IllegalArgumentException(RED+"wrong name!"+RESET);
+    }
 }

@@ -30,12 +30,15 @@ public class GiantProduct extends Items {
 
     public GiantProduct (ForagingSeedsType type, DateHour currentDate, ArrayList<Tile> neighbors) {
 
-        setStage();
         numFertilize = 0;
         this.type = type;
         isProtected = false;
         this.neighbors = neighbors;
         birthDay = currentDate.clone();
+        lastWater = currentDate.clone();
+        todayFertilize = false;
+        checkHaveProduct();
+        setStage();
     }
 
     public void setProtected(boolean aProtected) {
@@ -64,9 +67,10 @@ public class GiantProduct extends Items {
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
         for (int i = 0; i < this.type.getGrowthStages(); i++) {
-            if (defDays > days && (days+this.type.getStageDate(i)) > defDays)
-                stage = i+1;
-            else
+            if (defDays > days && (days+this.type.getStageDate(i)) > defDays) {
+                stage = i + 1;
+                return;
+            } else
                 days += this.type.getStageDate(i);
         }
         if (defDays > 8 && stage == 1)
@@ -76,8 +80,6 @@ public class GiantProduct extends Items {
 
     public void checkHaveProduct () {
 
-
-
         DateHour dateHour = currentGame.currentDate.clone();
         dateHour.increaseDay(numFertilize);
         this.haveProduct = type.getSeason().contains(currentGame.currentDate.getSeason()) &&
@@ -86,7 +88,7 @@ public class GiantProduct extends Items {
     }
     public boolean checkForDeath () {
 
-        return getDayDifferent(lastWater, currentGame.currentDate) > 1;
+        return getDayDifferent(lastWater, currentGame.currentDate) > 2;
     }
     public void harvest () {
 

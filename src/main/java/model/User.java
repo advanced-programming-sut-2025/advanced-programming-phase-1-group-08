@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
+import lombok.Getter;
+import lombok.Setter;
 import static model.App.currentGame;
 
-
+@Getter
+@Setter
 public class User {
 
     private String username;
@@ -24,11 +26,11 @@ public class User {
     private String hashPass;
     private String nickname;
     private String email;
-    private final String gender;
+    private String gender;
     private SecurityQuestions MySecurityQuestion;
     private String MySecurityAnswer;
     private int daysDepressedLeft = 0;
-    private List<Recipe> recipes = Recipe.createAllRecipes();
+    private List<Recipe> recipes;
 
     // buffs
     public int Buff_maxEnergy_100_hoursLeft = 0;
@@ -124,7 +126,7 @@ public class User {
 
     public HashMap<Items , DateHour> buffer = new HashMap<>();//برای برداشت محصولات فرآوری شده استفاده میشود
 
-    private final BackPack backPack = new BackPack();
+    private BackPack backPack = new BackPack();
     public Tools currentTool;
     private int farmingAbility  = 0;
     private int miningAbility   = 0;
@@ -142,8 +144,12 @@ public class User {
 
     public ArrayList<BarnOrCage> BarnOrCages = new ArrayList<>();
 
+    public User() {
+        // اگر چیزی بعد لود دوباره بارگذاری بشه
+    }
 
-    public User(String username, String nickname, String email, String gender,  int point, int health, String hashPass) {
+
+    public User(String username, String nickname, String email, String gender,  int point, int health, String hashPass, SecurityQuestions MySecQ, String MySecA) {
 
         this.username = username;
         this.hashPass = hashPass;
@@ -153,7 +159,8 @@ public class User {
         this.point = point;
         this.MAX_HEALTH = 200;
         this.healthUnlimited = false;
-
+        this.MySecurityQuestion = MySecQ;
+        this.MySecurityAnswer = MySecA;
     }
 
 
@@ -291,7 +298,7 @@ public class User {
         if (this.getSpouse() == null) this.money += amount;
         else {
             this.money += (amount / 2);
-            this.getSpouse().setMoney(this.getSpouse().getMoney() + (amount / 2));
+            this.getSpouse().setMoney(amount / 2);
         }
     }
 
@@ -365,6 +372,7 @@ public class User {
         return fishingAbility;
     }
 
+
     public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {
 
         this.friendshipPoint = friendshipPoint;
@@ -373,14 +381,17 @@ public class User {
 
         this.friendshipPoint.put(npc, friendshipPoint.get(npc) + point);
     }
+    public int put(NPC npc) {
+
+        return Math.min(friendshipPoint.get(npc)%200, 3);
+    }
     public int getFriendshipLevel(NPC npc) {
 
-        int level = Math.min(friendshipPoint.get(npc)%200, 3);
+        return Math.min((friendshipPoint.get(npc)/200), 3);
+    }
+    public int getFriendshipPoint(NPC npc) {
 
-        if (level == 3 && level3Date.get(npc) == currentGame.currentDate)
-            level3Date.put(npc, currentGame.currentDate.clone());
-
-        return level;
+        return Math.min(friendshipPoint.get(npc), 600);
     }
     public boolean getTodayGifting(NPC npc) {
 
