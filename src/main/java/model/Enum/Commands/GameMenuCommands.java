@@ -28,6 +28,7 @@ public enum GameMenuCommands implements Command{
     talking       ("(?i)\\s*talk\\s*-u\\s*(?<username>\\S+)\\s*-m\\s*(?<message>.+)"),
     propose       ("\\s*(?i)ask\\s*marriage\\s*-u\\s*(?<username>\\S+)\\s*-r\\s*(?<ring>\\S.+)\\s*"),
     sendGift      ("\\s*(?i)gift\\s*-u\\s*(?<username>\\S+)\\s*-i\\s*(?<item>\\S+)\\s*-a\\s*(?<amount>.+)\\s*"),
+    giftList      ("\\s*gist\\s+list\\s*"),
     trade         ("\\s*(?i)start\\s*trade\\s*"),
     proposalRespond("\\s*respond\\s*(?<response>\\S+)\\s*-u\\s*(?<username>.+)\\s*"),
 

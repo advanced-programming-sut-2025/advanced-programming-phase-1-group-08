@@ -65,6 +65,9 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.sendGift.getMatcher(input) != null)
             controller.sendGifts(input);
 
+//        else if (GameMenuCommands.giftList.getMatcher(input) != null)  پاکش نکنین!
+//            System.out.println(controller.giftList().massage());
+
         else if (GameMenuCommands.trade.getMatcher(input) != null) {
             TradeController tradeController = new TradeController();
             tradeController.tradeStart();
@@ -301,12 +304,8 @@ public class GameMenu implements AppMenu {
             Result result = controller.AutomaticFunctionAfterAnyAct();
 
             System.out.println("-----------------");
-            System.out.println("-> " + currentGame.currentPlayer.getNickname() + GREEN + "\t$" + currentGame.currentPlayer.getMoney() + "$" + RESET);
+            System.out.println("-> " + currentGame.currentPlayer.getNickname() + GREEN + "  $" + currentGame.currentPlayer.getMoney() + "$" + RESET);
             System.out.println("(" + currentGame.currentPlayer.getPositionX() + ", " + currentGame.currentPlayer.getPositionY() + ")");
-
-            System.out.println("farming  : " + currentGame.currentPlayer.getFarmingAbility());
-            System.out.println("mining   : " + currentGame.currentPlayer.getMiningAbility());
-            System.out.println("foraging : " + currentGame.currentPlayer.getForagingAbility());
             System.out.println("-----------------");
 
             if (!result.IsSuccess()) {

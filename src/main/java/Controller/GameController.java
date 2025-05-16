@@ -74,11 +74,11 @@ public class GameController {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         ItemRegistry itemRegistry = new ItemRegistry();
-        Items items=null;
+        Items items = null;
 
 
         itemRegistry.scanItems("model.Plants");
-        if ((items=itemRegistry.nameToItemMap.get(name)) != null) {
+        if ((items = itemRegistry.nameToItemMap.get(name)) != null) {
             if (inventory.Items.containsKey(items)) {
                 inventory.Items.compute(items , (k,v) -> v+amount);
             }
@@ -88,7 +88,7 @@ public class GameController {
             else {
                 inventory.Items.put(items, amount);
             }
-            return new Result(true , name + " created successfully");
+            return new Result(true , name + " Added Successfully");
         }
 
         itemRegistry.scanItems("model.Places");
@@ -102,7 +102,7 @@ public class GameController {
             else {
                 inventory.Items.put(items, amount);
             }
-            return new Result(true , name + " created successfully");
+            return new Result(true , name + " Added Successfully");
         }
 
         itemRegistry.scanItems("model.ToolsPackage");
@@ -116,7 +116,7 @@ public class GameController {
             else {
                 inventory.Items.put(items, amount);
             }
-            return new Result(true , name + " created successfully");
+            return new Result(true , name + " Added Successfully");
         }
 
         itemRegistry.scanItems("model.OtherItem");
@@ -130,7 +130,7 @@ public class GameController {
             else {
                 inventory.Items.put(items, amount);
             }
-            return new Result(true , name + " created successfully");
+            return new Result(true , name + " Added Successfully");
         }
 
         return new Result(false , name + " not found!");
@@ -2370,6 +2370,20 @@ public class GameController {
             currentGame.conversations.get(key).add(new MessageHandling(currentGame.currentPlayer, findPlayerInGame(username), currentGame.currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!"));
         }
     }
+//    public Result giftList () {
+//        User me = currentGame.currentPlayer;
+//        StringBuilder sb = new StringBuilder();
+//        for (List<MessageHandling> messages: currentGame.conversations.values()) {
+//            for (MessageHandling m: messages) {
+//                if (m.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername())) {
+//                    if (m.getText().endsWith("Rate it out of 5!")) {
+//                        sb.append(m.getSender().getNickname()).append(" -> You: ").append(??????);
+//                        // print
+//                    }
+//                }
+//            }
+//        }
+//    }
     public void giveFlowers (String input) {
         String username = GameMenuCommands.giveFlower.getMatcher(input).group("username");
         if (!currentGame.players.contains(findPlayerInGame(username))) {
@@ -2773,6 +2787,25 @@ public class GameController {
             }
             else user3.setCurrently_in_game(true);
         }
+
+        if (user1.getUsername().equals(currentUser.getUsername())) {
+            System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
+            return;
+        }
+        if (user2 != null) {
+            if (user2.getUsername().equals(currentUser.getUsername())) {
+                System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
+                return;
+            }
+        }
+        if (user3 != null) {
+            if (user3.getUsername().equals(currentUser.getUsername())) {
+                System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
+                return;
+            }
+        }
+
+
         currentGame.players.add(currentUser);
         currentGame.players.add(user1);
         if (user2 != null) currentGame.players.add(user2);
@@ -4705,34 +4738,34 @@ public class GameController {
     }
     public void plantCreator () {
 
-        clear();
-
-        for (int i = 21 ; i >= 19; i--)
-            for (int j = 26 ; j >= 21 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
-
-        for (int i = 25 ; i >= 23; i--)
-            for (int j = 26 ; j >= 21 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
-
-        for (int i = 17 ; i >= 15; i--)
-            for (int j = 26 ; j >= 21 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.Daffodil));
-
-        for (int i = 13 ; i >= 11; i--)
-            for (int j = 26 ; j >= 21 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.Daffodil));
-
-        for (int i = 9 ; i >= 7; i--)
-            for (int j = 26 ; j >= 21 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.Daffodil));
-
-//        for (int i = 20; i < 25; i++)
-//            for (int j = 20; j < 25; j++) {
-//                Walkable w = new Walkable();
-//                w.setGrassOrFiber("Plowed");
-//                getTileByCoordinates(i, j).setGameObject(w);
-//            }
+//        clear();
+//
+//        for (int i = 21 ; i >= 19; i--)
+//            for (int j = 26 ; j >= 21 ; j--)
+//                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
+//
+//        for (int i = 25 ; i >= 23; i--)
+//            for (int j = 26 ; j >= 21 ; j--)
+//                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
+//
+//        for (int i = 17 ; i >= 15; i--)
+//            for (int j = 26 ; j >= 21 ; j--)
+//                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.Daffodil));
+//
+//        for (int i = 13 ; i >= 11; i--)
+//            for (int j = 26 ; j >= 21 ; j--)
+//                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.Daffodil));
+//
+//        for (int i = 9 ; i >= 7; i--)
+//            for (int j = 26 ; j >= 21 ; j--)
+//                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.Daffodil));
+//
+////        for (int i = 20; i < 25; i++)
+////            for (int j = 20; j < 25; j++) {
+////                Walkable w = new Walkable();
+////                w.setGrassOrFiber("Plowed");
+////                getTileByCoordinates(i, j).setGameObject(w);
+////            }
     }
     public Result getObject2 (String x, String y) {
 
