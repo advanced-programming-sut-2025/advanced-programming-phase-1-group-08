@@ -1,8 +1,11 @@
 package org.example;
 
 import View.AppView;
+import model.Items;
 
 import java.io.IOException;
+
+import static model.App.AllFromDisplayNames;
 
 
 public class Main {

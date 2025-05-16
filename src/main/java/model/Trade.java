@@ -351,7 +351,7 @@ public class Trade {
         return new Result(true, GREEN+"Accepted Successfully."+RESET);
     }
 
-    public static Result checkTradeRequest(String input, char P_or_T) { // TODO make id   چک کن اگه موقع قبول کردن آفر فقططط آفر پول نداشت ارور بده
+    public static Result checkTradeRequest(String input, char P_or_T) {
         String username;
         String type;
         String itemName;

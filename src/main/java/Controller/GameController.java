@@ -2690,8 +2690,6 @@ public class GameController {
         System.out.println(CYAN+"Starting New Game..."+RESET);
 
         currentGame = new Game();
-        currentGame.currentPlayer = currentUser;
-        currentGame.currentMenu = currentMenu;
 
 
         String user1name = GameMenuCommands.makeNewGame.getMatcher(input).group("username1");
@@ -2708,59 +2706,62 @@ public class GameController {
         }
         if (user2name != null) {
             if (user2 == null) {
-                System.out.println("User2 Not Found!");
+                System.out.println("User2 Not Found! Try Again.");
                 return;
             }
         }
         if (user3name != null) {
             if (user3 == null) {
-                System.out.println("User3 Not Found!");
+                System.out.println("User3 Not Found! Try Again.");
                 return;
             }
         }
         if (user1.isCurrently_in_game()){
-            System.out.println("User1 Currently in Game!");
+            System.out.println("User1 Currently in Game! Try Again.");
             return;
         }
         else user1.setCurrently_in_game(true);
 
         if (user2name != null) {
             if (findUserByUsername(user2name).isCurrently_in_game()) {
-                System.out.println("User2 Currently in Game!");
+                System.out.println("User2 Currently in Game! Try Again.");
                 return;
             }
             else user2.setCurrently_in_game(true);
         }
         if (user3name != null) {
             if (findUserByUsername(user3name).isCurrently_in_game()) {
-                System.out.println("User3 Currently in Game!");
+                System.out.println("User3 Currently in Game! Try Again.");
                 return;
             }
             else user3.setCurrently_in_game(true);
         }
 
         if (user1.getUsername().equals(currentUser.getUsername())) {
-            System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
+            System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
             return;
         }
         if (user2 != null) {
             if (user2.getUsername().equals(currentUser.getUsername())) {
-                System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
+                System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
                 return;
             }
         }
         if (user3 != null) {
             if (user3.getUsername().equals(currentUser.getUsername())) {
-                System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
+                System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
                 return;
             }
         }
+
+        currentGame.currentPlayer = currentUser;
+        currentGame.currentMenu = currentMenu;
 
 
         currentGame.players.add(currentUser);
         currentGame.players.add(user1);
         if (user2 != null) currentGame.players.add(user2);
-        if (user3 != null) currentGame.players.add(user2);
+        if (user3 != null) currentGame.players.add(user3);
         currentGame.currentPlayer = currentUser;
         setTimeAndWeather();
 
