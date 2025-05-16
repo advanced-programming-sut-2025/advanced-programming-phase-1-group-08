@@ -2,9 +2,13 @@ package model.Plants;
 
 import Controller.GameController;
 import model.Enum.FoodTypes;
+import model.Inventory;
 import model.Items;
+import model.Result;
 
 import static model.App.currentGame;
+import static model.Color_Eraser.RED;
+import static model.Color_Eraser.RESET;
 
 public class Food extends Items {
     private final FoodTypes type;
