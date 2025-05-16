@@ -2,7 +2,10 @@ package View;
 
 import Controller.GameController;
 import Controller.TradeController;
+import model.Animall.Animal;
+import model.Animall.BarnOrCage;
 import model.Enum.Commands.GameMenuCommands;
+import model.Enum.ItemType.BarnORCageType;
 import model.Enum.Menu;
 import model.Result;
 
@@ -246,11 +249,11 @@ public class GameMenu implements AppMenu {
         else if ((matcher=GameMenuCommands.artisanGet.getMatcher(input)) != null)
             System.out.println(controller.ArtisanGetProduct(matcher.group(1).trim()));
 
-        else if ((matcher=GameMenuCommands.sell.getMatcher(input)) != null)
-            System.out.println(controller.sell(matcher.group("name").trim() , -1));
-
         else if ((matcher=GameMenuCommands.sellByCount.getMatcher(input)) != null)
             System.out.println(controller.sell(matcher.group("name").trim() , Integer.parseInt(matcher.group(2).trim()) ));
+
+        else if ((matcher=GameMenuCommands.sell.getMatcher(input)) != null)
+            System.out.println(controller.sell(matcher.group("name").trim() , -1));
 
         else if ((matcher=GameMenuCommands.cheatSetFriendship.getMatcher(input)) != null)
             System.out.println(controller.cheatSetFriendship(matcher.group(1).trim() , Integer.parseInt(matcher.group(2).trim()) ));

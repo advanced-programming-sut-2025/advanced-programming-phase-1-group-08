@@ -91,16 +91,17 @@ public enum GameMenuCommands implements Command{
     collectProduct("collect\\s+product\\s+-n\\s+(?<name>\\S.*)\\s*"),
     sellAnimal("sell\\s+animal\\s+-n\\s+(?<name>\\S.*)\\s*"),
     placeItem("place\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-d\\s+(?<direction>\\d+)\\s*"),
-    artisan("(?i)artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<first>\\S+)\\s*"),
+    artisan("(?i)artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<first>\\.+)\\s*"),
     artisanUse("(?i)artisan\\s+use\\s+(?<artisanName>\\S+)\\s+(?<first>\\S+)\\s+(?<second>\\S+)\\s*"),
     artisanGet("(?i)artisan\\s+get\\s+(?<name>\\S.*)\\s*"),
     sell("(?i)sell\\s+(?<name>\\S.*)\\s*"),
     sellByCount("(?i)sell\\s+(?<name>\\S.*)\\s+-n\\s+(?<count>\\d+)\\s*"),
-    cheatSetFriendship("(?i)cheat\\s+set\\s+\\friendship\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
+    cheatSetFriendship("(?i)cheat\\s+set\\s+friendship\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     addDollar("(?i)cheat\\s+add\\s+(?<amount>\\d+)\\s+dollars\\s*"),
     setDollar("(?i)cheat\\s*set\\s*(?<amount>\\d+)\\s+dollars\\s*"),
     addItem("(?i)\\s*cheat\\s+add\\s+item\\s+-n\\s+(?<name>\\S.*)\\s+-c\\s+(?<amount>\\d+)\\s*"),
     MarketMenu("(?i)menu\\s+market\\s+menu\\s*"),
+    cheatFishingAbility("(?i)cheat\\s+set\\s+fishing\\s+-d\\s+(?<amount>\\d+)\\s*"),
     ;
 
 

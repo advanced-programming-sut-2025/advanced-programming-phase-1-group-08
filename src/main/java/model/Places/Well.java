@@ -2,6 +2,8 @@ package model.Places;
 
 import model.MapThings.GameObject;
 
+import static model.Color_Eraser.WHITE;
+
 public class Well extends GameObject {
     private static int remindInShop=1;
     private static final int width=3;
@@ -36,5 +38,10 @@ public class Well extends GameObject {
     }
     public static void setRemindInShop(int x) {
         remindInShop = x;
+    }
+
+    @Override
+    public String getIcon() {
+        return WHITE + "W";
     }
 }

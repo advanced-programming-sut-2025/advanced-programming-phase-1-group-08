@@ -9,6 +9,7 @@ import model.Enum.AllPlants.TreesSourceType;
 import model.Enum.ItemType.*;
 import model.Enum.Menu;
 import model.Enum.ToolsType.*;
+import model.Enum.WeatherTime.Season;
 import model.Plants.BasicRock;
 import model.MapThings.Tile;
 import model.MapThings.Walkable;
@@ -25,8 +26,7 @@ import model.ToolsPackage.*;
 import java.util.Map;
 
 import static model.App.*;
-import static model.Color_Eraser.BLUE;
-import static model.Color_Eraser.RESET;
+import static model.Color_Eraser.*;
 
 public class Marketing {
 
@@ -139,19 +139,20 @@ public class Marketing {
         else if (id == 2) {
             result.append(MarketType.JojaMart.name()).append(" available Products:").append("\n");
         }
+
         for (ForagingSeedsType foragingSeedsType : ForagingSeedsType.values()) {
             if (foragingSeedsType.getMarketTypes().contains(MarketType.JojaMart)) {
                 int remind = foragingSeedsType.JojaMartLimit;
-                if (id == 1 || remind > 0 ) {
+                if (id == 1 || (remind > 0 && checkSeason(foragingSeedsType.getDisplayName()) ) ) {
                     int price=foragingSeedsType.getPrice(MarketType.JojaMart);
-                    result.append(foragingSeedsType.name()).append(", Price: ").append(price).append("\n");
+                    result.append(foragingSeedsType.getDisplayName()).append(", Price: ").append(price).append("\n");
                 }
             }
         }
         for (MarketItemType marketItem : MarketItemType.values()) {
             if (marketItem.getMarketTypes().contains(MarketType.JojaMart)) {
                 int remind = marketItem.getOtherShopsLimit();
-                if (id == 1 || remind > 0 ) {
+                if (id == 1 || (remind > 0 && checkSeason(marketItem.getName()) ) ) {
                     result.append(marketItem.getName()).append(", Price: ").append(marketItem.getPrice(0)).append("\n");
                 }
             }
@@ -287,10 +288,11 @@ public class Marketing {
             if (animalType.getBarnorcages().contains(barnOrCage.getBarnORCageType())) {
                 if (barnOrCage.getReminderCapacity() > 0) {
                     canBuyAnimal = true;
-                    Animal newAnimal = new Animal(animalType , 0 , name , false , false , false , false , currentGame.currentDate.getDate());
+                    Animal newAnimal = new Animal(animalType , 0 , name , false , false , false , false , currentGame.currentDate.clone().getDate());
                     takeAnimalToBarnOrCage(newAnimal , barnOrCage);
                     barnOrCage.animals.add(newAnimal);
                     animalType.increaseRemindInShop(-1);
+                    break;
                 }
             }
         }
@@ -307,13 +309,17 @@ public class Marketing {
     public Result createBarnOrCage(int topLeftX, int topLeftY, String name) {
         BarnORCageType barnORCageType=null;
         for (BarnORCageType x : BarnORCageType.values()) {
-            if (x.name().equals(name)) {
+            if (x.getName().equals(name)) {
                 barnORCageType=x;
             }
         }
 
         if (barnORCageType==null) {
             return new Result(false , "No such type of BarnORCage!");
+        }
+
+        if (barnORCageType.getShopLimit() == 0) {
+            return new Result(false , RED+"The purchase limit for this product has been reached" + RESET);
         }
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
@@ -384,44 +390,152 @@ public class Marketing {
         }
 
         currentGame.currentPlayer.BarnOrCages.add(barnOrCage);
+        barnORCageType.setShopLimit(0);
 
-        return new Result(true, barnORCageType.getName() + "created successfully!");
+        return new Result(true, barnORCageType.getName() + " created successfully!");
 
     }
 
+    public Result createWell(int topLeftX , int topLeftY) {
+        GameController gameController = new GameController();
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        Marketing marketing = new Marketing();
+
+        if (marketing.findEnteredShopType() != MarketType.MarnieRanch) {
+            return new Result(false , "you can't create a Well because you are not in Marnie's Ranch Market");
+        }
+
+        if (Well.getNeededStone() == 0) {
+            return new Result(false , RED+"The purchase limit for this product has been reached" + RESET);
+        }
+
+        if (!gameController.checkTilesForCreateBarnOrCage(topLeftX, topLeftY, Well.getWidth(), Well.getHeight())) {
+            return new Result(false, "you can't create a Well on this coordinate!");
+        }
+
+        int Stone= 0;
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof BasicRock) {
+                Stone=entry.getValue();
+            }
+        }
+
+        if (Well.getNeededStone() > Stone) {
+            return new Result(false , "you can't create well because you don't have enough stone!");
+        }
+
+        if (Well.getNeededCoin() > currentGame.currentPlayer.getMoney() ) {
+            return new Result(false , "you can't create well because you don't have enough money!");
+        }
+
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof BasicRock) {
+                entry.setValue(entry.getValue() - Well.getNeededStone());
+                break;
+            }
+        }
+        currentGame.currentPlayer.increaseMoney(- Well.getNeededCoin());
+
+        Well well = new Well(topLeftX, topLeftY);
+        well.setCharactor('w');
+
+        for (int i = topLeftX; i < topLeftX + Well.getWidth(); i++) {
+            for (int j = topLeftY; j < topLeftY + Well.getHeight(); j++) {
+
+                if (i == topLeftX || i == topLeftX + Well.getWidth() -1 || j == topLeftY || j == topLeftY + Well.getHeight() -1) {
+                    Tile tile = gameController.getTileByCoordinates(i , j );
+                    tile.setGameObject(well);
+                }
+            }
+        }
+        Well.setRemindInShop(0);
+        return new Result(true, "Well Created Successfully");
+
+    }
+
+    public Result createShippingBin(int topLeftX , int topLeftY) {
+        GameController gameController = new GameController();
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        Marketing marketing = new Marketing();
+
+        if (marketing.findEnteredShopType() != MarketType.CarpenterShop) {
+            return new Result(false , "you can't create a Shipping Bin because you are not in Carpenter Market");
+        }
+
+        if (!gameController.checkTilesForCreateBarnOrCage(topLeftX, topLeftY, ShippingBin.getWidth(), ShippingBin.getHeight())) {
+            return new Result(false, "you can't create a Shipping Bin on this coordinate!");
+        }
+
+        int Wood= 0;
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof Wood) {
+                Wood=entry.getValue();
+            }
+        }
+
+        if (ShippingBin.getWoodNeeded() > Wood) {
+            return new Result(false , "you can't create Shipping Bin because you don't have enough Wood!");
+        }
+
+        if (ShippingBin.getCoinNeeded() > currentGame.currentPlayer.getMoney() ) {
+            return new Result(false , "you can't create Shipping Bin because you don't have enough money!");
+        }
+
+
+
+        ShippingBin shippingBin = new ShippingBin(topLeftX, topLeftY);
+        shippingBin.setCharactor('s');
+
+        Tile tile = gameController.getTileByCoordinates(topLeftX , topLeftY);
+        if (tile.getGameObject() instanceof Walkable) {
+            tile.setGameObject(shippingBin);
+        }
+        else {
+            return new Result(false , RED + "you can't create shipping been on this coordinate!" +RESET);
+        }
+
+        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof Wood) {
+                entry.setValue(entry.getValue() - ShippingBin.getWoodNeeded());
+            }
+        }
+        inventory.Items.entrySet().removeIf(entry -> entry.getValue() == 0);
+        currentGame.currentPlayer.increaseMoney(- ShippingBin.getCoinNeeded());
+
+        currentGame.currentPlayer.getFarm().shippingBins.add(shippingBin);
+        return new Result(true, "Shipping Bin Created Successfully");
+    }
+
     public Result purchaseFromBlackSmith(String name , Integer amount) {
+        if (currentGame.currentDate.getHour() < MarketType.Blacksmith.getStartHour() || currentGame.currentDate.getHour() > MarketType.Blacksmith.getEndHour()) {
+            return new Result(false , RED + "Sorry. Store is close at this time");
+        }
+
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         if (amount == null) {
             amount = 1;
         }
         if (name.equals("Coal") ) {
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof ForagingMinerals) {
-                    if (((ForagingMinerals) entry.getKey()).getType().equals(ForagingMineralsType.COAL)) {
-                        if (currentGame.currentPlayer.getMoney() >= 150 * amount) {
-                            currentGame.currentPlayer.increaseMoney( - 150 * amount);
-                            inventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                            return new Result(true, name + "was purchased successfully");
-                        }
-                        else {
-                            return new Result(false , "Not enough money to purchase "+name);
-                        }
-                    }
-                }
+            ForagingMinerals Coal = new ForagingMinerals(ForagingMineralsType.COAL);
+            if (currentGame.currentPlayer.getMoney() < amount * 150) {
+                return new Result(false , RED + "Not enough money!" + RESET);
             }
-            if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-                if (currentGame.currentPlayer.getMoney() >= 150 * amount) {
-                    currentGame.currentPlayer.increaseMoney( - 150 * amount);
-                    ForagingMinerals Coal = new ForagingMinerals(ForagingMineralsType.COAL);
-                    return new Result(true, name + "was purchased successfully");
-                }
-                else {
-                    return new Result(false , "Not enough money to purchase "+name);
-                }
+            if (inventory.Items.containsKey(Coal)) {
+                Integer finalAmount = amount;
+                inventory.Items.compute(Coal , (key, value) -> value + finalAmount);
             }
-            return new Result(false , "not enough capacity in your backpack");
+            else {
+                if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                    return new Result(false , RED + "Not enough remind capacity!" + RESET);
+                }
+                inventory.Items.put(Coal, amount);
+            }
+
+            currentGame.currentPlayer.increaseMoney(- amount * 150);
+            return new Result(true , BLUE + "You purchased "+name+ " successfully!");
         }
         BarsAndOres b = null;
+
         for (BarsAndOreType barsAndOreType : BarsAndOreType.values()) {
             if (barsAndOreType.name().equals(name) && barsAndOreType.getMarketType() != null) {
                 b = new BarsAndOres(barsAndOreType);
@@ -431,30 +545,23 @@ public class Marketing {
         if (b == null) {
             return new Result(false , "Products Not found");
         }
-        for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-            if (entry.getKey() instanceof BarsAndOres) {
-                if (((BarsAndOres) entry.getKey()).getType().equals(b.getType())) {
-                    if (currentGame.currentPlayer.getMoney() >= ((BarsAndOres) entry.getKey()).getType().getPrice() * amount) {
-                        currentGame.currentPlayer.increaseMoney( - ((BarsAndOres) entry.getKey()).getType().getPrice() * amount);
-                        inventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                        return new Result(true, name + "was purchased successfully");
-                    }
-                    else {
-                        return new Result(false , "Not enough money to purchase "+name);
-                    }
-                }
-            }
+
+        if (currentGame.currentPlayer.getMoney() < amount * b.getType().getPrice()) {
+            return new Result(false , RED + "Not enough money!" + RESET);
         }
-        if (currentGame.currentPlayer.getBackPack().getType().getRemindInShop() > 0) {
-            if (currentGame.currentPlayer.getMoney() >= b.getType().getPrice() * amount) {
-                inventory.Items.put(b, amount);
-                return new Result(true, name + "was purchased successfully");
-            }
-            else {
-                return new Result(false , "Not enough money to purchase "+name);
-            }
+        if (inventory.Items.containsKey(b)) {
+            Integer finalAmount1 = amount;
+            inventory.Items.compute(b , (k, v) -> v + finalAmount1);
         }
-        return new Result(false , "not enough capacity in your backpack");
+        else {
+            if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                return new Result(false , RED + "Not enough capacity in your backpack!" + RESET);
+            }
+            inventory.Items.put(b, amount);
+        }
+
+        currentGame.currentPlayer.increaseMoney( - amount * b.getType().getPrice());
+        return new Result(true , BLUE + "You purchased "+name+ " successfully!");
 
     }
 
@@ -462,6 +569,10 @@ public class Marketing {
     public Result purchaseFromMarnieRanch(String name , Integer amount) {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+
+        if (currentGame.currentDate.getHour() < MarketType.MarnieRanch.getStartHour() || currentGame.currentDate.getHour() > MarketType.MarnieRanch.getEndHour()) {
+            return new Result(false , RED + "Sorry. Store is close at this time" + RESET);
+        }
 
         if (name.equals("Hay")) {
             if (amount == null) {
@@ -473,12 +584,17 @@ public class Marketing {
             if (MarketItemType.Hay.getPrice(0) * amount > currentGame.currentPlayer.getMoney()){
                 return new Result(false , "not enough money to purchase this product");
             }
-            if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
-                return new Result(false , "Not enough capacity in your backpack");
+            MarketItem Hay = new MarketItem(MarketItemType.Hay);
+            if (inventory.Items.containsKey(Hay)) {
+                Integer finalAmount = amount;
+                inventory.Items.compute(Hay , (key, value) -> value + finalAmount);
             }
-
-            MarketItem Hay=new MarketItem(MarketItemType.Hay);
-            inventory.Items.put(Hay , amount);
+            else {
+                if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                    return new Result(false , RED + "Not enough capacity in your backpack!" + RESET);
+                }
+                inventory.Items.put(Hay, amount);
+            }
             currentGame.currentPlayer.increaseMoney(- amount * MarketItemType.Hay.getPrice(0));
             MarketItemType.Hay.increaseOtherShopsLimit(-amount);
             return new Result(false , "you bought this product successfully");
@@ -493,11 +609,11 @@ public class Marketing {
             if (MilkPail.coinNeeded * amount > currentGame.currentPlayer.getMoney()){
                 return new Result(false , "not enough money to purchase this product");
             }
-            if (amount > currentGame.currentPlayer.getBackPack().getType().getCapacity()) {
+            if (amount > currentGame.currentPlayer.getBackPack().getType().getRemindCapacity()) {
                 return new Result(false , "Not enough capacity in your backpack");
             }
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry instanceof MilkPail) {
+                if (entry.getKey() instanceof MilkPail) {
                     return new Result(false , "you already have Milk Pail in your inventory");
                 }
             }
@@ -522,7 +638,7 @@ public class Marketing {
                 return new Result(false , "Not enough capacity in your backpack");
             }
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry instanceof Shear) {
+                if (entry.getKey() instanceof Shear) {
                     return new Result(false , "you already have Milk Pail in your inventory");
                 }
             }
@@ -537,6 +653,9 @@ public class Marketing {
     }
 
     public Result purchaseFromStardrop(String name , Integer amount) {
+        if (currentGame.currentDate.getHour() < MarketType.StardropSaloon.getStartHour() || currentGame.currentDate.getHour() > MarketType.StardropSaloon.getEndHour()) {
+            return new Result(false , RED + "Sorry. Store is close at this time" + RESET);
+        }
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         MarketItemType Product = null;
         for (MarketItemType type : MarketItemType.values()) {
@@ -580,6 +699,10 @@ public class Marketing {
     }
 
     public Result purchaseFromCarpenter(String name , Integer amount) {
+        if (currentGame.currentDate.getHour() < MarketType.CarpenterShop.getStartHour() || currentGame.currentDate.getHour() > MarketType.CarpenterShop.getEndHour()) {
+            return new Result(false , RED + "Sorry. Store is close at this time");
+        }
+
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
 
         if (amount == null) {
@@ -602,30 +725,37 @@ public class Marketing {
         if (Product.getOtherShopsLimit() < amount) {
             return new Result(false , "The purchase limit for this product is reached");
         }
-        if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
-            return new Result(false , "Not enough capacity in your backpack");
-        }
 
         if (Product.getName().equals("Stone") ) {
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof BasicRock) {
-                    entry.setValue(entry.getValue() + amount);
-                    Product.increaseOtherShopsLimit(-amount);
-                    currentGame.currentPlayer.increaseMoney(- amount * Product.getPrice(0));
-                    return new Result(false , "You bought this product successfully");
-                }
+            BasicRock rock = new BasicRock();
+            if (inventory.Items.containsKey(rock)) {
+                Integer finalAmount = amount;
+                inventory.Items.compute(rock , (k, v) -> v + finalAmount);
             }
+            else {
+                if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                    return new Result(false , RED+"Not enough capacity in your backpack"+RESET);
+                }
+                inventory.Items.put(rock , amount);
+            }
+            currentGame.currentPlayer.increaseMoney(- amount * Product.getPrice(0));
+            return new Result(false , "You bought this product successfully");
         }
 
         if (Product.getName().equals("Wood") ) {
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof Wood) {
-                    entry.setValue(entry.getValue() + amount);
-                    Product.increaseOtherShopsLimit(-amount);
-                    currentGame.currentPlayer.increaseMoney(- amount * Product.getPrice(0));
-                    return new Result(false , "You bought this product successfully");
-                }
+            Wood wood = new Wood();
+            if (inventory.Items.containsKey(wood)) {
+                Integer finalAmount = amount;
+                inventory.Items.compute(wood , (k, v) -> v + finalAmount);
             }
+            else {
+                if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                    return new Result(false , RED+"Not enough capacity in your backpack"+RESET);
+                }
+                inventory.Items.put(wood , amount);
+            }
+            currentGame.currentPlayer.increaseMoney(- amount * Product.getPrice(0));
+            return new Result(false , "You bought this product successfully");
         }
         return null;
     }
@@ -641,14 +771,15 @@ public class Marketing {
         if (Product == null && foragingSeed == null) {
             return new Result(false , "No such product found");
         }
-        if (currentGame.currentPlayer.getMoney() < amount * Product.getPrice(id)) {
-            return new Result(false , "Not enough money to purchase this product");
-        }
+
         if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
             return new Result(false , "Not enough capacity in your backpack");
         }
 
         if (Product != null) {
+            if (currentGame.currentPlayer.getMoney() < amount * Product.getPrice(id)) {
+                return new Result(false , "Not enough money to purchase this product");
+            }
 
             if (id == 1 && Product.getPierreShopsLimit() < amount) {
                 return new Result(false , "The purchase limit for this product is reached");
@@ -657,31 +788,21 @@ public class Marketing {
                 return new Result(false , "The purchase limit for this product is reached");
             }
 
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof MarketItem) {
-                    if (((MarketItem) entry.getKey()).getType() .equals(Product)) {
-                        entry.setValue(entry.getValue() + amount);
-                        if (id == 1) {
-                            Product.increaseOtherShopsLimit(-amount);
-                        }
-                        else {
-                            Product.increaseOtherShopsLimit(-amount);
-                        }
-                        currentGame.currentPlayer.increaseMoney(- amount * Product.getPrice(id));
-                        return new Result(true , "You bought this product successfully");
-                    }
-                }
-            }
-
             if (id == 1) {
                 Product.increaseOtherShopsLimit(-amount);
             }
             else {
                 Product.increaseOtherShopsLimit(-amount);
             }
-
+            currentGame.currentPlayer.increaseMoney(- amount * Product.getPrice(id));
             MarketItem marketItem = new MarketItem(Product);
-            inventory.Items.put(marketItem, amount);
+
+            if (inventory.Items.containsKey(marketItem)) {
+                inventory.Items.compute(marketItem , (k,v) -> v+amount);
+            }
+            else {
+                inventory.Items.put(marketItem , amount);
+            }
             return new Result(true , "You bought this product successfully");
         }
 
@@ -693,30 +814,33 @@ public class Marketing {
                 return new Result(false , "The purchase limit for this product is reached");
             }
 
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof ForagingSeeds) {
-                    if (((ForagingSeeds) entry.getKey()).getType() .equals(foragingSeed)) {
-                        entry.setValue(entry.getValue() + amount);
-                        if (id == 1) {
-                            foragingSeed.PierrGeneralLimit -= amount;
-                            currentGame.currentPlayer.increaseMoney(-  amount * foragingSeed.getPrice(MarketType.PierreGeneralStore));
-                        }
-                        else {
-                            foragingSeed.JojaMartLimit -= amount;
-                            currentGame.currentPlayer.increaseMoney(- amount * foragingSeed.getPrice(MarketType.JojaMart));
-                        }
-                        return new Result(false , "You bought this product successfully");
-                    }
-                }
+            if (id == 1) {
+                foragingSeed.PierrGeneralLimit -= amount;
+                currentGame.currentPlayer.increaseMoney(-  amount * foragingSeed.getPrice(MarketType.PierreGeneralStore));
             }
-
-            ForagingSeeds foragingSeeds = new ForagingSeeds(foragingSeed , null) ;
+            else {
+                foragingSeed.JojaMartLimit -= amount;
+                currentGame.currentPlayer.increaseMoney(- amount * foragingSeed.getPrice(MarketType.JojaMart));
+            }
+            ForagingSeeds foragingSeeds = new ForagingSeeds(foragingSeed) ;
+            if (inventory.Items.containsKey(foragingSeeds)) {
+                inventory.Items.compute(foragingSeeds , (k,v) -> v + amount );
+            }
+            else {
             inventory.Items.put(foragingSeeds, amount);
+            }
             return new Result(false , "You bought this product successfully");
         }
     }
 
     public Result purchaseFromJojaMart(String name , Integer amount) {
+        if (currentGame.currentDate.getHour() < MarketType.JojaMart.getStartHour() || currentGame.currentDate.getHour() > MarketType.JojaMart.getEndHour()) {
+            return new Result(false , RED + "Sorry. Store is close at this time");
+        }
+        if (! checkSeason(name) ) {
+            return new Result(false , "This product is not for this Season");
+        }
+
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         if (amount == null) {
             amount = 1;
@@ -737,6 +861,45 @@ public class Marketing {
 
         return buySeedsOrMarketItem(Product , foragingSeed , amount , MarketType.JojaMart);
 
+    }
+
+    private boolean isExistInArray(String [] array , String item) {
+        for (String string : array) {
+            if (string.equals(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkSeason(String name) {
+        String [] Spring={"Parsnip Seeds" , "Bean Starter" , "Cauliflower Seeds" , "Potato Seeds" , "Strawberry Seeds" ,
+                "Tulip Bulb" , "Kale Seeds" , "Coffee Beans" , "Carrot Seeds" , "Rhubarb Seeds" , "Jazz Seeds"};
+        String [] Summer={"Tomato Seeds" , "Pepper Seeds" , "Wheat Seeds" , "Summer Squash Seeds" , "Radish Seeds",
+                "Melon Seeds" , "Hops Starter" , "Poppy Seeds" , "Spangle Seeds" , "Starfruit Seeds" , "Coffee Beans" , "Sunflower Seeds"};
+        String [] Full={"Corn Seeds" , "Eggplant Seeds" , "Pumpkin Seeds" , "Broccoli Seeds" , "Amaranth Seeds" ,
+                "Grape Starter" , "Beet Seeds" , "Yam Seeds" , "Bok Choy Seeds" , "Cranberry Seeds" , "Sunflower Seeds" , "Fairy Seeds" , "Rare Seed" , "Wheat Seeds"};
+        String [] Winter={"Powdermelon Seeds"};
+
+        String [] AllSeason={"Joja Cola" , "Ancient Seed" , "Grass Starter" , "Sugar" , "Wheat Flour" , "Rice"};
+
+        if (isExistInArray(AllSeason , name)) {
+            return true;
+        }
+
+        if (currentGame.currentDate.getSeason().equals(Season.Spring) && ! isExistInArray(Spring , name)) {
+            return false;
+        }
+        if (currentGame.currentDate.getSeason().equals(Season.Summer) && ! isExistInArray(Summer, name)) {
+            return false;
+        }
+        if (currentGame.currentDate.getSeason().equals(Season.Fall) && ! isExistInArray(Full , name)) {
+            return false;
+        }
+        if (currentGame.currentDate.getSeason().equals(Season.Winter) && ! isExistInArray(Winter , name)) {
+            return false;
+        }
+        return true;
     }
 
     private Result buyBackpack(BackPackType backPackType , Integer amount) {
@@ -781,6 +944,10 @@ public class Marketing {
 
 
     public Result purchaseFromPierre(String name , Integer amount) {
+        if (currentGame.currentDate.getHour() < MarketType.PierreGeneralStore.getStartHour() || currentGame.currentDate.getHour() > MarketType.PierreGeneralStore.getEndHour()) {
+            return new Result(false , RED + "Sorry. Store is close at this time"+RESET);
+        }
+
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         if (amount == null) {
             amount = 1;
@@ -860,6 +1027,10 @@ public class Marketing {
     }
 
     public Result purchaseFromFishShop(String name , Integer amount) {
+          if (currentGame.currentDate.getHour() < MarketType.FishShop.getStartHour() || currentGame.currentDate.getHour() > MarketType.FishShop.getEndHour()) {
+              return new Result(false , RED + "Sorry. Store is close at this time"+RESET);
+          }
+
           Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
           if (amount == null) {
               amount = 1;
@@ -919,6 +1090,9 @@ public class Marketing {
     }
 
     public Result upgradeTool (String name) {
+        if (currentGame.currentDate.getHour() < MarketType.FishShop.getStartHour() || currentGame.currentDate.getHour() > MarketType.FishShop.getEndHour()) {
+            return new Result(false , RED + "Sorry. Store is close at this time"+RESET);
+        }
         MarketType marketType=MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());
         if (marketType!=MarketType.Blacksmith) {
             return new Result(false , "you are not in BlackSmith Market. please go there");
@@ -1037,13 +1211,12 @@ public class Marketing {
             }
             case StardropSaloon -> { return purchaseFromStardrop(name, amount);}
             case CarpenterShop -> { return purchaseFromCarpenter(name, amount);}
-            case JojaMart -> {purchaseFromJojaMart(name, amount);}
+            case JojaMart -> {return purchaseFromJojaMart(name, amount);}
             case PierreGeneralStore -> { return purchaseFromPierre(name, amount);}
             case FishShop ->{return purchaseFromFishShop(name, amount);}
             case Blacksmith -> {return purchaseFromBlackSmith(name, amount);}
             default -> {return new Result(false , name + " not found"); }
         }
-        return null;
     }
 
     public Result goToGameMenu() {

@@ -29,4 +29,9 @@ public class ForagingMinerals extends Items {
     public int getSellPrice() {
         return type.getPrice();
     }
+
+    @Override
+    public int getTakesTime() {
+        return 1;
+    }
 }

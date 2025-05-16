@@ -21,4 +21,9 @@ public class ArtisanProduct extends Items {
     public int getSellPrice() {
         return type.getPrice();
     }
+
+    @Override
+    public int getTakesTime() {
+        return type.getTakesTime();
+    }
 }
