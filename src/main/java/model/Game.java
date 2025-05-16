@@ -1,13 +1,15 @@
 package model;
 
 import model.Enum.Menu;
+import model.Enum.SecurityQuestions;
 import model.Enum.WeatherTime.Weather;
 import model.MapThings.Tile;
 import model.Places.Farm;
 import model.Places.Market;
 import model.SaveData.PasswordHashUtil;
-import model.SaveData.UserBasicInfo;
 
+
+import java.io.IOException;
 import java.util.*;
 
 public class Game {
@@ -26,7 +28,6 @@ public class Game {
     public DateHour currentDate;
 
     public User currentPlayer;
-    public User currentUser;
     public Menu currentMenu;
 
     public Menu getCurrentMenu() {
@@ -42,8 +43,8 @@ public class Game {
         return null;
     }
 
-    public void AddNewUser(String username, String pass, String nickname, String email, String gender,
-                                  String secQ, String secA){
+    public static void AddNewUser(String username, String pass, String nickname, String email, String gender,
+                                  SecurityQuestions secQ, String secA){
 
         String hashPASS = PasswordHashUtil.hashPassword(pass);
 
@@ -54,12 +55,18 @@ public class Game {
                 gender,
                 0,
                 100,
-                hashPASS
+                hashPASS,
+                secQ,
+                secA
         );
 
         App.users.add(newUser);
         App.currentUser = newUser;
-        this.currentUser = newUser;
+        try {
+            model.SaveData.UserStorage.saveUsers(App.users);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }

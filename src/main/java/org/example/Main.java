@@ -2,9 +2,11 @@ package org.example;
 
 import View.AppView;
 
-public class Main {
+import java.io.IOException;
 
-    public static void main(String[] args)  {
+
+public class Main {
+    public static void main(String[] args) throws IOException {
         (new AppView()).run();
     }
 }

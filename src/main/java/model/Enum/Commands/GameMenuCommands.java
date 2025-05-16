@@ -11,9 +11,9 @@ public enum GameMenuCommands implements Command{
     getGameObject   ("\\s*(?i)object\\s*(?<dir>\\d+)\\s*"),
     getGameObject2  ("\\s*(?i)object\\s*(?<x>\\d+)\\s*(?<y>\\d+)\\s*"),
 
-//    makeNewGame     ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+" +
-//            "(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
-    makeNewGame     ("\\s*game\\s*new"),
+    makeNewGame     ("^\\s*game\\s+new\\s+-u\\s+(?<username1>\\S+)(?:\\s+" +
+            "(?<username2>\\S+))?(?:\\s+(?<username3>\\S+))?\\s*$"),
+    back            ("\\s*(?i)back\\s*"),
     openHomeMenu    ("\\s*(?i)menu\\s*home\\s*menu\\s*"),
     nextTurn        ("\\s*(?i)next\\s*turn\\s*"),
     eatFood         ("\\s*(?i)eat\\s*(?<food>.+)"),

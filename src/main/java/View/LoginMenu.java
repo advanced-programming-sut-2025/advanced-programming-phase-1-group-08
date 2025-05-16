@@ -9,13 +9,14 @@ import model.User;
 import model.App;
 import model.Enum.Menu;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class LoginMenu extends AppView implements AppMenu {
     LoginController controller = new LoginController();
 
     @Override
-    public void check(Scanner scanner) {
+    public void check(Scanner scanner)throws IOException {
         String input = scanner.nextLine();
         if (LoginCommands.Login.getMatcher(input) != null)
         {

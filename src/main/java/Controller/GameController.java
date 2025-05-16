@@ -24,6 +24,7 @@ import model.Plants.*;
 import model.SaveData.PasswordHashUtil;
 import model.ToolsPackage.*;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -794,7 +795,7 @@ public class GameController {
             }
         }
 
-        for (User user : users) {
+        for (User user : currentGame.players) {
             if (user.getPositionX()==goalX && user.getPositionY()==goalY){
                 return new Result(true,"you can't go to this coordinate");
             }
@@ -2459,12 +2460,21 @@ public class GameController {
 
         System.out.println(GREEN+"Eaten Successfully."+RESET);
     }
+    public Result backToMainMenu () {
+        if (App.currentUser.isCurrently_in_game())
+            return new Result(false, RED+"You Are Currently in a Game!"+RESET);
+        else {
+            currentMenu = Menu.MainMenu;
+            return new Result(true, GREEN+"Returned to Main Menu."+RESET);
+        }
+    }
     public void exitGame () {
         if (currentGame.currentPlayer != currentUser) {
-            System.out.println("Access Denied!");
+            System.out.println(RED+"Access Denied!"+RESET);
             return;
         }
-
+        //TODO بیشترین امتیاز و... سیو بشه
+        //TODO currently in game
         //TODO سیو کل بازی
     }
     public void forceTerminate () {
@@ -2692,69 +2702,64 @@ public class GameController {
 
     }
 
-    public void startNewGame (String input) {
-        System.out.println(RED+"Starting New Game..."+RESET);
+    public void startNewGame (String input) throws IOException {
+        System.out.println(CYAN+"Starting New Game..."+RESET);
 
         currentGame = new Game();
-        currentGame.currentUser = currentUser;
+        currentGame.currentPlayer = currentUser;
         currentGame.currentMenu = currentMenu;
 
 
-//        String user1name = GameMenuCommands.makeNewGame.getMatcher(input).group("username1");
-//        String user2name = GameMenuCommands.makeNewGame.getMatcher(input).group("username2"); // could be null
-//        String user3name = GameMenuCommands.makeNewGame.getMatcher(input).group("username3");// could be null
-//
-//
-//
-//        if (findUserB(user1name) == null){
-//            System.out.println("User1 Not Found!");
-//            return;
-//        }
-//        if (user2name != null) {
-//            if (findUserB(user2name) == null) {
-//                System.out.println("User2 Not Found!");
-//                return;
-//            }
-//        }
-//        if (user3name != null) {
-//            if (findUserB(user3name) == null) {
-//                System.out.println("User3 Not Found!");
-//                return;
-//            }
-//        }
-//        if (findUserByUsername(user1name).isCurrently_in_game()){
-//            System.out.println("User Currently in Game!");
-//            return;
-//        }
-//
-//        if (user2name != null) {
-//            if (findUserByUsername(user2name).isCurrently_in_game()) {
-//                System.out.println("User Not Found!");
-//                return;
-//            }
-//        }
-//        if (user3name != null) {
-//            if (findUserByUsername(user3name).isCurrently_in_game()) {
-//                System.out.println("User Not Found!");
-//                return;
-//            }
-//        }
-//        currentGame.players.add(currentUser);
-//        currentGame.currentPlayer = currentUser;
-//        System.out.println(RED+"player selected"+RESET);
-//        setTimeAndWeather();
+        String user1name = GameMenuCommands.makeNewGame.getMatcher(input).group("username1");
+        String user2name = GameMenuCommands.makeNewGame.getMatcher(input).group("username2"); // could be null
+        String user3name = GameMenuCommands.makeNewGame.getMatcher(input).group("username3");// could be null
 
-//        currentGame.players.add(findUserByUsername(user1name));
-//        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
-//        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
-        currentGame.players.add(new User("Ario", "ArioTR", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
-        currentGame.players.add(new User("Erfan1", "Erfan2", "ario.ebr@gmail.com", "female", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
-        currentGame.players.add(new User("Ario3", "ArioTR3", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
-        currentGame.players.add(new User("Ario4", "ArioTR4", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
+        User user1 = findUserByUsername(user1name);
+        User user2 = findUserByUsername(user2name);
+        User user3 = findUserByUsername(user3name);
+
+        if (user1 == null){
+            System.out.println("User1 Not Found!");
+            return;
+        }
+        if (user2name != null) {
+            if (user2 == null) {
+                System.out.println("User2 Not Found!");
+                return;
+            }
+        }
+        if (user3name != null) {
+            if (user3 == null) {
+                System.out.println("User3 Not Found!");
+                return;
+            }
+        }
+        if (user1.isCurrently_in_game()){
+            System.out.println("User1 Currently in Game!");
+            return;
+        }
+        else user1.setCurrently_in_game(true);
+
+        if (user2name != null) {
+            if (findUserByUsername(user2name).isCurrently_in_game()) {
+                System.out.println("User2 Currently in Game!");
+                return;
+            }
+            else user2.setCurrently_in_game(true);
+        }
+        if (user3name != null) {
+            if (findUserByUsername(user3name).isCurrently_in_game()) {
+                System.out.println("User3 Currently in Game!");
+                return;
+            }
+            else user3.setCurrently_in_game(true);
+        }
+        currentGame.players.add(currentUser);
+        currentGame.players.add(user1);
+        if (user2 != null) currentGame.players.add(user2);
+        if (user3 != null) currentGame.players.add(user2);
+        currentGame.currentPlayer = currentUser;
         setTimeAndWeather();
-        currentGame.currentPlayer = currentGame.players.getFirst();
-        // done
-
 
         Scanner scanner = new Scanner(System.in);
 
@@ -2764,23 +2769,22 @@ public class GameController {
             currentGame.currentPlayer = user;
             while (true) {
 
-//                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
-//                String choiceString = scanner.nextLine();
-//                String[] splitChoice = choiceString.trim().split("\\s+");
-//
-//                int choice;
-//                try {
-//                    choice = Integer.parseInt(splitChoice[2]);
-//                } catch (Exception e) {
-//                    System.out.println("Please put a integer between 1 and 2!");
-//                    continue;
-//                }
-//                if (choice != 1 && choice != 2) {
-//                    System.out.println("Choose between 1 and 2!");
-//                    continue;
-//                }
+                System.out.println(currentGame.currentPlayer.getNickname() + "'s turn to choose map(1 or 2)");
+                String choiceString = scanner.nextLine();
+                String[] splitChoice = choiceString.trim().split("\\s+");
 
-                int choice = 1; // TODO باید پاک بشه
+                int choice;
+                try {
+                    choice = Integer.parseInt(splitChoice[2]);
+                } catch (Exception e) {
+                    System.out.println("Please Use an Integer between 1 and 2!");
+                    continue;
+                }
+                if (choice != 1 && choice != 2) {
+                    System.out.println("Choose between 1 and 2!");
+                    continue;
+                }
+
 
                 if (counter == 1) {
                     user.setIcon(BRIGHT_CYAN + "∆" + RESET);
@@ -2816,11 +2820,13 @@ public class GameController {
                 currentGame.friendships.add(f);
             }
         }
+        // set initial Cooking Recipes from beginning
+        for (User player: currentGame.players) {
+            player.setRecipes(Recipe.createAllRecipes());
+        }
         buildHall();
         buildNpcVillage();
         sortMap(currentGame.bigMap);
-//        friendships.get(0).addXp(150);  // این باعث میشه لول بره بالا
-//        friendships.get(0).printInfo();
         initializePlayer();
         startDay();
         plantCreator();

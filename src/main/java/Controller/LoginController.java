@@ -4,9 +4,11 @@ import model.Result;
 import model.SaveData.PasswordHashUtil;
 import model.SaveData.UserBasicInfo;
 import model.SaveData.UserDataBase;
+import model.SaveData.UserStorage;
 import model.User;
 import model.App;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import static Controller.RegisterController.*;
@@ -14,11 +16,10 @@ import static model.App.currentUser;
 
 public class LoginController {
 
-    public Result LoginRes(String username, String password) {
-        UserBasicInfo user = null;
-        for (UserBasicInfo userBasicInfo: UserDataBase.loadUsers()) {
-            if (userBasicInfo.getUsername().equals(username)) {
-                if (userBasicInfo.getHashpass().equals(PasswordHashUtil.hashPassword(password))) {
+    public Result LoginRes(String username, String password) throws IOException{
+        for (User user: UserStorage.loadUsers()) {
+            if (user.getUsername().equals(username)) {
+                if (user.getHashPass().equals(PasswordHashUtil.hashPassword(password))) {
                     return new Result(true, "User Logged in Successfully.You are Now in Main Menu!");
                 }
                 return new Result(false, "Password is Incorrect!");
@@ -27,15 +28,17 @@ public class LoginController {
         return new Result(false , "Username Doesn't Exist!");
     }
 
-    public Result ForgotPassRes(String username) {
-        for (UserBasicInfo userB : UserDataBase.loadUsers())
-            if (userB.getUsername().equals(username)) {
-                Scanner scanner = new Scanner(System.in);
+    public Result ForgotPassRes(String username) throws IOException {
+
+        Scanner scanner = new Scanner(System.in);
+
+        for (User user : UserStorage.loadUsers())
+            if (user.getUsername().equals(username)) {
                 System.out.println("Answer your Security Question.");
-                System.out.println(userB.getSecQ());
+                System.out.println(user.getMySecurityQuestion().getQuestionText());
                 String response = scanner.nextLine();
 
-                if (response.equals(userB.getSecA())) {
+                if (response.equals(user.getMySecurityAnswer())) {
                     System.out.println("Great, Now Enter Your New Password.(type random for Random Pass)");
                     String choice = scanner.nextLine();
 
@@ -46,8 +49,9 @@ public class LoginController {
                             System.out.println("Do You Approve This Password?[Y/N/back] Suggested Pass: " + suggestion);
                             String userResponse = scanner.nextLine();
                             if (userResponse.trim().equalsIgnoreCase("y")) {
-                                System.out.println("You Are Now in Main Menu");
-                                userB.setHashpass(PasswordHashUtil.hashPassword(suggestion));
+                                System.out.println("You Will Be Directed to Main Menu");
+                                user.setHashPass(PasswordHashUtil.hashPassword(suggestion));
+                                model.SaveData.UserDataBase.updatePassword(username, PasswordHashUtil.hashPassword(suggestion));
                                 App.currentMenu = Menu.MainMenu;
                                 return new Result(true, "Your Password is: " + suggestion);
                             }
@@ -63,9 +67,11 @@ public class LoginController {
                         if (passIsStrong(choice) != null)
                             return new Result(false , passIsStrong(choice));
 
-                        userB.setHashpass(PasswordHashUtil.hashPassword(choice));
-                        model.SaveData.UserDataBase.updatePassword(username, choice);
-
+                        String hashed = PasswordHashUtil.hashPassword(choice);
+                        user.setHashPass(hashed);
+                        model.SaveData.UserDataBase.updatePassword(username, hashed);
+                        System.out.println("You Will Be Directed to Main Menu");
+                        App.currentMenu = Menu.MainMenu;
                         return new Result(true, "Your Password is: " + choice);
                     }
                 }

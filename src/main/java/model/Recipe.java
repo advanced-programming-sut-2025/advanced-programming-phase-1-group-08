@@ -17,17 +17,22 @@ import java.util.HashMap;
 import java.util.List;
 
 import static model.App.currentGame;
-
+import lombok.Setter;
+import lombok.Getter;
+@Setter
+@Getter
 
 public class Recipe {
 
-    private final String name;
+    private String name;
     private boolean usable = false;
-    private final FoodTypes type;
+    private FoodTypes type;
     private HashMap<Items, Integer> ingredients = new HashMap<>(); // مقدار لازم از هر آیتم
     private int energyNeeded;
     private int sellPrice_golds;
-    private final Effect effect;
+    private Effect effect;
+
+    public Recipe(){}
 
     public Recipe(String name, boolean usable, FoodTypes type, HashMap<Items, Integer> ingredients, int energyNeeded, int price,
                   Effect effect) {

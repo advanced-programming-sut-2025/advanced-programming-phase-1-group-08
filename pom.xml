@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+
     <dependencies>
         <!-- Gson -->
         <dependency>
@@ -21,6 +22,15 @@
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.32</version> <!-- یا آخرین نسخه -->
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- SpongePowered Noise -->
         <dependency>
@@ -62,6 +72,12 @@
     </dependencies>
 
     <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+
         <repository>
             <id>sponge</id>
             <url>https://repo.spongepowered.org/repository/maven-public/</url>

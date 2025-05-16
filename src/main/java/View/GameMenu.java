@@ -6,6 +6,7 @@ import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Menu;
 import model.Result;
 
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
@@ -19,13 +20,17 @@ public class GameMenu implements AppMenu {
     Matcher matcher;
 
     @Override
-    public void check(Scanner scanner) {
+    public void check(Scanner scanner) throws IOException {
 
         String input = scanner.nextLine();
 
 
         if (GameMenuCommands.makeNewGame.getMatcher(input) != null)
             controller.startNewGame(input);
+
+        else if (GameMenuCommands.back.getMatcher(input) != null)
+            System.out.println(controller.backToMainMenu().massage());
+
         else if ((matcher = GameMenuCommands.printMap.getMatcher(input)) != null) {
             System.out.println(controller.print(
                     Integer.parseInt(matcher.group(1).trim()),
@@ -292,13 +297,15 @@ public class GameMenu implements AppMenu {
         else
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
-        controller.AutomaticFunctionAfterAnyAct();
-        System.out.println("-----------------");
-        System.out.println("-> " + currentGame.currentPlayer.getNickname() + GREEN+"\t$" + currentGame.currentPlayer.getMoney() + "$"+RESET);
-        System.out.println("(" + currentGame.currentPlayer.getPositionX()+ ", " + currentGame.currentPlayer.getPositionY() + ")");
-        System.out.println("farming  : "+currentGame.currentPlayer.getFarmingAbility());
-        System.out.println("mining   : "+currentGame.currentPlayer.getMiningAbility());
-        System.out.println("foraging : "+currentGame.currentPlayer.getForagingAbility());
-        System.out.println("-----------------");
+        if (currentGame != null && currentGame.currentPlayer != null) {
+            controller.AutomaticFunctionAfterAnyAct();
+            System.out.println("-----------------");
+            System.out.println("-> " + currentGame.currentPlayer.getNickname() + GREEN + "\t$" + currentGame.currentPlayer.getMoney() + "$" + RESET);
+            System.out.println("(" + currentGame.currentPlayer.getPositionX() + ", " + currentGame.currentPlayer.getPositionY() + ")");
+            System.out.println("farming  : " + currentGame.currentPlayer.getFarmingAbility());
+            System.out.println("mining   : " + currentGame.currentPlayer.getMiningAbility());
+            System.out.println("foraging : " + currentGame.currentPlayer.getForagingAbility());
+            System.out.println("-----------------");
+        }
     }
 }
