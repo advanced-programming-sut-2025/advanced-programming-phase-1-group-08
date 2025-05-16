@@ -929,7 +929,7 @@ public class GameController {
         if (amount ==null || amount.equals(reminder)) {
             int increase=(reminder * percent *price)/100;
             TrashCan.removeItem(increase,currentGame.currentPlayer.getBackPack().inventory.Items, items, reminder);
-            return new Result(true,name + "completely removed from your inventory");
+            return new Result(true,name + " completely removed from your inventory");
         }
         if (amount > reminder) {
             return new Result(false,"not enough "+name+" "+"in your inventory for remove");
@@ -4214,8 +4214,8 @@ public class GameController {
         int x1 = Integer.parseInt(x);
         int y1 = Integer.parseInt(y);
 
-        if ((!currentGame.currentPlayer.getFarm().isInFarm(x1, y1)) &&
-                !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(x1, y1))
+        if ((!currentGame.currentPlayer.getFarm().isInFarm(x1, y1)) && currentGame.currentPlayer.getSpouse() != null
+                && !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(x1, y1))
             return new Result(false, RED+"You must select your tile"+RESET);
 
         if (isInGreenHouse(getTileByCoordinates(x1, y1)))
@@ -4236,7 +4236,7 @@ public class GameController {
             return new Result(false, RED+"You don't have enough Coin!"+RESET);
 
         currentGame.currentPlayer.increaseMoney(-GreenHouse.requiredCoins);
-        advanceItem(new Wood(), GreenHouse.requiredWood);
+        advanceItem(new Wood(), -GreenHouse.requiredWood);
 
         currentGame.currentPlayer.getFarm().getGreenHouse().setCreated(true);
 
