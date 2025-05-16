@@ -13,7 +13,9 @@ import model.Places.Market;
 import model.Plants.*;
 import model.SaveData.PasswordHashUtil;
 import model.SaveData.UserBasicInfo;
+import model.SaveData.UserStorage;
 
+import java.io.IOException;
 import java.util.*;
 
 public class App {
@@ -26,7 +28,9 @@ public class App {
     public static Game currentGame;
 
 //    public static ArrayList<User> players = new ArrayList<>();
-    public static ArrayList<User> users  = new ArrayList<>();
+    public static List<User> users  = new ArrayList<>();
+
+
 //    public static ArrayList<Farm> farms  = new ArrayList<>();
 //    public static ArrayList<Tile> bigMap = new ArrayList<>();
 //    public static ArrayList<Market> markets = new ArrayList<>();
@@ -55,35 +59,7 @@ public class App {
         return null;
     }
 
-    public static void AddNewUser(String username, String pass, String nickname, String email, String gender,
-                                  String secQ, String secA){
 
-        String hashPASS = PasswordHashUtil.hashPassword(pass);
-
-        User newUser = new User(
-                username,
-                nickname,
-                email,
-                gender,
-                0,
-                100,
-                hashPASS
-        );
-
-        App.users.add(newUser);
-        App.currentUser = newUser;
-
-        model.SaveData.UserDataBase.addUser(new UserBasicInfo(
-                newUser.getUsername(),
-                newUser.getHashPass(),
-                newUser.getEmail(),
-                newUser.getNickname(),
-                newUser.getGender(),
-                secQ,
-                secA
-        ));
-
-    }
 
     public static Items AllFromDisplayNames (String name) {
         Items items = null;

@@ -7,13 +7,14 @@ import model.Enum.Menu;
 import model.Result;
 import model.User;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class RegisterMenu implements AppMenu {
     private final RegisterController controller = new RegisterController();
 
     @Override
-    public void check(Scanner scanner) {
+    public void check(Scanner scanner) throws IOException {
             String input = scanner.nextLine();
 
             if (RegisterCommands.Register.getMatcher(input) != null) {

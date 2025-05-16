@@ -6,6 +6,7 @@ import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Menu;
 import model.Result;
 
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
@@ -19,13 +20,17 @@ public class GameMenu implements AppMenu {
     Matcher matcher;
 
     @Override
-    public void check(Scanner scanner) {
+    public void check(Scanner scanner) throws IOException {
 
         String input = scanner.nextLine();
 
 
         if (GameMenuCommands.makeNewGame.getMatcher(input) != null)
             controller.startNewGame(input);
+
+        else if (GameMenuCommands.back.getMatcher(input) != null)
+            System.out.println(controller.backToMainMenu().massage());
+
         else if ((matcher = GameMenuCommands.printMap.getMatcher(input)) != null) {
             System.out.println(controller.print(
                     Integer.parseInt(matcher.group(1).trim()),

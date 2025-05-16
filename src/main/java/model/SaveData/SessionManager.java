@@ -195,12 +195,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import model.SaveData.UserBasicInfo;
+import model.User;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static model.SaveData.UserDataBase.findUserB;
+import static model.SaveData.UserDataBase.findUserByUsername;
+
 
 public class SessionManager {
     private static final String SESSION_FILE = "session.json";
@@ -232,13 +234,13 @@ public class SessionManager {
     }
 
     // گرفتن یوزر لاگین شده (فقط در صورتی که فلگ روشنه)
-    public static UserBasicInfo getLoggedInUser() {
+    public static User getLoggedInUser() {
         if (!isLoggedIn()) return null;
 
         try (Reader reader = new FileReader(SESSION_FILE)) {
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
             String username = json.get("username").getAsString();
-            return findUserB(username);
+            return findUserByUsername(username);
         } catch (Exception e) {
             return null;
         }

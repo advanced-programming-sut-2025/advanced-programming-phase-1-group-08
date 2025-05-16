@@ -8,13 +8,14 @@ import model.Enum.Menu;
 import model.Result;
 import model.User;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class ProfileMenu implements AppMenu{
     private final ProfileController controller = new ProfileController();
 
     @Override
-    public void check(Scanner scanner) {
+    public void check(Scanner scanner) throws IOException {
         String input = scanner.nextLine();
 
         if (ProfileCommands.userInfo.getMatcher(input) != null) {
@@ -39,6 +40,9 @@ public class ProfileMenu implements AppMenu{
             Result result = controller.changePass(ProfileCommands.changePass.getMatcher(input).group("password").trim(),
                                                     ProfileCommands.changePass.getMatcher(input).group("oldPassword"));
             System.out.println(result);
+        }
+        else if (ProfileCommands.back.getMatcher(input) != null) {
+            App.currentMenu = Menu.MainMenu;
         }
         else if (input.matches("\\s*show\\s*current\\s*menu"))
             System.out.println("Profile Menu");
