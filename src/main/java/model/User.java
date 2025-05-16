@@ -372,6 +372,7 @@ public class User {
         return fishingAbility;
     }
 
+
     public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {
 
         this.friendshipPoint = friendshipPoint;
@@ -380,14 +381,17 @@ public class User {
 
         this.friendshipPoint.put(npc, friendshipPoint.get(npc) + point);
     }
+    public int put(NPC npc) {
+
+        return Math.min(friendshipPoint.get(npc)%200, 3);
+    }
     public int getFriendshipLevel(NPC npc) {
 
-        int level = Math.min(friendshipPoint.get(npc)%200, 3);
+        return Math.min((friendshipPoint.get(npc)/200), 3);
+    }
+    public int getFriendshipPoint(NPC npc) {
 
-        if (level == 3 && level3Date.get(npc) == currentGame.currentDate)
-            level3Date.put(npc, currentGame.currentDate.clone());
-
-        return level;
+        return Math.min(friendshipPoint.get(npc), 600);
     }
     public boolean getTodayGifting(NPC npc) {
 
