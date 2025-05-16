@@ -22,7 +22,7 @@ public enum TreesSourceType {
         public int getPrice() {
             return 2000;
         }
-    }, // TODO    probability
+    },
     Cherry_Sapling      (CherryTree,     0.0, "Cherry Sapling") {
 
         @Override

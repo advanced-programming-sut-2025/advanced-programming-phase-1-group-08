@@ -673,7 +673,7 @@ public class GameController {
                     if (tile.getGameObject() instanceof UnWalkable) {
                         result.append(tile.getGameObject().getIcon()).append(RESET);
                     } else {
-                        result.append(tile.getGameObject().getIcon()).append(RESET).append(" ");
+                        result.append(tile.getGameObject().getIcon()).append(RESET).append(" "); //
                     }
                 }
             }
@@ -2842,7 +2842,6 @@ public class GameController {
 //        friendships.get(0).printInfo();
         initializePlayer();
         startDay();
-        plantCreator();
     }
 
     public void startDay () {
@@ -2917,10 +2916,9 @@ public class GameController {
     }
     private void doSeasonAutomaticTask () {
 
-//        currentGame.currentWeather = Weather.valueOf(currentGame.tomorrowWeather.toString());
-//        currentGame.tomorrowWeather = currentGame.currentDate.getSeason().getWeather();
-        currentGame.currentWeather = Weather.Rainy; // TODO
-        currentGame.tomorrowWeather = Weather.Rainy;
+        currentGame.currentWeather = Weather.valueOf(currentGame.tomorrowWeather.toString());
+        currentGame.tomorrowWeather = currentGame.currentDate.getSeason().getWeather();
+
     }
     private void doWeatherTask () {
 
@@ -3531,6 +3529,15 @@ public class GameController {
 
                         advanceItem(new Wood(), 5);
                         advanceItem(new TreesProdct(((Tree) object).getType().getProductType()), 1);
+
+                        TreesSourceType sourceType = TreesSourceType.fromDisplayName(((Tree) object).getType().getSourceName());
+                        if (checkAmountProductAvailable(new TreeSource(sourceType), 1) ||
+                                currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 1) {
+                            advanceItem(new TreeSource(sourceType), 2);
+                            return new Result(true, BRIGHT_BLUE + "+5 wood  +1 " +
+                                    ((Tree) object).getType().getProductType().getDisplayName() +
+                                    "  +2 " + sourceType.getDisplayName() + RESET);
+                        }
                         return new Result(false, BRIGHT_BLUE + "+5 wood  +1 " +
                                 ((Tree) object).getType().getProductType().getDisplayName() + RESET);
                     }
@@ -4306,7 +4313,7 @@ public class GameController {
         MarketItemType type;
 
         try {
-            type = MarketItemType.valueOf(fertilizeType);
+            type = MarketItemType.fromDisplayName(fertilizeType);
         } catch (Exception e) {
             return new Result(false, RED+"Fertilize type is invalid"+RESET);
         }
@@ -4696,37 +4703,6 @@ public class GameController {
     public Result getObject (String direction) {
 
         return new Result(true, PURPLE + getTileByDir(Integer.parseInt(direction)).getGameObject().toString() + RESET);
-    }
-    public void plantCreator () {
-
-        clear();
-
-        for (int i = 21 ; i >= 19; i--)
-            for (int j = 26 ; j >= 21 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
-
-        for (int i = 25 ; i >= 23; i--)
-            for (int j = 26 ; j >= 21 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
-
-        for (int i = 17 ; i >= 15; i--)
-            for (int j = 26 ; j >= 21 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.Daffodil));
-
-        for (int i = 13 ; i >= 11; i--)
-            for (int j = 26 ; j >= 21 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.Daffodil));
-
-        for (int i = 9 ; i >= 7; i--)
-            for (int j = 26 ; j >= 21 ; j--)
-                getTileByCoordinates(i, j).setGameObject(new ForagingCrops(ForagingCropsType.Daffodil));
-
-//        for (int i = 20; i < 25; i++)
-//            for (int j = 20; j < 25; j++) {
-//                Walkable w = new Walkable();
-//                w.setGrassOrFiber("Plowed");
-//                getTileByCoordinates(i, j).setGameObject(w);
-//            }
     }
     public Result getObject2 (String x, String y) {
 
