@@ -5,12 +5,14 @@ import model.Enum.ItemType.CraftType;
 import model.Items;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 public class CraftingItem extends Items {
     private final CraftType type;
     private int x;
     private int y;
-    private HashMap<Items , HashMap<DateHour, Integer>> buffer=new HashMap<Items, HashMap<DateHour, Integer>>();
+    private Map<Items , DateHour> buffer=new IdentityHashMap<>();
 
     public CraftingItem(CraftType craftType) {
         this.type = craftType;
@@ -37,7 +39,7 @@ public class CraftingItem extends Items {
         this.y = y;
     }
 
-    public HashMap<Items, HashMap<DateHour, Integer>> getBuffer() {
+    public Map<Items, DateHour> getBuffer() {
         return buffer;
     }
 

@@ -61,46 +61,83 @@ public class App {
 
 
 
-    public static Items AllFromDisplayNames (String name) {
+//    public static Items AllFromDisplayNames (String name) {
+//        Items items = null;
+//        try {
+//            items = new AllCrops(CropsType.fromDisplayName(name));
+//            return items;
+//        } catch (Exception e) {
+//            try {
+//                items = new ForagingCrops(ForagingCropsType.fromDisplayName(name));
+//                return items;
+//            } catch (Exception ex) {
+//                try {
+//                    items = new TreesProdct(TreesProductType.fromDisplayName(name));
+//                    return items;
+//                } catch (Exception exe) {
+//                    try {
+//                        items = new MarketItem(MarketItemType.fromDisplayName(name));
+//                        return items;
+//                    }
+//                    catch (Exception exception) {
+//                        try {
+//                            items = new ForagingMinerals(ForagingMineralsType.fromDisplayName(name));
+//                            return items;
+//                        } catch (Exception e2) {
+//                            try {
+//                                items = new ForagingSeeds(ForagingSeedsType.fromDisplayName(name));
+//                                return items;
+//                            } catch (Exception e3) {
+//                                try {
+//                                    items = new TreeSource(TreesSourceType.fromDisplayName(name));
+//                                    return items;
+//                                } catch (Exception e4) {
+//                                    return null;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    public static Items AllFromDisplayNames(String name) {
+
+        ItemRegistry itemRegistry = new ItemRegistry();
         Items items = null;
-        try {
-            items = new AllCrops(CropsType.fromDisplayName(name));
+
+
+        itemRegistry.scanItems("model.Plants");
+        if ((items = itemRegistry.nameToItemMap.get(name)) != null) {
             return items;
-        } catch (Exception e) {
-            try {
-                items = new ForagingCrops(ForagingCropsType.fromDisplayName(name));
-                return items;
-            } catch (Exception ex) {
-                try {
-                    items = new TreesProdct(TreesProductType.fromDisplayName(name));
-                    return items;
-                } catch (Exception exe) {
-                    try {
-                        items = new MarketItem(MarketItemType.fromDisplayName(name));
-                        return items;
-                    }
-                    catch (Exception exception) {
-                        try {
-                            items = new ForagingMinerals(ForagingMineralsType.fromDisplayName(name));
-                            return items;
-                        } catch (Exception e2) {
-                            try {
-                                items = new ForagingSeeds(ForagingSeedsType.fromDisplayName(name));
-                                return items;
-                            } catch (Exception e3) {
-                                try {
-                                    items = new TreeSource(TreesSourceType.fromDisplayName(name));
-                                    return items;
-                                } catch (Exception e4) {
-                                    return null;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
+
+        itemRegistry.scanItems("model.Places");
+        if ((items = itemRegistry.nameToItemMap.get(name)) != null) {
+            return items;
+        }
+
+        itemRegistry.scanItems("model.ToolsPackage");
+        if ((items = itemRegistry.nameToItemMap.get(name)) != null) {
+            return items;
+        }
+
+        itemRegistry.scanItems("model.OtherItem");
+        if ((items = itemRegistry.nameToItemMap.get(name)) != null) {
+           return items;
+        }
+
+        return null;
     }
+
+
+
+
+
+
+
+
 
 
     public static User findPlayerInGame (String name) {

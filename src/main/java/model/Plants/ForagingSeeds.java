@@ -21,8 +21,8 @@ public class ForagingSeeds extends Items {
     private int numFertilize;
     private int stage;
 
-    public ForagingSeeds (ForagingSeedsType type) {
 
+    public ForagingSeeds(ForagingSeedsType type) {
         stage = 1;
         numFertilize = 0;
         this.type = type;
@@ -30,7 +30,7 @@ public class ForagingSeeds extends Items {
         haveProduct = false;
         todayFertilize = false;
     }
-    public ForagingSeeds(ForagingSeedsType type, DateHour Date) {
+    public ForagingSeeds(ForagingSeedsType type, DateHour Date) { // TODO  باید بالایی کال بشه قبل کاشتن
 
         stage = 1;
         numFertilize = 0;

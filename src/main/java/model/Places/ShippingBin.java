@@ -7,6 +7,9 @@ import model.MapThings.GameObject;
 import model.MapThings.Tile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static model.Color_Eraser.RED;
 
 public class ShippingBin extends GameObject {
     private static final int width=1;
@@ -18,7 +21,7 @@ public class ShippingBin extends GameObject {
     private final int topLeftX;
     private final int topLeftY;
 
-    public ArrayList<Items> binContents=new ArrayList<>();
+    public HashMap<Items, Integer> binContents=new HashMap<>();
 
     public ShippingBin(int topLeftX , int topLeftY) {
         this.topLeftX = topLeftX;
@@ -60,17 +63,20 @@ public class ShippingBin extends GameObject {
         int [] diry={1,-1,0,1,-1,0,1,-1};
         GameController gameController=new GameController();
 
-        for (int x = App.currentGame.currentPlayer.getPositionX() ; x<App.currentGame.currentPlayer.getPositionX()+ dirx.length ; x++) {
-            for (int y=App.currentGame.currentPlayer.getPositionY() ; y<App.currentGame.currentPlayer.getPositionY()+ diry.length ; y++) {
-                Tile tile=gameController.getTileByCoordinates(x, y);
+        for (int i = 0 ; i<dirx.length ; i++) {
+                Tile tile=gameController.getTileByCoordinates(App.currentGame.currentPlayer.getPositionX() +dirx[i], App.currentGame.currentPlayer.getPositionY() + diry[i]);
                 if (tile == null) {
                     continue;
                 }
                 if (tile.getGameObject() instanceof ShippingBin) {
                     return (ShippingBin) tile.getGameObject();
                 }
-            }
         }
         return null;
+    }
+
+    @Override
+    public String getIcon() {
+        return RED + "S";
     }
 }

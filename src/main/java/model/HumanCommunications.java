@@ -95,7 +95,7 @@ public class HumanCommunications {
             setXP(300);
         }
         if (FriendshipLevel == 3 && getXP() >= 400 && SUCCESSFULPropose) {
-            marry();
+//            marry();
             setXP(getXP() - 400);
         }
         if (FriendshipLevel == 3 && getXP() >= 400 && !SUCCESSFULPropose) {
@@ -212,8 +212,8 @@ public class HumanCommunications {
 
             return new Result(false, RED+"You can't Send Gifts in your Current Friendship Level."+RESET);
         }
-
         Items items = AllFromDisplayNames(item);
+
 
         boolean IHaveThat = false;
         for (Map.Entry <Items , Integer> entry : myInventory.Items.entrySet() ) {

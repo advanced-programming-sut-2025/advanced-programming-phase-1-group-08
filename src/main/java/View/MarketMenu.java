@@ -25,7 +25,15 @@ public class MarketMenu implements AppMenu {
         else if ((matcher=MarketMenuCommands.buildBarnOrCage.getMatcher(input)) != null) {
             Integer x=Integer.parseInt(matcher.group(2).trim());
             Integer y=Integer.parseInt(matcher.group(3).trim());
-            System.out.println(marketing.createBarnOrCage( x , y , matcher.group(1).trim()));
+            if (matcher.group(1).trim().equals("Well")) {
+                System.out.println(marketing.createWell(x , y));
+            }
+            else if (matcher.group(1).trim().equals("Shipping Bin")) {
+                System.out.println(marketing.createShippingBin(x , y));
+            }
+            else {
+                System.out.println(marketing.createBarnOrCage(x, y, matcher.group(1).trim()));
+            }
         }
 
         else if ((matcher=MarketMenuCommands.showAllProducts.getMatcher(input)) != null)
