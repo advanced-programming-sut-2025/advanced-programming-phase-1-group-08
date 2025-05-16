@@ -7,6 +7,7 @@ import model.MapThings.Tile;
 import model.Places.Farm;
 import model.Places.Market;
 import model.SaveData.PasswordHashUtil;
+import model.SaveData.UserStorage;
 
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class Game {
     }
 
     public static void AddNewUser(String username, String pass, String nickname, String email, String gender,
-                                  SecurityQuestions secQ, String secA){
+                                  SecurityQuestions secQ, String secA) throws IOException{
 
         String hashPASS = PasswordHashUtil.hashPassword(pass);
 
@@ -62,8 +63,11 @@ public class Game {
 
         App.users.add(newUser);
         App.currentUser = newUser;
+
+        List<User> users = UserStorage.loadUsers();
+        users.add(newUser);
         try {
-            model.SaveData.UserStorage.saveUsers(App.users);
+            model.SaveData.UserStorage.saveUsers(users);
         } catch (IOException e) {
             e.printStackTrace();
         }
