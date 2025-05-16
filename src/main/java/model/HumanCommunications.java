@@ -212,76 +212,24 @@ public class HumanCommunications {
 
             return new Result(false, RED+"You can't Send Gifts in your Current Friendship Level."+RESET);
         }
+
         Items items = AllFromDisplayNames(item);
 
 
-        boolean IHaveThat = false;
-        for (Map.Entry <Items , Integer> entry : myInventory.Items.entrySet() ) {
-            if (entry.getKey() instanceof MarketItem) {
-                if (items instanceof MarketItem ) {
-                    MarketItemType marketItemType = ((MarketItem) items).getType();
-                    if (marketItemType.equals(((MarketItem) entry.getKey()).getType())) {
 
-                        if (entry.getValue() < amount)
-                            return new Result(false, RED+"Not Enough Item!"+RESET);
-
-                        IHaveThat = true;
-                        myInventory.Items.put(entry.getKey(), entry.getValue() - amount);
-                        break;
-                    }
-                }
+        if (myInventory.Items.containsKey(items)) {
+            int x = myInventory.Items.get(items);
+            if (x < amount) {
+                return new Result(false , RED + "Not Enough Item!" + RESET);
             }
-            else if (entry.getKey() instanceof AllCrops) {
-                if (items instanceof AllCrops ) {
-                    CropsType cropsType = ((AllCrops) items).getType();
-                    if (cropsType.equals(((AllCrops) entry.getKey()).getType())) {
-
-                        if (entry.getValue() < amount)
-                            return new Result(false, RED+"Not Enough Item!"+RESET);
-
-                        IHaveThat = true;
-                        myInventory.Items.put(entry.getKey(), entry.getValue() - amount);
-                        break;
-                    }
-                }
-            }
-            else if (entry.getKey() instanceof ForagingCrops) {
-                if (items instanceof ForagingCrops ) {
-                    ForagingCropsType foragingCropsType = ((ForagingCrops) items).getType();
-                    if (foragingCropsType.equals(((ForagingCrops) entry.getKey()).getType())) {
-
-                        if (entry.getValue() < amount)
-                            return new Result(false, RED+"Not Enough Item!"+RESET);
-
-                        IHaveThat = true;
-                        myInventory.Items.put(entry.getKey(), entry.getValue() - amount);
-                        break;
-                    }
-                }
-            }
-            else if (entry.getKey() instanceof TreesProdct) {
-                if (items instanceof TreesProdct ) {
-                    TreesProductType treesProductType = ((TreesProdct) items).getType();
-                    if (treesProductType.equals(((TreesProdct) entry.getKey()).getType())) {
-
-                        if (entry.getValue() < amount)
-                            return new Result(false, RED+"Not Enough Item!"+RESET);
-
-                        IHaveThat = true;
-                        myInventory.Items.put(entry.getKey(), entry.getValue() - amount);
-                        break;
-                    }
-                }
-            }
+            else
+                myInventory.Items.compute(items, (k,v) -> v - amount);
         }
-
+        else
+            return new Result(false, RED+"You Don't Have it to Give!"+RESET);
 
         myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
 
-
-
-        if (!IHaveThat)
-            return new Result(false, RED+"You Don't Have it to Give!"+RESET);
 
 
 
