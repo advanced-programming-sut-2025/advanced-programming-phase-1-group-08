@@ -8,7 +8,7 @@ import static model.Color_Eraser.RED;
 import static model.Color_Eraser.RESET;
 
 public enum MarketItemType {
-    JojaCola("Joja_Cola", List.of(MarketType.JojaMart) , Integer.MAX_VALUE , 0 , 0 ) {
+    JojaCola("Joja Cola", List.of(MarketType.JojaMart) , Integer.MAX_VALUE , 0 , 0 ) {
         @Override
         public int getPrice(int id) {
             return 750;
@@ -25,7 +25,7 @@ public enum MarketItemType {
         }
     },
 
-    GrassStarter("Grass_Starter" , List.of(MarketType.JojaMart , MarketType.PierreGeneralStore) , Integer.MAX_VALUE , Integer.MAX_VALUE , 0) {
+    GrassStarter("Grass Starter" , List.of(MarketType.JojaMart , MarketType.PierreGeneralStore) , Integer.MAX_VALUE , Integer.MAX_VALUE , 0) {
         @Override
         public int getPrice(int id) {
             if (id == 1) {
@@ -65,7 +65,7 @@ public enum MarketItemType {
         }
     },
 
-    WheatFlour("Wheat_Flour" , List.of(MarketType.JojaMart , MarketType.PierreGeneralStore) , Integer.MAX_VALUE , Integer.MAX_VALUE , 0) {
+    WheatFlour("Wheat Flour" , List.of(MarketType.JojaMart , MarketType.PierreGeneralStore) , Integer.MAX_VALUE , Integer.MAX_VALUE , 0) {
         @Override
         public int getPrice(int id) {
             if (id == 1) {
@@ -116,7 +116,7 @@ public enum MarketItemType {
         }
     },
 
-    WeddingRing("Wedding_Ring" , List.of( MarketType.PierreGeneralStore) , 0 , 2 , 0) {
+    WeddingRing("Wedding Ring" , List.of( MarketType.PierreGeneralStore) , 0 , 2 , 0) {
         @Override
         public int getPrice(int id) {
             return 10000;
@@ -133,7 +133,7 @@ public enum MarketItemType {
         }
     },
 
-    DehydratorRecipe("Dehydrator_Recipe" , List.of( MarketType.PierreGeneralStore) , 0 , 1 , 0) {
+    DehydratorRecipe("Dehydrator Recipe" , List.of( MarketType.PierreGeneralStore) , 0 , 1 , 0) {
         @Override
         public int getPrice(int id) {
             return 10000;
@@ -150,7 +150,7 @@ public enum MarketItemType {
         }
     },
 
-    GrassStarterRecipe("Grass Starter_Recipe" , List.of( MarketType.PierreGeneralStore) , 0 , 1 , 0) {
+    GrassStarterRecipe("Grass Starter Recipe" , List.of( MarketType.PierreGeneralStore) , 0 , 1 , 0) {
         @Override
         public int getPrice(int id) {
             return 1000;
@@ -201,7 +201,7 @@ public enum MarketItemType {
         }
     },
 
-    DeluxeRetainingSoil("Deluxe_Retaining_Soil" , List.of( MarketType.PierreGeneralStore) , 0 , Integer.MAX_VALUE , 0) {
+    DeluxeRetainingSoil("Deluxe Retaining Soil" , List.of( MarketType.PierreGeneralStore) , 0 , Integer.MAX_VALUE , 0) {
         @Override
         public int getPrice(int id) {
             return 150;
@@ -235,7 +235,7 @@ public enum MarketItemType {
         }
     },
 
-    BasicRetainingSoil("Basic_Retaining_Soil" , List.of( MarketType.PierreGeneralStore) , 0 , Integer.MAX_VALUE , 0) {
+    BasicRetainingSoil("Basic Retaining Soil" , List.of( MarketType.PierreGeneralStore) , 0 , Integer.MAX_VALUE , 0) {
         @Override
         public int getPrice(int id) {
             return 100;
@@ -252,7 +252,7 @@ public enum MarketItemType {
         }
     },
 
-    QuantityRetainingSoil("Quantity_Retaining_Soil" , List.of( MarketType.PierreGeneralStore) , 0 , Integer.MAX_VALUE , 0) {
+    QuantityRetainingSoil("Quantity Retaining Soil" , List.of( MarketType.PierreGeneralStore) , 0 , Integer.MAX_VALUE , 0) {
         @Override
         public int getPrice(int id) {
             return 150;
@@ -380,7 +380,7 @@ public enum MarketItemType {
             return 0;
         }
     },
-    HashbrownsRecipe("Hashbrowns_Recipe", List.of(MarketType.StardropSaloon), 1 , 0 , 0) {
+    HashbrownsRecipe("Hash Browns Recipe", List.of(MarketType.StardropSaloon), 1 , 0 , 0) {
         @Override
         public int getPrice(int id) {
             return 50;
@@ -395,7 +395,7 @@ public enum MarketItemType {
             return 0;
         }
     },
-    OmeletRecipe("Omelet_Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
+    OmeletRecipe("Omelet Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
         @Override
         public int getPrice(int id) {
             return 100;
@@ -410,7 +410,7 @@ public enum MarketItemType {
             return 0;
         }
     },
-    PancakesRecipe("Pancakes_Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
+    PancakesRecipe("Pancakes Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
         @Override
         public int getPrice(int id) {
             return 100;
@@ -425,7 +425,7 @@ public enum MarketItemType {
             return 0;
         }
     },
-    BreadRecipe("Bread_Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
+    BreadRecipe("Bread Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
         @Override
         public int getPrice(int id) {
             return 100;
@@ -440,7 +440,7 @@ public enum MarketItemType {
             return 0;
         }
     },
-    TortillaRecipe("Tortilla_Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
+    TortillaRecipe("Tortilla Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
         @Override
         public int getPrice(int id) {
             return 100;
@@ -455,7 +455,7 @@ public enum MarketItemType {
             return 0;
         }
     },
-    PizzaRecipe("Pizza_Recipe", List.of(MarketType.StardropSaloon) ,1 , 0 , 0) {
+    PizzaRecipe("Pizza Recipe", List.of(MarketType.StardropSaloon) ,1 , 0 , 0) {
         @Override
         public int getPrice(int id) {
             return 150;
@@ -470,7 +470,7 @@ public enum MarketItemType {
             return 0;
         }
     },
-    MakiRollRecipe("Maki_Roll_Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
+    MakiRollRecipe("Maki Roll Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
         @Override
         public int getPrice(int id) {
             return 300;
@@ -485,7 +485,7 @@ public enum MarketItemType {
             return 0;
         }
     },
-    TripleShotEspressoRecipe("Triple_Shot_Espresso_Recipe", List.of(MarketType.StardropSaloon ) , 1 , 0 , 0) {
+    TripleShotEspressoRecipe("Triple Shot Espresso Recipe", List.of(MarketType.StardropSaloon ) , 1 , 0 , 0) {
         @Override
         public int getPrice(int id) {
             return 5000;
@@ -500,7 +500,7 @@ public enum MarketItemType {
             return 0;
         }
     },
-    CookieRecipe("Cookie_Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
+    CookieRecipe("Cookie Recipe", List.of(MarketType.StardropSaloon) , 1 , 0 , 0) {
         @Override
         public int getPrice(int id) {
             return 300;
@@ -549,7 +549,7 @@ public enum MarketItemType {
         }
     },
 
-    FishSmokerRecipe("Fish_Smoker_Recipe" , List.of(MarketType.FishShop), 1 , 0 , 0 ) {
+    FishSmokerRecipe("Fish Smoker Recipe" , List.of(MarketType.FishShop), 1 , 0 , 0 ) {
         @Override
         public int getPrice(int id) {
             return 10000;
@@ -565,7 +565,7 @@ public enum MarketItemType {
         }
     },
 
-    TroutSoup("Trout_Soup" , List.of(MarketType.FishShop), 1 , 0 , 0 ) {
+    TroutSoup("Trout Soup" , List.of(MarketType.FishShop), 1 , 0 , 0 ) {
         @Override
         public int getPrice(int id) {
             return 250;

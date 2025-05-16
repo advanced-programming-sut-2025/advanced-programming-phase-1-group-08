@@ -125,6 +125,15 @@ public class App {
             }
         }
     }
+
+
+    public static User findPlayerInGame (String name) {
+        for (User player: currentGame.players) {
+            if (player.getUsername().equalsIgnoreCase(name))
+                return player;
+        }
+        return null;
+    }
 }
 
 

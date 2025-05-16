@@ -48,6 +48,9 @@ public class GameMenu implements AppMenu {
         else if (GameMenuCommands.friendships.getMatcher(input) != null)
             controller.DisplayFriendships();
 
+        else if (GameMenuCommands.addXpCheat.getMatcher(input) != null)
+            controller.cheatAddXp(input);
+
         else if (GameMenuCommands.talking.getMatcher(input) != null)
             controller.talking(input);
 
@@ -246,6 +249,9 @@ public class GameMenu implements AppMenu {
 
         else if ((matcher=GameMenuCommands.addDollar.getMatcher(input)) != null)
             System.out.println(controller.addDollar(Integer.parseInt(matcher.group(1).trim())));
+
+        else if ((matcher=GameMenuCommands.setDollar.getMatcher(input)) != null)
+            System.out.println(controller.setDollar(Integer.parseInt(matcher.group(1).trim())));
 
         else if ((matcher=GameMenuCommands.addItem.getMatcher(input)) != null)
             System.out.println(controller.addItem(matcher.group(1) , Integer.parseInt(matcher.group(2).trim())));

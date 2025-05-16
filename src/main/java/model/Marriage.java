@@ -31,7 +31,7 @@ public class Marriage {
     }
 
     public void print() {
-        System.out.println("Proposal: " + husband.getNickname() + " Wants to Marry You. Do You Accept to be his Wife?");
+        System.out.println("Proposal: " + husband.getNickname() + " Wants to Marry You. Are You Willing to be his Wife?");
     }
 
     public boolean isBetween(User u1, User u2) {
@@ -62,8 +62,8 @@ public class Marriage {
 
         assert f != null;
         if (accepted) {
-            f.marry();
-            return new Result(true, GREEN+"Congrats! I Announce You Man and Wife:)"+RESET);
+            f.setSUCCESSFULPropose(true);
+            return f.marry();
         }
         else {
             f.reduceXP(10000);

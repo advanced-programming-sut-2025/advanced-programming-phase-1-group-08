@@ -291,7 +291,7 @@ public class User {
         if (this.getSpouse() == null) this.money += amount;
         else {
             this.money += (amount / 2);
-            this.getSpouse().setMoney(this.getSpouse().getMoney() + (amount / 2));
+            this.getSpouse().setMoney(amount / 2);
         }
     }
 
