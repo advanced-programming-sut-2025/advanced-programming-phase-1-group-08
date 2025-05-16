@@ -5,13 +5,13 @@ import java.util.Map;
 
 public enum BarnORCageType {
 
-    Barn("Barn",4 , 7 , 4, 6000 , 350 , 150 , 1),
+    Barn("Barn",4 , 6 , 3, 6000 , 350 , 150 , 1),
     BigBarn("Big Barn", 8 , 7 , 4 , 12000 , 450 , 200 , 1),
-    DeluxeBarn("Deluxe Barn" , 12 , 7 , 4 , 25000 , 550 , 300 , 1),
+    DeluxeBarn("Deluxe Barn" , 12 , 8 , 5 , 25000 , 550 , 300 , 1),
 
     Coop("Coop" , 4 , 6 , 3 , 4000 , 300 , 100 , 1),
-    BigCoop("Big Coop" , 8 , 6 , 3 , 10000 , 400 , 150 , 1),
-    DeluxeCoop("Deluxe Coop" , 12 , 6 , 3 , 20000 , 500 , 200 , 1);
+    BigCoop("Big Coop" , 8 , 7 , 4 , 10000 , 400 , 150 , 1),
+    DeluxeCoop("Deluxe Coop" , 12 , 8 , 5 , 20000 , 500 , 200 , 1);
 
 
 

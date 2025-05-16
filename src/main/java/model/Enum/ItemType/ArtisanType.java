@@ -16,8 +16,10 @@ import model.Plants.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Map.entry;
+
 public enum ArtisanType {
-    Honey("Honey" , CraftType.BeeHouse , 350) {
+    Honey("Honey" , CraftType.BeeHouse , 350 , 96) {
         @Override
         public int getEnergy(String name) {
             return 75;
@@ -26,9 +28,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct artisanProduct=new ArtisanProduct(Honey);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 96);
-            craftingItem.getBuffer().put(artisanProduct , x);
+            craftingItem.getBuffer().put(artisanProduct , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -36,7 +36,7 @@ public enum ArtisanType {
             return true;
         }
     },
-    Cheese("Cheese" , CraftType.ChessPress , 345) {
+    Cheese("Cheese" , CraftType.ChessPress , 345 , 3) {
         @Override
         public int getEnergy(String name) {
             return 100;
@@ -45,9 +45,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct cheese=new ArtisanProduct(Cheese);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 3);
-            craftingItem.getBuffer().put(cheese , x);
+            craftingItem.getBuffer().put(cheese , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -69,7 +67,7 @@ public enum ArtisanType {
         }
     },
 
-    Goat_Cheese("Goat Cheese" , CraftType.ChessPress , 600) {
+    Goat_Cheese("Goat Cheese" , CraftType.ChessPress , 600 , 3) {
         @Override
         public int getEnergy(String name) {
             return 100;
@@ -78,9 +76,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct GoatCheese=new ArtisanProduct(Goat_Cheese);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 3);
-            craftingItem.getBuffer().put(GoatCheese , x);
+            craftingItem.getBuffer().put(GoatCheese , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -104,7 +100,7 @@ public enum ArtisanType {
         }
     },
 
-    Beer("Beer" , CraftType.Keg , 200) {
+    Beer("Beer" , CraftType.Keg , 200 , 24) {
         @Override
         public int getEnergy(String name) {
             return 50;
@@ -113,9 +109,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem beer=new MarketItem(MarketItemType.Beer);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 24);
-            craftingItem.getBuffer().put(beer , x);
+            craftingItem.getBuffer().put(beer , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -139,7 +133,7 @@ public enum ArtisanType {
         }
     },
 
-    Vinegar("Vinegar" , CraftType.Keg , 100) {
+    Vinegar("Vinegar" , CraftType.Keg , 100 , 10) {
         @Override
         public int getEnergy(String name) {
             return 13;
@@ -149,33 +143,27 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem vinegar=new MarketItem(MarketItemType.Vinegar);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 10);
-            craftingItem.getBuffer().put(vinegar , x);
+            craftingItem.getBuffer().put(vinegar , App.currentGame.currentDate.clone());
         }
 
         @Override
         public boolean checkIngredient(String first, String second) {
             if (! first.equals("Rice") ) {
+                //System.out.println("fj");
                 return false;
             }
             Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof MarketItem) {
-                    if (((MarketItem) entry.getKey()).getType().equals(MarketItemType.Rice)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
-                    }
-                }
+            MarketItem marketItem=new MarketItem(MarketItemType.Rice);
+            if (inventory.Items.containsKey(marketItem)) {
+                inventory.Items.compute(marketItem , (k,v) -> v-1 );
+                inventory.Items.entrySet().removeIf(e -> e.getValue()==0);
+                return true;
             }
             return false;
         }
     },
 
-    Coffee("Coffee" , CraftType.Keg , 150) {
+    Coffee("Coffee" , CraftType.Keg , 150 , 2) {
         @Override
         public int getEnergy(String name) {
             return 75;
@@ -185,9 +173,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem coffee=new MarketItem(MarketItemType.Coffee);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 2);
-            craftingItem.getBuffer().put(coffee , x);
+            craftingItem.getBuffer().put(coffee , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -211,7 +197,7 @@ public enum ArtisanType {
         }
     },
 
-    Juice("Juice" , CraftType.Keg , 300) {
+    Juice("Juice" , CraftType.Keg , 300 , 96) {
         @Override
         public int getEnergy(String name) {
             CropsType cropsType = CropsType.valueOf(name);
@@ -221,9 +207,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct juice=new ArtisanProduct(Juice);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 96);
-            craftingItem.getBuffer().put(juice , x);
+            craftingItem.getBuffer().put(juice , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -252,7 +236,7 @@ public enum ArtisanType {
         }
     },
 
-    Mead("Mead",CraftType.Keg , 300) {
+    Mead("Mead",CraftType.Keg , 300 , 10) {
         @Override
         public int getEnergy(String name) {
             return 100;
@@ -262,9 +246,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct mead=new ArtisanProduct(Mead);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 10);
-            craftingItem.getBuffer().put(mead , x);
+            craftingItem.getBuffer().put(mead , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -288,7 +270,7 @@ public enum ArtisanType {
         }
     },
 
-    Pale_Ale("Pale Ale",CraftType.Keg , 300) {
+    Pale_Ale("Pale Ale",CraftType.Keg , 300 , 72) {
         @Override
         public int getEnergy(String name) {
             return 50;
@@ -297,9 +279,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct pale=new ArtisanProduct(Pale_Ale);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 72);
-            craftingItem.getBuffer().put(pale , x);
+            craftingItem.getBuffer().put(pale , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -323,7 +303,7 @@ public enum ArtisanType {
         }
     },
 
-    Wine("Wine" , CraftType.Keg , 400) {
+    Wine("Wine" , CraftType.Keg , 400 , 168) {
         @Override
         public int getEnergy(String name) {
             TreesProductType type = TreesProductType.valueOf(name);
@@ -333,9 +313,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct wine=new ArtisanProduct(Wine);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 168);
-            craftingItem.getBuffer().put(wine , x);
+            craftingItem.getBuffer().put(wine , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -357,7 +335,7 @@ public enum ArtisanType {
         }
     },
 
-    Dried_Mushrooms("Dried Mushrooms" , CraftType.Dehydrator , 400) {
+    Dried_Mushrooms("Dried Mushrooms" , CraftType.Dehydrator , 400 , 12) {
         @Override
         public int getEnergy(String name) {
             return 50;
@@ -366,9 +344,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DriedMushrooms=new ArtisanProduct(Dried_Mushrooms);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 12);
-            craftingItem.getBuffer().put(DriedMushrooms , x);
+            craftingItem.getBuffer().put(DriedMushrooms , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -395,7 +371,7 @@ public enum ArtisanType {
         }
     },
 
-    Dried_Fruit("Dried Fruit" , CraftType.Dehydrator , 425) {
+    Dried_Fruit("Dried Fruit" , CraftType.Dehydrator , 425 , 12) {
         @Override
         public int getEnergy(String name) {
             return 75;
@@ -404,9 +380,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DriedFruit=new ArtisanProduct(Dried_Fruit);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 12);
-            craftingItem.getBuffer().put(DriedFruit , x);
+            craftingItem.getBuffer().put(DriedFruit , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -430,7 +404,7 @@ public enum ArtisanType {
         }
     },
 
-    Raisins("Raisins" , CraftType.Dehydrator , 600) {
+    Raisins("Raisins" , CraftType.Dehydrator , 600 , 12) {
         @Override
         public int getEnergy(String name) {
             return 125;
@@ -439,9 +413,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct raisins=new ArtisanProduct(Raisins);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 12);
-            craftingItem.getBuffer().put(raisins , x);
+            craftingItem.getBuffer().put(raisins ,App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -467,7 +439,7 @@ public enum ArtisanType {
         }
     },
 
-    Coal("Coal",CraftType.CharcoalKlin , 50) {
+    Coal("Coal",CraftType.CharcoalKlin , 50 , 1) {
         @Override
         public int getEnergy(String name) {
             return 0;
@@ -476,9 +448,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ForagingMinerals coal = new ForagingMinerals(ForagingMineralsType.COAL);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 1);
-            craftingItem.getBuffer().put(coal , x);
+            craftingItem.getBuffer().put(coal , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -502,7 +472,7 @@ public enum ArtisanType {
         }
     },
 
-    Cloth("Cloth",CraftType.Loom , 470) {
+    Cloth("Cloth",CraftType.Loom , 470 , 4) {
         @Override
         public int getEnergy(String name) {
             return 0;
@@ -511,9 +481,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct cloth=new ArtisanProduct(Cloth);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 4);
-            craftingItem.getBuffer().put(cloth , x);
+            craftingItem.getBuffer().put(cloth , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -544,7 +512,7 @@ public enum ArtisanType {
         }
     },
 
-    Mayonnaise("Mayonnaise" , CraftType.MayonnaiseMachine , 237) {
+    Mayonnaise("Mayonnaise" , CraftType.MayonnaiseMachine , 237 , 3) {
         @Override
         public int getEnergy(String name) {
             return 50;
@@ -553,9 +521,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct mayonnaise=new ArtisanProduct(Mayonnaise);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 3);
-            craftingItem.getBuffer().put(mayonnaise , x);
+            craftingItem.getBuffer().put(mayonnaise , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -580,7 +546,7 @@ public enum ArtisanType {
         }
     },
 
-    Duck_Mayonnaise("Duck Mayonnaise" , CraftType.MayonnaiseMachine , 37) {
+    Duck_Mayonnaise("Duck Mayonnaise" , CraftType.MayonnaiseMachine , 37 , 3) {
         @Override
         public int getEnergy(String name) {
             return 75;
@@ -589,9 +555,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DuckMayonnaise=new ArtisanProduct(Duck_Mayonnaise);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 3);
-            craftingItem.getBuffer().put(DuckMayonnaise , x);
+            craftingItem.getBuffer().put(DuckMayonnaise , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -616,7 +580,7 @@ public enum ArtisanType {
         }
     },
 
-    Dinosaur_Mayonnaise("Dinosaur Mayonnaise" , CraftType.MayonnaiseMachine , 800
+    Dinosaur_Mayonnaise("Dinosaur Mayonnaise" , CraftType.MayonnaiseMachine , 800 , 3
     ) {
         @Override
         public int getEnergy(String name) {
@@ -626,9 +590,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DinosaurMayonnaise=new ArtisanProduct(Dinosaur_Mayonnaise);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 3);
-            craftingItem.getBuffer().put(DinosaurMayonnaise , x);
+            craftingItem.getBuffer().put(DinosaurMayonnaise , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -653,7 +615,7 @@ public enum ArtisanType {
         }
     },
 
-    Truffle_Oil("Truffle Oil" , CraftType.OilMaker , 1065) {
+    Truffle_Oil("Truffle Oil" , CraftType.OilMaker , 1065 , 6) {
         @Override
         public int getEnergy(String name) {
             return 6;
@@ -662,9 +624,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct TruffleOil=new ArtisanProduct(Truffle_Oil);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 6);
-            craftingItem.getBuffer().put(TruffleOil , x);
+            craftingItem.getBuffer().put(TruffleOil , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -688,7 +648,7 @@ public enum ArtisanType {
         }
     },
 
-    Oil("Oil", CraftType.OilMaker , 100) {
+    Oil("Oil", CraftType.OilMaker , 100 , 6) {
         @Override
         public int getEnergy(String name) {
             return 13;
@@ -697,9 +657,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem oil=new MarketItem(MarketItemType.Oil);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 6);
-            craftingItem.getBuffer().put(oil , x);
+            craftingItem.getBuffer().put(oil , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -733,7 +691,7 @@ public enum ArtisanType {
         }
     },
 
-    Pickles("Pickles" , CraftType.PreservesJar , 200) {
+    Pickles("Pickles" , CraftType.PreservesJar , 200 , 6) {
         @Override
         public int getEnergy(String name) {
             CropsType cropsType = CropsType.valueOf(name);
@@ -743,9 +701,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct pickles=new ArtisanProduct(Pickles);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 6);
-            craftingItem.getBuffer().put(pickles , x);
+            craftingItem.getBuffer().put(pickles , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -772,7 +728,7 @@ public enum ArtisanType {
         }
     },
 
-    Jelly("Jelly" , CraftType.PreservesJar , 200) {
+    Jelly("Jelly" , CraftType.PreservesJar , 200 , 72) {
         @Override
         public int getEnergy(String name) {
             TreesProductType type = TreesProductType.valueOf(name);
@@ -782,9 +738,7 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct jelly=new ArtisanProduct(Jelly);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 72);
-            craftingItem.getBuffer().put(jelly , x);
+            craftingItem.getBuffer().put(jelly , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -806,7 +760,7 @@ public enum ArtisanType {
             return false;
         }
     },
-    Smoked_Fish("Smoked Fish" , CraftType.FishSmoker , 300) {
+    Smoked_Fish("Smoked Fish" , CraftType.FishSmoker , 300 , 1) {
         @Override
         public int getEnergy(String name) {
             return 15;
@@ -814,9 +768,7 @@ public enum ArtisanType {
 
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct smokedFish=new ArtisanProduct(Smoked_Fish);
-            HashMap<DateHour, Integer> x=new HashMap<>();
-            x.put(App.currentGame.currentDate.clone() , 1);
-            craftingItem.getBuffer().put(smokedFish , x);
+            craftingItem.getBuffer().put(smokedFish , App.currentGame.currentDate.clone());
         }
 
         @Override
@@ -861,7 +813,7 @@ public enum ArtisanType {
         }
     },
 
-    AnyMetalBar("Any_Metal_Bar" , CraftType.Furnace , 100) {
+    AnyMetalBar("Any_Metal_Bar" , CraftType.Furnace , 100 , 4) {
         @Override
         public int getEnergy(String name) {
             return 0;
@@ -871,27 +823,19 @@ public enum ArtisanType {
         public void creatArtesian(String name, CraftingItem craftingItem) {
             if (name.equals("Copper_Ore")) {
                 BarsAndOres copperBar=new BarsAndOres(BarsAndOreType.CopperBar);
-                HashMap<DateHour, Integer> x=new HashMap<>();
-                x.put(App.currentGame.currentDate.clone() , 4);
-                craftingItem.getBuffer().put(copperBar , x);
+                craftingItem.getBuffer().put(copperBar , App.currentGame.currentDate.clone());
             }
             if (name.equals("Iron_Ore")) {
                 BarsAndOres ironBar =new BarsAndOres(BarsAndOreType.IronBar);
-                HashMap<DateHour, Integer> x=new HashMap<>();
-                x.put(App.currentGame.currentDate.clone() , 4);
-                craftingItem.getBuffer().put(ironBar , x);
+                craftingItem.getBuffer().put(ironBar , App.currentGame.currentDate.clone());
             }
             if (name.equals("Gold_Ore")) {
                 BarsAndOres goldBar=new BarsAndOres(BarsAndOreType.GoldBar);
-                HashMap<DateHour, Integer> x=new HashMap<>();
-                x.put(App.currentGame.currentDate.clone() , 4);
-                craftingItem.getBuffer().put(goldBar , x);
+                craftingItem.getBuffer().put(goldBar , App.currentGame.currentDate.clone());
             }
             if (name.equals("Iridium_Ore")) {
                 BarsAndOres iridiumBar=new BarsAndOres(BarsAndOreType.IridiumBar);
-                HashMap<DateHour, Integer> x=new HashMap<>();
-                x.put(App.currentGame.currentDate.clone() , 4);
-                craftingItem.getBuffer().put(iridiumBar , x);
+                craftingItem.getBuffer().put(iridiumBar , App.currentGame.currentDate.clone());
             }
         }
 
@@ -929,11 +873,13 @@ public enum ArtisanType {
     public abstract void creatArtesian(String name , CraftingItem craftingItem);
     public abstract boolean checkIngredient(String first , String second);
     private final int price;
+    private final int takesTime;
 
-    ArtisanType(String name, CraftType craftType , int price) {
+    ArtisanType(String name, CraftType craftType , int price ,int takesTime) {
         this.name = name;
         this.craftType = craftType;
         this.price = price;
+        this.takesTime = takesTime;
     }
 
     public String getName() {
@@ -946,5 +892,9 @@ public enum ArtisanType {
 
     public int getPrice() {
         return price;
+    }
+
+    public int getTakesTime() {
+        return takesTime;
     }
 }

@@ -23,4 +23,9 @@ public class BarsAndOres extends Items {
     public int getSellPrice() {
         return type.getPrice();
     }
+
+    @Override
+    public int getTakesTime() {
+        return 4;
+    }
 }
