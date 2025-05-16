@@ -98,7 +98,7 @@ public class RegisterController {
 
         return sb.toString();
     }
-    public void PickSecurityQA (String Username, String Password, String NickName, String Email, String Gender) {
+    public void PickSecurityQA (String Username, String Password, String NickName, String Email, String Gender) throws IOException{
         Scanner scanner = new Scanner(System.in);
         System.out.println("Now Choose a Security Question and Answer It.");
         System.out.println("1: What's My Favorite Animal?");
