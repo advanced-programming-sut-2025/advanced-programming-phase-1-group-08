@@ -270,6 +270,8 @@ public class GameMenu implements AppMenu {
         else if ((matcher=GameMenuCommands.MarketMenu.getMatcher(input)) != null)
             System.out.println(controller.goToMarketMenu());
 
+        else if (input.matches("\\s*plant\\s*"))
+            controller.plantCreator();
 
 
 //        else if (input.matches("\\s*exit\\s*game\\s*"))
