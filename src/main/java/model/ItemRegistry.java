@@ -91,7 +91,7 @@ public class ItemRegistry {
                 }
             } catch (Exception e) {
                 //System.err.println("❌ خطا در پردازش کلاس " + itemClass.getSimpleName());
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
