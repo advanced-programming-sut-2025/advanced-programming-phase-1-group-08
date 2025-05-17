@@ -3106,14 +3106,15 @@ public class GameController {
 
                     number++;
 
-                    if (number % 2 == 0) {
+                    if (number % 16 == 0) {
 
                         double x = Math.random();
                         if (x <= 0.25) {
 
                             if (isInGreenHouse(tile)) {
                                 continue;
-                            } else if (object instanceof Tree && !((Tree) object).isProtected())
+                            }
+                            else if (object instanceof Tree && !((Tree) object).isProtected())
                                 ((Tree) object).setLastFruit(currentGame.currentDate);
 
                             else if (object instanceof ForagingCrops && !((ForagingCrops) object).isProtected())
