@@ -47,6 +47,6 @@ public class Home extends GameObject {
 
     @Override
     public String getIcon() {
-        return BG_YELLOW + ".";
+        return BG_YELLOW + ". ";
     }
 }

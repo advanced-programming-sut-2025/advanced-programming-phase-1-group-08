@@ -31,6 +31,6 @@ public class Lake extends GameObject {
 
     @Override
     public String getIcon() {
-        return BG_BRIGHT_BLUE+"L";
+        return BG_BRIGHT_BLUE+"L ";
     }
 }

@@ -10,7 +10,6 @@ import model.ToolsPackage.BackPack;
 import model.ToolsPackage.Tools;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import lombok.Getter;
@@ -34,6 +33,10 @@ public class User {
 
     // buffs
     public int Buff_maxEnergy_100_hoursLeft = 0;
+
+    public User(String ario, String arioTR, String mail, String male, int i, int i1, String s) {
+    }
+
     public void setBuff_maxEnergy_100_hoursLeft (int x) {
         Buff_maxEnergy_100_hoursLeft = x;
         Buff_maxEnergy_50_hoursLeft = 0;

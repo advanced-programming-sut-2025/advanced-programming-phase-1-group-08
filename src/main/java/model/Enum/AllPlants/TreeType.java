@@ -10,28 +10,28 @@ import static model.Color_Eraser.*;
 public enum TreeType {
 
     ApricotTree     ("Apricot Tree", TreesProductType.Apricot, "Apricot Sapling",
-            1,BG_WHITE+BLACK+BOLD+"A"+RESET, BG_WHITE+BRIGHT_GREEN+BOLD+"A"+RESET) {
+            1,BG_WHITE+BLACK+BOLD+"A "+RESET, BG_WHITE+BRIGHT_GREEN+BOLD+"A "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of( Season.Spring));
         }
     },
     CherryTree      ("Cherry Tree", TreesProductType.Cherry, "Cherry Sapling",
-            1,BG_WHITE+BLACK+BOLD+"C"+RESET, BG_WHITE+GREEN+BOLD+"C"+RESET) {
+            1,BG_WHITE+BLACK+BOLD+"C "+RESET, BG_WHITE+GREEN+BOLD+"C "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of( Season.Spring));
         }
     },
     BananaTree      ("Banana Tree", TreesProductType.Banana, "Banana Sapling",
-            1,BG_WHITE+BLACK+BOLD+"B"+RESET, BG_WHITE+GREEN+BOLD+"B"+RESET) {
+            1,BG_WHITE+BLACK+BOLD+"B "+RESET, BG_WHITE+GREEN+BOLD+"B "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Summer));
         }
     },
     MangoTree       ("Mango Tree", TreesProductType.Mango, "Mango Sapling",
-            1,BG_WHITE+BLACK+BOLD+"M"+RESET, BG_WHITE+GREEN+BOLD+"M"+RESET) {
+            1,BG_WHITE+BLACK+BOLD+"M "+RESET, BG_WHITE+GREEN+BOLD+"M "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Summer));
@@ -39,7 +39,7 @@ public enum TreeType {
 
     },
     OrangeTree      ("Orange Tree", TreesProductType.Orange, "Orange Sapling",
-            1,BG_WHITE+BLACK+BOLD+"O"+RESET, BG_WHITE+GREEN+BOLD+"O"+RESET) {
+            1,BG_WHITE+BLACK+BOLD+"O "+RESET, BG_WHITE+GREEN+BOLD+"O "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Summer));
@@ -47,7 +47,7 @@ public enum TreeType {
 
     },
     PeachTree       ("Peach Tree", TreesProductType.Peach, "Peach Sapling",
-            1,BG_WHITE+BLACK+BOLD+"P"+RESET, BG_WHITE+GREEN+BOLD+"P"+RESET) {
+            1,BG_WHITE+BLACK+BOLD+"P "+RESET, BG_WHITE+GREEN+BOLD+"P "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Summer));
@@ -55,7 +55,7 @@ public enum TreeType {
 
     },
     AppleTree       ("Apple Tree", TreesProductType.Apple, "Apple Sapling",
-            1,BG_WHITE+BLACK+BOLD+"A"+RESET, BG_WHITE+GREEN+BOLD+"A"+RESET) {
+            1,BG_WHITE+BLACK+BOLD+"A "+RESET, BG_WHITE+GREEN+BOLD+"A "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
@@ -63,7 +63,7 @@ public enum TreeType {
 
     },
     OakTree         ("Oak Tree", TreesProductType.OakResin, "Acorns",
-            7,BG_WHITE+BLACK+BOLD+"O"+RESET, BG_WHITE+GREEN+BOLD+"O"+RESET) {
+            7,BG_WHITE+BLACK+BOLD+"O "+RESET, BG_WHITE+GREEN+BOLD+"O "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
@@ -71,7 +71,7 @@ public enum TreeType {
 
     },
     MapleTree       ("Maple Tree", TreesProductType.MapleSyrup, "Maple Seeds",
-            9,BG_WHITE+BLACK+BOLD+"M"+RESET, BG_WHITE+GREEN+BOLD+"M"+RESET) {
+            9,BG_WHITE+BLACK+BOLD+"M "+RESET, BG_WHITE+GREEN+BOLD+"M "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
@@ -79,7 +79,7 @@ public enum TreeType {
 
     },
     PineTree        ("Pine Tree", TreesProductType.PineTar, "Pine Cones",
-            5,BG_WHITE+BLACK+BOLD+"P"+RESET, BG_WHITE+GREEN+BOLD+"P"+RESET) {
+            5,BG_WHITE+BLACK+BOLD+"P "+RESET, BG_WHITE+GREEN+BOLD+"P "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
@@ -87,7 +87,7 @@ public enum TreeType {
 
     },
     MahoganyTree    ("Mahogany Tree", TreesProductType.Sap, "Mahogany Seeds",
-            1,BG_WHITE+BRIGHT_WHITE+BOLD+"M"+RESET, BG_WHITE+BROWN+BOLD+"M"+RESET) {
+            1,BG_WHITE+BRIGHT_WHITE+BOLD+"M "+RESET, BG_WHITE+BROWN+BOLD+"M "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
@@ -95,7 +95,7 @@ public enum TreeType {
 
     },
     MysticTree      ("Mystic Tree", TreesProductType.MysticSyrup, "Mystic Tree Seeds",
-            7,BG_WHITE+PURPLE+BOLD+"M"+RESET, BG_WHITE+BROWN+BOLD+"M"+RESET) {
+            7,BG_WHITE+PURPLE+BOLD+"M "+RESET, BG_WHITE+BROWN+BOLD+"M "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
@@ -103,7 +103,7 @@ public enum TreeType {
 
     },
     MushroomTree    ("Mushroom Tree", TreesProductType.CommonMushroom, "Mushroom Tree Seeds",
-            1,BG_BLUE+BLACK+BOLD+"M"+RESET, BG_BLUE+GREEN+BOLD+"M"+RESET) {
+            1,BG_BLUE+BLACK+BOLD+"M "+RESET, BG_BLUE+GREEN+BOLD+"M "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));
@@ -111,7 +111,7 @@ public enum TreeType {
 
     },
     PomegranateTree ("Pomegranate Tree", TreesProductType.Pomegranate, "Pomegranate Sapling",
-            1,BG_WHITE+BROWN+BOLD+"P"+RESET, BG_WHITE+RED+BOLD+"P"+RESET) {
+            1,BG_WHITE+BROWN+BOLD+"P "+RESET, BG_WHITE+RED+BOLD+"P "+RESET) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of( Season.Spring, Season.Summer, Season.Fall, Season.Winter));

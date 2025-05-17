@@ -14,7 +14,6 @@ public class MilkPail extends Tools {
         return "MilkPail";
     }
 
-    public void use (){}
 
     public static int getRemindInShop() {
         return remindInShop;

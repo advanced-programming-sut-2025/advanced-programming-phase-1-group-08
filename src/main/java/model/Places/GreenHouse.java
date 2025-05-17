@@ -44,9 +44,9 @@ public class GreenHouse extends GameObject {
 
     public String getIcon () {
         if (isCreated)
-            return GREEN+"G"+ RESET;
+            return GREEN+"G "+ RESET;
         else
-            return GRAY+"G"+ RESET;
+            return GRAY+"G "+ RESET;
     }
     public int getLength() {
         return length;

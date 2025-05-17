@@ -11,7 +11,7 @@ public class Wood extends Items {
 
     @Override
     public String getIcon() {
-        return BRIGHT_BROWN + "|";
+        return BRIGHT_BROWN + "| ";
     }
 
     @Override

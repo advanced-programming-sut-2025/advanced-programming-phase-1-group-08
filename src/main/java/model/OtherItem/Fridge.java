@@ -35,6 +35,6 @@ public class Fridge extends GameObject {
 
     @Override
     public String getIcon() {
-        return YELLOW +"F";
+        return YELLOW +"F ";
     }
 }

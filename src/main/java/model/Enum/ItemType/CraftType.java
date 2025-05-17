@@ -54,7 +54,7 @@ public enum CraftType {
             return true;
         }
     },
-    Scarecrow("Scarecrow", 0, Map.of("Wood", 50, "Coal", 1, "Fiber", 20), "π") {
+    Scarecrow("Scarecrow", 0, Map.of("Wood", 50, "Coal", 1, "Fiber", 20), "\uD83E\uDDD1\u200D\uD83C\uDF3E") {
         @Override
         public boolean checkLevel() {
             return true;

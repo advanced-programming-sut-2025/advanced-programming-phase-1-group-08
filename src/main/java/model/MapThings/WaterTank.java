@@ -23,6 +23,6 @@ public class WaterTank extends GameObject {
 
     @Override
     public String getIcon() {
-        return BRIGHT_BLUE+"@";
+        return BRIGHT_BLUE+"@ ";
     }
 }

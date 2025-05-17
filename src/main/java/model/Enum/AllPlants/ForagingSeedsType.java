@@ -26,12 +26,10 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (level <= 3)
-                return YELLOW+"j"+RESET;
+                return YELLOW+"j "+RESET;
             else
-                return GREEN+"j"+RESET;
+                return GREEN+"j "+RESET;
         }
-
-
         @Override
         public int getPrice( MarketType marketType) {
             switch (marketType) {
@@ -58,11 +56,10 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (level <= 2)
-                return YELLOW+"c"+RESET;
+                return YELLOW+"c "+RESET;
             else
-                return ORANGE+"c"+RESET;
+                return ORANGE+"c "+RESET;
         }
-
 
         @Override
         public int getPrice( MarketType marketType) {
@@ -85,9 +82,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (level <= 4)
-                return WHITE+"f"+RESET;
+                return WHITE+"f "+RESET;
             else
-                return GREEN+"f"+RESET;
+                return GREEN+"f "+RESET;
         }
 
         @Override
@@ -116,9 +113,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (level <= 4)
-                return GREEN+"f"+RESET;
+                return GREEN+"f "+RESET;
             else
-                return BRIGHT_BROWN+"f"+RESET;
+                return BRIGHT_BROWN+"f "+RESET;
         }
 
         @Override
@@ -141,9 +138,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (level <= 3)
-                return BRIGHT_BROWN+"g"+RESET;
+                return BRIGHT_BROWN+"g "+RESET;
             else
-                return WHITE+"g"+RESET;
+                return WHITE+"g "+RESET;
         }
 
         @Override
@@ -171,9 +168,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (level <= 4)
-                return YELLOW+"b"+RESET;
+                return YELLOW+"b "+RESET;
             else
-                return GREEN+"b"+RESET;
+                return GREEN+"b "+RESET;
         }
 
         @Override
@@ -202,9 +199,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (level <= 3)
-                return YELLOW+"k"+RESET;
+                return YELLOW+"k "+RESET;
             else
-                return GREEN+"k"+RESET;
+                return GREEN+"k "+RESET;
         }
 
         @Override
@@ -233,9 +230,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (level <= 3)
-                return GREEN+"p"+RESET;
+                return GREEN+"p "+RESET;
             else
-                return WHITE+"p"+RESET;
+                return WHITE+"p "+RESET;
         }
 
         @Override
@@ -264,9 +261,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (level <= 4)
-                return YELLOW+"p"+RESET;
+                return YELLOW+"p "+RESET;
             else
-                return BRIGHT_BROWN+"p"+RESET;
+                return BRIGHT_BROWN+"p "+RESET;
         }
 
         @Override
@@ -295,9 +292,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() <= level)
-                return WHITE+"p"+RESET;
+                return WHITE+"p "+RESET;
             else
-                return PURPLE+"p"+RESET;
+                return PURPLE+"p "+RESET;
         }
 
         @Override
@@ -320,9 +317,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return GREEN+"s"+RESET;
+                return GREEN+"s "+RESET;
             else
-                return RED+"s"+RESET;
+                return RED+"s "+RESET;
         }
 
         @Override
@@ -345,9 +342,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return GREEN+"t"+RESET;
+                return GREEN+"t "+RESET;
             else
-                return RED+"t"+RESET;
+                return RED+"t "+RESET;
         }
 
 
@@ -377,9 +374,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return YELLOW+"r"+RESET;
+                return YELLOW+"r "+RESET;
             else
-                return GREEN+"r"+RESET;
+                return GREEN+"r "+RESET;
         }
 
 
@@ -408,9 +405,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return YELLOW+"b"+RESET;
+                return YELLOW+"b "+RESET;
             else
-                return BLUEBERRY+"b"+RESET;
+                return BLUEBERRY+"b "+RESET;
         }
 
         @Override
@@ -438,9 +435,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return WHITE+"o"+RESET;
+                return WHITE+"o "+RESET;
             else
-                return YELLOW+"o"+RESET;
+                return YELLOW+"o "+RESET;
         }
 
 
@@ -470,9 +467,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return WHITE+"h"+RESET;
+                return WHITE+"h "+RESET;
             else
-                return GREEN+"h"+RESET;
+                return GREEN+"h "+RESET;
         }
 
         @Override
@@ -501,9 +498,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BLUE+"h"+RESET;
+                return BLUE+"h "+RESET;
             else
-                return RED+"h"+RESET;
+                return RED+"h "+RESET;
         }
 
 
@@ -533,9 +530,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return WHITE+"m"+RESET;
+                return WHITE+"m "+RESET;
             else
-                return GREEN+"m"+RESET;
+                return GREEN+"m "+RESET;
         }
 
         @Override
@@ -564,9 +561,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_YELLOW+BRIGHT_RED+"p"+RESET;
+                return BG_BRIGHT_YELLOW+BRIGHT_RED+"p "+RESET;
             else
-                return BG_BRIGHT_YELLOW+RED+"p"+RESET;
+                return BG_BRIGHT_YELLOW+RED+"p "+RESET;
         }
 
 
@@ -596,9 +593,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return GREEN+"r"+RESET;
+                return GREEN+"r "+RESET;
             else
-                return BRIGHT_RED+"r"+RESET;
+                return BRIGHT_RED+"r "+RESET;
         }
 
         @Override
@@ -627,9 +624,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return CYAN+"r"+RESET;
+                return CYAN+"r "+RESET;
             else
-                return RED+"r"+RESET;
+                return RED+"r "+RESET;
         }
 
         @Override
@@ -657,9 +654,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_WHITE+WHITE+"s"+RESET;
+                return BG_BRIGHT_WHITE+WHITE+"s "+RESET;
             else
-                return BG_BRIGHT_WHITE+BRIGHT_YELLOW+"s"+RESET;
+                return BG_BRIGHT_WHITE+BRIGHT_YELLOW+"s "+RESET;
         }
 
         @Override
@@ -682,9 +679,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_WHITE+BRIGHT_BLUE+"s"+RESET;
+                return BG_BRIGHT_WHITE+BRIGHT_BLUE+"s "+RESET;
             else
-                return BG_BRIGHT_WHITE+BLUE+"s"+RESET;
+                return BG_BRIGHT_WHITE+BLUE+"s "+RESET;
         }
 
         @Override
@@ -713,9 +710,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BRIGHT_PURPLE+"s"+RESET;
+                return BRIGHT_PURPLE+"s "+RESET;
             else
-                return PURPLE+"s"+RESET;
+                return PURPLE+"s "+RESET;
         }
 
         @Override
@@ -738,9 +735,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_YELLOW+BLACK+"s"+RESET;
+                return BG_BRIGHT_YELLOW+BLACK+"s "+RESET;
             else
-                return BG_YELLOW+BLACK+"s"+RESET;
+                return BG_YELLOW+BLACK+"s "+RESET;
         }
 
         @Override
@@ -769,9 +766,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_WHITE+BRIGHT_RED+"t"+RESET;
+                return BG_BRIGHT_WHITE+BRIGHT_RED+"t "+RESET;
             else
-                return BG_WHITE+RED+"t"+RESET;
+                return BG_WHITE+RED+"t "+RESET;
         }
 
 
@@ -801,9 +798,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BRIGHT_YELLOW+"w"+RESET;
+                return BRIGHT_YELLOW+"w "+RESET;
             else
-                return YELLOW+"w"+RESET;
+                return YELLOW+"w "+RESET;
         }
 
         @Override
@@ -832,9 +829,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BRIGHT_PURPLE+"a"+RESET;
+                return BRIGHT_PURPLE+"a "+RESET;
             else
-                return PURPLE+"a"+RESET;
+                return PURPLE+"a "+RESET;
         }
 
         @Override
@@ -863,9 +860,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BRIGHT_GREEN+"a"+RESET;
+                return BRIGHT_GREEN+"a "+RESET;
             else
-                return GREEN+"a"+RESET;
+                return GREEN+"a "+RESET;
         }
 
         @Override
@@ -893,7 +890,7 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BRIGHT_PURPLE+"b"+RESET;
+                return BRIGHT_PURPLE+"b "+RESET;
             else
                 return RED+"b"+RESET;
         }
@@ -916,9 +913,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_WHITE+BRIGHT_GREEN+"b"+RESET;
+                return BG_BRIGHT_WHITE+BRIGHT_GREEN+"b "+RESET;
             else
-                return BG_BRIGHT_WHITE+GREEN+"b"+RESET;
+                return BG_BRIGHT_WHITE+GREEN+"b "+RESET;
         }
 
         @Override
@@ -945,9 +942,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_BLACK+BRIGHT_GREEN+"b"+RESET;
+                return BG_BRIGHT_BLACK+BRIGHT_GREEN+"b "+RESET;
             else
-                return BG_BRIGHT_BLACK+GREEN+"b"+RESET;
+                return BG_BRIGHT_BLACK+GREEN+"b "+RESET;
         }
 
         @Override
@@ -969,9 +966,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_CYAN+BRIGHT_RED+"b"+RESET;
+                return BG_BRIGHT_CYAN+BRIGHT_RED+"b "+RESET;
             else
-                return BG_BRIGHT_CYAN+RED+"b"+RESET;
+                return BG_BRIGHT_CYAN+RED+"b "+RESET;
         }
 
         @Override
@@ -999,9 +996,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BRIGHT_PURPLE+"e"+RESET;
+                return BRIGHT_PURPLE+"e "+RESET;
             else
-                return RED+"e"+RESET;
+                return RED+"e "+RESET;
         }
 
         @Override
@@ -1029,9 +1026,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_BLACK+BRIGHT_WHITE+"f"+RESET;
+                return BG_BRIGHT_BLACK+BRIGHT_WHITE+"f "+RESET;
             else
-                return BG_BRIGHT_BLACK+WHITE+"f"+RESET;
+                return BG_BRIGHT_BLACK+WHITE+"f "+RESET;
         }
 
         @Override
@@ -1058,9 +1055,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_BLACK+BRIGHT_YELLOW+"g"+RESET;
+                return BG_BRIGHT_BLACK+BRIGHT_YELLOW+"g "+RESET;
             else
-                return BG_BRIGHT_BLACK+YELLOW+"g"+RESET;
+                return BG_BRIGHT_BLACK+YELLOW+"g "+RESET;
         }
 
         @Override
@@ -1087,9 +1084,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return YELLOW+"p"+RESET;
+                return YELLOW+"p "+RESET;
             else
-                return ORANGE+"p"+RESET;
+                return ORANGE+"p "+RESET;
         }
 
         @Override
@@ -1116,9 +1113,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_YELLOW+WHITE+"y"+RESET;
+                return BG_BRIGHT_YELLOW+WHITE+"y "+RESET;
             else
-                return BG_BRIGHT_YELLOW+BROWN+"y"+RESET;
+                return BG_BRIGHT_YELLOW+BROWN+"y "+RESET;
         }
 
         @Override
@@ -1146,9 +1143,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BG_BRIGHT_BLACK+GREEN+"r"+RESET;
+                return BG_BRIGHT_BLACK+GREEN+"r "+RESET;
             else
-                return BG_BRIGHT_BLACK+ORANGE+"r"+RESET;
+                return BG_BRIGHT_BLACK+ORANGE+"r "+RESET;
         }
 
         @Override
@@ -1170,9 +1167,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BRIGHT_CYAN+"p"+RESET;
+                return BRIGHT_CYAN+"p "+RESET;
             else
-                return CYAN+"p"+RESET;
+                return CYAN+"p "+RESET;
         }
 
         @Override
@@ -1194,9 +1191,9 @@ public enum ForagingSeedsType {
         public String getSymbolByLevel (int level) {
 
             if (this.getGrowthStages() < level)
-                return BRIGHT_CYAN+"a"+RESET;
+                return BRIGHT_CYAN+"a "+RESET;
             else
-                return CYAN+"a"+RESET;
+                return CYAN+"a "+RESET;
         }
 
         @Override

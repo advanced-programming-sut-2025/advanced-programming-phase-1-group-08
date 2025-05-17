@@ -33,6 +33,6 @@ public class Mine extends GameObject {
 
     @Override
     public String getIcon() {
-        return RED+"M";
+        return RED+"M ";
     }
 }

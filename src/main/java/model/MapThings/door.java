@@ -17,6 +17,6 @@ public class door extends GameObject {
 
     @Override
     public String getIcon() {
-        return BRIGHT_BROWN+"D";
+        return BRIGHT_BROWN+"\uD83D\uDEAA";
     }
 }

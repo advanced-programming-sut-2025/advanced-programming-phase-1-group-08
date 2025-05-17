@@ -683,18 +683,16 @@ public class GameController {
                 Tile tile = getTileByCoordinates(j, i);
 
                 if ((user = getUserByLocation(j, i) )!= null)
-                    result.append(user.getIcon()).append(" ");
+                    result.append(user.getIcon()); // TODO
 
-                else if (tile.getGameObject() instanceof Animal) {
+                else if (tile.getGameObject() instanceof Animal)
                     result.append(tile.getGameObject().getIcon());
-                }
 
                 else {
-                    if (tile.getGameObject() instanceof UnWalkable) {
+                    if (tile.getGameObject() instanceof UnWalkable)
                         result.append(tile.getGameObject().getIcon()).append(RESET);
-                    } else {
-                        result.append(tile.getGameObject().getIcon()).append(RESET).append(" "); //
-                    }
+                    else
+                        result.append(tile.getGameObject().getIcon()).append(RESET); // TODO
                 }
             }
             result.append("\n");
@@ -2686,84 +2684,91 @@ public class GameController {
 
     }
 
-    public void startNewGame (String input) throws IOException {
-        System.out.println(CYAN+"Starting New Game..."+RESET);
+    public void startNewGame (String input) {
+        System.out.println(RED+"Starting New Game..."+RESET);
 
         currentGame = new Game();
-
-
-        String user1name = GameMenuCommands.makeNewGame.getMatcher(input).group("username1");
-        String user2name = GameMenuCommands.makeNewGame.getMatcher(input).group("username2"); // could be null
-        String user3name = GameMenuCommands.makeNewGame.getMatcher(input).group("username3");// could be null
-
-        User user1 = findUserByUsername(user1name);
-        User user2 = findUserByUsername(user2name);
-        User user3 = findUserByUsername(user3name);
-
-        if (user1 == null){
-            System.out.println("User1 Not Found!");
-            return;
-        }
-        if (user2name != null) {
-            if (user2 == null) {
-                System.out.println("User2 Not Found! Try Again.");
-                return;
-            }
-        }
-        if (user3name != null) {
-            if (user3 == null) {
-                System.out.println("User3 Not Found! Try Again.");
-                return;
-            }
-        }
-        if (user1.isCurrently_in_game()){
-            System.out.println("User1 Currently in Game! Try Again.");
-            return;
-        }
-        else user1.setCurrently_in_game(true);
-
-        if (user2name != null) {
-            if (findUserByUsername(user2name).isCurrently_in_game()) {
-                System.out.println("User2 Currently in Game! Try Again.");
-                return;
-            }
-            else user2.setCurrently_in_game(true);
-        }
-        if (user3name != null) {
-            if (findUserByUsername(user3name).isCurrently_in_game()) {
-                System.out.println("User3 Currently in Game! Try Again.");
-                return;
-            }
-            else user3.setCurrently_in_game(true);
-        }
-
-        if (user1.getUsername().equals(currentUser.getUsername())) {
-            System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
-            return;
-        }
-        if (user2 != null) {
-            if (user2.getUsername().equals(currentUser.getUsername())) {
-                System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
-                return;
-            }
-        }
-        if (user3 != null) {
-            if (user3.getUsername().equals(currentUser.getUsername())) {
-                System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
-                return;
-            }
-        }
-
-        currentGame.currentPlayer = currentUser;
         currentGame.currentMenu = currentMenu;
 
 
-        currentGame.players.add(currentUser);
-        currentGame.players.add(user1);
-        if (user2 != null) currentGame.players.add(user2);
-        if (user3 != null) currentGame.players.add(user3);
-        currentGame.currentPlayer = currentUser;
+//        String user1name = GameMenuCommands.makeNewGame.getMatcher(input).group("username1");
+//        String user2name = GameMenuCommands.makeNewGame.getMatcher(input).group("username2"); // could be null
+//        String user3name = GameMenuCommands.makeNewGame.getMatcher(input).group("username3");// could be null
+//
+//        User user1 = findUserByUsername(user1name);
+//        User user2 = findUserByUsername(user2name);
+//        User user3 = findUserByUsername(user3name);
+//
+//        if (user1 == null){
+//            System.out.println("User1 Not Found!");
+//            return;
+//        }
+//        if (user2name != null) {
+//            if (user2 == null) {
+//                System.out.println("User2 Not Found! Try Again.");
+//                return;
+//            }
+//        }
+//        if (user3name != null) {
+//            if (user3 == null) {
+//                System.out.println("User3 Not Found! Try Again.");
+//                return;
+//            }
+//        }
+//        if (user1.isCurrently_in_game()){
+//            System.out.println("User1 Currently in Game! Try Again.");
+//            return;
+//        }
+//        else user1.setCurrently_in_game(true);
+//
+//        if (user2name != null) {
+//            if (findUserByUsername(user2name).isCurrently_in_game()) {
+//                System.out.println("User2 Currently in Game! Try Again.");
+//                return;
+//            }
+//            else user2.setCurrently_in_game(true);
+//        }
+//        if (user3name != null) {
+//            if (findUserByUsername(user3name).isCurrently_in_game()) {
+//                System.out.println("User3 Currently in Game! Try Again.");
+//                return;
+//            }
+//            else user3.setCurrently_in_game(true);
+//        }
+//
+//        if (user1.getUsername().equals(currentUser.getUsername())) {
+//            System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
+//            return;
+//        }
+//        if (user2 != null) {
+//            if (user2.getUsername().equals(currentUser.getUsername())) {
+//                System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
+//                return;
+//            }
+//        }
+//        if (user3 != null) {
+//            if (user3.getUsername().equals(currentUser.getUsername())) {
+//                System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
+//                return;
+//            }
+//        }
+//        currentGame.players.add(currentUser);
+//        currentGame.currentPlayer = currentUser;
+//        System.out.println(RED+"player selected"+RESET);
+//        setTimeAndWeather();
+
+//        currentGame.players.add(findUserByUsername(user1name));
+//        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
+//        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
+        currentGame.players.add(new User("Ario", "ArioTR", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
+        currentGame.players.add(new User("Erfan1", "Erfan2", "ario.ebr@gmail.com", "female", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
+        currentGame.players.add(new User("Ario3", "ArioTR3", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
+        currentGame.players.add(new User("Ario4", "ArioTR4", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
         setTimeAndWeather();
+        currentGame.currentPlayer = currentGame.players.getFirst();
+        currentUser = currentGame.players.getFirst();
+        // done
+
 
         Scanner scanner = new Scanner(System.in);
 
@@ -2773,40 +2778,41 @@ public class GameController {
             currentGame.currentPlayer = user;
             while (true) {
 
-                System.out.println(currentGame.currentPlayer.getNickname() + "'s turn to choose map(1 or 2)");
-                String choiceString = scanner.nextLine();
-                String[] splitChoice = choiceString.trim().split("\\s+");
+//                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
+//                String choiceString = scanner.nextLine();
+//                String[] splitChoice = choiceString.trim().split("\\s+");
+//
+//                int choice;
+//                try {
+//                    choice = Integer.parseInt(splitChoice[2]);
+//                } catch (Exception e) {
+//                    System.out.println("Please put a integer between 1 and 2!");
+//                    continue;
+//                }
+//                if (choice != 1 && choice != 2) {
+//                    System.out.println("Choose between 1 and 2!");
+//                    continue;
+//                }
 
-                int choice;
-                try {
-                    choice = Integer.parseInt(splitChoice[2]);
-                } catch (Exception e) {
-                    System.out.println("Please Use an Integer between 1 and 2!");
-                    continue;
-                }
-                if (choice != 1 && choice != 2) {
-                    System.out.println("Choose between 1 and 2!");
-                    continue;
-                }
-
+                int choice = 1; // TODO باید پاک بشه
 
                 if (counter == 1) {
-                    user.setIcon(BRIGHT_CYAN + "∆" + RESET);
+                    user.setIcon(BRIGHT_CYAN + "∆ " + RESET);
                     user.topLeftX = 0;
                     user.topLeftY = 0;
                 }
                 else if (counter == 2) {
-                    user.setIcon(BRIGHT_PURPLE + "∆" + RESET);
+                    user.setIcon(BRIGHT_PURPLE + "∆ " + RESET);
                     user.topLeftX = 1;
                     user.topLeftY = 0;
                 }
                 else if (counter == 3) {
-                    user.setIcon(BRIGHT_RED + "∆" + RESET);
+                    user.setIcon(BRIGHT_RED + "∆ " + RESET);
                     user.topLeftX = 0;
                     user.topLeftY = 1;
                 }
                 else if (counter == 4) {
-                    user.setIcon(BRIGHT_YELLOW + "∆" + RESET);
+                    user.setIcon(BRIGHT_YELLOW + "∆ " + RESET);
                     user.topLeftX = 1;
                     user.topLeftY = 1;
                 }
@@ -2834,6 +2840,153 @@ public class GameController {
         initializePlayer();
         startDay();
     }
+//    public void startNewGame (String input) throws IOException {
+//        System.out.println(CYAN+"Starting New Game..."+RESET);
+//
+//        currentGame = new Game();
+//        currentGame.currentPlayer = currentUser;
+//        currentGame.currentMenu = currentMenu;
+//
+//
+//        String user1name = GameMenuCommands.makeNewGame.getMatcher(input).group("username1");
+//        String user2name = GameMenuCommands.makeNewGame.getMatcher(input).group("username2"); // could be null
+//        String user3name = GameMenuCommands.makeNewGame.getMatcher(input).group("username3");// could be null
+//
+//        User user1 = findUserByUsername(user1name);
+//        User user2 = findUserByUsername(user2name);
+//        User user3 = findUserByUsername(user3name);
+//
+//        if (user1 == null){
+//            System.out.println("User1 Not Found!");
+//            return;
+//        }
+//        if (user2name != null) {
+//            if (user2 == null) {
+//                System.out.println("User2 Not Found!");
+//                return;
+//            }
+//        }
+//        if (user3name != null) {
+//            if (user3 == null) {
+//                System.out.println("User3 Not Found!");
+//                return;
+//            }
+//        }
+//        if (user1.isCurrently_in_game()){
+//            System.out.println("User1 Currently in Game!");
+//            return;
+//        }
+//        else user1.setCurrently_in_game(true);
+//
+//        if (user2name != null) {
+//            if (findUserByUsername(user2name).isCurrently_in_game()) {
+//                System.out.println("User2 Currently in Game!");
+//                return;
+//            }
+//            else user2.setCurrently_in_game(true);
+//        }
+//        if (user3name != null) {
+//            if (findUserByUsername(user3name).isCurrently_in_game()) {
+//                System.out.println("User3 Currently in Game!");
+//                return;
+//            }
+//            else user3.setCurrently_in_game(true);
+//        }
+//
+//        if (user1.getUsername().equals(currentUser.getUsername())) {
+//            System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
+//            return;
+//        }
+//        if (user2 != null) {
+//            if (user2.getUsername().equals(currentUser.getUsername())) {
+//                System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
+//                return;
+//            }
+//        }
+//        if (user3 != null) {
+//            if (user3.getUsername().equals(currentUser.getUsername())) {
+//                System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
+//                return;
+//            }
+//        }
+//
+//
+//        currentGame.players.add(currentUser);
+//        currentGame.players.add(user1);
+//        if (user2 != null) currentGame.players.add(user2);
+//        if (user3 != null) currentGame.players.add(user2);
+//        currentGame.currentPlayer = currentUser;
+//        setTimeAndWeather();
+//
+//        Scanner scanner = new Scanner(System.in);
+//
+//        int counter = 1;
+//        for (User user: currentGame.players) {
+//
+//            currentGame.currentPlayer = user;
+//            while (true) {
+//
+//                System.out.println(currentGame.currentPlayer.getNickname() + "'s turn to choose map(1 or 2)");
+//                String choiceString = scanner.nextLine();
+//                String[] splitChoice = choiceString.trim().split("\\s+");
+//
+//                int choice;
+//                try {
+//                    choice = Integer.parseInt(splitChoice[2]);
+//                } catch (Exception e) {
+//                    System.out.println("Please Use an Integer between 1 and 2!");
+//                    continue;
+//                }
+//                if (choice != 1 && choice != 2) {
+//                    System.out.println("Choose between 1 and 2!");
+//                    continue;
+//                }
+//
+//
+//                if (counter == 1) {
+//                    user.setIcon(BRIGHT_CYAN + "∆ " + RESET);
+//                    user.topLeftX = 0;
+//                    user.topLeftY = 0;
+//                }
+//                else if (counter == 2) {
+//                    user.setIcon(BRIGHT_PURPLE + "∆ " + RESET);
+//                    user.topLeftX = 1;
+//                    user.topLeftY = 0;
+//                }
+//                else if (counter == 3) {
+//                    user.setIcon(BRIGHT_RED + "∆ " + RESET);
+//                    user.topLeftX = 0;
+//                    user.topLeftY = 1;
+//                }
+//                else if (counter == 4) {
+//                    user.setIcon(BRIGHT_YELLOW + "∆ " + RESET);
+//                    user.topLeftX = 1;
+//                    user.topLeftY = 1;
+//                }
+//                createInitialFarm(choice);
+//                counter++;
+//                break;
+//            }
+//        }
+//        currentGame.currentPlayer = currentGame.players.getFirst();
+//
+//        // Form Friendships
+//        for (int i = 0; i < currentGame.players.size(); i++) {
+//            for (int j = i + 1; j < currentGame.players.size(); j++) {
+//                HumanCommunications f = new HumanCommunications(currentGame.players.get(i), currentGame.players.get(j));
+//                currentGame.friendships.add(f);
+//            }
+//        }
+//        // set initial Cooking Recipes from beginning
+//        for (User player: currentGame.players) {
+//            player.setRecipes(Recipe.createAllRecipes());
+//        }
+//        buildHall();
+//        buildNpcVillage();
+//        sortMap(currentGame.bigMap);
+//        initializePlayer();
+//        startDay();
+//    }
 
     public void startDay () {
 
@@ -4714,5 +4867,9 @@ public class GameController {
         Walkable walkable = new Walkable();
         walkable.setGrassOrFiber("Plowed");
         getTileByCoordinates(7, 10).setGameObject(walkable);
+    }
+    public void plantCreator () {
+
+
     }
 }
