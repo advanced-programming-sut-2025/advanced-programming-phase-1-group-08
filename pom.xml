@@ -59,7 +59,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.14</version> <!-- آخرین نسخه را بررسی کنید -->
+            <version>1.5.13</version> <!-- آخرین نسخه را بررسی کنید -->
         </dependency>
 
         <dependency>
@@ -67,7 +67,6 @@
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.36</version>
         </dependency>
-
 
     </dependencies>
 
