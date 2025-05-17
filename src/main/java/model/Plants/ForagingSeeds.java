@@ -173,6 +173,6 @@ public class ForagingSeeds extends Items {
 
     @Override
     public int getSellPrice() {
-        return 0;
+        return 1;
     }
 }

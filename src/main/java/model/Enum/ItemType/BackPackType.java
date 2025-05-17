@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 public enum BackPackType {
-    primary("primary",12,0 ,0 , 0) {
+    primary("primary",Integer.MAX_VALUE,0 ,0 , 0) {
       //TODO باید ظرفیتش رو درست کنم بزارم همون 12
     },
 

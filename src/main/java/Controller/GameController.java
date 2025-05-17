@@ -3058,8 +3058,10 @@ public class GameController {
     }
     private void doSeasonAutomaticTask () {
 
-        currentGame.currentWeather = Weather.valueOf(currentGame.tomorrowWeather.toString());
-        currentGame.tomorrowWeather = currentGame.currentDate.getSeason().getWeather();
+//        currentGame.currentWeather = Weather.valueOf(currentGame.tomorrowWeather.toString());
+//        currentGame.tomorrowWeather = currentGame.currentDate.getSeason().getWeather();
+        currentGame.currentWeather = Weather.Rainy;
+        currentGame.tomorrowWeather= Weather.Rainy;
 
     }
     private void doWeatherTask () {
@@ -3583,9 +3585,8 @@ public class GameController {
 
                 advanceItem(new TreesProdct(type.getProductType()), type.getHarvestYield());
 
-                ((Tree) object).setLastFruit(currentGame.currentDate);
                 currentGame.currentPlayer.increaseFarmingAbility(5);
-                ((Tree) object).setLastFruit(currentGame.currentDate);
+                ((Tree) object).setLastFruit(currentGame.currentDate.clone());
                 return new Result(true, BLUE + "You got " + type.getHarvestYield()
                         + " " + type.getProductType().getDisplayName() + RESET);
             } else
@@ -4867,6 +4868,20 @@ public class GameController {
         getTileByCoordinates(7, 10).setGameObject(walkable);
     }
     public void plantCreator () {
+
+        clear();
+
+        for (int i = 25; i < 28; i++)
+            for (int j = 22; j < 25; j++)
+                getTileByCoordinates(i,j).setGameObject(new Tree(TreeType.OakTree, currentGame.currentDate.clone()));
+
+        for (int i = 21; i < 24; i++)
+            for (int j = 22; j < 25; j++)
+                getTileByCoordinates(i,j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
+
+        for (int i = 17; i < 20; i++)
+            for (int j = 22; j < 25; j++)
+                getTileByCoordinates(i,j).setGameObject(new ForagingSeeds(ForagingSeedsType.AncientSeeds, currentGame.currentDate.clone()));
 
 
     }

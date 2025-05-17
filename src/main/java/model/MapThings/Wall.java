@@ -18,6 +18,6 @@ public class Wall extends GameObject {
 
     @Override
     public String getIcon() {
-        return BG_BRIGHT_BLACK+"# ";
+        return BG_BRIGHT_WHITE+"# ";
     }
 }
