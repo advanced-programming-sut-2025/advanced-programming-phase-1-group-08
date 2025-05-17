@@ -227,51 +227,19 @@ public class HumanCommunications {
         }
         else
             return new Result(false, RED+"You Don't Have it to Give!"+RESET);
-
         myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
 
+        if (otherInventory.Items.containsKey(items)) {
 
+            myInventory.Items.compute(items, (k,v) -> v + amount);
+            if (currentGame.currentPlayer.getSpouse() != null)
+                if (currentGame.currentPlayer.getSpouse().equals(other)) {
+                    currentGame.currentPlayer.increaseHealth(50);
+                    currentGame.currentPlayer.getSpouse().increaseHealth(50);
+                }
+            return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
 
-
-        for (Map.Entry <Items , Integer> entry : otherInventory.Items.entrySet() ) {
-            if (entry.getKey() instanceof MarketItem) {
-                if (items instanceof MarketItem ) {
-                    MarketItemType marketItemType = ((MarketItem) items).getType();
-                    if (marketItemType.equals(((MarketItem) entry.getKey()).getType())) {
-                        otherInventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                        return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
-                    }
-                }
-            }
-            else if (entry.getKey() instanceof AllCrops) {
-                if (items instanceof AllCrops ) {
-                    CropsType cropsType = ((AllCrops) items).getType();
-                    if (cropsType.equals(((AllCrops) entry.getKey()).getType())) {
-                        otherInventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                        return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
-                    }
-                }
-            }
-            else if (entry.getKey() instanceof ForagingCrops) {
-                if (items instanceof ForagingCrops ) {
-                    ForagingCropsType foragingCropsType = ((ForagingCrops) items).getType();
-                    if (foragingCropsType.equals(((ForagingCrops) entry.getKey()).getType())) {
-                        otherInventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                        return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
-                    }
-                }
-            }
-            else if (entry.getKey() instanceof TreesProdct) {
-                if (items instanceof TreesProdct ) {
-                    TreesProductType treesProductType = ((TreesProdct) items).getType();
-                    if (treesProductType.equals(((TreesProdct) entry.getKey()).getType())) {
-                        otherInventory.Items.put(entry.getKey(), entry.getValue() + amount);
-                        return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
-                    }
-                }
-            }
         }
-
 
         otherInventory.Items.put(items, amount);
 
