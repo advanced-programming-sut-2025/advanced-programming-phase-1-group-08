@@ -3,16 +3,13 @@ package Controller;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import model.*;
 import model.Animall.Animal;
+import model.Enum.*;
 import model.Plants.Animalproduct;
 import model.Animall.BarnOrCage;
 import model.Plants.Fish;
 import model.Enum.AllPlants.*;
 import model.Enum.Commands.GameMenuCommands;
-import model.Enum.Door;
-import model.Enum.FoodTypes;
 import model.Enum.ItemType.*;
-import model.Enum.Menu;
-import model.Enum.NPC;
 import model.Enum.ToolsType.*;
 import model.Enum.WeatherTime.Season;
 import model.Enum.ItemType.WallType;
@@ -2760,10 +2757,10 @@ public class GameController {
 //        currentGame.players.add(findUserByUsername(user1name));
 //        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
 //        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
-        currentGame.players.add(new User("Ario", "ArioTR", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
-        currentGame.players.add(new User("Erfan1", "Erfan2", "ario.ebr@gmail.com", "female", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
-        currentGame.players.add(new User("Ario3", "ArioTR3", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
-        currentGame.players.add(new User("Ario4", "ArioTR4", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
+        currentGame.players.add(new User("Ario", "Ario", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+        currentGame.players.add(new User("Erfan", "Erfan", "ario.ebr@gmail.com", "female", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+        currentGame.players.add(new User("Mamali", "Mamali", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+        currentGame.players.add(new User("Ilia", "Ilia", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
         setTimeAndWeather();
         currentGame.currentPlayer = currentGame.players.getFirst();
         currentUser = currentGame.players.getFirst();
@@ -3061,8 +3058,10 @@ public class GameController {
     }
     private void doSeasonAutomaticTask () {
 
-        currentGame.currentWeather = Weather.valueOf(currentGame.tomorrowWeather.toString());
-        currentGame.tomorrowWeather = currentGame.currentDate.getSeason().getWeather();
+//        currentGame.currentWeather = Weather.valueOf(currentGame.tomorrowWeather.toString());
+//        currentGame.tomorrowWeather = currentGame.currentDate.getSeason().getWeather();
+        currentGame.currentWeather = Weather.Rainy;
+        currentGame.tomorrowWeather= Weather.Rainy;
 
     }
     private void doWeatherTask () {
@@ -3109,14 +3108,15 @@ public class GameController {
 
                     number++;
 
-                    if (number % 2 == 0) {
+                    if (number % 16 == 0) {
 
                         double x = Math.random();
                         if (x <= 0.25) {
 
                             if (isInGreenHouse(tile)) {
                                 continue;
-                            } else if (object instanceof Tree && !((Tree) object).isProtected())
+                            }
+                            else if (object instanceof Tree && !((Tree) object).isProtected())
                                 ((Tree) object).setLastFruit(currentGame.currentDate);
 
                             else if (object instanceof ForagingCrops && !((ForagingCrops) object).isProtected())
@@ -3585,9 +3585,8 @@ public class GameController {
 
                 advanceItem(new TreesProdct(type.getProductType()), type.getHarvestYield());
 
-                ((Tree) object).setLastFruit(currentGame.currentDate);
                 currentGame.currentPlayer.increaseFarmingAbility(5);
-                ((Tree) object).setLastFruit(currentGame.currentDate);
+                ((Tree) object).setLastFruit(currentGame.currentDate.clone());
                 return new Result(true, BLUE + "You got " + type.getHarvestYield()
                         + " " + type.getProductType().getDisplayName() + RESET);
             } else
@@ -4869,6 +4868,20 @@ public class GameController {
         getTileByCoordinates(7, 10).setGameObject(walkable);
     }
     public void plantCreator () {
+
+        clear();
+
+        for (int i = 25; i < 28; i++)
+            for (int j = 22; j < 25; j++)
+                getTileByCoordinates(i,j).setGameObject(new Tree(TreeType.OakTree, currentGame.currentDate.clone()));
+
+        for (int i = 21; i < 24; i++)
+            for (int j = 22; j < 25; j++)
+                getTileByCoordinates(i,j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
+
+        for (int i = 17; i < 20; i++)
+            for (int j = 22; j < 25; j++)
+                getTileByCoordinates(i,j).setGameObject(new ForagingSeeds(ForagingSeedsType.AncientSeeds, currentGame.currentDate.clone()));
 
 
     }

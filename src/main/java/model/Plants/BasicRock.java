@@ -10,7 +10,7 @@ public class BasicRock extends Items {
 
     @Override
     public String getIcon() {
-        return GRAY+"\uD83E\uDEA8";
+        return "\uD83E\uDEA8";
     }
 
     @Override
