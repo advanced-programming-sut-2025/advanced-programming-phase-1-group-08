@@ -2757,23 +2757,10 @@ public class GameController {
 //        currentGame.players.add(findUserByUsername(user1name));
 //        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
 //        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
-
-
-        currentGame.players.add(new User("Erfan2","Erfan1", "erfansedaghat23@gmail.com", "Male",
-                100, 100, PasswordHashUtil.hashPassword("Erfan!2321"), SecurityQuestions.FavoriteAnimal ,
-                "aaa"));
-        currentGame.players.add(new User("Erfan21","Erfan2", "erfansedaghat23@gmail.com", "Male",
-                100, 100, PasswordHashUtil.hashPassword("Erfan!2321"), SecurityQuestions.FavoriteAnimal ,
-                "aaa"));
-        currentGame.players.add(new User("Erfan22","Erfan3", "erfansedaghat23@gmail.com", "Male",
-                100, 100, PasswordHashUtil.hashPassword("Erfan!2321"), SecurityQuestions.FavoriteAnimal ,
-                "aaa"));
-        currentGame.players.add(new User("Erfan23","Erfan4", "erfansedaghat23@gmail.com", "Male",
-                100, 100, PasswordHashUtil.hashPassword("Erfan!2321"), SecurityQuestions.FavoriteAnimal ,
-                "aaa"));
-//        currentGame.players.add(new User("Erfan1", "Erfan2", "ario.ebr@gmail.com", "female", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
-//        currentGame.players.add(new User("Ario3", "ArioTR3", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
-//        currentGame.players.add(new User("Ario4", "ArioTR4", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?")));
+        currentGame.players.add(new User("Ario", "Ario", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+        currentGame.players.add(new User("Erfan", "Erfan", "ario.ebr@gmail.com", "female", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+        currentGame.players.add(new User("Mamali", "Mamali", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+        currentGame.players.add(new User("Ilia", "Ilia", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
         setTimeAndWeather();
         currentGame.currentPlayer = currentGame.players.getFirst();
         currentUser = currentGame.players.getFirst();
