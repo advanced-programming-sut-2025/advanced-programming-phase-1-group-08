@@ -1,7 +1,6 @@
 package View;
 
-import Controller.Marketing;
-import model.Enum.Commands.GameMenuCommands;
+import Controller.MainGame.Marketing;
 import model.Enum.Commands.MarketMenuCommands;
 
 import java.util.Scanner;

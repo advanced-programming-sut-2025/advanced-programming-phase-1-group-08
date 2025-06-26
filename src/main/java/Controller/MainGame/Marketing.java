@@ -1,4 +1,4 @@
-package Controller;
+package Controller.MainGame;
 
 import model.*;
 import model.Animall.Animal;
@@ -25,6 +25,8 @@ import model.ToolsPackage.*;
 
 import java.util.Map;
 
+import static Controller.MainGame.GameControllerLogic.checkTilesForCreateBarnOrCage;
+import static Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static model.App.*;
 import static model.Color_Eraser.*;
 
@@ -243,11 +245,10 @@ public class Marketing {
 
 
     public void takeAnimalToBarnOrCage(Animal animal , BarnOrCage barnOrCage ) {
-        GameController gameController = new GameController();
         for (int x=barnOrCage.topLeftX + 1 ; x < barnOrCage.topLeftX+ barnOrCage.getBarnORCageType().getWidth() - 1 ; x++) {
             for (int y=barnOrCage.topLeftY + 1 ; y< barnOrCage.topLeftY + barnOrCage.getBarnORCageType().getHeight() - 1 ; y++) {
 
-                Tile tile=gameController.getTileByCoordinates(x,y);
+                Tile tile = getTileByCoordinates(x,y);
 
                 if (tile.getGameObject() instanceof Walkable) {
                     tile.setGameObject(animal);
@@ -323,13 +324,13 @@ public class Marketing {
         }
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        GameController gameController = new GameController();
+        InputGameController gameController = new InputGameController();
 
         if (findEnteredShopType() != MarketType.MarnieRanch) {
             return new Result(false , "you can't create a barn or cage because you are not in Marnie's Ranch Market");
         }
 
-        if (!gameController.checkTilesForCreateBarnOrCage(topLeftX, topLeftY, barnORCageType.getWidth(), barnORCageType.getHeight())) {
+        if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, barnORCageType.getWidth(), barnORCageType.getHeight())) {
             return new Result(false, "you can't create barn or cage on this coordinate!");
         }
 
@@ -383,7 +384,7 @@ public class Marketing {
             for (int j = topLeftY; j < topLeftY + barnORCageType.getHeight(); j++) {
 
                 if (i == topLeftX || i == topLeftX + barnORCageType.getWidth() -1 || j == topLeftY || j == topLeftY + barnORCageType.getHeight() -1) {
-                    Tile tile = gameController.getTileByCoordinates(i , j );
+                    Tile tile = getTileByCoordinates(i , j );
                     tile.setGameObject(barnOrCage);
                 }
             }
@@ -397,7 +398,7 @@ public class Marketing {
     }
 
     public Result createWell(int topLeftX , int topLeftY) {
-        GameController gameController = new GameController();
+        InputGameController gameController = new InputGameController();
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         Marketing marketing = new Marketing();
 
@@ -409,7 +410,7 @@ public class Marketing {
             return new Result(false , RED+"The purchase limit for this product has been reached" + RESET);
         }
 
-        if (!gameController.checkTilesForCreateBarnOrCage(topLeftX, topLeftY, Well.getWidth(), Well.getHeight())) {
+        if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, Well.getWidth(), Well.getHeight())) {
             return new Result(false, "you can't create a Well on this coordinate!");
         }
 
@@ -443,7 +444,7 @@ public class Marketing {
             for (int j = topLeftY; j < topLeftY + Well.getHeight(); j++) {
 
                 if (i == topLeftX || i == topLeftX + Well.getWidth() -1 || j == topLeftY || j == topLeftY + Well.getHeight() -1) {
-                    Tile tile = gameController.getTileByCoordinates(i , j );
+                    Tile tile = getTileByCoordinates(i , j );
                     tile.setGameObject(well);
                 }
             }
@@ -454,7 +455,7 @@ public class Marketing {
     }
 
     public Result createShippingBin(int topLeftX , int topLeftY) {
-        GameController gameController = new GameController();
+        InputGameController gameController = new InputGameController();
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         Marketing marketing = new Marketing();
 
@@ -462,7 +463,7 @@ public class Marketing {
             return new Result(false , "you can't create a Shipping Bin because you are not in Carpenter Market");
         }
 
-        if (!gameController.checkTilesForCreateBarnOrCage(topLeftX, topLeftY, ShippingBin.getWidth(), ShippingBin.getHeight())) {
+        if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, ShippingBin.getWidth(), ShippingBin.getHeight())) {
             return new Result(false, "you can't create a Shipping Bin on this coordinate!");
         }
 
@@ -486,7 +487,7 @@ public class Marketing {
         ShippingBin shippingBin = new ShippingBin(topLeftX, topLeftY);
         shippingBin.setCharactor('s');
 
-        Tile tile = gameController.getTileByCoordinates(topLeftX , topLeftY);
+        Tile tile = getTileByCoordinates(topLeftX , topLeftY);
         if (tile.getGameObject() instanceof Walkable) {
             tile.setGameObject(shippingBin);
         }

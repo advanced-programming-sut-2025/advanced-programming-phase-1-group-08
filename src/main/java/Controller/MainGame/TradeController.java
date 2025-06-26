@@ -1,14 +1,7 @@
-package Controller;
+package Controller.MainGame;
 
 import model.*;
-import model.Enum.AllPlants.CropsType;
-import model.Enum.AllPlants.ForagingCropsType;
-import model.Enum.AllPlants.TreesProductType;
 import model.Enum.Commands.TradeMenuCommands;
-import model.Enum.ItemType.MarketItemType;
-import model.Plants.AllCrops;
-import model.Plants.ForagingCrops;
-import model.Plants.TreesProdct;
 
 import java.util.*;
 

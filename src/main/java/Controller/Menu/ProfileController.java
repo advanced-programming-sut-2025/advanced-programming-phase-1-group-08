@@ -1,6 +1,5 @@
-package Controller;
+package Controller.Menu;
 
-import View.RegisterMenu;
 import model.App;
 import model.Result;
 import model.SaveData.*;
@@ -10,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-import static Controller.RegisterController.*;
+import static Controller.Menu.RegisterController.*;
 import static model.Color_Eraser.RED;
 import static model.Color_Eraser.RESET;
 

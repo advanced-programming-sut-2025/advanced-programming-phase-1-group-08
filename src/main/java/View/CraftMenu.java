@@ -1,6 +1,6 @@
 package View;
 
-import Controller.CraftingController;
+import Controller.MainGame.CraftingController;
 import model.Enum.Commands.CraftMenuCommands;
 
 import java.util.Scanner;

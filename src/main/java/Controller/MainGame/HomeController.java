@@ -1,4 +1,4 @@
-package Controller;
+package Controller.MainGame;
 
 import model.*;
 import model.Enum.Commands.HomeMenuCommands;
@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
+import static Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
 import static model.App.*;
 import static model.Color_Eraser.*;
 
@@ -129,8 +130,7 @@ public class HomeController {
         boolean r = true;
         HashMap<Items, Integer> ingredients = recipe.getIngredients();
         for (Map.Entry<Items, Integer> e: ingredients.entrySet()) {
-            GameController controller = new GameController();
-            r = controller.checkAmountProductAvailable(e.getKey(), e.getValue());
+            r = checkAmountProductAvailable(e.getKey(), e.getValue());
 
             if (fridge.items.containsKey(e.getKey())) {
                 int amount = fridge.items.get(e.getKey());
@@ -157,9 +157,9 @@ public class HomeController {
 
 
         // add food to inventory
-        GameController controller = new GameController();
+        InputGameController controller = new InputGameController();
         Items i = new Food(t);
-        if (controller.checkAmountProductAvailable(i, 1)) {
+        if (checkAmountProductAvailable(i, 1)) {
             myInventory.Items.put(i, myInventory.Items.get(i) + 1);
         }
         else myInventory.Items.put(i, 1);
@@ -167,8 +167,8 @@ public class HomeController {
 
         // decrease ingredients
         for (Map.Entry<Items, Integer> e: ingredients.entrySet()) {
-            GameController controller2 = new GameController();
-            if (controller2.checkAmountProductAvailable(e.getKey(), e.getValue())) {
+            InputGameController controller2 = new InputGameController();
+            if (checkAmountProductAvailable(e.getKey(), e.getValue())) {
                 myInventory.Items.put(e.getKey(), myInventory.Items.get(e.getKey()) - e.getValue());
             }
             else {

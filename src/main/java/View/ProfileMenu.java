@@ -1,12 +1,10 @@
 package View;
 
-import Controller.ProfileController;
+import Controller.Menu.ProfileController;
 import model.App;
-import model.Enum.Commands.LoginCommands;
 import model.Enum.Commands.ProfileCommands;
 import model.Enum.Menu;
 import model.Result;
-import model.User;
 
 import java.io.IOException;
 import java.util.Scanner;

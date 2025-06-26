@@ -1,8 +1,7 @@
-package Controller;
+package Controller.Menu;
 
 import model.Result;
 import model.SaveData.SessionManager;
-import model.SaveData.UserDataBase;
 
 public class MainController {
 
