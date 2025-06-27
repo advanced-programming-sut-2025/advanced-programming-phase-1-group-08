@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://repo.spongepowered.org/repository/maven-public/"
+    }
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.spongepowered:noise:2.0.0-SNAPSHOT'
+    implementation 'org.reflections:reflections:0.10.2'
+    implementation 'ch.qos.logback:logback-classic:1.5.13'
+    implementation 'org.slf4j:slf4j-nop:1.7.36'
+
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+}
+
+test {
+    useJUnitPlatform()
+}

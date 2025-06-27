@@ -1,25 +1,20 @@
 package View;
 
-import Controller.GameController;
-import Controller.TradeController;
-import model.Animall.Animal;
-import model.Animall.BarnOrCage;
+import Controller.MainGame.GameControllerLogic;
+import Controller.MainGame.InputGameController;
+import Controller.MainGame.TradeController;
 import model.Enum.Commands.GameMenuCommands;
-import model.Enum.ItemType.BarnORCageType;
-import model.Enum.Menu;
-import model.Result;
 
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
-import static Controller.HomeController.NotInHome;
 import static model.App.*;
 import static model.Color_Eraser.*;
 
 public class GameMenu implements AppMenu {
 
-    GameController controller = new GameController();
+    InputGameController controller = new InputGameController();
     Matcher matcher;
 
     @Override
@@ -42,31 +37,31 @@ public class GameMenu implements AppMenu {
         }
 
         else if (GameMenuCommands.nextTurn.getMatcher(input) != null)
-            controller.nextTurn();
+            GameControllerLogic.nextTurn();
 
         else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null)
             System.out.println(controller.goToHomeMenu() );
 
         else if (GameMenuCommands.eatFood.getMatcher(input) != null)
-            controller.eatFood(input);
+            GameControllerLogic.eatFood(input);
 
         else if (GameMenuCommands.recipeUnlock.getMatcher(input) != null)
-            controller.unlockRecipe(input);
+            GameControllerLogic.unlockRecipe(input);
 
         else if (GameMenuCommands.friendships.getMatcher(input) != null)
-            controller.DisplayFriendships();
+            GameControllerLogic.DisplayFriendships();
 
         else if (GameMenuCommands.addXpCheat.getMatcher(input) != null)
-            controller.cheatAddXp(input);
+            GameControllerLogic.cheatAddXp(input);
 
         else if (GameMenuCommands.talking.getMatcher(input) != null)
-            controller.talking(input);
+            GameControllerLogic.talking(input);
 
         else if (GameMenuCommands.hug.getMatcher(input) != null)
-            controller.hug(input);
+            GameControllerLogic.hug(input);
 
         else if (GameMenuCommands.sendGift.getMatcher(input) != null)
-            controller.sendGifts(input);
+            GameControllerLogic.sendGifts(input);
 
 //        else if (GameMenuCommands.giftList.getMatcher(input) != null)  پاکش نکنین!
 //            System.out.println(controller.giftList().massage());
@@ -75,15 +70,14 @@ public class GameMenu implements AppMenu {
             TradeController tradeController = new TradeController();
             tradeController.tradeStart();
         }
-
         else if (GameMenuCommands.propose.getMatcher(input) != null)
-            controller.propose(input);
+            GameControllerLogic.propose(input);
 
         else if (GameMenuCommands.giveFlower.getMatcher(input) != null)
-            controller.giveFlowers(input);
+            GameControllerLogic.giveFlowers(input);
 
         else if (GameMenuCommands.talkHistory.getMatcher(input) != null)
-            controller.DisplayingTalkHistory(input);
+            GameControllerLogic.DisplayingTalkHistory(input);
 
         else if (GameMenuCommands.showTime.getMatcher(input) != null)
             System.out.println(controller.showTime());
@@ -188,14 +182,11 @@ public class GameMenu implements AppMenu {
 
         else if (input.matches("\\s*show\\s*current\\s*menu\\s*"))
             System.out.println("Game Menu");
-        else if (input.matches("\\s*menu\\s*exit")) {
-            currentMenu = Menu.MainMenu;
-            System.out.println(GREEN+"Done!"+RESET);
-        }
+
         else if (input.matches("\\s*exit\\s*game\\s*"))
-            controller.exitGame();
+            GameControllerLogic.exitGame();
         else if (input.matches("\\s*force\\s*terminate\\s*"))
-            controller.forceTerminate();
+            GameControllerLogic.forceTerminate();
 
 
         else if((matcher=GameMenuCommands.walk.getMatcher(input)) != null)
@@ -274,12 +265,6 @@ public class GameMenu implements AppMenu {
             controller.plantCreator();
 
 
-//        else if (input.matches("\\s*exit\\s*game\\s*"))
-//            controller.exitGame();
-//        else if (input.matches("\\s*force\\s*terminate\\s*"))
-//            controller.forceTerminate();
-
-
         else if ((matcher = GameMenuCommands.getGameObject.getMatcher(input)) != null)
             System.out.println(controller.getObject(matcher.group("dir").trim()));
         else if ((matcher = GameMenuCommands.getGameObject2.getMatcher(input)) != null)
@@ -300,20 +285,11 @@ public class GameMenu implements AppMenu {
         else if (input.matches("\\s*clear\\s*"))
             controller.clear();
 
-        //TODO چیت کد اضافه کردن آیتم.
+        else if (input.matches("\\s*plow\\s*"))
+            controller.plow();
+
         else
             System.out.println(RED+"Invalid Command, Try Again"+RESET);
 
-        Result result = controller.AutomaticFunctionAfterAnyAct();
-
-        System.out.println("-----------------");
-        System.out.println("-> " + currentGame.currentPlayer.getNickname() + GREEN+"     " + currentGame.currentPlayer.getMoney() + "$"+RESET);
-        System.out.println("(" + currentGame.currentPlayer.getPositionX()+ ", " + currentGame.currentPlayer.getPositionY() + ")");
-        System.out.println("-----------------");
-
-        if (!result.IsSuccess()) {
-            System.out.println(result);
-            controller.nextTurn();
-        }
     }
 }

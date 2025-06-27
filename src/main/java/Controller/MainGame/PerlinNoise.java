@@ -1,4 +1,4 @@
-package Controller;
+package Controller.MainGame;
 
 import java.util.ArrayList;
 import java.util.Collections;

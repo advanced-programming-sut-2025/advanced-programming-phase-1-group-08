@@ -1,18 +1,12 @@
-package Controller;
+package Controller.Menu;
 
-import model.App;
-import model.Enum.Commands.RegisterCommands;
 import model.Enum.SecurityQuestions;
 import model.Game;
 import model.Result;
-import model.SaveData.UserBasicInfo;
-import model.SaveData.UserDataBase;
 import model.SaveData.UserStorage;
 import model.User;
-import model.User.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;

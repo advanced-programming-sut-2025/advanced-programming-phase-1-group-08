@@ -1,6 +1,6 @@
 package View;
 
-import Controller.LoginController;
+import Controller.Menu.LoginController;
 import model.Enum.Commands.LoginCommands;
 import model.Result;
 import model.SaveData.SessionManager;

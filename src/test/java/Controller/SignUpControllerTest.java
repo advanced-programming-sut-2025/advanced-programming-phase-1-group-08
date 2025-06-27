@@ -1,9 +1,10 @@
 package Controller;
 
+import Controller.Menu.LoginController;
+import Controller.Menu.RegisterController;
 import model.Result;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -78,13 +79,13 @@ public class SignUpControllerTest {
 //        Result result2=registerController.register("Erfan1384" , "Mrk!1384","Mrk!1384", "Mrk","Mrk@gmail.com" , "male");
         String simulatedInput = "pick question -q 1 -a Cow -c Cow\n";
         System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
-        Result x = registerController.register("Alireza-84" , "Mrk!1384","Mrk!1384", "Mrk","Mrk@gmail.com" , "male");
+        Result x = registerController.register("Alireza-87" , "Mrk!1384","Mrk!1384", "Mrk","Mrk@gmail.com" , "male");
         System.out.println(x);
         assertTrue(x.IsSuccess());
         String simulateInput = "pick question -q 1 -a Cow -c Cow\n";
         System.setIn(new ByteArrayInputStream(simulateInput.getBytes()));
 
-        Result y = registerController.register("Alireza-85" , "Mrk!1384","Mrk!1384", "Mrk","Mrk@gmail.com" , "jkfh");
+        Result y = registerController.register("Alireza-88" , "Mrk!1384","Mrk!1384", "Mrk","Mrk@gmail.com" , "jkfh");
         assertFalse(y.IsSuccess());
 
     }

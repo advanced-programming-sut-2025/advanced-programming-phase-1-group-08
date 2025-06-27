@@ -7,7 +7,7 @@ public class DateHour implements Cloneable {
 
     private int year;
     private Season season;
-    private int date; // چندمین روز فصل ( تاریخ )
+    private int date;
     private int hour;
 
     public DateHour(){}
@@ -53,7 +53,7 @@ public class DateHour implements Cloneable {
         this.date = (this.date + number) % 28;
         if (this.date == 0)
             this.date = 28;
-    } // TODO ساعت از ۹ به بعد باید برن بخوابن و عملا الکیه و دستور افزایش ساعتم حواست باشه
+    }
     public void increaseSeason (int number) {
 
         checkYearPassed(number);
@@ -159,21 +159,13 @@ public class DateHour implements Cloneable {
         return day;
     }
 
-    public static int getHourDiffrent(DateHour first) {
+    public static int getHourDifferent(DateHour first) {
         int firstSeason=0;
         switch (first.getSeason()) {
-            case Spring -> {
-                firstSeason=1;
-            }
-            case Summer -> {
-                firstSeason=2;
-            }
-            case Fall -> {
-                firstSeason=3;
-            }
-            case Winter -> {
-                firstSeason=4;
-            }
+            case Spring -> firstSeason = 1;
+            case Summer -> firstSeason = 2;
+            case Fall -> firstSeason = 3;
+            case Winter -> firstSeason = 4;
         }
         int nowSeason =0;
         switch (App.currentGame.currentDate.getSeason()) {

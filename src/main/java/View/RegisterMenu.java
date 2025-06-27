@@ -1,11 +1,10 @@
 package View;
 
-import Controller.RegisterController;
+import Controller.Menu.RegisterController;
 import model.App;
 import model.Enum.Commands.RegisterCommands;
 import model.Enum.Menu;
 import model.Result;
-import model.User;
 
 import java.io.IOException;
 import java.util.Scanner;

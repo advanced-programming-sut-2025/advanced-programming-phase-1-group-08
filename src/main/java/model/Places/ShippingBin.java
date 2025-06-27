@@ -1,16 +1,19 @@
 package model.Places;
 
-import Controller.GameController;
+import lombok.Getter;
+import lombok.Setter;
 import model.App;
 import model.Items;
 import model.MapThings.GameObject;
 import model.MapThings.Tile;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
+import static Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static model.Color_Eraser.RED;
 
+@Getter
+@Setter
 public class ShippingBin extends GameObject {
     private static final int width=1;
     private static final int height=1;
@@ -59,12 +62,11 @@ public class ShippingBin extends GameObject {
     }
 
     public static ShippingBin isNearShippingBin() {
-        int [] dirx={0,0,1,1,1,-1,-1,-1};
-        int [] diry={1,-1,0,1,-1,0,1,-1};
-        GameController gameController=new GameController();
+        int [] dirx = {0, 0, 1, 1, 1,-1,-1,-1};
+        int [] diry = {1,-1, 0, 1,-1, 0, 1,-1};
 
         for (int i = 0 ; i<dirx.length ; i++) {
-                Tile tile=gameController.getTileByCoordinates(App.currentGame.currentPlayer.getPositionX() +dirx[i], App.currentGame.currentPlayer.getPositionY() + diry[i]);
+                Tile tile = getTileByCoordinates(App.currentGame.currentPlayer.getPositionX() +dirx[i], App.currentGame.currentPlayer.getPositionY() + diry[i]);
                 if (tile == null) {
                     continue;
                 }

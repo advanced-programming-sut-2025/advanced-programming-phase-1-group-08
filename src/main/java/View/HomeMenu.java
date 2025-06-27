@@ -1,8 +1,8 @@
 package View;
 
-import Controller.CraftingController;
-import Controller.GameController;
-import Controller.HomeController;
+import Controller.MainGame.CraftingController;
+import Controller.MainGame.InputGameController;
+import Controller.MainGame.HomeController;
 import model.App;
 import model.Enum.Commands.GameMenuCommands;
 import model.Enum.Commands.HomeMenuCommands;
@@ -10,9 +10,6 @@ import model.Enum.Menu;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
-
-import static model.Color_Eraser.BLUE;
-import static model.Color_Eraser.RESET;
 
 public class HomeMenu extends AppView implements AppMenu{
 
@@ -39,12 +36,12 @@ public class HomeMenu extends AppView implements AppMenu{
 
 
         else if((matcher = GameMenuCommands.inventoryShow.getMatcher(input)) != null) {
-            GameController controller = new GameController();
+            InputGameController controller = new InputGameController();
             System.out.println(controller.showInventory());
         }
 
         else if ((matcher=GameMenuCommands.addItem.getMatcher(input)) != null) {
-            GameController controller = new GameController();
+            InputGameController controller = new InputGameController();
             System.out.println(controller.addItem(matcher.group(1), Integer.parseInt(matcher.group(2).trim())));
         }
 

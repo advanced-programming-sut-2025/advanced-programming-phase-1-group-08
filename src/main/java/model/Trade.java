@@ -1,38 +1,37 @@
 package model;
 
-import model.Enum.AllPlants.CropsType;
-import model.Enum.AllPlants.ForagingCropsType;
-import model.Enum.AllPlants.TreesProductType;
+import lombok.Getter;
+import lombok.Setter;
 import model.Enum.Commands.TradeMenuCommands;
-import model.Enum.ItemType.AnimalProductType;
-import model.Enum.ItemType.MarketItemType;
-import model.Places.MarketItem;
-import model.Plants.*;
 
 import java.util.*;
 import java.util.regex.Matcher;
 
-import static Controller.GameController.isNeighbor;
-import static java.lang.Math.floor;
+import static Controller.MainGame.GameControllerLogic.isNeighbor;
 import static java.lang.Math.random;
 import static model.App.*;
 import static model.Color_Eraser.*;
 
+@Getter
+@Setter
 public class Trade {
 
     private final User sender;
     private final User receiver;
 
-    private final String senderGivesWhat;
     private final String receiverGivesWhat;
-    private boolean responded = false;
-    private int id;
-    private final char senderGivesPorT;
     private final char receiverGivesPorT;
-    private final int senderAmount;
+    private final String senderGivesWhat;
+    private final char senderGivesPorT;
     private final int receiverAmount;
+    private boolean responded = false;
+    private final int senderAmount;
+    private int id;
 
-    public Trade(User from, User to, char senderGivesPorT, char receiverGivesPorT, String senderGivesWhat, String receiverGivesWhat, int senderAmount, int receiverAmount) {
+    public Trade (User from, User to, char senderGivesPorT,
+                  char receiverGivesPorT, String senderGivesWhat,
+                  String receiverGivesWhat, int senderAmount,
+                  int receiverAmount) {
         this.sender = from;
         this.receiver = to;
         this.senderGivesWhat = senderGivesWhat;
@@ -59,23 +58,9 @@ public class Trade {
         return foundTrade;
     }
 
-    public User getReceiver() {
-        return receiver;
-    }
-    public User getSender(){ return sender; }
-
-    public boolean isResponded() {
-        return responded;
-    }
-
-    public void setResponded(boolean responded) {
-        this.responded = responded;
-    }
-
     public void print() {
         System.out.println("Trade ID: " + id + "\n Trade Content: " + sender.getNickname() + " Sends " + senderGivesWhat + " to " + receiver.getNickname() + " to Get " + receiverGivesWhat);
     }
-
     public boolean isBetween(User u1, User u2) {
         return (sender.equals(u1) && receiver.equals(u2)) || (sender.equals(u2) && receiver.equals(u1));
     }
@@ -208,7 +193,6 @@ public class Trade {
         f.addXP(50);
         return new Result(true, GREEN+"Accepted Successfully."+RESET);
     }
-
     public static Result checkTradeRequest(String input, char P_or_T) {
         String username;
         String type;
@@ -293,13 +277,5 @@ public class Trade {
 
 
         return new Result(true, "");
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }

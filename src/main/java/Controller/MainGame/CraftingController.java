@@ -1,19 +1,12 @@
-package Controller;
+package Controller.MainGame;
 
 import model.*;
-import model.Enum.AllPlants.ForagingCropsType;
-import model.Enum.AllPlants.ForagingMineralsType;
 import model.Enum.AllPlants.TreesSourceType;
 import model.Enum.ItemType.CraftType;
 import model.Enum.ItemType.MarketItemType;
 import model.Enum.Menu;
-import model.Plants.BasicRock;
-import model.Plants.Wood;
-import model.OtherItem.BarsAndOres;
 import model.ToolsPackage.CraftingItem;
 import model.Places.MarketItem;
-import model.Plants.ForagingCrops;
-import model.Plants.ForagingMinerals;
 import model.Plants.TreeSource;
 
 import java.util.HashMap;

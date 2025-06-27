@@ -1,9 +1,7 @@
-package Controller;
+package Controller.Menu;
 import model.Enum.Menu;
 import model.Result;
 import model.SaveData.PasswordHashUtil;
-import model.SaveData.UserBasicInfo;
-import model.SaveData.UserDataBase;
 import model.SaveData.UserStorage;
 import model.User;
 import model.App;
@@ -11,8 +9,7 @@ import model.App;
 import java.io.IOException;
 import java.util.Scanner;
 
-import static Controller.RegisterController.*;
-import static model.App.currentUser;
+import static Controller.Menu.RegisterController.*;
 
 public class LoginController {
 
