@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
-import static model.App.*;
-import static model.Color_Eraser.*;
-
 public class GameMenu implements AppMenu {
 
     InputGameController controller = new InputGameController();
