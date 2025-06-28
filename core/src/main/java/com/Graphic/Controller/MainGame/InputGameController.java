@@ -1,13 +1,17 @@
 package com.Graphic.Controller.MainGame;
 
+import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
+import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.Places.Farm;
 import com.Graphic.model.Plants.Animalproduct;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Plants.Fish;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Enum.WeatherTime.Weather;
-import com.Graphic.model.Result;
 import com.Graphic.model.SaveData.PasswordHashUtil;
 
 import java.io.IOException;
@@ -15,6 +19,9 @@ import java.util.*;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 
+import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.App.currentMenu;
+import static com.Graphic.model.Color_Eraser.*;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 
 
@@ -34,14 +41,14 @@ public class InputGameController {
         if (MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY()) == null) {
             return new Result(false , "you are not in market");
         }
-        currentMenu=Menu.MarketMenu;
+        currentMenu = Menu.MarketMenu;
         return new Result(true , "Welcome to market menu");
     }
     public Result goToHomeMenu() {
         if ( !currentGame.currentPlayer.getFarm().isInHome(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY())) {
             return new Result(false , RED+"You're Not in Your Home!"+RESET);
         }
-        currentMenu=Menu.HomeMenu;
+        currentMenu = Menu.HomeMenu;
         return new Result(true , BLUE+"Welcome to home menu"+RESET);
     }
 
