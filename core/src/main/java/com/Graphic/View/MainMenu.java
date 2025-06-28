@@ -1,6 +1,6 @@
 package com.Graphic.View;
 
-import com.Graphic.Controller.Menu.MainController;
+import Controller.Menu.MainController;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.Commands.MainMenuCommands;
 import com.Graphic.model.Enum.Menu;

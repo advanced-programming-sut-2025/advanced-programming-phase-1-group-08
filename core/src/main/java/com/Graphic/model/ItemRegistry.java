@@ -1,6 +1,6 @@
 package com.Graphic.model;
 
-impor javassist.tools.reflect.Reflection;
+import javassist.tools.reflect.Reflection;
 import com.Graphic.model.Enum.ItemType.Quantity;
 import org.reflections.Reflections;
 

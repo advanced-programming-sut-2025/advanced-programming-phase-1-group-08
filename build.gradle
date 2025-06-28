@@ -70,4 +70,5 @@ subprojects {
   }
 }
 
+
 eclipse.project.name = 'StardewValley' + '-parent'

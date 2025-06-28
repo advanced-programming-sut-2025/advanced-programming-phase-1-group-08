@@ -1,6 +1,6 @@
 package com.Graphic.View;
 
-import model.App;
+import com.Graphic.model.App;
 
 import java.io.IOException;
 import java.util.Scanner;

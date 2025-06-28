@@ -1,8 +1,8 @@
 package com.Graphic.View;
 
-import com.Graphic.Controller.MainGame.CraftingController;
-import com.Graphic.Controller.MainGame.InputGameController;
-import com.Graphic.Controller.MainGame.HomeController;
+import Controller.MainGame.CraftingController;
+import Controller.MainGame.InputGameController;
+import Controller.MainGame.HomeController;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Commands.HomeMenuCommands;
