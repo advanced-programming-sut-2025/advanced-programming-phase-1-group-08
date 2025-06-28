@@ -1,17 +1,17 @@
 package com.Graphic.View;
 
 import Controller.Menu.MainController;
-import model.App;
-import model.Enum.Commands.MainMenuCommands;
-import model.Enum.Menu;
-import model.Result;
-import model.SaveData.UserStorage;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.Commands.MainMenuCommands;
+import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.Result;
+import com.Graphic.model.SaveData.UserStorage;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-import static model.Color_Eraser.CYAN;
-import static model.Color_Eraser.RESET;
+import static com.Graphic.model.Color_Eraser.CYAN;
+import static com.Graphic.model.Color_Eraser.RESET;
 
 public class MainMenu implements AppMenu{
     private final MainController controller = new MainController();

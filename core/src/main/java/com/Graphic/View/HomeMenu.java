@@ -3,10 +3,10 @@ package com.Graphic.View;
 import Controller.MainGame.CraftingController;
 import Controller.MainGame.InputGameController;
 import Controller.MainGame.HomeController;
-import model.App;
-import model.Enum.Commands.GameMenuCommands;
-import model.Enum.Commands.HomeMenuCommands;
-import model.Enum.Menu;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.Commands.GameMenuCommands;
+import com.Graphic.model.Enum.Commands.HomeMenuCommands;
+import com.Graphic.model.Enum.Menu;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;

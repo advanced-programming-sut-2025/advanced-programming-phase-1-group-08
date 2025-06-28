@@ -1,10 +1,10 @@
 package com.Graphic.View;
 
 import Controller.Menu.ProfileController;
-import model.App;
-import model.Enum.Commands.ProfileCommands;
-import model.Enum.Menu;
-import model.Result;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.Commands.ProfileCommands;
+import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.Result;
 
 import java.io.IOException;
 import java.util.Scanner;
