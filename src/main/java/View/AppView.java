@@ -2,15 +2,11 @@ package View;
 
 import model.App;
 import model.Enum.Menu;
-import model.SaveData.PasswordHashUtil;
-import model.SaveData.SessionManager;
-import model.User;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 import static model.App.currentMenu;
-import static model.Color_Eraser.*;
 
 
 public class AppView {
