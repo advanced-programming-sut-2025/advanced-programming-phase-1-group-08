@@ -1,8 +1,6 @@
 package com.Graphic.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import model.Enum.Commands.TradeMenuCommands;
+import com.Graphic.model.Enum.Commands.TradeMenuCommands;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -276,5 +274,44 @@ public class Trade {
 
 
         return new Result(true, "");
+    }
+
+
+
+    public User getSender() {
+        return sender;
+    }
+    public User getReceiver() {
+        return receiver;
+    }
+    public String getReceiverGivesWhat() {
+        return receiverGivesWhat;
+    }
+    public char getReceiverGivesPorT() {
+        return receiverGivesPorT;
+    }
+    public String getSenderGivesWhat() {
+        return senderGivesWhat;
+    }
+    public char getSenderGivesPorT() {
+        return senderGivesPorT;
+    }
+    public int getReceiverAmount() {
+        return receiverAmount;
+    }
+    public boolean isResponded() {
+        return responded;
+    }
+    public void setResponded(boolean responded) {
+        this.responded = responded;
+    }
+    public int getSenderAmount() {
+        return senderAmount;
+    }
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -67,7 +67,7 @@ public class Game {
         List<User> users = UserStorage.loadUsers();
         users.add(newUser);
         try {
-            model.SaveData.UserStorage.saveUsers(users);
+            com.Graphic.model.SaveData.UserStorage.saveUsers(users);
         } catch (IOException e) {
             e.printStackTrace();
         }

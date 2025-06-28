@@ -10,11 +10,14 @@ import com.Graphic.model.MapThings.Walkable;
 import java.util.ArrayList;
 
 
-
-import static model.App.currentGame;
-import static model.Color_Eraser.*;
-import static model.DateHour.decreaseDay;
-import static model.DateHour.getDayDifferent;
+import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.Color_Eraser.BG_BRIGHT_PURPLE;
+import static com.Graphic.model.Color_Eraser.RESET;
+import static com.Graphic.model.DateHour.getDayDifferent;
+import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.DateHour.decreaseDay;
+import static com.Graphic.model.DateHour.getDayDifferent;
 
 public class GiantProduct extends Items {
 

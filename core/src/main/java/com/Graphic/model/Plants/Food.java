@@ -4,7 +4,7 @@ import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Items;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
-import static model.App.currentGame;
+import static com.Graphic.model.App.currentGame;
 
 public class Food extends Items {
 
