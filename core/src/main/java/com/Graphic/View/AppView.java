@@ -1,12 +1,12 @@
 package com.Graphic.View;
 
-import model.App;
-import model.Enum.Menu;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.Menu;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-import static model.App.currentMenu;
+import static com.Graphic.model.App.currentMenu;
 
 
 public class AppView {

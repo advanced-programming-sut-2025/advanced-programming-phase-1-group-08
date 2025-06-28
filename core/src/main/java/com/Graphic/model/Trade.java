@@ -7,7 +7,7 @@ import model.Enum.Commands.TradeMenuCommands;
 import java.util.*;
 import java.util.regex.Matcher;
 
-import static Controller.MainGame.GameControllerLogic.isNeighbor;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.isNeighbor;
 import static java.lang.Math.random;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.Color_Eraser.*;

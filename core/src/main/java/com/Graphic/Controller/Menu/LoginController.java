@@ -1,4 +1,4 @@
-package Controller.Menu;
+package com.Graphic.Controller.Menu;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Result;
 import com.Graphic.model.SaveData.PasswordHashUtil;
@@ -9,7 +9,7 @@ import com.Graphic.model.App;
 import java.io.IOException;
 import java.util.Scanner;
 
-import static Controller.Menu.RegisterController.*;
+import static com.Graphic.Controller.Menu.RegisterController.*;
 
 public class LoginController {
 

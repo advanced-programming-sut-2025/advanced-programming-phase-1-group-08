@@ -8,6 +8,8 @@ import static com.Graphic.model.Color_Eraser.*;
 
 public class GreenHouse extends GameObject {
 
+    private final int topLeftX = 8;
+
     public static final int requiredWood = 500;
     public static final int requiredCoins = 1000;
 

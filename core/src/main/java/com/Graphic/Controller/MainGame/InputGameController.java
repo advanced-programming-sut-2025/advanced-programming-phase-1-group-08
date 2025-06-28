@@ -1,4 +1,4 @@
-package Controller.MainGame;
+package com.Graphic.Controller.MainGame;
 
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Plants.Animalproduct;
@@ -13,7 +13,7 @@ import com.Graphic.model.SaveData.PasswordHashUtil;
 import java.io.IOException;
 import java.util.*;
 
-import static Controller.MainGame.GameControllerLogic.*;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 

@@ -194,12 +194,12 @@ package com.Graphic.model.SaveData;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import model.SaveData.UserBasicInfo;
-import model.User;
+import com.Graphic.model.SaveData.UserBasicInfo;
+import com.Graphic.model.User;
 
 import java.io.*;
 
-import static model.SaveData.UserDataBase.findUserByUsername;
+import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 
 
 public class SessionManager {

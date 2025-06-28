@@ -1,13 +1,16 @@
 package com.Graphic.View;
 
-import Controller.MainGame.GameControllerLogic;
-import Controller.MainGame.InputGameController;
-import Controller.MainGame.TradeController;
-import model.Enum.Commands.GameMenuCommands;
+import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.Controller.MainGame.InputGameController;
+import com.Graphic.Controller.MainGame.TradeController;
+import com.Graphic.model.Enum.Commands.GameMenuCommands;
 
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
+
+import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.Color_Eraser.*;
 
 public class GameMenu implements AppMenu {
 
