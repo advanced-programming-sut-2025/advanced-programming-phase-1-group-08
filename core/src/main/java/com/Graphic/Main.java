@@ -14,6 +14,8 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
+
+        String test = new String("test");
         batch = new SpriteBatch();
         image = new Texture("libgdx.png");
     }
