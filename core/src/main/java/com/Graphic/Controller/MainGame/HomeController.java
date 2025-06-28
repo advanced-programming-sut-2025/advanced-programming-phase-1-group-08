@@ -1,4 +1,4 @@
-package Controller.MainGame;
+package com.Graphic.Controller.MainGame;
 
 import com.Graphic.model.Items;
 import com.Graphic.model.Recipe;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
-import static Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
 import static com.Graphic.model.App.AllFromDisplayNames;
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.Color_Eraser.*;

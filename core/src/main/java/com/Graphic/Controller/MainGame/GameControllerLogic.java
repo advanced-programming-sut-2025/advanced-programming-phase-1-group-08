@@ -1,4 +1,4 @@
-package Controller.MainGame;
+package com.Graphic.Controller.MainGame;
 
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;

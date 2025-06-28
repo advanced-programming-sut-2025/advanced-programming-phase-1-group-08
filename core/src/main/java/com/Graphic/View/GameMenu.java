@@ -13,6 +13,9 @@ import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.Color_Eraser.RED;
 import static com.Graphic.model.Color_Eraser.RESET;
 
+import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.Color_Eraser.*;
+
 public class GameMenu implements AppMenu {
 
     InputGameController controller = new InputGameController();

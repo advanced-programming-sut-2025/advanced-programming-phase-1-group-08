@@ -1,4 +1,4 @@
-package Controller.Menu;
+package com.Graphic.Controller.Menu;
 
 import com.Graphic.model.Result;
 import com.Graphic.model.SaveData.SessionManager;

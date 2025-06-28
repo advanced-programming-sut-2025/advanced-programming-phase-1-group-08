@@ -1,4 +1,4 @@
-package Controller.MainGame;
+package com.Graphic.Controller.MainGame;
 
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
@@ -21,8 +21,8 @@ import com.Graphic.model.Plants.TreeSource;
 
 import java.util.Map;
 
-import static Controller.MainGame.GameControllerLogic.checkTilesForCreateBarnOrCage;
-import static Controller.MainGame.GameControllerLogic.getTileByCoordinates;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.checkTilesForCreateBarnOrCage;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 
 public class Marketing {
 

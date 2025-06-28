@@ -35,4 +35,5 @@ public class Mine extends GameObject {
     public String getIcon() {
         return RED+"M ";
     }
+
 }

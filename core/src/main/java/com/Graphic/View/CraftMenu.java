@@ -1,6 +1,6 @@
 package com.Graphic.View;
 
-import Controller.MainGame.CraftingController;
+import com.Graphic.Controller.MainGame.CraftingController;
 import com.Graphic.model.Enum.Commands.CraftMenuCommands;
 
 import java.util.Scanner;

@@ -5,7 +5,7 @@ import com.Graphic.model.Places.MarketItem;
 
 import java.util.*;
 
-import static Controller.MainGame.GameControllerLogic.isNeighbor;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.isNeighbor;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.Color_Eraser.*;
 

@@ -1,4 +1,4 @@
-package Controller.MainGame;
+package com.Graphic.Controller.MainGame;
 
 import com.Graphic.model.Enum.Commands.TradeMenuCommands;
 import com.Graphic.model.Result;
