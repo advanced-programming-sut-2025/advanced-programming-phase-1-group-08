@@ -28,7 +28,6 @@ public class CraftingController {
 
         return null;
     }
-
     public Result showCraftingRecipe() {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         StringBuilder output = new StringBuilder();
@@ -45,8 +44,6 @@ public class CraftingController {
 
         return new Result(true , output.toString());
     }
-
-
     public Result craftingCraft(String name) {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         CraftType type=null;
@@ -127,13 +124,11 @@ public class CraftingController {
         return new Result(true , "you created " +newCraft.getType().getName() + " successfully");
 
     }
-
     public Result goToGameMenu() {
+
+        String test = "dd";
         App.currentMenu= Menu.GameMenu;
         return new Result(true , BLUE + "Back to Game Menu" + RESET);
     }
-
-
-
 
 }
