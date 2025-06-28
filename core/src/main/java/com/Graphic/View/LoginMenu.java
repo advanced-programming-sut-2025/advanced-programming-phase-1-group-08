@@ -1,6 +1,6 @@
 package com.Graphic.View;
 
-import Controller.Menu.LoginController;
+import com.Graphic.Controller.Menu.LoginController;
 import com.Graphic.model.Enum.Commands.LoginCommands;
 import com.Graphic.model.Result;
 import com.Graphic.model.SaveData.SessionManager;

@@ -1,6 +1,6 @@
 package com.Graphic.View;
 
-import Controller.Menu.RegisterController;
+import com.Graphic.Controller.Menu.RegisterController;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.Commands.RegisterCommands;
 import com.Graphic.model.Enum.Menu;

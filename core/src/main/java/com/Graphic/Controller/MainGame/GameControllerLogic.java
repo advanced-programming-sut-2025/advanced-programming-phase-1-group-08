@@ -1189,9 +1189,7 @@ public class GameControllerLogic {
     }
 
 
-
                                                                         // Erfan
-
 
 
     public static void setPlayerLocation () {
@@ -1784,7 +1782,6 @@ public class GameControllerLogic {
 
     }
 
-
                                                                             // other plant task
     public static String showTree (Tree tree) {
 
@@ -2266,7 +2263,6 @@ public class GameControllerLogic {
 
         return new Result(false, RED+"There are no plant!"+RESET);
     }
-
 
                                                                             // NPC task
     public static void NPAutomateTask() {
