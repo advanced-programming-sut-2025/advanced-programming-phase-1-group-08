@@ -1,6 +1,6 @@
 package View;
 
-import Controller.MainController;
+import Controller.Menu.MainController;
 import model.App;
 import model.Enum.Commands.MainMenuCommands;
 import model.Enum.Menu;

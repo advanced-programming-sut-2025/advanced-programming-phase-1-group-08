@@ -1,6 +1,5 @@
 package model;
 
-import Controller.GameController;
 import model.Animall.BarnOrCage;
 import model.Enum.NPC;
 import model.Enum.SecurityQuestions;
@@ -14,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+
+import static Controller.MainGame.GameControllerLogic.passedOfTime;
 import static model.App.currentGame;
 
 @Getter
@@ -78,8 +79,7 @@ public class User {
         Buff_maxEnergy_100_hoursLeft = 0;
         Buff_fishing_hoursLeft = 0;
         Buff_mining_hoursLeft = 0;
-        GameController controller = new GameController();
-        controller.passedOfTime(0, 0);
+        passedOfTime(0, 0);
     }
     public int Buff_fishing_hoursLeft = 0;
     public void setBuff_fishing_hoursLeft (int x) {
@@ -89,8 +89,7 @@ public class User {
         Buff_farming_hoursLeft = 0;
         Buff_maxEnergy_100_hoursLeft = 0;
         Buff_mining_hoursLeft = 0;
-        GameController controller = new GameController();
-        controller.passedOfTime(0, 0);
+        passedOfTime(0, 0);
     }
     public int Buff_mining_hoursLeft = 0;
     public void setBuff_mining_hoursLeft (int x) {
@@ -100,8 +99,7 @@ public class User {
         Buff_farming_hoursLeft = 0;
         Buff_fishing_hoursLeft = 0;
         Buff_maxEnergy_100_hoursLeft = 0;
-        GameController controller = new GameController();
-        controller.passedOfTime(0, 0);
+        passedOfTime(0, 0);
     }
 
     // TODO وقتی بازی تموم میشه این سه تارو ست کنیم

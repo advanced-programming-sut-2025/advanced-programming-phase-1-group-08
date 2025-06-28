@@ -1,21 +1,18 @@
 package model;
 
-import model.Enum.AllPlants.CropsType;
-import model.Enum.AllPlants.ForagingCropsType;
-import model.Enum.AllPlants.TreesProductType;
-import model.Enum.Commands.GameMenuCommands;
+import lombok.Getter;
+import lombok.Setter;
 import model.Enum.ItemType.MarketItemType;
 import model.Places.MarketItem;
-import model.Plants.AllCrops;
-import model.Plants.ForagingCrops;
-import model.Plants.TreesProdct;
 
 import java.util.*;
 
-import static Controller.GameController.isNeighbor;
+import static Controller.MainGame.GameControllerLogic.isNeighbor;
 import static model.App.*;
 import static model.Color_Eraser.*;
 
+@Setter
+@Getter
 public class HumanCommunications {
     private User player1;
     private User player2;
@@ -38,12 +35,6 @@ public class HumanCommunications {
         return (u1.equals(player1) && u2.equals(player2)) || (u1.equals(player2) && u2.equals(player1));
     }
 
-    public int getXP() {
-        return XP;
-    }
-    public void setXP(int XP) {
-        this.XP = XP;
-    }
 
     public void addXP(int XP) {
         this.XP += XP;
@@ -54,29 +45,7 @@ public class HumanCommunications {
         updateLevel();
     }
 
-    public boolean isBOUQUETBought() {
-        return BOUQUETBought;
-    }
 
-    public void setBOUQUETBought(boolean BOUQUETBought) {
-        this.BOUQUETBought = BOUQUETBought;
-    }
-
-    public boolean isSUCCESSFULPropose() {
-        return SUCCESSFULPropose;
-    }
-
-    public void setSUCCESSFULPropose(boolean SUCCESSFULPropose) {
-        this.SUCCESSFULPropose = SUCCESSFULPropose;
-    }
-
-    public User getPlayer1() {
-        return player1;
-    }
-
-    public User getPlayer2() {
-        return player2;
-    }
     //TODO وقتی مکانیزم کاهش لول رو زدی یادت باشه این بولین های اول رو فالس کنی با کم شدن لول
     public void updateLevel() {
         if (FriendshipLevel == 0 && getXP() >= 100) {

@@ -1,5 +1,6 @@
 package Controller;
 
+import Controller.Menu.LoginController;
 import model.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

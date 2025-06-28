@@ -1,16 +1,13 @@
 package model.Plants;
 
-import Controller.GameController;
 import model.Enum.FoodTypes;
-import model.Inventory;
 import model.Items;
-import model.Result;
 
+import static Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
 import static model.App.currentGame;
-import static model.Color_Eraser.RED;
-import static model.Color_Eraser.RESET;
 
 public class Food extends Items {
+
     private final FoodTypes type;
 
     public Food(FoodTypes type) {
@@ -22,8 +19,7 @@ public class Food extends Items {
     }
 
     public static boolean checkInventorySpaceForFood(FoodTypes type) {
-        GameController controller = new GameController();
-        return controller.checkAmountProductAvailable(new Food(type), 1) ||
+        return checkAmountProductAvailable(new Food(type), 1) ||
                 currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0;
     }
 
