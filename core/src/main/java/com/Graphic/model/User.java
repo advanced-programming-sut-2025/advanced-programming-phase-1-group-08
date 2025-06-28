@@ -1,24 +1,20 @@
 package com.Graphic.model;
 
-import model.Animall.BarnOrCage;
-import model.Enum.NPC;
-import model.Enum.SecurityQuestions;
-import model.MapThings.Tile;
-import model.Places.Farm;
-import model.ToolsPackage.BackPack;
-import model.ToolsPackage.Tools;
+import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.Enum.NPC;
+import com.Graphic.model.Enum.SecurityQuestions;
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.Places.Farm;
+import com.Graphic.model.ToolsPackage.BackPack;
+import com.Graphic.model.ToolsPackage.Tools;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
 import static Controller.MainGame.GameControllerLogic.passedOfTime;
-import static model.App.currentGame;
+import static com.Graphic.model.App.currentGame;
 
-@Getter
-@Setter
 public class User {
 
     private String username;

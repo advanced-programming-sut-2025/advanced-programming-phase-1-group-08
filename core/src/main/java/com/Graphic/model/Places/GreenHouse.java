@@ -1,10 +1,10 @@
 package com.Graphic.model.Places;
 
-import model.MapThings.GameObject;
-import model.User;
-import model.MapThings.WaterTank;
+import com.Graphic.model.MapThings.GameObject;
+import com.Graphic.model.User;
+import com.Graphic.model.MapThings.WaterTank;
 
-import static model.Color_Eraser.*;
+import static com.Graphic.model.Color_Eraser.*;
 
 public class GreenHouse extends GameObject {
 

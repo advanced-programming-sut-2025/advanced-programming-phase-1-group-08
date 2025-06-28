@@ -1,7 +1,7 @@
 package com.Graphic.model.Plants;
 
-import model.Enum.AllPlants.ForagingMineralsType;
-import model.Items;
+import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
+import com.Graphic.model.Items;
 
 public class ForagingMinerals extends Items {
 

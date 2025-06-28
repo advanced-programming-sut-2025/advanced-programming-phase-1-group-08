@@ -1,8 +1,8 @@
 package com.Graphic.model.Plants;
 
 
-import model.Items;
-import static model.Color_Eraser.*;
+import com.Graphic.model.Items;
+import static com.Graphic.model.Color_Eraser.*;
 
 public class Wood extends Items {
 

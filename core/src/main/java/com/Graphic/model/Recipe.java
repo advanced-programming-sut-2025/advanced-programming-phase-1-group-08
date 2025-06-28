@@ -1,26 +1,23 @@
 package com.Graphic.model;
 
-import model.Plants.Animalproduct;
-import model.Plants.Fish;
-import model.Enum.AllPlants.CropsType;
-import model.Enum.AllPlants.ForagingCropsType;
-import model.Enum.AllPlants.TreesProductType;
-import model.Enum.FoodTypes;
-import model.Enum.ItemType.*;
-import model.OtherItem.ArtisanProduct;
-import model.Places.MarketItem;
-import model.Plants.AllCrops;
-import model.Plants.ForagingCrops;
-import model.Plants.TreesProdct;
+import com.Graphic.model.Plants.Animalproduct;
+import com.Graphic.model.Plants.Fish;
+import com.Graphic.model.Enum.AllPlants.CropsType;
+import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
+import com.Graphic.model.Enum.AllPlants.TreesProductType;
+import com.Graphic.model.Enum.FoodTypes;
+import com.Graphic.model.Enum.ItemType.*;
+import com.Graphic.model.OtherItem.ArtisanProduct;
+import com.Graphic.model.Places.MarketItem;
+import com.Graphic.model.Plants.AllCrops;
+import com.Graphic.model.Plants.ForagingCrops;
+import com.Graphic.model.Plants.TreesProdct;
 
 import java.util.HashMap;
 import java.util.List;
 
-import static model.App.currentGame;
-import lombok.Setter;
-import lombok.Getter;
-@Setter
-@Getter
+import static com.Graphic.model.App.currentGame;
+
 
 public class Recipe {
 

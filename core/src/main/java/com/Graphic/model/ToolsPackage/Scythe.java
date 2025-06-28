@@ -1,6 +1,6 @@
 package com.Graphic.model.ToolsPackage;
 
-import static model.App.currentGame;
+import static com.Graphic.model.App.currentGame;
 public class Scythe extends Tools {
 
     public Scythe() {

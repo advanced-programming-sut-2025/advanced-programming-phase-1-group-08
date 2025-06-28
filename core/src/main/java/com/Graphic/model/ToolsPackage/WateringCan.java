@@ -1,8 +1,8 @@
 package com.Graphic.model.ToolsPackage;
 
-import model.Enum.ToolsType.WateringCanType;
+import com.Graphic.model.Enum.ToolsType.WateringCanType;
 
-import static model.App.*;
+import static com.Graphic.model.App.*;
 
 public class WateringCan extends Tools {
 

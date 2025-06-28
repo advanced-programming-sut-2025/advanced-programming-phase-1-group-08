@@ -1,7 +1,7 @@
 package com.Graphic.model.Plants;
 
-import model.Enum.FoodTypes;
-import model.Items;
+import com.Graphic.model.Enum.FoodTypes;
+import com.Graphic.model.Items;
 
 import static Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
 import static model.App.currentGame;

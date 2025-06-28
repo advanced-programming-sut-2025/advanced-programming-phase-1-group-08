@@ -1,11 +1,11 @@
 package com.Graphic.model.OtherItem;
 
-import model.Items;
-import model.MapThings.GameObject;
+import com.Graphic.model.Items;
+import com.Graphic.model.MapThings.GameObject;
 
 import java.util.HashMap;
 
-import static model.Color_Eraser.YELLOW;
+import static com.Graphic.model.Color_Eraser.YELLOW;
 
 public class Fridge extends GameObject {
     //ArrayList<GameObject>

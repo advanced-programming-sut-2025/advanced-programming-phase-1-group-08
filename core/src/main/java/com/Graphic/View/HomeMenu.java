@@ -1,4 +1,4 @@
-package View;
+package com.Graphic.View;
 
 import Controller.MainGame.CraftingController;
 import Controller.MainGame.InputGameController;

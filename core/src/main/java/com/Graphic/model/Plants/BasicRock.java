@@ -1,8 +1,8 @@
 package com.Graphic.model.Plants;
 
-import model.Items;
+import com.Graphic.model.Items;
 
-import static model.Color_Eraser.*;
+import static com.Graphic.model.Color_Eraser.*;
 
 public class BasicRock extends Items {
     //این کلاس برای سنگ عادی اول بازی زده شده.

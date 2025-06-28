@@ -1,13 +1,13 @@
 package com.Graphic.model.Plants;
 
-import model.*;
-import model.Enum.AllPlants.ForagingSeedsType;
-import model.Enum.ItemType.MarketItemType;
-import model.MapThings.Tile;
-import model.MapThings.Walkable;
+import com.Graphic.model.*;
+import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
+import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.Walkable;
 
-import static model.App.currentGame;
-import static model.DateHour.getDayDifferent;
+import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.DateHour.getDayDifferent;
 
 public class ForagingSeeds extends Items {
 

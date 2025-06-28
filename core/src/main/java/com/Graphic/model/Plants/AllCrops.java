@@ -1,7 +1,7 @@
 package com.Graphic.model.Plants;
 
-import model.Enum.AllPlants.CropsType;
-import model.Items;
+import com.Graphic.model.Enum.AllPlants.CropsType;
+import com.Graphic.model.Items;
 
 public class AllCrops extends Items {
 

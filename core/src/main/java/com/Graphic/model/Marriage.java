@@ -1,6 +1,6 @@
 package com.Graphic.model;
 
-import model.Enum.Commands.GameMenuCommands;
+import com.Graphic.model.Enum.Commands.GameMenuCommands;
 
 import java.util.*;
 

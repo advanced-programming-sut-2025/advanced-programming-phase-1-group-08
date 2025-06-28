@@ -1,8 +1,8 @@
 package com.Graphic.model.Plants;
 
-import model.Enum.ItemType.AnimalProductType;
-import model.Enum.ItemType.Quantity;
-import model.Items;
+import com.Graphic.model.Enum.ItemType.AnimalProductType;
+import com.Graphic.model.Enum.ItemType.Quantity;
+import com.Graphic.model.Items;
 
 public class Animalproduct extends Items {
 

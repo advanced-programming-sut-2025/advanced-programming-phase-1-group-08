@@ -1,4 +1,4 @@
-package View;
+package com.Graphic.View;
 
 import Controller.MainGame.Marketing;
 import model.Enum.Commands.MarketMenuCommands;

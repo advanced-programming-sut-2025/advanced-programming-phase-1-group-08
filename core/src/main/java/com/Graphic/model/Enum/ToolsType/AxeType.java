@@ -1,15 +1,15 @@
 package com.Graphic.model.Enum.ToolsType;
 
-import model.App;
-import model.Enum.ItemType.BarnORCageType;
-import model.Enum.ItemType.BarsAndOreType;
-import model.Inventory;
-import model.Items;
-import model.OtherItem.BarsAndOres;
-import model.ToolsPackage.Axe;
-import model.Enum.ItemType.BarsAndOreType.*;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.ItemType.BarnORCageType;
+import com.Graphic.model.Enum.ItemType.BarsAndOreType;
+import com.Graphic.model.Inventory;
+import com.Graphic.model.Items;
+import com.Graphic.model.OtherItem.BarsAndOres;
+import com.Graphic.model.ToolsPackage.Axe;
+import com.Graphic.model.Enum.ItemType.BarsAndOreType.*;
 
-import static model.Enum.ItemType.BarsAndOreType.*;
+import static com.Graphic.model.Enum.ItemType.BarsAndOreType.*;
 
 public enum AxeType {
 

@@ -1,11 +1,11 @@
 package com.Graphic.model.Plants;
 
-import model.DateHour;
-import model.Enum.AllPlants.ForagingSeedsType;
-import model.Enum.ItemType.MarketItemType;
-import model.Items;
-import model.MapThings.Tile;
-import model.MapThings.Walkable;
+import com.Graphic.model.DateHour;
+import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
+import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.Items;
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.Walkable;
 
 import java.util.ArrayList;
 

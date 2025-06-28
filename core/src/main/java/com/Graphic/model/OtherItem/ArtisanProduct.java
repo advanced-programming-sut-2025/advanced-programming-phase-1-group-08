@@ -1,7 +1,7 @@
 package com.Graphic.model.OtherItem;
 
-import model.Enum.ItemType.ArtisanType;
-import model.Items;
+import com.Graphic.model.Enum.ItemType.ArtisanType;
+import com.Graphic.model.Items;
 
 public class ArtisanProduct extends Items {
     private ArtisanType type;

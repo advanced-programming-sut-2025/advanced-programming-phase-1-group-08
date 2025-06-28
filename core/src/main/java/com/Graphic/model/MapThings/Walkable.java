@@ -1,6 +1,6 @@
 package com.Graphic.model.MapThings;
 
-import static model.Color_Eraser.*;
+import static com.Graphic.model.Color_Eraser.*;
 
 public class Walkable extends GameObject {
 

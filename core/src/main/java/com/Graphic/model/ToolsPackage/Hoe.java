@@ -1,8 +1,8 @@
 package com.Graphic.model.ToolsPackage;
 
-import model.Enum.ToolsType.HoeType;
+import com.Graphic.model.Enum.ToolsType.HoeType;
 
-import static model.App.*;
+import static com.Graphic.model.App.*;
 
 public class Hoe extends Tools {
 

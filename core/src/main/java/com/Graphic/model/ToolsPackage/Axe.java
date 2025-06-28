@@ -1,6 +1,6 @@
 package com.Graphic.model.ToolsPackage;
 
-import model.Enum.ToolsType.AxeType;
+import com.Graphic.model.Enum.ToolsType.AxeType;
 
 import static model.App.*;
 

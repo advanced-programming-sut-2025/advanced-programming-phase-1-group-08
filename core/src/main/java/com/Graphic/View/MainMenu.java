@@ -1,4 +1,4 @@
-package View;
+package com.Graphic.View;
 
 import Controller.Menu.MainController;
 import model.App;

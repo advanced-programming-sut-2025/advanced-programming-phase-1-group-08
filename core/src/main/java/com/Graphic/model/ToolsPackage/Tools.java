@@ -1,8 +1,8 @@
 package com.Graphic.model.ToolsPackage;
 
 
-import lombok.Setter;
-import model.Items;
+import com.Graphic.lombok.Setter;
+import com.Graphic.model.Items;
 
 @Setter
 public abstract class Tools extends Items {

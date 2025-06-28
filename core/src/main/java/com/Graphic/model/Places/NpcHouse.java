@@ -1,6 +1,6 @@
 package com.Graphic.model.Places;
 
-import model.Enum.NPC;
+import com.Graphic.model.Enum.NPC;
 
 public class NpcHouse {
     private final NPC owner;

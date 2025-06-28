@@ -1,17 +1,17 @@
 package com.Graphic.model.Plants;
 
-import model.DateHour;
-import model.Enum.AllPlants.TreeType;
-import model.Enum.ItemType.MarketItemType;
-import model.Items;
-import model.MapThings.Tile;
-import model.MapThings.Walkable;
+import com.Graphic.model.DateHour;
+import com.Graphic.model.Enum.AllPlants.TreeType;
+import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.Items;
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.Walkable;
 
 
 
-import static model.App.currentGame;
-import static model.DateHour.decreaseDay;
-import static model.DateHour.getDayDifferent;
+import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.DateHour.decreaseDay;
+import static com.Graphic.model.DateHour.getDayDifferent;
 
 public class Tree extends Items {
 

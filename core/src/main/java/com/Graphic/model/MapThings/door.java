@@ -1,8 +1,8 @@
 package com.Graphic.model.MapThings;
 
 
-import model.Enum.Door;
-import static model.Color_Eraser.*;
+import com.Graphic.model.Enum.Door;
+import static com.Graphic.model.Color_Eraser.*;
 
 public class door extends GameObject {
     private Door door;

@@ -1,11 +1,11 @@
 package com.Graphic.model.Plants;
 
-import model.Enum.AllPlants.ForagingCropsType;
-import model.Items;
-import model.MapThings.Tile;
-import model.MapThings.Walkable;
+import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
+import com.Graphic.model.Items;
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.Walkable;
 
-import static model.App.currentGame;
+import static com.Graphic.model.App.currentGame;
 
 
 public class ForagingCrops extends Items {

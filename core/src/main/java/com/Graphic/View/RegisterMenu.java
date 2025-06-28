@@ -1,4 +1,4 @@
-package View;
+package com.Graphic.View;
 
 import Controller.Menu.RegisterController;
 import model.App;

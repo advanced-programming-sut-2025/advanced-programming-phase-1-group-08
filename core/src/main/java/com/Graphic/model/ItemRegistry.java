@@ -1,7 +1,7 @@
 package com.Graphic.model;
 
-import javassist.tools.reflect.Reflection;
-import model.Enum.ItemType.Quantity;
+impor javassist.tools.reflect.Reflection;
+import com.Graphic.model.Enum.ItemType.Quantity;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;

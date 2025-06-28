@@ -1,6 +1,6 @@
 package com.Graphic.model.ToolsPackage;
 
-import model.Enum.ToolsType.FishingPoleType;
+import com.Graphic.model.Enum.ToolsType.FishingPoleType;
 
 public class FishingPole extends Tools {
 

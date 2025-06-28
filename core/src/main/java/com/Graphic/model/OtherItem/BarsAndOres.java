@@ -1,7 +1,7 @@
 package com.Graphic.model.OtherItem;
 
-import model.Enum.ItemType.BarsAndOreType;
-import model.Items;
+import com.Graphic.model.Enum.ItemType.BarsAndOreType;
+import com.Graphic.model.Items;
 
 public class BarsAndOres extends Items {
     private final BarsAndOreType type;

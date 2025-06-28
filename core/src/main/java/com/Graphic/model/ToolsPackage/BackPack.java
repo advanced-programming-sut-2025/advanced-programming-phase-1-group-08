@@ -1,8 +1,8 @@
 package com.Graphic.model.ToolsPackage;
 
-import model.Enum.ItemType.BackPackType;
-import model.Inventory;
-import model.Items;
+import com.Graphic.model.Enum.ItemType.BackPackType;
+import com.Graphic.model.Inventory;
+import com.Graphic.model.Items;
 
 public class BackPack {
 

@@ -1,7 +1,7 @@
 package com.Graphic.model.Places;
 
-import model.Enum.ItemType.MarketItemType;
-import model.Items;
+import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.Items;
 
 public class MarketItem extends Items {
     private MarketItemType type;

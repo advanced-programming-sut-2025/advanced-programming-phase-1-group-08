@@ -1,7 +1,7 @@
 package com.Graphic.model;
 
-import model.Enum.WeatherTime.Season;
-import model.Enum.WeatherTime.WeekDay;
+import com.Graphic.model.Enum.WeatherTime.Season;
+import com.Graphic.model.Enum.WeatherTime.WeekDay;
 
 public class DateHour implements Cloneable {
 

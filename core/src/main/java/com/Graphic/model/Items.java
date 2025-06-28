@@ -1,6 +1,6 @@
 package com.Graphic.model;
 
-import model.MapThings.GameObject;
+import com.Graphic.model.MapThings.GameObject;
 
 import java.lang.reflect.Field;
 import java.util.Objects;

@@ -62,8 +62,8 @@ package com.Graphic.model.SaveData;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import model.App;
-import model.User;
+import com.Graphic.model.App;
+import com.Graphic.model.User;
 
 import java.io.*;
 import java.util.List;

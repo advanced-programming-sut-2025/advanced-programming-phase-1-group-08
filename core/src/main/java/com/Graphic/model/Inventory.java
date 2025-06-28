@@ -1,7 +1,7 @@
 package com.Graphic.model;
 
-import model.Plants.*;
-import model.ToolsPackage.Tools;
+import com.Graphic.model.Plants.*;
+import com.Graphic.model.ToolsPackage.Tools;
 
 import java.util.HashMap;
 

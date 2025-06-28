@@ -1,8 +1,8 @@
 package com.Graphic.model.ToolsPackage;
 
-import model.App;
-import model.Enum.ToolsType.TrashCanType;
-import model.Items;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.ToolsType.TrashCanType;
+import com.Graphic.model.Items;
 
 import java.util.HashMap;
 

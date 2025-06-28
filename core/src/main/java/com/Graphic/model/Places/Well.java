@@ -1,8 +1,8 @@
 package com.Graphic.model.Places;
 
-import model.MapThings.GameObject;
+import com.Graphic.model.MapThings.GameObject;
 
-import static model.Color_Eraser.WHITE;
+import static com.Graphic.model.Color_Eraser.WHITE;
 
 public class Well extends GameObject {
     private static int remindInShop=1;

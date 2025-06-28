@@ -1,6 +1,6 @@
 package com.Graphic.model.Enum.ToolsType;
 
-import static model.App.currentGame;
+import static com.Graphic.model.App.currentGame;
 
 
 public enum FishingPoleType {

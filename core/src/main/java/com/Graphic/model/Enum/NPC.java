@@ -1,13 +1,13 @@
 package com.Graphic.model.Enum;
 
-import model.*;
-import model.Plants.*;
-import model.Enum.WeatherTime.Weather;
-import model.Enum.AllPlants.CropsType;
-import model.Enum.ItemType.*;
-import model.OtherItem.ArtisanProduct;
-import model.OtherItem.BarsAndOres;
-import model.Places.MarketItem;
+import com.Graphic.model.*;
+import com.Graphic.model.Plants.*;
+import com.Graphic.model.Enum.WeatherTime.Weather;
+import com.Graphic.model.Enum.AllPlants.CropsType;
+import com.Graphic.model.Enum.ItemType.*;
+import com.Graphic.model.OtherItem.ArtisanProduct;
+import com.Graphic.model.OtherItem.BarsAndOres;
+import com.Graphic.model.Places.MarketItem;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

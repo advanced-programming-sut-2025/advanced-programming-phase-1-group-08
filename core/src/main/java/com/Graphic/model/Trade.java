@@ -9,11 +9,10 @@ import java.util.regex.Matcher;
 
 import static Controller.MainGame.GameControllerLogic.isNeighbor;
 import static java.lang.Math.random;
-import static model.App.*;
-import static model.Color_Eraser.*;
+import static com.Graphic.model.App.*;
+import static com.Graphic.model.Color_Eraser.*;
 
-@Getter
-@Setter
+
 public class Trade {
 
     private final User sender;

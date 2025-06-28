@@ -1,4 +1,4 @@
-package View;
+package com.Graphic.View;
 
 import model.App;
 import model.Enum.Menu;

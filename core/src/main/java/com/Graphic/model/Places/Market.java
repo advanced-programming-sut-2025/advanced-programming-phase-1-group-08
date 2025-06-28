@@ -1,7 +1,7 @@
 package com.Graphic.model.Places;
 
-import model.Enum.ItemType.MarketType;
-import model.MapThings.GameObject;
+import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.MapThings.GameObject;
 
 public class Market extends GameObject {
     private final int topLeftX;

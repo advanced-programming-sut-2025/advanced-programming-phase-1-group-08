@@ -1,12 +1,12 @@
 package com.Graphic.model.Enum.ToolsType;
 
-import model.App;
-import model.Enum.ItemType.BarsAndOreType;
-import model.Inventory;
-import model.OtherItem.BarsAndOres;
-import model.ToolsPackage.Axe;
-import model.ToolsPackage.WateringCan;
-import static model.Enum.ItemType.BarsAndOreType.*;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.ItemType.BarsAndOreType;
+import com.Graphic.model.Inventory;
+import com.Graphic.model.OtherItem.BarsAndOres;
+import com.Graphic.model.ToolsPackage.Axe;
+import com.Graphic.model.ToolsPackage.WateringCan;
+import static com.Graphic.model.Enum.ItemType.BarsAndOreType.*;
 
 public enum WateringCanType {
 

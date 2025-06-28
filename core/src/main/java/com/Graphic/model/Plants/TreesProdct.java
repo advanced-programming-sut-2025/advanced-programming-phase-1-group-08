@@ -1,7 +1,7 @@
 package com.Graphic.model.Plants;
 
-import model.Enum.AllPlants.TreesProductType;
-import model.Items;
+import com.Graphic.model.Enum.AllPlants.TreesProductType;
+import com.Graphic.model.Items;
 
 public class TreesProdct extends Items {
 

@@ -1,19 +1,17 @@
 package com.Graphic.model.Places;
 
-import lombok.Getter;
-import lombok.Setter;
-import model.App;
-import model.Items;
-import model.MapThings.GameObject;
-import model.MapThings.Tile;
+
+import com.Graphic.model.App;
+import com.Graphic.model.Items;
+import com.Graphic.model.MapThings.GameObject;
+import com.Graphic.model.MapThings.Tile;
 
 import java.util.HashMap;
 
 import static Controller.MainGame.GameControllerLogic.getTileByCoordinates;
-import static model.Color_Eraser.RED;
+import static com.Graphic.model.Color_Eraser.RED;
 
-@Getter
-@Setter
+
 public class ShippingBin extends GameObject {
     private static final int width=1;
     private static final int height=1;

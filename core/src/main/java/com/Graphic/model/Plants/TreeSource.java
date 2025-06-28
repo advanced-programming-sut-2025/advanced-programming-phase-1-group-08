@@ -1,7 +1,7 @@
 package com.Graphic.model.Plants;
 
-import model.Enum.AllPlants.TreesSourceType;
-import model.Items;
+import com.Graphic.model.Enum.AllPlants.TreesSourceType;
+import com.Graphic.model.Items;
 
 public class TreeSource extends Items {
 

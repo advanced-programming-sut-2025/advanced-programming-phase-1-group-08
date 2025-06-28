@@ -1,18 +1,15 @@
 package com.Graphic.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import model.Enum.ItemType.MarketItemType;
-import model.Places.MarketItem;
+import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.Places.MarketItem;
 
 import java.util.*;
 
 import static Controller.MainGame.GameControllerLogic.isNeighbor;
-import static model.App.*;
-import static model.Color_Eraser.*;
+import static com.Graphic.model.App.*;
+import static com.Graphic.model.Color_Eraser.*;
 
-@Setter
-@Getter
+
 public class HumanCommunications {
     private User player1;
     private User player2;

@@ -1,8 +1,8 @@
 package com.Graphic.model.Plants;
 
-import model.Enum.AllPlants.ForagingSeedsType;
-import model.Enum.WeatherTime.Season;
-import model.Items;
+import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
+import com.Graphic.model.Enum.WeatherTime.Season;
+import com.Graphic.model.Items;
 
 public class MixedSeeds extends Items {
 

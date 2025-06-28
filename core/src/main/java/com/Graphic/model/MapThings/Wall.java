@@ -1,7 +1,7 @@
 package com.Graphic.model.MapThings;
 
-import model.Enum.ItemType.WallType;
-import static model.Color_Eraser.*;
+import com.Graphic.model.Enum.ItemType.WallType;
+import static com.Graphic.model.Color_Eraser.*;
 
 public class Wall extends GameObject {
     private WallType wallType;
