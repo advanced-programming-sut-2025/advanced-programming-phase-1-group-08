@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.sun.jdi.request.StepRequest;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -15,6 +16,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
 
+        String test = "test";
         batch = new SpriteBatch();
         image = new Texture("libgdx.png");
     }
