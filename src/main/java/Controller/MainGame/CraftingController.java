@@ -126,7 +126,7 @@ public class CraftingController {
     }
     public Result goToGameMenu() {
 
-        String test = "ddsdsddfsdfsdfd";
+        String test = "ddsdsddsdfd";
         App.currentMenu= Menu.GameMenu;
         return new Result(true , BLUE + "Back to Game Menu" + RESET);
     }
