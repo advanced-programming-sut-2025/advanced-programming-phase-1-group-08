@@ -4,12 +4,12 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import model.Items;
-import model.OtherItem.ArtisanProduct;
-import model.OtherItem.BarsAndOres;
-import model.Places.MarketItem;
-import model.Plants.*;
-import model.ToolsPackage.*;
+import com.Graphic.model.Items;
+import com.Graphic.model.OtherItem.ArtisanProduct;
+import com.Graphic.model.OtherItem.BarsAndOres;
+import com.Graphic.model.Places.MarketItem;
+import com.Graphic.model.Plants.*;
+import com.Graphic.model.ToolsPackage.*;
 
 import java.io.IOException;
 import java.util.HashMap;

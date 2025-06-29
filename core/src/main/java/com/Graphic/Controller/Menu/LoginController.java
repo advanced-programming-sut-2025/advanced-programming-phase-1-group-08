@@ -1,4 +1,4 @@
-package Controller.Menu;
+package com.Graphic.Controller.Menu;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Result;
 import com.Graphic.model.SaveData.PasswordHashUtil;
@@ -9,7 +9,7 @@ import com.Graphic.model.App;
 import java.io.IOException;
 import java.util.Scanner;
 
-import static Controller.Menu.RegisterController.*;
+import static com.Graphic.Controller.Menu.RegisterController.*;
 
 public class LoginController {
 
@@ -48,7 +48,7 @@ public class LoginController {
                             if (userResponse.trim().equalsIgnoreCase("y")) {
                                 System.out.println("You Will Be Directed to Main Menu");
                                 user.setHashPass(PasswordHashUtil.hashPassword(suggestion));
-                                model.SaveData.UserDataBase.updatePassword(username, PasswordHashUtil.hashPassword(suggestion));
+                                com.Graphic.model.SaveData.UserDataBase.updatePassword(username, PasswordHashUtil.hashPassword(suggestion));
                                 App.currentMenu = Menu.MainMenu;
                                 return new Result(true, "Your Password is: " + suggestion);
                             }
@@ -66,7 +66,7 @@ public class LoginController {
 
                         String hashed = PasswordHashUtil.hashPassword(choice);
                         user.setHashPass(hashed);
-                        model.SaveData.UserDataBase.updatePassword(username, hashed);
+                        com.Graphic.model.SaveData.UserDataBase.updatePassword(username, hashed);
                         System.out.println("You Will Be Directed to Main Menu");
                         App.currentMenu = Menu.MainMenu;
                         return new Result(true, "Your Password is: " + choice);

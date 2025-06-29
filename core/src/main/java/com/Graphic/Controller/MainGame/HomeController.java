@@ -1,9 +1,6 @@
-package Controller.MainGame;
+package com.Graphic.Controller.MainGame;
 
-import com.Graphic.model.Items;
-import com.Graphic.model.Recipe;
-import com.Graphic.model.Result;
-import com.Graphic.model.User;
+import com.Graphic.model.*;
 import com.Graphic.model.Enum.Commands.HomeMenuCommands;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
@@ -17,7 +14,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
-import static Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
 import static com.Graphic.model.App.AllFromDisplayNames;
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.Color_Eraser.*;

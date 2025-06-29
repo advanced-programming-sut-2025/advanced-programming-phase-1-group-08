@@ -2,7 +2,7 @@ package com.Graphic.model.ToolsPackage;
 
 import com.Graphic.model.Enum.ToolsType.AxeType;
 
-import static model.App.*;
+import static com.Graphic.model.App.*;
 
 public class Axe extends Tools {
 

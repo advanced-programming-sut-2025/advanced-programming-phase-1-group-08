@@ -1,14 +1,17 @@
-package Controller.Menu;
+package com.Graphic.Controller.Menu;
 
 import com.Graphic.model.App;
 import com.Graphic.model.Result;
+import com.Graphic.model.SaveData.PasswordHashUtil;
+import com.Graphic.model.SaveData.SessionManager;
+import com.Graphic.model.SaveData.UserStorage;
 import com.Graphic.model.User;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-import static Controller.Menu.RegisterController.*;
+import static com.Graphic.Controller.Menu.RegisterController.*;
 import static com.Graphic.model.Color_Eraser.RED;
 import static com.Graphic.model.Color_Eraser.RESET;
 

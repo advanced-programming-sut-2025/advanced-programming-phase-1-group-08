@@ -1,12 +1,16 @@
-package Controller.MainGame;
+package com.Graphic.Controller.MainGame;
 
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
 import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.AllPlants.TreesSourceType;
+import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Enum.WeatherTime.Season;
+import com.Graphic.model.Inventory;
+import com.Graphic.model.Items;
 import com.Graphic.model.Plants.BasicRock;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
@@ -18,11 +22,16 @@ import com.Graphic.model.Places.Well;
 import com.Graphic.model.Plants.ForagingMinerals;
 import com.Graphic.model.Plants.ForagingSeeds;
 import com.Graphic.model.Plants.TreeSource;
+import com.Graphic.model.Result;
+import com.Graphic.model.ToolsPackage.*;
 
 import java.util.Map;
 
-import static Controller.MainGame.GameControllerLogic.checkTilesForCreateBarnOrCage;
-import static Controller.MainGame.GameControllerLogic.getTileByCoordinates;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.checkTilesForCreateBarnOrCage;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
+import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.App.currentMenu;
+import static com.Graphic.model.Color_Eraser.*;
 
 public class Marketing {
 
@@ -330,7 +339,7 @@ public class Marketing {
 
         int Wood = 0;
         int Stone= 0;
-        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
+        for (Map.Entry <Items, Integer> entry:inventory.Items.entrySet()) {
             if (entry.getKey() instanceof Wood) {
                 Wood=entry.getValue();
             }
@@ -1116,7 +1125,7 @@ public class Marketing {
         if ( name.equals("Hoe") ) {
             for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof Hoe) {
-                    HoeType hoeType=HoeType.getNextType(((Hoe) entry.getKey()).getType());
+                    HoeType hoeType= HoeType.getNextType(((Hoe) entry.getKey()).getType());
                     if (hoeType == null) {
                         return new Result(false , name + "is at top level");
                     }
@@ -1215,7 +1224,7 @@ public class Marketing {
     }
 
     public Result goToGameMenu() {
-        currentMenu= Menu.GameMenu;
+        currentMenu = Menu.GameMenu;
         return new Result(true , BLUE+"Back to game menu" + RESET);
     }
 }

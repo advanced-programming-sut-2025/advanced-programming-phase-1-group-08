@@ -1,8 +1,8 @@
 package com.Graphic.View;
 
-import model.App;
-import model.Enum.Commands.AvatarCommands;
-import model.Enum.Menu;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.Commands.AvatarCommands;
+import com.Graphic.model.Enum.Menu;
 
 import java.util.Scanner;
 

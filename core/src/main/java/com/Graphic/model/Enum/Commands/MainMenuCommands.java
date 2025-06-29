@@ -1,6 +1,6 @@
 package com.Graphic.model.Enum.Commands;
 
-import View.RegisterMenu;
+import com.Graphic.View.RegisterMenu;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

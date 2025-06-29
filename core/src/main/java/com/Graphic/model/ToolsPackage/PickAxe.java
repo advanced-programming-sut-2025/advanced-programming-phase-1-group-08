@@ -2,7 +2,7 @@ package com.Graphic.model.ToolsPackage;
 
 import com.Graphic.model.Enum.ToolsType.PickAxeType;
 
-import static model.App.*;
+import static com.Graphic.model.App.*;
 
 public class PickAxe extends Tools {
 

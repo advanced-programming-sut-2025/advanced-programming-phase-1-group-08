@@ -1,10 +1,10 @@
 package com.Graphic.View;
 
-import Controller.Menu.RegisterController;
-import model.App;
-import model.Enum.Commands.RegisterCommands;
-import model.Enum.Menu;
-import model.Result;
+import com.Graphic.Controller.Menu.RegisterController;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.Commands.RegisterCommands;
+import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.Result;
 
 import java.io.IOException;
 import java.util.Scanner;

@@ -1,12 +1,14 @@
-package Controller.MainGame;
+package com.Graphic.Controller.MainGame;
 
 import com.Graphic.model.Enum.Commands.TradeMenuCommands;
 import com.Graphic.model.Result;
 import com.Graphic.model.Trade;
+import com.Graphic.model.User;
 
 import java.util.*;
 
 import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.Color_Eraser.*;
 import static com.Graphic.model.Trade.checkTradeRequest;
 
 

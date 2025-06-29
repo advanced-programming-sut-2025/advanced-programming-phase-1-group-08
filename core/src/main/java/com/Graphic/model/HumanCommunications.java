@@ -5,7 +5,7 @@ import com.Graphic.model.Places.MarketItem;
 
 import java.util.*;
 
-import static Controller.MainGame.GameControllerLogic.isNeighbor;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.isNeighbor;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.Color_Eraser.*;
 
@@ -374,4 +374,51 @@ public class HumanCommunications {
         return new Result(true, GREEN+"Congrats! I Announce You Man and Wife:)"+RESET);
     }
 
+    public User getPlayer1() {
+        return player1;
+    }
+
+    public void setPlayer1(User player1) {
+        this.player1 = player1;
+    }
+
+    public User getPlayer2() {
+        return player2;
+    }
+
+    public void setPlayer2(User player2) {
+        this.player2 = player2;
+    }
+
+    public int getXP() {
+        return XP;
+    }
+
+    public void setXP(int XP) {
+        this.XP = XP;
+    }
+
+    public int getFriendshipLevel() {
+        return FriendshipLevel;
+    }
+
+    public void setFriendshipLevel(int friendshipLevel) {
+        FriendshipLevel = friendshipLevel;
+    }
+
+    public boolean isBOUQUETBought() {
+        return BOUQUETBought;
+    }
+
+    public void setBOUQUETBought(boolean BOUQUETBought) {
+        this.BOUQUETBought = BOUQUETBought;
+    }
+
+    public boolean isSUCCESSFULPropose() {
+        return SUCCESSFULPropose;
+    }
+
+    public void setSUCCESSFULPropose(boolean SUCCESSFULPropose) {
+        this.SUCCESSFULPropose = SUCCESSFULPropose;
+    }
 }

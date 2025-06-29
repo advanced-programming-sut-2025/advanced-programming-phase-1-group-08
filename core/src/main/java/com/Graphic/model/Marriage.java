@@ -4,8 +4,8 @@ import com.Graphic.model.Enum.Commands.GameMenuCommands;
 
 import java.util.*;
 
-import static model.App.*;
-import static model.Color_Eraser.*;
+import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.App.*;
 
 public class Marriage {
     private final User husband;

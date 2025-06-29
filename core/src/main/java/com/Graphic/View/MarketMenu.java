@@ -1,13 +1,13 @@
 package com.Graphic.View;
 
-import Controller.MainGame.Marketing;
-import model.Enum.Commands.MarketMenuCommands;
+import com.Graphic.Controller.MainGame.Marketing;
+import com.Graphic.model.Enum.Commands.MarketMenuCommands;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
-import static model.Color_Eraser.RED;
-import static model.Color_Eraser.RESET;
+import static com.Graphic.model.Color_Eraser.RED;
+import static com.Graphic.model.Color_Eraser.RESET;
 
 public class MarketMenu implements AppMenu {
 
