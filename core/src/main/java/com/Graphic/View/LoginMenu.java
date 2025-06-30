@@ -2,12 +2,11 @@ package com.Graphic.View;
 
 import com.Graphic.Controller.Menu.LoginController;
 import com.Graphic.model.Enum.Commands.LoginCommands;
-import com.Graphic.model.Result;
+import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.SaveData.SessionManager;
 import com.Graphic.model.SaveData.UserDataBase;
 import com.Graphic.model.User;
 import com.Graphic.model.App;
-import com.Graphic.model.Enum.Menu;
 
 import java.io.IOException;
 import java.util.Scanner;

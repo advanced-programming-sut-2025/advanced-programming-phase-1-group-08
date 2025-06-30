@@ -1,6 +1,7 @@
 package com.Graphic.model;
 
 import com.Graphic.model.Enum.Commands.TradeMenuCommands;
+import com.Graphic.model.HelpersClass.Result;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -8,7 +9,7 @@ import java.util.regex.Matcher;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.isNeighbor;
 import static java.lang.Math.random;
 import static com.Graphic.model.App.*;
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 
 public class Trade {

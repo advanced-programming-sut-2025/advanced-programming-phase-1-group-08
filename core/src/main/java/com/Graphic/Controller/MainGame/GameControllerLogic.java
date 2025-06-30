@@ -11,6 +11,7 @@ import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Enum.WeatherTime.*;
+import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.MapThings.*;
 import com.Graphic.model.OtherItem.*;
 import com.Graphic.model.Places.*;
@@ -21,7 +22,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 
 import static com.Graphic.model.App.*;
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.DateHour.getDayDifferent;
 import static com.Graphic.model.Enum.AllPlants.ForagingMineralsType.*;
 

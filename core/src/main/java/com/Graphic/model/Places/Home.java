@@ -6,7 +6,7 @@ import com.Graphic.model.MapThings.door;
 
 import java.util.ArrayList;
 
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class Home extends GameObject {
     private final int width;

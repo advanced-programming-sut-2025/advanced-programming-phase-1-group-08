@@ -6,8 +6,8 @@ import com.Graphic.model.Enum.Commands.CraftMenuCommands;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
-import static com.Graphic.model.Color_Eraser.RED;
-import static com.Graphic.model.Color_Eraser.RESET;
+import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
+import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
 public class CraftMenu implements AppMenu {
     public void check(Scanner scanner) {

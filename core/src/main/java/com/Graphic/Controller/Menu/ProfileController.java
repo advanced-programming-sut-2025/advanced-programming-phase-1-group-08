@@ -1,7 +1,7 @@
 package com.Graphic.Controller.Menu;
 
 import com.Graphic.model.App;
-import com.Graphic.model.Result;
+import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.SaveData.SessionManager;
 import com.Graphic.model.SaveData.UserStorage;
@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import static com.Graphic.Controller.Menu.RegisterController.*;
-import static com.Graphic.model.Color_Eraser.RED;
-import static com.Graphic.model.Color_Eraser.RESET;
+import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
+import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
 
 public class ProfileController {

@@ -4,7 +4,7 @@ import com.Graphic.model.*;
 import com.Graphic.model.Enum.Commands.HomeMenuCommands;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
-import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.OtherItem.Fridge;
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Plants.Food;
@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
 import static com.Graphic.model.App.AllFromDisplayNames;
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class HomeController {
     public static boolean NotInHome(User user) {

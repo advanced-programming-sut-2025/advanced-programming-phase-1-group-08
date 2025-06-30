@@ -3,8 +3,7 @@ package com.Graphic.View;
 import com.Graphic.Controller.Menu.RegisterController;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.Commands.RegisterCommands;
-import com.Graphic.model.Enum.Menu;
-import com.Graphic.model.Result;
+import com.Graphic.model.HelpersClass.Result;
 
 import java.io.IOException;
 import java.util.Scanner;

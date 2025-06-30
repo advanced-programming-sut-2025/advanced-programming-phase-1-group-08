@@ -5,7 +5,7 @@ import com.Graphic.model.Enum.WeatherTime.Season;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public enum TreeType {
 
