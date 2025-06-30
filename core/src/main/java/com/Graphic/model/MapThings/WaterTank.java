@@ -1,7 +1,7 @@
 package com.Graphic.model.MapThings;
 
 
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class WaterTank extends GameObject {
 

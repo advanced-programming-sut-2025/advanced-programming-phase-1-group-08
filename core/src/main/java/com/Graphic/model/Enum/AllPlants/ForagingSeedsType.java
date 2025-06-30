@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.Enum.AllPlants.CropsType.*;
 
 public enum ForagingSeedsType {

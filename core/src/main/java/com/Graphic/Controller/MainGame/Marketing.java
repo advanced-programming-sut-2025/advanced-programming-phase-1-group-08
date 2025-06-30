@@ -6,7 +6,6 @@ import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
 import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.AllPlants.TreesSourceType;
 import com.Graphic.model.Enum.ItemType.*;
-import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Inventory;
@@ -22,7 +21,7 @@ import com.Graphic.model.Places.Well;
 import com.Graphic.model.Plants.ForagingMinerals;
 import com.Graphic.model.Plants.ForagingSeeds;
 import com.Graphic.model.Plants.TreeSource;
-import com.Graphic.model.Result;
+import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.ToolsPackage.*;
 
 import java.util.Map;
@@ -31,7 +30,7 @@ import static com.Graphic.Controller.MainGame.GameControllerLogic.checkTilesForC
 import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.App.currentMenu;
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class Marketing {
 

@@ -2,8 +2,7 @@ package com.Graphic.model.Enum.WeatherTime;
 
 
 
-import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public enum Season {
 

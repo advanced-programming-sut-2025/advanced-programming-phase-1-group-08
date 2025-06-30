@@ -4,10 +4,10 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
 import com.Graphic.model.Enum.ItemType.*;
-import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.ToolsType.*;
+import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.UnWalkable;
@@ -29,7 +29,7 @@ import java.util.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 
 import static com.Graphic.model.App.*;
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 
 

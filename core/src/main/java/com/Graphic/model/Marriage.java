@@ -1,10 +1,11 @@
 package com.Graphic.model;
 
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
+import com.Graphic.model.HelpersClass.Result;
 
 import java.util.*;
 
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.App.*;
 
 public class Marriage {

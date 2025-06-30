@@ -2,7 +2,7 @@ package com.Graphic.model.Places;
 
 import com.Graphic.model.MapThings.GameObject;
 
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class Lake extends GameObject {
     private final int topLeftX;

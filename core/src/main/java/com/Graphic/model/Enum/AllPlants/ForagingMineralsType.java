@@ -1,6 +1,6 @@
 package com.Graphic.model.Enum.AllPlants;
 
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public enum ForagingMineralsType {
 

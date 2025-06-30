@@ -1,4 +1,4 @@
-package com.Graphic.model;
+package com.Graphic.model.HelpersClass;
 
 public class Color_Eraser {
 

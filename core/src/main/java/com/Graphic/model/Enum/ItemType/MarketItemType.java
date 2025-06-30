@@ -1,11 +1,9 @@
 package com.Graphic.model.Enum.ItemType;
 
-import com.Graphic.model.Enum.AllPlants.CropsType;
-
 import java.util.List;
 
-import static com.Graphic.model.Color_Eraser.RED;
-import static com.Graphic.model.Color_Eraser.RESET;
+import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
+import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
 public enum MarketItemType {
     JojaCola("Joja Cola", List.of(MarketType.JojaMart) , Integer.MAX_VALUE , 0 , 0 ) {

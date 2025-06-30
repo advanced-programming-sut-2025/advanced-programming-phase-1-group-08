@@ -3,11 +3,10 @@ package com.Graphic.Controller.MainGame;
 import com.Graphic.model.App;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.Items;
-import com.Graphic.model.Result;
+import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.Enum.AllPlants.TreesSourceType;
 import com.Graphic.model.Enum.ItemType.CraftType;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
-import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Plants.TreeSource;
@@ -15,8 +14,8 @@ import com.Graphic.model.Plants.TreeSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.Graphic.model.Color_Eraser.BLUE;
-import static com.Graphic.model.Color_Eraser.RESET;
+import static com.Graphic.model.HelpersClass.Color_Eraser.BLUE;
+import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
 public class CraftingController {
 

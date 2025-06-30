@@ -2,7 +2,7 @@ package com.Graphic.model.Places;
 
 import com.Graphic.model.MapThings.GameObject;
 
-import static com.Graphic.model.Color_Eraser.WHITE;
+import static com.Graphic.model.HelpersClass.Color_Eraser.WHITE;
 
 public class Well extends GameObject {
     private static int remindInShop=1;

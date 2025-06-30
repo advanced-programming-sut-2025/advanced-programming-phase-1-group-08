@@ -1,9 +1,7 @@
 package com.Graphic.model.Enum.ItemType;
 
-import com.Graphic.model.Enum.AllPlants.TreesSourceType;
-
-import static com.Graphic.model.Color_Eraser.RED;
-import static com.Graphic.model.Color_Eraser.RESET;
+import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
+import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
 public enum AnimalProductType {
 

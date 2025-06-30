@@ -5,7 +5,7 @@ import com.Graphic.model.MapThings.GameObject;
 
 import java.util.HashMap;
 
-import static com.Graphic.model.Color_Eraser.YELLOW;
+import static com.Graphic.model.HelpersClass.Color_Eraser.YELLOW;
 
 public class Fridge extends GameObject {
     //ArrayList<GameObject>

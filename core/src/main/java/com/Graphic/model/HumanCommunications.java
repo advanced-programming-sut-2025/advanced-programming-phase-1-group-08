@@ -1,13 +1,14 @@
 package com.Graphic.model;
 
 import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.Places.MarketItem;
 
 import java.util.*;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.isNeighbor;
 import static com.Graphic.model.App.*;
-import static com.Graphic.model.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 
 public class HumanCommunications {

@@ -1,4 +1,4 @@
-package com.Graphic.model;
+package com.Graphic.model.HelpersClass;
 
 public record Result(boolean IsSuccess, String massage) {
 

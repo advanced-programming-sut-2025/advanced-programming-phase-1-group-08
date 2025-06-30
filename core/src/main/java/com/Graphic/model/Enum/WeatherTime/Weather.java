@@ -1,8 +1,8 @@
 package com.Graphic.model.Enum.WeatherTime;
 
-import static com.Graphic.model.Color_Eraser.*;
-import static com.Graphic.model.Color_Eraser.CYAN;
-import static com.Graphic.model.Color_Eraser.RESET;
+import static com.Graphic.model.HelpersClass.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.Color_Eraser.CYAN;
+import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
 public enum Weather {
 

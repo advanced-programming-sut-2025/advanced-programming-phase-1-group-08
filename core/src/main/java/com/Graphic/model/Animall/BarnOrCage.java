@@ -5,7 +5,7 @@ import com.Graphic.model.MapThings.GameObject;
 
 import java.util.ArrayList;
 
-import static com.Graphic.model.Color_Eraser.BROWN;
+import static com.Graphic.model.HelpersClass.Color_Eraser.BROWN;
 
 public class BarnOrCage extends GameObject {
 
