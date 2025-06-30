@@ -11,7 +11,6 @@ public class SFXManager {
     public HashMap<String, Sound> sounds;
 
 
-
     public SFXManager getInstance () {
         if (instance == null) {
             instance = new SFXManager();
@@ -20,7 +19,6 @@ public class SFXManager {
         }
         return instance;
     }
-
 
     private void loadSounds() {
         for (SFX sfx : SFX.values())

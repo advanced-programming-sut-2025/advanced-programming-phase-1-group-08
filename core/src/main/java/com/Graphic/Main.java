@@ -42,5 +42,4 @@ public class Main extends Game {
     public static void setMain(Main main) {
         Main.main = main;
     }
-    //test
 }
