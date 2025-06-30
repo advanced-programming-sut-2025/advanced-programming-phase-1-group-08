@@ -5,35 +5,41 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class SimpleEffect {
 
     float x, y;
     float stateTime = 0f;
-    static Animation<TextureRegion> animation = null;
 
-    public SimpleEffect (float x, float y) {
+    static ObjectMap<EffectType, Animation<TextureRegion>> animations = new ObjectMap<>();
+
+    public SimpleEffect(float x, float y, EffectType type) {
         this.x = x;
         this.y = y;
+        loadAnimationIfNeeded(type);
+    }
 
-        if (animation == null) {
+    private void loadAnimationIfNeeded(EffectType type) {
+        if (!animations.containsKey(type)) {
             Array<TextureRegion> frames = new Array<>();
-            for (int i = 0; i < 6; i++) {
-                Texture texture = new Texture("death/death" + i + ".png");
+            for (int i = 0; i < type.frameCount; i++) {
+                Texture texture = new Texture(type.basePath + i + ".png");
                 frames.add(new TextureRegion(texture));
             }
-            animation = new Animation<>(0.5f/6f, frames, Animation.PlayMode.NORMAL);
+            Animation<TextureRegion> animation = new Animation<>(type.speed / type.frameCount, frames, Animation.PlayMode.NORMAL);
+            animations.put(type, animation);
         }
     }
 
-    public boolean isFinished() {
-        return animation.isAnimationFinished(stateTime);
+    public boolean isFinished(EffectType type) {
+        return animations.get(type).isAnimationFinished(stateTime);
     }
 
-
-    public void draw(SpriteBatch batch, float delta) {
+    public void draw(SpriteBatch batch, float delta, EffectType type) {
         stateTime += delta;
-        TextureRegion frame = animation.getKeyFrame(stateTime, false);
+        TextureRegion frame = animations.get(type).getKeyFrame(stateTime, false);
         batch.draw(frame, x, y);
     }
 }
+
