@@ -1,23 +1,23 @@
 package com.Graphic.model.HelpersClass;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
-
 public enum SFX {
 
-    test (Gdx.audio.newSound(Gdx.files.internal("SFX/name.wav"))),
+    test ("test","SFX/name.wav"),
     ;
 
-    private final Sound sound;
+    public final String name;
+    public final String path;
 
-    private SFX(Sound sound) {
-
-        this.sound = sound;
+    private SFX(String name, String path) {
+        this.name = name;
+        this.path = path;
     }
 
+    public String getName() {
+        return name;
+    }
 
-    public Sound getSound() {
-
-        return sound;
+    public String getPath() {
+        return path;
     }
 }
