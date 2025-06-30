@@ -1,6 +1,7 @@
 package com.Graphic.model;
 
 
+import com.Graphic.model.Enum.Menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 

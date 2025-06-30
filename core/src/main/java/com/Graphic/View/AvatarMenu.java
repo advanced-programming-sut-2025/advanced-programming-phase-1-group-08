@@ -2,10 +2,11 @@ package com.Graphic.View;
 
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.Commands.AvatarCommands;
+import com.Graphic.model.Enum.Menu;
 
 import java.util.Scanner;
 
-public class AvatarMenu {
+public class AvatarMenu implements AppMenu{
 
     public void check(Scanner scanner) {
         String input = scanner.nextLine();

@@ -3,6 +3,7 @@ package com.Graphic.View;
 import com.Graphic.Controller.Menu.ProfileController;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.Commands.ProfileCommands;
+import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.HelpersClass.Result;
 
 import java.io.IOException;

@@ -1,6 +1,7 @@
 package com.Graphic.View;
 
 import com.Graphic.model.App;
+import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.SaveData.SessionManager;
 import com.Graphic.model.User;
 

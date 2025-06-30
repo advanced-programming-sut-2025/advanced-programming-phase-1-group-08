@@ -1,5 +1,6 @@
 package com.Graphic;
 
+import com.Graphic.View.HomeMenu;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -21,7 +22,7 @@ public class Main extends Game {
 
         main = this;
         batch = new SpriteBatch();
-        main.setScreen((new Screen() {}));
+        main.setScreen((new HomeMenu()));
 
     }
 

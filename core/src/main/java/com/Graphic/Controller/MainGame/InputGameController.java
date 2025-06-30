@@ -49,14 +49,14 @@ public class InputGameController {
         if (MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY()) == null) {
             return new Result(false , "you are not in market");
         }
-        currentMenu = Menu.MarketMenu;
+        currentMenu = com.Graphic.model.Enum.Menu.MarketMenu;
         return new Result(true , "Welcome to market menu");
     }
     public Result goToHomeMenu() {
         if ( !currentGame.currentPlayer.getFarm().isInHome(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY())) {
             return new Result(false , RED+"You're Not in Your Home!"+RESET);
         }
-        currentMenu = Menu.HomeMenu;
+        currentMenu = com.Graphic.model.Enum.Menu.HomeMenu;
         return new Result(true , BLUE+"Welcome to home menu"+RESET);
     }
 
@@ -1261,7 +1261,7 @@ public class InputGameController {
         if (App.currentUser.isCurrently_in_game())
             return new Result(false, RED+"You Are Currently in a Game!"+RESET);
         else {
-            currentMenu = Menu.MainMenu;
+            currentMenu = com.Graphic.model.Enum.Menu.MainMenu;
             return new Result(true, GREEN+"Returned to Main Menu."+RESET);
         }
     }
