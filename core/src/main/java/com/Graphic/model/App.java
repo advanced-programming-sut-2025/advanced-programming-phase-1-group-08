@@ -1,9 +1,19 @@
 package com.Graphic.model;
 
 
+import com.Graphic.model.Enum.WeatherTime.Weather;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import java.util.*;
 
 public class App {
+
+
+
+    public static Skin skin = new Skin(Gdx.files.internal()); // skin path
+
+
 
     // TODO موقع سیو دیتا اینارو باید همشو سیو کرد و موقع ترمینیت پاک کرد
 //    public static Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
@@ -22,11 +32,11 @@ public class App {
 
     public static final int mapDimensions = 90;
 
-//    public static Weather tomorrowWeather;
-//    public static Weather currentWeather;
-//    public static DateHour currentDate;
+    public static Weather tomorrowWeather;
+    public static Weather currentWeather;
+    public static DateHour currentDate;
 
-//    public static User currentPlayer; // TODO
+    public static User currentPlayer; // TODO
     public static User currentUser; // TODO
     public static Menu currentMenu;
 
