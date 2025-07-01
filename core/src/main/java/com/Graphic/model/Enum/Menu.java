@@ -16,7 +16,6 @@ public enum Menu {
     ExitMenu(new ExitMenu()),
     MainMenu(new MainMenu()),
     HomeMenu(new HomeMenu()),
-    GameMenu(new GameMenu()),
     CraftMenu(new CraftMenu());
 
 

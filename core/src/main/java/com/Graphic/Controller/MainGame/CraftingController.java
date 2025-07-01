@@ -129,7 +129,7 @@ public class CraftingController {
     }
     public Result goToGameMenu() {
 
-        App.currentMenu= Menu.GameMenu;
+        // App.currentMenu= Menu.GameMenu;
         return new Result(true , BLUE + "Back to Game Menu" + RESET);
     }
 

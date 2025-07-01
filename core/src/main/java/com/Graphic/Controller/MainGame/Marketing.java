@@ -1224,7 +1224,7 @@ public class Marketing {
     }
 
     public Result goToGameMenu() {
-        currentMenu = Menu.GameMenu;
+        // currentMenu = Menu.GameMenu;
         return new Result(true , BLUE+"Back to game menu" + RESET);
     }
 }

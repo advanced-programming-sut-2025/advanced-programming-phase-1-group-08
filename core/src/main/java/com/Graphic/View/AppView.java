@@ -29,7 +29,7 @@ public class AppView {
             System.out.println(CYAN+"\nWelcome To The SignUp Menu!"+RESET);
             System.out.println("In This Menu You Can Register, Go to LogInPage or Quit The Program\n");
         }
-        currentMenu = Menu.GameMenu;
+        // currentMenu = Menu.GameMenu;
         do {
             App.getCurrentMenu().checkCommand(scanner);
         } while (App.getCurrentMenu() != Menu.ExitMenu);

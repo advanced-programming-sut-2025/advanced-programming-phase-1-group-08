@@ -43,8 +43,8 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
         else if (input.trim().toLowerCase().matches("\\s*show\\s+current\\s+menu\\s*"))
             System.out.println("Home Menu");
-        else if (input.toLowerCase().matches("\\s*exit\\s*"))
-            App.currentMenu = Menu.GameMenu;
+        // else if (input.toLowerCase().matches("\\s*exit\\s*"))
+            // App.currentMenu = Menu.GameMenu;
 
         else if ((matcher=HomeMenuCommands.startCrafting.getMatcher(input))!=null)
             System.out.println(homeController.goToCraftingMenu());

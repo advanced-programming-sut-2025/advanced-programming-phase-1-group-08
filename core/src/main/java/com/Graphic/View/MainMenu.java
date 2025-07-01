@@ -46,7 +46,7 @@ public class MainMenu implements AppMenu{
             System.out.println(temp);
 
             if (temp.IsSuccess()) {
-                App.currentMenu = Menu.GameMenu;
+                // App.currentMenu = Menu.GameMenu;
             }
         }
         else if (MainMenuCommands.goToProfileMenu.getMatcher(input) != null) {
