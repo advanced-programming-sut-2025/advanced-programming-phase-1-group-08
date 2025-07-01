@@ -1,5 +1,7 @@
 package com.Graphic.model.MapThings;
 
+import com.badlogic.gdx.graphics.Texture;
+
 public class GameObject {
 
     private char Charactor;
@@ -14,7 +16,7 @@ public class GameObject {
     public void startDayAutomaticTask() {}
     public void turnByTurnAutomaticTask() {}
 
-    public String getIcon() {
-        return "";
+    public Texture getIcon() {
+        return null;
     }
 }

@@ -23,5 +23,4 @@ public class TextureManager {
 
         cache.clear();
     }
-
 }

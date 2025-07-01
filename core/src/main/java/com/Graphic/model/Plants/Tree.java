@@ -3,9 +3,12 @@ package com.Graphic.model.Plants;
 import com.Graphic.model.DateHour;
 import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.Items;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 
 
 import static com.Graphic.model.App.currentGame;
@@ -86,12 +89,9 @@ public class Tree extends Items {
 
         return this.type;
     }
-    public String   getIcon () {
+    public Texture getIcon () {
 
-        if (stage >= 4 && haveFruit)
-            return this.type.getIcon2();
-        else
-            return this.type.getIcon1();
+        return TextureManager.get(type.getPath(this.stage));
     }
     public boolean  isFertilize() {
 
