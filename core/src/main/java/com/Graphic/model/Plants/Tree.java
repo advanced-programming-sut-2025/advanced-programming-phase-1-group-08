@@ -8,9 +8,7 @@ import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
 
 
-
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.DateHour.decreaseDay;
 import static com.Graphic.model.DateHour.getDayDifferent;
 
 public class Tree extends Items {
