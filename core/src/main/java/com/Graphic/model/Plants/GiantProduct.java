@@ -6,6 +6,7 @@ import com.Graphic.model.Enum.ItemType.MarketItemType;
 import com.Graphic.model.Items;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
 
@@ -123,6 +124,9 @@ public class GiantProduct extends Items {
     public String   getIcon () {
 
         return BG_BRIGHT_PURPLE+type.getSymbolByLevel(stage)+RESET;
+    }
+    public Texture getIconTexture () {
+        return ;
     }
     public boolean  isProtected() {
 
