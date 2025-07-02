@@ -1,10 +1,23 @@
 package com.Graphic.View;
 
 import com.Graphic.Controller.MainGame.InputGameController;
+import com.Graphic.Main;
+import com.Graphic.model.Enum.AllPlants.TreeType;
+import com.Graphic.model.HelpersClass.TextureManager;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class GameMenu implements Screen {
 
+public class GameMenu implements Screen, InputProcessor {
+
+    private Stage stage;
+    private Skin skin;
 
     InputGameController controller = new InputGameController();
 
@@ -12,9 +25,30 @@ public class GameMenu implements Screen {
 
     public void show() {
 
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(this);
+
+
+
+
     }
     public void render(float v) {
 
+        Gdx.gl.glClearColor(1, 1, 1, 1); // سفید
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Main.getBatch().begin();
+
+
+        Texture texture = TextureManager.get(TreeType.AppleTree.getPath(2));
+        Main.getBatch().draw(texture, 500, 500, 512, 512);
+        Main.getBatch().draw(texture, 400, 400, 256, 256);
+        Main.getBatch().draw(texture, 300, 300, 128, 128);
+        Main.getBatch().draw(texture, 200, 200, 64, 64);
+        Main.getBatch().draw(texture, 100, 100, 32, 32);
+
+        Main.getBatch().end();
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
     }
 
 
@@ -35,6 +69,36 @@ public class GameMenu implements Screen {
     }
     public void dispose() {
 
+    }
+
+
+    public boolean keyUp(int i) {
+        return false;
+    }
+    public boolean keyDown(int i) {
+
+        return false;
+    }
+    public boolean keyTyped(char c) {
+        return false;
+    }
+    public boolean mouseMoved(int i, int i1) {
+        return false;
+    }
+    public boolean scrolled(float v, float v1) {
+        return false;
+    }
+    public boolean touchDragged(int i, int i1, int i2) {
+        return false;
+    }
+    public boolean touchUp(int i, int i1, int i2, int i3) {
+        return false;
+    }
+    public boolean touchDown(int i, int i1, int i2, int i3) {
+        return false;
+    }
+    public boolean touchCancelled(int i, int i1, int i2, int i3) {
+        return false;
     }
 
 

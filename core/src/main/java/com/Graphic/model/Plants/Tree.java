@@ -89,7 +89,13 @@ public class Tree extends Items {
 
         return this.type;
     }
-    public Texture getIcon () {
+
+    public String getIcon () {
+
+        return "";
+    }
+
+    public Texture getIconTexture () {
 
         return TextureManager.get(type.getPath(this.stage));
     }

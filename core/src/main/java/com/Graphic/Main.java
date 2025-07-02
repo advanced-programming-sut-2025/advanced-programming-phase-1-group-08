@@ -1,15 +1,8 @@
 package com.Graphic;
 
-import com.Graphic.View.HomeMenu;
-import com.badlogic.gdx.ApplicationAdapter;
+import com.Graphic.View.*;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.sun.jdi.request.StepRequest;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
@@ -22,7 +15,7 @@ public class Main extends Game {
 
         main = this;
         batch = new SpriteBatch();
-        main.setScreen((new HomeMenu()));
+        main.setScreen((new GameMenu()));
 
     }
 

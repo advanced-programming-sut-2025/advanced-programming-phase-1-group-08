@@ -16,7 +16,7 @@ public class GameObject {
     public void startDayAutomaticTask() {}
     public void turnByTurnAutomaticTask() {}
 
-    public Texture getIcon() {
+    public String getIcon() {
         return null;
     }
 }
