@@ -52,7 +52,4 @@ public class ForagingCrops extends Items {
     public String getIcon () {
         return this.type.getTexturePath();
     }
-    public Texture getIconTexture () {
-        return
-    }
 }
