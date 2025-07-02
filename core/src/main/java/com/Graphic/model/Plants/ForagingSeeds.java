@@ -5,6 +5,7 @@ import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
+import com.badlogic.gdx.graphics.Texture;
 
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.DateHour.getDayDifferent;
@@ -51,9 +52,9 @@ public class ForagingSeeds extends Items {
 
         return stage;
     }
-    public String   getIcon () {
+    public String getIcon () {
 
-        return type.getSymbolByLevel(stage);
+        return type.getTexturePath(stage);
     }
     public boolean  isProtected() {
 

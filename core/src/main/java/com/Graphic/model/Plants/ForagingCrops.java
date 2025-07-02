@@ -4,6 +4,7 @@ import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
 import com.Graphic.model.Items;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
+import com.badlogic.gdx.graphics.Texture;
 
 import static com.Graphic.model.App.currentGame;
 
@@ -49,6 +50,6 @@ public class ForagingCrops extends Items {
 
     @Override
     public String getIcon () {
-        return this.type.getIcon();
+        return this.type.getTexturePath();
     }
 }

@@ -3,6 +3,7 @@ package com.Graphic.model.Enum.AllPlants;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.WeatherTime.Season;
+import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,12 +24,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(List.of(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (level <= 3)
-                return YELLOW+"j "+RESET;
-            else
-                return GREEN+"j "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/blueJazz/Blue_Jazz_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/blueJazz/Blue_Jazz_Stage_" + this.getGrowthStages() + ".png";
         }
         @Override
         public int getPrice( MarketType marketType) {
@@ -53,12 +55,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(List.of(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (level <= 2)
-                return YELLOW+"c "+RESET;
-            else
-                return ORANGE+"c "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/carrot/Carrot_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/carrot/Carrot_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -78,13 +81,20 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Spring));
         }
-        @Override
-        public String getSymbolByLevel (int level) {
 
-            if (level <= 4)
-                return WHITE+"f "+RESET;
-            else
-                return GREEN+"f "+RESET;
+        @Override
+        public String getTexturePath(int stage) {
+
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/Cauliflower/Cauliflower_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/Cauliflower/Cauliflower_Stage_" + this.getGrowthStages() + ".png";
+        }
+
+        @Override
+        public String getGiantTexturePath() {
+            return "Erfan/plants/crops/giant/Giant_Cauliflower.png";
         }
 
         @Override
@@ -110,12 +120,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Spring, Season.Summer));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (level <= 4)
-                return GREEN+"f "+RESET;
-            else
-                return BRIGHT_BROWN+"f "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/coffeeBean/Coffee_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/coffeeBean/Coffee_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -135,12 +146,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (level <= 3)
-                return BRIGHT_BROWN+"g "+RESET;
-            else
-                return WHITE+"g "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/Garlic/Garlic_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/Garlic/Garlic_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -165,12 +177,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (level <= 4)
-                return YELLOW+"b "+RESET;
-            else
-                return GREEN+"b "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/GreenBean/Green_Bean_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/GreenBean/Green_Bean_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -196,12 +209,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (level <= 3)
-                return YELLOW+"k "+RESET;
-            else
-                return GREEN+"k "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/kale/Kale_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/kale/Kale_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -227,12 +241,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (level <= 3)
-                return GREEN+"p "+RESET;
-            else
-                return WHITE+"p "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/parsnip/Parsnip_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/parsnip/Parsnip_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -258,12 +273,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (level <= 4)
-                return YELLOW+"p "+RESET;
-            else
-                return BRIGHT_BROWN+"p "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/potato/Potato_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/potato/Potato_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -289,12 +305,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() <= level)
-                return WHITE+"p "+RESET;
-            else
-                return PURPLE+"p "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/rhubarb/Rhubarb_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/rhubarb/Rhubarb_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -314,12 +331,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return GREEN+"s "+RESET;
-            else
-                return RED+"s "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/strawberry/Strawberry_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/strawberry/Strawberry_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -339,12 +357,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return GREEN+"t "+RESET;
-            else
-                return RED+"t "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/tulip/Tulip_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/tulip/Tulip_Stage_" + this.getGrowthStages() + ".png";
         }
 
 
@@ -371,14 +390,14 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Spring));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return YELLOW+"r "+RESET;
-            else
-                return GREEN+"r "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/unmilledRice/Unmilled_Rice_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/unmilledRice/Unmilled_Rice_Stage_" + this.getGrowthStages() + ".png";
         }
-
 
         @Override
         public int getPrice( MarketType marketType) {
@@ -402,12 +421,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return YELLOW+"b "+RESET;
-            else
-                return BLUEBERRY+"b "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/blueberry/Blueberry_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/blueberry/Blueberry_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -432,12 +452,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer, Season.Fall));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return WHITE+"o "+RESET;
-            else
-                return YELLOW+"o "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/corn/Corn_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/corn/Corn_Stage_" + this.getGrowthStages() + ".png";
         }
 
 
@@ -464,12 +485,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return WHITE+"h "+RESET;
-            else
-                return GREEN+"h "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/hops/Hops_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/hops/Hops_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -494,15 +516,16 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
+
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BLUE+"h "+RESET;
-            else
-                return RED+"h "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/hotPepper/Hot_Pepper_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/hotPepper/Hot_Pepper_Stage_" + this.getGrowthStages() + ".png";
         }
-
 
         @Override
         public int getPrice( MarketType marketType) {
@@ -518,7 +541,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    MelonSeeds      ( "Melon Seeds",      true, Melon,10000,
+    MelonSeeds      ( "Melon Seeds",      true, Melon,10000, /// //// Erfan/Erfan/Erfan/Erfan/Erfan/Erfan/Erfan/
             5, true, new int[] {1, 2, 3, 3, 3} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -526,13 +549,20 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
-        @Override
-        public String getSymbolByLevel (int level) {
 
-            if (this.getGrowthStages() < level)
-                return WHITE+"m "+RESET;
-            else
-                return GREEN+"m "+RESET;
+        @Override
+        public String getGiantTexturePath() {
+            return "Erfan/plants/crops/giant/Giant_Melon.png";
+        }
+
+        @Override
+        public String getTexturePath(int stage) {
+
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/melon/Melon_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/melon/Melon_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -558,12 +588,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_YELLOW+BRIGHT_RED+"p "+RESET;
-            else
-                return BG_BRIGHT_YELLOW+RED+"p "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/poppy/Poppy_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/poppy/Poppy_Stage_" + this.getGrowthStages() + ".png";
         }
 
 
@@ -590,12 +621,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return GREEN+"r "+RESET;
-            else
-                return BRIGHT_RED+"r "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/radish/Radish_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/radish/Radish_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -621,12 +653,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return CYAN+"r "+RESET;
-            else
-                return RED+"r "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/redCabbage/Red_Cabbage_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/redCabbage/Red_Cabbage_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -651,12 +684,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_WHITE+WHITE+"s "+RESET;
-            else
-                return BG_BRIGHT_WHITE+BRIGHT_YELLOW+"s "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/starfruit/Starfruit_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/starfruit/Starfruit_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -676,12 +710,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_WHITE+BRIGHT_BLUE+"s "+RESET;
-            else
-                return BG_BRIGHT_WHITE+BLUE+"s "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/summerSpangle/Summer_Spangle_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/summerSpangle/Summer_Spangle_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -707,12 +742,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BRIGHT_PURPLE+"s "+RESET;
-            else
-                return PURPLE+"s "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/summerSquash/Summer_Squash_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/summerSquash/Summer_Squash_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -732,12 +768,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer, Season.Fall));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_YELLOW+BLACK+"s "+RESET;
-            else
-                return BG_YELLOW+BLACK+"s "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/sunflower/Sunflower_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/sunflower/Sunflower_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -763,12 +800,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_WHITE+BRIGHT_RED+"t "+RESET;
-            else
-                return BG_WHITE+RED+"t "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/tomato/Tomato_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/tomato/Tomato_Stage_" + this.getGrowthStages() + ".png";
         }
 
 
@@ -795,12 +833,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(Arrays.asList(Season.Summer, Season.Fall));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BRIGHT_YELLOW+"w "+RESET;
-            else
-                return YELLOW+"w "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/wheat/Wheat_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/wheat/Wheat_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -826,12 +865,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(List.of(Season.Fall));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BRIGHT_PURPLE+"a "+RESET;
-            else
-                return PURPLE+"a "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/amaranth/Amaranth_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/amaranth/Amaranth_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -857,12 +897,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(List.of(Season.Fall));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BRIGHT_GREEN+"a "+RESET;
-            else
-                return GREEN+"a "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/artichoke/Artichoke_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/artichoke/Artichoke_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -887,12 +928,13 @@ public enum ForagingSeedsType {
             return new ArrayList<>(List.of(Season.Fall));
         }
         @Override
-        public String getSymbolByLevel (int level) {
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BRIGHT_PURPLE+"b "+RESET;
-            else
-                return RED+"b"+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/beet/Beet_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/bett/Beet_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -910,12 +952,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
         }
-        public String getSymbolByLevel (int level) {
+        @Override
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_WHITE+BRIGHT_GREEN+"b "+RESET;
-            else
-                return BG_BRIGHT_WHITE+GREEN+"b "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/bokChoy/Bok_Choy_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/bokChoy/Bok_Choy_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -939,12 +983,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
         }
-        public String getSymbolByLevel (int level) {
+        @Override
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_BLACK+BRIGHT_GREEN+"b "+RESET;
-            else
-                return BG_BRIGHT_BLACK+GREEN+"b "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/broccoli/Broccoli_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/broccoli/Broccoli_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -963,12 +1009,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
         }
-        public String getSymbolByLevel (int level) {
+        @Override
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_CYAN+BRIGHT_RED+"b "+RESET;
-            else
-                return BG_BRIGHT_CYAN+RED+"b "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/cranberries/Cranberry_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/cranberries/Cranberry_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -993,12 +1041,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
         }
-        public String getSymbolByLevel (int level) {
+        @Override
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BRIGHT_PURPLE+"e "+RESET;
-            else
-                return RED+"e "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/eggplant/Eggplant_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/eggplant/Eggplant_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1023,12 +1073,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
         }
-        public String getSymbolByLevel (int level) {
+        @Override
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_BLACK+BRIGHT_WHITE+"f "+RESET;
-            else
-                return BG_BRIGHT_BLACK+WHITE+"f "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/fairyRose/Fairy_Rose_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/fairyRose/Fairy_Rose_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1052,12 +1104,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
         }
-        public String getSymbolByLevel (int level) {
+        @Override
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_BLACK+BRIGHT_YELLOW+"g "+RESET;
-            else
-                return BG_BRIGHT_BLACK+YELLOW+"g "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/grape/Grape_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/grape/Grape_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1081,12 +1135,19 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
         }
-        public String getSymbolByLevel (int level) {
+        @Override
+        public String getGiantTexturePath() {
+            return "Erfan/plants/crops/giant/Giant_Pumpkin.png";
+        }
 
-            if (this.getGrowthStages() < level)
-                return YELLOW+"p "+RESET;
-            else
-                return ORANGE+"p "+RESET;
+        @Override
+        public String getTexturePath(int stage) {
+
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/pumpkin/Pumpkin_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/pumpkin/Pumpkin_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1110,12 +1171,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
         }
-        public String getSymbolByLevel (int level) {
+        @Override
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_YELLOW+WHITE+"y "+RESET;
-            else
-                return BG_BRIGHT_YELLOW+BROWN+"y "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/yam/Yam_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/yam/Yam_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1140,12 +1203,14 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
         }
-        public String getSymbolByLevel (int level) {
+        @Override
+        public String getTexturePath(int stage) {
 
-            if (this.getGrowthStages() < level)
-                return BG_BRIGHT_BLACK+GREEN+"r "+RESET;
-            else
-                return BG_BRIGHT_BLACK+ORANGE+"r "+RESET;
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/sweetGemBerry/Sweet_Gem_Berry_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/sweetGemBerry/Sweet_Gem_Berry_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1164,12 +1229,20 @@ public enum ForagingSeedsType {
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Winter));
         }
-        public String getSymbolByLevel (int level) {
 
-            if (this.getGrowthStages() < level)
-                return BRIGHT_CYAN+"p "+RESET;
-            else
-                return CYAN+"p "+RESET;
+        @Override
+        public String getGiantTexturePath() {
+            return "Erfan/plants/crops/giant/Giant_Powdermelon.png";
+        }
+
+        @Override
+        public String getTexturePath(int stage) {
+
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/Powdermelon/Powdermelon_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/Powdermelon/Powdermelon_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1184,16 +1257,18 @@ public enum ForagingSeedsType {
             5, false, new int[]{2, 7, 7, 7, 5} , 1 , 0 ,
             List.of(MarketType.JojaMart) ) {
 
-        @Override
         public ArrayList<Season> getSeason() {
              return new ArrayList<>(Arrays.asList(Season.Fall, Season.Summer, Season.Spring));
         }
-        public String getSymbolByLevel (int level) {
 
-            if (this.getGrowthStages() < level)
-                return BRIGHT_CYAN+"a "+RESET;
-            else
-                return CYAN+"a "+RESET;
+        @Override
+        public String getTexturePath(int stage) {
+
+            for (int i = 1; i < this.getGrowthStages(); i++)
+                if (i == stage)
+                    return "Erfan/plants/crops/ancientFruit/Ancient_Fruit_Stage_" + (i+1) + ".png";
+
+            return "Erfan/plants/crops/ancientFruit/Ancient_Fruit_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1260,9 +1335,9 @@ public enum ForagingSeedsType {
     }
 
 
-    public abstract String getSymbolByLevel (int level);
     public abstract ArrayList<Season> getSeason();
     public abstract int getPrice(MarketType marketType);
+    public abstract String getTexturePath(int stage);
 
     public void increaseJojaMartLimit(int amount) {
         JojaMartLimit = Math.max(0 , JojaMartLimit + amount);
@@ -1273,6 +1348,9 @@ public enum ForagingSeedsType {
 
     public List<MarketType> getMarketTypes() {
         return marketTypes;
+    }
+    public String getGiantTexturePath() {
+        return null;
     }
     public static ForagingSeedsType fromDisplayName(String displayName) {
         for (ForagingSeedsType type : ForagingSeedsType.values())
