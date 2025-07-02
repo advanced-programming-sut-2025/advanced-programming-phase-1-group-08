@@ -123,10 +123,7 @@ public class GiantProduct extends Items {
     }
     public String   getIcon () {
 
-        return BG_BRIGHT_PURPLE+type.getSymbolByLevel(stage)+RESET;
-    }
-    public Texture getIconTexture () {
-        return ;
+        return type.getGiantTexturePath();
     }
     public boolean  isProtected() {
 

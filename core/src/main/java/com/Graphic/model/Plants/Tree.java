@@ -89,15 +89,9 @@ public class Tree extends Items {
 
         return this.type;
     }
-
     public String getIcon () {
 
-        return "";
-    }
-
-    public Texture getIconTexture () {
-
-        return TextureManager.get(type.getPath(this.stage));
+        return type.getPath(this.stage);
     }
     public boolean  isFertilize() {
 

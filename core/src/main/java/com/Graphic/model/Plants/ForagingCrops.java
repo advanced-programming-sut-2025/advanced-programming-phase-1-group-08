@@ -50,7 +50,7 @@ public class ForagingCrops extends Items {
 
     @Override
     public String getIcon () {
-        return this.type.getIcon();
+        return this.type.getTexturePath();
     }
     public Texture getIconTexture () {
         return

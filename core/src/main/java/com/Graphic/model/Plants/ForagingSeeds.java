@@ -52,14 +52,10 @@ public class ForagingSeeds extends Items {
 
         return stage;
     }
-    public String   getIcon () {
+    public String getIcon () {
 
-        return type.getSymbolByLevel(stage);
+        return type.getTexturePath(stage);
     }
-    public Texture getIconTexture () {
-        return ;
-    }
-
     public boolean  isProtected() {
 
         return isProtected;

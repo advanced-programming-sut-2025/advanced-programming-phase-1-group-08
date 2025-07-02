@@ -9,60 +9,60 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public enum ForagingCropsType {
 
-    CommonMushroom  ("Common Mushroom", 40, 38, BG_RED+BLACK+BOLD+"C "+RESET,
+    CommonMushroom  ("Common Mushroom", 40, 38, "Erfan/plants/ForagingCrops/Common_Mushroom.png",
             List.of(Season.Spring, Season.Fall, Season.Summer, Season.Winter) , true),
-    Daffodil        ("Daffodil",        30, 0,  BG_RED+BLACK+BOLD+"D "+RESET,
+    Daffodil        ("Daffodil",        30, 0,  "Erfan/plants/ForagingCrops/Daffodil.png",
             List.of(Season.Spring) , false),
-    Dandelion       ("Dandelion",       40, 25, BG_RED+BROWN+BOLD+"D "+RESET,
+    Dandelion       ("Dandelion",       40, 25, "Erfan/plants/ForagingCrops/Dandelion.png",
             List.of(Season.Spring) , false),
-    Leek            ("Leek",            60, 40, BG_RED+BLACK+BOLD+"L "+RESET,
+    Leek            ("Leek",            60, 40, "Erfan/plants/ForagingCrops/Leek.png",
             List.of(Season.Spring) , true),
-    Morel           ("Morel",           150,20, BG_RED+BLACK+BOLD+"M "+RESET,
+    Morel           ("Morel",           150,20, "Erfan/plants/ForagingCrops/Moral.png",
             List.of(Season.Spring) , true),
-    Salmonberry     ("Salmonberry",     5,  25, BG_RED+BLACK+BOLD+"S "+RESET,
+    Salmonberry     ("Salmonberry",     5,  25, "Erfan/plants/ForagingCrops/Salmonberry.png",
             List.of(Season.Spring) , false),
-    SpringOnion     ("Spring Onion",    8,  13, BG_RED+BROWN+BOLD+"S "+RESET,
+    SpringOnion     ("Spring Onion",    8,  13, "Erfan/plants/ForagingCrops/Spring_Onion_Mastery.png",
             List.of(Season.Spring) , false),
-    WildHorseradish ("Wild Horseradish",50, 13, BG_RED+BLACK+BOLD+"W "+RESET,
+    WildHorseradish ("Wild Horseradish",50, 13, "Erfan/plants/ForagingCrops/Wild_Horseradish.png",
             List.of(Season.Spring) , false),
-    FiddleheadFern  ("Fiddlehead Fern", 90, 25, BG_RED+BLACK+BOLD+"F "+RESET,
+    FiddleheadFern  ("Fiddlehead Fern", 90, 25, "Erfan/plants/ForagingCrops/Fiddlehead_Fern.png",
             List.of(Season.Summer) , false),
-    Grape           ("Grape",           80, 38, BG_RED+BLACK+BOLD+"G "+RESET,
+    Grape           ("Grape",           80, 38, "Erfan/plants/ForagingCrops/Grape.png",
             List.of(Season.Summer) , false),
-    RedMushroom     ("Red Mushroom",    75, -50,BG_RED+BLACK+BOLD+"R "+RESET,
+    RedMushroom     ("Red Mushroom",    75, -50,"Erfan/plants/ForagingCrops/Red_Mushroom.png",
             List.of(Season.Summer) , true),
-    SpiceBerry      ("Spice Berry",     80, 25, BG_RED+CYAN+BOLD+"S "+RESET,
+    SpiceBerry      ("Spice Berry",     80, 25, "Erfan/plants/ForagingCrops/Spice_Berry.png",
             List.of(Season.Summer) , false),
-    SweetPea        ("Sweet Pea",       50, 0,  BG_RED+BRIGHT_WHITE+BOLD+"S "+RESET,
+    SweetPea        ("Sweet Pea",       50, 0,  "Erfan/plants/ForagingCrops/Sweet_Pea.png",
             List.of(Season.Summer) , false),
-    Blackberry      ("Blackberry",      25, 25, BG_RED+BLACK+BOLD+"B "+RESET,
+    Blackberry      ("Blackberry",      25, 25, "Erfan/plants/ForagingCrops/Blackberry.png",
             List.of(Season.Fall) , false),
-    Chanterelle     ("Chanterelle",     160,75, BG_RED+BROWN+BOLD+"C "+RESET,
+    Chanterelle     ("Chanterelle",     160,75, "Erfan/plants/ForagingCrops/Chanterelle.png",
             List.of(Season.Fall) , false),
-    Hazelnut        ("Hazelnut",        40, 38, BG_RED+BLACK+BOLD+"H "+RESET,
+    Hazelnut        ("Hazelnut",        40, 38, "Erfan/plants/ForagingCrops/Hazelnut.png",
             List.of(Season.Fall) , false),
-    PurpleMushroom  ("Purple Mushroom", 90, 30, BG_RED+BLACK+BOLD+"P "+RESET,
+    PurpleMushroom  ("Purple Mushroom", 90, 30, "Erfan/plants/ForagingCrops/Purple_Mushroom.png",
             List.of(Season.Fall) , true),
-    WildPlum        ("Wild Plum",       80, 25, BG_RED+BROWN+BOLD+"W "+RESET,
+    WildPlum        ("Wild Plum",       80, 25, "Erfan/plants/ForagingCrops/Wild_Plum.png",
             List.of(Season.Fall) , false),
-    Crocus          ("Crocus",          60, 0,  BG_RED+BRIGHT_WHITE+BOLD+"C "+RESET,
+    Crocus          ("Crocus",          60, 0,  "Erfan/plants/ForagingCrops/Crocus.png",
             List.of(Season.Winter) , false),
-    CrystalFruit    ("Crystal Fruit",   150,63, BG_RED+WHITE+BOLD+"C "+RESET,
+    CrystalFruit    ("Crystal Fruit",   150,63, "Erfan/plants/ForagingCrops/Crystal_Fruit.png",
             List.of(Season.Winter) , false),
-    Holly           ("Holly",           80, -37,BG_RED+BLACK+BOLD+"H "+RESET,
+    Holly           ("Holly",           80, -37,"Erfan/plants/ForagingCrops/Holly.png",
             List.of(Season.Winter) , false),
-    SnowYam         ("Snow Yam",        100,30, BG_RED+WHITE+BOLD+"S "+RESET,
+    SnowYam         ("Snow Yam",        100,30, "Erfan/plants/ForagingCrops/Snow_Yam.png",
             List.of(Season.Winter) , false),
-    WinterRoot      ("Winter Root",     70, 25, BG_RED+WHITE+BOLD+"W "+RESET,
+    WinterRoot      ("Winter Root",     70, 25, "Erfan/plants/ForagingCrops/Winter_Root.png",
             List.of(Season.Winter) , false),
-    Fiber           ("Fiber",            0,  0, BG_RED+WHITE+BOLD+"F "+RESET,
+    Fiber           ("Fiber",            0,  0, "Erfan/plants/ForagingCrops/Fiber.png",
             List.of(Season.Winter) , false);
 
 
     private final String displayName;
     private final int price;
     private final int energy;
-    private final String icon;
+    private final String texturePath;
     private final List<Season> seasons;
     private boolean isMushroom ;
 
@@ -70,7 +70,7 @@ public enum ForagingCropsType {
         this.displayName = displayName;
         this.price = price;
         this.energy = energy;
-        this.icon = icon;
+        this.texturePath = icon;
         this.seasons = seasons;
         this.isMushroom = isMushroom;
     }
@@ -84,8 +84,8 @@ public enum ForagingCropsType {
     public int getEnergy() {
         return energy;
     }
-    public String getIcon() {
-        return icon;
+    public String getTexturePath() {
+        return texturePath;
     }
     public ArrayList<Season> getSeason() {
         return new ArrayList<>(seasons);
@@ -101,7 +101,6 @@ public enum ForagingCropsType {
         builder.append(BLUE+"Name : "+BRIGHT_GREEN).append(type.displayName)
                 .append(BLUE+"\nPrice  : "+BRIGHT_RED).append(type.price)
                 .append(BLUE+"\nEnergy : "+BRIGHT_RED).append(type.energy)
-                .append(BLUE+"\nIcon : "+RESET).append(type.icon)
                 .append(BLUE+"\nSeasons : "+RESET);
 
         for (Season season : type.seasons)

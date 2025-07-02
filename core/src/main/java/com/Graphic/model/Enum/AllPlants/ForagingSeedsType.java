@@ -28,9 +28,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/blueJazz/Blue_Jazz_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/blueJazz/Blue_Jazz_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/blueJazz/Blue_Jazz_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/blueJazz/Blue_Jazz_Stage_" + this.getGrowthStages() + ".png";
         }
         @Override
         public int getPrice( MarketType marketType) {
@@ -59,9 +59,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/carrot/Carrot_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/carrot/Carrot_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/carrot/Carrot_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/carrot/Carrot_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -87,14 +87,14 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/Cauliflower/Cauliflower_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/Cauliflower/Cauliflower_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/Cauliflower/Cauliflower_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/Cauliflower/Cauliflower_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
         public String getGiantTexturePath() {
-            return "plants/crops/giant/Giant_Cauliflower.png";
+            return "Erfan/plants/crops/giant/Giant_Cauliflower.png";
         }
 
         @Override
@@ -124,9 +124,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/coffeeBean/Coffee_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/coffeeBean/Coffee_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/coffeeBean/Coffee_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/coffeeBean/Coffee_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -150,9 +150,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/Garlic/Garlic_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/Garlic/Garlic_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/Garlic/Garlic_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/Garlic/Garlic_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -181,9 +181,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/GreenBean/Green_Bean_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/GreenBean/Green_Bean_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/GreenBean/Green_Bean_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/GreenBean/Green_Bean_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -213,9 +213,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/kale/Kale_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/kale/Kale_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/kale/Kale_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/kale/Kale_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -245,9 +245,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/parsnip/Parsnip_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/parsnip/Parsnip_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/parsnip/Parsnip_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/parsnip/Parsnip_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -277,9 +277,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/potato/Potato_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/potato/Potato_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/potato/Potato_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/potato/Potato_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -309,9 +309,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/rhubarb/Rhubarb_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/rhubarb/Rhubarb_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/rhubarb/Rhubarb_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/rhubarb/Rhubarb_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -335,9 +335,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/strawberry/Strawberry_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/strawberry/Strawberry_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/strawberry/Strawberry_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/strawberry/Strawberry_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -361,9 +361,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/tulip/Tulip_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/tulip/Tulip_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/tulip/Tulip_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/tulip/Tulip_Stage_" + this.getGrowthStages() + ".png";
         }
 
 
@@ -394,9 +394,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/unmilledRice/Unmilled_Rice_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/unmilledRice/Unmilled_Rice_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/unmilledRice/Unmilled_Rice_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/unmilledRice/Unmilled_Rice_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -425,9 +425,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/blueberry/Blueberry_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/blueberry/Blueberry_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/blueberry/Blueberry_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/blueberry/Blueberry_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -456,9 +456,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/corn/Corn_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/corn/Corn_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/corn/Corn_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/corn/Corn_Stage_" + this.getGrowthStages() + ".png";
         }
 
 
@@ -489,9 +489,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/hops/Hops_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/hops/Hops_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/hops/Hops_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/hops/Hops_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -522,9 +522,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/hotPepper/Hot_Pepper_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/hotPepper/Hot_Pepper_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/hotPepper/Hot_Pepper_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/hotPepper/Hot_Pepper_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -541,7 +541,7 @@ public enum ForagingSeedsType {
             }
         }
     },
-    MelonSeeds      ( "Melon Seeds",      true, Melon,10000,
+    MelonSeeds      ( "Melon Seeds",      true, Melon,10000, /// //// Erfan/Erfan/Erfan/Erfan/Erfan/Erfan/Erfan/
             5, true, new int[] {1, 2, 3, 3, 3} , 5 , 5 ,
             List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
@@ -552,7 +552,7 @@ public enum ForagingSeedsType {
 
         @Override
         public String getGiantTexturePath() {
-            return "plants/crops/giant/Giant_Melon.png";
+            return "Erfan/plants/crops/giant/Giant_Melon.png";
         }
 
         @Override
@@ -560,9 +560,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/melon/Melon_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/melon/Melon_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/melon/Melon_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/melon/Melon_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -592,9 +592,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/poppy/Poppy_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/poppy/Poppy_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/poppy/Poppy_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/poppy/Poppy_Stage_" + this.getGrowthStages() + ".png";
         }
 
 
@@ -625,9 +625,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/radish/Radish_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/radish/Radish_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/radish/Radish_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/radish/Radish_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -657,9 +657,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/redCabbage/Red_Cabbage_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/redCabbage/Red_Cabbage_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/redCabbage/Red_Cabbage_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/redCabbage/Red_Cabbage_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -688,9 +688,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/starfruit/Starfruit_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/starfruit/Starfruit_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/starfruit/Starfruit_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/starfruit/Starfruit_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -714,9 +714,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/summerSpangle/Summer_Spangle_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/summerSpangle/Summer_Spangle_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/summerSpangle/Summer_Spangle_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/summerSpangle/Summer_Spangle_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -746,9 +746,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/summerSquash/Summer_Squash_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/summerSquash/Summer_Squash_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/summerSquash/Summer_Squash_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/summerSquash/Summer_Squash_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -772,9 +772,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/sunflower/Sunflower_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/sunflower/Sunflower_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/sunflower/Sunflower_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/sunflower/Sunflower_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -804,9 +804,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/tomato/Tomato_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/tomato/Tomato_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/tomato/Tomato_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/tomato/Tomato_Stage_" + this.getGrowthStages() + ".png";
         }
 
 
@@ -837,9 +837,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/wheat/Wheat_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/wheat/Wheat_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/wheat/Wheat_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/wheat/Wheat_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -869,9 +869,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/amaranth/Amaranth_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/amaranth/Amaranth_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/amaranth/Amaranth_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/amaranth/Amaranth_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -901,9 +901,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/artichoke/Artichoke_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/artichoke/Artichoke_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/artichoke/Artichoke_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/artichoke/Artichoke_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -932,9 +932,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/beet/Beet_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/beet/Beet_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/bett/Beet_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/bett/Beet_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -957,9 +957,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/bokChoy/Bok_Choy_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/bokChoy/Bok_Choy_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/bokChoy/Bok_Choy_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/bokChoy/Bok_Choy_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -988,9 +988,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/broccoli/Broccoli_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/broccoli/Broccoli_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/broccoli/Broccoli_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/broccoli/Broccoli_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1014,9 +1014,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/cranberries/Cranberry_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/cranberries/Cranberry_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/cranberries/Cranberry_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/cranberries/Cranberry_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1046,9 +1046,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/eggplant/Eggplant_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/eggplant/Eggplant_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/eggplant/Eggplant_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/eggplant/Eggplant_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1078,9 +1078,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/fairyRose/Fairy_Rose_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/fairyRose/Fairy_Rose_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/fairyRose/Fairy_Rose_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/fairyRose/Fairy_Rose_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1109,9 +1109,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/grape/Grape_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/grape/Grape_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/grape/Grape_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/grape/Grape_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1137,7 +1137,7 @@ public enum ForagingSeedsType {
         }
         @Override
         public String getGiantTexturePath() {
-            return "plants/crops/giant/Giant_Pumpkin.png";
+            return "Erfan/plants/crops/giant/Giant_Pumpkin.png";
         }
 
         @Override
@@ -1145,9 +1145,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/pumpkin/Pumpkin_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/pumpkin/Pumpkin_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/pumpkin/Pumpkin_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/pumpkin/Pumpkin_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1176,9 +1176,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/yam/Yam_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/yam/Yam_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/yam/Yam_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/yam/Yam_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1208,9 +1208,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/sweetGemBerry/Sweet_Gem_Berry_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/sweetGemBerry/Sweet_Gem_Berry_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/sweetGemBerry/Sweet_Gem_Berry_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/sweetGemBerry/Sweet_Gem_Berry_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1232,7 +1232,7 @@ public enum ForagingSeedsType {
 
         @Override
         public String getGiantTexturePath() {
-            return "plants/crops/giant/Giant_Powdermelon.png";
+            return "Erfan/plants/crops/giant/Giant_Powdermelon.png";
         }
 
         @Override
@@ -1240,9 +1240,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/Powdermelon/Powdermelon_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/Powdermelon/Powdermelon_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/Powdermelon/Powdermelon_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/Powdermelon/Powdermelon_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
@@ -1266,9 +1266,9 @@ public enum ForagingSeedsType {
 
             for (int i = 1; i < this.getGrowthStages(); i++)
                 if (i == stage)
-                    return "plants/crops/ancientFruit/Ancient_Fruit_Stage_" + (i+1) + ".png";
+                    return "Erfan/plants/crops/ancientFruit/Ancient_Fruit_Stage_" + (i+1) + ".png";
 
-            return "plants/crops/ancientFruit/Ancient_Fruit_Stage_" + this.getGrowthStages() + ".png";
+            return "Erfan/plants/crops/ancientFruit/Ancient_Fruit_Stage_" + this.getGrowthStages() + ".png";
         }
 
         @Override
