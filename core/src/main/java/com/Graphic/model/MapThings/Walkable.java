@@ -22,32 +22,32 @@ public class Walkable extends GameObject {
 
         switch (this.grassOrFiber) {
             case "Walk" -> {
-                return ". ";
+                return "Places/Walkable.png";
             }
             case "Grass" -> {
-                return BG_BRIGHT_GREEN + ". " + RESET;
+                return "Places/Grass.png";
             }
-            case "Fiber", "JojaMart" -> {
-                return BG_GREEN + ". " + RESET;
+            case "Fiber" -> {
+                return "Crops/Fiber.png";
             }
-            case "PLowed", "Marnie's Ranch" -> {
-                return BG_BRIGHT_BROWN + ". " + RESET;
-            }
-            case "Blacksmith" , "Sebastian" -> {
-                return BG_BRIGHT_BLACK + ". " + RESET;
-            }
-            case "The Stardrop Saloon" , "Abigail" -> {
-                return BG_BRIGHT_YELLOW + ". " + RESET;
-            }
-            case "Fish shop" , "Harvey" -> {
-                return BG_BRIGHT_BLUE + ". " + RESET;
-            }
-            case "Carpenter's shop" , "Lia" -> {
-                return BG_BRIGHT_RED + ". " + RESET;
-            }
-            case "Pierre's General" , "Robin" -> {
-                return BG_BRIGHT_PURPLE + ". " + RESET;
-            }
+//            case "PLowed", "Marnie's Ranch" -> {
+//                return BG_BRIGHT_BROWN + ". " + RESET;
+//            }
+//            case "Blacksmith" , "Sebastian" -> {
+//                return BG_BRIGHT_BLACK + ". " + RESET;
+//            }
+//            case "The Stardrop Saloon" , "Abigail" -> {
+//                return BG_BRIGHT_YELLOW + ". " + RESET;
+//            }
+//            case "Fish shop" , "Harvey" -> {
+//                return BG_BRIGHT_BLUE + ". " + RESET;
+//            }
+//            case "Carpenter's shop" , "Lia" -> {
+//                return BG_BRIGHT_RED + ". " + RESET;
+//            }
+//            case "Pierre's General" , "Robin" -> {
+//                return BG_BRIGHT_PURPLE + ". " + RESET;
+//            }
         }
         return "  ";
     }

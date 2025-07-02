@@ -1,5 +1,6 @@
 package com.Graphic.Controller.MainGame;
 
+import com.Graphic.Main;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
@@ -8,12 +9,14 @@ import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.HelpersClass.Result;
+import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.UnWalkable;
 import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.OtherItem.ArtisanProduct;
 import com.Graphic.model.OtherItem.BarsAndOres;
+import com.Graphic.model.OtherItem.Fridge;
 import com.Graphic.model.Places.*;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Animall.BarnOrCage;
@@ -22,7 +25,13 @@ import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.ToolsPackage.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 
@@ -30,6 +39,7 @@ import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 
 
@@ -194,32 +204,33 @@ public class InputGameController {
 
         return new Result(false , name + " not found!");
     }
-    public Result print(int startX , int startY , int size){
 
-        User user;
 
-        StringBuilder result = new StringBuilder();
 
-        for (int i=startX ; i<startX + size ; i++) {
-            for (int j = startY; j < startY + size; j++) {
-                Tile tile = getTileByCoordinates(j, i);
+    public Result print(){
 
-                if ((user = getUserByLocation(j, i) )!= null)
-                    result.append(user.getIcon()); // TODO
+        for (int i =0 ; i< 90 ; i++) {
+            for (int j =0 ; j< 90 ; j++) {
+                try {
+                    Main.getBatch().draw(TextureManager.get("Places/Walkable.png") ,
+                        TEXTURE_SIZE * j , TEXTURE_SIZE * (90 - i) , TEXTURE_SIZE , TEXTURE_SIZE);
 
-                else if (tile.getGameObject() instanceof Animal)
-                    result.append(tile.getGameObject().getIcon());
+                    if (getTileByCoordinates(i,j).getGameObject() instanceof UnWalkable) {
+                        Main.getBatch().draw(TextureManager.get("Tree/unWalkable6.png"),
+                            TEXTURE_SIZE * j , TEXTURE_SIZE * (90 - i) , TEXTURE_SIZE , TEXTURE_SIZE);
+                    }
 
-                else {
-                    if (tile.getGameObject() instanceof UnWalkable)
-                        result.append(tile.getGameObject().getIcon()).append(RESET);
-                    else
-                        result.append(tile.getGameObject().getIcon()).append(RESET); // TODO
+                    Main.getBatch().draw(getTileByCoordinates(i , j)
+                       .getGameObject()
+                       .getSprite(TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
+                                     TEXTURE_SIZE * j , TEXTURE_SIZE * (90 - i) , TEXTURE_SIZE , TEXTURE_SIZE);
+                }
+                catch (Exception e) {
+
                 }
             }
-            result.append("\n");
         }
-        return new Result(true , result.toString());
+        return null;
     }
     public Result checkConditionsForWalk(int goalX, int goalY){
         if (goalX <0 || goalX >=90 || goalY <0 || goalY >=90) {
@@ -277,6 +288,25 @@ public class InputGameController {
         }
         return null;
 
+    }
+
+    public void moveCamera(OrthographicCamera camera) {
+        float cameraSpeed = 200 * Gdx.graphics.getDeltaTime(); // سرعت حرکت بر اساس زمان فریم
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            camera.translate(0, cameraSpeed);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            camera.translate(0, -cameraSpeed);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            camera.translate(-cameraSpeed, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            camera.translate(cameraSpeed, 0);
+        }
+
+        camera.update();
     }
 
 
@@ -1270,8 +1300,9 @@ public class InputGameController {
     public void startNewGame (String input) {
         System.out.println(RED+"Starting New Game..."+RESET);
 
+
         currentGame = new Game();
-        currentGame.currentMenu = currentMenu;
+        //currentGame.currentMenu = currentMenu;
 
 
 //        String user1name = GameMenuCommands.makeNewGame.getMatcher(input).group("username1");
@@ -1350,6 +1381,8 @@ public class InputGameController {
         setTimeAndWeather();
         currentGame.currentPlayer = currentGame.players.getFirst();
         currentUser = currentGame.players.getFirst();
+
+
         // done
 
 
@@ -1405,6 +1438,8 @@ public class InputGameController {
             }
         }
         currentGame.currentPlayer = currentGame.players.getFirst();
+
+
 
         // Form Friendships
         for (int i = 0; i < currentGame.players.size(); i++) {

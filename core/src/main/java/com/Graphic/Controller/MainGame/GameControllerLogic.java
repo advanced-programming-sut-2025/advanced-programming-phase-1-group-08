@@ -17,6 +17,10 @@ import com.Graphic.model.OtherItem.*;
 import com.Graphic.model.Places.*;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.ToolsPackage.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -186,34 +190,34 @@ public class GameControllerLogic {
         houseDoor.setCharactor('D');
         Fridge fridge= new Fridge(topLeftX + 60 * x + width -2 , topLeftY + 60 * y + height - 2);
         fridge.setCharactor('F');
-        Home home = new Home(topLeftX + 60 * x, topLeftY + 60 * y,width,height, fridge);
-        home.setCharactor('H');
-        home.houseDoor = houseDoor;
+
 
         for (int i = topLeftX + 60 * x; i < topLeftX + 60 * x + width ; i++) {
             for (int j = topLeftY + 60 * y; j < topLeftY + 60 * y + height ; j++) {
-                if (i == topLeftX + 60 * x + width / 2 && j == topLeftY + 60 * y + height-1) {
-                    Tile tile = new Tile(i, j, houseDoor);
-                    farm.Farm.add(tile);
-                    currentGame.bigMap.add(tile);
-                }
-                else if (i == topLeftX + 60 * x + width -2 && j == topLeftY + 60 * y + height-2) {
+//                if (i == topLeftX + 60 * x + width / 2 && j == topLeftY + 60 * y + height-1) {
+//                    Tile tile = new Tile(i, j, houseDoor);
+//                    farm.Farm.add(tile);
+//                    currentGame.bigMap.add(tile);
+//                }
+                if (i == topLeftX + 60 * x + width -2 && j == topLeftY + 60 * y + height-2) {
                     Tile tile = new Tile(i, j, fridge);
                     farm.Farm.add(tile);
                     currentGame.bigMap.add(tile);
                 }
-                else if (i == topLeftX + 60 * x || i == topLeftX + 60 * x + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
-                    Tile tile = new Tile(i, j, wall);
-                    farm.Farm.add(tile);
-                    currentGame.bigMap.add(tile);
-                }  else {
+//                else if (i == topLeftX + 60 * x || i == topLeftX + 60 * x + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
+//                    Tile tile = new Tile(i, j, wall);
+//                    farm.Farm.add(tile);
+//                    currentGame.bigMap.add(tile);
+//                }
+                else {
+                    Home home = new Home(topLeftX + 60 * x, topLeftY + 60 * y,width,height, fridge);
                     Tile tile = new Tile(i, j, home);
                     farm.Farm.add(tile);
                     currentGame.bigMap.add(tile);
                 }
             }
         }
-        farm.setHome(home);
+        farm.setHome(new Home(topLeftX + 60 * x, topLeftY + 60 * y,width,height, fridge));
     }
     public static void createInitialGreenHouse(int x, int y , int topLeftX , int topLeftY , int width , int height) {
         Farm farm = currentGame.currentPlayer.getFarm();
@@ -258,7 +262,7 @@ public class GameControllerLogic {
 
     public static void buildHall() {
         Walkable walkable=new Walkable();
-        UnWalkable unWalkable=new UnWalkable();
+
         for (int j = 30 ; j<60 ; j++) {
             Tile tile=new Tile(15 , j , walkable);
             currentGame.bigMap.add(tile);
@@ -282,6 +286,7 @@ public class GameControllerLogic {
                     currentGame.bigMap.add(tile);
                 }
                 else if (j != 15) {
+                    UnWalkable unWalkable=new UnWalkable();
                     Tile tile=new Tile(i , j , unWalkable);
                     currentGame.bigMap.add(tile);
                 }
@@ -295,6 +300,7 @@ public class GameControllerLogic {
                     currentGame.bigMap.add(tile);
                 }
                 else if (i!=15) {
+                    UnWalkable unWalkable=new UnWalkable();
                     Tile tile=new Tile(i , j , unWalkable);
                     currentGame.bigMap.add(tile);
                 }
@@ -307,6 +313,7 @@ public class GameControllerLogic {
                     currentGame.bigMap.add(tile);
                 }
                 else if (j!=75) {
+                    UnWalkable unWalkable=new UnWalkable();
                     Tile tile=new Tile(i , j , unWalkable);
                     currentGame.bigMap.add(tile);
                 }
@@ -319,6 +326,7 @@ public class GameControllerLogic {
                     currentGame.bigMap.add(tile);
                 }
                 else if (i!=75) {
+                    UnWalkable unWalkable=new UnWalkable();
                     Tile tile=new Tile(i , j , unWalkable);
                     currentGame.bigMap.add(tile);
                 }
@@ -507,21 +515,21 @@ public class GameControllerLogic {
             PerlinNoise perlinNoise = new PerlinNoise(seed);
 
             double noise = perlinNoise.noise(i * 0.1, j * 0.1);
-            if (-1.2 < noise && noise < -0.9 && treeNumber <16) {
+            if (-1.2 < noise && noise < -0.9 && treeNumber <30) {
                 Tree tree = new Tree(TreeType.OakTree,currentGame.currentDate.clone());
                 Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, tree);
                 currentGame.currentPlayer.getFarm().Farm.add(tile);
                 currentGame.bigMap.add(tile);
                 return 1;
             }
-            else if(noise > -0.9 && noise <-0.5 && treeNumber <16){
+            else if(noise > -0.9 && noise <-0.5 && treeNumber <30){
                 Tree tree = new Tree(TreeType.MapleTree,currentGame.currentDate.clone());
                 Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, tree);
                 currentGame.currentPlayer.getFarm().Farm.add(tile);
                 currentGame.bigMap.add(tile);
                 return 1;
             }
-            else if (noise > -0.5 && noise < - 0.2 && treeNumber <16){
+            else if (noise > -0.5 && noise < - 0.2 && treeNumber <30){
                 Tree tree = new Tree(TreeType.PineTree,currentGame.currentDate.clone());
                 Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, tree);
                 currentGame.currentPlayer.getFarm().Farm.add(tile);

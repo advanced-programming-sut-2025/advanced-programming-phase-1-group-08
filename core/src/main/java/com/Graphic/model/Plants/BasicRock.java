@@ -8,7 +8,7 @@ public class BasicRock extends Items {
 
     @Override
     public String getIcon() {
-        return "\uD83E\uDEA8";
+        return "Stones/Basic_Rock.png";
     }
 
     @Override

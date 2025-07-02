@@ -1,5 +1,6 @@
 package com.Graphic.model.Places;
 
+import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.model.OtherItem.Fridge;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.door;
@@ -15,6 +16,7 @@ public class Home extends GameObject {
     private int topLeftY;
     private Fridge fridge;
     public door houseDoor;
+    private String Path;
 
     public Home(int topLeftX, int topLeftY, int width , int length, Fridge fridge) {
         this.topLeftX = topLeftX;
@@ -47,6 +49,20 @@ public class Home extends GameObject {
 
     @Override
     public String getIcon() {
-        return BG_YELLOW + ". ";
+        if (Path != null) {
+            return Path;
+        }
+
+        for (int i = topLeftX; i < topLeftX + width; i++) {
+            for (int j = topLeftY; j < topLeftY + length; j++) {
+                if (GameControllerLogic.getTileByCoordinates(i , j).getGameObject().equals(this)) {
+                    int l = 7 * (i - topLeftX) + j - topLeftY + 1;
+                    Path = "Places/home" + l + ".png";
+                    System.out.println(i + " " + j);
+                    return Path;
+                }
+            }
+        }
+        return Path;
     }
 }

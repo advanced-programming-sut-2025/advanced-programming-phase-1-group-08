@@ -14,7 +14,7 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class AppView {
 
-    public void run() throws IOException {
+    public static void run() throws IOException {
         Scanner scanner = new Scanner(System.in);
 
         if (SessionManager.isLoggedIn()) {
