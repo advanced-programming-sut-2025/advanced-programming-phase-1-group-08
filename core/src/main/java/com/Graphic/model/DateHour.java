@@ -22,19 +22,19 @@ public class DateHour implements Cloneable {
     public WeekDay getDayOfTheWeek () {
 
         if (this.date % 7 == 0)
-            return WeekDay.saturday;
+            return WeekDay.sat;
         else if (this.date % 7 == 1)
-            return WeekDay.sunday;
+            return WeekDay.sun;
         else if (this.date % 7 == 2)
-            return WeekDay.monday;
+            return WeekDay.mon;
         else if (this.date % 7 == 3)
-            return WeekDay.tuesday;
+            return WeekDay.tue;
         else if (this.date % 7 == 4)
-            return WeekDay.wednesday;
+            return WeekDay.wed;
         else if (this.date % 7 == 5)
-            return WeekDay.thursday;
+            return WeekDay.thu;
         else
-            return WeekDay.friday;
+            return WeekDay.fri;
     }
     public int getHour () {return this.hour;}
     public int getDate () {return this.date;}
