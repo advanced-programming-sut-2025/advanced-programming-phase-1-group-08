@@ -31,72 +31,11 @@ public class User {
     // buffs
     public int Buff_maxEnergy_100_hoursLeft = 0;
 
-    public void setBuff_maxEnergy_100_hoursLeft (int x) {
-        Buff_maxEnergy_100_hoursLeft = x;
-        Buff_maxEnergy_50_hoursLeft = 0;
-        Buff_foraging_hoursLeft = 0;
-        Buff_farming_hoursLeft = 0;
-        Buff_fishing_hoursLeft = 0;
-        Buff_mining_hoursLeft = 0;
-        // Buff implementation
-        if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
-            currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 100);
-            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 100);
-        }
-    }
     public int Buff_maxEnergy_50_hoursLeft = 0;
-    public void setBuff_maxEnergy_50_hoursLeft (int x) {
-        Buff_maxEnergy_50_hoursLeft = x;
-        Buff_maxEnergy_100_hoursLeft = 0;
-        Buff_foraging_hoursLeft = 0;
-        Buff_farming_hoursLeft = 0;
-        Buff_fishing_hoursLeft = 0;
-        Buff_mining_hoursLeft = 0;
-        // Buff implementation
-        if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
-            currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 50);
-            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 50);
-        }
-    }
     public int Buff_foraging_hoursLeft = 0;
-    public void setBuff_foraging_hoursLeft (int x) {
-        Buff_foraging_hoursLeft = x;
-        Buff_maxEnergy_50_hoursLeft = 0;
-        Buff_maxEnergy_100_hoursLeft = 0;
-        Buff_farming_hoursLeft = 0;
-        Buff_fishing_hoursLeft = 0;
-        Buff_mining_hoursLeft = 0;
-    }
     public int Buff_farming_hoursLeft = 0;
-    public void setBuff_farming_hoursLeft (int x) {
-        Buff_farming_hoursLeft = x;
-        Buff_maxEnergy_50_hoursLeft = 0;
-        Buff_foraging_hoursLeft = 0;
-        Buff_maxEnergy_100_hoursLeft = 0;
-        Buff_fishing_hoursLeft = 0;
-        Buff_mining_hoursLeft = 0;
-        passedOfTime(0, 0);
-    }
     public int Buff_fishing_hoursLeft = 0;
-    public void setBuff_fishing_hoursLeft (int x) {
-        Buff_fishing_hoursLeft = x;
-        Buff_maxEnergy_50_hoursLeft = 0;
-        Buff_foraging_hoursLeft = 0;
-        Buff_farming_hoursLeft = 0;
-        Buff_maxEnergy_100_hoursLeft = 0;
-        Buff_mining_hoursLeft = 0;
-        passedOfTime(0, 0);
-    }
     public int Buff_mining_hoursLeft = 0;
-    public void setBuff_mining_hoursLeft (int x) {
-        Buff_mining_hoursLeft = x;
-        Buff_maxEnergy_50_hoursLeft = 0;
-        Buff_foraging_hoursLeft = 0;
-        Buff_farming_hoursLeft = 0;
-        Buff_fishing_hoursLeft = 0;
-        Buff_maxEnergy_100_hoursLeft = 0;
-        passedOfTime(0, 0);
-    }
 
     // TODO وقتی بازی تموم میشه این سه تارو ست کنیم
     private int max_point = 0;
@@ -109,8 +48,8 @@ public class User {
     private int MAX_HEALTH;
     private Tile SleepTile;
     private User Spouse;  // شخصی که باهاش ازدواج کرده
-    private boolean healthUnlimited;
     private String icon;
+    private boolean healthUnlimited;
 
 
     private HashMap<NPC, Integer>    friendshipPoint = new HashMap<>();
@@ -118,7 +57,7 @@ public class User {
     private final HashMap<NPC, Boolean> todayTalking = new HashMap<>();
     private final HashMap<NPC, Boolean> todayGifting = new HashMap<>();
 
-    public HashMap<Items , DateHour> buffer = new HashMap<>();//برای برداشت محصولات فرآوری شده استفاده میشود
+    public HashMap<Items , DateHour> buffer = new HashMap<>();   //برای برداشت محصولات فرآوری شده استفاده میشود
 
     private BackPack backPack = new BackPack();
     public Tools currentTool;
@@ -157,6 +96,71 @@ public class User {
         this.MySecurityAnswer = MySecA;
     }
 
+
+
+
+
+    public void setBuff_maxEnergy_100_hoursLeft (int x) {
+        Buff_maxEnergy_100_hoursLeft = x;
+        Buff_maxEnergy_50_hoursLeft = 0;
+        Buff_foraging_hoursLeft = 0;
+        Buff_farming_hoursLeft = 0;
+        Buff_fishing_hoursLeft = 0;
+        Buff_mining_hoursLeft = 0;
+        // Buff implementation
+        if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
+            currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 100);
+            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 100);
+        }
+    }
+    public void setBuff_maxEnergy_50_hoursLeft (int x) {
+        Buff_maxEnergy_50_hoursLeft = x;
+        Buff_maxEnergy_100_hoursLeft = 0;
+        Buff_foraging_hoursLeft = 0;
+        Buff_farming_hoursLeft = 0;
+        Buff_fishing_hoursLeft = 0;
+        Buff_mining_hoursLeft = 0;
+        // Buff implementation
+        if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
+            currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 50);
+            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 50);
+        }
+    }
+    public void setBuff_foraging_hoursLeft (int x) {
+        Buff_foraging_hoursLeft = x;
+        Buff_maxEnergy_50_hoursLeft = 0;
+        Buff_maxEnergy_100_hoursLeft = 0;
+        Buff_farming_hoursLeft = 0;
+        Buff_fishing_hoursLeft = 0;
+        Buff_mining_hoursLeft = 0;
+    }
+    public void setBuff_farming_hoursLeft (int x) {
+        Buff_farming_hoursLeft = x;
+        Buff_maxEnergy_50_hoursLeft = 0;
+        Buff_foraging_hoursLeft = 0;
+        Buff_maxEnergy_100_hoursLeft = 0;
+        Buff_fishing_hoursLeft = 0;
+        Buff_mining_hoursLeft = 0;
+        passedOfTime(0, 0);
+    }
+    public void setBuff_fishing_hoursLeft (int x) {
+        Buff_fishing_hoursLeft = x;
+        Buff_maxEnergy_50_hoursLeft = 0;
+        Buff_foraging_hoursLeft = 0;
+        Buff_farming_hoursLeft = 0;
+        Buff_maxEnergy_100_hoursLeft = 0;
+        Buff_mining_hoursLeft = 0;
+        passedOfTime(0, 0);
+    }
+    public void setBuff_mining_hoursLeft (int x) {
+        Buff_mining_hoursLeft = x;
+        Buff_maxEnergy_50_hoursLeft = 0;
+        Buff_foraging_hoursLeft = 0;
+        Buff_farming_hoursLeft = 0;
+        Buff_fishing_hoursLeft = 0;
+        Buff_maxEnergy_100_hoursLeft = 0;
+        passedOfTime(0, 0);
+    }
 
 
     public int getMAX_HEALTH() {

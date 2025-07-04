@@ -16,7 +16,6 @@ import com.Graphic.model.MapThings.UnWalkable;
 import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.OtherItem.ArtisanProduct;
 import com.Graphic.model.OtherItem.BarsAndOres;
-import com.Graphic.model.OtherItem.Fridge;
 import com.Graphic.model.Places.*;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Animall.BarnOrCage;
@@ -28,10 +27,8 @@ import com.Graphic.model.ToolsPackage.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import java.awt.*;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -44,8 +41,6 @@ import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 
 
 public class InputGameController {
-
-
 
     public Result addDollar(int amount) {
         currentGame.currentPlayer.increaseMoney(amount);
@@ -209,7 +204,7 @@ public class InputGameController {
 
     public Result print(){
 
-        for (int i =0 ; i< 90 ; i++) {
+        for (int i =0 ; i< 90 ; i++)
             for (int j =0 ; j< 90 ; j++) {
                 try {
                     Main.getBatch().draw(TextureManager.get("Places/Walkable.png") ,
@@ -229,7 +224,14 @@ public class InputGameController {
 
                 }
             }
-        }
+
+        for (User player : currentGame.players)
+            Main.getBatch().draw(
+                TextureManager.get(player.getIcon()),
+                player.getPositionX()*TEXTURE_SIZE,
+                player.getPositionY()*TEXTURE_SIZE,
+                64, 64);
+
         return null;
     }
     public Result checkConditionsForWalk(int goalX, int goalY){
@@ -1298,8 +1300,6 @@ public class InputGameController {
 
 
     public void startNewGame (String input) {
-        System.out.println(RED+"Starting New Game..."+RESET);
-
 
         currentGame = new Game();
         //currentGame.currentMenu = currentMenu;
@@ -1386,7 +1386,6 @@ public class InputGameController {
         // done
 
 
-        Scanner scanner = new Scanner(System.in);
 
         int counter = 1;
         for (User user: currentGame.players) {
@@ -1413,22 +1412,26 @@ public class InputGameController {
                 int choice = 1; // TODO باید پاک بشه
 
                 if (counter == 1) {
-                    user.setIcon(BRIGHT_CYAN + "∆ " + RESET);
+                    user.setIcon("all image/Crops/Cactus_Stage_6.png");
+//                    user.setIcon(BRIGHT_CYAN + "∆ " + RESET);
                     user.topLeftX = 0;
                     user.topLeftY = 0;
                 }
                 else if (counter == 2) {
-                    user.setIcon(BRIGHT_PURPLE + "∆ " + RESET);
+//                    user.setIcon(BRIGHT_PURPLE + "∆ " + RESET);
+                    user.setIcon("all image/Special_item/Cursed_Mannequin_%28F%29.png");
                     user.topLeftX = 1;
                     user.topLeftY = 0;
                 }
                 else if (counter == 3) {
-                    user.setIcon(BRIGHT_RED + "∆ " + RESET);
+                    user.setIcon("all image/Special_item/Deconstructor.png");
+//                    user.setIcon(BRIGHT_RED + "∆ " + RESET);
                     user.topLeftX = 0;
                     user.topLeftY = 1;
                 }
                 else if (counter == 4) {
-                    user.setIcon(BRIGHT_YELLOW + "∆ " + RESET);
+                    user.setIcon("all image/Special_item/Wood_Chipper_On.png");
+//                    user.setIcon(BRIGHT_YELLOW + "∆ " + RESET);
                     user.topLeftX = 1;
                     user.topLeftY = 1;
                 }
@@ -1459,7 +1462,6 @@ public class InputGameController {
         startDay();
     }
     public void startNewGame1 (String input) throws IOException {
-        System.out.println(CYAN+"Starting New Game..."+RESET);
 
         currentGame = new Game();
         currentGame.currentPlayer = currentUser;

@@ -1,13 +1,13 @@
-package com.Graphic.View;
+package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.CraftingController;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.HomeController;
 import com.Graphic.Main;
-import com.Graphic.model.App;
+import com.Graphic.View.AppMenu;
+import com.Graphic.View.AppView;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Commands.HomeMenuCommands;
-import com.Graphic.model.Enum.Menu;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;

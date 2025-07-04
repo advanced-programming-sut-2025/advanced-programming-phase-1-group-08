@@ -1,7 +1,9 @@
 package com.Graphic.model.Enum;
 
 import com.Graphic.View.*;
-import com.Graphic.model.App;
+import com.Graphic.View.GameMenus.CraftMenu;
+import com.Graphic.View.GameMenus.HomeMenu;
+import com.Graphic.View.GameMenus.MarketMenu;
 
 import java.io.IOException;
 import java.util.Scanner;
