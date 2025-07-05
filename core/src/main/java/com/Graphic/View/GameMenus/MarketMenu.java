@@ -1,6 +1,7 @@
-package com.Graphic.View;
+package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.Marketing;
+import com.Graphic.View.AppMenu;
 import com.Graphic.model.Enum.Commands.MarketMenuCommands;
 
 import java.util.Scanner;

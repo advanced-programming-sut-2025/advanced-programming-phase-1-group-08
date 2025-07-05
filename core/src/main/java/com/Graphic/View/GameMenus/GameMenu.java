@@ -1,56 +1,163 @@
-package com.Graphic.View;
+package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
 import com.Graphic.model.App;
-import com.Graphic.model.Enum.AllPlants.TreeType;
-import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.HelpersClass.TextureManager;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import static com.Graphic.model.App.currentGame;
 
 
 public class GameMenu implements  Screen, InputProcessor {
 
+    public static GameMenu gameMenu;
+
+
     private Stage stage;
-    private Skin skin;
     public static OrthographicCamera camera;
+    private InputGameController controller;
+
+    private Group clockGroup;
+    private Label moneyLabel;
+    private Label timeLabel;
+    private Label dateLabel;
+    private Label weekDayLabel;
 
 
-    InputGameController controller = new InputGameController();
+    private GameMenu() {
 
+    }
+    public static GameMenu getInstance() {
+        if (gameMenu == null)
+            gameMenu = new GameMenu();
 
+        return gameMenu;
+    }
 
     public void show() {
 
-        stage = new Stage(new ScreenViewport());
-        camera = new OrthographicCamera();
+        initialize();
+
         camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         controller.startNewGame("a");
         Gdx.input.setInputProcessor(this);
+        createClock();
+
+
+
+    }
+    private void initialize () {
+
+        controller = new InputGameController();
+        stage = new Stage(new ScreenViewport());
+        clockGroup = new Group();
+        camera = new OrthographicCamera();
+
+
+        timeLabel = new Label("", App.skin);
+        dateLabel = new Label("", App.skin);
+        moneyLabel = new Label("", App.skin);
+        weekDayLabel = new Label("", App.skin);
 
     }
     public void render(float v) {
 
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         Main.getBatch().setProjectionMatrix(camera.combined);
         Main.getBatch().begin();
         controller.print();
         controller.moveCamera(camera);
         Main.getBatch().end();
 
+
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+
+
+
     }
 
 
+    private void createClock() {
+
+        Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
+
+        BitmapFont font = new BitmapFont(Gdx.files.internal("Erfan/Fonts/tinyFont.fnt"));
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+
+        BitmapFont font2 = new BitmapFont(Gdx.files.internal("Erfan/Fonts/SpriteFont1.fnt"));
+        Label.LabelStyle labelStyle2 = new Label.LabelStyle();
+        labelStyle2.font = font2;
+
+        BitmapFont font3 = new BitmapFont(Gdx.files.internal("Erfan/Fonts/SmallFont.fnt"));
+        Label.LabelStyle labelStyle3 = new Label.LabelStyle();
+        labelStyle3.font = font3;
+
+
+
+        timeLabel.setText(currentGame.currentDate.getHour());
+        dateLabel.setText(currentGame.currentDate.getDate());
+        moneyLabel.setText("500");
+        weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
+
+        timeLabel.setColor(Color.BLACK);
+        dateLabel.setColor(Color.BLACK);
+        moneyLabel.setColor(Color.GREEN);
+        weekDayLabel.setColor(Color.BLACK);
+
+
+        dateLabel.setFontScale(1.2f);
+        weekDayLabel.setFontScale(1.2f);
+        weekDayLabel.setStyle(labelStyle2);
+
+
+
+        clockGroup.addActor(image);
+
+        clockGroup.addActor(timeLabel);
+        clockGroup.addActor(dateLabel);
+        clockGroup.addActor(moneyLabel);
+        clockGroup.addActor(weekDayLabel);
+
+        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 35);
+        moneyLabel.setPosition(300 , 150 - moneyLabel.getHeight());
+        weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 100, dateLabel.getY());
+        timeLabel.setPosition(weekDayLabel.getX(), weekDayLabel.getY() - 200);
+
+
+        float screenWidth = stage.getViewport().getWorldWidth();
+        float screenHeight = stage.getViewport().getWorldHeight();
+
+
+        clockGroup.setSize(image.getWidth(), image.getHeight());
+
+        clockGroup.setPosition(
+            screenWidth - clockGroup.getWidth() - 10,
+            screenHeight - clockGroup.getHeight() - 10);
+
+        stage.addActor(clockGroup);
+
+
+    }
 
 
 

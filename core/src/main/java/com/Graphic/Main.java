@@ -1,6 +1,6 @@
 package com.Graphic;
 
-import com.Graphic.View.*;
+import com.Graphic.View.GameMenus.GameMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

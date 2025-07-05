@@ -9,6 +9,8 @@ import java.util.*;
 
 public class App {
 
+
+    public static Skin skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
     // TODO موقع سیو دیتا اینارو باید همشو سیو کرد و موقع ترمینیت پاک کرد
 //    public static Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
 //    public static Map<Set<User>, List<Trade>> trades = new HashMap<>();
