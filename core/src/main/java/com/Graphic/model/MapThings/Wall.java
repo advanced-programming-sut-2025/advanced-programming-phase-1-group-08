@@ -5,6 +5,12 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class Wall extends GameObject {
     private WallType wallType;
+    int index;
+    private String Path;
+
+    public Wall(int index){
+        this.index=index;
+    }
 
     public void setWallType(WallType wallType) {
         this.wallType = wallType;
@@ -18,6 +24,14 @@ public class Wall extends GameObject {
 
     @Override
     public String getIcon() {
-        return BG_BRIGHT_WHITE+"# ";
+        if (Path != null) {
+            return Path;
+        }
+        if (index == 0) {
+            return Path ="Places/wall1.png";
+        }
+        else {
+            return Path = "Places/wall2.png";
+        }
     }
 }

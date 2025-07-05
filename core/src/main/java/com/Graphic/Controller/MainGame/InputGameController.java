@@ -279,15 +279,15 @@ public class InputGameController {
             return new Result(false,"you can't go to this coordinate");
         }
 
-        for (Market market : currentGame.markets) {
-            if (goalX > market.getTopLeftX() && goalY > market.getTopLeftY()){
-                if (goalX < market.getTopLeftX() + market.getWidth() && goalY < market.getTopLeftY() + market.getHeight()){
-                    if (market.getMarketType().getStartHour() > currentGame.currentDate.getHour() || market.getMarketType().getEndHour() < currentGame.currentDate.getHour()){
-                        return new Result(false , "you can't go to Market because it is not open");
-                    }
-                }
-            }
-        }
+//        for (Market market : currentGame.markets) {
+//            if (goalX > market.getTopLeftX() && goalY > market.getTopLeftY()){
+//                if (goalX < market.getTopLeftX() + market.getWidth() && goalY < market.getTopLeftY() + market.getHeight()){
+//                    if (market.getMarketType().getStartHour() > currentGame.currentDate.getHour() || market.getMarketType().getEndHour() < currentGame.currentDate.getHour()){
+//                        return new Result(false , "you can't go to Market because it is not open");
+//                    }
+//                }
+//            }
+//        }
         return null;
 
     }
