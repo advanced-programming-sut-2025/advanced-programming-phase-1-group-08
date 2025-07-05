@@ -1,9 +1,12 @@
 package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
+import com.Graphic.View.GameMenu;
+import com.Graphic.View.HomeMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Enum.Commands.HomeMenuCommands;
 import com.Graphic.model.Enum.FoodTypes;
+import com.Graphic.model.Enum.HouseModes;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.HelpersClass.Result;
@@ -225,14 +228,14 @@ public class HomeController {
     }
 
 
-    public static void handleHomeInputs () {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.C))
-            cook();
+    public static HouseModes handleHomeInputs (HouseModes mode) {
+        if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.C))
+            return cook(mode);
+
+        return mode;
     }
 
-    public static void cook () {
-
-
+    public static HouseModes cook (HouseModes mode) {
 //        // رسپی های عرفان
 //        if (currentGame.currentPlayer.getLevelMining() >= 1) {
 //            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
@@ -352,33 +355,7 @@ public class HomeController {
 //        }
 
 
-
-
-//        String input;
-//        Scanner scanner = new Scanner(System.in);
-//        Result result;
-//        while (true) {
-//            input = scanner.nextLine();
-//            if (HomeMenuCommands.showRecipes.getMatcher(input) != null) {
-//                result = recipeDisplay();
-//                System.out.println(result.massage());
-//            }
-//            else if (HomeMenuCommands.fridgePick.getMatcher(input) != null) {
-//                result = fridgePick(input);
-//                System.out.println(result.massage());
-//            }
-//            else if (HomeMenuCommands.fridgePut.getMatcher(input) != null) {
-//                result = fridgePut(input);
-//                System.out.println(result);
-//            }
-//            else if (HomeMenuCommands.foodPrepare.getMatcher(input) != null) {
-//                result = foodPrepare(input);
-//                System.out.println(result);
-//            }
-//            else if (input.equalsIgnoreCase("exit"))
-//                return;
-//            else System.out.println(RED+"Invalid Command in Cooking Section!(type exit to quit)"+RESET);
-//        }
+        return HouseModes.cook;
     }
 
     public Result goToCraftingMenu() {

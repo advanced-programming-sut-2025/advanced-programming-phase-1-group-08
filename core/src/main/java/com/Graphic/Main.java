@@ -15,7 +15,7 @@ public class Main extends Game {
 
         main = this;
         batch = new SpriteBatch();
-        main.setScreen((new GameMenu()));
+        main.setScreen((new HomeMenu()));
 
     }
 
