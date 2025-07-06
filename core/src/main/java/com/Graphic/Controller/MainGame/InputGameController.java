@@ -230,17 +230,17 @@ public class InputGameController {
             for (int j =0 ; j< 90 ; j++) {
                 try {
                     Main.getBatch().draw(TextureManager.get("Places/Walkable.png") ,
-                        TEXTURE_SIZE * j , TEXTURE_SIZE * (90 - i) , TEXTURE_SIZE , TEXTURE_SIZE);
+                        TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
 
                     if (getTileByCoordinates(i,j).getGameObject() instanceof UnWalkable) {
                         Main.getBatch().draw(TextureManager.get("Tree/unWalkable6.png"),
-                            TEXTURE_SIZE * j , TEXTURE_SIZE * (90 - i) , TEXTURE_SIZE , TEXTURE_SIZE);
+                            TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
                     }
 
                     Main.getBatch().draw(getTileByCoordinates(i , j)
                        .getGameObject()
                        .getSprite(TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
-                                     TEXTURE_SIZE * j , TEXTURE_SIZE * (90 - i) , TEXTURE_SIZE , TEXTURE_SIZE);
+                                     TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
                 }
                 catch (Exception e) {
 
