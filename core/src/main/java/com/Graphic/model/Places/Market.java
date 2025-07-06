@@ -24,15 +24,8 @@ public class Market extends GameObject {
         for (int i = marketType.getTopleftx();  i < marketType.getTopleftx() + marketType.getWidth() ; i++) {
             for (int j = marketType.getToplefty();  j < marketType.getToplefty() + marketType.getHeight() ; j++) {
                 if (GameControllerLogic.getTileByCoordinates(i, j).getGameObject().equals(this)) {
-                    int x = marketType.getWidth() * (i - marketType.getTopleftx()) + j - marketType.getToplefty() + 1;
-                    switch (marketType){
-                        case Blacksmith -> {
-                            return Path = "Places/BlackSmith"+x+".png";
-                        }
-                        default -> {
-                            return null;
-                        }
-                    }
+                    int x = marketType.getWidth() * (j - marketType.getToplefty()) + i - marketType.getTopleftx() + 1;
+                    return Path = "Places/"+marketType.getName()+x+".png";
 
                 }
             }

@@ -2,6 +2,7 @@ package com.Graphic.model.Places;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.model.MapThings.GameObject;
+import com.Graphic.model.MapThings.Wall;
 
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
@@ -43,53 +44,53 @@ public class Mine extends GameObject {
             for (int j = startY ; j < startY + height ; j++) {
                 if (GameControllerLogic.getTileByCoordinates(i, j).getGameObject().equals(this)) {
 
-                    if (i == startX + width - 1 && j == startY + (height / 2)) {
+                    if (j == startY + height - 1 && i == startX + (width / 2)) {
                         return Path = "Places/Mine1.png";
                     }
-                    if (i == startX + width - 2 && j == startY + (height / 2)) {
+                    if (j == startY + height - 2 && i == startX + (width / 2)) {
                         return Path = "Places/Mine2.png";
                     }
-                    if (i == startX + width -1 && j == startY) {
+                    if (j == startY + height -1 && i == startX) {
                         return Path = "Places/Mine5.png";
                     }
-                    if (i == startX + width - 1 && j == startY + height - 1) {
+                    if (j == startY + height - 1 && i == startX + width - 1) {
                         return Path = "Places/Mine6.png";
                     }
-                    if (i == startX + width - 1) {
+                    if (j == startY + height - 1) {
                         return Path="Places/Mine3.png";
                     }
-                    if (i == startX + width - 2 && j == startY + height - 1) {
+                    if (j == startY + height - 2 && i == startX + width - 1) {
                         return Path = "Places/Mine7.png";
                     }
-                    if (i == startX + width -2 && j == startY) {
+                    if (j == startY + height -2 && i == startX) {
                         return Path = "Places/Mine8.png";
                     }
-                    if (i == startX + width -2) {
+                    if (j == startY + height -2) {
                         return Path = "Places/Mine9.png";
                     }
-                    if (i > startX && i < startX + width - 2 && j > startY && j < startY + height - 1 ) {
+                    if (j > startY && j < startY + height - 2 && i > startX && i < startX + width - 1 ) {
                         return Path = "Places/Mine10.png";
                     }
-                    if (i == startX + width - 3 && j == startY ) {
+                    if (j == startY + height - 3 && i == startX ) {
                         return Path = "Places/Mine11.png";
                     }
-                    if (i == startX + width - 1 && j == startY + height - 3) {
+                    if (j == startY + height - 1 && i == startX + width - 3) {
                         return Path = "Places/Mine12.png";
                     }
-                    if (i == startX && j == startY + height - 1) {
+                    if (j == startY && i == startX + width - 1) {
                         return Path = "Places/Mine16.png";
                     }
-                    if (i == startX && j == startY) {
+                    if (j == startY && i == startX) {
                         return Path = "Places/Mine17.png";
                     }
-                    if (j == startY){
+                    if (i == startX){
                         return Path = "Places/Mine15.png";
                     }
-                    if (j == startY + height - 1) {
+                    if (i == startX + width - 1) {
                         return Path = "Places/Mine14.png";
                     }
 
-                    if (i == startX) {
+                    if (j == startY) {
                         return Path = "Places/Mine13.png";
                     }
                 }

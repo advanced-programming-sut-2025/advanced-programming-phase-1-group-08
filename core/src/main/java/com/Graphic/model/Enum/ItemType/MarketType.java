@@ -1,7 +1,7 @@
 package com.Graphic.model.Enum.ItemType;
 
 public enum MarketType {
-    Blacksmith("Blacksmith" , 9 , 16 , 42 , 32 , 6 , 5),
+    Blacksmith("BlackSmith" , 9 , 16 , 42 , 32 , 6 , 5),
     MarnieRanch("Marnie's Ranch" , 9 , 16 , 51 , 32 , 6 , 5),
     StardropSaloon("The Stardrop Saloon" , 12 , 24 , 32 , 45 , 6 , 5),
     CarpenterShop("Carpenter's shop" , 9 , 20 , 51, 38 , 6 , 5),
