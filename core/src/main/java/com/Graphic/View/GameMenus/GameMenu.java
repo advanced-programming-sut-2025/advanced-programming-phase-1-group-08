@@ -4,6 +4,7 @@ import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.GameTexturePath;
+import com.Graphic.model.GameAssetManager;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.badlogic.gdx.Gdx;
@@ -12,15 +13,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import java.util.ArrayList;
 
 import static com.Graphic.model.App.currentGame;
 
@@ -91,8 +89,6 @@ public class GameMenu implements  Screen, InputProcessor {
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
 
-
-
     }
 
 
@@ -100,48 +96,45 @@ public class GameMenu implements  Screen, InputProcessor {
 
         Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
 
-        BitmapFont font = new BitmapFont(Gdx.files.internal("Erfan/Fonts/tinyFont.fnt"));
+        ArrayList<Label> labels = new ArrayList<>();
+        labels.add(timeLabel);
+        labels.add(dateLabel);
+        labels.add(moneyLabel);
+        labels.add(weekDayLabel);
+
         Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
+        labelStyle.font = GameAssetManager.getGameAssetManager().getFont2();
 
-        BitmapFont font2 = new BitmapFont(Gdx.files.internal("Erfan/Fonts/SpriteFont1.fnt"));
         Label.LabelStyle labelStyle2 = new Label.LabelStyle();
-        labelStyle2.font = font2;
-
-        BitmapFont font3 = new BitmapFont(Gdx.files.internal("Erfan/Fonts/SmallFont.fnt"));
-        Label.LabelStyle labelStyle3 = new Label.LabelStyle();
-        labelStyle3.font = font3;
+        labelStyle2.font = GameAssetManager.getGameAssetManager().getFont3();
 
 
 
-        timeLabel.setText(currentGame.currentDate.getHour());
+        timeLabel.setText(currentGame.currentDate.getHour() + ":00");
         dateLabel.setText(currentGame.currentDate.getDate());
-        moneyLabel.setText("500");
         weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
 
-        timeLabel.setColor(Color.BLACK);
-        dateLabel.setColor(Color.BLACK);
-        moneyLabel.setColor(Color.GREEN);
-        weekDayLabel.setColor(Color.BLACK);
+        String moneyStr = String.valueOf(currentGame.currentPlayer.getMoney());
+        String spaced = String.join(" ", moneyStr.split(""));
+        moneyLabel.setText(spaced);
 
 
-        dateLabel.setFontScale(1.2f);
-        weekDayLabel.setFontScale(1.2f);
-        weekDayLabel.setStyle(labelStyle2);
-
-
+        for (Label l : labels) {
+            l.setColor(Color.BLACK);
+            l.setStyle(labelStyle2);
+        }
+        moneyLabel.setStyle(labelStyle);
 
         clockGroup.addActor(image);
 
-        clockGroup.addActor(timeLabel);
-        clockGroup.addActor(dateLabel);
-        clockGroup.addActor(moneyLabel);
-        clockGroup.addActor(weekDayLabel);
+        for (Label l : labels)
+            clockGroup.addActor(l);
 
-        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 35);
-        moneyLabel.setPosition(300 , 150 - moneyLabel.getHeight());
-        weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 100, dateLabel.getY());
-        timeLabel.setPosition(weekDayLabel.getX(), weekDayLabel.getY() - 200);
+
+        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 48);
+        weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 80, dateLabel.getY() + 3);
+        setCenteredPosition(timeLabel, weekDayLabel.getX() + 20, weekDayLabel.getY() - 95);
+        moneyLabel.setPosition(timeLabel.getX() + 35 - moneyLabel.getWidth(), timeLabel.getY() - 78);
 
 
         float screenWidth = stage.getViewport().getWorldWidth();
@@ -155,8 +148,6 @@ public class GameMenu implements  Screen, InputProcessor {
             screenHeight - clockGroup.getHeight() - 10);
 
         stage.addActor(clockGroup);
-
-
     }
 
 
@@ -206,6 +197,10 @@ public class GameMenu implements  Screen, InputProcessor {
     public boolean touchCancelled(int i, int i1, int i2, int i3) {
         return false;
     }
+    public void setCenteredPosition(Actor actor, float centerX, float centerY) {
+        actor.setPosition(centerX - actor.getWidth() / 2f, centerY - actor.getHeight() / 2f);
+    }
+
 
 
 //    public void check(Scanner scanner) throws IOException {

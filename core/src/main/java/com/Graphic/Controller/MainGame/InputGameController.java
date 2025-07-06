@@ -27,6 +27,7 @@ import com.Graphic.model.ToolsPackage.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 
 import java.io.IOException;
@@ -41,6 +42,12 @@ import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 
 
 public class InputGameController {
+
+
+    public void setCenteredPosition(Actor actor, float centerX, float centerY) {
+        actor.setPosition(centerX - actor.getWidth() / 2f, centerY - actor.getHeight() / 2f);
+    }
+
 
     public Result addDollar(int amount) {
         currentGame.currentPlayer.increaseMoney(amount);
