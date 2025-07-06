@@ -168,7 +168,7 @@ public class GameControllerLogic {
         Lake lake = null;
         for (int i = topLeftX + 60 * x; i < topLeftX + 60 * x + width; i++) {
             for (int j = topLeftY + 60 * y; j < topLeftY + 60 * y + height; j++) {
-                lake = new Lake(topLeftX, topLeftY, width, height);
+                lake = new Lake(topLeftX + 60 * x, topLeftY + 60 * y, width, height);
                 Tile tile = new Tile(i, j, lake);
                 farm.Farm.add(tile);
                 currentGame.bigMap.add(tile);
@@ -482,13 +482,13 @@ public class GameControllerLogic {
             }
             else {
                 if (i == 0 || i == 29) {
-                    Wall wall = new Wall(0);
+                    Wall wall = new Wall(1);
                     Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, wall);
                     currentGame.currentPlayer.getFarm().Farm.add(tile);
                     currentGame.bigMap.add(tile);
                 }
                 else {
-                    Wall wall = new Wall(1);
+                    Wall wall = new Wall(0);
                     Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, wall);
                     currentGame.currentPlayer.getFarm().Farm.add(tile);
                     currentGame.bigMap.add(tile);
