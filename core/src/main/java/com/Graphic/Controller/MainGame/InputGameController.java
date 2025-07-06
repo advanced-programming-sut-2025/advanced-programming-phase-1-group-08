@@ -10,12 +10,8 @@ import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.TextureManager;
-import com.Graphic.model.MapThings.GameObject;
-import com.Graphic.model.MapThings.Tile;
-import com.Graphic.model.MapThings.UnWalkable;
-import com.Graphic.model.MapThings.Walkable;
-import com.Graphic.model.OtherItem.ArtisanProduct;
-import com.Graphic.model.OtherItem.BarsAndOres;
+import com.Graphic.model.MapThings.*;
+import com.Graphic.model.OtherItem.*;
 import com.Graphic.model.Places.*;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Animall.BarnOrCage;
@@ -43,6 +39,25 @@ import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 
 public class InputGameController {
 
+    public static InputGameController inputGameController;
+
+    private InputGameController() {
+
+    }
+    public static InputGameController getInstance() {
+        if (inputGameController == null)
+            inputGameController = new InputGameController();
+        return inputGameController;
+    }
+
+    public void init () {
+        GameControllerLogic.init();
+    }
+    public void update(OrthographicCamera camera, float v) {
+        print();
+        moveCamera(camera);
+        GameControllerLogic.update();
+    }
 
     public void setCenteredPosition(Actor actor, float centerX, float centerY) {
         actor.setPosition(centerX - actor.getWidth() / 2f, centerY - actor.getHeight() / 2f);

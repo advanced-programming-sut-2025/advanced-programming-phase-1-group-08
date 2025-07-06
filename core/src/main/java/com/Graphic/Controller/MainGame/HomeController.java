@@ -166,7 +166,7 @@ public class HomeController {
 
 
         // add food to inventory
-        InputGameController controller = new InputGameController();
+        InputGameController controller = InputGameController.getInstance();
         Items i = new Food(t);
         if (checkAmountProductAvailable(i, 1)) {
             myInventory.Items.put(i, myInventory.Items.get(i) + 1);
@@ -176,7 +176,7 @@ public class HomeController {
 
         // decrease ingredients
         for (Map.Entry<Items, Integer> e: ingredients.entrySet()) {
-            InputGameController controller2 = new InputGameController();
+            InputGameController controller2 = InputGameController.getInstance();
             if (checkAmountProductAvailable(e.getKey(), e.getValue())) {
                 myInventory.Items.put(e.getKey(), myInventory.Items.get(e.getKey()) - e.getValue());
             }

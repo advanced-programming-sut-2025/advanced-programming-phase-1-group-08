@@ -327,7 +327,7 @@ public class Marketing {
         }
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        InputGameController gameController = new InputGameController();
+        InputGameController gameController = InputGameController.getInstance();
 
         if (findEnteredShopType() != MarketType.MarnieRanch) {
             return new Result(false , "you can't create a barn or cage because you are not in Marnie's Ranch Market");
@@ -401,7 +401,7 @@ public class Marketing {
     }
 
     public Result createWell(int topLeftX , int topLeftY) {
-        InputGameController gameController = new InputGameController();
+        InputGameController gameController = InputGameController.getInstance();
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         Marketing marketing = new Marketing();
 
@@ -458,7 +458,7 @@ public class Marketing {
     }
 
     public Result createShippingBin(int topLeftX , int topLeftY) {
-        InputGameController gameController = new InputGameController();
+        InputGameController gameController = InputGameController.getInstance();
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         Marketing marketing = new Marketing();
 

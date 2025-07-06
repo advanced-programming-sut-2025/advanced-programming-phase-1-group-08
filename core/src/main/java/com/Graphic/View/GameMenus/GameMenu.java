@@ -16,10 +16,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 
+import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
 
 
@@ -27,6 +29,8 @@ public class GameMenu implements  Screen, InputProcessor {
 
     public static GameMenu gameMenu;
 
+    public long startTime;
+    public long lastTime;
 
     private Stage stage;
     public static OrthographicCamera camera;
@@ -59,11 +63,15 @@ public class GameMenu implements  Screen, InputProcessor {
         createClock();
 
 
+        controller.init();
 
     }
     private void initialize () {
 
-        controller = new InputGameController();
+        startTime = TimeUtils.millis();
+        lastTime = TimeUtils.millis();
+
+        controller = InputGameController.getInstance();
         stage = new Stage(new ScreenViewport());
         clockGroup = new Group();
         camera = new OrthographicCamera();
@@ -77,12 +85,14 @@ public class GameMenu implements  Screen, InputProcessor {
     }
     public void render(float v) {
 
+        if (TimeUtils.millis() - lastTime > 3000)
+            updateClock();
+
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Main.getBatch().setProjectionMatrix(camera.combined);
         Main.getBatch().begin();
-        controller.print();
-        controller.moveCamera(camera);
+        controller.update(camera, v);
         Main.getBatch().end();
 
 
@@ -133,8 +143,8 @@ public class GameMenu implements  Screen, InputProcessor {
 
         dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 48);
         weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 80, dateLabel.getY() + 3);
-        setCenteredPosition(timeLabel, weekDayLabel.getX() + 20, weekDayLabel.getY() - 95);
-        moneyLabel.setPosition(timeLabel.getX() + 35 - moneyLabel.getWidth(), timeLabel.getY() - 78);
+        setCenteredPosition(timeLabel, weekDayLabel.getX() + 10, weekDayLabel.getY() - 95);
+        moneyLabel.setPosition(timeLabel.getX() + 45 - moneyLabel.getWidth(), timeLabel.getY() - 78);
 
 
         float screenWidth = stage.getViewport().getWorldWidth();
@@ -149,7 +159,14 @@ public class GameMenu implements  Screen, InputProcessor {
 
         stage.addActor(clockGroup);
     }
+    private void updateClock() {
 
+        passedOfTime(0, 1);
+        timeLabel.setText(currentGame.currentDate.getHour() + ":00");
+        dateLabel.setText(currentGame.currentDate.getDate());
+        weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
+        lastTime = TimeUtils.millis();
+    }
 
 
     public void resize(int i, int i1) {

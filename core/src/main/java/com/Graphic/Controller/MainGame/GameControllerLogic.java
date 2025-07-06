@@ -1,6 +1,7 @@
 
 package com.Graphic.Controller.MainGame;
 
+import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -33,9 +35,18 @@ import static com.Graphic.model.Enum.AllPlants.ForagingMineralsType.*;
 
 public class GameControllerLogic {
 
+    public static GameMenu gameMenu = GameMenu.getInstance();
 
     static int turnCounter = 0;
     static Random rand = new Random();
+
+
+
+    public static void init() {
+    }
+    public static void update() {
+
+    }
 
     public static ArrayList<Tile> sortMap(ArrayList<Tile> Map) {
         Map.sort((a, b) -> {
@@ -870,9 +881,6 @@ public class GameControllerLogic {
                     turnCounter++;
                     currentGame.currentPlayer = user;
 
-                    if (turnCounter % 4 == 0 && turnCounter != 0)
-                        passedOfTime(0, 1);
-
                     AutomaticFunctionAfterOneTurn();
 
                     if (checkForDeath()) {
@@ -1311,79 +1319,6 @@ public class GameControllerLogic {
             startDay();
         }
         currentGame.currentDate.increaseHour(dateHour.getHour() - currentGame.currentDate.getHour());
-    }
-    public static void passedOfTimeOriginal (int day, int hour) {
-//
-//        if (day == 0) {
-//            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
-//            }
-//            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(0);
-//            }
-//            if (currentGame.currentPlayer.Buff_farming_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_farming_hoursLeft(currentGame.currentPlayer.Buff_farming_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_farming_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_farming_hoursLeft(0);
-//            }
-//            if (currentGame.currentPlayer.Buff_foraging_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_foraging_hoursLeft(currentGame.currentPlayer.Buff_foraging_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_foraging_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_foraging_hoursLeft(0);
-//            }
-//            if (currentGame.currentPlayer.Buff_fishing_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_fishing_hoursLeft(currentGame.currentPlayer.Buff_fishing_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_fishing_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_fishing_hoursLeft(0);
-//            }
-//            if (currentGame.currentPlayer.Buff_mining_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_mining_hoursLeft(currentGame.currentPlayer.Buff_mining_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_mining_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_mining_hoursLeft(0);
-//            }
-//
-//
-//
-//
-//            // Buff implementation
-//            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft == 0) currentGame.currentPlayer.setMAX_HEALTH(200);
-//            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft == 0) currentGame.currentPlayer.setMAX_HEALTH(200);
-//            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
-//                currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 100);
-//                currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 100);
-//                currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft --);
-//            }
-//            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
-//                currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 50);
-//                currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 50);
-//                currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft --);
-//            }
-//            if (currentGame.currentPlayer.Buff_mining_hoursLeft > 0) currentGame.currentPlayer.setBuff_mining_hoursLeft(currentGame.currentPlayer.Buff_mining_hoursLeft --);
-//            if (currentGame.currentPlayer.Buff_fishing_hoursLeft > 0) currentGame.currentPlayer.setBuff_fishing_hoursLeft(currentGame.currentPlayer.Buff_fishing_hoursLeft --);
-//            if (currentGame.currentPlayer.Buff_farming_hoursLeft > 0) currentGame.currentPlayer.setBuff_farming_hoursLeft(currentGame.currentPlayer.Buff_farming_hoursLeft --);
-//            if (currentGame.currentPlayer.Buff_foraging_hoursLeft > 0) currentGame.currentPlayer.setBuff_foraging_hoursLeft(currentGame.currentPlayer.Buff_foraging_hoursLeft --);
-//
-//        }
-//        else
-//            currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
-//
-//        DateHour dateHour = currentGame.currentDate.clone();
-//
-//        currentGame.currentDate.increaseHour(hour);
-//        currentGame.currentDate.increaseDay(day);
-//
-//        for (int i = 0 ; i < getDayDifferent(dateHour, currentGame.currentDate) ; i++)
-//            startDay();
-//
-//        if (currentGame.currentDate.getHour() > 22)
-//            passedOfTime(0, 24 - currentGame.currentDate.getHour() + 9);
-//        if (currentGame.currentDate.getHour() < 9)
-//            passedOfTime(0, 9 - currentGame.currentDate.getHour());
-
     }
 
     public static void startDay () {
