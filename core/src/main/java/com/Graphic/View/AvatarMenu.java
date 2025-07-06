@@ -15,4 +15,5 @@ public class AvatarMenu implements AppMenu{
 
         else System.out.println("Invalid Command!");
     }
+
 }
