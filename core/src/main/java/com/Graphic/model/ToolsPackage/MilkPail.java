@@ -32,7 +32,7 @@ public class MilkPail extends Tools {
     }
 
     @Override
-    public String getIconPath() {
+    public String getInventoryIconPath() {
         return "Erfan/Tools/Milk_Pail.png";
     }
 

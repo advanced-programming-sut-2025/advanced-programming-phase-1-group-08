@@ -17,7 +17,7 @@ public enum ForagingSeedsType {
 
     JazzSeeds       ( "Jazz Seeds",       true, BlueJazz,10000,
             4, false, new int[]{1, 2, 2, 2},5,5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore )  ) {
+            "Erfan/plants/crops/blueJazz/Jazz_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore )  ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -48,7 +48,7 @@ public enum ForagingSeedsType {
     },
     CarrotSeeds     ( "Carrot Seeds",     true, Carrot,  10000,
             3, false, new int[]{1, 1, 1,} ,10,0 ,
-            List.of(MarketType.JojaMart) ) {
+            "Erfan/plants/crops/carrot/Carrot_Seeds.png", List.of(MarketType.JojaMart) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -75,7 +75,7 @@ public enum ForagingSeedsType {
     },
     CauliflowerSeeds( "Cauliflower Seeds",true, Cauliflower,10000,
             5, true, new int[]{1, 2, 4, 4, 1} , 5,5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/Cauliflower/Cauliflower_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -113,7 +113,7 @@ public enum ForagingSeedsType {
     },
     CoffeeBean      ( "Coffee Bean",       false, CropsType.CoffeeBean,2,
             5, false, new int[]{1, 2, 2, 3, 2} , 1, 5 ,
-            List.of(MarketType.JojaMart ) ) {
+            "Erfan/plants/crops//.png", List.of(MarketType.JojaMart ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -136,10 +136,10 @@ public enum ForagingSeedsType {
                 default -> {return -1 ;}
             }
         }
-    },
+    },             // TODO
     GarlicSeeds     ( "Garlic Seeds",    true, Garlic,10000,
             4, false, new int[]{1, 1, 1, 1} ,0 , 5 ,
-            List.of( MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/Garlic/Garlic_Seeds.png", List.of( MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -170,7 +170,7 @@ public enum ForagingSeedsType {
     },
     BeanStarter     ( "Bean Starter",     false, GreenBean,3,
             5, false, new int[]{1, 1, 1, 3, 4} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/GreenBean/.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -199,10 +199,10 @@ public enum ForagingSeedsType {
                 default -> {return -1 ;}
             }
         }
-    },
+    }, // TODO
     KaleSeeds       ( "Kale Seeds",       true, Kale,10000,
             4, false, new int[]{1, 2, 2, 1} ,5,5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/kale/Kale_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -234,7 +234,7 @@ public enum ForagingSeedsType {
     },
     ParsnipSeeds    ( "Parsnip Seeds",    true, Parsnip,10000,
             4, false, new int[]{1, 1, 1, 1} ,5, 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/parsnip/Parsnip_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -266,7 +266,7 @@ public enum ForagingSeedsType {
     },
     PotatoSeeds     ( "Potato Seeds",     true, Potato,10000,
             5, false, new int[]{1, 1, 1, 2, 1} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/potato/Potato_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -298,7 +298,7 @@ public enum ForagingSeedsType {
     },
     RhubarbSeeds    ( "Rhubarb Seeds",    true, Rhubarb,10000,
             5, false, new int[]{2, 2, 2, 3, 4} , 5 , 0 ,
-            List.of(MarketType.JojaMart) ) {
+            "Erfan/plants/crops/rhubarb/Rhubarb_Seeds.png", List.of(MarketType.JojaMart) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -324,7 +324,7 @@ public enum ForagingSeedsType {
     },
     StrawberrySeeds ( "Strawberry Seeds", false, Strawberry,4,
             5, false, new int[]{1, 1, 2, 2, 2,} , 5 , 0 ,
-            List.of(MarketType.JojaMart) ) {
+            "Erfan/plants/crops/strawberry/Strawberry_Seeds.png", List.of(MarketType.JojaMart) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -350,7 +350,7 @@ public enum ForagingSeedsType {
     },
     TulipBulb       ( "Tulip Bulb",       true, Tulip,10000,
             4, false, new int[]{1, 1, 2, 2} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/tulip/Tulip_Bulb.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -383,7 +383,7 @@ public enum ForagingSeedsType {
     },
     RiceShoot       ( "Rice Shoot",       true, UnmilledRice,10000,
             4, false, new int[]{1, 2, 2, 3} , 0 , 5 ,
-            List.of(MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/unmilledRice/.png", List.of(MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -411,10 +411,10 @@ public enum ForagingSeedsType {
                 default -> {return -1 ;}
             }
         }
-    },
+    }, // TODO
     BlueberrySeeds  ( "Blueberry Seeds",  false, Blueberry,4,
             5, false, new int[]{1, 3, 3, 4, 2} , 0 , 5 ,
-            List.of(MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/blueberry/Blueberry_Seeds.png", List.of(MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -445,7 +445,7 @@ public enum ForagingSeedsType {
     },
     CornSeeds       ( "Corn Seeds",       false, Corn,4,
             5, false, new int[]{2, 3, 3, 3, 3} ,5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/corn/Corn_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -478,7 +478,7 @@ public enum ForagingSeedsType {
     },
     HopsStarter     ( "Hops Starter",     false, Hops,1,
             5, false, new int[]{1, 1, 2, 3, 4} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/hops/Hops_Starter.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -510,7 +510,7 @@ public enum ForagingSeedsType {
     },
     PepperSeeds     ( "Pepper Seeds",     false, HotPepper,3,
             5, false, new int[]{1, 1, 1, 1, 1} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/hotPepper/Pepper_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -541,9 +541,9 @@ public enum ForagingSeedsType {
             }
         }
     },
-    MelonSeeds      ( "Melon Seeds",      true, Melon,10000, /// //// Erfan/Erfan/Erfan/Erfan/Erfan/Erfan/Erfan/
+    MelonSeeds      ( "Melon Seeds",      true, Melon,10000,
             5, true, new int[] {1, 2, 3, 3, 3} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/melon/Melon_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -581,7 +581,7 @@ public enum ForagingSeedsType {
     },
     PoppySeeds      ( "Poppy Seeds",      true, Poppy,10000,
             4, false, new int[]{1, 2, 2, 2} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/poppy/Poppy_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -614,7 +614,7 @@ public enum ForagingSeedsType {
     },
     RadishSeeds     ("Radish Seeds",      true, Radish,10000,
             4, false, new int[]{2, 1, 2, 1} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/radish/Radish_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -646,7 +646,7 @@ public enum ForagingSeedsType {
     },
     RedCabbageSeeds ( "Red Cabbage Seeds",true, RedCabbage,10000,
             5, false, new int[]{2, 1, 2, 2, 2} ,0 ,5 ,
-            List.of(MarketType.PierreGeneralStore)) {
+            "Erfan/plants/crops/redCabbage/Red_Cabbage_Seeds.png", List.of(MarketType.PierreGeneralStore)) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -677,7 +677,7 @@ public enum ForagingSeedsType {
     },
     StarfruitSeeds  ( "Starfruit Seeds",  true, Starfruit,10000,
             5, false, new int[]{2, 3, 2, 3, 3} , 5 , 0 ,
-            List.of(MarketType.JojaMart) ) {
+            "Erfan/plants/crops/starfruit/Starfruit_Seeds.png", List.of(MarketType.JojaMart) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -703,7 +703,7 @@ public enum ForagingSeedsType {
     },
     SpangleSeeds    ( "Spangle Seeds",    true, SummerSpangle,10000,
             4, false, new int[]{1, 2, 3, 1} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/summerSpangle/Summer_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -735,7 +735,7 @@ public enum ForagingSeedsType {
     },
     SummerSquashSeeds( "Summer Squash Seeds",false, SummerSquash,3,
             5, false, new int[]{1, 1, 1, 2, 1} ,10 , 0 ,
-            List.of(MarketType.JojaMart ) ) {
+            "Erfan/plants/crops/summerSquash/Summer_Squash_Seeds.png", List.of(MarketType.JojaMart ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -761,7 +761,7 @@ public enum ForagingSeedsType {
     },
     SunflowerSeeds  ( "Sunflower Seeds",     true, Sunflower,10000,
             4, false, new int[]{1, 2, 3, 2} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/sunflower/Sunflower_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -793,7 +793,7 @@ public enum ForagingSeedsType {
     },
     TomatoSeeds     ( "Tomato Seeds",        false, Tomato,4,
             5, false, new int[]{2, 2, 2, 2, 3} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/tomato/Tomato_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -826,7 +826,7 @@ public enum ForagingSeedsType {
     },
     WheatSeeds      ( "Wheat Seeds",         true, Wheat,10000,
             4, false, new int[]{1, 1, 1, 1} , 10 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/wheat/Wheat_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -858,7 +858,7 @@ public enum ForagingSeedsType {
     },
     AmaranthSeeds   ( "Amaranth Seeds",      true, Amaranth,10000,
             4, false, new int[]{1, 2, 2, 2} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/amaranth/Amaranth_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -890,7 +890,7 @@ public enum ForagingSeedsType {
     },
     ArtichokeSeeds  ( "Artichoke Seeds",     true, Artichoke,10000,
             5, false, new int[]{2, 2, 1, 2, 1} ,0 , 5 ,
-            List.of(MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/artichoke/Artichoke_Seeds.png", List.of(MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -921,7 +921,7 @@ public enum ForagingSeedsType {
     },
     BeetSeeds       ( "Beet Seeds",          true, Beet,10000,
             4, false, new int[]{1, 1, 2, 2} ,5 , 0 ,
-            List.of(MarketType.JojaMart ) ){
+            "Erfan/plants/crops/beet/Beet_Seeds.png", List.of(MarketType.JojaMart ) ){
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -947,7 +947,7 @@ public enum ForagingSeedsType {
     },
     BokChoySeeds    ("BokChoy Seeds",        true, BokChoy,10000,
             4, false, new int[]{1, 1, 1, 1} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/bokChoy/Bok_Choy_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
@@ -978,7 +978,7 @@ public enum ForagingSeedsType {
     },
     BroccoliSeeds   ( "Broccoli Seeds",      false, Broccoli,4,
             4, false, new int[]{2, 2, 2, 2} ,5 , 0 ,
-            List.of(MarketType.JojaMart ) ){
+            "Erfan/plants/crops/Broccoli/Broccoli_Seeds.png", List.of(MarketType.JojaMart ) ){
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
@@ -1003,7 +1003,7 @@ public enum ForagingSeedsType {
     },
     CranberrySeeds  ( "Cranberry Seeds",     false, Cranberries,5,
             5, false, new int[]{1, 2, 1, 1, 2} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/cranberries/Cranberry_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -1035,7 +1035,7 @@ public enum ForagingSeedsType {
     },
     EggplantSeeds   ( "Eggplant Seeds",      false, Eggplant,5,
             4, false, new int[]{1, 1, 1, 1} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/eggplant/Eggplant_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -1067,7 +1067,7 @@ public enum ForagingSeedsType {
     },
     FairySeeds      ( "Fairy Seeds",         true, FairyRose,10000,
             4, false, new int[]{1, 4, 4, 3}, 5,5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/fairyRose/Fairy_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -1099,7 +1099,7 @@ public enum ForagingSeedsType {
     },
     GrapeStarter    ( "Grape Starter",       false, Grape,3,
             5, false, new int[]{1, 1, 2, 3, 3} ,0 , 5 ,
-            List.of(MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/grape/Grape_Starter.png", List.of(MarketType.PierreGeneralStore ) ) {
         @Override
         public ArrayList<Season> getSeason() {
             return new ArrayList<>(List.of(Season.Fall));
@@ -1129,7 +1129,7 @@ public enum ForagingSeedsType {
     },
     PumpkinSeeds    ( "Pumpkin Seeds",       true, Pumpkin,10000,
             5, true, new int[] {1, 2, 3, 4, 3} , 0 , 5 ,
-            List.of(MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/pumpkin/Pumpkin_Seeds.png", List.of(MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -1165,7 +1165,7 @@ public enum ForagingSeedsType {
     },
     YamSeeds        ( "Yam Seeds",           true, Yam,10000,
             4, false, new int[]{1, 3, 3, 3} , 5 , 5 ,
-            List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/yam/Yam_Seeds.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -1197,7 +1197,7 @@ public enum ForagingSeedsType {
     },
     RareSeed        ( "Rare Seed",           true, SweetGemBerry,10000,
             5, false, new int[]{2, 4, 6, 6, 6} , 1 , 0 ,
-            List.of(MarketType.JojaMart) ) {
+            "Erfan/plants/crops/sweetGemBerry/Rare_Seed.png", List.of(MarketType.JojaMart) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -1223,7 +1223,7 @@ public enum ForagingSeedsType {
     },
     PowdermelonSeeds("Powdermelon Seeds",    true, Powdermelon,10000,
             5, true, new int[]{1, 2, 1, 2, 1} , 10 , 0 ,
-            List.of(MarketType.JojaMart) ) {
+            "Erfan/plants/crops/Powdermelon/Powdermelon_Seeds.png", List.of(MarketType.JojaMart) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -1255,7 +1255,7 @@ public enum ForagingSeedsType {
     },
     AncientSeeds    ( "Ancient Seeds",       false, AncientFruit,7,
             5, false, new int[]{2, 7, 7, 7, 5} , 1 , 0 ,
-            List.of(MarketType.JojaMart) ) {
+            "Erfan/plants/crops/ancientFruit/Ancient_Seeds.png", List.of(MarketType.JojaMart) ) {
 
         public ArrayList<Season> getSeason() {
              return new ArrayList<>(Arrays.asList(Season.Fall, Season.Summer, Season.Spring));
@@ -1283,6 +1283,7 @@ public enum ForagingSeedsType {
     };
 
 
+    private final String inventoryIconPath;
     private final String displayName;
     private final boolean isOneTimeUse;
     private final CropsType productType;
@@ -1296,7 +1297,10 @@ public enum ForagingSeedsType {
 
     ForagingSeedsType(String displayName, boolean isOneTimeUse, CropsType productType,
                       int regrowthTime, int growthStages, boolean canGrowGiant, int[] stageDays,
-                      int JojaMartLimit, int PierrGeneralLimit , List<MarketType> marketTypes) {
+                      int JojaMartLimit, int PierrGeneralLimit,
+                      String inventoryIconPath, List<MarketType> marketTypes) {
+
+        this.inventoryIconPath = inventoryIconPath;
         this.displayName = displayName;
         this.isOneTimeUse = isOneTimeUse;
         this.productType = productType;

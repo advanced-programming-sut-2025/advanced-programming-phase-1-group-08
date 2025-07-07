@@ -27,7 +27,7 @@ public class FishingPole extends Tools {
         return 0;
     }
     @Override
-    public String getIconPath() {
+    public String getInventoryIconPath() {
         return type.getIconPath();
     }
 }

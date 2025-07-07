@@ -13,15 +13,20 @@ import static com.Graphic.model.Enum.ItemType.BarsAndOreType.*;
 
 public enum AxeType {
 
-    primaryAxe  ("Primary Axe", -5 , 1 , 0 , null, "Erfan/Tools/Axe/Axe.png"),
+    primaryAxe  ("Primary Axe",-5,1,0,
+        null, "Erfan/Tools/Axe/Axe.png"),
 
-    copperyAxe  ("Coppery Axe", -4 , 1 , 2000 , CopperBar, "Erfan/Tools/Axe/Copper_Axe.png") ,
+    copperyAxe  ("Coppery Axe",-4,1,2000,
+        CopperBar, "Erfan/Tools/Axe/Copper_Axe.png") ,
 
-    ironAxe     ("Iron Axe",    -3 , 1 , 5000 , IronBar, "Erfan/Tools/Axe/Steel_Axe.png"),
+    ironAxe     ("Iron Axe",   -3,1,5000,
+        IronBar, "Erfan/Tools/Axe/Steel_Axe.png"),
 
-    goldenAxe   ("Golden Axe",  -2 , 1 , 10000 , GoldBar, "Erfan/Tools/Axe/Gold_Axe.png"),
+    goldenAxe   ("Golden Axe", -2,1,10000,
+        GoldBar, "Erfan/Tools/Axe/Gold_Axe.png"),
 
-    iridiumAxe  ("Iridium Axe", -1 , 1 , 25000 , IridiumBar, "Erfan/Tools/Axe/Iridium_Axe.png");
+    iridiumAxe  ("Iridium Axe",-1,1,25000,
+        IridiumBar, "Erfan/Tools/Axe/Iridium_Axe.png");
 
     private final int energyCost;
     private final String displayName;

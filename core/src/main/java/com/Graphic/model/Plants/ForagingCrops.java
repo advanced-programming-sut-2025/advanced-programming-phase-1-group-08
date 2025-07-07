@@ -19,17 +19,7 @@ public class ForagingCrops extends Items {
         this.type = type;
     }
 
-    public ForagingCropsType getType() {
-        return type;
-    }
 
-    public void setProtected(boolean aProtected) {
-        isProtected = aProtected;
-    }
-
-    public boolean isProtected() {
-        return isProtected;
-    }
 
     public void delete () {
 
@@ -37,19 +27,35 @@ public class ForagingCrops extends Items {
             if (tile.getGameObject() == this)
                 tile.setGameObject(new Walkable());
     }
+    public void setProtected(boolean aProtected) {
+
+        isProtected = aProtected;
+    }
+    public boolean isProtected() {
+
+        return isProtected;
+    }
+    public ForagingCropsType getType() {
+
+        return type;
+    }
 
     @Override
     public String getName () {
+
         return type.getDisplayName();
     }
 
     @Override
-    public int getSellPrice() {
-        return type.getPrice();
+    public String getInventoryIconPath() {
+
+        return type.getTexturePath();
     }
 
     @Override
-    public String getIcon () {
-        return this.type.getTexturePath();
+    public int getSellPrice() {
+
+        return type.getPrice();
     }
+
 }

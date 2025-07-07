@@ -42,7 +42,7 @@ public class Hoe extends Tools {
         return 0;
     }
     @Override
-    public String getIconPath() {
+    public String getInventoryIconPath() {
         return type.getIconPath();
     }
 }

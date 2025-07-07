@@ -13,9 +13,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -29,12 +34,12 @@ public class GameMenu implements  Screen, InputProcessor {
 
     public static GameMenu gameMenu;
 
-    public long startTime;
-    public long lastTime;
-
     private Stage stage;
     public static OrthographicCamera camera;
     private InputGameController controller;
+
+    public long startTime;
+    public long lastTime;
 
     private Group clockGroup;
     private Label moneyLabel;
@@ -62,25 +67,7 @@ public class GameMenu implements  Screen, InputProcessor {
         controller.startNewGame("a");
         Gdx.input.setInputProcessor(this);
         createClock();
-
-
-
-    }
-    private void initialize () {
-
-        startTime = TimeUtils.millis();
-        lastTime = TimeUtils.millis();
-
-        controller = InputGameController.getInstance();
-        stage = new Stage(new ScreenViewport());
-        clockGroup = new Group();
-        camera = new OrthographicCamera();
-
-
-        timeLabel = new Label("", App.skin);
-        dateLabel = new Label("", App.skin);
-        moneyLabel = new Label("", App.skin);
-        weekDayLabel = new Label("", App.skin);
+        createToolsMenu();
 
     }
     public void render(float v) {
@@ -102,6 +89,51 @@ public class GameMenu implements  Screen, InputProcessor {
     }
 
 
+    private void createToolsMenu () {
+
+        Image darkOverlay = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/280x280.jpg"))));
+        darkOverlay.setColor(0, 0, 0, 0.5f);
+        darkOverlay.setSize(stage.getWidth(), stage.getHeight());
+
+        // از کنترلر اری لیست تکست چر بگیری و با سایزش میتونی ابعاد اوکی کنی
+
+        Window popup = new Window("Tools", App.skin);
+        popup.setSize(900, 300);
+        popup.setPosition((stage.getWidth() - popup.getWidth()) / 2, (stage.getHeight() - popup.getHeight()) / 2);
+
+
+        TextButton closeButton = new TextButton("Exit", App.skin);
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                popup.remove();
+                darkOverlay.remove();
+            }
+        });
+
+        popup.add(new Label("choose your tool", App.skin)).row();
+        popup.add(closeButton);
+
+        stage.addActor(darkOverlay);
+        stage.addActor(popup);
+    }
+    private void initialize () {
+
+        startTime = TimeUtils.millis();
+        lastTime = TimeUtils.millis();
+
+        controller = InputGameController.getInstance();
+        stage = new Stage(new ScreenViewport());
+        clockGroup = new Group();
+        camera = new OrthographicCamera();
+
+
+        timeLabel = new Label("", App.skin);
+        dateLabel = new Label("", App.skin);
+        moneyLabel = new Label("", App.skin);
+        weekDayLabel = new Label("", App.skin);
+
+    }
     private void createClock() {
 
         Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));

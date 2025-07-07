@@ -43,7 +43,7 @@ public class TrashCan extends Tools {
     }
 
     @Override
-    public String getIconPath() {
+    public String getInventoryIconPath() {
         return type.getIconPath();
     }
 }

@@ -34,7 +34,7 @@ public class PickAxe extends Tools {
     }
 
     @Override
-    public String getIconPath() {
+    public String getInventoryIconPath() {
         return type.getIconPath();
     }
 

@@ -39,7 +39,7 @@ public class Axe extends Tools {
     public int getSellPrice() {
         return 0;
     }
-    public String getIconPath () {
+    public String getInventoryIconPath () {
         return this.type.getIconPath();
     }
 
