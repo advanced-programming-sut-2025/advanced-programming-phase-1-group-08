@@ -1356,6 +1356,10 @@ public enum ForagingSeedsType {
     public String getGiantTexturePath() {
         return null;
     }
+    public String getInventoryIconPath() {
+        return inventoryIconPath;
+    }
+
     public static ForagingSeedsType fromDisplayName(String displayName) {
         for (ForagingSeedsType type : ForagingSeedsType.values())
             if (type.getDisplayName().equals(displayName))
