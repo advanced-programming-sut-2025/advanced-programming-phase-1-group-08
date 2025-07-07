@@ -10,25 +10,32 @@ import static com.Graphic.model.Enum.ItemType.BarsAndOreType.*;
 
 public enum WateringCanType {
 
-    PrimaryWateringCan  ("Primary Watering Can",-5, 40 , 0 , null),
+    PrimaryWateringCan  ("Primary Watering Can",-5, 40, 0,
+        null, "Erfan/Tools/Watering_Can/Watering_Can.png"),
 
-    CopperyWateringCan  ("Coppery Watering Can",-4, 55 , 2000 , CopperBar),
+    CopperyWateringCan  ("Coppery Watering Can",-4, 55, 2000,
+        CopperBar, "Erfan/Tools/Watering_Can/Copper_Watering_Can.png"),
 
-    IronWateringCan     ("Iron Watering Can",   -3, 70 , 5000 , IronBar),
+    IronWateringCan     ("Iron Watering Can",   -3, 70, 5000,
+        IronBar, "Erfan/Tools/Watering_Can/Steel_Watering_Can.png"),
 
-    GoldenWateringCan   ("Golden Watering Can", -2, 85 , 10000 , GoldBar),
+    GoldenWateringCan   ("Golden Watering Can", -2, 85, 10000,
+        GoldBar, "Erfan/Tools/Watering_Can/Gold_Watering_Can.png"),
 
-    IridiumWateringCan  ("Iridium Watering Can",-1, 100 , 25000 , IridiumBar);
+    IridiumWateringCan  ("Iridium Watering Can",-1, 100, 25000,
+        IridiumBar, "Erfan/Tools/Watering_Can/Iridium_Watering_Can.png");
 
     private final String displayName;
+    private final String iconPath;
     private final int energyCost;
     private final int capacity;
     private final int Price;
     private final BarsAndOreType barsAndOreType;
 
-    WateringCanType(String displayName, int energyCost, int capacity , int Price , BarsAndOreType barsAndOreType) {
+    WateringCanType(String displayName, int energyCost, int capacity , int Price , BarsAndOreType barsAndOreType, String iconPath) {
         this.displayName = displayName;
         this.energyCost = energyCost;
+        this.iconPath = iconPath;
         this.capacity = capacity;
         this.Price = Price;
         this.barsAndOreType = barsAndOreType;

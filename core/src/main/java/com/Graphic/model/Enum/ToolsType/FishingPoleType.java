@@ -5,7 +5,7 @@ import static com.Graphic.model.App.currentGame;
 
 public enum FishingPoleType {
 
-    TrainingRod (1 , -1){
+    TrainingRod (1 , -1, "Erfan/Tools/Fishing_Pole/Training_Rod.png"){
         @Override
         public int getPrice() {
             return 25;
@@ -35,7 +35,7 @@ public enum FishingPoleType {
             return 0.1;
         }
     },
-    BambooPole (1 , -1){
+    BambooPole (1 , -1, "Erfan/Tools/Fishing_Pole/Bamboo_Pole.png"){
         @Override
         public int getPrice() {
             return 500;
@@ -61,7 +61,7 @@ public enum FishingPoleType {
             return 0.5;
         }
     },
-    FiberglassRod (1 , 2){
+    FiberglassRod (1 , 2, "Erfan/Tools/Fishing_Pole/Fiberglass_Rod.png"){
         @Override
         public int getPrice() {
             return 1800;
@@ -87,7 +87,7 @@ public enum FishingPoleType {
             return 0.9;
         }
     },
-    IridiumRod (1 , 4){
+    IridiumRod (1 , 4, "Erfan/Tools/Fishing_Pole/Iridium_Rod.png"){
         @Override
         public int getPrice() {
             return 7500;
@@ -116,18 +116,23 @@ public enum FishingPoleType {
         }
     };
 
+    private int initialShopLimit;
+    private final String iconPath;
+    private final int level;
+    private int shopLimit=1;
+
+    FishingPoleType(int InitialShopLimit , int level, String iconPath) {
+        this.initialShopLimit = InitialShopLimit;
+        this.level = level;
+        this.iconPath = iconPath;
+    }
+
+
+
     public abstract int getPrice();
     public abstract int costEnergy(boolean Fishing);
     public abstract String getName();
     public abstract double getCoefficient();
-    private int initialShopLimit;
-    private final int level;
-    private int shopLimit=1;
-
-    FishingPoleType(int InitialShopLimit , int level) {
-        this.initialShopLimit = InitialShopLimit;
-        this.level = level;
-    }
 
     public int getInitialShopLimit() {
         return initialShopLimit;

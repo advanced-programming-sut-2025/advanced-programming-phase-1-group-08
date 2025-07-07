@@ -12,23 +12,25 @@ import static com.Graphic.model.Enum.ItemType.BarsAndOreType.*;
 
 public enum PickAxeType {
 
-    primaryPickAxe  ("Primary PickAxe", -5 , 0 , null),
+    primaryPickAxe  ("Primary PickAxe", -5 , 0 , null, "Erfan/Tools/Pickaxe/Pickaxe.png"),
 
-    copperyPickAxe  ("Coppery PickAxe", -4 , 2000 , CopperBar),
+    copperyPickAxe  ("Coppery PickAxe", -4 , 2000 , CopperBar, "Erfan/Tools/Pickaxe/Copper_Pickaxe.png"),
 
-    ironPickAxe     ("Iron PickAxe",    -3 , 5000 , IronBar),
+    ironPickAxe     ("Iron PickAxe",    -3 , 5000 , IronBar, "Erfan/Tools/Pickaxe/Steel_Pickaxe.png"),
 
-    goldenPickAxe   ("Golden PickAxe",  -2 , 10000 , GoldBar),
+    goldenPickAxe   ("Golden PickAxe",  -2 , 10000 , GoldBar, "Erfan/Tools/Pickaxe/Gold_Pickaxe.png"),
 
-    iridiumPickAxe  ("Iridium PickAxe", -1 , 25000 , IridiumBar);
+    iridiumPickAxe  ("Iridium PickAxe", -1 , 25000 , IridiumBar, "Erfan/Tools/Pickaxe/Iridium_Pickaxe.png");
 
     private final int energyCost;
     private final String displayName;
     private final int price;
+    private final String iconPath;
     private final BarsAndOreType barsAndOreType;
 
-    PickAxeType (String displayName, int energyCost, int price , BarsAndOreType barsAndOreType) {
+    PickAxeType (String displayName, int energyCost, int price , BarsAndOreType barsAndOreType, String iconPath) {
         this.displayName = displayName;
+        this.iconPath = iconPath;
         this.energyCost = energyCost;
         this.price = price;
         this.barsAndOreType = barsAndOreType;

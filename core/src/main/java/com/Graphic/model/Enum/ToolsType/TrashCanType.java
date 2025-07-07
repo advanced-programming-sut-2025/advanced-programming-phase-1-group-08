@@ -9,44 +9,45 @@ import static com.Graphic.model.Enum.ItemType.BarsAndOreType.*;
 
 public enum TrashCanType {
 
-    primaryTrashCan("Primary Trash Can",    0, null) {
+    primaryTrashCan("Primary Trash Can",    0, null, "Erfan/Tools/Trash_Can/Trash_Can_Copper.png") {
         @Override
         public int getPercent() {
             return 0;
         }
     },
-    CopperTrashCan ("Copper Trash Can",  1000, CopperBar) {
+    CopperTrashCan ("Copper Trash Can",  1000, CopperBar, "Erfan/Tools/Trash_Can/Trash_Can_Copper.png") {
         @Override
         public int getPercent() {
             return 15;
         }
     },
-    SteelTrashCan  ("Steel Trash Can",   2500, IronBar) {
+    SteelTrashCan  ("Steel Trash Can",   2500, IronBar, "Erfan/Tools/Trash_Can/Trash_Can_Steel.png") {
         @Override
         public int getPercent() {
             return 30;
         }
     },
-    GoldTrashCan   ("Gold Trash Can",    5000, GoldBar) {
+    GoldTrashCan   ("Gold Trash Can",    5000, GoldBar, "Erfan/Tools/Trash_Can/Trash_Can_Gold.png") {
         @Override
         public int getPercent() {
             return 45;
         }
     },
-    IridiumTrashCan("Iridium Trash Can",12500, IridiumBar) {
+    IridiumTrashCan("Iridium Trash Can",12500, IridiumBar, "Erfan/Tools/Trash_Can/Trash_Can_Iridium.png") {
         @Override
         public int getPercent() {
             return 60;
         }
     };
 
-    public abstract int getPercent();
     private final int Price;
+    private final String iconPath;
     private final String displayName;
     private final BarsAndOreType BarsAndOreType;
 
-    private TrashCanType(String displayName, int price , BarsAndOreType BarsAndOreType) {
+    private TrashCanType(String displayName, int price , BarsAndOreType BarsAndOreType, String iconPath) {
         this.displayName = displayName;
+        this.iconPath = iconPath;
         this.Price = price;
         this.BarsAndOreType = BarsAndOreType;
     }
@@ -54,6 +55,7 @@ public enum TrashCanType {
         return Price;
     }
 
+    public abstract int getPercent();
     public static TrashCanType nextTrashCanType(TrashCanType trashCanType) {
         return switch (trashCanType) {
             case primaryTrashCan -> CopperTrashCan;
