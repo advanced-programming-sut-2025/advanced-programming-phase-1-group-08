@@ -43,6 +43,10 @@ public enum HoeType {
 
         return displayName;
     }
+    public String getIconPath() {
+        return iconPath;
+
+    }
     public int getPrice() {
         return price;
     }
@@ -62,7 +66,6 @@ public enum HoeType {
         }
         return null;
     }
-
     public static boolean checkIngredient(HoeType hoeType) {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         BarsAndOres barsAndOres= new BarsAndOres(hoeType.barsAndOreType);

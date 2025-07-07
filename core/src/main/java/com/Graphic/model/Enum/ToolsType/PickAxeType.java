@@ -44,6 +44,10 @@ public enum PickAxeType {
 
         return displayName;
     }
+    public String getIconPath() {
+        return iconPath;
+
+    }
     public int getPrice() {
         return price;
     }

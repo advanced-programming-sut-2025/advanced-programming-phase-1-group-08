@@ -51,11 +51,22 @@ public enum TrashCanType {
         this.Price = price;
         this.BarsAndOreType = BarsAndOreType;
     }
+
+
     public int getPrice() {
         return Price;
     }
+    public String getDisplayName() {
+
+        return displayName;
+    }
+    public String getIconPath() {
+        return iconPath;
+
+    }
 
     public abstract int getPercent();
+
     public static TrashCanType nextTrashCanType(TrashCanType trashCanType) {
         return switch (trashCanType) {
             case primaryTrashCan -> CopperTrashCan;
@@ -65,7 +76,6 @@ public enum TrashCanType {
             case null, default -> null;
         };
     }
-
     public static boolean checkIngredient(TrashCanType trashCanType) {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         BarsAndOres barsAndOres= new BarsAndOres(trashCanType.BarsAndOreType);
@@ -79,10 +89,5 @@ public enum TrashCanType {
             return false;
         }
         return false;
-    }
-
-    public String getDisplayName() {
-
-        return displayName;
     }
 }

@@ -26,4 +26,8 @@ public class FishingPole extends Tools {
     public int getSellPrice() {
         return 0;
     }
+    @Override
+    public String getIconPath() {
+        return type.getIconPath();
+    }
 }

@@ -150,6 +150,10 @@ public enum FishingPoleType {
     public int getLevel() {
         return level;
     }
+    public String getIconPath() {
+
+        return iconPath;
+    }
 
     public boolean checkAbility(int amount){
         if (currentGame.currentPlayer.getLevelFishing()>=amount){

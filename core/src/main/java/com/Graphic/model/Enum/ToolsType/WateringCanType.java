@@ -53,6 +53,10 @@ public enum WateringCanType {
 
         return this.displayName;
     }
+    public String getIconPath() {
+        return iconPath;
+
+    }
     public int getPrice () {
         return Price;
     }

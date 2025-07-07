@@ -50,7 +50,9 @@ public enum AxeType {
     public int getPrice() {
         return Price;
     }
-
+    public String getIconPath() {
+        return iconPath;
+    }
 
     public static AxeType getNextType(AxeType axeType) {
         return switch (axeType) {
@@ -61,7 +63,6 @@ public enum AxeType {
             case null, default -> null;
         };
     }
-
     public static boolean checkIngredient(AxeType axeType) {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         BarsAndOres barsAndOres= new BarsAndOres(axeType.BarsAndOreType);
