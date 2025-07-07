@@ -23,6 +23,7 @@ import com.Graphic.model.ToolsPackage.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 
@@ -241,6 +242,11 @@ public class InputGameController {
                        .getGameObject()
                        .getSprite(TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
                                      TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
+
+                    if (getTileByCoordinates(i , j).getGameObject() instanceof Lake) {
+                        LakeAnimation((Lake) getTileByCoordinates(i , j).getGameObject());
+                    }
+
                 }
                 catch (Exception e) {
 
@@ -255,6 +261,17 @@ public class InputGameController {
                 64, 64);
 
         return null;
+    }
+
+    public void LakeAnimation(Lake lake) {
+        lake.getSprite(null).setRegion(lake.getLakeAnimation().getKeyFrame(lake.getTimer()));
+        if (! lake.getLakeAnimation().isAnimationFinished(lake.getTimer())) {
+            lake.setTimer(lake.getTimer() + Gdx.graphics.getDeltaTime());
+        }
+        else {
+            lake.setTimer(0);
+        }
+        lake.getLakeAnimation().setPlayMode(Animation.PlayMode.LOOP);
     }
     public Result checkConditionsForWalk(int goalX, int goalY){
         if (goalX <0 || goalX >=90 || goalY <0 || goalY >=90) {
