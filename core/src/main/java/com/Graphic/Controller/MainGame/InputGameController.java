@@ -1481,7 +1481,7 @@ public class InputGameController {
         buildNpcVillage();
         sortMap(currentGame.bigMap);
         initializePlayer();
-        startDay();
+        fadeToNextDay();
     }
     public void startNewGame1 (String input) throws IOException {
 
@@ -1627,7 +1627,7 @@ public class InputGameController {
         buildNpcVillage();
         sortMap(currentGame.bigMap);
         initializePlayer();
-        startDay();
+        fadeToNextDay();
     }
 
 

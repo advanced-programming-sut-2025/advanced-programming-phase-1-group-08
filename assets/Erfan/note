@@ -1,0 +1,89 @@
+
+ اینا رو برای فصل و اب و هوای مختلف داده
+
+public class WeatherEffectManager {
+
+    private final Stage stage;
+    private ParticleEffect rainEffect;
+    private ParticleEffect snowEffect;
+    private ParticleEffect stormEffect;
+
+    private Image environmentTint;
+
+    public WeatherEffectManager(Stage stage) {
+        this.stage = stage;
+        loadEffects();
+        createTintLayer();
+    }
+
+    private void loadEffects() {
+        rainEffect = loadEffect("effects/rain.p");
+        snowEffect = loadEffect("effects/snow.p");
+        stormEffect = loadEffect("effects/storm.p");
+    }
+
+    private ParticleEffect loadEffect(String path) {
+        ParticleEffect effect = new ParticleEffect();
+        effect.load(Gdx.files.internal(path), Gdx.files.internal("effects"));
+        return effect;
+    }
+
+    private void createTintLayer() {
+        environmentTint = new Image(new Texture("blank.png")); // 1x1 سفید
+        environmentTint.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
+        environmentTint.setColor(0, 0, 0, 0f); // شفاف
+        stage.addActor(environmentTint);
+    }
+
+    public void applyEffects(Season season, Weather weather) {
+        stopAllEffects();
+
+        switch (weather) {
+            case RAINY:
+                rainEffect.start();
+                break;
+            case SNOWY:
+                snowEffect.start();
+                break;
+            case STORMY:
+                stormEffect.start();
+                break;
+            default:
+                // هیچ افکت ذره‌ای
+                break;
+        }
+
+        updateEnvironmentTint(season, weather);
+    }
+
+    private void stopAllEffects() {
+        rainEffect.allowCompletion();
+        snowEffect.allowCompletion();
+        stormEffect.allowCompletion();
+    }
+
+    private void updateEnvironmentTint(Season season, Weather weather) {
+        // رنگ بندی پیشنهادی
+        Color tint = new Color(0, 0, 0, 0); // پیش‌فرض شفاف
+
+        if (weather == Weather.STORMY) {
+            tint = new Color(0, 0, 0, 0.4f); // تاریکی خفیف
+        } else if (season == Season.FALL) {
+            tint = new Color(0.6f, 0.4f, 0.2f, 0.2f); // فیلتر نارنجی
+        } else if (season == Season.WINTER && weather == Weather.SUNNY) {
+            tint = new Color(0.9f, 0.9f, 1f, 0.15f); // نور سفید ملایم
+        }
+
+        environmentTint.setColor(tint);
+    }
+
+    public void renderEffects(Batch batch, float delta) {
+        rainEffect.update(delta);
+        snowEffect.update(delta);
+        stormEffect.update(delta);
+
+        rainEffect.draw(batch);
+        snowEffect.draw(batch);
+        stormEffect.draw(batch);
+    }
+}

@@ -56,6 +56,7 @@ public class GameMenu implements  Screen, InputProcessor {
     public void show() {
 
         initialize();
+        controller.init();
 
         camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         controller.startNewGame("a");
@@ -63,7 +64,6 @@ public class GameMenu implements  Screen, InputProcessor {
         createClock();
 
 
-        controller.init();
 
     }
     private void initialize () {
@@ -85,7 +85,7 @@ public class GameMenu implements  Screen, InputProcessor {
     }
     public void render(float v) {
 
-        if (TimeUtils.millis() - lastTime > 3000)
+        if (TimeUtils.millis() - lastTime > 300000)
             updateClock();
 
         Gdx.gl.glClearColor(0,0,0,1);
@@ -218,9 +218,12 @@ public class GameMenu implements  Screen, InputProcessor {
         actor.setPosition(centerX - actor.getWidth() / 2f, centerY - actor.getHeight() / 2f);
     }
 
+    public Stage getStage() {
+        return stage;
+    }
 
 
-//    public void check(Scanner scanner) throws IOException {
+    //    public void check(Scanner scanner) throws IOException {
 //
 //        String input = scanner.nextLine();
 //
