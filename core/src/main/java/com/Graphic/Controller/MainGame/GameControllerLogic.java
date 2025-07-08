@@ -126,26 +126,26 @@ public class GameControllerLogic {
 
     public static Tile getTileByDir (int dir) {
 
-        int x = currentGame.currentPlayer.getPositionX();
-        int y = currentGame.currentPlayer.getPositionY();
+        float x = currentGame.currentPlayer.getPositionX();
+        float y = currentGame.currentPlayer.getPositionY();
 
-        if (dir == 1)
-            return getTileByCoordinates(x+1, y);
-        else if (dir == 2)
-            return getTileByCoordinates(x+1, y+1);
-        else if (dir == 3)
-            return getTileByCoordinates(x, y+1);
-        else if (dir == 4)
-            return getTileByCoordinates(x-1, y+1);
-        else if (dir == 5)
-            return getTileByCoordinates(x-1, y);
-        else if (dir == 6)
-            return getTileByCoordinates(x-1, y-1);
-        else if (dir == 7)
-            return getTileByCoordinates(x, y-1);
-        else if (dir == 8)
-            return getTileByCoordinates(x+1, y-1);
-        else
+//        if (dir == 1)
+//            return getTileByCoordinates(x+1, y);
+//        else if (dir == 2)
+//            return getTileByCoordinates(x+1, y+1);
+//        else if (dir == 3)
+//            return getTileByCoordinates(x, y+1);
+//        else if (dir == 4)
+//            return getTileByCoordinates(x-1, y+1);
+//        else if (dir == 5)
+//            return getTileByCoordinates(x-1, y);
+//        else if (dir == 6)
+//            return getTileByCoordinates(x-1, y-1);
+//        else if (dir == 7)
+//            return getTileByCoordinates(x, y-1);
+//        else if (dir == 8)
+//            return getTileByCoordinates(x+1, y-1);
+//        else
             return null;
     }
     public static Tile getTileByCoordinates(int x, int y) {
@@ -468,6 +468,7 @@ public class GameControllerLogic {
         }
         farm.setX(60 * currentGame.currentPlayer.topLeftX);
         farm.setY(60 * currentGame.currentPlayer.topLeftY);
+        farm.setIndex(2 * currentGame.currentPlayer.topLeftY + currentGame.currentPlayer.topLeftX + 1);
         currentGame.farms.add(farm);
     }
     public static int MapGenerator(int i,int j,long seed , int treeNumber){
@@ -580,14 +581,14 @@ public class GameControllerLogic {
 
 
     public static boolean checkCoordinateForFishing(){
-        int [] x={1,1,1,0,0,-1,-1,-1};
-        int [] y={1,0,-1,1,-1,-1,0,1};
-        for (int i=0;i<8;i++){
-            if (getTileByCoordinates(currentGame.currentPlayer.getPositionX() +x[i],currentGame.currentPlayer.getPositionY() +y[i]).
-                getGameObject() instanceof Lake){
-                return true;
-            }
-        }
+//        int [] x={1,1,1,0,0,-1,-1,-1};
+//        int [] y={1,0,-1,1,-1,-1,0,1};
+//        for (int i=0;i<8;i++){
+//            if (getTileByCoordinates(currentGame.currentPlayer.getPositionX() +x[i],currentGame.currentPlayer.getPositionY() +y[i]).
+//                getGameObject() instanceof Lake){
+//                return true;
+//            }
+//        }
         return false;
     }
     public static FishingPole isFishingPoleTypeExist(String name){
@@ -824,22 +825,22 @@ public class GameControllerLogic {
         }
     }
     public static CraftingItem isNeighborWithCrafting(String name) {
-        int [] dirx={0,0,1,1,1,-1,-1,-1};
-        int [] diry={1,-1,0,1,-1,0,1,-1};
-
-        for (int x = currentGame.currentPlayer.getPositionX(); x <currentGame.currentPlayer.getPositionX()+ dirx.length; x++) {
-            for (int y=currentGame.currentPlayer.getPositionY() ; y< currentGame.currentPlayer.getPositionY()+ diry.length; y++) {
-                Tile tile=getTileByCoordinates(x,y);
-                if (tile == null) {
-                    continue;
-                }
-                if (tile.getGameObject() instanceof CraftingItem) {
-                    if (((CraftingItem) tile.getGameObject()).getType().getName().equals(name)) {
-                        return (CraftingItem) tile.getGameObject();
-                    }
-                }
-            }
-        }
+//        int [] dirx={0,0,1,1,1,-1,-1,-1};
+//        int [] diry={1,-1,0,1,-1,0,1,-1};
+//
+//        for (int x = currentGame.currentPlayer.getPositionX(); x <currentGame.currentPlayer.getPositionX()+ dirx.length; x++) {
+//            for (int y=currentGame.currentPlayer.getPositionY() ; y< currentGame.currentPlayer.getPositionY()+ diry.length; y++) {
+//                Tile tile=getTileByCoordinates(x,y);
+//                if (tile == null) {
+//                    continue;
+//                }
+//                if (tile.getGameObject() instanceof CraftingItem) {
+//                    if (((CraftingItem) tile.getGameObject()).getType().getName().equals(name)) {
+//                        return (CraftingItem) tile.getGameObject();
+//                    }
+//                }
+//            }
+//        }
         return null;
     }
     public static void addArtisanToInventory(Items item) {
@@ -1405,12 +1406,12 @@ public class GameControllerLogic {
         }
         checkSprinkler();
 
-        if (checkForDeath()) {
-            currentGame.currentPlayer.setSleepTile(
-                getTileByCoordinates(currentGame.currentPlayer.getPositionX(),
-                    currentGame.currentPlayer.getPositionY()));
-            return new Result(false, BRIGHT_RED + "No energy left! It's the next player's turn" + RESET);
-        }
+//        if (checkForDeath()) {
+//            currentGame.currentPlayer.setSleepTile(
+//                getTileByCoordinates(currentGame.currentPlayer.getPositionX(),
+//                    currentGame.currentPlayer.getPositionY()));
+//            return new Result(false, BRIGHT_RED + "No energy left! It's the next player's turn" + RESET);
+//        }
         return new Result(true, "");
     }
 
