@@ -20,6 +20,11 @@ public class Wood extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return "Erfan/Wood.png";
+    }
+
+    @Override
     public int getSellPrice() {
         return 10;
     }
