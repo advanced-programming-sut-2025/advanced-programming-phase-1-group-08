@@ -118,9 +118,9 @@ public class HumanCommunications {
         else
             other = player1;
 
-        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Talk to " + other.getNickname() + "!"+RESET);
-        }
+//        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
+//            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Talk to " + other.getNickname() + "!"+RESET);
+//        }
 
         addXP(10);
         if (currentGame.currentPlayer.getSpouse() != null)
@@ -172,9 +172,9 @@ public class HumanCommunications {
         Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
-        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Send Gift to " + other.getNickname() + "!"+RESET);
-        }
+//        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
+//            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Send Gift to " + other.getNickname() + "!"+RESET);
+//        }
         if (getLevel() < 1) {
 
             return new Result(false, RED+"You can't Send Gifts in your Current Friendship Level."+RESET);
@@ -229,9 +229,9 @@ public class HumanCommunications {
         else
             other = player1;
 
-        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Hug " + other.getNickname() + "!"+RESET);
-        }
+//        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
+//            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Hug " + other.getNickname() + "!"+RESET);
+//        }
         if (getLevel() < 2) {
             return new Result(false, RED+"You can't Hug in your Current Friendship Level."+RESET);
         }
@@ -257,7 +257,7 @@ public class HumanCommunications {
         Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
-        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) return new Result(false, RED+"You Should Get Closer in Order to Buy Flower for " + other.getNickname() + "!"+RESET);
+        //if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) return new Result(false, RED+"You Should Get Closer in Order to Buy Flower for " + other.getNickname() + "!"+RESET);
         if (getLevel() < 2) return new Result(false, RED+"You can't Buy Flower in your Current " + "Friendship Level" + "."+RESET);
         if (getXP() < 300) return new Result(false, RED+"You Have to Reach 300 XPs to Give Bouquet!"+RESET);
 
@@ -311,9 +311,9 @@ public class HumanCommunications {
             return new Result(false, RED+"Proposal is a Guy job!"+RESET);
         if (currentGame.currentPlayer.getGender().equalsIgnoreCase(other.getGender()))
             return new Result(false, RED+"No Gay Marriage in Islamic Village!"+RESET);
-        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-            return new Result(false, PURPLE+"Get Closer Honey!"+RESET);
-        }
+//        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
+//            return new Result(false, PURPLE+"Get Closer Honey!"+RESET);
+//        }
 
         if (getLevel() < 3)
             return new Result(false, RED+"You Can't Propose in your Current Friendship Level."+RESET);
