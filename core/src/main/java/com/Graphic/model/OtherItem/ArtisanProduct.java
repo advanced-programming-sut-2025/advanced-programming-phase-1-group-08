@@ -4,6 +4,7 @@ import com.Graphic.model.Enum.ItemType.ArtisanType;
 import com.Graphic.model.Items;
 
 public class ArtisanProduct extends Items {
+    
     private ArtisanType type;
     public ArtisanProduct(ArtisanType type ) {
         this.type = type;
@@ -15,6 +16,11 @@ public class ArtisanProduct extends Items {
     @Override
     public String getName() {
         return type.getName();
+    }
+
+    @Override
+    public String getInventoryIconPath() {
+        return "";
     }
 
     @Override

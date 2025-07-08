@@ -24,10 +24,10 @@ public class GameAssetManager {
     }
 
 
-    public BitmapFont getFont() {
+    public BitmapFont getTinyFont() {
         return font;
     }
-    public BitmapFont getFont2() {
+    public BitmapFont getSmallFont() {
         return font2;
     }
     public BitmapFont getFont3() {

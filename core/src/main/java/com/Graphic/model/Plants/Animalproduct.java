@@ -28,6 +28,11 @@ public class Animalproduct extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return "";
+    }
+
+    @Override
     public int getSellPrice() {
         return (int) (type.getInitialPrice() * quantity.getValue() );
     }

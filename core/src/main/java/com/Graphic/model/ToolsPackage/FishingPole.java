@@ -18,6 +18,11 @@ public class FishingPole extends Tools {
     }
 
     @Override
+    public String getIconPath() {
+        return type.getIconPath();
+    }
+
+    @Override
     public String getName() {
         return type.getName();
     }

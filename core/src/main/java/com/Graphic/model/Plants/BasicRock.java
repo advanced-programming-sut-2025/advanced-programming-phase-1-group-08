@@ -17,6 +17,11 @@ public class BasicRock extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return "Erfan/Stone.png";
+    }
+
+    @Override
     public int getSellPrice() {
         return 20;
     }
