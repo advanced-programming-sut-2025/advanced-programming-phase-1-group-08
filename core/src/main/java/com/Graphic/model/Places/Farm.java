@@ -14,6 +14,7 @@ public class Farm {
     private Mine mine;
     private Home home;
     private Lake lake;
+    private int index;
 
     public ArrayList<Tile> Farm = new ArrayList<>();
     public ArrayList<ShippingBin> shippingBins = new ArrayList<>();
@@ -68,5 +69,12 @@ public class Farm {
 
     public void setX(int x) {
         this.x = x;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

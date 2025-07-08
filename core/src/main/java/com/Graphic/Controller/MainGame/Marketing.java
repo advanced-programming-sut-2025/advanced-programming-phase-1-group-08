@@ -1097,7 +1097,7 @@ public class Marketing {
         if (currentGame.currentDate.getHour() < MarketType.FishShop.getStartHour() || currentGame.currentDate.getHour() > MarketType.FishShop.getEndHour()) {
             return new Result(false , RED + "Sorry. Store is close at this time"+RESET);
         }
-        MarketType marketType=MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());
+        MarketType marketType=null;//MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());
         if (marketType!=MarketType.Blacksmith) {
             return new Result(false , "you are not in BlackSmith Market. please go there");
         }

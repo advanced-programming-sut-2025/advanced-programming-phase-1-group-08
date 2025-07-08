@@ -1,12 +1,20 @@
 package com.Graphic.model;
 
+import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Places.Farm;
 import com.Graphic.model.ToolsPackage.BackPack;
 import com.Graphic.model.ToolsPackage.Tools;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +22,7 @@ import java.util.List;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class User {
 
@@ -27,6 +36,16 @@ public class User {
     private String MySecurityAnswer;
     private int daysDepressedLeft = 0;
     private List<Recipe> recipes;
+    public Sprite sprite;
+    private Animation<Texture> Right;
+    private Animation<Texture> Left;
+    private Animation<Texture> Up;
+    private Animation<Texture> Down;
+    private Direction direction;
+    private HashMap<Direction , Texture> DirectionInWalk;
+    private boolean isMoving;
+    private float Timer = 0.0f;
+    private boolean first = true;
 
     // buffs
     public int Buff_maxEnergy_100_hoursLeft = 0;
@@ -72,8 +91,8 @@ public class User {
     private final Farm farm = new Farm();
     public int topLeftX;
     public int topLeftY; // اینا باید برن تو فارم
-    private int positionX;
-    private int positionY;
+    private float positionX;
+    private float positionY;
 
     public ArrayList<BarnOrCage> BarnOrCages = new ArrayList<>();
 
@@ -94,6 +113,10 @@ public class User {
         this.healthUnlimited = false;
         this.MySecurityQuestion = MySecQ;
         this.MySecurityAnswer = MySecA;
+
+
+
+        isMoving = false;
     }
 
 
@@ -220,16 +243,16 @@ public class User {
         if (this.health < 0)
             this.health = 0;
     }
-    public int getPositionX() {
+    public float getPositionX() {
         return positionX;
     }
-    public void setPositionX(int positionX) {
+    public void setPositionX(float positionX) {
         this.positionX = positionX;
     }
-    public int getPositionY() {
+    public float getPositionY() {
         return positionY;
     }
-    public void setPositionY(int positionY) {
+    public void setPositionY(float positionY) {
         this.positionY = positionY;
     }
     public void setSleepTile(Tile sleepTile) {
@@ -465,5 +488,78 @@ public class User {
 
     public void setRecipes(List<Recipe> recipes) {
         this.recipes = recipes;
+    }
+
+    public void initAnimations () {
+        this.Right = new Animation<>(0.1f,
+            new Texture("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png"),
+            new Texture("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png"));
+
+        this.Left = new Animation<>(0.1f,
+            new Texture("Mohamadreza/PlayerSpriteIdle/Left" + farm.getIndex() + "," + gender + ".png"),
+            new Texture("Mohamadreza/PlayerSpriteMove/Left" + farm.getIndex() + "," + gender + ".png"));
+
+        this.Up = new Animation<>(0.1f,
+            new Texture("Mohamadreza/PlayerSpriteIdle/Up" + farm.getIndex() + "," + gender + ".png"),
+            new Texture("Mohamadreza/PlayerSpriteMove/Up" + farm.getIndex() + "," + gender + ".png"));
+
+        this.Down = new Animation<>(0.1f,
+            new Texture("Mohamadreza/PlayerSpriteIdle/Down" + farm.getIndex() + "," + gender + ".png"),
+            new Texture("Mohamadreza/PlayerSpriteMove/Down" + farm.getIndex() + "," + gender + ".png"));
+
+        direction = Direction.Down;
+        DirectionInWalk = new HashMap<>();
+        DirectionInWalk.put(Direction.Up , new Texture(Gdx.files.internal(Direction.Up.getPath() + farm.getIndex() + "," + gender + ".png")));
+        DirectionInWalk.put(Direction.Down , new Texture(Gdx.files.internal(Direction.Down.getPath() + farm.getIndex() + "," + gender + ".png")));
+        DirectionInWalk.put(Direction.Right , new Texture(Gdx.files.internal(Direction.Right.getPath() + farm.getIndex() + "," + gender + ".png")));
+        DirectionInWalk.put(Direction.Left , new Texture(Gdx.files.internal(Direction.Left.getPath() + farm.getIndex() + "," + gender + ".png")));
+        sprite = new Sprite(DirectionInWalk.get(direction));
+        sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
+    }
+
+    public Sprite getSprite() {
+        sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
+        sprite.setSize(TEXTURE_SIZE, TEXTURE_SIZE);
+
+        return sprite;
+    }
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public boolean isMoving() {
+        return isMoving;
+    }
+    public void setMoving(boolean isMoving) {
+        this.isMoving = isMoving;
+    }
+    public Animation<Texture> getAnimation() {
+        switch (direction) {
+            case Up -> {
+                return Up;
+            }
+            case Down -> {
+                return Down;
+            }
+            case Left -> {
+                return Left;
+            }
+            case Right -> {
+                return Right;
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
+    public float getTimer() {
+        return Timer;
+    }
+    public void setTimer(float timer) {
+        Timer = timer;
     }
 }

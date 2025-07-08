@@ -29,7 +29,8 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class HomeController {
     public static boolean NotInHome(User user) {
-        return !(user.getFarm().isInHome(user.getPositionX(), user.getPositionY()));
+        //return !(user.getFarm().isInHome(user.getPositionX(), user.getPositionY()));
+        return true;
     }
 
 

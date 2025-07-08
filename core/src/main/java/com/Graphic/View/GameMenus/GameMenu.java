@@ -3,6 +3,7 @@ package com.Graphic.View.GameMenus;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
 import com.Graphic.model.App;
+import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ToolsType.AxeType;
 import com.Graphic.model.GameAssetManager;
@@ -10,6 +11,7 @@ import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.ToolsPackage.Axe;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -49,6 +51,9 @@ public class GameMenu implements  Screen, InputProcessor {
     private Label timeLabel;
     private Label dateLabel;
     private Label weekDayLabel;
+
+
+
 
     private GameMenu() {
 
