@@ -15,6 +15,16 @@ public class Scythe extends Tools {
     }
 
     @Override
+    public String getIconPath() {
+        return "Erfan/Tools/Scythe.png";
+    }
+
+    @Override
+    public String getInventoryIconPath() {
+        return "Erfan/Tools/Scythe.png";
+    }
+
+    @Override
     public String getName() {
         return "Scythe";
     }

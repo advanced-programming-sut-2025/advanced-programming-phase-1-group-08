@@ -47,7 +47,6 @@ public class ItemAdapterFactory implements TypeAdapterFactory {
         itemTypeMap.put("Shear", Shear.class);
         itemTypeMap.put("Tools", Tools.class);
         itemTypeMap.put("TrashCan", TrashCan.class);
-        itemTypeMap.put("Tree", Tree.class);
         itemTypeMap.put("TreeSource", TreeSource.class);
         itemTypeMap.put("TreesProdct", TreesProdct.class);
         itemTypeMap.put("WateringCan", WateringCan.class);

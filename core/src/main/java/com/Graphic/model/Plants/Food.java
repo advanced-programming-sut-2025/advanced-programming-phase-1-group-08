@@ -29,6 +29,11 @@ public class Food extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return "";
+    }
+
+    @Override
     public int getSellPrice() {
         return type.getSellPrice();
     }

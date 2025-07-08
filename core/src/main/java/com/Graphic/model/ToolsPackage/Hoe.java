@@ -38,7 +38,16 @@ public class Hoe extends Tools {
     }
 
     @Override
+    public String getIconPath() {
+        return type.getIconPath();
+    }
+
+    @Override
     public int getSellPrice() {
         return 0;
+    }
+    @Override
+    public String getInventoryIconPath() {
+        return type.getIconPath();
     }
 }

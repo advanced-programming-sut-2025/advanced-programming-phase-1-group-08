@@ -160,6 +160,11 @@ public class GiantProduct extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return "";
+    }
+
+    @Override
     public int getSellPrice() {
         return 0;
     }

@@ -23,6 +23,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.*;
@@ -39,10 +47,12 @@ public class GameControllerLogic {
 
     static int turnCounter = 0;
     static Random rand = new Random();
+    static Image blackOverlay;
 
 
 
     public static void init() {
+        createScreenOverlay(gameMenu.getStage());
     }
     public static void update() {
 
@@ -1241,6 +1251,37 @@ public class GameControllerLogic {
     }
 
 
+    public static void createScreenOverlay(Stage stage) {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(0, 0, 0, 1);
+        pixmap.fill();
+
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+
+        blackOverlay = new Image(new TextureRegionDrawable(new TextureRegion(texture)));
+        blackOverlay.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
+        blackOverlay.getColor().a = 0f;
+
+        blackOverlay.setTouchable(Touchable.disabled);
+        stage.addActor(blackOverlay);
+    }
+    public static void fadeToNextDay() {
+
+        blackOverlay.toFront(); // پوشش بالا بیاد
+
+        blackOverlay.addAction(Actions.sequence(
+            Actions.fadeIn(1f), // تاریک شدن
+            Actions.run(() -> {
+                startDay();  // ⬅️ اجرای تابع روز جدید
+            }),
+            Actions.delay(0.3f), // یه وقفه کوچیک
+            Actions.fadeOut(1f) // روشن شدن مجدد
+        ));
+    }
+
+
+
     public static void passedOfTime (int day, int hour) {
 
         if (day == 0) {
@@ -1317,12 +1358,14 @@ public class GameControllerLogic {
 
         for (int i = 0 ; i < number ; i++) {
             currentGame.currentDate.increaseDay(1);
-            startDay();
+            fadeToNextDay();
         }
         currentGame.currentDate.increaseHour(dateHour.getHour() - currentGame.currentDate.getHour());
     }
 
     public static void startDay () {
+
+
 
         doSeasonAutomaticTask();
         setPlayerLocation();
@@ -1339,6 +1382,9 @@ public class GameControllerLogic {
 
         doWeatherTask();
         crowAttack(); // قبل محصول دادن درخت باید باشه
+
+
+
     }
 
     public static void AutomaticFunctionAfterOneTurn () {

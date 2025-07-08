@@ -34,12 +34,20 @@ public class Axe extends Tools {
     }
 
     @Override
-    public String getName() {
-        return type.getDisplayName();
+    public String getIconPath() {
+        return type.getIconPath();
     }
 
-    @Override
+    public String getName() {
+
+        return type.getDisplayName();
+    }
     public int getSellPrice() {
         return 0;
     }
+    public String getInventoryIconPath () {
+        return this.type.getIconPath();
+    }
+
+
 }

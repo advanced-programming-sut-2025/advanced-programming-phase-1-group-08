@@ -13,28 +13,35 @@ import static com.Graphic.model.Enum.ItemType.BarsAndOreType.*;
 
 public enum AxeType {
 
-    primaryAxe  ("Primary Axe", -5 , 1 , 0 , null),
+    primaryAxe  ("Primary Axe",-5,1,0,
+        null, "Erfan/Tools/Axe/Axe.png"),
 
-    copperyAxe  ("Coppery Axe", -4 , 1 , 2000 , CopperBar) ,
+    copperyAxe  ("Coppery Axe",-4,1,2000,
+        CopperBar, "Erfan/Tools/Axe/Copper_Axe.png") ,
 
-    ironAxe     ("Iron Axe",    -3 , 1 , 5000 , IronBar),
+    ironAxe     ("Iron Axe",   -3,1,5000,
+        IronBar, "Erfan/Tools/Axe/Steel_Axe.png"),
 
-    goldenAxe   ("Golden Axe",  -2 , 1 , 10000 , GoldBar),
+    goldenAxe   ("Golden Axe", -2,1,10000,
+        GoldBar, "Erfan/Tools/Axe/Gold_Axe.png"),
 
-    iridiumAxe  ("Iridium Axe", -1 , 1 , 25000 , IridiumBar);
+    iridiumAxe  ("Iridium Axe",-1,1,25000,
+        IridiumBar, "Erfan/Tools/Axe/Iridium_Axe.png");
 
     private final int energyCost;
     private final String displayName;
     private final int initialLimit;
     private final int Price;
+    private final String iconPath;
     private final BarsAndOreType BarsAndOreType;
 
-    AxeType (String displayName, int energyCost , int initialLimit , int Price , BarsAndOreType BarsAndOreType) {
+    AxeType (String displayName, int energyCost , int initialLimit , int Price , BarsAndOreType BarsAndOreType, String iconPath) {
         this.displayName = displayName;
         this.energyCost = energyCost;
         this.initialLimit = initialLimit;
         this.Price = Price;
         this.BarsAndOreType = BarsAndOreType;
+        this.iconPath = iconPath;
     }
 
     public int getEnergyCost() {
@@ -48,7 +55,9 @@ public enum AxeType {
     public int getPrice() {
         return Price;
     }
-
+    public String getIconPath() {
+        return iconPath;
+    }
 
     public static AxeType getNextType(AxeType axeType) {
         return switch (axeType) {
@@ -59,7 +68,6 @@ public enum AxeType {
             case null, default -> null;
         };
     }
-
     public static boolean checkIngredient(AxeType axeType) {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         BarsAndOres barsAndOres= new BarsAndOres(axeType.BarsAndOreType);

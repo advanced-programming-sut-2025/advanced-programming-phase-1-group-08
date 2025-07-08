@@ -61,6 +61,11 @@ public class CraftingItem extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() { // TODO
+        return "";
+    }
+
+    @Override
     public int getSellPrice() {
         return type.getSellPrice();
     }

@@ -1588,7 +1588,7 @@ public class InputGameController {
         buildNpcVillage();
         sortMap(currentGame.bigMap);
         initializePlayer();
-        startDay();
+        fadeToNextDay();
     }
     public void startNewGame1 (String input) throws IOException {
 
@@ -1734,11 +1734,12 @@ public class InputGameController {
         buildNpcVillage();
         sortMap(currentGame.bigMap);
         initializePlayer();
-        startDay();
+        fadeToNextDay();
     }
 
 
                                                                     // Erfan
+
 
                                                                   // input command Date
     public Result showTime () {
@@ -2052,96 +2053,36 @@ public class InputGameController {
 
         return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
     }
-    public Result toolsEquip (String name) {
+    public void toolsEquip (String name) {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
 
-        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()) {
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
+            if (entry.getKey() instanceof Tools && entry.getKey().getName().equals(name))
+                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
 
-            if (entry.getKey() instanceof Axe && name.equals("Axe")) {
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"Axe successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof FishingPole && name.equals("FishingPole")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"FishingPole successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof Hoe && name.equals("Hoe")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"Hoe successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof PickAxe && name.equals("PickAxe")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"PickAxe successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof WateringCan && name.equals("WateringCan")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"WateringCan successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof MilkPail && name.equals("MilkPail")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"MilkPail successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof Scythe && name.equals("Scythe")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"Scythe successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof Shear && name.equals("Shear")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"Shear successfully picked up"+RESET);
-            }
-        }
-        return new Result(false,"there is no such tool");
+        System.out.println(currentGame.currentPlayer.currentTool.getName());
     }
-    public Result showCurrentTool() {
+    public String getCurrentTool() {
 
         Tools currentTool = currentGame.currentPlayer.currentTool;
 
-        return switch (currentTool) {
+        if (currentTool != null)
+            return currentTool.getName();
+        else
+            return null;
 
-            case Axe axe -> new Result(true, "current tool: " + axe.getType().getDisplayName());
-            case null    -> new Result(false, "there is no current tool in your hands");
-            case Hoe hoe -> new Result(true, "current tool: " + hoe.getType().getDisplayName());
-            case MilkPail milkPail -> new Result(true, "current tool: " + milkPail.getName());
-            case Scythe scythe -> new Result(true, "current tool: " + scythe.getName());
-            case Shear shear   -> new Result(true, "current tool: " + shear.getName());
-            case PickAxe pickAxe -> new Result(true, "current tool: " +
-                    pickAxe.getType().getDisplayName());
-            case FishingPole fishingPole -> new Result(true, "current tool: " +
-                    fishingPole.type.getName());
-            case WateringCan wateringCan -> new Result(true, "current tool: " +
-                    wateringCan.getType().getDisplayName());
-            default -> new Result(true, "current tool: " + currentTool.getName());
-        };
     }
-    public Result availableTools() {
+    public HashMap<String, String> availableTools() {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        StringBuilder result = new StringBuilder();
+        HashMap<String, String> availableTools = new HashMap<>();
 
-        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet())
+            if (entry.getKey() instanceof Tools)
+                availableTools.put(entry.getKey().getName(), entry.getKey().getInventoryIconPath());
 
-            if (entry.getKey() instanceof Axe)
-                 result.append(BRIGHT_BLUE).append(((Axe) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
-
-            else if (entry.getKey() instanceof FishingPole)
-                result.append(BRIGHT_RED).append(((FishingPole) entry.getKey()).type).append(RESET).append("\n");
-
-            else if (entry.getKey() instanceof Hoe)
-                result.append(BRIGHT_PURPLE).append(((Hoe) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
-
-            else if (entry.getKey() instanceof WateringCan)
-                result.append(BRIGHT_GREEN).append(((WateringCan) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
-
-            else if (entry.getKey() instanceof PickAxe)
-                result.append(BRIGHT_CYAN).append(((PickAxe) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
-
-            else if (entry.getKey() instanceof Tools)
-                result.append(BRIGHT_BROWN).append(((Tools) entry.getKey()).getName()).append(RESET).append("\n");
-        }
-        if (result.isEmpty())
-            return new Result(false, RED + "You don't have any tools" + RESET);
-        return new Result(true, result.toString());
+        return availableTools;
     }
     public Result upgradeTool (String name) {
 //         MarketType marketType=MarketType.wallOrDoor(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());

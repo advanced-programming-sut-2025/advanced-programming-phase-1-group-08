@@ -27,6 +27,11 @@ public class AllCrops extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return type.getIconPath();
+    }
+
+    @Override
     public int getSellPrice() {
         return type.getPrice();
     }

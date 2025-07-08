@@ -66,7 +66,16 @@ public class WateringCan extends Tools {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return type.getIconPath();
+    }
+
+    @Override
     public int getSellPrice() {
         return type.getPrice();
+    }
+    @Override
+    public String getIconPath() {
+        return type.getIconPath();
     }
 }

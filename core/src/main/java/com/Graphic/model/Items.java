@@ -100,10 +100,11 @@ public abstract class Items extends GameObject {
 
 
 
-    public abstract String getName();
     public abstract int getSellPrice();
+    public abstract String getName();
+    public abstract String getInventoryIconPath ();
+
     public  int getTakesTime() {
         return 0;
     }
-
 }
