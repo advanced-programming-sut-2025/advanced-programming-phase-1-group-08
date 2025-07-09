@@ -7,6 +7,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class GameObject {
 
     private char Charactor;
+    private float width;
+    private float height;
+
+    public GameObject(float width, float height) {
+        this.width = width;
+        this.height = height;
+    }
 
     public char getCharactor() {
         return Charactor;
