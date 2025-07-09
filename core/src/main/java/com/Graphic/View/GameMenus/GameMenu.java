@@ -3,15 +3,11 @@ package com.Graphic.View.GameMenus;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
 import com.Graphic.model.App;
-import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
-import com.Graphic.model.Enum.ToolsType.AxeType;
 import com.Graphic.model.GameAssetManager;
 import com.Graphic.model.HelpersClass.TextureManager;
 
-import com.Graphic.model.ToolsPackage.Axe;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -42,6 +38,8 @@ public class GameMenu implements  Screen, InputProcessor {
     public static OrthographicCamera camera;
     private InputGameController controller;
     private Stage stage;
+
+    private  Image helperBackGround;
 
     public long startTime;
     public long lastTime;
@@ -74,7 +72,6 @@ public class GameMenu implements  Screen, InputProcessor {
         controller.startNewGame("a");
         Gdx.input.setInputProcessor(stage);
         createClock();
-        currentGame.currentPlayer.currentTool = new Axe(AxeType.iridiumAxe);
         createToolsMenu();
 
     }
@@ -97,7 +94,7 @@ public class GameMenu implements  Screen, InputProcessor {
     }
 
 
-    private void createToolsTable (Table content, String currentTool, HashMap<String,String> tools) {
+    private void createToolsTable (Table content, String currentTool, HashMap<String,String> tools, Window popup) {
 
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = GameAssetManager.getGameAssetManager().getTinyFont();
@@ -107,9 +104,9 @@ public class GameMenu implements  Screen, InputProcessor {
         content.top();
         content.defaults().pad(10);
 
-        Label label = new Label("choose your tool", labelStyle);
+        Label label = new Label("", labelStyle);
         label.setColor(Color.BLACK);
-        content.add(label).padTop(30).center().row();
+        content.add(label).padTop(30).padLeft(20).center().row();
 
         BitmapFont font = GameAssetManager.getGameAssetManager().getTinyFont();
         font.getData().setScale(0.4f);
@@ -121,7 +118,7 @@ public class GameMenu implements  Screen, InputProcessor {
 
 
         for (int i = 0; i < half; i++)
-            addToolImage(content, entries, i, currentTool);
+            addToolImage(content, entries, i, currentTool, popup);
         content.row();
 
         for (int i = 0; i < half; i++)
@@ -130,7 +127,7 @@ public class GameMenu implements  Screen, InputProcessor {
         content.row();
 
         for (int i = half; i < total; i++)
-            addToolImage(content, entries, i, currentTool);
+            addToolImage(content, entries, i, currentTool, popup);
 
         content.row();
 
@@ -147,14 +144,13 @@ public class GameMenu implements  Screen, InputProcessor {
         content.add(label1);
     }
     private void addToolImage(Table content, Array<Map.Entry<String, String>> entries,
-                              int i, String currentTool) {
+                              int i, String currentTool, Window popup) {
         Map.Entry<String, String> entry = entries.get(i);
         Image img = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(entry.getValue()))));
         img.setSize(30, 30);
 
         final String toolName = entry.getKey();
 
-        // 🔹 آیا این ابزار همون ابزار فعاله؟
         boolean isCurrent = toolName.equals(currentTool);
         if (isCurrent) {
             img.setColor(0.4f, 0.8f, 1f, 1f); // رنگ آبی روشن
@@ -167,12 +163,14 @@ public class GameMenu implements  Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.toolsEquip(toolName);
+                helperBackGround.remove();
+                popup.remove();
             }
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 img.setColor(1f, 1f, 1f, 1f);
-                img.setScale(isCurrent ? 1.4f : 1.2f); // اگر خودش بود بزرگ‌تر، اگه نه همون معمولی
+                img.setScale(isCurrent ? 1.4f : 1.2f);
             }
 
             @Override
@@ -194,9 +192,9 @@ public class GameMenu implements  Screen, InputProcessor {
 
     private void createToolsMenu () {
 
-        Image darkOverlay = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/280x280.jpg"))));
-        darkOverlay.setColor(0, 0, 0, 0.5f);
-        darkOverlay.setSize(stage.getWidth(), stage.getHeight());
+        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+        helperBackGround.setColor(0, 0, 0, 0.5f);
+        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
 
 
         HashMap<String, String> availableTools = controller.availableTools();
@@ -210,11 +208,11 @@ public class GameMenu implements  Screen, InputProcessor {
 
 
         Table content = new Table();
-        createToolsTable(content, currentTool, availableTools);
+        createToolsTable(content, currentTool, availableTools, popup);
 
         popup.add(content).expand().fill();
 
-        stage.addActor(darkOverlay);
+        stage.addActor(helperBackGround);
         stage.addActor(popup);
     }
     private void initialize () {
