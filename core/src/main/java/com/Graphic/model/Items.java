@@ -7,10 +7,6 @@ import java.util.Objects;
 
 public abstract class Items extends GameObject {
 
-    public Items(float width, float height) {
-        super(width, height);
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
