@@ -10,9 +10,9 @@ public class GameObject {
     private float width;
     private float height;
 
-    public GameObject(float width, float height) {
-        this.width = width;
-        this.height = height;
+    public GameObject() {
+        this.width = 1;
+        this.height = 1;
     }
 
     public char getCharactor() {
@@ -40,5 +40,22 @@ public class GameObject {
 
     public String getIcon() {
         return null;
+    }
+
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
     }
 }
