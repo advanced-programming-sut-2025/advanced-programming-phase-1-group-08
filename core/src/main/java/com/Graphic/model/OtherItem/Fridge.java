@@ -16,6 +16,7 @@ public class Fridge extends GameObject {
     public Fridge(int x, int y) {
         this.x = x;
         this.y = y;
+        super.setHeight(1.5f);
     }
 
     public int getX() {
