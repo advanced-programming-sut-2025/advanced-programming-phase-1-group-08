@@ -7,6 +7,7 @@ import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.GameAssetManager;
 import com.Graphic.model.HelpersClass.TextureManager;
 
+import com.Graphic.model.Keys;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -37,9 +38,10 @@ public class GameMenu implements  Screen, InputProcessor {
 
     public static OrthographicCamera camera;
     private InputGameController controller;
+    private final int hourSecond = 300000;
     private Stage stage;
 
-    private  Image helperBackGround;
+    private Image helperBackGround;
 
     public long startTime;
     public long lastTime;
@@ -50,7 +52,8 @@ public class GameMenu implements  Screen, InputProcessor {
     private Label dateLabel;
     private Label weekDayLabel;
 
-
+    private boolean toolsMenuIsActivated;
+    private Window toolsPopup;
 
 
     private GameMenu() {
@@ -72,14 +75,14 @@ public class GameMenu implements  Screen, InputProcessor {
         controller.startNewGame("a");
         Gdx.input.setInputProcessor(stage);
         createClock();
-        createToolsMenu();
 
     }
     public void render(float v) {
 
-        if (TimeUtils.millis() - lastTime > 300000)
+        if (TimeUtils.millis() - lastTime > hourSecond)
             updateClock();
 
+        inputController();
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Main.getBatch().setProjectionMatrix(camera.combined);
@@ -94,7 +97,7 @@ public class GameMenu implements  Screen, InputProcessor {
     }
 
 
-    private void createToolsTable (Table content, String currentTool, HashMap<String,String> tools, Window popup) {
+    private void createToolsTable (Table content, String currentTool, HashMap<String,String> tools) {
 
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = GameAssetManager.getGameAssetManager().getTinyFont();
@@ -118,7 +121,7 @@ public class GameMenu implements  Screen, InputProcessor {
 
 
         for (int i = 0; i < half; i++)
-            addToolImage(content, entries, i, currentTool, popup);
+            addToolImage(content, entries, i, currentTool);
         content.row();
 
         for (int i = 0; i < half; i++)
@@ -127,14 +130,13 @@ public class GameMenu implements  Screen, InputProcessor {
         content.row();
 
         for (int i = half; i < total; i++)
-            addToolImage(content, entries, i, currentTool, popup);
+            addToolImage(content, entries, i, currentTool);
 
         content.row();
 
         for (int i = half; i < total; i++)
             addToolName(content, entries, i, labelStyle);
     }
-
     private void addToolName(Table content, Array<Map.Entry<String, String>> entries,
                              int i, Label.LabelStyle labelStyle) {
         Map.Entry<String, String> entry = entries.get(i);
@@ -144,7 +146,7 @@ public class GameMenu implements  Screen, InputProcessor {
         content.add(label1);
     }
     private void addToolImage(Table content, Array<Map.Entry<String, String>> entries,
-                              int i, String currentTool, Window popup) {
+                              int i, String currentTool) {
         Map.Entry<String, String> entry = entries.get(i);
         Image img = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(entry.getValue()))));
         img.setSize(30, 30);
@@ -153,18 +155,18 @@ public class GameMenu implements  Screen, InputProcessor {
 
         boolean isCurrent = toolName.equals(currentTool);
         if (isCurrent) {
-            img.setColor(0.4f, 0.8f, 1f, 1f); // رنگ آبی روشن
-            img.setScale(1.3f); // کمی بزرگ‌ترش کن
-        } else {
-            img.setColor(1f, 1f, 1f, 0.8f); // حالت عادی
-        }
+            img.setColor(0.4f, 0.8f, 1f, 1f);
+            img.setScale(1.3f);
+        } else
+            img.setColor(1f, 1f, 1f, 0.8f);
 
         img.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.toolsEquip(toolName);
                 helperBackGround.remove();
-                popup.remove();
+                toolsPopup.remove();
+                toolsMenuIsActivated = false;
             }
 
             @Override
@@ -192,28 +194,38 @@ public class GameMenu implements  Screen, InputProcessor {
 
     private void createToolsMenu () {
 
-        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
-        helperBackGround.setColor(0, 0, 0, 0.5f);
-        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+        if (!toolsMenuIsActivated) {
+            helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+            helperBackGround.setColor(0, 0, 0, 0.5f);
+            helperBackGround.setSize(stage.getWidth(), stage.getHeight());
 
 
-        HashMap<String, String> availableTools = controller.availableTools();
-        String currentTool = controller.getCurrentTool();
+            HashMap<String, String> availableTools = controller.availableTools();
+            String currentTool = controller.getCurrentTool();
 
-        int colNumber = availableTools.size() / 2 + 1;
+            int colNumber = availableTools.size() / 2 + 1;
 
-        Window popup = new Window("", App.skin);
-        popup.setSize(200 + colNumber * 100, 300);
-        popup.setPosition((stage.getWidth() - popup.getWidth()) / 2, (stage.getHeight() - popup.getHeight()) / 2);
+            toolsPopup = new Window("", App.skin);
+            toolsPopup.setSize(200 + colNumber * 100, 300);
+            toolsPopup.setPosition(
+                (stage.getWidth() - toolsPopup.getWidth()) / 2,
+                (stage.getHeight() - toolsPopup.getHeight()) / 2);
 
 
-        Table content = new Table();
-        createToolsTable(content, currentTool, availableTools, popup);
+            Table content = new Table();
+            createToolsTable(content, currentTool, availableTools);
 
-        popup.add(content).expand().fill();
+            toolsPopup.add(content).expand().fill();
 
-        stage.addActor(helperBackGround);
-        stage.addActor(popup);
+            stage.addActor(helperBackGround);
+            stage.addActor(toolsPopup);
+            toolsMenuIsActivated = true;
+        }
+        else {
+            helperBackGround.remove();
+            toolsPopup.remove();
+            toolsMenuIsActivated = false;
+        }
     }
     private void initialize () {
 
@@ -230,6 +242,8 @@ public class GameMenu implements  Screen, InputProcessor {
         dateLabel = new Label("", App.skin);
         moneyLabel = new Label("", App.skin);
         weekDayLabel = new Label("", App.skin);
+
+        toolsMenuIsActivated = false;
 
     }
     private void createClock() {
@@ -298,6 +312,12 @@ public class GameMenu implements  Screen, InputProcessor {
         lastTime = TimeUtils.millis();
     }
 
+
+    private void inputController () {
+
+         if (Gdx.input.isKeyJustPressed(Keys.ToolsMenu))
+             createToolsMenu();
+    }
 
     public void resize(int i, int i1) {
 
