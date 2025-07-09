@@ -2197,8 +2197,6 @@ public class InputGameController {
             currentGame.currentPlayer.increaseHealth(currentGame.currentPlayer.currentTool.healthCost());
         }
 
-        System.out.println("Energy : "+currentGame.currentPlayer.getHealth());
-
         if (directionIncorrect(direction))
             return new Result(false, RED+"Direction is invalid"+RESET);
 
