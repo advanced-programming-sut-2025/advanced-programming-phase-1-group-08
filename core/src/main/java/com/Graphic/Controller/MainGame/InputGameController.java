@@ -2063,16 +2063,6 @@ public class InputGameController {
 
         System.out.println(currentGame.currentPlayer.currentTool.getName());
     }
-    public String getCurrentTool() {
-
-        Tools currentTool = currentGame.currentPlayer.currentTool;
-
-        if (currentTool != null)
-            return currentTool.getName();
-        else
-            return null;
-
-    }
     public HashMap<String, String> availableTools() {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;

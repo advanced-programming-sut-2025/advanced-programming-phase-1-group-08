@@ -3,10 +3,12 @@ package com.Graphic.View.GameMenus;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
 import com.Graphic.model.App;
+import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.GameAssetManager;
 import com.Graphic.model.HelpersClass.TextureManager;
 
+import com.Graphic.model.Items;
 import com.Graphic.model.Keys;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.Gdx;
@@ -15,7 +17,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -29,9 +33,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 
@@ -91,6 +95,7 @@ public class GameMenu implements  Screen, InputProcessor {
         Main.getBatch().setProjectionMatrix(camera.combined);
         Main.getBatch().begin();
         controller.update(camera, v);
+        // drawCurrentTool();
         Main.getBatch().end();
 
 
@@ -100,7 +105,7 @@ public class GameMenu implements  Screen, InputProcessor {
     }
 
 
-    private void createToolsTable (Table content, String currentTool, HashMap<String,String> tools) {
+    private void createToolsTable (Table content, Items currentItem, HashMap<String,String> tools) {
 
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = GameAssetManager.getGameAssetManager().getTinyFont();
@@ -124,7 +129,7 @@ public class GameMenu implements  Screen, InputProcessor {
 
 
         for (int i = 0; i < half; i++)
-            addToolImage(content, entries, i, currentTool);
+            addToolImage(content, entries, i, currentItem);
         content.row();
 
         for (int i = 0; i < half; i++)
@@ -133,7 +138,7 @@ public class GameMenu implements  Screen, InputProcessor {
         content.row();
 
         for (int i = half; i < total; i++)
-            addToolImage(content, entries, i, currentTool);
+            addToolImage(content, entries, i, currentItem);
 
         content.row();
 
@@ -149,14 +154,14 @@ public class GameMenu implements  Screen, InputProcessor {
         content.add(label1);
     }
     private void addToolImage(Table content, Array<Map.Entry<String, String>> entries,
-                              int i, String currentTool) {
+                              int i, Items currentItem) {
         Map.Entry<String, String> entry = entries.get(i);
         Image img = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(entry.getValue()))));
         img.setSize(30, 30);
 
         final String toolName = entry.getKey();
 
-        boolean isCurrent = toolName.equals(currentTool);
+        boolean isCurrent = currentItem != null && toolName.equals(currentItem.getName());
         if (isCurrent) {
             img.setColor(0.4f, 0.8f, 1f, 1f);
             img.setScale(1.3f);
@@ -166,7 +171,12 @@ public class GameMenu implements  Screen, InputProcessor {
         img.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.toolsEquip(toolName);
+
+                if (currentItem != null && currentItem.getName().equals(toolName))
+                    currentGame.currentPlayer.currentItem = null;
+                else
+                    controller.toolsEquip(toolName);
+
                 helperBackGround.remove();
                 toolsPopup.remove();
                 toolsMenuIsActivated = false;
@@ -288,7 +298,7 @@ public class GameMenu implements  Screen, InputProcessor {
 
 
             HashMap<String, String> availableTools = controller.availableTools();
-            String currentTool = controller.getCurrentTool();
+            Items currentItem = currentGame.currentPlayer.currentItem;
 
             int colNumber = availableTools.size() / 2 + 1;
 
@@ -300,7 +310,7 @@ public class GameMenu implements  Screen, InputProcessor {
 
 
             Table content = new Table();
-            createToolsTable(content, currentTool, availableTools);
+            createToolsTable(content, currentItem, availableTools);
 
             toolsPopup.add(content).expand().fill();
 
@@ -314,19 +324,60 @@ public class GameMenu implements  Screen, InputProcessor {
             toolsMenuIsActivated = false;
         }
     }
-    private void drawCurrentTool () {
+//    private void drawCurrentTool () {
+//
+//        if (currentGame.currentPlayer.currentTool != null) {
+//
+//            Tools currentTool = currentGame.currentPlayer.currentTool;
+//
+//            float x = getXForHands();
+//            float y = getYForHands();
+//
+//            Sprite toolSprite = currentTool.getSprite(TextureManager.get(currentTool.getIconPath()));
+//            toolSprite.flip(true, false);
+//
+//            Main.getBatch().draw(toolSprite, x, y, EQUIP_THING_SIZE, EQUIP_THING_SIZE);
+//        }
+//    }
+//    private void drawCurrentTool() {
+//        if (currentGame.currentPlayer.currentTool != null) {
+//
+//
+//            Items currentItem = currentGame.currentPlayer.currentItem;
+//            Direction direction = currentGame.currentPlayer.getDirection();
+//            Direction lastDirection;
+//
+//            float x = getXForHands(direction), y = getYForHands(direction);
+//            Sprite toolSprite = currentTool.getSprite(TextureManager.get(currentTool.getIconPath()));
+//
+//            if (lastDirection != null && lastDirection != direction && direction == Direction.Left)
+//
+//                toolSprite.flip(true, false);
+//            else
+//                toolSprite.flip(false, false);
+//
+//            Main.getBatch().draw(toolSprite, x, y, EQUIP_THING_SIZE, EQUIP_THING_SIZE);
+//            lastDirection = direction;
+//        }
+//    }
 
-        if (currentGame.currentPlayer.currentTool != null) {
+    private float getYForHands(Direction direction) {
 
-            Tools currentTool = currentGame.currentPlayer.currentTool;
+        return switch (direction) {
+            case Right -> (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
+            case Left -> (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
+            case Up -> (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
+            case Down -> (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
+        };
+    }
+    private float getXForHands(Direction direction) {
 
-            float x = currentGame.currentPlayer.getPositionX();
-            float y = currentGame.currentPlayer.getPositionY();
-
-            Main.getBatch().draw(currentTool.getSprite(TextureManager.get(currentTool.getIconPath())) ,
-                TEXTURE_SIZE * x , TEXTURE_SIZE * (90 - y) , TEXTURE_SIZE , TEXTURE_SIZE);
-            
-        }
+        return switch (direction) {
+            case Right -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 20;
+            case Left -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 5;
+            case Up -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 20;
+            case Down -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 20;
+        };
     }
 
     private void inputController () {

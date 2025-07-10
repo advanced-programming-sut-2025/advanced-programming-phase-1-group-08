@@ -6,6 +6,7 @@ public enum Direction {
     Up   ("Mohamadreza/PlayerSpriteIdle/Up" , 0 , -1 ),
     Down ("Mohamadreza/PlayerSpriteIdle/Down" , 0 , 1);
 
+    public static Direction lastDir;
     private final String Path;
     private final int x;
     private final int y;

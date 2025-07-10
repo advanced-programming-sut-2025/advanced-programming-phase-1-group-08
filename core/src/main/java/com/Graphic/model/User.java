@@ -79,6 +79,8 @@ public class User {
     public HashMap<Items , DateHour> buffer = new HashMap<>();   //برای برداشت محصولات فرآوری شده استفاده میشود
 
     private BackPack backPack = new BackPack();
+
+    public Items currentItem;
     public Tools currentTool;
     private int farmingAbility  = 0;
     private int miningAbility   = 0;
