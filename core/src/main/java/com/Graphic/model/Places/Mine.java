@@ -2,16 +2,14 @@ package com.Graphic.model.Places;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.model.MapThings.GameObject;
-import com.Graphic.model.MapThings.Wall;
-
-import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class Mine extends GameObject {
 
     private final int startX;
     private final int startY;
     private final int width;
-    private final int height;
+    private final int height
+        ;
     private String Path;
 
     public Mine(int x, int y , int width, int height) {
@@ -27,9 +25,11 @@ public class Mine extends GameObject {
     public int getStartY() {
         return startY;
     }
+
     public int getWidth() {
         return width;
     }
+
     public int getHeight() {
         return height;
     }
@@ -40,8 +40,8 @@ public class Mine extends GameObject {
             return Path;
         }
 
-        for (int i = startX ; i < startX + width ; i++) {
-            for (int j = startY ; j < startY + height ; j++) {
+        for (int i = startX; i < startX + width; i++) {
+            for (int j = startY; j < startY + height; j++) {
                 if (GameControllerLogic.getTileByCoordinates(i, j).getGameObject().equals(this)) {
 
                     if (j == startY + height - 1 && i == startX + (width / 2)) {

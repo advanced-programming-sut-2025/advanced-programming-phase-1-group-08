@@ -8,6 +8,7 @@ import com.Graphic.model.GameAssetManager;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.Keys;
+import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -28,8 +29,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 
 public class GameMenu implements  Screen, InputProcessor {
@@ -192,41 +195,6 @@ public class GameMenu implements  Screen, InputProcessor {
 
 
 
-    private void createToolsMenu () {
-
-        if (!toolsMenuIsActivated) {
-            helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
-            helperBackGround.setColor(0, 0, 0, 0.5f);
-            helperBackGround.setSize(stage.getWidth(), stage.getHeight());
-
-
-            HashMap<String, String> availableTools = controller.availableTools();
-            String currentTool = controller.getCurrentTool();
-
-            int colNumber = availableTools.size() / 2 + 1;
-
-            toolsPopup = new Window("", App.skin);
-            toolsPopup.setSize(200 + colNumber * 100, 300);
-            toolsPopup.setPosition(
-                (stage.getWidth() - toolsPopup.getWidth()) / 2,
-                (stage.getHeight() - toolsPopup.getHeight()) / 2);
-
-
-            Table content = new Table();
-            createToolsTable(content, currentTool, availableTools);
-
-            toolsPopup.add(content).expand().fill();
-
-            stage.addActor(helperBackGround);
-            stage.addActor(toolsPopup);
-            toolsMenuIsActivated = true;
-        }
-        else {
-            helperBackGround.remove();
-            toolsPopup.remove();
-            toolsMenuIsActivated = false;
-        }
-    }
     private void initialize () {
 
         startTime = TimeUtils.millis();
@@ -311,7 +279,55 @@ public class GameMenu implements  Screen, InputProcessor {
         weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
         lastTime = TimeUtils.millis();
     }
+    private void createToolsMenu () {
 
+        if (!toolsMenuIsActivated) {
+            helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+            helperBackGround.setColor(0, 0, 0, 0.5f);
+            helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+
+
+            HashMap<String, String> availableTools = controller.availableTools();
+            String currentTool = controller.getCurrentTool();
+
+            int colNumber = availableTools.size() / 2 + 1;
+
+            toolsPopup = new Window("", App.skin);
+            toolsPopup.setSize(200 + colNumber * 100, 300);
+            toolsPopup.setPosition(
+                (stage.getWidth() - toolsPopup.getWidth()) / 2,
+                (stage.getHeight() - toolsPopup.getHeight()) / 2);
+
+
+            Table content = new Table();
+            createToolsTable(content, currentTool, availableTools);
+
+            toolsPopup.add(content).expand().fill();
+
+            stage.addActor(helperBackGround);
+            stage.addActor(toolsPopup);
+            toolsMenuIsActivated = true;
+        }
+        else {
+            helperBackGround.remove();
+            toolsPopup.remove();
+            toolsMenuIsActivated = false;
+        }
+    }
+    private void drawCurrentTool () {
+
+        if (currentGame.currentPlayer.currentTool != null) {
+
+            Tools currentTool = currentGame.currentPlayer.currentTool;
+
+            float x = currentGame.currentPlayer.getPositionX();
+            float y = currentGame.currentPlayer.getPositionY();
+
+            Main.getBatch().draw(currentTool.getSprite(TextureManager.get(currentTool.getIconPath())) ,
+                TEXTURE_SIZE * x , TEXTURE_SIZE * (90 - y) , TEXTURE_SIZE , TEXTURE_SIZE);
+            
+        }
+    }
 
     private void inputController () {
 

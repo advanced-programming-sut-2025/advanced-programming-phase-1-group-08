@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class GameObject {
 
     private char Charactor;
-    private float width;
-    private float height;
+    private float textureWidth;
+    private float textureHeight;
 
     public GameObject() {
-        this.width = 1;
-        this.height = 1;
+        this.textureHeight = 1;
+        this.textureWidth = 1;
     }
 
     public char getCharactor() {
@@ -25,9 +25,9 @@ public class GameObject {
     private Sprite sprite;
 
     public Sprite getSprite(Texture texture) {
-        if (sprite == null) {
+
+        if (sprite == null)
             sprite = new Sprite(texture);
-        }
 
         return sprite;
     }
@@ -42,20 +42,19 @@ public class GameObject {
         return null;
     }
 
-
-    public float getWidth() {
-        return width;
+    public float getTextureWidth() {
+        return textureWidth;
     }
 
-    public void setWidth(float width) {
-        this.width = width;
+    public void setTextureWidth(float textureWidth) {
+        this.textureWidth = textureWidth;
     }
 
-    public float getHeight() {
-        return height;
+    public float getTextureHeight() {
+        return textureHeight;
     }
 
-    public void setHeight(float height) {
-        this.height = height;
+    public void setTextureHeight(float textureHeight) {
+        this.textureHeight = textureHeight;
     }
 }
