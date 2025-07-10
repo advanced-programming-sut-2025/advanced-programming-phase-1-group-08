@@ -45,7 +45,7 @@ public class GameMenu implements  Screen, InputProcessor {
 
     public static OrthographicCamera camera;
     private InputGameController controller;
-    private final int hourSecond = 300000;
+    private final int hourSecond = 120000;
     private Stage stage;
 
     private Image helperBackGround;
@@ -222,6 +222,7 @@ public class GameMenu implements  Screen, InputProcessor {
         toolsMenuIsActivated = false;
 
     }
+
     private void createClock() {
 
         Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
@@ -322,58 +323,37 @@ public class GameMenu implements  Screen, InputProcessor {
             toolsMenuIsActivated = false;
         }
     }
-//    private void drawCurrentItem () {
-//
-//        if (currentGame.currentPlayer.currentItem != null) {
-//
-//            Tools currentTool = currentGame.currentPlayer.currentTool;
-//
-//            float x = getXForHands();
-//            float y = getYForHands();
-//
-//            Sprite toolSprite = currentTool.getSprite(TextureManager.get(currentTool.getIconPath()));
-//            toolSprite.flip(true, false);
-//
-//            Main.getBatch().draw(toolSprite, x, y, EQUIP_THING_SIZE, EQUIP_THING_SIZE);
-//        }
-//    }
     private void drawCurrentItem() {
         if (currentGame.currentPlayer.currentItem != null) {
 
             Items currentItem = currentGame.currentPlayer.currentItem;
             Direction direction = currentGame.currentPlayer.getDirection();
-            Direction lastDirection;
 
             float x = getXForHands(direction), y = getYForHands(direction);
-            Sprite toolSprite = currentItem.getSprite(TextureManager.get(currentItem.getIconPath()));
+            Sprite toolSprite = currentItem.getSprite(TextureManager.get(currentItem.getInventoryIconPath()));
 
-            if (lastDirection != null && lastDirection != direction && direction == Direction.Left)
-
-                toolSprite.flip(true, false);
-            else
-                toolSprite.flip(false, false);
+            toolSprite.flip(Direction.lastDir != null && Direction.lastDir != direction &&
+                (direction == Direction.Left || Direction.lastDir == Direction.Left), false);
 
             Main.getBatch().draw(toolSprite, x, y, EQUIP_THING_SIZE, EQUIP_THING_SIZE);
-            lastDirection = direction;
+            Direction.lastDir = direction;
         }
     }
 
     private float getYForHands(Direction direction) {
 
-        return switch (direction) {
-            case Right -> (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
-            case Left -> (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
-            case Up -> (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
-            case Down -> (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
-        };
+        if (direction == Direction.Up)
+            return (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 12;
+
+        return (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
     }
     private float getXForHands(Direction direction) {
 
         return switch (direction) {
             case Right -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 20;
-            case Left -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 5;
-            case Up -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 20;
-            case Down -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 20;
+            case Left -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE - 10;
+            case Up -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 25;
+            case Down -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 23;
         };
     }
 

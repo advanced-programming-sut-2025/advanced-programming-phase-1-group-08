@@ -103,7 +103,8 @@ public class User {
     }
 
 
-    public User(String username, String nickname, String email, String gender,  int point, int health, String hashPass, SecurityQuestions MySecQ, String MySecA) {
+    public User(String username, String nickname, String email, String gender,
+                int point, int health, String hashPass, SecurityQuestions MySecQ, String MySecA) {
 
         this.username = username;
         this.hashPass = hashPass;
