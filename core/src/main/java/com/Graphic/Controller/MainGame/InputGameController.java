@@ -2042,6 +2042,7 @@ public class InputGameController {
     }
 
                                                                    // input tools command
+
     public Result howMuchWater () {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
@@ -2053,15 +2054,14 @@ public class InputGameController {
 
         return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
     }
-    public void toolsEquip (String name) {
+    public void itemEquip (String name) {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
 
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
-            if (entry.getKey() instanceof Tools && entry.getKey().getName().equals(name))
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
+            if (entry.getKey() != null && entry.getKey().getName().equals(name))
+                currentGame.currentPlayer.currentItem = entry.getKey();
 
-        System.out.println(currentGame.currentPlayer.currentTool.getName());
     }
     public HashMap<String, String> availableTools() {
 

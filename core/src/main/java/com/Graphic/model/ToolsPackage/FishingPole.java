@@ -16,12 +16,6 @@ public class FishingPole extends Tools {
     public int healthCost() { // TODO
         return 0;
     }
-
-    @Override
-    public String getIconPath() {
-        return type.getIconPath();
-    }
-
     @Override
     public String getName() {
         return type.getName();

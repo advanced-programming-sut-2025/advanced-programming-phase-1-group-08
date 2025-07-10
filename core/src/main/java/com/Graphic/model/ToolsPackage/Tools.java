@@ -20,7 +20,6 @@ public abstract class Tools extends Items {
     }
 
     public abstract int healthCost ();
-    public abstract String getIconPath();
 
     @Override
     public int getSellPrice() {

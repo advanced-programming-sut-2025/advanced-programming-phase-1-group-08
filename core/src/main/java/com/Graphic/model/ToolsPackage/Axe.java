@@ -33,11 +33,6 @@ public class Axe extends Tools {
         return Math.min((int) (this.type.getEnergyCost()*x), 0);
     }
 
-    @Override
-    public String getIconPath() {
-        return type.getIconPath();
-    }
-
     public String getName() {
 
         return type.getDisplayName();

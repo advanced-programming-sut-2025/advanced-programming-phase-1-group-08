@@ -95,7 +95,7 @@ public class GameMenu implements  Screen, InputProcessor {
         Main.getBatch().setProjectionMatrix(camera.combined);
         Main.getBatch().begin();
         controller.update(camera, v);
-        // drawCurrentTool();
+        drawCurrentItem();
         Main.getBatch().end();
 
 
@@ -175,19 +175,17 @@ public class GameMenu implements  Screen, InputProcessor {
                 if (currentItem != null && currentItem.getName().equals(toolName))
                     currentGame.currentPlayer.currentItem = null;
                 else
-                    controller.toolsEquip(toolName);
+                    controller.itemEquip(toolName);
 
                 helperBackGround.remove();
                 toolsPopup.remove();
                 toolsMenuIsActivated = false;
             }
-
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 img.setColor(1f, 1f, 1f, 1f);
                 img.setScale(isCurrent ? 1.4f : 1.2f);
             }
-
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 if (isCurrent) {
@@ -324,9 +322,9 @@ public class GameMenu implements  Screen, InputProcessor {
             toolsMenuIsActivated = false;
         }
     }
-//    private void drawCurrentTool () {
+//    private void drawCurrentItem () {
 //
-//        if (currentGame.currentPlayer.currentTool != null) {
+//        if (currentGame.currentPlayer.currentItem != null) {
 //
 //            Tools currentTool = currentGame.currentPlayer.currentTool;
 //
@@ -339,27 +337,26 @@ public class GameMenu implements  Screen, InputProcessor {
 //            Main.getBatch().draw(toolSprite, x, y, EQUIP_THING_SIZE, EQUIP_THING_SIZE);
 //        }
 //    }
-//    private void drawCurrentTool() {
-//        if (currentGame.currentPlayer.currentTool != null) {
-//
-//
-//            Items currentItem = currentGame.currentPlayer.currentItem;
-//            Direction direction = currentGame.currentPlayer.getDirection();
-//            Direction lastDirection;
-//
-//            float x = getXForHands(direction), y = getYForHands(direction);
-//            Sprite toolSprite = currentTool.getSprite(TextureManager.get(currentTool.getIconPath()));
-//
-//            if (lastDirection != null && lastDirection != direction && direction == Direction.Left)
-//
-//                toolSprite.flip(true, false);
-//            else
-//                toolSprite.flip(false, false);
-//
-//            Main.getBatch().draw(toolSprite, x, y, EQUIP_THING_SIZE, EQUIP_THING_SIZE);
-//            lastDirection = direction;
-//        }
-//    }
+    private void drawCurrentItem() {
+        if (currentGame.currentPlayer.currentItem != null) {
+
+            Items currentItem = currentGame.currentPlayer.currentItem;
+            Direction direction = currentGame.currentPlayer.getDirection();
+            Direction lastDirection;
+
+            float x = getXForHands(direction), y = getYForHands(direction);
+            Sprite toolSprite = currentItem.getSprite(TextureManager.get(currentItem.getIconPath()));
+
+            if (lastDirection != null && lastDirection != direction && direction == Direction.Left)
+
+                toolSprite.flip(true, false);
+            else
+                toolSprite.flip(false, false);
+
+            Main.getBatch().draw(toolSprite, x, y, EQUIP_THING_SIZE, EQUIP_THING_SIZE);
+            lastDirection = direction;
+        }
+    }
 
     private float getYForHands(Direction direction) {
 
