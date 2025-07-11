@@ -104,7 +104,7 @@ public class InputGameController {
         }
     }
 
-    public void moveAnimation() {
+    public static void moveAnimation() {
         currentGame.currentPlayer.getSprite().setRegion(currentGame.currentPlayer.getAnimation().getKeyFrame(currentGame.currentPlayer.getTimer()));
 
         if (! currentGame.currentPlayer.getAnimation().isAnimationFinished(currentGame.currentPlayer.getTimer())) {
@@ -1588,7 +1588,7 @@ public class InputGameController {
         buildNpcVillage();
         sortMap(currentGame.bigMap);
         initializePlayer();
-        fadeToNextDay();
+        //fadeToNextDay();
     }
     public void startNewGame1 (String input) throws IOException {
 

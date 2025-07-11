@@ -1,6 +1,8 @@
 package com.Graphic;
 
+import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.View.GameMenus.GameMenu;
+import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.View.MainMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -13,16 +15,19 @@ public class Main extends Game {
     private static Main main;
     private static SpriteBatch batch;
     private static Skin skin;
+    private static InputGameController x;
 
     @Override
     public void create() {
 
         main = this;
         batch = new SpriteBatch();
-        main.setScreen(GameMenu.getInstance());
+        x = InputGameController.getInstance();
+        x.startNewGame("a");
+        main.setScreen(new MarketMenu());
 
         skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-        main.setScreen(new MainMenu());
+        main.setScreen(new MarketMenu());
 
     }
 
