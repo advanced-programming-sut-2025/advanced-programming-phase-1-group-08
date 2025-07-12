@@ -11,10 +11,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -29,6 +36,8 @@ public class MarketMenu implements Screen , InputProcessor {
     OrthographicCamera camera;
     Marketing marketing;
     public static MarketType marketType;
+    Stage stage;
+    Skin skin;
 
     @Override
     public boolean keyDown(int i) {
@@ -77,40 +86,52 @@ public class MarketMenu implements Screen , InputProcessor {
 
     @Override
     public void show() {
-        App.currentGame.currentPlayer.sprite.setSize(16 , 32);
-        marketing = new Marketing();
-        marketType = MarketType.StardropSaloon;
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false , 300 , 150);
-        map = new TmxMapLoader().load("Mohamadreza/Maps/Saloon.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, 1f);
-        Main.getBatch().begin();
-        marketing.init();
-        Main.getBatch().end();
+//        App.currentGame.currentPlayer.sprite.setSize(16 , 32);
+//        marketing = new Marketing();
+//        marketType = MarketType.StardropSaloon;
+//        camera = new OrthographicCamera();
+//        camera.setToOrtho(false , 300 , 150);
+//        map = new TmxMapLoader().load("Mohamadreza/Maps/Saloon.tmx");
+//        renderer = new OrthogonalTiledMapRenderer(map, 1f);
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+        skin = new Skin(Gdx.files.internal("Mohamadreza/pixthulhu-ui.json"));
+        TextButton button = new TextButton("Name", skin);
+        Table table = new Table();
+        table.setFillParent(true);
+        table.add(button);
+        stage.addActor(table);
+//        Main.getBatch().begin();
+//        marketing.init();
+//        Main.getBatch().end();
 
 
     }
 
     @Override
     public void render(float v) {
-        Main.getBatch().begin();
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            camera.translate(0, 200 * Gdx.graphics.getDeltaTime());
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            camera.translate(0, - 200 * Gdx.graphics.getDeltaTime());
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            camera.translate(- 200 * Gdx.graphics.getDeltaTime(), 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            camera.translate( 200 * Gdx.graphics.getDeltaTime(), 0);
-        }
-        marketing.move();
-        camera.update();
-        renderer.setView(camera);
-        renderer.render();
-        Main.getBatch().end();
+//        Main.getBatch().begin();
+//        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+//            camera.translate(0, 200 * Gdx.graphics.getDeltaTime());
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+//            camera.translate(0, - 200 * Gdx.graphics.getDeltaTime());
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+//            camera.translate(- 200 * Gdx.graphics.getDeltaTime(), 0);
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+//            camera.translate( 200 * Gdx.graphics.getDeltaTime(), 0);
+//        }
+//        marketing.move();
+//        camera.update();
+//        renderer.setView(camera);
+//        renderer.render();
+//        Main.getBatch().end();
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(v);
+        stage.draw();
 
     }
 
