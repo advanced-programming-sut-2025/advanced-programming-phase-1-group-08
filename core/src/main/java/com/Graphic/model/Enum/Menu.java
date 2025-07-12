@@ -13,7 +13,6 @@ public enum Menu {
     RegisterMenu(new RegisterMenu()),
     ProfileMenu(new ProfileMenu()),
     AvatarMenu(new AvatarMenu()),
-    MarketMenu(new MarketMenu()),
     LoginMenu(new LoginMenu()),
     ExitMenu(new ExitMenu()),
     MainMenu(new MainMenu()),

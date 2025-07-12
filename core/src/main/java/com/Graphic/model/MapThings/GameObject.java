@@ -57,4 +57,5 @@ public class GameObject {
     public void setTextureHeight(float textureHeight) {
         this.textureHeight = textureHeight;
     }
+
 }

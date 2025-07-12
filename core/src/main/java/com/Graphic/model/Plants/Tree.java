@@ -39,6 +39,8 @@ public class Tree extends GameObject {
         isProtected = false;
         haveFruit = false;
         fertilize = false;
+        super.setTextureWidth(1);
+        super.setTextureHeight(2);
     }
 
     public void setProtected(boolean aProtected) {

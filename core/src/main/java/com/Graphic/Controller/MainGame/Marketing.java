@@ -1,10 +1,13 @@
 package com.Graphic.Controller.MainGame;
 
+import com.Graphic.Main;
+import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
 import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.AllPlants.TreesSourceType;
+import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.ToolsType.*;
@@ -24,6 +27,9 @@ import com.Graphic.model.Plants.ForagingSeeds;
 import com.Graphic.model.Plants.TreeSource;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.ToolsPackage.*;
+import com.Graphic.model.collisionRect;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 
 import java.util.Map;
 
@@ -34,6 +40,66 @@ import static com.Graphic.model.App.currentMenu;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class Marketing {
+
+    public void init() {
+        currentGame.currentPlayer.setDirection(Direction.Up);
+        currentGame.currentPlayer.sprite.setPosition(79 ,24 );
+        currentGame.currentPlayer.sprite.setSize(16 , 16);
+        currentGame.currentPlayer.sprite.draw(Main.getBatch());
+    }
+
+    public void move() {
+        float x = currentGame.currentPlayer.sprite.getX();
+        float y = currentGame.currentPlayer.sprite.getY();
+
+        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
+            System.out.println(currentGame.currentPlayer.sprite.getX() + ", " + currentGame.currentPlayer.sprite.getY());
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            InputGameController.moveAnimation();
+            currentGame.currentPlayer.setDirection(Direction.Up);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            InputGameController.moveAnimation();
+            currentGame.currentPlayer.setDirection(Direction.Down);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            InputGameController.moveAnimation();
+            currentGame.currentPlayer.setDirection(Direction.Left);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            InputGameController.moveAnimation();
+            currentGame.currentPlayer.setDirection(Direction.Right);
+        }
+
+        else {
+            currentGame.currentPlayer.sprite.draw(Main.getBatch());
+            return;
+        }
+
+        currentGame.currentPlayer.sprite.setSize(16 , 32);
+
+
+        currentGame.currentPlayer.sprite.
+            setPosition(x + currentGame.currentPlayer.getDirection().getX() * 50 * Gdx.graphics.getDeltaTime(),
+                y - currentGame.currentPlayer.getDirection().getY() * 50 * Gdx.graphics.getDeltaTime());
+
+        if (! checkColision()) {
+            currentGame.currentPlayer.sprite.setPosition(x , y);
+        }
+
+        currentGame.currentPlayer.sprite.draw(Main.getBatch());
+    }
+
+    public boolean checkColision() {
+        for (collisionRect rect : MarketMenu.marketType.getRects()) {
+            if (! rect.checkCollision(currentGame.currentPlayer)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public MarketType findEnteredShopType() {
         for (MarketType market : MarketType.values()) {

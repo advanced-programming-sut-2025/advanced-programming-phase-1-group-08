@@ -25,6 +25,7 @@ public class Lake extends GameObject {
     private float Timer = 0.0f;
 
     public Lake(int x, int y, int width, int height) {
+        super();
         this.topLeftX = x;
         this.topLeftY = y;
         this.width = width;
