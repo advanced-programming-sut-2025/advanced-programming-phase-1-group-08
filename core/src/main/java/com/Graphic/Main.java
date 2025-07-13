@@ -1,6 +1,7 @@
 package com.Graphic;
 
 import com.Graphic.View.GameMenus.GameMenu;
+import com.Graphic.View.GameMenus.HomeMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -15,7 +16,7 @@ public class Main extends Game {
 
         main = this;
         batch = new SpriteBatch();
-        main.setScreen((new HomeMenu()));
+        main.setScreen(GameMenu.getInstance());
 
     }
 

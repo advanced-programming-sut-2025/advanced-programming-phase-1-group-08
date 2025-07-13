@@ -69,7 +69,7 @@ public class CraftingController {
             return new Result(false , "Not enough Capacity in your BackPack");
         }
         if (!type.checkLevel()) {
-            return new Result(false , "you don't have Recipe for this crafting");
+            return new Result(false , "Recipe is Locked");
         }
 
         for (Map.Entry <String,Integer> entry : type.getIngrediants().entrySet()) {

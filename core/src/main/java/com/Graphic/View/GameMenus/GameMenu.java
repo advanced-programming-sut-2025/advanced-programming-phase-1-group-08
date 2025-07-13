@@ -7,6 +7,7 @@ import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -21,6 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import java.awt.*;
 
 import static com.Graphic.model.App.currentGame;
 
@@ -91,7 +94,9 @@ public class GameMenu implements  Screen, InputProcessor {
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
 
-
+        if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
+            Main.getMain().setScreen(new HomeMenu());
+        }
 
     }
 
