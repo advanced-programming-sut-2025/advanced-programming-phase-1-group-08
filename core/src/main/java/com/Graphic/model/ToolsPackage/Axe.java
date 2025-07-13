@@ -33,13 +33,16 @@ public class Axe extends Tools {
         return Math.min((int) (this.type.getEnergyCost()*x), 0);
     }
 
-    @Override
     public String getName() {
+
         return type.getDisplayName();
     }
-
-    @Override
     public int getSellPrice() {
         return 0;
     }
+    public String getInventoryIconPath () {
+        return this.type.getIconPath();
+    }
+
+
 }

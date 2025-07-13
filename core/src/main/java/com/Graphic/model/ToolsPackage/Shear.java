@@ -36,6 +36,11 @@ public class Shear extends Tools {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return "Erfan/Tools/Shears.png";
+    }
+
+    @Override
     public String getName() {
         return "Shear";
     }

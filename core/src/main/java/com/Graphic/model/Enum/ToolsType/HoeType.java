@@ -11,26 +11,28 @@ import static com.Graphic.model.Enum.ItemType.BarsAndOreType.*;
 
 public enum HoeType {
 
-    primaryHoe  ("Primary Hoe", -5 , 0 , null),
+    primaryHoe  ("Primary Hoe", -5 , 0 , null, "Erfan/Tools/Hoe/Hoe.png"),
 
-    copperyHoe  ("Coppery Hoe", -4 , 2000 , CopperBar),
+    copperyHoe  ("Coppery Hoe", -4 , 2000 , CopperBar, "Erfan/Tools/Hoe/Copper_Hoe.png"),
 
-    ironHoe     ("Iron Hoe",    -3 , 5000 , IronBar),
+    ironHoe     ("Iron Hoe",    -3 , 5000 , IronBar, "Erfan/Tools/Hoe/Steel_Hoe.png"),
 
-    goldenHoe   ("Golden Hoe",  -2 , 10000 , GoldBar),
+    goldenHoe   ("Golden Hoe",  -2 , 10000 , GoldBar, "Erfan/Tools/Hoe/Gold_Hoe.png"),
 
-    iridiumHoe  ("Iridium Hoe", -1 , 25000 , IridiumBar);
+    iridiumHoe  ("Iridium Hoe", -1 , 25000 , IridiumBar, "Erfan/Tools/Hoe/Iridium_Hoe.png");
 
     private final int energyCost;
     private final String displayName;
     private final int price;
+    private final String iconPath;
     private final BarsAndOreType barsAndOreType;
 
-    HoeType(String displayName, int energyCost , int price , BarsAndOreType barsAndOreType) {
+    HoeType(String displayName, int energyCost , int price , BarsAndOreType barsAndOreType, String iconPath) {
         this.displayName = displayName;
         this.energyCost = energyCost;
         this.price = price;
         this.barsAndOreType = barsAndOreType;
+        this.iconPath = iconPath;
     }
 
     public int getEnergyCost() {
@@ -40,6 +42,10 @@ public enum HoeType {
     public String getDisplayName() {
 
         return displayName;
+    }
+    public String getIconPath() {
+        return iconPath;
+
     }
     public int getPrice() {
         return price;
@@ -60,7 +66,6 @@ public enum HoeType {
         }
         return null;
     }
-
     public static boolean checkIngredient(HoeType hoeType) {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         BarsAndOres barsAndOres= new BarsAndOres(hoeType.barsAndOreType);

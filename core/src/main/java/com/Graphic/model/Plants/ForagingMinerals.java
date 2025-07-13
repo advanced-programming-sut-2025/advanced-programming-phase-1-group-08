@@ -15,6 +15,8 @@ public class ForagingMinerals extends Items {
         return type;
     }
 
+
+
     @Override
     public String getIcon () {
         return this.type.getTexturePath();
@@ -23,6 +25,12 @@ public class ForagingMinerals extends Items {
     @Override
     public String getName() {
         return type.getDisplayName();
+    }
+
+    @Override
+    public String getInventoryIconPath() {
+
+        return type.getTexturePath();
     }
 
     @Override

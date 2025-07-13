@@ -41,4 +41,9 @@ public class TrashCan extends Tools {
     public int getSellPrice() {
         return 0;
     }
+
+    @Override
+    public String getInventoryIconPath() {
+        return type.getIconPath();
+    }
 }

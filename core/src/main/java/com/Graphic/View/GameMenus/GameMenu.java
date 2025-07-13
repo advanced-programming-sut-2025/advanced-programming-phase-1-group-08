@@ -3,9 +3,14 @@ package com.Graphic.View.GameMenus;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
 import com.Graphic.model.App;
+import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
+import com.Graphic.model.GameAssetManager;
 import com.Graphic.model.HelpersClass.TextureManager;
 
+import com.Graphic.model.Items;
+import com.Graphic.model.Keys;
+import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -13,35 +18,52 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.awt.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 
 public class GameMenu implements  Screen, InputProcessor {
 
     public static GameMenu gameMenu;
 
-
-    private Stage stage;
     public static OrthographicCamera camera;
     private InputGameController controller;
+    private final int hourSecond = 120000;
+    private Stage stage;
+
+    private Image helperBackGround;
+
+    public long startTime;
+    public long lastTime;
 
     private Group clockGroup;
     private Label moneyLabel;
     private Label timeLabel;
     private Label dateLabel;
     private Label weekDayLabel;
+
+    private boolean toolsMenuIsActivated;
+    private Window toolsPopup;
 
 
     private GameMenu() {
@@ -57,18 +79,139 @@ public class GameMenu implements  Screen, InputProcessor {
     public void show() {
 
         initialize();
+        controller.init();
 
         camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         controller.startNewGame("a");
-        Gdx.input.setInputProcessor(this);
+        Gdx.input.setInputProcessor(stage);
         createClock();
 
+    }
+    public void render(float v) {
 
+        if (TimeUtils.millis() - lastTime > hourSecond)
+            updateClock();
+
+        inputController();
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Main.getBatch().setProjectionMatrix(camera.combined);
+        Main.getBatch().begin();
+        controller.update(camera, v);
+        drawCurrentItem();
+        Main.getBatch().end();
+
+
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
 
     }
+
+
+    private void createToolsTable (Table content, Items currentItem, HashMap<String,String> tools) {
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = GameAssetManager.getGameAssetManager().getTinyFont();
+
+
+        content.setFillParent(true);
+        content.top();
+        content.defaults().pad(10);
+
+        Label label = new Label("", labelStyle);
+        label.setColor(Color.BLACK);
+        content.add(label).padTop(30).padLeft(20).center().row();
+
+        BitmapFont font = GameAssetManager.getGameAssetManager().getTinyFont();
+        font.getData().setScale(0.4f);
+        labelStyle.font = font;
+
+        int total = tools.size();
+        int half = (int) Math.ceil(total / 2.0);
+        Array<Map.Entry<String, String>> entries = new Array<>(tools.entrySet().toArray(new Map.Entry[0]));
+
+
+        for (int i = 0; i < half; i++)
+            addToolImage(content, entries, i, currentItem);
+        content.row();
+
+        for (int i = 0; i < half; i++)
+            addToolName(content, entries, i, labelStyle);
+
+        content.row();
+
+        for (int i = half; i < total; i++)
+            addToolImage(content, entries, i, currentItem);
+
+        content.row();
+
+        for (int i = half; i < total; i++)
+            addToolName(content, entries, i, labelStyle);
+    }
+    private void addToolName(Table content, Array<Map.Entry<String, String>> entries,
+                             int i, Label.LabelStyle labelStyle) {
+        Map.Entry<String, String> entry = entries.get(i);
+        Label label1 = new Label(entry.getKey(), labelStyle);
+        label1.setColor(Color.BLACK);
+        label1.setSize(15, 8);
+        content.add(label1);
+    }
+    private void addToolImage(Table content, Array<Map.Entry<String, String>> entries,
+                              int i, Items currentItem) {
+        Map.Entry<String, String> entry = entries.get(i);
+        Image img = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(entry.getValue()))));
+        img.setSize(30, 30);
+
+        final String toolName = entry.getKey();
+
+        boolean isCurrent = currentItem != null && toolName.equals(currentItem.getName());
+        if (isCurrent) {
+            img.setColor(0.4f, 0.8f, 1f, 1f);
+            img.setScale(1.3f);
+        } else
+            img.setColor(1f, 1f, 1f, 0.8f);
+
+        img.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                if (currentItem != null && currentItem.getName().equals(toolName))
+                    currentGame.currentPlayer.currentItem = null;
+                else
+                    controller.itemEquip(toolName);
+
+                helperBackGround.remove();
+                toolsPopup.remove();
+                toolsMenuIsActivated = false;
+            }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                img.setColor(1f, 1f, 1f, 1f);
+                img.setScale(isCurrent ? 1.4f : 1.2f);
+            }
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                if (isCurrent) {
+                    img.setColor(0.4f, 0.8f, 1f, 1f); // برگرد به رنگ خاص خودش
+                    img.setScale(1.3f);
+                } else {
+                    img.setColor(1f, 1f, 1f, 0.8f); // حالت عادی
+                    img.setScale(1f);
+                }
+            }
+        });
+
+        content.add(img).size(30, 30);
+    }
+
+
+
     private void initialize () {
 
-        controller = new InputGameController();
+        startTime = TimeUtils.millis();
+        lastTime = TimeUtils.millis();
+
+        controller = InputGameController.getInstance();
         stage = new Stage(new ScreenViewport());
         clockGroup = new Group();
         camera = new OrthographicCamera();
@@ -79,74 +222,53 @@ public class GameMenu implements  Screen, InputProcessor {
         moneyLabel = new Label("", App.skin);
         weekDayLabel = new Label("", App.skin);
 
-    }
-    public void render(float v) {
-
-        Gdx.gl.glClearColor(0,0,0,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Main.getBatch().setProjectionMatrix(camera.combined);
-        Main.getBatch().begin();
-        controller.print();
-        controller.moveCamera(camera);
-        Main.getBatch().end();
-
-
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
-            Main.getMain().setScreen(new HomeMenu());
-        }
+        toolsMenuIsActivated = false;
 
     }
-
 
     private void createClock() {
 
         Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
 
-        BitmapFont font = new BitmapFont(Gdx.files.internal("Erfan/Fonts/tinyFont.fnt"));
+        ArrayList<Label> labels = new ArrayList<>();
+        labels.add(timeLabel);
+        labels.add(dateLabel);
+        labels.add(moneyLabel);
+        labels.add(weekDayLabel);
+
         Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
+        labelStyle.font = GameAssetManager.getGameAssetManager().getSmallFont();
 
-        BitmapFont font2 = new BitmapFont(Gdx.files.internal("Erfan/Fonts/SpriteFont1.fnt"));
         Label.LabelStyle labelStyle2 = new Label.LabelStyle();
-        labelStyle2.font = font2;
-
-        BitmapFont font3 = new BitmapFont(Gdx.files.internal("Erfan/Fonts/SmallFont.fnt"));
-        Label.LabelStyle labelStyle3 = new Label.LabelStyle();
-        labelStyle3.font = font3;
+        labelStyle2.font = GameAssetManager.getGameAssetManager().getFont3();
 
 
 
-        timeLabel.setText(currentGame.currentDate.getHour());
+        timeLabel.setText(currentGame.currentDate.getHour() + ":00");
         dateLabel.setText(currentGame.currentDate.getDate());
-        moneyLabel.setText("500");
         weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
 
-        timeLabel.setColor(Color.BLACK);
-        dateLabel.setColor(Color.BLACK);
-        moneyLabel.setColor(Color.GREEN);
-        weekDayLabel.setColor(Color.BLACK);
+        String moneyStr = String.valueOf(currentGame.currentPlayer.getMoney());
+        String spaced = String.join(" ", moneyStr.split(""));
+        moneyLabel.setText(spaced);
 
 
-        dateLabel.setFontScale(1.2f);
-        weekDayLabel.setFontScale(1.2f);
-        weekDayLabel.setStyle(labelStyle2);
-
-
+        for (Label l : labels) {
+            l.setColor(Color.BLACK);
+            l.setStyle(labelStyle2);
+        }
+        moneyLabel.setStyle(labelStyle);
 
         clockGroup.addActor(image);
 
-        clockGroup.addActor(timeLabel);
-        clockGroup.addActor(dateLabel);
-        clockGroup.addActor(moneyLabel);
-        clockGroup.addActor(weekDayLabel);
+        for (Label l : labels)
+            clockGroup.addActor(l);
 
-        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 35);
-        moneyLabel.setPosition(300 , 150 - moneyLabel.getHeight());
-        weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 100, dateLabel.getY());
-        timeLabel.setPosition(weekDayLabel.getX(), weekDayLabel.getY() - 200);
+
+        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 48);
+        weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 80, dateLabel.getY() + 3);
+        setCenteredPosition(timeLabel, weekDayLabel.getX() + 10, weekDayLabel.getY() - 95);
+        moneyLabel.setPosition(timeLabel.getX() + 45 - moneyLabel.getWidth(), timeLabel.getY() - 78);
 
 
         float screenWidth = stage.getViewport().getWorldWidth();
@@ -160,11 +282,89 @@ public class GameMenu implements  Screen, InputProcessor {
             screenHeight - clockGroup.getHeight() - 10);
 
         stage.addActor(clockGroup);
+    }
+    private void updateClock() {
+
+        passedOfTime(0, 1);
+        timeLabel.setText(currentGame.currentDate.getHour() + ":00");
+        dateLabel.setText(currentGame.currentDate.getDate());
+        weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
+        lastTime = TimeUtils.millis();
+    }
+    private void createToolsMenu () {
+
+        if (!toolsMenuIsActivated) {
+            helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+            helperBackGround.setColor(0, 0, 0, 0.5f);
+            helperBackGround.setSize(stage.getWidth(), stage.getHeight());
 
 
+            HashMap<String, String> availableTools = controller.availableTools();
+            Items currentItem = currentGame.currentPlayer.currentItem;
+
+            int colNumber = availableTools.size() / 2 + 1;
+
+            toolsPopup = new Window("", App.skin);
+            toolsPopup.setSize(200 + colNumber * 100, 300);
+            toolsPopup.setPosition(
+                (stage.getWidth() - toolsPopup.getWidth()) / 2,
+                (stage.getHeight() - toolsPopup.getHeight()) / 2);
+
+
+            Table content = new Table();
+            createToolsTable(content, currentItem, availableTools);
+
+            toolsPopup.add(content).expand().fill();
+
+            stage.addActor(helperBackGround);
+            stage.addActor(toolsPopup);
+            toolsMenuIsActivated = true;
+        }
+        else {
+            helperBackGround.remove();
+            toolsPopup.remove();
+            toolsMenuIsActivated = false;
+        }
+    }
+    private void drawCurrentItem() {
+        if (currentGame.currentPlayer.currentItem != null) {
+
+            Items currentItem = currentGame.currentPlayer.currentItem;
+            Direction direction = currentGame.currentPlayer.getDirection();
+
+            float x = getXForHands(direction), y = getYForHands(direction);
+            Sprite toolSprite = currentItem.getSprite(TextureManager.get(currentItem.getInventoryIconPath()));
+
+            toolSprite.flip(Direction.lastDir != null && Direction.lastDir != direction &&
+                (direction == Direction.Left || Direction.lastDir == Direction.Left), false);
+
+            Main.getBatch().draw(toolSprite, x, y, EQUIP_THING_SIZE, EQUIP_THING_SIZE);
+            Direction.lastDir = direction;
+        }
     }
 
+    private float getYForHands(Direction direction) {
 
+        if (direction == Direction.Up)
+            return (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 12;
+
+        return (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
+    }
+    private float getXForHands(Direction direction) {
+
+        return switch (direction) {
+            case Right -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 20;
+            case Left -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE - 10;
+            case Up -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 25;
+            case Down -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 23;
+        };
+    }
+
+    private void inputController () {
+
+         if (Gdx.input.isKeyJustPressed(Keys.ToolsMenu))
+             createToolsMenu();
+    }
 
     public void resize(int i, int i1) {
 
@@ -211,9 +411,16 @@ public class GameMenu implements  Screen, InputProcessor {
     public boolean touchCancelled(int i, int i1, int i2, int i3) {
         return false;
     }
+    public void setCenteredPosition(Actor actor, float centerX, float centerY) {
+        actor.setPosition(centerX - actor.getWidth() / 2f, centerY - actor.getHeight() / 2f);
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
 
 
-//    public void check(Scanner scanner) throws IOException {
+    //    public void check(Scanner scanner) throws IOException {
 //
 //        String input = scanner.nextLine();
 //

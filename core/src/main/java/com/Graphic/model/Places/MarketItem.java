@@ -19,6 +19,11 @@ public class MarketItem extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return "";
+    }
+
+    @Override
     public int getSellPrice() {
         return type.getSellPrice();
     }

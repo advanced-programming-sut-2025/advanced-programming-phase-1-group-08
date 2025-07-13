@@ -27,6 +27,11 @@ public class Fish extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return "";
+    }
+
+    @Override
     public int getSellPrice() {
         return (int) ( type.getPrice() * quantity.getValue());
     }

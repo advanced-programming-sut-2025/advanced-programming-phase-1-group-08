@@ -1,6 +1,7 @@
 
 package com.Graphic.Controller.MainGame;
 
+import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
@@ -22,6 +23,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -33,9 +43,20 @@ import static com.Graphic.model.Enum.AllPlants.ForagingMineralsType.*;
 
 public class GameControllerLogic {
 
+    public static GameMenu gameMenu = GameMenu.getInstance();
 
     static int turnCounter = 0;
     static Random rand = new Random();
+    static Image blackOverlay;
+
+
+
+    public static void init() {
+        createScreenOverlay(gameMenu.getStage());
+    }
+    public static void update() {
+
+    }
 
     public static ArrayList<Tile> sortMap(ArrayList<Tile> Map) {
         Map.sort((a, b) -> {
@@ -105,26 +126,26 @@ public class GameControllerLogic {
 
     public static Tile getTileByDir (int dir) {
 
-        int x = currentGame.currentPlayer.getPositionX();
-        int y = currentGame.currentPlayer.getPositionY();
+        float x = currentGame.currentPlayer.getPositionX();
+        float y = currentGame.currentPlayer.getPositionY();
 
-        if (dir == 1)
-            return getTileByCoordinates(x+1, y);
-        else if (dir == 2)
-            return getTileByCoordinates(x+1, y+1);
-        else if (dir == 3)
-            return getTileByCoordinates(x, y+1);
-        else if (dir == 4)
-            return getTileByCoordinates(x-1, y+1);
-        else if (dir == 5)
-            return getTileByCoordinates(x-1, y);
-        else if (dir == 6)
-            return getTileByCoordinates(x-1, y-1);
-        else if (dir == 7)
-            return getTileByCoordinates(x, y-1);
-        else if (dir == 8)
-            return getTileByCoordinates(x+1, y-1);
-        else
+//        if (dir == 1)
+//            return getTileByCoordinates(x+1, y);
+//        else if (dir == 2)
+//            return getTileByCoordinates(x+1, y+1);
+//        else if (dir == 3)
+//            return getTileByCoordinates(x, y+1);
+//        else if (dir == 4)
+//            return getTileByCoordinates(x-1, y+1);
+//        else if (dir == 5)
+//            return getTileByCoordinates(x-1, y);
+//        else if (dir == 6)
+//            return getTileByCoordinates(x-1, y-1);
+//        else if (dir == 7)
+//            return getTileByCoordinates(x, y-1);
+//        else if (dir == 8)
+//            return getTileByCoordinates(x+1, y-1);
+//        else
             return null;
     }
     public static Tile getTileByCoordinates(int x, int y) {
@@ -157,7 +178,7 @@ public class GameControllerLogic {
         Lake lake = null;
         for (int i = topLeftX + 60 * x; i < topLeftX + 60 * x + width; i++) {
             for (int j = topLeftY + 60 * y; j < topLeftY + 60 * y + height; j++) {
-                lake = new Lake(topLeftX, topLeftY, width, height);
+                lake = new Lake(topLeftX + 60 * x, topLeftY + 60 * y, width, height);
                 Tile tile = new Tile(i, j, lake);
                 farm.Farm.add(tile);
                 currentGame.bigMap.add(tile);
@@ -447,6 +468,7 @@ public class GameControllerLogic {
         }
         farm.setX(60 * currentGame.currentPlayer.topLeftX);
         farm.setY(60 * currentGame.currentPlayer.topLeftY);
+        farm.setIndex(2 * currentGame.currentPlayer.topLeftY + currentGame.currentPlayer.topLeftX + 1);
         currentGame.farms.add(farm);
     }
     public static int MapGenerator(int i,int j,long seed , int treeNumber){
@@ -471,13 +493,13 @@ public class GameControllerLogic {
             }
             else {
                 if (i == 0 || i == 29) {
-                    Wall wall = new Wall(0);
+                    Wall wall = new Wall(1);
                     Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, wall);
                     currentGame.currentPlayer.getFarm().Farm.add(tile);
                     currentGame.bigMap.add(tile);
                 }
                 else {
-                    Wall wall = new Wall(1);
+                    Wall wall = new Wall(0);
                     Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, wall);
                     currentGame.currentPlayer.getFarm().Farm.add(tile);
                     currentGame.bigMap.add(tile);
@@ -559,14 +581,14 @@ public class GameControllerLogic {
 
 
     public static boolean checkCoordinateForFishing(){
-        int [] x={1,1,1,0,0,-1,-1,-1};
-        int [] y={1,0,-1,1,-1,-1,0,1};
-        for (int i=0;i<8;i++){
-            if (getTileByCoordinates(currentGame.currentPlayer.getPositionX() +x[i],currentGame.currentPlayer.getPositionY() +y[i]).
-                getGameObject() instanceof Lake){
-                return true;
-            }
-        }
+//        int [] x={1,1,1,0,0,-1,-1,-1};
+//        int [] y={1,0,-1,1,-1,-1,0,1};
+//        for (int i=0;i<8;i++){
+//            if (getTileByCoordinates(currentGame.currentPlayer.getPositionX() +x[i],currentGame.currentPlayer.getPositionY() +y[i]).
+//                getGameObject() instanceof Lake){
+//                return true;
+//            }
+//        }
         return false;
     }
     public static FishingPole isFishingPoleTypeExist(String name){
@@ -803,22 +825,22 @@ public class GameControllerLogic {
         }
     }
     public static CraftingItem isNeighborWithCrafting(String name) {
-        int [] dirx={0,0,1,1,1,-1,-1,-1};
-        int [] diry={1,-1,0,1,-1,0,1,-1};
-
-        for (int x = currentGame.currentPlayer.getPositionX(); x <currentGame.currentPlayer.getPositionX()+ dirx.length; x++) {
-            for (int y=currentGame.currentPlayer.getPositionY() ; y< currentGame.currentPlayer.getPositionY()+ diry.length; y++) {
-                Tile tile=getTileByCoordinates(x,y);
-                if (tile == null) {
-                    continue;
-                }
-                if (tile.getGameObject() instanceof CraftingItem) {
-                    if (((CraftingItem) tile.getGameObject()).getType().getName().equals(name)) {
-                        return (CraftingItem) tile.getGameObject();
-                    }
-                }
-            }
-        }
+//        int [] dirx={0,0,1,1,1,-1,-1,-1};
+//        int [] diry={1,-1,0,1,-1,0,1,-1};
+//
+//        for (int x = currentGame.currentPlayer.getPositionX(); x <currentGame.currentPlayer.getPositionX()+ dirx.length; x++) {
+//            for (int y=currentGame.currentPlayer.getPositionY() ; y< currentGame.currentPlayer.getPositionY()+ diry.length; y++) {
+//                Tile tile=getTileByCoordinates(x,y);
+//                if (tile == null) {
+//                    continue;
+//                }
+//                if (tile.getGameObject() instanceof CraftingItem) {
+//                    if (((CraftingItem) tile.getGameObject()).getType().getName().equals(name)) {
+//                        return (CraftingItem) tile.getGameObject();
+//                    }
+//                }
+//            }
+//        }
         return null;
     }
     public static void addArtisanToInventory(Items item) {
@@ -869,9 +891,6 @@ public class GameControllerLogic {
 
                     turnCounter++;
                     currentGame.currentPlayer = user;
-
-                    if (turnCounter % 4 == 0 && turnCounter != 0)
-                        passedOfTime(0, 1);
 
                     AutomaticFunctionAfterOneTurn();
 
@@ -1232,6 +1251,37 @@ public class GameControllerLogic {
     }
 
 
+    public static void createScreenOverlay(Stage stage) {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(0, 0, 0, 1);
+        pixmap.fill();
+
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+
+        blackOverlay = new Image(new TextureRegionDrawable(new TextureRegion(texture)));
+        blackOverlay.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
+        blackOverlay.getColor().a = 0f;
+
+        blackOverlay.setTouchable(Touchable.disabled);
+        stage.addActor(blackOverlay);
+    }
+    public static void fadeToNextDay() {
+
+        blackOverlay.toFront(); // پوشش بالا بیاد
+
+        blackOverlay.addAction(Actions.sequence(
+            Actions.fadeIn(1f), // تاریک شدن
+            Actions.run(() -> {
+                startDay();  // ⬅️ اجرای تابع روز جدید
+            }),
+            Actions.delay(0.3f), // یه وقفه کوچیک
+            Actions.fadeOut(1f) // روشن شدن مجدد
+        ));
+    }
+
+
+
     public static void passedOfTime (int day, int hour) {
 
         if (day == 0) {
@@ -1308,85 +1358,14 @@ public class GameControllerLogic {
 
         for (int i = 0 ; i < number ; i++) {
             currentGame.currentDate.increaseDay(1);
-            startDay();
+            fadeToNextDay();
         }
         currentGame.currentDate.increaseHour(dateHour.getHour() - currentGame.currentDate.getHour());
     }
-    public static void passedOfTimeOriginal (int day, int hour) {
-//
-//        if (day == 0) {
-//            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
-//            }
-//            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(0);
-//            }
-//            if (currentGame.currentPlayer.Buff_farming_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_farming_hoursLeft(currentGame.currentPlayer.Buff_farming_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_farming_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_farming_hoursLeft(0);
-//            }
-//            if (currentGame.currentPlayer.Buff_foraging_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_foraging_hoursLeft(currentGame.currentPlayer.Buff_foraging_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_foraging_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_foraging_hoursLeft(0);
-//            }
-//            if (currentGame.currentPlayer.Buff_fishing_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_fishing_hoursLeft(currentGame.currentPlayer.Buff_fishing_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_fishing_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_fishing_hoursLeft(0);
-//            }
-//            if (currentGame.currentPlayer.Buff_mining_hoursLeft > 0) {
-//                currentGame.currentPlayer.setBuff_mining_hoursLeft(currentGame.currentPlayer.Buff_mining_hoursLeft - hour);
-//                if (currentGame.currentPlayer.Buff_mining_hoursLeft < 0)
-//                    currentGame.currentPlayer.setBuff_mining_hoursLeft(0);
-//            }
-//
-//
-//
-//
-//            // Buff implementation
-//            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft == 0) currentGame.currentPlayer.setMAX_HEALTH(200);
-//            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft == 0) currentGame.currentPlayer.setMAX_HEALTH(200);
-//            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
-//                currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 100);
-//                currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 100);
-//                currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft --);
-//            }
-//            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
-//                currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 50);
-//                currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 50);
-//                currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft --);
-//            }
-//            if (currentGame.currentPlayer.Buff_mining_hoursLeft > 0) currentGame.currentPlayer.setBuff_mining_hoursLeft(currentGame.currentPlayer.Buff_mining_hoursLeft --);
-//            if (currentGame.currentPlayer.Buff_fishing_hoursLeft > 0) currentGame.currentPlayer.setBuff_fishing_hoursLeft(currentGame.currentPlayer.Buff_fishing_hoursLeft --);
-//            if (currentGame.currentPlayer.Buff_farming_hoursLeft > 0) currentGame.currentPlayer.setBuff_farming_hoursLeft(currentGame.currentPlayer.Buff_farming_hoursLeft --);
-//            if (currentGame.currentPlayer.Buff_foraging_hoursLeft > 0) currentGame.currentPlayer.setBuff_foraging_hoursLeft(currentGame.currentPlayer.Buff_foraging_hoursLeft --);
-//
-//        }
-//        else
-//            currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
-//
-//        DateHour dateHour = currentGame.currentDate.clone();
-//
-//        currentGame.currentDate.increaseHour(hour);
-//        currentGame.currentDate.increaseDay(day);
-//
-//        for (int i = 0 ; i < getDayDifferent(dateHour, currentGame.currentDate) ; i++)
-//            startDay();
-//
-//        if (currentGame.currentDate.getHour() > 22)
-//            passedOfTime(0, 24 - currentGame.currentDate.getHour() + 9);
-//        if (currentGame.currentDate.getHour() < 9)
-//            passedOfTime(0, 9 - currentGame.currentDate.getHour());
-
-    }
 
     public static void startDay () {
+
+
 
         doSeasonAutomaticTask();
         setPlayerLocation();
@@ -1403,6 +1382,9 @@ public class GameControllerLogic {
 
         doWeatherTask();
         crowAttack(); // قبل محصول دادن درخت باید باشه
+
+
+
     }
 
     public static void AutomaticFunctionAfterOneTurn () {
@@ -1424,12 +1406,12 @@ public class GameControllerLogic {
         }
         checkSprinkler();
 
-        if (checkForDeath()) {
-            currentGame.currentPlayer.setSleepTile(
-                getTileByCoordinates(currentGame.currentPlayer.getPositionX(),
-                    currentGame.currentPlayer.getPositionY()));
-            return new Result(false, BRIGHT_RED + "No energy left! It's the next player's turn" + RESET);
-        }
+//        if (checkForDeath()) {
+//            currentGame.currentPlayer.setSleepTile(
+//                getTileByCoordinates(currentGame.currentPlayer.getPositionX(),
+//                    currentGame.currentPlayer.getPositionY()));
+//            return new Result(false, BRIGHT_RED + "No energy left! It's the next player's turn" + RESET);
+//        }
         return new Result(true, "");
     }
 

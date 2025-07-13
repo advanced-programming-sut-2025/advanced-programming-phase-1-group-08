@@ -5,6 +5,7 @@ import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.Items;
+import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
 import com.badlogic.gdx.Gdx;
@@ -14,7 +15,7 @@ import com.badlogic.gdx.graphics.Texture;
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.DateHour.getDayDifferent;
 
-public class Tree extends Items {
+public class Tree extends GameObject {
 
     private final DateHour birthDay;
     private final TreeType type;
@@ -38,6 +39,8 @@ public class Tree extends Items {
         isProtected = false;
         haveFruit = false;
         fertilize = false;
+        super.setTextureWidth(1);
+        super.setTextureHeight(2);
     }
 
     public void setProtected(boolean aProtected) {
@@ -147,13 +150,13 @@ public class Tree extends Items {
 
     }
 
-    @Override
-    public String getName() {
-        return type.getDisplayName();
-    }
-
-    @Override
-    public int getSellPrice() {
-        return 0;
-    }
+//    @Override
+//    public String getName() {
+//        return type.getDisplayName();
+//    }
+//
+//    @Override
+//    public int getSellPrice() {
+//        return 0;
+//    }
 }

@@ -9,7 +9,9 @@ import java.util.Map;
 public class TextureManager {
 
     private static final Map<String, Texture> cache = new HashMap<>();
+
     public static int TEXTURE_SIZE = 32;
+    public static int EQUIP_THING_SIZE = 24;
 
     public static Texture get(String path) {
 

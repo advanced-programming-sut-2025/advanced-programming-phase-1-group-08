@@ -4,18 +4,15 @@ import com.Graphic.Main;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
+import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.TextureManager;
-import com.Graphic.model.MapThings.GameObject;
-import com.Graphic.model.MapThings.Tile;
-import com.Graphic.model.MapThings.UnWalkable;
-import com.Graphic.model.MapThings.Walkable;
-import com.Graphic.model.OtherItem.ArtisanProduct;
-import com.Graphic.model.OtherItem.BarsAndOres;
+import com.Graphic.model.MapThings.*;
+import com.Graphic.model.OtherItem.*;
 import com.Graphic.model.Places.*;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Animall.BarnOrCage;
@@ -27,6 +24,8 @@ import com.Graphic.model.ToolsPackage.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 
 import java.io.IOException;
@@ -42,6 +41,110 @@ import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 
 public class InputGameController {
 
+    public static InputGameController inputGameController;
+
+    private InputGameController() {
+
+    }
+    public static InputGameController getInstance() {
+        if (inputGameController == null)
+            inputGameController = new InputGameController();
+        return inputGameController;
+    }
+
+    public void init () {
+        GameControllerLogic.init();
+    }
+    public void update(OrthographicCamera camera, float v) {
+        updateMove();
+        print();
+        moveCamera(camera);
+        GameControllerLogic.update();
+    }
+
+    public void updateMove() {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) ) {
+            currentGame.currentPlayer.setDirection(Direction.Up);
+            if (checkWalking()) {
+                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() - 5 * Gdx.graphics.getDeltaTime());
+            }
+            currentGame.currentPlayer.setMoving(true);
+            moveAnimation();
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) ) {
+            currentGame.currentPlayer.setDirection(Direction.Down);
+            if (checkWalking()) {
+                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() + 5 * Gdx.graphics.getDeltaTime());
+            }
+            currentGame.currentPlayer.setMoving(true);
+            moveAnimation();
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) ) {
+            currentGame.currentPlayer.setDirection(Direction.Left);
+            if (checkWalking()) {
+                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() - 5 * Gdx.graphics.getDeltaTime());
+            }
+            currentGame.currentPlayer.setMoving(true);
+            moveAnimation();
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) ) {
+            currentGame.currentPlayer.setDirection(Direction.Right);
+            if (checkWalking()) {
+                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() + 5 * Gdx.graphics.getDeltaTime());
+            }
+            currentGame.currentPlayer.setMoving(true);
+            moveAnimation();
+        }
+
+        else {
+            currentGame.currentPlayer.setMoving(false);
+            currentGame.currentPlayer.setTimer(0);
+            currentGame.currentPlayer.getSprite().setRegion(currentGame.currentPlayer.getAnimation().getKeyFrame(0));
+
+        }
+    }
+
+    public static void moveAnimation() {
+        currentGame.currentPlayer.getSprite().setRegion(currentGame.currentPlayer.getAnimation().getKeyFrame(currentGame.currentPlayer.getTimer()));
+
+        if (! currentGame.currentPlayer.getAnimation().isAnimationFinished(currentGame.currentPlayer.getTimer())) {
+            currentGame.currentPlayer.setTimer(currentGame.currentPlayer.getTimer() + Gdx.graphics.getDeltaTime());
+        }
+        else {
+            currentGame.currentPlayer.setTimer(0);
+        }
+
+        currentGame.currentPlayer.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+
+    }
+
+    public static boolean checkWalking() {
+
+        try {
+            System.out.println(currentGame.currentPlayer.getPositionX() + " " + currentGame.currentPlayer.getPositionY());
+
+            int x = (int) (currentGame.currentPlayer.getPositionX() + currentGame.currentPlayer.getDirection().getX() *
+                5 * Gdx.graphics.getDeltaTime());
+            int y = (int) (currentGame.currentPlayer.getPositionY() + currentGame.currentPlayer.getDirection().getY() *
+                5 * Gdx.graphics.getDeltaTime());
+
+            if (getTileByCoordinates(x, y).getGameObject() instanceof Walkable) {
+                return true;
+            }
+        }
+        catch (Exception e) {
+            return false;
+        }
+
+        return false;
+
+    }
+
+    public void setCenteredPosition(Actor actor, float centerX, float centerY) {
+        actor.setPosition(centerX - actor.getWidth() / 2f, centerY - actor.getHeight() / 2f);
+    }
+
+
     public Result addDollar(int amount) {
         currentGame.currentPlayer.increaseMoney(amount);
         return new Result(true , "your money cheated successfully");
@@ -50,86 +153,86 @@ public class InputGameController {
         currentGame.currentPlayer.increaseMoney(amount - currentGame.currentPlayer.getMoney());
         return new Result(true , "your money cheated successfully");
     }
-    public Result goToMarketMenu () {
-        if (MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY()) == null) {
-            return new Result(false , "you are not in market");
-        }
-        currentMenu = com.Graphic.model.Enum.Menu.MarketMenu;
-        return new Result(true , "Welcome to market menu");
-    }
-    public Result goToHomeMenu() {
-        if ( !currentGame.currentPlayer.getFarm().isInHome(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY())) {
-            return new Result(false , RED+"You're Not in Your Home!"+RESET);
-        }
-        currentMenu = com.Graphic.model.Enum.Menu.HomeMenu;
-        return new Result(true , BLUE+"Welcome to home menu"+RESET);
-    }
+//    public Result goToMarketMenu () {
+//        if (MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY()) == null) {
+//            return new Result(false , "you are not in market");
+//        }
+//        currentMenu = com.Graphic.model.Enum.Menu.MarketMenu;
+//        return new Result(true , "Welcome to market menu");
+//    }
+//    public Result goToHomeMenu() {
+//        if ( !currentGame.currentPlayer.getFarm().isInHome(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY())) {
+//            return new Result(false , RED+"You're Not in Your Home!"+RESET);
+//        }
+//        currentMenu = com.Graphic.model.Enum.Menu.HomeMenu;
+//        return new Result(true , BLUE+"Welcome to home menu"+RESET);
+//    }
 
-    public Result walk(int goalX, int goalY) {
-        int startX = currentGame.currentPlayer.getPositionX();
-        int startY = currentGame.currentPlayer.getPositionY();
-        Tile endTile = getTileByCoordinates(goalX, goalY);
-
-        if (endTile==null) {
-            return new Result(false,"you can't go to this coordinate");
-        }
-
-        PriorityQueue<State> queue = new PriorityQueue<>(Comparator.comparingInt(s -> s.Energy));
-        Set<State> visited = new HashSet<>();
-
-
-        if (checkConditionsForWalk(goalX, goalY) !=null) {
-            return checkConditionsForWalk(goalX, goalY);
-        }
-
-        for (int dir =1 ; dir<9 ; dir++) {
-            Tile tile = getTileByDir(dir);
-            if (tile == null ) {
-                continue;
-            }
-            if (checkConditionsForWalk(tile.getX() , tile.getY()) ==null) {
-                State state=new State(startX , startY , -1, 0);
-                queue.add(state);
-            }
-        }
-
-        int [] dirx={0,0,1,1,1,-1,-1,-1};
-        int [] diry={1,-1,0,1,-1,0,1,-1};
-
-        while (!queue.isEmpty()) {
-            State current = queue.poll();
-            if (current.x == goalX && current.y == goalY) {
-                if (currentGame.currentPlayer.isHealthUnlimited()){
-                    currentGame.currentPlayer.setPositionX(goalX);
-                    currentGame.currentPlayer.setPositionY(goalY);
-                    return new Result(true,"now you are in "+goalX+","+goalY);
-                }
-                if (currentGame.currentPlayer.getHealth() >= current.Energy ) {
-                    currentGame.currentPlayer.increaseHealth(- current.Energy);
-                    currentGame.currentPlayer.setPositionX(goalX);
-                    currentGame.currentPlayer.setPositionY(goalY);
-                    return new Result(true, "you are now in " + goalX + "," + goalY);
-                }
-                return new Result(false , "your energy is not enough for go to this tile");
-            }
-            if (visited.contains(current)) {
-                continue;
-            }
-            visited.add(current);
-            for (int i=0 ; i<8 ; i++) {
-                int x=dirx[i];
-                int y=diry[i];
-                if (checkConditionsForWalk(x + current.x,y + current.y) !=null) {
-                    continue;
-                }
-                int turnCost= (i + 1 == current.direction || current.direction== - 1) ? 1:10;
-                int totalEnergy=current.Energy + turnCost;
-                queue.add(new State(x+current.x , y+current.y , i+1 , totalEnergy));
-            }
-        }
-
-        return new Result(false , "No way to this coordinate");
-    }
+//    public Result walk(int goalX, int goalY) {
+//        int startX = currentGame.currentPlayer.getPositionX();
+//        int startY = currentGame.currentPlayer.getPositionY();
+//        Tile endTile = getTileByCoordinates(goalX, goalY);
+//
+//        if (endTile==null) {
+//            return new Result(false,"you can't go to this coordinate");
+//        }
+//
+//        PriorityQueue<State> queue = new PriorityQueue<>(Comparator.comparingInt(s -> s.Energy));
+//        Set<State> visited = new HashSet<>();
+//
+//
+//        if (checkConditionsForWalk(goalX, goalY) !=null) {
+//            return checkConditionsForWalk(goalX, goalY);
+//        }
+//
+//        for (int dir =1 ; dir<9 ; dir++) {
+//            Tile tile = getTileByDir(dir);
+//            if (tile == null ) {
+//                continue;
+//            }
+//            if (checkConditionsForWalk(tile.getX() , tile.getY()) ==null) {
+//                State state=new State(startX , startY , -1, 0);
+//                queue.add(state);
+//            }
+//        }
+//
+//        int [] dirx={0,0,1,1,1,-1,-1,-1};
+//        int [] diry={1,-1,0,1,-1,0,1,-1};
+//
+//        while (!queue.isEmpty()) {
+//            State current = queue.poll();
+//            if (current.x == goalX && current.y == goalY) {
+//                if (currentGame.currentPlayer.isHealthUnlimited()){
+//                    currentGame.currentPlayer.setPositionX(goalX);
+//                    currentGame.currentPlayer.setPositionY(goalY);
+//                    return new Result(true,"now you are in "+goalX+","+goalY);
+//                }
+//                if (currentGame.currentPlayer.getHealth() >= current.Energy ) {
+//                    currentGame.currentPlayer.increaseHealth(- current.Energy);
+//                    currentGame.currentPlayer.setPositionX(goalX);
+//                    currentGame.currentPlayer.setPositionY(goalY);
+//                    return new Result(true, "you are now in " + goalX + "," + goalY);
+//                }
+//                return new Result(false , "your energy is not enough for go to this tile");
+//            }
+//            if (visited.contains(current)) {
+//                continue;
+//            }
+//            visited.add(current);
+//            for (int i=0 ; i<8 ; i++) {
+//                int x=dirx[i];
+//                int y=diry[i];
+//                if (checkConditionsForWalk(x + current.x,y + current.y) !=null) {
+//                    continue;
+//                }
+//                int turnCost= (i + 1 == current.direction || current.direction== - 1) ? 1:10;
+//                int totalEnergy=current.Energy + turnCost;
+//                queue.add(new State(x+current.x , y+current.y , i+1 , totalEnergy));
+//            }
+//        }
+//
+//        return new Result(false , "No way to this coordinate");
+//    }
     public Result cheatFishingAbility(int amount) {
         currentGame.currentPlayer.increaseFishingAbility(amount);
         return new Result(true , "you cheated fishing successfully");
@@ -208,31 +311,55 @@ public class InputGameController {
             for (int j =0 ; j< 90 ; j++) {
                 try {
                     Main.getBatch().draw(TextureManager.get("Places/Walkable.png") ,
-                        TEXTURE_SIZE * j , TEXTURE_SIZE * (90 - i) , TEXTURE_SIZE , TEXTURE_SIZE);
+                        TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
 
                     if (getTileByCoordinates(i,j).getGameObject() instanceof UnWalkable) {
                         Main.getBatch().draw(TextureManager.get("Tree/unWalkable6.png"),
-                            TEXTURE_SIZE * j , TEXTURE_SIZE * (90 - i) , TEXTURE_SIZE , TEXTURE_SIZE);
+                            TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
                     }
 
                     Main.getBatch().draw(getTileByCoordinates(i , j)
                        .getGameObject()
                        .getSprite(TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
-                                     TEXTURE_SIZE * j , TEXTURE_SIZE * (90 - i) , TEXTURE_SIZE , TEXTURE_SIZE);
+                                     TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
+
+                    if (getTileByCoordinates(i , j).getGameObject() instanceof Lake) {
+                        LakeAnimation((Lake) getTileByCoordinates(i , j).getGameObject());
+                    }
+
                 }
                 catch (Exception e) {
 
                 }
             }
 
-        for (User player : currentGame.players)
-            Main.getBatch().draw(
-                TextureManager.get(player.getIcon()),
-                player.getPositionX()*TEXTURE_SIZE,
-                player.getPositionY()*TEXTURE_SIZE,
-                64, 64);
+        for (User player : currentGame.players) {
+            //Main.getBatch().draw( player.getSprite().getTexture() ,player.getSprite().getX() , player.getSprite().getY() , TEXTURE_SIZE * 2 , TEXTURE_SIZE * 2);
+            player.sprite.draw(Main.getBatch());
+        }
+
+//        if (currentGame.currentPlayer.isMoving()) {
+//            moveAnimation();
+//        }
+//        else {
+//            currentGame.currentPlayer.setTimer(0);
+//        }
+
+
+
 
         return null;
+    }
+
+    public void LakeAnimation(Lake lake) {
+        lake.getSprite(null).setRegion(lake.getLakeAnimation().getKeyFrame(lake.getTimer()));
+        if (! lake.getLakeAnimation().isAnimationFinished(lake.getTimer())) {
+            lake.setTimer(lake.getTimer() + Gdx.graphics.getDeltaTime());
+        }
+        else {
+            lake.setTimer(0);
+        }
+        lake.getLakeAnimation().setPlayMode(Animation.PlayMode.LOOP);
     }
     public Result checkConditionsForWalk(int goalX, int goalY){
         if (goalX <0 || goalX >=90 || goalY <0 || goalY >=90) {
@@ -685,23 +812,23 @@ public class InputGameController {
     }
 
 
-    public Result pet(String petName) {
-        int [] x={1,1,1,0,0,-1,-1,-1};
-        int [] y={1,0,-1,1,-1,-1,0,1};
-
-        for (int i = 0; i < 8; i++) {
-            Tile tile = getTileByCoordinates(currentGame.currentPlayer.getPositionX() + x[i], currentGame.currentPlayer.getPositionY() + y[i]);
-            if (tile.getGameObject() instanceof Animal) {
-                Animal animal = (Animal) tile.getGameObject();
-                if (animal.getName().equals(petName)) {
-                    animal.increaseFriendShip(15);
-                    animal.setPetToday(true);
-                    return new Result(true, petName + " petted successfully!");
-                }
-            }
-        }
-        return new Result(false,petName+"  doesn't exist!");
-    }
+//    public Result pet(String petName) {
+//        int [] x={1,1,1,0,0,-1,-1,-1};
+//        int [] y={1,0,-1,1,-1,-1,0,1};
+//
+//        for (int i = 0; i < 8; i++) {
+//            Tile tile = getTileByCoordinates(currentGame.currentPlayer.getPositionX() + x[i], currentGame.currentPlayer.getPositionY() + y[i]);
+//            if (tile.getGameObject() instanceof Animal) {
+//                Animal animal = (Animal) tile.getGameObject();
+//                if (animal.getName().equals(petName)) {
+//                    animal.increaseFriendShip(15);
+//                    animal.setPetToday(true);
+//                    return new Result(true, petName + " petted successfully!");
+//                }
+//            }
+//        }
+//        return new Result(false,petName+"  doesn't exist!");
+//    }
     public Result animals() {
         StringBuilder result= new StringBuilder();
         for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
@@ -848,45 +975,45 @@ public class InputGameController {
         animal.increaseFriendShip(amount - animal.getFriendShip());
         return new Result(true, "friendship cheated successfully!");
     }
-    public Result getProductAnimals(String name) {
-        Animal animal=getAnimalByName(name);
-
-        if (! animal.isFeedPreviousDay()){
-            return new Result(false , "No Product because you didn't feed " + animal.getName() + " in previous day");
-        }
-        if (animal.isProductCollected()) {
-            return new Result(false , "Product was collected before");
-        }
-        if (! checkPeriod(animal)) {
-            return new Result(false , "It's not time yet. This animal isn't ready to produce again");
-        }
-        if ( ! isNeighbor(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY() , animal.getPositionX() , animal.getPositionY())) {
-            return new Result(false , "The animal is not in Neighbor Tile");
-        }
-
-        if (animal.getType().equals(AnimalType.cow) || animal.getType().equals(AnimalType.goat) || animal.getType().equals(AnimalType.sheep)) {
-            if (sheepOrGoatOrCow(animal) == null) {
-                return sheepOrGoatOrCow(animal);
-            }
-        }
-
-
-        double Quantity=((double) animal.getFriendShip() / 1000) * (0.5 * (1 + animal.getRandomProduction()));
-        Quantity quantity=productQuantity(Quantity);
-
-        Animalproduct animalproduct = new Animalproduct(animal.getProductType(), quantity);
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        if (inventory.Items.containsKey(animalproduct)) {
-            inventory.Items.compute(animalproduct , (k,v) -> v+1);
-        }
-        else {
-            inventory.Items.put(animalproduct, 1);
-        }
-
-        animal.setProductCollected(true);
-
-        return new Result(true , "product "+ animal.getProductType().getName() + "collected successfully");
-    }
+//    public Result getProductAnimals(String name) {
+//        Animal animal=getAnimalByName(name);
+//
+//        if (! animal.isFeedPreviousDay()){
+//            return new Result(false , "No Product because you didn't feed " + animal.getName() + " in previous day");
+//        }
+//        if (animal.isProductCollected()) {
+//            return new Result(false , "Product was collected before");
+//        }
+//        if (! checkPeriod(animal)) {
+//            return new Result(false , "It's not time yet. This animal isn't ready to produce again");
+//        }
+//        if ( ! isNeighbor(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY() , animal.getPositionX() , animal.getPositionY())) {
+//            return new Result(false , "The animal is not in Neighbor Tile");
+//        }
+//
+//        if (animal.getType().equals(AnimalType.cow) || animal.getType().equals(AnimalType.goat) || animal.getType().equals(AnimalType.sheep)) {
+//            if (sheepOrGoatOrCow(animal) == null) {
+//                return sheepOrGoatOrCow(animal);
+//            }
+//        }
+//
+//
+//        double Quantity=((double) animal.getFriendShip() / 1000) * (0.5 * (1 + animal.getRandomProduction()));
+//        Quantity quantity=productQuantity(Quantity);
+//
+//        Animalproduct animalproduct = new Animalproduct(animal.getProductType(), quantity);
+//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+//        if (inventory.Items.containsKey(animalproduct)) {
+//            inventory.Items.compute(animalproduct , (k,v) -> v+1);
+//        }
+//        else {
+//            inventory.Items.put(animalproduct, 1);
+//        }
+//
+//        animal.setProductCollected(true);
+//
+//        return new Result(true , "product "+ animal.getProductType().getName() + "collected successfully");
+//    }
     public Result produces() {
         StringBuilder result=new StringBuilder();
         result.append("Produces :\n");
@@ -1020,23 +1147,24 @@ public class InputGameController {
     }
     private Result placeScarecrow(Tile tile , String name, Items items) {
 
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        if (currentGame.currentPlayer.getFarm().isInHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY())) {
-            return new Result(false , "you can't place "+name+" in your Home because it is not for this place");
-        }
-
-        if (name.equals("Scarecrow")) {
-            tile.setGameObject(items);
-            inventory.Items.compute(items , (k,v) -> v-1);
-            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() == 0);
-            return new Result(true , "Scarecrow successfully placed");
-        }
-        else  {
-            tile.setGameObject(items);
-            inventory.Items.compute(items , (k,v) -> v-1);
-            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() == 0);
-            return new Result(true , "Deluxe Scarecrow successfully placed");
-        }
+//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+//        if (currentGame.currentPlayer.getFarm().isInHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY())) {
+//            return new Result(false , "you can't place "+name+" in your Home because it is not for this place");
+//        }
+//
+//        if (name.equals("Scarecrow")) {
+//            tile.setGameObject(items);
+//            inventory.Items.compute(items , (k,v) -> v-1);
+//            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() == 0);
+//            return new Result(true , "Scarecrow successfully placed");
+//        }
+//        else  {
+//            tile.setGameObject(items);
+//            inventory.Items.compute(items , (k,v) -> v-1);
+//            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() == 0);
+//            return new Result(true , "Deluxe Scarecrow successfully placed");
+//        }
+        return null;
     }
     private Result placeOther(Items items , Tile tile) {
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
@@ -1175,47 +1303,47 @@ public class InputGameController {
 
 
                                                                     // Ario
-    public Result ArtisanGetProduct(String name) {
-        int [] dirx={0,0,1,1,1,-1,-1,-1};
-        int [] diry={1,-1,0,1,-1,0,1,-1};
-
-        Inventory inventory= currentGame.currentPlayer.getBackPack().inventory;
-        if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() ==0) {
-            return new Result(false , "you can't get product because your backpack is full");
-        }
-        Items items=null;
-        StringBuilder result=new StringBuilder();
-        result.append("Produces:").append('\n');
-
-        for (int x = 0 ; x<dirx.length ; x++) {
-            Tile tile=getTileByCoordinates(currentGame.currentPlayer.getPositionX() + dirx[x],currentGame.currentPlayer.getPositionY() + diry[x]);
-                if (tile.getGameObject() instanceof CraftingItem) {
-                    if (((CraftingItem) tile.getGameObject()).getName().equals(name)) {
-                        Map <Items , DateHour> map=((CraftingItem) tile.getGameObject()).getBuffer();
-                        for (Map.Entry <Items , DateHour> entry : map.entrySet()) {
-                            for (ArtisanType artisan : ArtisanType.values()) {
-                                if (artisan.getName().equals(entry.getKey().getName()) ) {
-                                    if (DateHour.getHourDifferent(entry.getValue()) >= artisan.getTakesTime()){
-                                        entry.setValue(null);
-                                        if (inventory.Items.containsKey(entry.getKey())) {
-                                            inventory.Items.compute(entry.getKey(), (k, v) -> v + 1);
-                                        }
-                                        else {
-                                            inventory.Items.put(entry.getKey(), 1);
-                                        }
-                                        result.append(BLUE + entry.getKey().getName() +RESET);
-                                    }
-                                }
-                            }
-                        }
-
-                        map.entrySet().removeIf(entry -> entry.getValue() == null);
-                    }
-                }
-            }
-
-        return new Result(false , result.toString());
-    }
+//    public Result ArtisanGetProduct(String name) {
+//        int [] dirx={0,0,1,1,1,-1,-1,-1};
+//        int [] diry={1,-1,0,1,-1,0,1,-1};
+//
+//        Inventory inventory= currentGame.currentPlayer.getBackPack().inventory;
+//        if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() ==0) {
+//            return new Result(false , "you can't get product because your backpack is full");
+//        }
+//        Items items=null;
+//        StringBuilder result=new StringBuilder();
+//        result.append("Produces:").append('\n');
+//
+//        for (int x = 0 ; x<dirx.length ; x++) {
+//            Tile tile=getTileByCoordinates(currentGame.currentPlayer.getPositionX() + dirx[x],currentGame.currentPlayer.getPositionY() + diry[x]);
+//                if (tile.getGameObject() instanceof CraftingItem) {
+//                    if (((CraftingItem) tile.getGameObject()).getName().equals(name)) {
+//                        Map <Items , DateHour> map=((CraftingItem) tile.getGameObject()).getBuffer();
+//                        for (Map.Entry <Items , DateHour> entry : map.entrySet()) {
+//                            for (ArtisanType artisan : ArtisanType.values()) {
+//                                if (artisan.getName().equals(entry.getKey().getName()) ) {
+//                                    if (DateHour.getHourDifferent(entry.getValue()) >= artisan.getTakesTime()){
+//                                        entry.setValue(null);
+//                                        if (inventory.Items.containsKey(entry.getKey())) {
+//                                            inventory.Items.compute(entry.getKey(), (k, v) -> v + 1);
+//                                        }
+//                                        else {
+//                                            inventory.Items.put(entry.getKey(), 1);
+//                                        }
+//                                        result.append(BLUE + entry.getKey().getName() +RESET);
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        map.entrySet().removeIf(entry -> entry.getValue() == null);
+//                    }
+//                }
+//            }
+//
+//        return new Result(false , result.toString());
+//    }
     public Result sell(String name , Integer amount) {
         ShippingBin shippingBin=ShippingBin.isNearShippingBin();
         if (shippingBin == null ) {
@@ -1374,10 +1502,10 @@ public class InputGameController {
 //        currentGame.players.add(findUserByUsername(user1name));
 //        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
 //        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
-        currentGame.players.add(new User("Ario", "Ario", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
-        currentGame.players.add(new User("Erfan", "Erfan", "ario.ebr@gmail.com", "female", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
-        currentGame.players.add(new User("Mamali", "Mamali", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
-        currentGame.players.add(new User("Ilia", "Ilia", "ario.ebr@gmail.com", "male", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+        currentGame.players.add(new User("Ario", "Ario", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+        currentGame.players.add(new User("Erfan", "Erfan", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+        currentGame.players.add(new User("Mamali", "Mamali", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+        currentGame.players.add(new User("Ilia", "Ilia", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
         setTimeAndWeather();
         currentGame.currentPlayer = currentGame.players.getFirst();
         currentUser = currentGame.players.getFirst();
@@ -1436,6 +1564,7 @@ public class InputGameController {
                     user.topLeftY = 1;
                 }
                 createInitialFarm(choice);
+                user.initAnimations();
                 counter++;
                 break;
             }
@@ -1459,7 +1588,7 @@ public class InputGameController {
         buildNpcVillage();
         sortMap(currentGame.bigMap);
         initializePlayer();
-        startDay();
+        //fadeToNextDay();
     }
     public void startNewGame1 (String input) throws IOException {
 
@@ -1605,11 +1734,12 @@ public class InputGameController {
         buildNpcVillage();
         sortMap(currentGame.bigMap);
         initializePlayer();
-        startDay();
+        fadeToNextDay();
     }
 
 
                                                                     // Erfan
+
 
                                                                   // input command Date
     public Result showTime () {
@@ -1912,6 +2042,7 @@ public class InputGameController {
     }
 
                                                                    // input tools command
+
     public Result howMuchWater () {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
@@ -1923,198 +2054,127 @@ public class InputGameController {
 
         return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
     }
-    public Result toolsEquip (String name) {
+    public void itemEquip (String name) {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
 
-        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()) {
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
+            if (entry.getKey() != null && entry.getKey().getName().equals(name))
+                currentGame.currentPlayer.currentItem = entry.getKey();
 
-            if (entry.getKey() instanceof Axe && name.equals("Axe")) {
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"Axe successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof FishingPole && name.equals("FishingPole")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"FishingPole successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof Hoe && name.equals("Hoe")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"Hoe successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof PickAxe && name.equals("PickAxe")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"PickAxe successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof WateringCan && name.equals("WateringCan")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"WateringCan successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof MilkPail && name.equals("MilkPail")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"MilkPail successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof Scythe && name.equals("Scythe")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"Scythe successfully picked up"+RESET);
-            }
-            else if (entry.getKey() instanceof Shear && name.equals("Shear")){
-                currentGame.currentPlayer.currentTool = (Tools) entry.getKey();
-                return new Result(true, BRIGHT_BLUE+"Shear successfully picked up"+RESET);
-            }
-        }
-        return new Result(false,"there is no such tool");
     }
-    public Result showCurrentTool() {
-
-        Tools currentTool = currentGame.currentPlayer.currentTool;
-
-        return switch (currentTool) {
-
-            case Axe axe -> new Result(true, "current tool: " + axe.getType().getDisplayName());
-            case null    -> new Result(false, "there is no current tool in your hands");
-            case Hoe hoe -> new Result(true, "current tool: " + hoe.getType().getDisplayName());
-            case MilkPail milkPail -> new Result(true, "current tool: " + milkPail.getName());
-            case Scythe scythe -> new Result(true, "current tool: " + scythe.getName());
-            case Shear shear   -> new Result(true, "current tool: " + shear.getName());
-            case PickAxe pickAxe -> new Result(true, "current tool: " +
-                    pickAxe.getType().getDisplayName());
-            case FishingPole fishingPole -> new Result(true, "current tool: " +
-                    fishingPole.type.getName());
-            case WateringCan wateringCan -> new Result(true, "current tool: " +
-                    wateringCan.getType().getDisplayName());
-            default -> new Result(true, "current tool: " + currentTool.getName());
-        };
-    }
-    public Result availableTools() {
+    public HashMap<String, String> availableTools() {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        StringBuilder result = new StringBuilder();
+        HashMap<String, String> availableTools = new HashMap<>();
 
-        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet())
+            if (entry.getKey() instanceof Tools)
+                availableTools.put(entry.getKey().getName(), entry.getKey().getInventoryIconPath());
 
-            if (entry.getKey() instanceof Axe)
-                 result.append(BRIGHT_BLUE).append(((Axe) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
-
-            else if (entry.getKey() instanceof FishingPole)
-                result.append(BRIGHT_RED).append(((FishingPole) entry.getKey()).type).append(RESET).append("\n");
-
-            else if (entry.getKey() instanceof Hoe)
-                result.append(BRIGHT_PURPLE).append(((Hoe) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
-
-            else if (entry.getKey() instanceof WateringCan)
-                result.append(BRIGHT_GREEN).append(((WateringCan) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
-
-            else if (entry.getKey() instanceof PickAxe)
-                result.append(BRIGHT_CYAN).append(((PickAxe) entry.getKey()).getType().getDisplayName()).append(RESET).append("\n");
-
-            else if (entry.getKey() instanceof Tools)
-                result.append(BRIGHT_BROWN).append(((Tools) entry.getKey()).getName()).append(RESET).append("\n");
-        }
-        if (result.isEmpty())
-            return new Result(false, RED + "You don't have any tools" + RESET);
-        return new Result(true, result.toString());
+        return availableTools;
     }
     public Result upgradeTool (String name) {
-         MarketType marketType=MarketType.wallOrDoor(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());
-         if (marketType!=MarketType.Blacksmith) {
-             return new Result(false , "you are not in BlackSmith Market. please go there");
-         }
-         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-
-         if ( name.equals("Axe") ) {
-             for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-                 if (entry.getKey() instanceof Axe) {
-                     AxeType axeType = AxeType.getNextType(((Axe) entry.getKey()).getType());
-                     if (axeType == null) {
-                         return new Result(false , name + "is at top level");
-                     }
-                     else if (AxeType.checkIngredient(axeType)) {
-                         ((Axe) entry.getKey()).setType(axeType);
-                         currentGame.currentPlayer.increaseMoney( - axeType.getPrice());
-                         return new Result(true , name + "updated successfully");
-                     }
-                     else {
-                         return new Result(false , "Not enough ingredient or money");
-                     }
-                 }
-             }
-         }
-
-        if ( name.equals("Hoe") ) {
-            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof Hoe) {
-                    HoeType hoeType=HoeType.getNextType(((Hoe) entry.getKey()).getType());
-                    if (hoeType == null) {
-                        return new Result(false , name + "is at top level");
-                    }
-                    else if (HoeType.checkIngredient(hoeType)) {
-                        ((Hoe) entry.getKey()).setType(hoeType);
-                        currentGame.currentPlayer.increaseMoney( - hoeType.getPrice());
-                        return new Result(true , name + "updated successfully");
-                    }
-                    else {
-                        return new Result(false , "Not enough ingredient or money");
-                    }
-                }
-            }
-        }
-
-        if ( name.equals("PickAxe") ) {
-            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof PickAxe) {
-                    PickAxeType pickAxeType=PickAxeType.getPickAxeType(((PickAxe) entry.getKey()).getType());
-                    if (pickAxeType == null) {
-                        return new Result(false , name + "is at top level");
-                    }
-                    else if (PickAxeType.checkIngredient(pickAxeType)) {
-                        ((PickAxe) entry.getKey()).setType(pickAxeType);
-                        currentGame.currentPlayer.increaseMoney( - pickAxeType.getPrice());
-                        return new Result(true , name + "updated successfully");
-                    }
-                    else {
-                        return new Result(false , "Not enough ingredient or money");
-                    }
-                }
-            }
-        }
-
-        if ( name.equals("WateringCan") ) {
-            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof WateringCan) {
-                    WateringCanType wateringCanType=WateringCanType.getWateringCanType(((WateringCan) entry.getKey()).getType());
-                    if (wateringCanType == null) {
-                        return new Result(false , name + "is at top level");
-                    }
-                    else if (WateringCanType.checkIngredient(wateringCanType)) {
-                        ((WateringCan) entry.getKey()).setType(wateringCanType);
-                        currentGame.currentPlayer.increaseMoney( - wateringCanType.getPrice());
-                        return new Result(true , name + "updated successfully");
-                    }
-                    else {
-                        return new Result(false , "Not enough ingredient or money");
-                    }
-                }
-            }
-        }
-
-        if ( name.equals("TrashCan") ) {
-            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof TrashCan) {
-                    TrashCanType trashCanType = TrashCanType.nextTrashCanType(((TrashCan) entry.getKey()).type);
-                    if (trashCanType == null) {
-                        return new Result(false , name + "is at top level");
-                    }
-                    else if (TrashCanType.checkIngredient(trashCanType)) {
-                        ((TrashCan) entry.getKey()).setType(trashCanType);
-                        currentGame.currentPlayer.increaseMoney( - trashCanType.getPrice());
-                        return new Result(true , name + "updated successfully");
-                    }
-                    else {
-                        return new Result(false , "Not enough ingredient or money");
-                    }
-                }
-            }
-        }
+//         MarketType marketType=MarketType.wallOrDoor(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());
+//         if (marketType!=MarketType.Blacksmith) {
+//             return new Result(false , "you are not in BlackSmith Market. please go there");
+//         }
+//         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+//
+//         if ( name.equals("Axe") ) {
+//             for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//                 if (entry.getKey() instanceof Axe) {
+//                     AxeType axeType = AxeType.getNextType(((Axe) entry.getKey()).getType());
+//                     if (axeType == null) {
+//                         return new Result(false , name + "is at top level");
+//                     }
+//                     else if (AxeType.checkIngredient(axeType)) {
+//                         ((Axe) entry.getKey()).setType(axeType);
+//                         currentGame.currentPlayer.increaseMoney( - axeType.getPrice());
+//                         return new Result(true , name + "updated successfully");
+//                     }
+//                     else {
+//                         return new Result(false , "Not enough ingredient or money");
+//                     }
+//                 }
+//             }
+//         }
+//
+//        if ( name.equals("Hoe") ) {
+//            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//                if (entry.getKey() instanceof Hoe) {
+//                    HoeType hoeType=HoeType.getNextType(((Hoe) entry.getKey()).getType());
+//                    if (hoeType == null) {
+//                        return new Result(false , name + "is at top level");
+//                    }
+//                    else if (HoeType.checkIngredient(hoeType)) {
+//                        ((Hoe) entry.getKey()).setType(hoeType);
+//                        currentGame.currentPlayer.increaseMoney( - hoeType.getPrice());
+//                        return new Result(true , name + "updated successfully");
+//                    }
+//                    else {
+//                        return new Result(false , "Not enough ingredient or money");
+//                    }
+//                }
+//            }
+//        }
+//
+//        if ( name.equals("PickAxe") ) {
+//            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//                if (entry.getKey() instanceof PickAxe) {
+//                    PickAxeType pickAxeType=PickAxeType.getPickAxeType(((PickAxe) entry.getKey()).getType());
+//                    if (pickAxeType == null) {
+//                        return new Result(false , name + "is at top level");
+//                    }
+//                    else if (PickAxeType.checkIngredient(pickAxeType)) {
+//                        ((PickAxe) entry.getKey()).setType(pickAxeType);
+//                        currentGame.currentPlayer.increaseMoney( - pickAxeType.getPrice());
+//                        return new Result(true , name + "updated successfully");
+//                    }
+//                    else {
+//                        return new Result(false , "Not enough ingredient or money");
+//                    }
+//                }
+//            }
+//        }
+//
+//        if ( name.equals("WateringCan") ) {
+//            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//                if (entry.getKey() instanceof WateringCan) {
+//                    WateringCanType wateringCanType=WateringCanType.getWateringCanType(((WateringCan) entry.getKey()).getType());
+//                    if (wateringCanType == null) {
+//                        return new Result(false , name + "is at top level");
+//                    }
+//                    else if (WateringCanType.checkIngredient(wateringCanType)) {
+//                        ((WateringCan) entry.getKey()).setType(wateringCanType);
+//                        currentGame.currentPlayer.increaseMoney( - wateringCanType.getPrice());
+//                        return new Result(true , name + "updated successfully");
+//                    }
+//                    else {
+//                        return new Result(false , "Not enough ingredient or money");
+//                    }
+//                }
+//            }
+//        }
+//
+//        if ( name.equals("TrashCan") ) {
+//            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//                if (entry.getKey() instanceof TrashCan) {
+//                    TrashCanType trashCanType = TrashCanType.nextTrashCanType(((TrashCan) entry.getKey()).type);
+//                    if (trashCanType == null) {
+//                        return new Result(false , name + "is at top level");
+//                    }
+//                    else if (TrashCanType.checkIngredient(trashCanType)) {
+//                        ((TrashCan) entry.getKey()).setType(trashCanType);
+//                        currentGame.currentPlayer.increaseMoney( - trashCanType.getPrice());
+//                        return new Result(true , name + "updated successfully");
+//                    }
+//                    else {
+//                        return new Result(false , "Not enough ingredient or money");
+//                    }
+//                }
+//            }
+//        }
 
         return null;
     }
@@ -2126,8 +2186,6 @@ public class InputGameController {
 
             currentGame.currentPlayer.increaseHealth(currentGame.currentPlayer.currentTool.healthCost());
         }
-
-        System.out.println("Energy : "+currentGame.currentPlayer.getHealth());
 
         if (directionIncorrect(direction))
             return new Result(false, RED+"Direction is invalid"+RESET);
@@ -2166,23 +2224,24 @@ public class InputGameController {
                                                                     // input NPC command
     public Result meetNPC (String name) {
 
-        NPC npc;
-        try {
-            npc = NPC.valueOf(name);
-        } catch (Exception e) {
-            return new Result(false, RED+"You're looking for someone who isn't real"+RESET);
-        }
-
-        if (!npc.isInHisHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY()))
-            return new Result(false, RED+"You should go to their place first"+RESET);
-
-        if (!currentGame.currentPlayer.getTodayTalking(npc)) {
-            currentGame.currentPlayer.setTodayTalking(npc,true);
-            currentGame.currentPlayer.increaseFriendshipPoint(npc, 20);
-        }
-
-        return new Result(true, npc.getName() + " : " + BLUE +
-                npc.getDialogue(currentGame.currentPlayer.getFriendshipLevel(npc), currentGame.currentWeather)+RESET);
+//        NPC npc;
+//        try {
+//            npc = NPC.valueOf(name);
+//        } catch (Exception e) {
+//            return new Result(false, RED+"You're looking for someone who isn't real"+RESET);
+//        }
+//
+//        if (!npc.isInHisHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY()))
+//            return new Result(false, RED+"You should go to their place first"+RESET);
+//
+//        if (!currentGame.currentPlayer.getTodayTalking(npc)) {
+//            currentGame.currentPlayer.setTodayTalking(npc,true);
+//            currentGame.currentPlayer.increaseFriendshipPoint(npc, 20);
+//        }
+//
+//        return new Result(true, npc.getName() + " : " + BLUE +
+//                npc.getDialogue(currentGame.currentPlayer.getFriendshipLevel(npc), currentGame.currentWeather)+RESET);
+        return null;
     }
     public Result giftNPC (String name, String itemName) {
 
@@ -2193,8 +2252,8 @@ public class InputGameController {
             return new Result(false, RED+"You're looking for someone who isn't real"+RESET);
         }
 
-        if (!npc.isInHisHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY()))
-            return new Result(false, RED+"You should go to their place first"+RESET);
+//        if (!npc.isInHisHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY()))
+//            return new Result(false, RED+"You should go to their place first"+RESET);
 
         Items item = AllFromDisplayNames(itemName);
 
@@ -2269,8 +2328,8 @@ public class InputGameController {
         } catch (Exception e) {
             return new Result(false, RED+"You're looking for someone who isn't real"+RESET);
         }
-        if (!npc.isInHisHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY()))
-            return new Result(false, RED+"You should go to their place first"+RESET);
+//        if (!npc.isInHisHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY()))
+//            return new Result(false, RED+"You should go to their place first"+RESET);
 
         return switch (ID) {
             case 1 -> doTask1(npc);

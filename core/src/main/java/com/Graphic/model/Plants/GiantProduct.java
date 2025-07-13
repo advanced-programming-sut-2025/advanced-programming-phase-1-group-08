@@ -16,7 +16,7 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.BG_BRIGHT_PURPLE;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 import static com.Graphic.model.DateHour.getDayDifferent;
 
-public class GiantProduct extends Items {
+public class GiantProduct extends Items { // TODO ابعاد
 
     private ArrayList<Tile> neighbors = new ArrayList<>();
     private final ForagingSeedsType type;
@@ -157,6 +157,11 @@ public class GiantProduct extends Items {
     @Override
     public String getName() {
         return "dl";
+    }
+
+    @Override
+    public String getInventoryIconPath() {
+        return "";
     }
 
     @Override

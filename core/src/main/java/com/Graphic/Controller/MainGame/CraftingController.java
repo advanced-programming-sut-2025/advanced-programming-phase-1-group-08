@@ -35,9 +35,9 @@ public class CraftingController {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         StringBuilder output = new StringBuilder();
 
-        if (! App.currentGame.currentPlayer.getFarm().isInHome(App.currentGame.currentPlayer.getPositionX(),App.currentGame.currentPlayer.getPositionY())) {
-            return new Result(false, "you are not in home");
-        }
+//        if (! App.currentGame.currentPlayer.getFarm().isInHome(App.currentGame.currentPlayer.getPositionX(),App.currentGame.currentPlayer.getPositionY())) {
+//            return new Result(false, "you are not in home");
+//        }
 
         for (CraftType craftType : CraftType.values()) {
             if (craftType.checkLevel()) {
@@ -58,9 +58,9 @@ public class CraftingController {
             }
         }
 
-        if (!App.currentGame.currentPlayer.getFarm().isInHome(App.currentGame.currentPlayer.getPositionX(), App.currentGame.currentPlayer.getPositionY())) {
-            return new Result(false, "You are not in Home");
-        }
+//        if (!App.currentGame.currentPlayer.getFarm().isInHome(App.currentGame.currentPlayer.getPositionX(), App.currentGame.currentPlayer.getPositionY())) {
+//            return new Result(false, "You are not in Home");
+//        }
 
         if (type == null) {
             return new Result(false , "No such Craft type");

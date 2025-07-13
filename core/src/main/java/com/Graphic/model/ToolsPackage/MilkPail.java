@@ -30,6 +30,10 @@ public class MilkPail extends Tools {
     public int healthCost() { // TODO
         return 0;
     }
+    @Override
+    public String getInventoryIconPath() {
+        return "Erfan/Tools/Milk_Pail.png";
+    }
 
     @Override
     public String getIcon() {

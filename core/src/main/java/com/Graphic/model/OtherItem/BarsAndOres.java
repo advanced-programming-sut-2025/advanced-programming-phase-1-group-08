@@ -20,6 +20,11 @@ public class BarsAndOres extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return "";
+    }
+
+    @Override
     public int getSellPrice() {
         return type.getPrice();
     }

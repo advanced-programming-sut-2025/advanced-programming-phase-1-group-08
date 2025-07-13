@@ -251,8 +251,8 @@ public class Trade {
         }
         if (!userFound)
             return new Result(false, RED+"User Not Found!"+RESET);
-        if (!isNeighbor(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY(), mentionedPlayer.getPositionX(), mentionedPlayer.getPositionY()))
-            return new Result(false, RED+"Get Closer To Trade!"+RESET);
+//        if (!isNeighbor(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY(), mentionedPlayer.getPositionX(), mentionedPlayer.getPositionY()))
+//            return new Result(false, RED+"Get Closer To Trade!"+RESET);
         if (!(type.trim().equalsIgnoreCase("offer") || type.trim().equalsIgnoreCase("request")))
             return new Result(false, RED+"type Doesn't Match!(offer / request)"+RESET);
 

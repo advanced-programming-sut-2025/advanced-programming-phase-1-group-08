@@ -16,7 +16,6 @@ public class FishingPole extends Tools {
     public int healthCost() { // TODO
         return 0;
     }
-
     @Override
     public String getName() {
         return type.getName();
@@ -25,5 +24,9 @@ public class FishingPole extends Tools {
     @Override
     public int getSellPrice() {
         return 0;
+    }
+    @Override
+    public String getInventoryIconPath() {
+        return type.getIconPath();
     }
 }

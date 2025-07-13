@@ -173,6 +173,11 @@ public class ForagingSeeds extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return type.getInventoryIconPath();
+    }
+
+    @Override
     public int getSellPrice() {
         return 1;
     }

@@ -259,12 +259,12 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
 
         else if((matcher = GameMenuCommands.inventoryShow.getMatcher(input)) != null) {
-            InputGameController controller = new InputGameController();
+            InputGameController controller = InputGameController.getInstance();
             System.out.println(controller.showInventory());
         }
 
         else if ((matcher=GameMenuCommands.addItem.getMatcher(input)) != null) {
-            InputGameController controller = new InputGameController();
+            InputGameController controller = InputGameController.getInstance();
             System.out.println(controller.addItem(matcher.group(1), Integer.parseInt(matcher.group(2).trim())));
         }
 

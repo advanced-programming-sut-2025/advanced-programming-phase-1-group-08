@@ -87,6 +87,11 @@ public class MixedSeeds extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return "Erfan/plants/crops/Mixed/Mixed_Seeds.png";
+    }
+
+    @Override
     public int getSellPrice() {
         return 0;
     }

@@ -21,6 +21,11 @@ public class TreeSource extends Items {
     }
 
     @Override
+    public String getInventoryIconPath() {
+        return type.getInventoryIconPath();
+    }
+
+    @Override
     public int getSellPrice() {
         return type.getPrice();
     }
