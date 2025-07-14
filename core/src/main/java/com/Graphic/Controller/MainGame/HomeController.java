@@ -1,9 +1,11 @@
 package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
+import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Enum.Commands.HomeMenuCommands;
 import com.Graphic.model.Enum.FoodTypes;
+import com.Graphic.model.Enum.HouseModes;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.HelpersClass.Result;
@@ -12,14 +14,11 @@ import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Plants.Food;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
@@ -119,21 +118,18 @@ public class HomeController {
         }
         return null;
     }
-    public static Result foodPrepare (String input) {
-        if (NotInHome(currentGame.currentPlayer))
-            return new Result(false, RED+"You're Not in Your Home!"+RESET);
+    public static Result foodPrepare (String foodName) {
 
-        String foodName = HomeMenuCommands.foodPrepare.getMatcher(input).group("food");
         if (foodName == null)
-            return new Result(false, RED+"Wrong Food Name!"+RESET);
+            return new Result(false, "Wrong Food Name!");
 
         Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
 
         Recipe recipe = findRecipeByName(foodName);
         if (recipe == null)
-            return new Result(false, RED+"Recipe Unavailable!"+RESET);
+            return new Result(false, "Recipe Unavailable!");
         if (!recipe.isUsable())
-            return new Result(false, RED+"Recipe is Locked!"+RESET);
+            return new Result(false, "Recipe is Locked!");
 
         // check ingredients
         Fridge fridge = currentGame.currentPlayer.getFarm().getHome().getFridge();
@@ -149,14 +145,14 @@ public class HomeController {
             }
 
             if (!r)
-                return new Result(false, RED+"Not Enough Ingredients!"+RESET);
+                return new Result(false, "Not Enough Ingredients!");
         }
 
         // check inventory space for food
         FoodTypes t = recipe.getType();
         boolean inventorySpace = Food.checkInventorySpaceForFood(t);
         if (!inventorySpace)
-            return new Result(false, RED+"No Space in Inventory!"+RESET);
+            return new Result(false, "No Space in Inventory!");
 
 
         // lower default energy
@@ -192,7 +188,7 @@ public class HomeController {
 
 
 
-        return new Result(true, GREEN+"Cooked Properly!"+RESET);
+        return new Result(true, "Cooked Properly!");
     }
     public static Result recipeDisplay () {
         if (NotInHome(currentGame.currentPlayer))
@@ -226,164 +222,141 @@ public class HomeController {
     }
 
 
-    public static void handleHomeInputs () {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.C))
-            cook();
+    public static HouseModes handleHomeInputs (HouseModes mode) {
+        if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.C))
+            return cook(mode);
+        if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.B))
+            return HouseModes.craft;
+        if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+            Main.getMain().setScreen(GameMenu.getInstance());
+
+        return mode;
     }
+    public static HouseModes cook (HouseModes mode) {
+//         رسپی های عرفان
+        if (currentGame.currentPlayer.getLevelMining() >= 1) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("miner's treat")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        if (currentGame.currentPlayer.getLevelForaging() >= 2) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("vegetable medley")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        if (currentGame.currentPlayer.getLevelForaging() >= 3) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("survival burger")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        if (currentGame.currentPlayer.getLevelFishing() >= 3) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("seaform pudding")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
 
-    public static void cook () {
-
-
-//        // رسپی های عرفان
-//        if (currentGame.currentPlayer.getLevelMining() >= 1) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("miner's treat")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        if (currentGame.currentPlayer.getLevelForaging() >= 2) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("vegetable medley")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        if (currentGame.currentPlayer.getLevelForaging() >= 3) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("survival burger")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        if (currentGame.currentPlayer.getLevelFishing() >= 3) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("seaform pudding")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//
-//        // رسپی های محمدرضا
-//        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
-//        MarketItem marketItem = new MarketItem(findSource("omelet"));
-//        if (myInventory.Items.containsKey(marketItem)) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("omelet")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        MarketItem marketItem4 = new MarketItem(findSource("pizza"));
-//        if (myInventory.Items.containsKey(marketItem4)) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("pizza")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        MarketItem marketItem5 = new MarketItem(findSource("tortilla"));
-//        if (myInventory.Items.containsKey(marketItem5)) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("tortilla")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        MarketItem marketItem6 = new MarketItem(findSource("maki roll"));
-//        if (myInventory.Items.containsKey(marketItem6)) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("maki roll")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        MarketItem marketItem7 = new MarketItem(findSource("triple shot espresso"));
-//        if (myInventory.Items.containsKey(marketItem7)) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("triple shot espresso")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        MarketItem marketItem8 = new MarketItem(findSource("cookie"));
-//        if (myInventory.Items.containsKey(marketItem8)) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("cookie")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        MarketItem marketItem9 = new MarketItem(findSource("hash browns"));
-//        if (myInventory.Items.containsKey(marketItem9)) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("hash browns")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        MarketItem marketItem10 = new MarketItem(findSource("pancakes"));
-//        if (myInventory.Items.containsKey(marketItem10)) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("pancakes")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
-//        MarketItem marketItem13 = new MarketItem(findSource("bread"));
-//        if (myInventory.Items.containsKey(marketItem13)) {
-//            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
-//                if (recipe.getName().equals("bread")) {
-//                    recipe.setUsable(true);
-//                    break;
-//                }
-//            }
-//        }
+        // رسپی های محمدرضا
+        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
+        MarketItem marketItem = new MarketItem(findSource("omelet"));
+        if (myInventory.Items.containsKey(marketItem)) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("omelet")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        MarketItem marketItem4 = new MarketItem(findSource("pizza"));
+        if (myInventory.Items.containsKey(marketItem4)) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("pizza")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        MarketItem marketItem5 = new MarketItem(findSource("tortilla"));
+        if (myInventory.Items.containsKey(marketItem5)) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("tortilla")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        MarketItem marketItem6 = new MarketItem(findSource("maki roll"));
+        if (myInventory.Items.containsKey(marketItem6)) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("maki roll")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        MarketItem marketItem7 = new MarketItem(findSource("triple shot espresso"));
+        if (myInventory.Items.containsKey(marketItem7)) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("triple shot espresso")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        MarketItem marketItem8 = new MarketItem(findSource("cookie"));
+        if (myInventory.Items.containsKey(marketItem8)) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("cookie")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        MarketItem marketItem9 = new MarketItem(findSource("hash browns"));
+        if (myInventory.Items.containsKey(marketItem9)) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("hash browns")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        MarketItem marketItem10 = new MarketItem(findSource("pancakes"));
+        if (myInventory.Items.containsKey(marketItem10)) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("pancakes")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
+        MarketItem marketItem13 = new MarketItem(findSource("bread"));
+        if (myInventory.Items.containsKey(marketItem13)) {
+            for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+                if (recipe.getName().equals("bread")) {
+                    recipe.setUsable(true);
+                    break;
+                }
+            }
+        }
 
 
-
-
-//        String input;
-//        Scanner scanner = new Scanner(System.in);
-//        Result result;
-//        while (true) {
-//            input = scanner.nextLine();
-//            if (HomeMenuCommands.showRecipes.getMatcher(input) != null) {
-//                result = recipeDisplay();
-//                System.out.println(result.massage());
-//            }
-//            else if (HomeMenuCommands.fridgePick.getMatcher(input) != null) {
-//                result = fridgePick(input);
-//                System.out.println(result.massage());
-//            }
-//            else if (HomeMenuCommands.fridgePut.getMatcher(input) != null) {
-//                result = fridgePut(input);
-//                System.out.println(result);
-//            }
-//            else if (HomeMenuCommands.foodPrepare.getMatcher(input) != null) {
-//                result = foodPrepare(input);
-//                System.out.println(result);
-//            }
-//            else if (input.equalsIgnoreCase("exit"))
-//                return;
-//            else System.out.println(RED+"Invalid Command in Cooking Section!(type exit to quit)"+RESET);
-//        }
+        return HouseModes.cook;
     }
 
     public Result goToCraftingMenu() {
         App.currentMenu = Menu.CraftMenu;
-        return new Result(true , BLUE+"Welcome to craft menu" + RESET);
+        return new Result(true , "Welcome to craft menu");
     }
 }
