@@ -1,5 +1,7 @@
 package com.Graphic.model.ToolsPackage;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
+
 public class MilkPail extends Tools {
 
     public static final int coinNeeded=1000;
@@ -15,12 +17,15 @@ public class MilkPail extends Tools {
     }
 
 
-    public static int getRemindInShop() {
+    public int getRemindInShop(MarketType marketType) {
         return remindInShop;
     }
-    public static void setRemindInShop() {
-        remindInShop = 1;
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+        remindInShop = amount;
     }
+
     public static void increaseRemindInShop(int amount) {
         remindInShop += amount;
     }
@@ -43,5 +48,10 @@ public class MilkPail extends Tools {
     @Override
     public int getSellPrice() {
         return 0;
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return 1000;
     }
 }

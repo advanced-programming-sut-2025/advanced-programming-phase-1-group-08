@@ -1,5 +1,6 @@
 package com.Graphic.model.ToolsPackage;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.ToolsType.FishingPoleType;
 
 public class FishingPole extends Tools {
@@ -28,5 +29,20 @@ public class FishingPole extends Tools {
     @Override
     public String getInventoryIconPath() {
         return type.getIconPath();
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return type.shopLimit;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+        type.shopLimit = amount;
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return type.getPrice();
     }
 }

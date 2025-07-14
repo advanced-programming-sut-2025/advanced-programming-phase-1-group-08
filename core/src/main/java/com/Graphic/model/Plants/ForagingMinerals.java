@@ -1,6 +1,7 @@
 package com.Graphic.model.Plants;
 
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
 
 public class ForagingMinerals extends Items {
@@ -41,5 +42,20 @@ public class ForagingMinerals extends Items {
     @Override
     public int getTakesTime() {
         return 1;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return -1;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return 0;
     }
 }

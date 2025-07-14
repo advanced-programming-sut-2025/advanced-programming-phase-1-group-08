@@ -1,5 +1,6 @@
 package com.Graphic.model.ToolsPackage;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.ToolsType.WateringCanType;
 
 import static com.Graphic.model.App.*;
@@ -72,6 +73,21 @@ public class WateringCan extends Tools {
 
     @Override
     public int getSellPrice() {
+        return type.getPrice();
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
         return type.getPrice();
     }
 }

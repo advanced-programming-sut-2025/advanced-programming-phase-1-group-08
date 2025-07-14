@@ -3,6 +3,7 @@ package com.Graphic.model.Plants;
 import com.Graphic.model.*;
 import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
 import com.badlogic.gdx.graphics.Texture;
@@ -180,5 +181,31 @@ public class ForagingSeeds extends Items {
     @Override
     public int getSellPrice() {
         return 1;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        if (marketType.equals(MarketType.JojaMart)) {
+            return type.getJojaMartLimit();
+        }
+        if (marketType.equals(MarketType.PierreGeneralStore)){
+            return type.getPierrGeneralLimit();
+        }
+        return -1;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+        if (marketType.equals(MarketType.JojaMart)) {
+            type.increaseJojaMartLimit(amount - type.getJojaMartLimit());
+        }
+        if (marketType.equals(MarketType.PierreGeneralStore)){
+            type.increasePierrGeneralLimit(amount - type.getPierrGeneralLimit());
+        }
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return type.getPrice(marketType);
     }
 }

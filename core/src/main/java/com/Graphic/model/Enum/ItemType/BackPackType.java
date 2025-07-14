@@ -11,15 +11,15 @@ import java.util.Map;
 import java.util.Set;
 
 public enum BackPackType {
-    primary("primary",Integer.MAX_VALUE,0 ,0 , 0) {
+    primary("primary",Integer.MAX_VALUE,0 ,0 , 0 , null) {
       //TODO باید ظرفیتش رو درست کنم بزارم همون 12
     },
 
-    LargePack("Large Pack" , 24 , 2000 , 1 , 1) {
+    LargePack("Large Pack" , 24 , 2000 , 1 , 1 , "Mohamadreza/Large_Pack.png") {
 
     },
 
-    DeluxePack("Deluxe Pack" , Integer.MAX_VALUE , 10000 , 1 , 1) {
+    DeluxePack("Deluxe Pack" , Integer.MAX_VALUE , 10000 , 1 , 1,"Mohamadreza/Deluxe_Pack.png") {
 
     };
 
@@ -28,13 +28,15 @@ public enum BackPackType {
     private final int price;
     private final int InitialShopLimit;
     private int remindInShop;
+    private final String Path;
 
-    BackPackType(String name, int capacity, int price, int InitialShopLimit , int remindInShop) {
+    BackPackType(String name, int capacity, int price, int InitialShopLimit , int remindInShop , String Path) {
         this.name = name;
         this.capacity = capacity;
         this.price = price;
         this.InitialShopLimit = InitialShopLimit;
         this.remindInShop = remindInShop;
+        this.Path = Path;
     }
     public String getName() {
         return name;
@@ -81,6 +83,7 @@ public enum BackPackType {
         return App.currentGame.currentPlayer.getBackPack().getType().getCapacity() - x - fishTypes.size() - animalProductTypes.size() ;
     }
 
-
-
- }
+    public String getPath() {
+        return Path;
+    }
+}

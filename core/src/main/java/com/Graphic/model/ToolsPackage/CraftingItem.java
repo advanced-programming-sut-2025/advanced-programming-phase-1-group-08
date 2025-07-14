@@ -2,6 +2,7 @@ package com.Graphic.model.ToolsPackage;
 
 import com.Graphic.model.DateHour;
 import com.Graphic.model.Enum.ItemType.CraftType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
 
 import java.util.IdentityHashMap;
@@ -73,5 +74,20 @@ public class CraftingItem extends Items {
     @Override
     public String getIcon() {
         return type.getIcon();
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return -1;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return 0;
     }
 }
