@@ -1,5 +1,6 @@
 package com.Graphic.model.MapThings;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.ItemType.WallType;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
@@ -36,5 +37,15 @@ public class Wall extends GameObject {
             return Path ="Places/wall2.png";
         }
         return null;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return 0;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
     }
 }

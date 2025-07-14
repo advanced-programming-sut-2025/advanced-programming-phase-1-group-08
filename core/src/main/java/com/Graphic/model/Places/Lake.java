@@ -1,6 +1,7 @@
 package com.Graphic.model.Places;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -77,5 +78,15 @@ public class Lake extends GameObject {
     }
     public void setTimer(float timer) {
         Timer = timer;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return 0;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
     }
 }

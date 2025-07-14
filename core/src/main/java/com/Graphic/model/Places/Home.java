@@ -1,6 +1,7 @@
 package com.Graphic.model.Places;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.OtherItem.Fridge;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.door;
@@ -64,5 +65,15 @@ public class Home extends GameObject {
             }
         }
         return Path;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return 0;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
     }
 }

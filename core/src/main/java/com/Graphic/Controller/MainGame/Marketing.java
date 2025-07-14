@@ -11,6 +11,7 @@ import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Enum.WeatherTime.Season;
+import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.Items;
 import com.Graphic.model.Plants.BasicRock;
@@ -32,6 +33,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -49,6 +51,7 @@ import static com.Graphic.View.GameMenus.MarketMenu.marketType;
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.Enum.ItemType.MarketType.*;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class Marketing {
 
@@ -217,6 +220,59 @@ public class Marketing {
         });
     }
 
+    public void buyBarnOrCage(TextButton button , BarnOrCage barnOrCage) {
+
+        button.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                removeImage();
+                getWindow().clear();
+                getWindow().remove();
+                Texture texture = TextureManager.get(barnOrCage.getBarnORCageType().getPath());
+                Sprite sprite = new Sprite(texture);
+                sprite.setAlpha(0.5f);
+                setWithMouse(sprite);
+                choosePlace = true;
+            }
+        });
+    }
+
+    public void moveTextureWithMouse(Sprite sprite) {
+        if (choosePlace) {
+            printMapForCreate();
+            sprite.setPosition(getVector().x - sprite.getWidth() / 2, getVector().y - sprite.getHeight() / 2);
+            sprite.draw(Main.getBatch());
+        }
+    }
+
+    public void printMapForCreate() {
+        if (Gdx.input.isKeyPressed(Input.Keys.T)) {
+            System.out.println(currentGame.currentPlayer.topLeftX + " " + currentGame.currentPlayer.topLeftY);
+        }
+        for (int i = 0; i < 30; i++) {
+            for (int j = 0; j < 30; j++) {
+                try {
+                    Main.getBatch().draw(TextureManager.get("Places/Walkable.png"),
+                        TEXTURE_SIZE * 2 * (i),
+                        TEXTURE_SIZE * 2 * (30 -j) ,
+                        TEXTURE_SIZE * 2 , TEXTURE_SIZE * 2);
+
+                    Main.getBatch().draw(getTileByCoordinates(i + 60 * currentGame.currentPlayer.topLeftX , j + 60 * currentGame.currentPlayer.topLeftY)
+                            .getGameObject()
+                            .getSprite(TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
+                        TEXTURE_SIZE * 2 * (i) ,
+                        TEXTURE_SIZE * 2 * (30 - j) ,
+                        TEXTURE_SIZE * 2 , TEXTURE_SIZE * 2);
+
+                } catch (Exception e) {
+
+                }
+            }
+        }
+    }
+
+
     public void createSelectBox(SelectBox selectBox , MarketType marketType) {
         selectBox.addListener(new ChangeListener() {
 
@@ -232,6 +288,7 @@ public class Marketing {
                             case PierreGeneralStore -> showPierreProducts(1,true);
                             case StardropSaloon -> showStardropProducts(1,true);
                             case FishShop -> showFishProducts(1,true);
+                            case CarpenterShop -> showCarpenterProducts(1,true);
                         }
                     }
                     if (selected.equals("Available Products")) {
@@ -243,6 +300,7 @@ public class Marketing {
                             case PierreGeneralStore -> showPierreProducts(2,true);
                             case StardropSaloon -> showStardropProducts(2,true);
                             case FishShop -> showFishProducts(2,true);
+                            case CarpenterShop -> showCarpenterProducts(2,true);
                         }
                     }
             }
@@ -292,11 +350,20 @@ public class Marketing {
     }
 
     public void listMarketItems(int id , Table table , MarketType marketType , Label label) {
+
         for (MarketItemType f : MarketItemType.values()) {
             if (f.getMarketTypes().contains(marketType) && (id ==1 || new MarketItem(f).getRemindInShop(marketType) > 0)) {
                 TextButton coinButton = new TextButton("",getSkin());
                 coinButton.clearChildren();
-                buy(coinButton , new MarketItem(f) , marketType);
+                if (f.equals(MarketItemType.Wood)) {
+                    buy(coinButton , new Wood() , marketType);
+                }
+                else if (f.equals(MarketItemType.Stone)) {
+                    buy(coinButton , new BasicRock() , marketType);
+                }
+                else {
+                    buy(coinButton, new MarketItem(f), marketType);
+                }
 
                 Table innerTable = new Table();
                 innerTable.add(new Image(new Texture(Gdx.files.internal(f.getPath())))).left().padLeft(60).size(24, 24);
@@ -304,6 +371,21 @@ public class Marketing {
                 makeCoinButton(table,coinButton,innerTable,f.getName(),
                     new MarketItem(f).getMarketPrice(marketType),
                     new MarketItem(f).getRemindInShop(marketType) );
+            }
+        }
+    }
+
+    public void listBarnOrCage(int id , Table table , MarketType marketType , Label label) {
+        for (BarnORCageType f : BarnORCageType.values()) {
+            if (id == 1 || new BarnOrCage(f , 0 , 0).getRemindInShop(marketType) > 0) {
+                TextButton coinButton = new TextButton("",getSkin());
+                coinButton.clearChildren();
+                buyBarnOrCage(coinButton , new BarnOrCage(f , 0 , 0));
+                Table innerTable = new Table();
+                innerTable.add(new Image(new Texture(Gdx.files.internal(f.getPath())))).left().padLeft(60).size(24, 24);
+
+                makeCoinButton(table , coinButton , innerTable , f.getName() , f.getPrice(),
+                    new BarnOrCage(f,0,0).getRemindInShop(marketType));
             }
         }
     }
@@ -409,6 +491,23 @@ public class Marketing {
             pane.setWidget(table);
             createWindow(pane , image);
 
+        }
+    }
+
+    public void showCarpenterProducts(int id , boolean Filter) {
+        if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && showWindow) || Filter) {
+            showWindow = false;
+
+            Table table = createTable(CarpenterShop);
+            ScrollPane pane = new ScrollPane(table,getSkin());
+            Image image = getImage();
+            Label label = null;
+            pane.setFadeScrollBars(false);
+            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            listMarketItems(id,table,CarpenterShop,label);
+            listBarnOrCage(id, table,CarpenterShop,label);
+            pane.setWidget(table);
+            createWindow(pane , image);
         }
     }
 

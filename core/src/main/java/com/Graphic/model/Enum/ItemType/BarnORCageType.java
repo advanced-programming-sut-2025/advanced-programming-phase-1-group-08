@@ -5,13 +5,19 @@ import java.util.Map;
 
 public enum BarnORCageType {
 
-    Barn("Barn",4 , 6 , 3, 6000 , 350 , 150 , 1),
-    BigBarn("Big Barn", 8 , 7 , 4 , 12000 , 450 , 200 , 1),
-    DeluxeBarn("Deluxe Barn" , 12 , 8 , 5 , 25000 , 550 , 300 , 1),
+    Barn("Barn",4 , 6 , 3, 6000 , 350 , 150 ,
+        1 , "Mohamadreza/Barn.png"),
+    BigBarn("Big Barn", 8 , 7 , 4 , 12000 , 450 , 200 ,
+        1 , "Mohamadreza/Big Barn.png"),
+    DeluxeBarn("Deluxe Barn" , 12 , 8 , 5 , 25000 , 550 , 300 ,
+        1 , "Mohamadreza/Deluxe Barn.png"),
 
-    Coop("Coop" , 4 , 6 , 3 , 4000 , 300 , 100 , 1),
-    BigCoop("Big Coop" , 8 , 7 , 4 , 10000 , 400 , 150 , 1),
-    DeluxeCoop("Deluxe Coop" , 12 , 8 , 5 , 20000 , 500 , 200 , 1);
+    Coop("Coop" , 4 , 6 , 3 , 4000 , 300 , 100 ,
+        1 , "Mohamadreza/Coop.png"),
+    BigCoop("Big Coop" , 8 , 7 , 4 , 10000 , 400 , 150 ,
+        1 , "Mohamadreza/Big Coop.png"),
+    DeluxeCoop("Deluxe Coop" , 12 , 8 , 5 , 20000 , 500 , 200 ,
+        1 , "Mohamadreza/Deluxe Coop.png"),;
 
 
 
@@ -23,8 +29,9 @@ public enum BarnORCageType {
     private final int woodNeeded;
     private final int stoneNeeded;
     private int shopLimit;
+    private final String Path;
 
-    BarnORCageType(String name, int initialCapacity, int width, int height ,int price,int woodNeeded,int stoneNeeded , int shopLimit) {
+    BarnORCageType(String name, int initialCapacity, int width, int height ,int price,int woodNeeded,int stoneNeeded , int shopLimit , String Path) {
         this.name = name;
         this.initialCapacity = initialCapacity;
         this.width = width;
@@ -33,6 +40,7 @@ public enum BarnORCageType {
         this.woodNeeded = woodNeeded;
         this.stoneNeeded = stoneNeeded;
         this.shopLimit = shopLimit;
+        this.Path = Path;
     }
 
     public String getName() {
@@ -61,5 +69,8 @@ public enum BarnORCageType {
     }
     public void setShopLimit(int ShopLimit) {
         this.shopLimit = ShopLimit;
+    }
+    public String getPath() {
+        return Path;
     }
 }

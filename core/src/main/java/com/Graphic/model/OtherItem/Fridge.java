@@ -1,5 +1,6 @@
 package com.Graphic.model.OtherItem;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
 import com.Graphic.model.MapThings.GameObject;
 
@@ -37,5 +38,15 @@ public class Fridge extends GameObject {
     @Override
     public String getIcon() {
         return YELLOW +"F ";
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return 0;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
     }
 }

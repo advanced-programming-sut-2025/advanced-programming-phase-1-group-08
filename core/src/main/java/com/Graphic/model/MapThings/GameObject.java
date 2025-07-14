@@ -1,10 +1,11 @@
 package com.Graphic.model.MapThings;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class GameObject {
+public abstract class GameObject {
 
     private char Charactor;
     private float textureWidth;
@@ -57,5 +58,8 @@ public class GameObject {
     public void setTextureHeight(float textureHeight) {
         this.textureHeight = textureHeight;
     }
+
+    public abstract int getRemindInShop(MarketType marketType);
+    public abstract void setRemindInShop(int amount , MarketType marketType);
 
 }

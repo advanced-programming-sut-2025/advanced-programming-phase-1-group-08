@@ -17,11 +17,13 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -39,7 +41,7 @@ public class MarketMenu implements Screen , InputProcessor {
 
     TiledMap map;
     OrthogonalTiledMapRenderer renderer;
-    OrthographicCamera camera;
+    private static OrthographicCamera camera;
     Marketing marketing;
     public static MarketType marketType;
     private static Stage stage;
@@ -49,6 +51,9 @@ public class MarketMenu implements Screen , InputProcessor {
     public static boolean showWindow = true;
     private static Texture coinTexture;
     private static ImageButton closeButton;
+    public static boolean choosePlace = false;
+    private static Vector3 vector;
+    private static Sprite withMouse;
 
     @Override
     public boolean keyDown(int i) {
@@ -143,6 +148,27 @@ public class MarketMenu implements Screen , InputProcessor {
         closeButton.getImageCell().size(50, 50);
         return closeButton;
     }
+
+    public static Vector3 getVector() {
+        if (vector == null) {
+            vector = new Vector3(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
+        }
+        vector.set(Gdx.input.getX() , Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
+        //camera.unproject(vector);
+        return vector;
+    }
+
+    public static Sprite getWithMouse() {
+        if (withMouse == null) {
+            withMouse = new Sprite();
+        }
+        return withMouse;
+    }
+
+    public static void setWithMouse(Sprite withMouse) {
+        MarketMenu.withMouse = withMouse;
+    }
+
     @Override
     public void show() {
 //        App.currentGame.currentPlayer.sprite.setSize(16 , 32);
@@ -197,10 +223,13 @@ public class MarketMenu implements Screen , InputProcessor {
 //            }
 //        }
         marketing.move();
-        marketing.showFishProducts(1,false);
+        marketing.showCarpenterProducts(1,false);
+        marketing.moveTextureWithMouse(getWithMouse());
         camera.update();
-        renderer.setView(camera);
-        renderer.render();
+        if (! choosePlace) {
+            renderer.setView(camera);
+            renderer.render();
+        }
         Main.getBatch().end();
 
         stage.act(v);
