@@ -1245,7 +1245,9 @@ public class GameControllerLogic {
             Home home = user.getFarm().getHome();
             user.setPositionX( 60 * user.topLeftX + home.getTopLeftX() + home.getWidth() / 2);
             user.setPositionY( 60 * user.topLeftY + home.getTopLeftY() + home.getLength());
-            user.increaseMoney(500 - user.getMoney());
+            user.increaseMoney(1000000 - user.getMoney());
+            //advanceItem(new Wood() , 100000);
+            //advanceItem(new BasicRock() , 100000);
         }
         currentGame.currentPlayer = user1;
     }

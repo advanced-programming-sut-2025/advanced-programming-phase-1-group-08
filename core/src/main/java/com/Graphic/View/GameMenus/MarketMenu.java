@@ -6,6 +6,7 @@ import com.Graphic.View.AppMenu;
 import com.Graphic.model.App;
 import com.Graphic.model.App.*;
 import com.Graphic.model.Enum.Commands.MarketMenuCommands;
+import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
@@ -54,6 +56,7 @@ public class MarketMenu implements Screen , InputProcessor {
     public static boolean choosePlace = false;
     private static Vector3 vector;
     private static Sprite withMouse;
+    private static HashMap <Sprite , BarnORCageType> mapSpriteToBarnOrCage;
 
     @Override
     public boolean keyDown(int i) {
@@ -151,10 +154,10 @@ public class MarketMenu implements Screen , InputProcessor {
 
     public static Vector3 getVector() {
         if (vector == null) {
-            vector = new Vector3(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
+            vector = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         }
-        vector.set(Gdx.input.getX() , Gdx.graphics.getHeight() - Gdx.input.getY(), 0);
-        //camera.unproject(vector);
+        vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
+        camera.unproject(vector);
         return vector;
     }
 
@@ -163,6 +166,13 @@ public class MarketMenu implements Screen , InputProcessor {
             withMouse = new Sprite();
         }
         return withMouse;
+    }
+
+    public static HashMap<Sprite , BarnORCageType> mapSpriteToBarnOrCage() {
+        if (mapSpriteToBarnOrCage == null) {
+            mapSpriteToBarnOrCage = new HashMap();
+        }
+        return mapSpriteToBarnOrCage;
     }
 
     public static void setWithMouse(Sprite withMouse) {
@@ -198,7 +208,6 @@ public class MarketMenu implements Screen , InputProcessor {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Main.getBatch().begin();
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             camera.translate(0, 200 * Gdx.graphics.getDeltaTime());
         }
@@ -211,6 +220,10 @@ public class MarketMenu implements Screen , InputProcessor {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             camera.translate( 200 * Gdx.graphics.getDeltaTime(), 0);
         }
+        camera.update();
+        Main.getBatch().setProjectionMatrix( camera.combined);
+
+        Main.getBatch().begin();
 //        if (Gdx.input.isKeyPressed(Input.Keys.T) && !showWindow) {
 //            try {
 //                image.remove();
@@ -224,11 +237,17 @@ public class MarketMenu implements Screen , InputProcessor {
 //        }
         marketing.move();
         marketing.showCarpenterProducts(1,false);
-        marketing.moveTextureWithMouse(getWithMouse());
+        //marketing.moveTextureWithMouse(getWithMouse());
         camera.update();
         if (! choosePlace) {
+            camera.setToOrtho(false , 300 , 150);
             renderer.setView(camera);
             renderer.render();
+        }
+        else {
+            marketing.moveTextureWithMouse(getWithMouse());
+            camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+            camera.zoom = 2f;
         }
         Main.getBatch().end();
 
