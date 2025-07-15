@@ -2,6 +2,7 @@ package com.Graphic.model.Animall;
 
 import com.Graphic.model.Enum.ItemType.AnimalProductType;
 import com.Graphic.model.Enum.ItemType.AnimalType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
 
 public class Animal extends GameObject {
@@ -134,5 +135,15 @@ public class Animal extends GameObject {
     @Override
     public String getIcon() {
         return type.getIcon();
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return type.getRemindInShop();
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+        type.increaseRemindInShop(amount - type.getRemindInShop());
     }
 }

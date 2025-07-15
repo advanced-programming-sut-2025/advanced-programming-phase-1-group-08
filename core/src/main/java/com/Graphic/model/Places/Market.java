@@ -44,4 +44,14 @@ public class Market extends GameObject {
         return null;
 
     }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return 0;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
 }

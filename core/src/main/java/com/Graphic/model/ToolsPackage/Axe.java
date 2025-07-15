@@ -1,5 +1,6 @@
 package com.Graphic.model.ToolsPackage;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.ToolsType.AxeType;
 
 import static com.Graphic.model.App.*;
@@ -44,5 +45,18 @@ public class Axe extends Tools {
         return this.type.getIconPath();
     }
 
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return type.initialLimit;
+    }
 
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+        type.initialLimit = amount;
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return type.getPrice();
+    }
 }

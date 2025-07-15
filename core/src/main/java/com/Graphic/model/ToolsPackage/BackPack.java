@@ -1,10 +1,11 @@
 package com.Graphic.model.ToolsPackage;
 
 import com.Graphic.model.Enum.ItemType.BackPackType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.Items;
 
-public class BackPack {
+public class BackPack extends Items {
 
     private BackPackType Type;
     public Inventory inventory;
@@ -21,5 +22,36 @@ public class BackPack {
     }
     public void setType(BackPackType type) {
         Type = type;
+    }
+
+
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return Type.getRemindInShop();
+    }
+
+    @Override
+    public String getName() {
+        return Type.getName();
+    }
+
+    @Override
+    public String getInventoryIconPath() {
+        return Type.getPath() ;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return Type.getPrice();
     }
 }

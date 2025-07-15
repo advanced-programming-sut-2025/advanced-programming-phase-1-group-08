@@ -1,5 +1,6 @@
 package com.Graphic.model;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
 
 import java.lang.reflect.Field;
@@ -101,8 +102,11 @@ public abstract class Items extends GameObject {
 
 
     public abstract int getSellPrice();
+    public abstract int getRemindInShop(MarketType marketType);
     public abstract String getName();
     public abstract String getInventoryIconPath ();
+    public abstract void setRemindInShop(int amount , MarketType marketType);
+    public abstract int getMarketPrice(MarketType marketType);
 
     public  int getTakesTime() {
         return 0;

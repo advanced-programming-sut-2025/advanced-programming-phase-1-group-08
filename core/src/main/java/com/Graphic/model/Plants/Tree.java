@@ -3,6 +3,7 @@ package com.Graphic.model.Plants;
 import com.Graphic.model.DateHour;
 import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.Items;
 import com.Graphic.model.MapThings.GameObject;
@@ -150,7 +151,16 @@ public class Tree extends GameObject {
 
     }
 
-//    @Override
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return 0;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+    //    @Override
 //    public String getName() {
 //        return type.getDisplayName();
 //    }

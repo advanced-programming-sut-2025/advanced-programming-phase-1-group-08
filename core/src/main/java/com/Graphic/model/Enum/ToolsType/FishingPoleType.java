@@ -116,10 +116,10 @@ public enum FishingPoleType {
         }
     };
 
-    private int initialShopLimit;
+    public int initialShopLimit;
     private final String iconPath;
     private final int level;
-    private int shopLimit=1;
+    public int shopLimit=1;
 
     FishingPoleType(int InitialShopLimit , int level, String iconPath) {
         this.initialShopLimit = InitialShopLimit;
@@ -140,9 +140,7 @@ public enum FishingPoleType {
     public void setshopLimit() {
         this.shopLimit = initialShopLimit;
     }
-    public int getshopLimit() {
-        return shopLimit;
-    }
+
     public void incrementShopLimit(int amount) {
         this.shopLimit += amount;
     }

@@ -126,7 +126,7 @@ public class Recipe {
         pumpkinPieIng.put(new MarketItem(MarketItemType.WheatFlour), 1);
         pumpkinPieIng.put(new MarketItem(MarketItemType.Sugar), 1);
         Recipe pumpkinPie = new Recipe(
-                "Pumpkin pie",
+                "Pumpkin Pie",
                 true,
                 FoodTypes.pumpkinPie,
                 pumpkinPieIng,

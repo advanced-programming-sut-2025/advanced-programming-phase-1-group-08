@@ -1,7 +1,10 @@
 package com.Graphic.model.Animall;
 
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 
 import java.util.ArrayList;
 
@@ -13,6 +16,7 @@ public class BarnOrCage extends GameObject {
     public ArrayList<Animal> animals = new ArrayList<>();
     public int topLeftX;
     public int topLeftY;
+
 
     public BarnOrCage(){}
 
@@ -43,4 +47,16 @@ public class BarnOrCage extends GameObject {
             return BROWN +"C ";
         }
     }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return barnORCageType.getShopLimit();
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+        barnORCageType.setShopLimit(amount);
+    }
+
 }
+

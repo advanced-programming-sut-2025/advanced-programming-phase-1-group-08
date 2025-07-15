@@ -1,5 +1,6 @@
 package com.Graphic.model.Plants;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
 
 public class BasicRock extends Items {
@@ -24,5 +25,20 @@ public class BasicRock extends Items {
     @Override
     public int getSellPrice() {
         return 20;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return price;
     }
 }

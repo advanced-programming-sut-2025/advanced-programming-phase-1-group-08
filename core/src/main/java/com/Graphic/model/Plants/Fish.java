@@ -1,6 +1,7 @@
 package com.Graphic.model.Plants;
 
 import com.Graphic.model.Enum.ItemType.FishType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.ItemType.Quantity;
 import com.Graphic.model.Items;
 
@@ -36,5 +37,18 @@ public class Fish extends Items {
         return (int) ( type.getPrice() * quantity.getValue());
     }
 
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return -1;
+    }
 
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return 0;
+    }
 }

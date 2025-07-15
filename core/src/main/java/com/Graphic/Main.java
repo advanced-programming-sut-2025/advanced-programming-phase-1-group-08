@@ -24,7 +24,7 @@ public class Main extends Game {
         batch = new SpriteBatch();
 //        x = InputGameController.getInstance();
 //        x.startNewGame("a");
-        //main.setScreen(new MainMenu());
+        main.setScreen(new MainMenu());
 
         skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
         main.setScreen(new MainMenu());

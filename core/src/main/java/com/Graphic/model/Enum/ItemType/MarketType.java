@@ -136,4 +136,23 @@ public enum MarketType {
         }
         return null;
     }
+
+    public static String endLimit(String id) {
+        if (id.equals("1")) {
+            return "The purchase limit for this product is reached";
+        }
+        if (id.equals("2")) {
+            return "Your Money is not enough to purchase this product";
+        }
+        if (id.equals("3")) {
+            return "your BackPack does not have enough capacity for this product";
+        }
+        if (id.equals("4")) {
+            return "Your BackPack does not changeable";
+        }
+        if (id.equals("5")) {
+            return "Your ability is not enough for purchase this Fishing Pole";
+        }
+        return null;
+    }
 }

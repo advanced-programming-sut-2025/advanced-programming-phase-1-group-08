@@ -1,5 +1,7 @@
 package com.Graphic.model.ToolsPackage;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
+
 import static com.Graphic.model.App.currentGame;
 public class Scythe extends Tools {
 
@@ -26,6 +28,21 @@ public class Scythe extends Tools {
 
     @Override
     public int getSellPrice() {
+        return 0;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return -1;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
         return 0;
     }
 }

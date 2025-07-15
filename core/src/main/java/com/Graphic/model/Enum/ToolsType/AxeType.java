@@ -30,7 +30,7 @@ public enum AxeType {
 
     private final int energyCost;
     private final String displayName;
-    private final int initialLimit;
+    public int initialLimit;
     private final int Price;
     private final String iconPath;
     private final BarsAndOreType BarsAndOreType;
@@ -58,6 +58,7 @@ public enum AxeType {
     public String getIconPath() {
         return iconPath;
     }
+
 
     public static AxeType getNextType(AxeType axeType) {
         return switch (axeType) {
