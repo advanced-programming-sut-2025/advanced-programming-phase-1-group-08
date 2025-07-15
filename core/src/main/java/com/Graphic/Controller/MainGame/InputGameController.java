@@ -2046,7 +2046,7 @@ public class InputGameController {
 
     public void doItemTask (float disX, float disY) {
 
-        Diraction diraction =
+        // Diraction diraction =
     }
     public Result howMuchWater () {
 

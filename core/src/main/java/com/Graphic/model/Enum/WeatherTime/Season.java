@@ -122,6 +122,10 @@ public enum Season {
             return RED+displayName+RESET;
     }
 
+    public String getIconPath() {
+        return "Erfan/Clock/Season Icon" + this.displayName + " Icon.png";
+    }
+
     public abstract Season passedSeason   (int number);
     public abstract Weather getWeather();
 }

@@ -57,6 +57,8 @@ public class GameMenu implements  Screen, InputProcessor {
     public long lastTime;
 
     private Group clockGroup;
+    private Image seasonImage;
+    private Image weatherImage;
     private Label moneyLabel;
     private Label timeLabel;
     private Label dateLabel;
@@ -267,11 +269,31 @@ public class GameMenu implements  Screen, InputProcessor {
         weekDayLabel = new Label("", App.skin);
 
         toolsMenuIsActivated = false;
-
     }
     private void createClock() {
 
         Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
+
+        createClockLabels(image.getWidth(), image.getHeight());
+        createClockImage();
+
+        clockGroup.addActor(image);
+
+        float screenWidth = stage.getViewport().getWorldWidth();
+        float screenHeight = stage.getViewport().getWorldHeight();
+
+        clockGroup.setSize(image.getWidth(), image.getHeight());
+
+        clockGroup.setPosition(
+            screenWidth - clockGroup.getWidth() - 10,
+            screenHeight - clockGroup.getHeight() - 10);
+
+        stage.addActor(clockGroup);
+    }
+    private void createClockImage () {
+        seasonImage = new Image(TextureManager.get(currentGame.currentDate.getSeason().getIconPath()));
+    }
+    private void createClockLabels (float x, float y) {
 
         ArrayList<Label> labels = new ArrayList<>();
         labels.add(timeLabel);
@@ -279,12 +301,12 @@ public class GameMenu implements  Screen, InputProcessor {
         labels.add(moneyLabel);
         labels.add(weekDayLabel);
 
+
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = GameAssetManager.getGameAssetManager().getSmallFont();
 
         Label.LabelStyle labelStyle2 = new Label.LabelStyle();
         labelStyle2.font = GameAssetManager.getGameAssetManager().getFont3();
-
 
 
         timeLabel.setText(currentGame.currentDate.getHour() + ":00");
@@ -302,29 +324,14 @@ public class GameMenu implements  Screen, InputProcessor {
         }
         moneyLabel.setStyle(labelStyle);
 
-        clockGroup.addActor(image);
-
         for (Label l : labels)
             clockGroup.addActor(l);
 
 
-        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 48);
+        dateLabel.setPosition(x - dateLabel.getWidth() - 70, y - dateLabel.getHeight() - 48);
         weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 80, dateLabel.getY() + 3);
         setCenteredPosition(timeLabel, weekDayLabel.getX() + 10, weekDayLabel.getY() - 95);
         moneyLabel.setPosition(timeLabel.getX() + 45 - moneyLabel.getWidth(), timeLabel.getY() - 78);
-
-
-        float screenWidth = stage.getViewport().getWorldWidth();
-        float screenHeight = stage.getViewport().getWorldHeight();
-
-
-        clockGroup.setSize(image.getWidth(), image.getHeight());
-
-        clockGroup.setPosition(
-            screenWidth - clockGroup.getWidth() - 10,
-            screenHeight - clockGroup.getHeight() - 10);
-
-        stage.addActor(clockGroup);
     }
     private void updateClock() {
 
