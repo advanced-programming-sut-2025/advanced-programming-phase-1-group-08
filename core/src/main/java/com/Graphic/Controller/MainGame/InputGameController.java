@@ -34,6 +34,7 @@ import java.util.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 
 import static com.Graphic.model.App.*;
+import static com.Graphic.model.Enum.Direction.getDirByCord;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
@@ -2043,6 +2044,10 @@ public class InputGameController {
 
                                                                    // input tools command
 
+    public void doItemTask (float disX, float disY) {
+
+        // Diraction diraction =
+    }
     public Result howMuchWater () {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
