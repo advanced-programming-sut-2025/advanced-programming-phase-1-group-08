@@ -2,7 +2,7 @@ package com.Graphic.model.Enum;
 
 public enum GameTexturePath {
 
-    Clock ("Erfan/Clock/EmptyClock.png"),
+    Clock ("Erfan/Clock/Clock2.png"),
     ;
 
 

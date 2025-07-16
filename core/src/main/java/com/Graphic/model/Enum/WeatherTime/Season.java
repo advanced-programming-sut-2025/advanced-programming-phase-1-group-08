@@ -6,7 +6,7 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public enum Season {
 
-    Winter("❄️Winter❄️") {
+    Winter("Winter","❄️Winter❄️") {
 
         public Season passedSeason(int number) {
 
@@ -29,7 +29,7 @@ public enum Season {
             return Weather.Sunny;
         }
     },
-    Fall  ("\uD83C\uDF42Fall\uD83C\uDF42") {
+    Fall  ("Fall","\uD83C\uDF42Fall\uD83C\uDF42") {
 
         public Season passedSeason(int number) {
 
@@ -54,7 +54,7 @@ public enum Season {
             return Weather.Sunny;
         }
     },
-    Summer("☀️Summer☀️") {
+    Summer("Summer","☀️Summer☀️") {
 
         public Season passedSeason(int number) {
 
@@ -79,7 +79,7 @@ public enum Season {
             return Weather.Sunny;
         }
     },
-    Spring("\uD83C\uDF38Spring\uD83C\uDF38") {
+    Spring("Spring","\uD83C\uDF38Spring\uD83C\uDF38") {
 
         public Season passedSeason(int number) {
 
@@ -106,8 +106,10 @@ public enum Season {
     };
 
     private final String displayName;
+    private final String iconPath;
 
-    Season(String displayName) {
+    Season(String iconPath ,String displayName) {
+        this.iconPath = iconPath;
         this.displayName = displayName;
     }
     public String getDisplayName() {
@@ -123,7 +125,7 @@ public enum Season {
     }
 
     public String getIconPath() {
-        return "Erfan/Clock/Season Icon" + this.displayName + " Icon.png";
+        return "Erfan/Clock/Season Icon/" + this.iconPath + " Icon.png";
     }
 
     public abstract Season passedSeason   (int number);

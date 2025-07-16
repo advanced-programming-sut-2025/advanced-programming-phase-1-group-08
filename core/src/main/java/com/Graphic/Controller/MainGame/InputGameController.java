@@ -1498,11 +1498,11 @@ public class InputGameController {
 //        currentGame.players.add(currentUser);
 //        currentGame.currentPlayer = currentUser;
 //        System.out.println(RED+"player selected"+RESET);
-//        setTimeAndWeather();
 
 //        currentGame.players.add(findUserByUsername(user1name));
 //        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
 //        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
+
         currentGame.players.add(new User("Ario", "Ario", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
         currentGame.players.add(new User("Erfan", "Erfan", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
         currentGame.players.add(new User("Mamali", "Mamali", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));

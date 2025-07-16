@@ -1436,6 +1436,7 @@ public class GameControllerLogic {
     public static void setTimeAndWeather () {
 
         currentGame.currentDate = new DateHour(Season.Spring, 1, 9, 1980);
+        currentGame.currentWeather = Weather.Sunny;
         currentGame.tomorrowWeather = Weather.Sunny;
 
     }

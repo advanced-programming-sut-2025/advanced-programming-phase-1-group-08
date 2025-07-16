@@ -48,7 +48,8 @@ public class GameMenu implements  Screen, InputProcessor {
 
     public static OrthographicCamera camera;
     private InputGameController controller;
-    private final int hourSecond = 120000;
+//    private final int hourSecond = 120000;
+    private final int hourSecond = 120;
     private Stage stage;
 
     private Image helperBackGround;
@@ -95,7 +96,7 @@ public class GameMenu implements  Screen, InputProcessor {
     public void render(float v) {
 
         if (TimeUtils.millis() - lastTime > hourSecond)
-            updateClock();
+            updateClock(1);
 
         inputController();
         Gdx.gl.glClearColor(0,0,0,1);
@@ -274,39 +275,18 @@ public class GameMenu implements  Screen, InputProcessor {
 
         Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
 
-        createClockLabels(image.getWidth(), image.getHeight());
-        createClockImage();
-
-        clockGroup.addActor(image);
-
-        float screenWidth = stage.getViewport().getWorldWidth();
-        float screenHeight = stage.getViewport().getWorldHeight();
-
-        clockGroup.setSize(image.getWidth(), image.getHeight());
-
-        clockGroup.setPosition(
-            screenWidth - clockGroup.getWidth() - 10,
-            screenHeight - clockGroup.getHeight() - 10);
-
-        stage.addActor(clockGroup);
-    }
-    private void createClockImage () {
-        seasonImage = new Image(TextureManager.get(currentGame.currentDate.getSeason().getIconPath()));
-    }
-    private void createClockLabels (float x, float y) {
-
         ArrayList<Label> labels = new ArrayList<>();
         labels.add(timeLabel);
         labels.add(dateLabel);
         labels.add(moneyLabel);
         labels.add(weekDayLabel);
 
-
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = GameAssetManager.getGameAssetManager().getSmallFont();
 
         Label.LabelStyle labelStyle2 = new Label.LabelStyle();
         labelStyle2.font = GameAssetManager.getGameAssetManager().getFont3();
+
 
 
         timeLabel.setText(currentGame.currentDate.getHour() + ":00");
@@ -324,22 +304,54 @@ public class GameMenu implements  Screen, InputProcessor {
         }
         moneyLabel.setStyle(labelStyle);
 
+        clockGroup.addActor(image);
+
         for (Label l : labels)
             clockGroup.addActor(l);
 
 
-        dateLabel.setPosition(x - dateLabel.getWidth() - 70, y - dateLabel.getHeight() - 48);
+        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 48);
         weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 80, dateLabel.getY() + 3);
         setCenteredPosition(timeLabel, weekDayLabel.getX() + 10, weekDayLabel.getY() - 95);
         moneyLabel.setPosition(timeLabel.getX() + 45 - moneyLabel.getWidth(), timeLabel.getY() - 78);
+
+
+        seasonImage = new Image(TextureManager.get(currentGame.currentDate.getSeason().getIconPath()));
+        seasonImage.setSize(200,220);
+        seasonImage.setPosition(image.getWidth()- seasonImage.getWidth() + 47, image.getHeight() - seasonImage.getHeight() + 30);
+        clockGroup.addActor(seasonImage);
+
+        weatherImage = new Image(TextureManager.get(currentGame.currentWeather.getIconPath()));
+        weatherImage.setSize(200,220);
+        weatherImage.setPosition(image.getWidth()- weatherImage.getWidth() - 47, image.getHeight() - weatherImage.getHeight() + 30);
+        clockGroup.addActor(weatherImage);
+
+
+        float screenWidth = stage.getViewport().getWorldWidth();
+        float screenHeight = stage.getViewport().getWorldHeight();
+
+        clockGroup.setSize(image.getWidth(), image.getHeight());
+
+        clockGroup.setPosition(
+            screenWidth - clockGroup.getWidth() - 10,
+            screenHeight - clockGroup.getHeight() - 10);
+
+        stage.addActor(clockGroup);
+
+
     }
-    private void updateClock() {
+    private void updateClock(int hourPassed) {
 
         passedOfTime(0, 1);
         timeLabel.setText(currentGame.currentDate.getHour() + ":00");
         dateLabel.setText(currentGame.currentDate.getDate());
         weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
+        Texture newTexture = TextureManager.get(currentGame.currentDate.getSeason().getIconPath());
+        seasonImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
+        Texture newTexture1 = TextureManager.get(currentGame.currentWeather.getIconPath());
+        weatherImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture1)));
         lastTime = TimeUtils.millis();
+
     }
 
     private void createEscMenu () {
