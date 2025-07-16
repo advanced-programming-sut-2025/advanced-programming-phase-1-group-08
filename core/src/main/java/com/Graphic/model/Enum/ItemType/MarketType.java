@@ -153,6 +153,15 @@ public enum MarketType {
         if (id.equals("5")) {
             return "Your ability is not enough for purchase this Fishing Pole";
         }
+        if (id.equals("6")) {
+            return "You don't have enough Wood to make this Building";
+        }
+        if (id.equals("7")) {
+            return "You don't have enough Stone to make this Building";
+        }
+        if (id.equals("8")) {
+            return "you can't create Barn Or Cage on this coordinate";
+        }
         return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.Graphic.model.Animall;
 
+import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
@@ -16,6 +17,7 @@ public class BarnOrCage extends GameObject {
     public ArrayList<Animal> animals = new ArrayList<>();
     public int topLeftX;
     public int topLeftY;
+    private String Path;
 
 
     public BarnOrCage(){}
@@ -40,12 +42,19 @@ public class BarnOrCage extends GameObject {
 
     @Override
     public String getIcon() {
-        if (barnORCageType.equals(BarnORCageType.Barn) || barnORCageType.equals(BarnORCageType.BigBarn) || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
-            return BROWN +"B ";
+        if (Path != null) {
+            return Path;
         }
-        else {
-            return BROWN +"C ";
+        for (int i = topLeftX ; i < topLeftX + barnORCageType.getWidth() ; i++) {
+            for (int j = topLeftY ; j < topLeftY + barnORCageType.getHeight() ; j++) {
+                if (GameControllerLogic.getTileByCoordinates(i , j).getGameObject().equals(this)) {
+                    int l = barnORCageType.getWidth() * (j - topLeftY) + i - topLeftX + 1;
+                    System.out.println(l);
+                    return Path = "Places/"+barnORCageType.getName()+l+".png";
+                }
+            }
         }
+        return Path;
     }
 
     @Override
@@ -57,6 +66,10 @@ public class BarnOrCage extends GameObject {
     public void setRemindInShop(int amount, MarketType marketType) {
         barnORCageType.setShopLimit(amount);
     }
+
+
+
+
 
 }
 

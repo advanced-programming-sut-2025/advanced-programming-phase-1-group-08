@@ -108,6 +108,33 @@ public class Marketing {
 
     }
 
+    public Result checkBuyBarnOrCage(BarnORCageType barnORCageType) {
+        if (currentGame.currentPlayer.getMoney() < barnORCageType.getPrice()) {
+            return new Result(false , "2");
+        }
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+
+        if (inventory.Items.containsKey(new Wood())) {
+            if (inventory.Items.get(new Wood()) < barnORCageType.getWoodNeeded()) {
+                return new Result(false , "6");
+            }
+        }
+        else {
+            return new Result(false , "6");
+        }
+
+        if (inventory.Items.containsKey(new BasicRock())) {
+            if (inventory.Items.get(new BasicRock()) < barnORCageType.getStoneNeeded()) {
+                return new Result(false , "7");
+            }
+        }
+        else {
+            return new Result(false , "7");
+        }
+        return new Result(true , "0");
+
+    }
+
     private void makeCoinButton(Table table, TextButton coinButton, Table innerTable, String name, int price, int remindInShop) {
         Label label;
         innerTable.add().expandX();
@@ -124,6 +151,26 @@ public class Marketing {
             coinButton.setColor(Color.DARK_GRAY);
         }
         table.row();
+    }
+
+    private void addDialogToTable(Dialog dialog, Label content) {
+        dialog.getContentTable().add(content);
+        ImageButton closeButton = createCloseButtonForDialog(dialog);
+        dialog.getTitleTable().add(closeButton).padRight(5).padTop(3).right();
+        dialog.show(getStage());
+        dialog.setPosition(400,100);
+        dialog.setSize(1000,48);
+    }
+
+    private Dialog createDialogError() {
+        Texture tex = new Texture(Gdx.files.internal("Mohamadreza/Error.png"));
+        NinePatch patch = new NinePatch(tex,10,10,3,3);
+        Drawable background = new NinePatchDrawable(patch);
+        Window.WindowStyle style = new Window.WindowStyle();
+        style.background = background;
+        style.titleFont = getFont();
+        Dialog dialog = new Dialog("Error",style);
+        return dialog;
     }
 
     public void init() {
@@ -183,20 +230,9 @@ public class Marketing {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 if (! checkBuy(item, marketType).IsSuccess()) {
-                    Texture tex = new Texture(Gdx.files.internal("Mohamadreza/Error.png"));
-                    NinePatch patch = new NinePatch(tex,10,10,3,3);
-                    Drawable background = new NinePatchDrawable(patch);
-                    Window.WindowStyle style = new Window.WindowStyle();
-                    style.background = background;
-                    style.titleFont = getFont();
-                    Dialog dialog = new Dialog("Error",style);
+                    Dialog dialog=createDialogError();
                     Label content = new Label(MarketType.endLimit(checkBuy(item,marketType).massage()), new Label.LabelStyle(getFont() , Color.BLACK));
-                    dialog.getContentTable().add(content);
-                    ImageButton closeButton = createCloseButtonForDialog(dialog);
-                    dialog.getTitleTable().add(closeButton).padRight(5).padTop(3).right();
-                    dialog.show(getStage());
-                    dialog.setPosition(400,100);
-                    dialog.setSize(1000,48);
+                    addDialogToTable(dialog, content);
                 }
                 else if (item instanceof BackPack) {
                     currentGame.currentPlayer.getBackPack().setType(((BackPack) item).getType());
@@ -220,30 +256,126 @@ public class Marketing {
         });
     }
 
+
     public void buyBarnOrCage(TextButton button , BarnOrCage barnOrCage) {
 
         button.addListener(new ChangeListener() {
 
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                removeImage();
-                getWindow().clear();
-                getWindow().remove();
-                Texture texture = TextureManager.get(barnOrCage.getBarnORCageType().getPath());
-                Sprite sprite = new Sprite(texture);
-                sprite.setAlpha(0.5f);
-                setWithMouse(sprite);
-                choosePlace = true;
+                if (! checkBuyBarnOrCage(barnOrCage.getBarnORCageType()).IsSuccess()) {
+                    Dialog dialog=createDialogError();
+                    Label content = new Label(MarketType.endLimit(checkBuyBarnOrCage(barnOrCage.getBarnORCageType()).massage()), new Label.LabelStyle(getFont() , Color.BLACK));
+                    addDialogToTable(dialog, content);
+                }
+                else {
+                    removeImage();
+                    getWindow().clear();
+                    getWindow().remove();
+                    Texture texture = TextureManager.get(barnOrCage.getBarnORCageType().getPath());
+                    Sprite sprite = new Sprite(texture);
+                    sprite.setAlpha(0.5f);
+                    mapSpriteToBarnOrCage().put(sprite, barnOrCage.getBarnORCageType());
+                    setWithMouse(sprite);
+                    choosePlace = true;
+                }
             }
         });
     }
 
+
     public void moveTextureWithMouse(Sprite sprite) {
-        if (choosePlace) {
-            printMapForCreate();
-            sprite.setPosition(getVector().x - sprite.getWidth() / 2, getVector().y - sprite.getHeight() / 2);
-            sprite.draw(Main.getBatch());
+
+            if (choosePlace && !mapSpriteToBarnOrCage().get(sprite).isWaiting()) {
+                printMapForCreate();
+                sprite.setPosition(getVector().x - sprite.getWidth() / 2, getVector().y - sprite.getHeight() / 2);
+                sprite.draw(Main.getBatch());
+            }
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && choosePlace && ! mapSpriteToBarnOrCage().get(sprite).isWaiting()) {
+                mapSpriteToBarnOrCage().get(sprite).setWaiting(true);
+            }
+
+            if (mapSpriteToBarnOrCage().get(sprite).isWaiting()) {
+                setBarnOrCageOnFarm(sprite, mapSpriteToBarnOrCage().get(sprite));
+            }
+
+    }
+
+    private boolean isPlaced = false;
+    public void setBarnOrCageOnFarm(Sprite sprite ,BarnORCageType barnORCageType) {
+        int x = (int) (sprite.getX() / TEXTURE_SIZE) + 60 * currentGame.currentPlayer.topLeftX;
+        int y =30 -  (int) (sprite.getY() / TEXTURE_SIZE) + 60 * currentGame.currentPlayer.topLeftY;
+
+        if (! checkTilesForCreateBarnOrCage(x , y , barnORCageType.getWidth() , barnORCageType.getHeight()) && ! isPlaced ) {
+
+            Dialog dialog=createDialogError();
+            Label content = new Label(MarketType.endLimit("8") , new Label.LabelStyle(getFont() , Color.BLACK));
+            addDialogToTable(dialog, content);
+            barnORCageType.setWaiting(false);
         }
+        else {
+            isPlaced = true;
+            for (int i = x ; i < x + barnORCageType.getWidth() ; i++) {
+                for (int j = y ; j < y + barnORCageType.getHeight() ; j++) {
+                    if (!(getTileByCoordinates(i , j).getGameObject() instanceof BarnOrCage )) {
+                        getTileByCoordinates(i , j).setGameObject(new BarnOrCage(barnORCageType , x , y));
+                    }
+                }
+            }
+            printMapForCreate();
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                TextButton confirm = new TextButton("" , getSkin());
+                TextButton TryAgain = new TextButton("" , getSkin());
+                Label con = new Label("Confirm" , getSkin());
+                Label Try = new Label("Try Again" , getSkin());
+                confirm.add(con).left().padLeft(10);
+                TryAgain.add(Try).left().padLeft(10);
+                getStage().addActor(confirm);
+                getStage().addActor(TryAgain);
+                confirm.setPosition(1200,480);
+                confirm.setSize(200 , 40);
+                TryAgain.setPosition(1200,400);
+                TryAgain.setSize(200 , 40);
+
+                confirm.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        isPlaced = false;
+                        payForBuilding((BarnOrCage) getTileByCoordinates(x,y).getGameObject());
+                        choosePlace = false;
+                        barnORCageType.setWaiting(false);
+                        confirm.remove();
+                        TryAgain.remove();
+
+                    }
+                });
+
+                TryAgain.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        barnORCageType.setWaiting(false);
+                        isPlaced = false;
+                        for (int i = x ; i < x + barnORCageType.getWidth() ; i++) {
+                            for (int j = y ; j < y + barnORCageType.getHeight() ; j++) {
+                                getTileByCoordinates(i , j).setGameObject(new Walkable());
+                            }
+                        }
+                        confirm.remove();
+                        TryAgain.remove();
+                    }
+                });
+            }
+        }
+    }
+
+    public void payForBuilding(BarnOrCage barnOrCage) {
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        inventory.Items.put(new Wood() , inventory.Items.get(new Wood()) - barnOrCage.getBarnORCageType().getWoodNeeded());
+        inventory.Items.put(new BasicRock() , inventory.Items.get(new BasicRock()) - barnOrCage.getBarnORCageType().getStoneNeeded());
+        inventory.Items.entrySet().removeIf(entry -> entry.getValue() == 0);
+        currentGame.currentPlayer.increaseMoney(- barnOrCage.getBarnORCageType().getPrice());
+        barnOrCage.setRemindInShop(barnOrCage.getRemindInShop(null) - 1 , null);
+        currentGame.currentPlayer.BarnOrCages.add(barnOrCage);
     }
 
     public void printMapForCreate() {
@@ -254,16 +386,16 @@ public class Marketing {
             for (int j = 0; j < 30; j++) {
                 try {
                     Main.getBatch().draw(TextureManager.get("Places/Walkable.png"),
-                        TEXTURE_SIZE * 2 * (i),
-                        TEXTURE_SIZE * 2 * (30 -j) ,
-                        TEXTURE_SIZE * 2 , TEXTURE_SIZE * 2);
+                        TEXTURE_SIZE  * (i),
+                        TEXTURE_SIZE  * (30 -j) ,
+                        TEXTURE_SIZE  , TEXTURE_SIZE );
 
                     Main.getBatch().draw(getTileByCoordinates(i + 60 * currentGame.currentPlayer.topLeftX , j + 60 * currentGame.currentPlayer.topLeftY)
                             .getGameObject()
                             .getSprite(TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
-                        TEXTURE_SIZE * 2 * (i) ,
-                        TEXTURE_SIZE * 2 * (30 - j) ,
-                        TEXTURE_SIZE * 2 , TEXTURE_SIZE * 2);
+                        TEXTURE_SIZE * (i) ,
+                        TEXTURE_SIZE  * (30 - j) ,
+                        TEXTURE_SIZE , TEXTURE_SIZE);
 
                 } catch (Exception e) {
 
@@ -513,6 +645,7 @@ public class Marketing {
 
 
     public boolean checkColision() {
+
         for (collisionRect rect : MarketMenu.marketType.getRects()) {
             if (! rect.checkCollision(currentGame.currentPlayer)) {
                 return false;
@@ -796,53 +929,17 @@ public class Marketing {
 
     }
 
-    public Result createBarnOrCage(int topLeftX, int topLeftY, String name) {
-        BarnORCageType barnORCageType=null;
-        for (BarnORCageType x : BarnORCageType.values()) {
-            if (x.getName().equals(name)) {
-                barnORCageType=x;
-            }
-        }
+    public Result createBarnOrCage(int topLeftX, int topLeftY, BarnORCageType barnORCageType) {
 
-        if (barnORCageType==null) {
-            return new Result(false , "No such type of BarnORCage!");
-        }
-
-        if (barnORCageType.getShopLimit() == 0) {
-            return new Result(false , RED+"The purchase limit for this product has been reached" + RESET);
-        }
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         InputGameController gameController = InputGameController.getInstance();
 
-        if (findEnteredShopType() != MarketType.MarnieRanch) {
-            return new Result(false , "you can't create makeCoinButton barn or cage because you are not in Marnie's Ranch Market");
-        }
 
         if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, barnORCageType.getWidth(), barnORCageType.getHeight())) {
             return new Result(false, "you can't create barn or cage on this coordinate!");
         }
 
-        int Wood = 0;
-        int Stone= 0;
-        for (Map.Entry <Items, Integer> entry:inventory.Items.entrySet()) {
-            if (entry.getKey() instanceof Wood) {
-                Wood=entry.getValue();
-            }
-            if (entry.getKey() instanceof BasicRock) {
-                Stone=entry.getValue();
-            }
-        }
-
-        if (barnORCageType.getWoodNeeded() > Wood) {
-            return new Result(false , "you can't create barn or cage because you don't have enough wood!");
-        }
-        if (barnORCageType.getStoneNeeded() > Stone) {
-            return new Result(false , "you can't create barn or cage because you don't have enough stone!");
-        }
-        if (barnORCageType.getPrice() > currentGame.currentPlayer.getMoney() ) {
-            return new Result(false , "you can't create barn or cage because you don't have enough money!");
-        }
 
 
         BarnOrCage barnOrCage = new BarnOrCage(barnORCageType, topLeftX, topLeftY);
@@ -861,13 +958,6 @@ public class Marketing {
 
         currentGame.currentPlayer.increaseMoney(- barnORCageType.getPrice());
 
-        if (barnORCageType.equals(BarnORCageType.Barn) || barnORCageType.equals(BarnORCageType.BigBarn)
-                || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
-            barnOrCage.setCharactor('b');
-        }
-        else {
-            barnOrCage.setCharactor('c');
-        }
 
         for (int i = topLeftX; i < topLeftX + barnORCageType.getWidth(); i++) {
             for (int j = topLeftY; j < topLeftY + barnORCageType.getHeight(); j++) {
