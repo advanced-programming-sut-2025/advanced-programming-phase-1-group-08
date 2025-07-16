@@ -21,14 +21,13 @@ import com.Graphic.model.Plants.*;
 import com.Graphic.model.ToolsPackage.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -1252,6 +1251,19 @@ public class GameControllerLogic {
         currentGame.currentPlayer = user1;
     }
 
+    public static void updateDarknessLevel(int hour) {
+        float darkness = getDarknessLevel(hour);
+        Color color = blackOverlay.getColor();
+        blackOverlay.setColor(color.r, color.g, color.b, darkness);
+    }
+    public static float getDarknessLevel(int hour) {
+        if (hour <= 18)
+            return 0f;
+        else if (hour >= 22)
+            return 0.6f;
+        else
+            return (hour - 18) / 8f;
+    }
 
     public static void createScreenOverlay(Stage stage) {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -1270,15 +1282,15 @@ public class GameControllerLogic {
     }
     public static void fadeToNextDay() {
 
-        blackOverlay.toFront(); // پوشش بالا بیاد
+        blackOverlay.toFront();
 
         blackOverlay.addAction(Actions.sequence(
-            Actions.fadeIn(1f), // تاریک شدن
+            Actions.fadeIn(1f),
             Actions.run(() -> {
-                startDay();  // ⬅️ اجرای تابع روز جدید
+                startDay();
             }),
-            Actions.delay(0.3f), // یه وقفه کوچیک
-            Actions.fadeOut(1f) // روشن شدن مجدد
+            Actions.delay(0.3f),
+            Actions.fadeOut(1f)
         ));
     }
 
@@ -1363,6 +1375,7 @@ public class GameControllerLogic {
             fadeToNextDay();
         }
         currentGame.currentDate.increaseHour(dateHour.getHour() - currentGame.currentDate.getHour());
+        updateDarknessLevel(currentGame.currentDate.getHour());
     }
 
     public static void startDay () {
@@ -1449,6 +1462,7 @@ public class GameControllerLogic {
 
     }
     public static void doWeatherTask () {
+
 
         if (currentGame.currentWeather.equals(Weather.Rainy) || currentGame.currentWeather.equals(Weather.Stormy)) {
             for (Tile tile : currentGame.bigMap) {
@@ -1612,6 +1626,46 @@ public class GameControllerLogic {
 
         return (currentGame.currentPlayer.getHealth() <= 0 && !currentGame.currentPlayer.isHealthUnlimited());
     }
+
+    public static void animateCloudWithLightning(final Stage stage, final Image cloud, final Image shadow,
+                                          final Farm farm, final float tileSize) {
+
+        final Tile targetTile = selectTileForThor(farm);
+        if (targetTile == null) return;
+
+        final int targetTileX = targetTile.getX();
+        final int targetTileY = targetTile.getY();
+
+        float startX = stage.getViewport().getWorldWidth();
+        float startY = (targetTileY + 1) * tileSize;
+
+        float targetX = targetTileX * tileSize;
+
+        cloud.setPosition(startX, startY);
+        shadow.setPosition(startX, targetTileY * tileSize);
+        shadow.setScale(1.5f);
+
+        stage.addActor(cloud);
+        stage.addActor(shadow);
+
+        float distance = startX - targetX;
+        float speedPerSecond = 50f;
+        float duration = distance / speedPerSecond;
+
+        MoveToAction moveCloud = Actions.moveTo(targetX, startY, duration);
+        MoveToAction moveShadow = Actions.moveTo(targetX, targetTileY * tileSize, duration);
+
+        RunnableAction lightningAction = new RunnableAction() {
+            @Override
+            public void run() {
+                lightningStrike(targetTile);
+            }
+        };
+
+        cloud.addAction(Actions.sequence(moveCloud, lightningAction));
+        shadow.addAction(moveShadow);
+    }
+
     public static void    lightningStrike (Tile selected) {
 
         GameObject object = selected.getGameObject();

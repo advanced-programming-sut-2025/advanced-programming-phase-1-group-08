@@ -6,4 +6,5 @@ public class Keys {
 
     public static final int ToolsMenu = Input.Keys.T;
     public static final int EscMenu = Input.Keys.ESCAPE;
+    public static final int increaseTime = Input.Keys.P;
 }

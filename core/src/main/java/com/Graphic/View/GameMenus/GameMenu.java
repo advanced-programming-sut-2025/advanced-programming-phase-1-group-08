@@ -10,22 +10,16 @@ import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.Items;
 import com.Graphic.model.Keys;
-import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -36,8 +30,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.Graphic.Controller.MainGame.GameControllerLogic.animateCloudWithLightning;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.Enum.GameTexturePath.*;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
@@ -48,8 +44,7 @@ public class GameMenu implements  Screen, InputProcessor {
 
     public static OrthographicCamera camera;
     private InputGameController controller;
-//    private final int hourSecond = 120000;
-    private final int hourSecond = 120;
+    private final int hourSecond = 120000;
     private Stage stage;
 
     private Image helperBackGround;
@@ -90,6 +85,10 @@ public class GameMenu implements  Screen, InputProcessor {
         camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         controller.startNewGame("a");
         Gdx.input.setInputProcessor(stage);
+        animateCloudWithLightning(stage,
+            new Image(TextureManager.get(Cloud.getPath())),
+            new Image(TextureManager.get(CloudShadow.getPath())),
+            currentGame.currentPlayer.getFarm(), 32f);
         createClock();
 
     }
@@ -99,6 +98,7 @@ public class GameMenu implements  Screen, InputProcessor {
             updateClock(1);
 
         inputController();
+
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Main.getBatch().setProjectionMatrix(camera.combined);
@@ -112,15 +112,16 @@ public class GameMenu implements  Screen, InputProcessor {
         stage.draw();
 
     }
-
     private void inputController () {
 
         if (Gdx.input.isKeyJustPressed(Keys.ToolsMenu))
             createToolsMenu();
         else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
             createEscMenu();
-    }
+        else if (Gdx.input.isKeyJustPressed(Keys.increaseTime))
+            updateClock(2);
 
+    }
 
     private void createToolsMenu () {
 
@@ -342,7 +343,7 @@ public class GameMenu implements  Screen, InputProcessor {
     }
     private void updateClock(int hourPassed) {
 
-        passedOfTime(0, 1);
+        passedOfTime(0, hourPassed);
         timeLabel.setText(currentGame.currentDate.getHour() + ":00");
         dateLabel.setText(currentGame.currentDate.getDate());
         weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
