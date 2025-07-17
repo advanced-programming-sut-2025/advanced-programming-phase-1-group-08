@@ -168,7 +168,7 @@ public class LoginMenu implements Screen, AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 App.currentMenu = Menu.RegisterMenu;
-                //Main.getMain().setScreen(new RegisterMenu());
+                Main.getMain().setScreen(new RegisterMenu());
             }
         });
     }

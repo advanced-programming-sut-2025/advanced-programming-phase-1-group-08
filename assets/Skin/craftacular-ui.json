@@ -1,5 +1,8 @@
 {
   "com.badlogic.gdx.graphics.g2d.BitmapFont": {
+    "default": {
+      "file": "Skin/font-export.fnt"
+    },
     "bold": {
       "file": "Skin/font-bold-export.fnt"
     },
@@ -48,13 +51,6 @@
       "disabled": "button-disabled"
     }
   },
-  "com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle": {
-    "default": {
-      "font": "font",
-      "checkboxOn": "cell",
-      "checkboxOff": "cell"
-    }
-  },
   "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
     "default": {
       "up": "button",
@@ -79,8 +75,7 @@
       "fontColor": "gray"
     },
     "bold": {
-      "font": "bold",
-      "background": "underline"
+      "font": "bold"
     },
     "title": {
       "font": "title"
@@ -162,6 +157,38 @@
     "default": {
       "background": "window",
       "titleFont": "font"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle": {
+    "default": {
+      "font": "font",
+      "checkboxOn": "cell",
+      "checkboxOff": "cell",
+      "checkboxOver": "cell"
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle": {
+    "default": {
+      "font": "font",
+      "fontColor": "white",
+      "background": "text-field",
+      "scrollStyle": "default",
+      "listStyle": {
+        "font": "font",
+        "fontColorSelected": "white",
+        "fontColorUnselected": "gray",
+        "selection": "button-hover",
+        "background": "window"
+      }
+    }
+  },
+  "com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle": {
+    "default": {
+      "font": "font",
+      "fontColorSelected": "white",
+      "fontColorUnselected": "gray",
+      "selection": "button-hover",
+      "background": "window"
     }
   }
 }
