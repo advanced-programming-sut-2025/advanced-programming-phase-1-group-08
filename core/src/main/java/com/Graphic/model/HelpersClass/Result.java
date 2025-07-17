@@ -6,4 +6,8 @@ public record Result(boolean IsSuccess, String massage) {
     public String toString() {
         return massage;
     }
+
+    public String getMessage() {
+        return "sa";
+    }
 }
