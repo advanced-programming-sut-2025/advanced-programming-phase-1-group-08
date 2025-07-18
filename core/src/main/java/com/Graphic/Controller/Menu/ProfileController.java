@@ -9,14 +9,53 @@ import com.Graphic.model.User;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Scanner;
 
 import static com.Graphic.Controller.Menu.RegisterController.*;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
-
 public class ProfileController {
+
+
+    public String getUserInfo() {
+        if (App.currentUser == null) {
+            return "No user logged in";
+        }
+
+        StringBuilder info = new StringBuilder();
+        info.append("Username: ").append(App.currentUser.getUsername()).append("\n");
+        info.append("Nickname: ").append(App.currentUser.getNickname()).append("\n");
+        info.append("Email: ").append(App.currentUser.getEmail()).append("\n");
+        info.append("Most Golds Collected: ").append(App.currentUser.getMax_point()).append("\n");
+        info.append("Total Games Played: ").append(App.currentUser.getGames_played());
+
+        return info.toString();
+    }
+
+
+    public String getCurrentUsername() {
+        return App.currentUser != null ? App.currentUser.getUsername() : "";
+    }
+
+
+    public String getCurrentNickname() {
+        return App.currentUser != null ? App.currentUser.getNickname() : "";
+    }
+
+
+    public String getCurrentEmail() {
+        return App.currentUser != null ? App.currentUser.getEmail() : "";
+    }
+
+
+    public int getMaxPoints() {
+        return App.currentUser != null ? App.currentUser.getMax_point() : 0;
+    }
+
+
+    public int getGamesPlayed() {
+        return App.currentUser != null ? App.currentUser.getGames_played() : 0;
+    }
 
     public Result changeUsername(String username) throws IOException {
         if (App.currentUser.getUsername().equals(username))
@@ -25,8 +64,6 @@ public class ProfileController {
             return new Result(false, "Invalid Username Format!");
         if (!isUnique(username))
             return new Result(false, "Username is Already Taken!");
-
-
 
         List<User> users = UserStorage.loadUsers();
         for (User user: users) {
@@ -39,10 +76,10 @@ public class ProfileController {
             }
         }
 
-        return new Result(false, RED+"User Not Found!"+RESET);
+        return new Result(false, "User Not Found!");
     }
 
-    public Result changeEmail(String email) throws IOException{
+    public Result changeEmail(String email) throws IOException {
         if (App.currentUser.getEmail().equals(email))
             return new Result(false, "You Already Have This Email!");
         if (!emailCheck(email))
@@ -61,7 +98,7 @@ public class ProfileController {
         return new Result(true, "Email Successfully Changed.");
     }
 
-    public Result changeNickname(String nickname) throws IOException{
+    public Result changeNickname(String nickname) throws IOException {
         if (App.currentUser.getNickname().equals(nickname))
             return new Result(false, "You Already Have This Nickname!");
         if (!CheckName(nickname))
@@ -80,51 +117,53 @@ public class ProfileController {
         return new Result(true, "Nickname Successfully Changed.");
     }
 
-    public Result changePass(String password, String oldPass) throws IOException{
 
-        if (!App.currentUser.getHashPass().equals(PasswordHashUtil.hashPassword(oldPass)))
+    public Result validateOldPassword(String oldPassword) {
+        if (!App.currentUser.getHashPass().equals(PasswordHashUtil.hashPassword(oldPassword))) {
             return new Result(false, "Your Old Password is NOT Correct!");
+        }
+        return new Result(true, "Old password is correct");
+    }
 
-        if (password.equals("random")) {
-            Scanner scanner = new Scanner(System.in);
-            String suggestion = null;
-            while (true) {
-                suggestion = generateRandomPass();
-
-                System.out.println("Do You Approve This Password?[Y/N/back] Suggested Pass: " + suggestion);
-
-                String response = scanner.nextLine();
-
-                if (response.trim().toLowerCase().equals("y")) {
-                    System.out.println("Then Your Pass is " + suggestion);
-                    password = suggestion;
-                    break;
-                }
-                else if (response.toLowerCase().trim().equals("back"))
-                    return new Result(false, "Returned to Profile Menu");
-
-                System.out.println("Generating New Password...");
-            }
+    public Result changePassword(String newPassword, String oldPassword) throws IOException {
+        Result oldPassResult = validateOldPassword(oldPassword);
+        if (!oldPassResult.IsSuccess()) {
+            return oldPassResult;
         }
 
-
-        if (App.currentUser.getHashPass().equals(PasswordHashUtil.hashPassword(password)))
+        if (App.currentUser.getHashPass().equals(PasswordHashUtil.hashPassword(newPassword))) {
             return new Result(false, "You Already Have This Password!");
-        if (!passCheck(password))
-            return new Result(false, "Invalid Password Format!");
-        if (passIsStrong(password) != null)
-            return new Result(false, passIsStrong(password));
+        }
 
+        if (!passCheck(newPassword)) {
+            return new Result(false, "Invalid Password Format!");
+        }
+
+        String strengthError = passIsStrong(newPassword);
+        if (strengthError != null) {
+            return new Result(false, strengthError);
+        }
 
         List<User> users = UserStorage.loadUsers();
         for (User user: users) {
             if (user.getUsername().equals(App.currentUser.getUsername())) {
-                user.setHashPass(PasswordHashUtil.hashPassword(password));
+                user.setHashPass(PasswordHashUtil.hashPassword(newPassword));
                 UserStorage.saveUsers(users);
-                App.currentUser.setHashPass(PasswordHashUtil.hashPassword(password));
+                App.currentUser.setHashPass(PasswordHashUtil.hashPassword(newPassword));
                 break;
             }
         }
+
         return new Result(true, "Password Changed Successfully.");
+    }
+
+
+    public String generatePassword() {
+        return generateRandomPass();
+    }
+
+    @Deprecated
+    public Result changePass(String password, String oldPass) throws IOException {
+        return changePassword(password, oldPass);
     }
 }

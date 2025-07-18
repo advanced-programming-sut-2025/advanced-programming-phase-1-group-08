@@ -20,9 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Timer;
+
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 public class LoginMenu implements Screen, AppMenu {
@@ -63,8 +62,13 @@ public class LoginMenu implements Screen, AppMenu {
         mainTable.setFillParent(true);
         mainTable.center();
 
-        Label titleLabel = new Label("LOGIN", Main.getSkin(), "title");
-        mainTable.add(titleLabel).padBottom(40).row();
+        if (Gdx.files.internal("Skin/craftacular-ui.png").exists()) {
+            Label titleLabel = new Label("LOGIN", Main.getSkin(), "title");
+            mainTable.add(titleLabel).padBottom(40).row();
+        } else {
+            Label titleLabel = new Label("LOGIN", Main.getSkin(), "title");
+            mainTable.add(titleLabel).padBottom(40).row();
+        }
 
         Table loginContainer = new Table();
         loginContainer.background(Main.getSkin().getDrawable("window"));
@@ -80,6 +84,7 @@ public class LoginMenu implements Screen, AppMenu {
         passwordField.setPasswordCharacter('*');
         passwordField.setMessageText("Enter password");
 
+        stayLoggedInCheckbox = new CheckBox(" Stay logged in", Main.getSkin());
 
         TextButton loginButton = new TextButton("Login", Main.getSkin());
         TextButton forgotPasswordButton = new TextButton("Forgot Password?", Main.getSkin());
@@ -174,15 +179,9 @@ public class LoginMenu implements Screen, AppMenu {
     }
 
     private void showForgotPasswordDialog() {
-        forgotPasswordWindow = new Window("Forgot Password", Main.getSkin());
+        forgotPasswordWindow = new Window("Forgot Password - Step 1", Main.getSkin());
         forgotPasswordWindow.setModal(true);
         forgotPasswordWindow.setMovable(true);
-
-        showUsernameStep();
-    }
-
-    private void showUsernameStep() {
-        forgotPasswordWindow.clear();
 
         Table content = new Table();
         content.pad(20);
@@ -204,7 +203,6 @@ public class LoginMenu implements Screen, AppMenu {
 
         Label forgotMessageLabel = new Label("", Main.getSkin());
         forgotMessageLabel.setAlignment(Align.center);
-        forgotMessageLabel.setColor(1, 0.3f, 0.3f, 1);
         content.add(forgotMessageLabel).padTop(10);
 
         forgotPasswordWindow.add(content);
@@ -220,18 +218,22 @@ public class LoginMenu implements Screen, AppMenu {
                 String username = forgotUsernameField.getText().trim();
                 if (username.isEmpty()) {
                     forgotMessageLabel.setText("Please enter username!");
+                    forgotMessageLabel.setColor(1, 0.3f, 0.3f, 1);
                     return;
                 }
 
                 try {
-                    Result result = controller.checkUsernameForPasswordReset(username);
+                    Result result = controller.checkUsernameAndGetQuestion(username);
                     if (result.IsSuccess()) {
-                        showSecurityQuestionStep(result.toString());
+                        forgotPasswordWindow.remove();
+                        showSecurityQuestionDialog(result.toString());
                     } else {
                         forgotMessageLabel.setText(result.toString());
+                        forgotMessageLabel.setColor(1, 0.3f, 0.3f, 1);
                     }
                 } catch (IOException e) {
                     forgotMessageLabel.setText("Error: " + e.getMessage());
+                    forgotMessageLabel.setColor(1, 0.3f, 0.3f, 1);
                 }
             }
         });
@@ -239,7 +241,7 @@ public class LoginMenu implements Screen, AppMenu {
         cancelButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.cancelPasswordReset();
+                controller.cancelForgotPassword();
                 forgotPasswordWindow.remove();
             }
         });
@@ -247,38 +249,40 @@ public class LoginMenu implements Screen, AppMenu {
         stage.addActor(forgotPasswordWindow);
     }
 
-    private void showSecurityQuestionStep(String question) {
-        forgotPasswordWindow.clear();
+    private void showSecurityQuestionDialog(String question) {
+        Window securityWindow = new Window("Security Question", Main.getSkin());
+        securityWindow.setModal(true);
+        securityWindow.setMovable(true);
 
         Table content = new Table();
         content.pad(20);
 
-        Label titleLabel = new Label("Security Question", Main.getSkin(), "bold");
         Label questionLabel = new Label(question, Main.getSkin());
         questionLabel.setWrap(true);
-
         TextField answerField = new TextField("", Main.getSkin());
         answerField.setMessageText("Your answer");
 
         TextButton submitButton = new TextButton("Submit", Main.getSkin());
-        TextButton backButton = new TextButton("Back", Main.getSkin());
+        TextButton cancelButton = new TextButton("Cancel", Main.getSkin());
 
-        content.add(titleLabel).padBottom(10).row();
         content.add(questionLabel).width(300).padBottom(15).row();
         content.add(answerField).width(250).padBottom(20).row();
 
         Table buttonTable = new Table();
         buttonTable.add(submitButton).width(100).padRight(10);
-        buttonTable.add(backButton).width(100);
+        buttonTable.add(cancelButton).width(100);
         content.add(buttonTable).row();
 
         Label messageLabel = new Label("", Main.getSkin());
         messageLabel.setAlignment(Align.center);
-        messageLabel.setColor(1, 0.3f, 0.3f, 1);
         content.add(messageLabel).padTop(10);
 
-        forgotPasswordWindow.add(content);
-        forgotPasswordWindow.pack();
+        securityWindow.add(content);
+        securityWindow.pack();
+        securityWindow.setPosition(
+            (stage.getWidth() - securityWindow.getWidth()) / 2,
+            (stage.getHeight() - securityWindow.getHeight()) / 2
+        );
 
         submitButton.addListener(new ClickListener() {
             @Override
@@ -286,117 +290,103 @@ public class LoginMenu implements Screen, AppMenu {
                 String answer = answerField.getText().trim();
                 if (answer.isEmpty()) {
                     messageLabel.setText("Please enter your answer!");
+                    messageLabel.setColor(1, 0.3f, 0.3f, 1);
                     return;
                 }
 
                 Result result = controller.verifySecurityAnswer(answer);
                 if (result.IsSuccess()) {
-                    showNewPasswordStep();
+                    securityWindow.remove();
+                    showNewPasswordDialog();
                 } else {
                     messageLabel.setText(result.toString());
-                    Timer.schedule(new Timer.Task() {
-                        @Override
-                        public void run() {
-                            showUsernameStep();
-                        }
-                    }, 2f);
+                    messageLabel.setColor(1, 0.3f, 0.3f, 1);
                 }
             }
         });
 
-        backButton.addListener(new ClickListener() {
+        cancelButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.cancelPasswordReset();
-                showUsernameStep();
+                controller.cancelForgotPassword();
+                securityWindow.remove();
             }
         });
+
+        stage.addActor(securityWindow);
     }
 
-    private void showNewPasswordStep() {
-        forgotPasswordWindow.clear();
+    private void showNewPasswordDialog() {
+        Window passwordWindow = new Window("Set New Password", Main.getSkin());
+        passwordWindow.setModal(true);
+        passwordWindow.setMovable(true);
 
         Table content = new Table();
         content.pad(20);
 
-        Label titleLabel = new Label("Set New Password", Main.getSkin(), "bold");
-
+        Label instructionLabel = new Label("Enter your new password:", Main.getSkin());
         TextField passwordField = new TextField("", Main.getSkin());
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
         passwordField.setMessageText("New password");
 
-        TextField confirmField = new TextField("", Main.getSkin());
-        confirmField.setPasswordMode(true);
-        confirmField.setPasswordCharacter('*');
-        confirmField.setMessageText("Confirm password");
-
-        TextButton setPasswordButton = new TextButton("Set Password", Main.getSkin());
+        TextButton submitButton = new TextButton("Set Password", Main.getSkin());
         TextButton randomButton = new TextButton("Generate Random", Main.getSkin());
         TextButton cancelButton = new TextButton("Cancel", Main.getSkin());
 
-        Table suggestionsTable = new Table();
-        suggestionsTable.setVisible(false);
+        Label suggestedLabel = new Label("", Main.getSkin(), "dim");
+        suggestedLabel.setAlignment(Align.center);
 
-        content.add(titleLabel).padBottom(15).row();
-        content.add(new Label("Enter new password:", Main.getSkin())).padBottom(5).row();
+        content.add(instructionLabel).padBottom(10).row();
         content.add(passwordField).width(250).padBottom(10).row();
-        content.add(confirmField).width(250).padBottom(15).row();
+        content.add(suggestedLabel).padBottom(20).row();
 
         Table buttonTable = new Table();
-        buttonTable.add(setPasswordButton).width(120).padRight(5);
-        buttonTable.add(randomButton).width(120);
-        content.add(buttonTable).padBottom(10).row();
-
-        content.add(suggestionsTable).padBottom(10).row();
-        content.add(cancelButton).width(100).row();
+        buttonTable.add(submitButton).width(120).padRight(5);
+        buttonTable.add(randomButton).width(120).padRight(5);
+        buttonTable.add(cancelButton).width(80);
+        content.add(buttonTable).row();
 
         Label messageLabel = new Label("", Main.getSkin());
         messageLabel.setAlignment(Align.center);
         messageLabel.setWrap(true);
-        content.add(messageLabel).width(300).padTop(10);
+        content.add(messageLabel).width(350).padTop(10);
 
-        forgotPasswordWindow.add(content);
-        forgotPasswordWindow.pack();
+        passwordWindow.add(content);
+        passwordWindow.pack();
+        passwordWindow.setPosition(
+            (stage.getWidth() - passwordWindow.getWidth()) / 2,
+            (stage.getHeight() - passwordWindow.getHeight()) / 2
+        );
 
-
-        setPasswordButton.addListener(new ClickListener() {
+        submitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String password = passwordField.getText();
-                String confirm = confirmField.getText();
-
-                if (password.isEmpty() || confirm.isEmpty()) {
+                String newPassword = passwordField.getText().trim();
+                if (newPassword.isEmpty()) {
+                    messageLabel.setText("Please enter a password!");
                     messageLabel.setColor(1, 0.3f, 0.3f, 1);
-                    messageLabel.setText("Please fill both fields!");
-                    return;
-                }
-
-                if (!password.equals(confirm)) {
-                    messageLabel.setColor(1, 0.3f, 0.3f, 1);
-                    messageLabel.setText("Passwords don't match!");
                     return;
                 }
 
                 try {
-                    Result result = controller.setNewPassword(password);
+                    Result result = controller.setNewPassword(newPassword);
                     if (result.IsSuccess()) {
-                        messageLabel.setColor(0.3f, 1, 0.3f, 1);
-                        messageLabel.setText(result.toString());
-                        Timer.schedule(new Timer.Task() {
+                        passwordWindow.remove();
+                        showMessage("Password reset successful! Redirecting to main menu...", false);
+                        com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
                             @Override
                             public void run() {
-                                controller.cancelPasswordReset();
-                                forgotPasswordWindow.remove();
+                                Main.getMain().setScreen(new MainMenu());
                             }
-                        }, 2f);
+                        }, 2);
                     } else {
-                        messageLabel.setColor(1, 0.3f, 0.3f, 1);
                         messageLabel.setText(result.toString());
+                        messageLabel.setColor(1, 0.3f, 0.3f, 1);
                     }
                 } catch (IOException e) {
-                    messageLabel.setColor(1, 0.3f, 0.3f, 1);
                     messageLabel.setText("Error: " + e.getMessage());
+                    messageLabel.setColor(1, 0.3f, 0.3f, 1);
                 }
             }
         });
@@ -404,37 +394,21 @@ public class LoginMenu implements Screen, AppMenu {
         randomButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                suggestionsTable.clear();
-                suggestionsTable.setVisible(true);
-
-                Label suggestLabel = new Label("Password Suggestions:", Main.getSkin(), "bold");
-                suggestionsTable.add(suggestLabel).padBottom(10).row();
-
-                List<String> suggestions = controller.generateRandomPasswordSuggestions(3);
-                for (String suggestion : suggestions) {
-                    TextButton useButton = new TextButton(suggestion, Main.getSkin());
-                    useButton.addListener(new ClickListener() {
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            passwordField.setText(suggestion);
-                            confirmField.setText(suggestion);
-                            suggestionsTable.setVisible(false);
-                        }
-                    });
-                    suggestionsTable.add(useButton).width(200).padBottom(5).row();
-                }
-
-                forgotPasswordWindow.pack();
+                String suggestion = controller.generatePasswordSuggestion();
+                passwordField.setText(suggestion);
+                suggestedLabel.setText("Suggested: " + suggestion);
             }
         });
 
         cancelButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                controller.cancelPasswordReset();
-                forgotPasswordWindow.remove();
+                controller.cancelForgotPassword();
+                passwordWindow.remove();
             }
         });
+
+        stage.addActor(passwordWindow);
     }
 
     private void showMessage(String message, boolean isError) {

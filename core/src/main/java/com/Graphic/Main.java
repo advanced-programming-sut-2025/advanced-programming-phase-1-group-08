@@ -29,7 +29,7 @@ public class Main extends Game {
 //        main.setScreen(new MarketMenu());
 
         skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-        main.setScreen(new RegisterMenu());
+        main.setScreen(new LoginMenu());
 
     }
 
