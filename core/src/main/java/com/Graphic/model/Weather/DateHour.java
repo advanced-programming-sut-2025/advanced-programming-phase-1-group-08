@@ -1,5 +1,6 @@
-package com.Graphic.model;
+package com.Graphic.model.Weather;
 
+import com.Graphic.model.App;
 import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Enum.WeatherTime.WeekDay;
 

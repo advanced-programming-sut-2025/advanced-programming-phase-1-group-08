@@ -30,10 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.Graphic.Controller.MainGame.GameControllerLogic.animateCloudWithLightning;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.Enum.GameTexturePath.*;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
@@ -85,10 +83,6 @@ public class GameMenu implements  Screen, InputProcessor {
         camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         controller.startNewGame("a");
         Gdx.input.setInputProcessor(stage);
-        animateCloudWithLightning(stage,
-            new Image(TextureManager.get(Cloud.getPath())),
-            new Image(TextureManager.get(CloudShadow.getPath())),
-            currentGame.currentPlayer.getFarm(), 32f);
         createClock();
 
     }
@@ -106,7 +100,6 @@ public class GameMenu implements  Screen, InputProcessor {
         controller.update(camera, v);
         drawCurrentItem();
         Main.getBatch().end();
-
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
@@ -361,7 +354,7 @@ public class GameMenu implements  Screen, InputProcessor {
 
             createGrayBackGround();
 
-            EscPopup = new Window("", App.skin);
+            EscPopup = new Window("", App.newSkin);
             EscPopup.setSize(650, 350);
             EscPopup.setPosition(
                 (stage.getWidth() - EscPopup.getWidth()) / 2,
@@ -389,11 +382,11 @@ public class GameMenu implements  Screen, InputProcessor {
         table.defaults().align(Align.center).pad(10);
         table.center();
 
-        TextButton inventoryButton = new TextButton("Inventory", App.skin);
-        TextButton skillsButton = new TextButton("Skills", App.skin);
-        TextButton SocialButton = new TextButton("Social", App.skin);
-        TextButton backButton = new TextButton("back", App.skin);
-        TextButton mapButton = new TextButton("Map", App.skin);
+        TextButton inventoryButton = new TextButton("Inventory", App.newSkin);
+        TextButton skillsButton = new TextButton("Skills", App.newSkin);
+        TextButton SocialButton = new TextButton("Social", App.newSkin);
+        TextButton backButton = new TextButton("back", App.newSkin);
+        TextButton mapButton = new TextButton("Map", App.newSkin);
 
 
         table.add(inventoryButton).width(250).center();

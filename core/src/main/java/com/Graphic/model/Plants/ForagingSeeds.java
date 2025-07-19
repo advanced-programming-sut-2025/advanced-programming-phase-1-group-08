@@ -6,10 +6,10 @@ import com.Graphic.model.Enum.ItemType.MarketItemType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
-import com.badlogic.gdx.graphics.Texture;
+import com.Graphic.model.Weather.DateHour;
 
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.DateHour.getDayDifferent;
+import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 
 public class ForagingSeeds extends Items {
 

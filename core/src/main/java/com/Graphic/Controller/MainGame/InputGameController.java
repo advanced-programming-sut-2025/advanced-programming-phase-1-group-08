@@ -60,7 +60,7 @@ public class InputGameController {
         updateMove();
         print();
         moveCamera(camera);
-        GameControllerLogic.update();
+        GameControllerLogic.update(v);
     }
 
     public void updateMove() {

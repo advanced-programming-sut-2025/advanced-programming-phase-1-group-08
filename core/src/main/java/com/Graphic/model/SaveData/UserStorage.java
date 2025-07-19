@@ -3,7 +3,7 @@ package com.Graphic.model.SaveData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.Graphic.model.DateHour;
+import com.Graphic.model.Weather.DateHour;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Items;
 import com.Graphic.model.User;

@@ -24,12 +24,12 @@ public class Main extends Game {
 
         main = this;
         batch = new SpriteBatch();
-//        x = InputGameController.getInstance();
-//        x.startNewGame("a");
-//        main.setScreen(new MarketMenu());
+        x = InputGameController.getInstance();
+        x.startNewGame("a");
+        main.setScreen(GameMenu.getInstance());
 
-        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-        main.setScreen(new LoginMenu());
+//        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
+//        main.setScreen(new LoginMenu());
 
     }
 
