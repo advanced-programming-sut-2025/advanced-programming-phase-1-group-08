@@ -1,10 +1,14 @@
 package com.Graphic.model.Weather;
 
 import com.Graphic.Main;
+import com.Graphic.model.Enum.GameTexturePath;
+import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.Tile;
 import com.badlogic.gdx.graphics.Texture;
 
+import static com.Graphic.Controller.MainGame.GameControllerLogic.lightningEffect;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.lightningStrike;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class Cloud {
 
@@ -20,15 +24,16 @@ public class Cloud {
     private final float speed = 50f;
     private boolean lightningTriggered = false;
 
-    public Cloud (Texture cloudTexture, Texture shadowTexture, Tile targetTile, float tileSize) {
-        this.cloudTexture = cloudTexture;
-        this.shadowTexture = shadowTexture;
+    public Cloud (Tile targetTile) {
+        System.out.println("Creating Cloud");
+        this.cloudTexture = TextureManager.get(GameTexturePath.Cloud.getPath());
+        this.shadowTexture = TextureManager.get(GameTexturePath.CloudShadow.getPath());
         this.targetTile = targetTile;
 
-        this.cloudX = 90 * tileSize;
-        this.cloudY = (targetTile.getY() + 1) * tileSize;
-        this.shadowY = targetTile.getY() * tileSize;
-        this.targetX = targetTile.getX() * tileSize;
+        this.cloudX = 90 * TEXTURE_SIZE;
+        this.cloudY = (targetTile.getY() + 1) * TEXTURE_SIZE;
+        this.shadowY = targetTile.getY() * TEXTURE_SIZE;
+        this.targetX = targetTile.getX() * TEXTURE_SIZE;
     }
 
 
@@ -45,6 +50,7 @@ public class Cloud {
             cloudX -= speed * delta;
             if (cloudX < targetX) cloudX = targetX;
         } else if (!lightningTriggered) {
+            lightningEffect = new LightningEffect(targetTile, cloudY);
             lightningStrike(targetTile);
             lightningTriggered = true;
         }

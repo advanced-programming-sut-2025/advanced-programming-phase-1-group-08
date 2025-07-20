@@ -4,7 +4,7 @@ public enum GameTexturePath {
 
     Clock ("Erfan/Clock/Clock2.png"),
     Cloud ("Erfan/Lightning/cloud2.png"),
-    Light ("Erfan/Lightning/light.png"),
+    Lightning ("Erfan/Lightning/light.png"),
     CloudShadow ("Erfan/Lightning/shadow.png"),
     ;
 
