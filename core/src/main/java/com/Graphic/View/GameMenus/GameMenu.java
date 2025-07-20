@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
@@ -105,6 +106,26 @@ public class GameMenu implements  Screen, InputProcessor {
         stage.draw();
 
     }
+
+    private void initialize () {
+
+        startTime = TimeUtils.millis();
+        lastTime = TimeUtils.millis();
+
+        controller = InputGameController.getInstance();
+        stage = new Stage(new ScreenViewport());
+        clockGroup = new Group();
+        camera = new OrthographicCamera();
+
+
+        timeLabel = new Label("", App.skin);
+        dateLabel = new Label("", App.skin);
+        moneyLabel = new Label("", App.skin);
+        weekDayLabel = new Label("", App.skin);
+
+        toolsMenuIsActivated = false;
+    }
+
     private void inputController () {
 
         if (Gdx.input.isKeyJustPressed(Keys.ToolsMenu))
@@ -113,6 +134,8 @@ public class GameMenu implements  Screen, InputProcessor {
             createEscMenu();
         else if (Gdx.input.isKeyJustPressed(Keys.increaseTime))
             updateClock(2);
+        else if (Gdx.input.isKeyJustPressed(Keys.lighting))
+            createCloud();
 
     }
 
@@ -245,26 +268,6 @@ public class GameMenu implements  Screen, InputProcessor {
         content.add(img).size(30, 30);
     }
 
-
-
-    private void initialize () {
-
-        startTime = TimeUtils.millis();
-        lastTime = TimeUtils.millis();
-
-        controller = InputGameController.getInstance();
-        stage = new Stage(new ScreenViewport());
-        clockGroup = new Group();
-        camera = new OrthographicCamera();
-
-
-        timeLabel = new Label("", App.skin);
-        dateLabel = new Label("", App.skin);
-        moneyLabel = new Label("", App.skin);
-        weekDayLabel = new Label("", App.skin);
-
-        toolsMenuIsActivated = false;
-    }
     private void createClock() {
 
         Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));

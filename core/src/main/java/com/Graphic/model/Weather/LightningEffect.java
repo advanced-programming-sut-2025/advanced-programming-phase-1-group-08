@@ -64,8 +64,8 @@ public class LightningEffect {
         if (flashAlpha > 0f) {
             Color prevColor = Main.getBatch().getColor();
             Main.getBatch().setColor(1f, 1f, 1f, flashAlpha);
-            Main.getBatch().draw(getWhiteTexture(), 0, 0,
-                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            Main.getBatch().draw(getWhiteTexture(),0,0,
+                (float) (Gdx.graphics.getWidth() * 2.5), (float) (Gdx.graphics.getHeight() * 3.2));
             Main.getBatch().setColor(prevColor);
         }
 

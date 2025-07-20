@@ -61,13 +61,6 @@ public class GameControllerLogic {
     public static void init() {
 
         createScreenOverlay(gameMenu.getStage());
-
-        Tile tile = null;
-
-        while (tile == null)
-            tile = selectTileForThor(currentGame.currentPlayer.getFarm());
-
-        cloud = new Cloud(tile);
     }
     public static void update(float delta) {
 
@@ -87,18 +80,11 @@ public class GameControllerLogic {
                 if (currentGame.currentWeather.equals(Weather.Stormy)) {
 
                     Random random1 = new Random();
-                    if (random1.nextInt(2) == 1) {
-
-                        User user = currentGame.players.get(random1.nextInt(currentGame.players.size()));
-                        Tile tile = selectTileForThor(user.getFarm());
-
-                        if (tile != null)
-                            cloud = new Cloud(tile);
-
-                    }
+                    if (random1.nextInt(2) == 1)
+                        createCloud();
                 }
         }
-        else {
+        else if (cloud != null) {
             cloud.update(delta);
             cloud.render();
 
@@ -114,6 +100,16 @@ public class GameControllerLogic {
             lightningEffect.render();
         }
     }
+    public static void createCloud() {
+
+        Random random1 = new Random();
+        User user = currentGame.players.get(random1.nextInt(currentGame.players.size()));
+        Tile tile = selectTileForThor(user.getFarm());
+
+        if (tile != null)
+            cloud = new Cloud(tile);
+    }
+
     public static ArrayList<Tile> sortMap(ArrayList<Tile> Map) {
         Map.sort((a, b) -> {
             if (a.getY() != b.getY()) return Integer.compare(a.getY(), b.getY());
@@ -1675,16 +1671,12 @@ public class GameControllerLogic {
 
         GameObject object = selected.getGameObject();
 
-
         if (object instanceof Tree)
             selected.setGameObject(new ForagingMinerals(COAL));
         else if (object instanceof ForagingSeeds)
             selected.setGameObject(new Walkable());
         else if (object instanceof Animal)
             selected.setGameObject(new Walkable());
-
-    }
-    public static void    lightningTriggered (Tile selected) {
 
     }
     public static Tile    selectTileForThor (Farm farm) {

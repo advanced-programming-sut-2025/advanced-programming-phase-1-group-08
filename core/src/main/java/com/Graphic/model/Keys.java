@@ -7,6 +7,7 @@ public class Keys {
     public static final int ToolsMenu = Input.Keys.T;
     public static final int EscMenu = Input.Keys.ESCAPE;
     public static final int increaseTime = Input.Keys.P;
+    public static final int lighting = Input.Keys.L;
 
     public static final int Test1 = Input.Keys.NUM_1;
     public static final int Test2 = Input.Keys.NUM_2;
