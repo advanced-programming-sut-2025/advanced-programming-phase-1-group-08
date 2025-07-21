@@ -23,9 +23,6 @@ public class MainMenu implements Screen, AppMenu {
     private Texture backgroundTexture;
     private Table mainTable;
 
-    public MainMenu() {
-    }
-
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());

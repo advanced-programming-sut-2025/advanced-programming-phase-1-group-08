@@ -28,8 +28,8 @@ public class Main extends Game {
         x.startNewGame("a");
         main.setScreen(GameMenu.getInstance());
 
-        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-        //main.setScreen(new LoginMenu());
+//        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
+//        main.setScreen(new LoginMenu());
 
     }
 

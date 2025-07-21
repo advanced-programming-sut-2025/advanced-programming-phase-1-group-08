@@ -132,7 +132,6 @@ public class InputGameController {
     public static boolean checkWalking() {
 
         try {
-            System.out.println(currentGame.currentPlayer.getPositionX() + " " + currentGame.currentPlayer.getPositionY());
 
             int x = (int) (currentGame.currentPlayer.getPositionX() + currentGame.currentPlayer.getDirection().getX() *
                 5 * Gdx.graphics.getDeltaTime());
@@ -935,6 +934,9 @@ public class InputGameController {
                 " go to this coordinate.\nyou should a place with distance less than 5");
         }
 
+        if (animal == null) {
+            return new Result(false , "animal not found!");
+        }
 
         return new Result(true , "1");
 

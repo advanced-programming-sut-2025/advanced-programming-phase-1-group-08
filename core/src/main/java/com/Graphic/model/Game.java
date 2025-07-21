@@ -8,6 +8,7 @@ import com.Graphic.model.Places.Farm;
 import com.Graphic.model.Places.Market;
 import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.SaveData.UserStorage;
+import com.Graphic.model.Weather.DateHour;
 
 
 import java.io.IOException;

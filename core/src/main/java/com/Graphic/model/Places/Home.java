@@ -59,7 +59,6 @@ public class Home extends GameObject {
                 if (GameControllerLogic.getTileByCoordinates(i , j).getGameObject().equals(this)) {
                     int l = 7 * (j - topLeftY) + i - topLeftX + 1;
                     Path = "Places/home" + l + ".png";
-                    System.out.println(i + " " + j);
                     return Path;
                 }
             }

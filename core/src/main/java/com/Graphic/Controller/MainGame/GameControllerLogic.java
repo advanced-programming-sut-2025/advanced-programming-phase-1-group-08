@@ -11,6 +11,7 @@ import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.FoodTypes;
+import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.ToolsType.*;
@@ -23,8 +24,9 @@ import com.Graphic.model.Places.*;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Plants.Tree;
 import com.Graphic.model.ToolsPackage.*;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.Graphic.model.Weather.Cloud;
+import com.Graphic.model.Weather.DateHour;
+import com.Graphic.model.Weather.LightningEffect;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -34,13 +36,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.*;
@@ -51,7 +50,8 @@ import static com.Graphic.View.GameMenus.GameMenu.*;
 import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
-import static com.Graphic.model.DateHour.getDayDifferent;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
+import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 import static com.Graphic.model.Enum.AllPlants.ForagingMineralsType.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
@@ -60,12 +60,19 @@ public class GameControllerLogic {
     public static GameMenu gameMenu = GameMenu.getInstance();
 
     static int turnCounter = 0;
+    static Image helperBackGround;
     static Random rand = new Random();
-    static Image blackOverlay;
+    static long lastTimeUpdate = TimeUtils.millis();
+
+
+    static Cloud cloud;
+    public static LightningEffect lightningEffect;
+
 
 
 
     public static void init() {
+
         createScreenOverlay(gameMenu.getStage());
     }
     public static void update() {
@@ -76,6 +83,52 @@ public class GameControllerLogic {
             gameMenu.setTiledMap(new TmxMapLoader().load(gameMenu.getBarnOrCagePath()));
             gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap() , 1f));
         }
+    public static void update(float delta) {
+
+        handleLightning(delta);
+
+        if (TimeUtils.millis() - lastTimeUpdate > 1000) {
+            AutomaticFunctionAfterAnyAct();
+            lastTimeUpdate = TimeUtils.millis();
+        }
+
+    }
+
+    public static void handleLightning (float delta) {
+
+        if (cloud == null) {
+            if ((TimeUtils.millis() / 1000) % 40 == 0)
+                if (currentGame.currentWeather.equals(Weather.Stormy)) {
+
+                    Random random1 = new Random();
+                    if (random1.nextInt(2) == 1)
+                        createCloud();
+                }
+        }
+        else if (cloud != null) {
+            cloud.update(delta);
+            cloud.render();
+
+            if (cloud.isFinished())
+                cloud = null;
+        }
+        if (lightningEffect != null) {
+            if (lightningEffect.isFinished()) {
+                lightningEffect = null;
+                return;
+            }
+            lightningEffect.update(delta);
+            lightningEffect.render();
+        }
+    }
+    public static void createCloud() {
+
+        Random random1 = new Random();
+        User user = currentGame.players.get(random1.nextInt(currentGame.players.size()));
+        Tile tile = selectTileForThor(user.getFarm());
+
+        if (tile != null)
+            cloud = new Cloud(tile);
     }
 
     public static ArrayList<Tile> sortMap(ArrayList<Tile> Map) {
@@ -141,7 +194,7 @@ public class GameControllerLogic {
         }
         else
             inventory.Items.put(items, amount);
-    } // برای کم کردن الو چک بشه اون تعداد داریم یا نه
+    }
 
 
     public static Tile getTileByDir (int dir) {
@@ -1627,8 +1680,8 @@ public class GameControllerLogic {
 
     public static void updateDarknessLevel(int hour) {
         float darkness = getDarknessLevel(hour);
-        Color color = blackOverlay.getColor();
-        blackOverlay.setColor(color.r, color.g, color.b, darkness);
+        Color color = helperBackGround.getColor();
+        helperBackGround.setColor(color.r, color.g, color.b, darkness);
     }
     public static float getDarknessLevel(int hour) {
         if (hour <= 18)
@@ -1647,18 +1700,18 @@ public class GameControllerLogic {
         Texture texture = new Texture(pixmap);
         pixmap.dispose();
 
-        blackOverlay = new Image(new TextureRegionDrawable(new TextureRegion(texture)));
-        blackOverlay.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
-        blackOverlay.getColor().a = 0f;
+        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(texture)));
+        helperBackGround.setSize(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
+        helperBackGround.getColor().a = 0f;
 
-        blackOverlay.setTouchable(Touchable.disabled);
-        stage.addActor(blackOverlay);
+        helperBackGround.setTouchable(Touchable.disabled);
+        stage.addActor(helperBackGround);
     }
     public static void fadeToNextDay() {
 
-        blackOverlay.toFront();
+        helperBackGround.toFront();
 
-        blackOverlay.addAction(Actions.sequence(
+        helperBackGround.addAction(Actions.sequence(
             Actions.fadeIn(1f),
             Actions.run(() -> {
                 startDay();
@@ -1781,7 +1834,7 @@ public class GameControllerLogic {
         for (Tile tile : currentGame.bigMap)
             tile.getGameObject().turnByTurnAutomaticTask();
     }
-    public static Result AutomaticFunctionAfterAnyAct () {
+    public static void AutomaticFunctionAfterAnyAct () {
 
         checkForGiant();
         checkForProtect();
@@ -1801,7 +1854,7 @@ public class GameControllerLogic {
 //                    currentGame.currentPlayer.getPositionY()));
 //            return new Result(false, BRIGHT_RED + "No energy left! It's the next player's turn" + RESET);
 //        }
-        return new Result(true, "");
+
     }
 
     // energy & Date
@@ -1837,8 +1890,7 @@ public class GameControllerLogic {
     }
     public static void doWeatherTask () {
 
-
-        if (currentGame.currentWeather.equals(Weather.Rainy) || currentGame.currentWeather.equals(Weather.Stormy)) {
+        if (currentGame.currentWeather.equals(Weather.Rainy) || currentGame.currentWeather.equals(Weather.Stormy))
             for (Tile tile : currentGame.bigMap) {
                 GameObject object = tile.getGameObject();
 
@@ -1849,18 +1901,6 @@ public class GameControllerLogic {
                 if (object instanceof ForagingSeeds && !isInGreenHouse(tile))
                     ((ForagingSeeds) object).setLastWater(currentGame.currentDate);
             }
-        }
-        if (currentGame.currentWeather.equals(Weather.Stormy)) {
-
-            Random random1 = new Random();
-
-            for (User user : currentGame.players)
-                if (random1.nextInt(2) == 1) {
-                    Tile tile = selectTileForThor(user.getFarm());
-                    if (tile != null)
-                        lightningStrike(tile);
-                }
-        }
     }
 
     // Automatic Plant task
@@ -1909,12 +1949,12 @@ public class GameControllerLogic {
     }
     public static void    checkForGiant () {
 
-        for (Tile tile1 : currentGame.bigMap) {
-            int i = tile1.getX();
-            int j = tile1.getY();
-
+        for (Tile tile1 : currentGame.bigMap)
             if (tile1.getGameObject() instanceof ForagingSeeds)
                 if (((ForagingSeeds) tile1.getGameObject()).getType().canGrowGiant() && !isInGreenHouse(tile1)) {
+
+                    int i = tile1.getX();
+                    int j = tile1.getY();
 
                     ForagingSeedsType type = ((ForagingSeeds) tile1.getGameObject()).getType();
                     Tile tile2 = getTileByCoordinates(i+1, j);
@@ -1939,7 +1979,6 @@ public class GameControllerLogic {
                             tile4.setGameObject(giantProduct);
                         }
                 }
-        }
     }
     public static void    checkForProtect() {
 
@@ -2001,44 +2040,6 @@ public class GameControllerLogic {
         return (currentGame.currentPlayer.getHealth() <= 0 && !currentGame.currentPlayer.isHealthUnlimited());
     }
 
-    public static void animateCloudWithLightning(final Stage stage, final Image cloud, final Image shadow,
-                                          final Farm farm, final float tileSize) {
-
-        final Tile targetTile = selectTileForThor(farm);
-        if (targetTile == null) return;
-
-        final int targetTileX = targetTile.getX();
-        final int targetTileY = targetTile.getY();
-
-        float startX = stage.getViewport().getWorldWidth();
-        float startY = (targetTileY + 1) * tileSize;
-
-        float targetX = targetTileX * tileSize;
-
-        cloud.setPosition(startX, startY);
-        shadow.setPosition(startX, targetTileY * tileSize);
-        shadow.setScale(1.5f);
-
-        stage.addActor(cloud);
-        stage.addActor(shadow);
-
-        float distance = startX - targetX;
-        float speedPerSecond = 50f;
-        float duration = distance / speedPerSecond;
-
-        MoveToAction moveCloud = Actions.moveTo(targetX, startY, duration);
-        MoveToAction moveShadow = Actions.moveTo(targetX, targetTileY * tileSize, duration);
-
-        RunnableAction lightningAction = new RunnableAction() {
-            @Override
-            public void run() {
-                lightningStrike(targetTile);
-            }
-        };
-
-        cloud.addAction(Actions.sequence(moveCloud, lightningAction));
-        shadow.addAction(moveShadow);
-    }
 
     public static void    lightningStrike (Tile selected) {
 

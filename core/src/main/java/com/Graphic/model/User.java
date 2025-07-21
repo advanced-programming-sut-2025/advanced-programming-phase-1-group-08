@@ -1,16 +1,14 @@
 package com.Graphic.model;
 
-import com.Graphic.Controller.MainGame.GameControllerLogic;
-import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.MapThings.Tile;
-import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Places.Farm;
 import com.Graphic.model.ToolsPackage.BackPack;
 import com.Graphic.model.ToolsPackage.Tools;
+import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
