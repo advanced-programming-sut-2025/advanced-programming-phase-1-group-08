@@ -59,4 +59,9 @@ public class Shear extends Tools {
     public int getMarketPrice(MarketType marketType) {
         return 1000;
     }
+
+    @Override
+    public String getIcon() {
+        return "Mohamadreza/Shears.png";
+    }
 }

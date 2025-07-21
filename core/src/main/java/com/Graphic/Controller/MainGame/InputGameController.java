@@ -28,8 +28,10 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 
@@ -55,12 +57,20 @@ public class InputGameController {
 
     public void init () {
         GameControllerLogic.init();
+        gameMenu.isInFarmExterior = true;
     }
     public void update(OrthographicCamera camera, float v) {
-        updateMove();
-        print();
-        moveCamera(camera);
-        GameControllerLogic.update();
+        if (gameMenu.isInFarmExterior) {
+            updateMove();
+            print();
+            moveCamera(camera);
+            GameControllerLogic.update();
+        }
+        else {
+            walkInBarnOrCage();
+            showAnimalsInBarnOrCage();
+        }
+        createAnimalInformationWindow(showAnimalInfo());
     }
 
     public void updateMove() {
@@ -337,6 +347,14 @@ public class InputGameController {
         for (User player : currentGame.players) {
             //Main.getBatch().draw( player.getSprite().getTexture() ,player.getSprite().getX() , player.getSprite().getY() , TEXTURE_SIZE * 2 , TEXTURE_SIZE * 2);
             player.sprite.draw(Main.getBatch());
+        }
+
+        for (User player : currentGame.players) {
+            for (BarnOrCage barnOrCage : player.BarnOrCages) {
+                for (Animal animal : barnOrCage.getAnimals()) {
+                    animal.getSprite().draw(Main.getBatch());
+                }
+            }
         }
 
 //        if (currentGame.currentPlayer.isMoving()) {
@@ -813,74 +831,39 @@ public class InputGameController {
     }
 
 
-//    public Result pet(String petName) {
-//        int [] x={1,1,1,0,0,-1,-1,-1};
-//        int [] y={1,0,-1,1,-1,-1,0,1};
-//
-//        for (int i = 0; i < 8; i++) {
-//            Tile tile = getTileByCoordinates(currentGame.currentPlayer.getPositionX() + x[i], currentGame.currentPlayer.getPositionY() + y[i]);
-//            if (tile.getGameObject() instanceof Animal) {
-//                Animal animal = (Animal) tile.getGameObject();
-//                if (animal.getName().equals(petName)) {
-//                    animal.increaseFriendShip(15);
-//                    animal.setPetToday(true);
-//                    return new Result(true, petName + " petted successfully!");
-//                }
-//            }
-//        }
-//        return new Result(false,petName+"  doesn't exist!");
-//    }
-    public Result animals() {
-        StringBuilder result= new StringBuilder();
-        for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
-            for (Animal animal : barnOrCage.animals){
-                result.append(animal.getName())
-                        .append(" Friendship: ").append(animal.getFriendShip()).append('\n')
-                        .append(" petToday: ").append(animal.isPetToday()).append('\n')
-                        .append("feedToday: ").append(animal.isFeedToday()).append("\n");
-            }
-        }
-        return new Result(true, result.toString());
-    }
-    public Result shepherdAnimals(String x1, String y1, String name) {
+
+    public List<Tile> shepherdAnimals(String x1, String y1, Animal animal) {
 
         int goalX=Integer.parseInt(x1);
         int goalY=Integer.parseInt(y1);
 
-        if (checkShepherdAnimals(goalX , goalY , name) != null) {
-            return checkShepherdAnimals(goalX , goalY , name);
-        }
-
-
-        Animal animal = getAnimalByName(name);
-        if (animal.getType().equals(AnimalType.pig) && currentGame.currentDate.getSeason().equals(Season.Winter)) {
-            return new Result(false , "Pigs can't go out because we are in winter");
-        }
-        Walkable walkable=new Walkable();
-
-        int [] x = {1,1,1,0,0,-1,-1,-1};
-        int [] y = {1,0,-1,1,-1,-1,0,1};
+        int [] x = {1,0,0,-1};
+        int [] y = {0,1,-1,0};
         Queue<Tile> queue = new LinkedList<>();
         Set<Tile> tiles = new HashSet<>();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 4; i++) {
             if (checkTileForAnimalWalking(animal.getPositionX() + x[i] , animal.getPositionY() + y[i] )) {
                 queue.add(getTileByCoordinates(animal.getPositionX() + x[i] , animal.getPositionY() + y[i]));
             }
         }
         tiles.add(getTileByCoordinates(animal.getPositionX() , animal.getPositionY() ));
 
+        HashMap<Tile , Tile> cameFrom = new HashMap<>();
+
         while (!queue.isEmpty()) {
             Tile tile=queue.poll();
             tiles.add(tile);
             if (tile.getX() == goalX && tile.getY() == goalY) {
-                tile.setGameObject(animal);
-                getTileByCoordinates(animal.getPositionX(), animal.getPositionY() ).setGameObject(walkable);
-                animal.setPositionX(goalX);
-                animal.setPositionY(goalY);
-                return eatFiberByAnimal(animal);
+                List<Tile> Path= new ArrayList<>();
+                while (tile != null) {
+                    Path.add(tile);
+                    tile = cameFrom.get(tile);
+                }
+
+                return Path;
             }
 
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 4; i++) {
                 if (! checkTileForAnimalWalking(tile.getX() + x[i] , tile.getY() + y[i] ) ) {
                     continue;
                 }
@@ -890,11 +873,14 @@ public class InputGameController {
                 if (tiles.contains(getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i]))) {
                     continue;
                 }
-                queue.add(getTileByCoordinates(tile.getX() + x[i], tile.getY() + y[i]));
+                Tile next = getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i]);
+                cameFrom.put(next, tile);
+                queue.add(next);
             }
         }
-        return new Result(false , "there is no way for animal to go to this coordinate!");
+        return null;
     }
+
     public Result eatFiberByAnimal(Animal animal) {
         int [] x = {1,1,1,0,0,-1,-1,-1};
         int [] y = {1,0,-1,1,-1,-1,0,1};
@@ -917,7 +903,18 @@ public class InputGameController {
         }
         return new Result(true , RED+animal.getName() + " Shepherd successfully"+RESET);
     }
-    private Result checkShepherdAnimals(int goalX, int goalY, String name) {
+
+    public Result checkShepherdAnimals(String X, String Y , Animal animal) {
+        int goalX = 0;
+        int goalY = 0;
+        try {
+            goalX = Integer.parseInt(X);
+            goalY = Integer.parseInt(Y);
+        }
+        catch (NumberFormatException e) {
+            return new Result(false , "please enter an integer number");
+        }
+
         if (goalX < 0 || goalX >90 || goalY < 0 || goalY >90) {
             return new Result(false , "you can't shepherd animals out of bounds!");
         }
@@ -928,54 +925,35 @@ public class InputGameController {
         if (currentGame.currentWeather.equals(Weather.Snowy) || currentGame.currentWeather.equals(Weather.Rainy) || currentGame.currentWeather.equals(Weather.Stormy) ) {
             return new Result(false , "The weather conditions isn't suitable");
         }
-
-        Animal animal=null;
-
-        for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
-            for (Animal animal1 : barnOrCage.animals) {
-                if (animal1.getName().equals(name)) {
-                    animal = animal1;
-                    break;
-                }
-            }
+        if (animal.getType().equals(AnimalType.pig) && currentGame.currentDate.getSeason().equals(Season.Winter)) {
+            return new Result(false , "Pigs can't go out because we are in winter");
+        }
+        Point start = new Point(animal.getPositionX() , animal.getPositionY());
+        Point end = new Point(goalX , goalY);
+        if (start.distance(end) > 5) {
+            return new Result(false , "The distance is long and animal can't" +
+                " go to this coordinate.\nyou should a place with distance less than 5");
         }
 
-        if (animal == null) {
-            return new Result(false , "animal not found!");
-        }
 
-        return null;
+        return new Result(true , "1");
 
     }
 
 
-    public Result feedHay(String name) {
+    public Result feedHay(Animal animal) {
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        Animal animal=getAnimalByName(name);
-        if (animal==null) {
-            return new Result(false , "animal not found!");
-        }
         MarketItem marketItem = new MarketItem(MarketItemType.Hay);
         if (inventory.Items.containsKey(marketItem)) {
             inventory.Items.compute(marketItem , (k,v) -> v-1);
             inventory.Items.entrySet().removeIf(entry -> entry.getValue()==0);
             animal.setFeedToday(true);
-            return new Result(true, BLUE+"you fed "+name+" successfully!" + RESET);
+            return new Result(true, "you fed "+animal.getName()+" successfully!");
         }
 
-        return new Result(false , RED + "You don't have Hay in your inventiry!" + RESET);
+        return new Result(false ,"You don't have Hay in your inventiry!");
     }
-    public Result cheatSetFriendship( String name , Integer amount ) {
-        Animal animal=getAnimalByName(name);
-        if (animal==null) {
-            return new Result(false , "animal not found!");
-        }
-        if (amount > 1000 || amount <0) {
-            return new Result(false , RED+ "You should say a number between 1 and 1000" + RESET);
-        }
-        animal.increaseFriendShip(amount - animal.getFriendShip());
-        return new Result(true, "friendship cheated successfully!");
-    }
+
 //    public Result getProductAnimals(String name) {
 //        Animal animal=getAnimalByName(name);
 //
@@ -1062,28 +1040,23 @@ public class InputGameController {
     }
 
     public Result removeAnimal(Animal animal) {
-        for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
-            for (Animal animal2 : barnOrCage.animals) {
-                if (animal.equals(animal2)) {
-                    barnOrCage.getAnimals().remove(animal2);
-                    return new Result(true , animal.getName() + " was sold successfully");
-                }
-            }
-        }
-        return null;
-    }
-    public Result sellAnimal(String name) {
-        Animal animal=getAnimalByName(name);
-
-        if (animal == null) {
-            return new Result(false , "Animal not found");
-        }
-        for (Tile tile : currentGame.bigMap) {
-            if (tile.getGameObject().equals(animal)) {
-                tile.setGameObject(new Walkable());
+        for (Animal animal1 : gameMenu.getCurrentBarnOrCage().animals) {
+            if (animal1.equals(animal)) {
+                gameMenu.getCurrentBarnOrCage().animals.remove(animal1);
                 break;
             }
         }
+
+        int index=0;
+        for (Animal animal1 : gameMenu.getCurrentBarnOrCage().animals) {
+            animal1.setIndex(index);
+            index++;
+        }
+
+        return new Result(true , animal.getName() +" was sold successfully");
+    }
+    public Result sellAnimal(Animal animal) {
+
         double x = animal.getFriendShip()/1000 + 0.3;
         currentGame.currentPlayer.increaseMoney((int) (animal.getType().getPrice() * x) );
         return removeAnimal(animal);

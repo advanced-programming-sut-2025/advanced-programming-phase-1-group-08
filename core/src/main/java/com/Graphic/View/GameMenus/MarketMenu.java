@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
+import static com.Graphic.View.GameMenus.GameMenu.gameMenu;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
@@ -57,6 +58,11 @@ public class MarketMenu implements Screen , InputProcessor {
     private static Vector3 vector;
     private static Sprite withMouse;
     private static HashMap <Sprite , BarnORCageType> mapSpriteToBarnOrCage;
+
+
+    public MarketMenu() {
+
+    }
 
     @Override
     public boolean keyDown(int i) {
@@ -237,8 +243,10 @@ public class MarketMenu implements Screen , InputProcessor {
 //        }
         marketing.move();
         marketing.showCarpenterProducts(1,false);
+        marketing.showMarnieProducts(1,false);
+        //marketing.showMarnieProducts(1,false);
         //marketing.moveTextureWithMouse(getWithMouse());
-        camera.update();
+
         if (! choosePlace) {
             camera.setToOrtho(false , 300 , 150);
             renderer.setView(camera);
@@ -249,6 +257,11 @@ public class MarketMenu implements Screen , InputProcessor {
             camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
             camera.zoom = 2f;
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
+            marketType = null;
+            Main.getMain().setScreen(GameMenu.getInstance());
+        }
+        camera.update();
         Main.getBatch().end();
 
         stage.act(v);

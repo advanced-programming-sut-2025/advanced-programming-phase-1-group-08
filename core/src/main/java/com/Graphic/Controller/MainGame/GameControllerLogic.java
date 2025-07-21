@@ -1,12 +1,14 @@
 
 package com.Graphic.Controller.MainGame;
 
+import com.Graphic.Main;
 import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.AllPlants.*;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
+import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.ItemType.*;
@@ -14,31 +16,44 @@ import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Enum.WeatherTime.*;
 import com.Graphic.model.HelpersClass.Result;
+import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.*;
 import com.Graphic.model.OtherItem.*;
 import com.Graphic.model.Places.*;
 import com.Graphic.model.Plants.*;
+import com.Graphic.model.Plants.Tree;
 import com.Graphic.model.ToolsPackage.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 
+import static com.Graphic.View.GameMenus.GameMenu.*;
+import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.DateHour.getDayDifferent;
 import static com.Graphic.model.Enum.AllPlants.ForagingMineralsType.*;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class GameControllerLogic {
 
@@ -54,7 +69,13 @@ public class GameControllerLogic {
         createScreenOverlay(gameMenu.getStage());
     }
     public static void update() {
-
+        EnterTheBarnOrCage();
+        if (! gameMenu.isInFarmExterior && gameMenu.isFirstLoad()) {
+            gameMenu.setFirstLoad(false);
+            camera.setToOrtho(false , 300 , 150);
+            gameMenu.setTiledMap(new TmxMapLoader().load(gameMenu.getBarnOrCagePath()));
+            gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap() , 1f));
+        }
     }
 
     public static ArrayList<Tile> sortMap(ArrayList<Tile> Map) {
@@ -641,16 +662,368 @@ public class GameControllerLogic {
         return true;
     }
 
-    public static Animal getAnimalByName(String animalName) {
-        for (BarnOrCage barnOrCage:currentGame.currentPlayer.BarnOrCages){
-            for (Animal animal: barnOrCage.animals){
-                if (animal.getName().equals(animalName)){
-                    return animal;
+    public static void EnterTheBarnOrCage() {
+        if (currentGame.currentPlayer.getDirection().equals(Direction.Up)) {
+            if ( Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) ) {
+                for (BarnOrCage barnOrCage :currentGame.currentPlayer.BarnOrCages) {
+                    if (barnOrCage.getDoor().checkCollisionMouse(gameMenu.getMousePos()) && barnOrCage.getDoor().checkCollision(currentGame.currentPlayer)) {
+                        gameMenu.setBarnOrCagePath(barnOrCage.getBarnORCageType().getEntryIconPath());
+                        gameMenu.isInFarmExterior = false;
+                        currentGame.currentPlayer.sprite.setPosition(barnOrCage.getBarnORCageType().getInitX() , barnOrCage.getBarnORCageType().getInitY());
+                        gameMenu.setCurrentBarnOrCage(barnOrCage);
+                        camera.setToOrtho(false , 300,150);
+                        return;
+                    }
+                    //System.out.println(gameMenu.getMousePos().x + "," + gameMenu.getMousePos().y);
+                    //System.out.println(barnOrCage.getDoor().getX()+ " "+ barnOrCage.getDoor().getWidth()+ " " + barnOrCage.getDoor().getY() + " " + barnOrCage.getDoor().getHeight());
+                }
+            }
+        }
+    }
+
+    public static void walkInBarnOrCage() {
+        float x = currentGame.currentPlayer.sprite.getX();
+        float y = currentGame.currentPlayer.sprite.getY();
+
+        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
+            System.out.println(currentGame.currentPlayer.sprite.getX() + ", " + currentGame.currentPlayer.sprite.getY());
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            InputGameController.moveAnimation();
+            currentGame.currentPlayer.setDirection(Direction.Up);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            InputGameController.moveAnimation();
+            currentGame.currentPlayer.setDirection(Direction.Down);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            InputGameController.moveAnimation();
+            currentGame.currentPlayer.setDirection(Direction.Left);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            InputGameController.moveAnimation();
+            currentGame.currentPlayer.setDirection(Direction.Right);
+        }
+
+        else {
+            currentGame.currentPlayer.sprite.draw(Main.getBatch());
+            return;
+        }
+
+        currentGame.currentPlayer.sprite.setSize(16 , 32);
+
+
+        currentGame.currentPlayer.sprite.
+            setPosition(x + currentGame.currentPlayer.getDirection().getX() * 50 * Gdx.graphics.getDeltaTime(),
+                y - currentGame.currentPlayer.getDirection().getY() * 50 * Gdx.graphics.getDeltaTime());
+
+//        if (! checkCollisionInBarnOrCage()) {
+//            currentGame.currentPlayer.sprite.setPosition(x , y);
+//        }
+        currentGame.currentPlayer.sprite.draw(Main.getBatch());
+        gameMenu.getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(currentGame.currentPlayer);
+    }
+
+    public static void showAnimalsInBarnOrCage() {
+        for (Animal animal : gameMenu.getCurrentBarnOrCage().animals) {
+            if (! animal.isOut()) {
+                animal.getSprite().draw(Main.getBatch());
+                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
+                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
+                    animal.setTimer(animal.getTimer() + (Gdx.graphics.getDeltaTime()/2));
+                }
+                else {
+                    animal.setTimer(0);
+                }
+
+                animal.getSprite().setPosition(
+                    gameMenu.getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x,
+                    gameMenu.getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
+                //System.out.println(animal.getSprite().getX()+ ",,"+animal.getSprite().getY());
+                animal.getSprite().setSize(animal.getType().getX() , animal.getType().getY());
+
+                animal.getSprite().draw(Main.getBatch());
+
+            }
+        }
+    }
+
+    public static Animal showAnimalInfo() {
+        if (! gameMenu.isInFarmExterior) {
+            for (Animal animal : gameMenu.getCurrentBarnOrCage().animals) {
+                if (!animal.isOut()) {
+                    if (gameMenu.getMousePos().x >= animal.getSprite().getX() &&
+                        gameMenu.getMousePos().x <= animal.getSprite().getX() + animal.getSprite().getWidth() &&
+                        gameMenu.getMousePos().y >= animal.getSprite().getY() &&
+                        gameMenu.getMousePos().y <= animal.getSprite().getY() + animal.getSprite().getHeight()) {
+
+                        Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
+                            animal.getSprite().getX() + animal.getSprite().getWidth() / 2,
+                            animal.getSprite().getY() + animal.getSprite().getHeight() / 2);
+                        return animal;
+                    }
+                }
+            }
+        }
+        else {
+            for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
+                for (Animal animal : barnOrCage.animals) {
+                    if (animal.isOut()) {
+                        if (gameMenu.getMousePos().x >= animal.getSprite().getX() &&
+                            gameMenu.getMousePos().x <= animal.getSprite().getX() + animal.getSprite().getWidth() &&
+                            gameMenu.getMousePos().y >= animal.getSprite().getY() &&
+                            gameMenu.getMousePos().y <= animal.getSprite().getY() + animal.getSprite().getHeight()) {
+
+                            Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
+                                animal.getSprite().getX() + animal.getSprite().getWidth() / 2,
+                                animal.getSprite().getY() + animal.getSprite().getHeight() / 2);
+                            return animal;
+                        }
+                    }
                 }
             }
         }
         return null;
     }
+
+    public static void createAnimalInformationWindow(Animal animal) {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && animal!= null) {
+            BitmapFont font = gameMenu.getAnimalFont();
+            //font.setColor(Color.BROWN);
+            Table mainTable = new Table();
+            Window window = new Window("Information", getSkin(), "default");
+            window.setSize(1000, 750);
+            window.setPosition(Gdx.graphics.getWidth() / 2 - 500, Gdx.graphics.getHeight() / 2 - 375);
+            Image image = new Image(new Texture(Gdx.files.internal(animal.getType().getIcon())));
+            Texture background = new Texture(Gdx.files.internal("Mohamadreza/AnimalBackground2.png"));
+            Drawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(background));
+
+            Table content = new Table();
+            content.setBackground(backgroundDrawable);
+            content.add(image).size(200, 200).top().row();
+
+            Label.LabelStyle labelStyle = new Label.LabelStyle();
+            labelStyle.font = font;
+            Table right = new Table();
+            Table lowerRight = new Table();
+            right.add(createRightUpSideWindow(animal , labelStyle , backgroundDrawable , window , lowerRight)).top().width(500).height(350).row();
+            right.add(createRightMidWindow(animal , labelStyle , backgroundDrawable , lowerRight ,window)).width(500).height(200).row();
+            lowerRight.setBackground(backgroundDrawable);
+            right.add(lowerRight).width(500).height(200);
+
+            mainTable.add(createLeftSideWindow(animal, content, labelStyle, window)).width(500).height(750);
+            mainTable.add(right).padLeft(5).width(500).height(750);
+            window.add(mainTable).expand().fill();
+            gameMenu.getStage().addActor(window);
+        }
+
+    }
+
+
+    private static Table createLeftSideWindow(Animal animal ,Table content ,Label.LabelStyle labelStyle , Window window) {
+        Label Name = new Label("Name: "+animal.getName() , labelStyle);
+        Label FriendShip = new Label("Friendship: "+animal.getFriendShip() , labelStyle);
+        Label isPetToday = new Label("Need To Pet: "+animal.isPetToday() , labelStyle);
+        Label isFeedToday = new Label("FeedToday: "+animal.isFeedToday() , labelStyle);
+
+        content.add(Name).center().row();
+        content.add(FriendShip).center().row();
+        content.add(isPetToday).center().row();
+        content.add(isFeedToday).center().row();
+
+        TextButton button = new TextButton("",getSkin());
+        button.clearChildren();
+        Label back = new Label("Back",labelStyle);
+        button.add(back).center();
+        content.add(button).center().size(200,100).row();
+
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                window.remove();
+            }
+        });
+        return content;
+    }
+
+    private static Table createRightUpSideWindow(Animal animal , Label.LabelStyle labelStyle , Drawable drawable , Window window , Table lowerRight) {
+        Table right = new Table();
+        right.setBackground(drawable);
+        TextButton Sell = new TextButton("",getSkin());
+        Label sell = new Label("Sell",labelStyle);
+        Sell.clearChildren();
+        Sell.add(sell).center();
+
+        Sell.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                window.remove();
+                InputGameController x = InputGameController.getInstance();
+                Marketing marketing = new Marketing();
+                Dialog dialog = marketing.createDialogError();
+                Label success = new Label(x.sellAnimal(animal).toString(),new Label.LabelStyle(getFont() , Color.BLACK));
+                dialog.getContentTable().add(success);
+                ImageButton closeButton = marketing.createCloseButtonForDialog(dialog);
+                dialog.getTitleTable().add(closeButton).padRight(5).padTop(3).right();
+                dialog.show(gameMenu.getStage());
+                dialog.setPosition(400,100);
+                dialog.setSize(1000,48);
+            }
+        });
+
+
+        TextButton Feed = new TextButton("",getSkin());
+        Feed.clearChildren();
+        Label feed = new Label("Feed",labelStyle);
+        Feed.add(feed).center();
+
+        Feed.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                InputGameController x = InputGameController.getInstance();
+                Result result = x.feedHay(animal);
+                createDialogError(result , lowerRight);
+            }
+        });
+
+        SelectBox<String> collectProduct = new SelectBox<>(getSkin());
+        collectProduct.clear();
+        collectProduct.setItems("Collect Products" , "Uncollected Produces");
+
+        right.add(Sell).center().size(200,100).top().row();
+        right.add(Feed).center().size(200,100).row();
+        right.add(collectProduct).center().row();
+
+        return right;
+
+    }
+
+    private static Table createRightMidWindow(Animal animal , Label.LabelStyle labelStyle , Drawable drawable , Table lowerRight , Window window) {
+        Table mid = new Table();
+        mid.clearChildren();
+        mid.setBackground(drawable);
+
+        Label shepherd = new Label("Shepherd Animals", labelStyle);
+        mid.add(shepherd).center().top().padTop(20).left().padLeft(50).row();
+
+// جدول داخلی برای x و y
+        Table coordTable = new Table();
+        coordTable.defaults().size(100, 50).pad(5); // فاصله بین فیلدها
+
+        TextField x = new TextField("", getSkin());
+        x.setMessageText(" X");
+
+        TextField y = new TextField("", getSkin());
+        y.setMessageText(" Y");
+
+        coordTable.add(x);
+        coordTable.add(y);
+
+// حالا جدول رو اضافه کن به mid
+        mid.add(coordTable).center().padTop(5).row();
+
+// دکمه
+        TextButton button = new TextButton("", getSkin());
+        Label submit = new Label("Shepherd", labelStyle);
+        button.add(submit).center();
+        mid.add(button).center().padTop(5).size(200, 50).row();
+
+
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                InputGameController controller = InputGameController.getInstance();
+                Result result = controller.checkShepherdAnimals(x.getText() , y.getText() , animal);
+                if (! result.IsSuccess()) {
+                   createDialogError(result , lowerRight);
+                }
+
+                List<Tile> Path = controller.shepherdAnimals(x.getText() , y.getText() , animal);
+                if (Path==null) {
+                    createDialogError(new Result(false , "There is no way for animal to go to this coordinate") , lowerRight);
+                }
+
+                else {
+                    animal.setOut(true);
+                    gameMenu.getShepherdingAnimals().add(animal);
+                    animal.setMoving(true);
+                    walkAnimalGradually(Path,animal);
+                    window.remove();
+                }
+            }
+        });
+
+        return mid;
+
+    }
+
+    private static void createDialogError(Result result , Table lowerRight) {
+        lowerRight.clearChildren();
+        Marketing marketing = new Marketing();
+        Dialog dialog = marketing.createDialogError();
+        dialog.getContentTable().pad(10); // فاصله داخلی دیالوگ
+        ImageButton closeButton = marketing.createCloseButtonForDialog(dialog);
+        Table closeTable = new Table();
+        closeTable.add(closeButton).right().top();
+        dialog.getContentTable().add(closeTable).expandX().fillX().row();
+
+
+        Label message = new Label(result.toString(), new Label.LabelStyle(getFont(), Color.BLACK));
+        message.setWrap(true);
+        message.setAlignment(Align.left);
+        dialog.getContentTable().add(message)
+            .width(460) // کمتر از عرض کل دیالوگ
+            .padTop(10)
+            .padBottom(10)
+            .expandX()
+            .fillX()
+            .row();
+
+        lowerRight.add(dialog).size(500, 200).center();
+    }
+
+    private static void walkAnimalGradually(List<Tile> Path , Animal animal) {
+        Collections.reverse(Path);
+        Timer timer = new Timer();
+        for (int i = 0; i < Path.size() - 1; i++) {
+            final int finalI = i;
+            try {
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (Path.get(finalI+1).getX() - Path.get(finalI).getX() == 0 && Path.get(finalI+1).getY() - Path.get(finalI).getY() == 1) {
+                            animal.setDirection(Direction.Down);
+                        }
+                        if (Path.get(finalI+1).getX() - Path.get(finalI).getX() == 0 && Path.get(finalI+1).getY() - Path.get(finalI).getY() == -1) {
+                            animal.setDirection(Direction.Up);
+                        }
+                        if (Path.get(finalI+1).getX() - Path.get(finalI).getX() == 1 && Path.get(finalI+1).getY() - Path.get(finalI).getY() == 0) {
+                            animal.setDirection(Direction.Right);
+                        }
+                        if (Path.get(finalI+1).getX() - Path.get(finalI).getX() == -1 && Path.get(finalI+1).getY() - Path.get(finalI).getY() == 0) {
+                            animal.setDirection(Direction.Left);
+                        }
+                        animal.setTimer(0);
+                        animal.getSprite().setPosition(TEXTURE_SIZE * Path.get(finalI+1).getX(), TEXTURE_SIZE * (90 - Path.get(finalI+1).getY()));
+                        animal.getSprite().setSize(TEXTURE_SIZE, TEXTURE_SIZE);
+
+                        if (finalI == Path.size() - 2) {
+                            gameMenu.getShepherdingAnimals().remove(animal);
+                            animal.setMoving(false);
+                        }
+                    }
+                },500 * i);
+
+            }
+            catch (Exception e) {
+
+            }
+        }
+    }
+
+
     public static boolean checkTileForAnimalWalking(int x, int y) {
         Tile tile = getTileByCoordinates(x , y );
         if (tile == null) {
@@ -1245,8 +1618,9 @@ public class GameControllerLogic {
             user.setPositionX( 60 * user.topLeftX + home.getTopLeftX() + home.getWidth() / 2);
             user.setPositionY( 60 * user.topLeftY + home.getTopLeftY() + home.getLength());
             user.increaseMoney(1000000 - user.getMoney());
-            //advanceItem(new Wood() , 100000);
-            //advanceItem(new BasicRock() , 100000);
+            advanceItem(new Wood() , 100000);
+            advanceItem(new BasicRock() , 100000);
+            advanceItem(new MarketItem(MarketItemType.Hay) , 5);
         }
         currentGame.currentPlayer = user1;
     }

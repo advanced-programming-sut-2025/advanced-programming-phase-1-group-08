@@ -2,21 +2,29 @@ package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
+import com.Graphic.model.Animall.Animal;
+import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
+import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.GameAssetManager;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.Items;
 import com.Graphic.model.Keys;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -31,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.animateCloudWithLightning;
-import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.Enum.GameTexturePath.*;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
@@ -43,7 +51,16 @@ public class GameMenu implements  Screen, InputProcessor {
     public static GameMenu gameMenu;
 
     public static OrthographicCamera camera;
+    private Vector3 mousePos;
+    private String BarnOrCagePath;
+    public boolean isInFarmExterior;
+    private BarnOrCage currentBarnOrCage;
+    private ArrayList<Animal> shepherdingAnimals;
     private InputGameController controller;
+    private boolean firstLoad;
+    private TiledMap map;
+    private BitmapFont animalFont;
+    private OrthogonalTiledMapRenderer renderer;
     private final int hourSecond = 120000;
     private Stage stage;
 
@@ -81,15 +98,18 @@ public class GameMenu implements  Screen, InputProcessor {
 
         initialize();
         controller.init();
-
+        mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        controller.startNewGame("a");
+        //controller.startNewGame("a");
         Gdx.input.setInputProcessor(stage);
         animateCloudWithLightning(stage,
             new Image(TextureManager.get(Cloud.getPath())),
             new Image(TextureManager.get(CloudShadow.getPath())),
             currentGame.currentPlayer.getFarm(), 32f);
-        createClock();
+        firstLoad = true;
+        currentBarnOrCage = new BarnOrCage(BarnORCageType.Coop ,0 , 0);
+        shepherdingAnimals = new ArrayList<>();
+        //createClock();
 
     }
     public void render(float v) {
@@ -102,9 +122,23 @@ public class GameMenu implements  Screen, InputProcessor {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Main.getBatch().setProjectionMatrix(camera.combined);
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            Main.getMain().setScreen(new MarketMenu());
+        }
+
+        if (! isInFarmExterior) {
+            getRenderer().setView(camera);
+            getRenderer().render();
+        }
+
         Main.getBatch().begin();
         controller.update(camera, v);
         drawCurrentItem();
+        moveAnimal();
+        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mousePos);
+        camera.update();
         Main.getBatch().end();
 
 
@@ -252,7 +286,61 @@ public class GameMenu implements  Screen, InputProcessor {
         content.add(img).size(30, 30);
     }
 
+    public Vector3 getMousePos() {
+        return mousePos;
+    }
 
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public void setTiledMap(TiledMap tiledMap) {
+        map = tiledMap;
+    }
+
+    public boolean isFirstLoad() {
+        return firstLoad;
+    }
+    public void setFirstLoad(boolean firstLoad) {
+        this.firstLoad = firstLoad;
+    }
+    public OrthogonalTiledMapRenderer getRenderer() {
+        return renderer;
+    }
+    public void setRenderer(OrthogonalTiledMapRenderer renderer) {
+        this.renderer = renderer;
+    }
+    public BitmapFont getAnimalFont() {
+        if (animalFont != null) {
+            return animalFont;
+        }
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Erfan/Fonts/Stardew Valley Regular.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 48;
+        parameter.color = Color.RED;
+
+        animalFont = generator.generateFont(parameter);
+        generator.dispose();
+        return animalFont;
+    }
+
+    private void moveAnimal() {
+        if (isInFarmExterior) {
+            for (Animal animal : shepherdingAnimals) {
+                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
+                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
+                    animal.setTimer(animal.getTimer() + Gdx.graphics.getDeltaTime());
+                }
+                else {
+                    animal.setTimer(0);
+                }
+            }
+        }
+    }
+
+    public ArrayList<Animal> getShepherdingAnimals() {
+        return shepherdingAnimals;
+    }
 
     private void initialize () {
 
@@ -480,9 +568,18 @@ public class GameMenu implements  Screen, InputProcessor {
             case Down -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 23;
         };
     }
-
-
-
+    public String getBarnOrCagePath() {
+        return BarnOrCagePath;
+    }
+    public void setBarnOrCagePath(String barnOrCagePath) {
+        BarnOrCagePath = barnOrCagePath;
+    }
+    public BarnOrCage getCurrentBarnOrCage() {
+        return currentBarnOrCage;
+    }
+    public void setCurrentBarnOrCage(BarnOrCage currentBarnOrCage) {
+        this.currentBarnOrCage = currentBarnOrCage;
+    }
 
     public void resize(int i, int i1) {
 

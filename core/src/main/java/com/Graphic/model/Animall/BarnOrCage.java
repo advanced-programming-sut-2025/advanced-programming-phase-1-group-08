@@ -4,12 +4,14 @@ import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
+import com.Graphic.model.collisionRect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 
 import java.util.ArrayList;
 
 import static com.Graphic.model.HelpersClass.Color_Eraser.BROWN;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class BarnOrCage extends GameObject {
 
@@ -18,6 +20,7 @@ public class BarnOrCage extends GameObject {
     public int topLeftX;
     public int topLeftY;
     private String Path;
+    private collisionRect door;
 
 
     public BarnOrCage(){}
@@ -26,6 +29,10 @@ public class BarnOrCage extends GameObject {
         this.barnORCageType = barnORCageType;
         this.topLeftX = topLeftX;
         this.topLeftY = topLeftY;
+        door = new collisionRect((topLeftX + barnORCageType.getDoorX() ) * TEXTURE_SIZE ,
+                             (TEXTURE_SIZE * 3) / 2 ,
+                                (90 - topLeftY - barnORCageType.getDoorY()) * TEXTURE_SIZE ,
+                            (TEXTURE_SIZE * 3) / 2 );
     }
 
     public int getReminderCapacity(){
@@ -67,9 +74,8 @@ public class BarnOrCage extends GameObject {
         barnORCageType.setShopLimit(amount);
     }
 
-
-
-
-
+    public collisionRect getDoor() {
+        return door;
+    }
 }
 

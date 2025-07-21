@@ -1,5 +1,10 @@
 package com.Graphic.model;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
+
 public class collisionRect {
     private int x;
     private int y;
@@ -19,5 +24,27 @@ public class collisionRect {
             return false;
         }
         return true;
+    }
+
+    public boolean checkCollisionMouse(Vector3 mouse) {
+        if (mouse.x >= x && mouse.x <= (x + width) &&
+            mouse.y >= y  && mouse.y <= (y + height ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+    public int getWidth() {
+        return width;
+    }
+    public int getHeight() {
+        return height;
     }
 }
