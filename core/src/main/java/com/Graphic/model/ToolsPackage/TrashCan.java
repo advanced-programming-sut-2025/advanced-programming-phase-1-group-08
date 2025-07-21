@@ -1,6 +1,7 @@
 package com.Graphic.model.ToolsPackage;
 
 import com.Graphic.model.App;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.ToolsType.TrashCanType;
 import com.Graphic.model.Items;
 
@@ -45,5 +46,20 @@ public class TrashCan extends Tools {
     @Override
     public String getInventoryIconPath() {
         return type.getIconPath();
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return -1;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return type.getPrice();
     }
 }

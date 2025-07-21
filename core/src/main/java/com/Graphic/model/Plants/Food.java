@@ -1,6 +1,7 @@
 package com.Graphic.model.Plants;
 
 import com.Graphic.model.Enum.FoodTypes;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
@@ -36,5 +37,20 @@ public class Food extends Items {
     @Override
     public int getSellPrice() {
         return type.getSellPrice();
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return -1;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return 0;
     }
 }

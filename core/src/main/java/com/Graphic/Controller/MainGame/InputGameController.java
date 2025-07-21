@@ -34,6 +34,7 @@ import java.util.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 
 import static com.Graphic.model.App.*;
+import static com.Graphic.model.Enum.Direction.getDirByCord;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
@@ -59,7 +60,7 @@ public class InputGameController {
         updateMove();
         print();
         moveCamera(camera);
-        GameControllerLogic.update();
+        GameControllerLogic.update(v);
     }
 
     public void updateMove() {
@@ -1497,11 +1498,11 @@ public class InputGameController {
 //        currentGame.players.add(currentUser);
 //        currentGame.currentPlayer = currentUser;
 //        System.out.println(RED+"player selected"+RESET);
-//        setTimeAndWeather();
 
 //        currentGame.players.add(findUserByUsername(user1name));
 //        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
 //        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
+
         currentGame.players.add(new User("Ario", "Ario", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
         currentGame.players.add(new User("Erfan", "Erfan", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
         currentGame.players.add(new User("Mamali", "Mamali", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
@@ -2043,6 +2044,10 @@ public class InputGameController {
 
                                                                    // input tools command
 
+    public void doItemTask (float disX, float disY) {
+
+        // Diraction diraction =
+    }
     public Result howMuchWater () {
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;

@@ -6,6 +6,7 @@ import com.Graphic.View.AppMenu;
 import com.Graphic.model.App;
 import com.Graphic.model.App.*;
 import com.Graphic.model.Enum.Commands.MarketMenuCommands;
+import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -13,16 +14,25 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
@@ -33,11 +43,20 @@ public class MarketMenu implements Screen , InputProcessor {
 
     TiledMap map;
     OrthogonalTiledMapRenderer renderer;
-    OrthographicCamera camera;
+    private static OrthographicCamera camera;
     Marketing marketing;
     public static MarketType marketType;
-    Stage stage;
-    Skin skin;
+    private static Stage stage;
+    private static Skin skin;
+    private static Window window;
+    private static Image image;
+    public static boolean showWindow = true;
+    private static Texture coinTexture;
+    private static ImageButton closeButton;
+    public static boolean choosePlace = false;
+    private static Vector3 vector;
+    private static Sprite withMouse;
+    private static HashMap <Sprite , BarnORCageType> mapSpriteToBarnOrCage;
 
     @Override
     public boolean keyDown(int i) {
@@ -84,52 +103,154 @@ public class MarketMenu implements Screen , InputProcessor {
         return false;
     }
 
+
+
+    public static Skin getSkin() {
+        return skin;
+    }
+
+    public static Stage getStage() {
+        return stage;
+    }
+
+    public static Window getWindow() {
+        if (window == null) {
+            return window = new Window("Products", skin, "default");
+        }
+        return window;
+    }
+
+    public static Image getImage() {
+            Pixmap pixmap =  new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            pixmap.setColor(0, 0, 0, 0.6f);
+            pixmap.fill();
+            Texture texture = new Texture(pixmap);
+            pixmap.dispose();
+            return image = new Image(new TextureRegionDrawable(new TextureRegion(texture)));
+    }
+
+    public static void removeImage() {
+        if (image != null) {
+            image.remove();
+        }
+    }
+
+    public static Texture getCoinTexture() {
+        if (coinTexture == null) {
+            coinTexture = new Texture(Gdx.files.internal("Mohamadreza/coin.png"));
+        }
+        return coinTexture;
+    }
+
+    public static ImageButton getCloseButton() {
+        if (closeButton == null) {
+            closeButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Mohamadreza/close.png")))));
+        }
+        closeButton.setSize(50,50);
+        closeButton.getImage().setScaling(Scaling.fit);
+        closeButton.getImageCell().size(50, 50);
+        return closeButton;
+    }
+
+    public static Vector3 getVector() {
+        if (vector == null) {
+            vector = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        }
+        vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
+        camera.unproject(vector);
+        return vector;
+    }
+
+    public static Sprite getWithMouse() {
+        if (withMouse == null) {
+            withMouse = new Sprite();
+        }
+        return withMouse;
+    }
+
+    public static HashMap<Sprite , BarnORCageType> mapSpriteToBarnOrCage() {
+        if (mapSpriteToBarnOrCage == null) {
+            mapSpriteToBarnOrCage = new HashMap();
+        }
+        return mapSpriteToBarnOrCage;
+    }
+
+    public static void setWithMouse(Sprite withMouse) {
+        MarketMenu.withMouse = withMouse;
+    }
+
     @Override
     public void show() {
 //        App.currentGame.currentPlayer.sprite.setSize(16 , 32);
-//        marketing = new Marketing();
-//        marketType = MarketType.StardropSaloon;
-//        camera = new OrthographicCamera();
-//        camera.setToOrtho(false , 300 , 150);
-//        map = new TmxMapLoader().load("Mohamadreza/Maps/Saloon.tmx");
-//        renderer = new OrthogonalTiledMapRenderer(map, 1f);
+        marketing = new Marketing();
+        marketType = MarketType.JojaMart;
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false , 300 , 150);
+        map = new TmxMapLoader().load("Mohamadreza/Maps/JojaMart.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map, 1f);
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("Mohamadreza/pixthulhu-ui.json"));
-        TextButton button = new TextButton("Name", skin);
-        Table table = new Table();
-        table.setFillParent(true);
-        table.add(button);
-        stage.addActor(table);
-//        Main.getBatch().begin();
-//        marketing.init();
-//        Main.getBatch().end();
+        skin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
+
+        Main.getBatch().begin();
+        marketing.init();
+        Main.getBatch().end();
 
 
     }
 
+    public static BitmapFont getFont() {
+        BitmapFont font = new BitmapFont(Gdx.files.internal("Erfan/Fonts/SmallFont.fnt"));
+        return font;
+    }
     @Override
     public void render(float v) {
-//        Main.getBatch().begin();
-//        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-//            camera.translate(0, 200 * Gdx.graphics.getDeltaTime());
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-//            camera.translate(0, - 200 * Gdx.graphics.getDeltaTime());
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-//            camera.translate(- 200 * Gdx.graphics.getDeltaTime(), 0);
-//        }
-//        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-//            camera.translate( 200 * Gdx.graphics.getDeltaTime(), 0);
-//        }
-//        marketing.move();
-//        camera.update();
-//        renderer.setView(camera);
-//        renderer.render();
-//        Main.getBatch().end();
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            camera.translate(0, 200 * Gdx.graphics.getDeltaTime());
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            camera.translate(0, - 200 * Gdx.graphics.getDeltaTime());
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            camera.translate(- 200 * Gdx.graphics.getDeltaTime(), 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            camera.translate( 200 * Gdx.graphics.getDeltaTime(), 0);
+        }
+        camera.update();
+        Main.getBatch().setProjectionMatrix( camera.combined);
+
+        Main.getBatch().begin();
+//        if (Gdx.input.isKeyPressed(Input.Keys.T) && !showWindow) {
+//            try {
+//                image.remove();
+//                getWindow().clear();
+//                getWindow().remove();
+//                showWindow = true;
+//            }
+//            catch (Exception e) {
+//
+//            }
+//        }
+        marketing.move();
+        marketing.showCarpenterProducts(1,false);
+        //marketing.moveTextureWithMouse(getWithMouse());
+        camera.update();
+        if (! choosePlace) {
+            camera.setToOrtho(false , 300 , 150);
+            renderer.setView(camera);
+            renderer.render();
+        }
+        else {
+            marketing.moveTextureWithMouse(getWithMouse());
+            camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+            camera.zoom = 2f;
+        }
+        Main.getBatch().end();
+
         stage.act(v);
         stage.draw();
 

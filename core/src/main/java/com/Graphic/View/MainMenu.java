@@ -23,9 +23,6 @@ public class MainMenu implements Screen, AppMenu {
     private Texture backgroundTexture;
     private Table mainTable;
 
-    public MainMenu() {
-    }
-
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
@@ -71,6 +68,13 @@ public class MainMenu implements Screen, AppMenu {
         float buttonHeight = 60;
         float buttonPadding = 15;
 
+        profileButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getMain().setScreen(new ProfileMenu());
+            }
+        });
+
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -89,13 +93,6 @@ public class MainMenu implements Screen, AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Opening market...");
-            }
-        });
-
-        profileButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                showProfileWindow();
             }
         });
 

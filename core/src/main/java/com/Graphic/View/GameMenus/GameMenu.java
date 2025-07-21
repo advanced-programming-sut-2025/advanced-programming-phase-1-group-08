@@ -10,15 +10,10 @@ import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.Items;
 import com.Graphic.model.Keys;
-import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -29,16 +24,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import java.awt.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
@@ -60,6 +55,8 @@ public class GameMenu implements  Screen, InputProcessor {
     public long lastTime;
 
     private Group clockGroup;
+    private Image seasonImage;
+    private Image weatherImage;
     private Label moneyLabel;
     private Label timeLabel;
     private Label dateLabel;
@@ -67,6 +64,9 @@ public class GameMenu implements  Screen, InputProcessor {
 
     private boolean toolsMenuIsActivated;
     private Window toolsPopup;
+
+    private boolean EscMenuIsActivated;
+    private Window EscPopup;
 
 
     private GameMenu() {
@@ -93,9 +93,10 @@ public class GameMenu implements  Screen, InputProcessor {
     public void render(float v) {
 
         if (TimeUtils.millis() - lastTime > hourSecond)
-            updateClock();
+            updateClock(1);
 
         inputController();
+
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Main.getBatch().setProjectionMatrix(camera.combined);
@@ -104,13 +105,76 @@ public class GameMenu implements  Screen, InputProcessor {
         drawCurrentItem();
         Main.getBatch().end();
 
-
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
 
     }
 
+    private void initialize () {
 
+        startTime = TimeUtils.millis();
+        lastTime = TimeUtils.millis();
+
+        controller = InputGameController.getInstance();
+        stage = new Stage(new ScreenViewport());
+        clockGroup = new Group();
+        camera = new OrthographicCamera();
+
+
+        timeLabel = new Label("", App.skin);
+        dateLabel = new Label("", App.skin);
+        moneyLabel = new Label("", App.skin);
+        weekDayLabel = new Label("", App.skin);
+
+        toolsMenuIsActivated = false;
+    }
+
+    private void inputController () {
+
+        if (Gdx.input.isKeyJustPressed(Keys.ToolsMenu))
+            createToolsMenu();
+        else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
+            createEscMenu();
+        else if (Gdx.input.isKeyJustPressed(Keys.increaseTime))
+            updateClock(2);
+        else if (Gdx.input.isKeyJustPressed(Keys.lighting))
+            createCloud();
+
+    }
+
+    private void createToolsMenu () {
+
+        if (!toolsMenuIsActivated) {
+
+            createGrayBackGround();
+
+            HashMap<String, String> availableTools = controller.availableTools();
+            Items currentItem = currentGame.currentPlayer.currentItem;
+
+            int colNumber = availableTools.size() / 2 + 1;
+
+            toolsPopup = new Window("", App.skin);
+            toolsPopup.setSize(200 + colNumber * 100, 300);
+            toolsPopup.setPosition(
+                (stage.getWidth() - toolsPopup.getWidth()) / 2,
+                (stage.getHeight() - toolsPopup.getHeight()) / 2);
+
+
+            Table content = new Table();
+            createToolsTable(content, currentItem, availableTools);
+
+            toolsPopup.add(content).expand().fill();
+
+            stage.addActor(helperBackGround);
+            stage.addActor(toolsPopup);
+            toolsMenuIsActivated = true;
+        }
+        else {
+            helperBackGround.remove();
+            toolsPopup.remove();
+            toolsMenuIsActivated = false;
+        }
+    }
     private void createToolsTable (Table content, Items currentItem, HashMap<String,String> tools) {
 
         Label.LabelStyle labelStyle = new Label.LabelStyle();
@@ -207,28 +271,6 @@ public class GameMenu implements  Screen, InputProcessor {
         content.add(img).size(30, 30);
     }
 
-
-
-    private void initialize () {
-
-        startTime = TimeUtils.millis();
-        lastTime = TimeUtils.millis();
-
-        controller = InputGameController.getInstance();
-        stage = new Stage(new ScreenViewport());
-        clockGroup = new Group();
-        camera = new OrthographicCamera();
-
-
-        timeLabel = new Label("", App.skin);
-        dateLabel = new Label("", App.skin);
-        moneyLabel = new Label("", App.skin);
-        weekDayLabel = new Label("", App.skin);
-
-        toolsMenuIsActivated = false;
-
-    }
-
     private void createClock() {
 
         Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
@@ -274,9 +316,19 @@ public class GameMenu implements  Screen, InputProcessor {
         moneyLabel.setPosition(timeLabel.getX() + 45 - moneyLabel.getWidth(), timeLabel.getY() - 78);
 
 
+        seasonImage = new Image(TextureManager.get(currentGame.currentDate.getSeason().getIconPath()));
+        seasonImage.setSize(200,220);
+        seasonImage.setPosition(image.getWidth()- seasonImage.getWidth() + 47, image.getHeight() - seasonImage.getHeight() + 30);
+        clockGroup.addActor(seasonImage);
+
+        weatherImage = new Image(TextureManager.get(currentGame.currentWeather.getIconPath()));
+        weatherImage.setSize(200,220);
+        weatherImage.setPosition(image.getWidth()- weatherImage.getWidth() - 47, image.getHeight() - weatherImage.getHeight() + 30);
+        clockGroup.addActor(weatherImage);
+
+
         float screenWidth = stage.getViewport().getWorldWidth();
         float screenHeight = stage.getViewport().getWorldHeight();
-
 
         clockGroup.setSize(image.getWidth(), image.getHeight());
 
@@ -285,50 +337,116 @@ public class GameMenu implements  Screen, InputProcessor {
             screenHeight - clockGroup.getHeight() - 10);
 
         stage.addActor(clockGroup);
-    }
-    private void updateClock() {
 
-        passedOfTime(0, 1);
+
+    }
+    private void updateClock(int hourPassed) {
+
+        passedOfTime(0, hourPassed);
         timeLabel.setText(currentGame.currentDate.getHour() + ":00");
         dateLabel.setText(currentGame.currentDate.getDate());
         weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
+        Texture newTexture = TextureManager.get(currentGame.currentDate.getSeason().getIconPath());
+        seasonImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
+        Texture newTexture1 = TextureManager.get(currentGame.currentWeather.getIconPath());
+        weatherImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture1)));
         lastTime = TimeUtils.millis();
+
     }
-    private void createToolsMenu () {
 
-        if (!toolsMenuIsActivated) {
-            helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
-            helperBackGround.setColor(0, 0, 0, 0.5f);
-            helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+    private void createEscMenu () {
 
+        if (!EscMenuIsActivated) {
 
-            HashMap<String, String> availableTools = controller.availableTools();
-            Items currentItem = currentGame.currentPlayer.currentItem;
+            createGrayBackGround();
 
-            int colNumber = availableTools.size() / 2 + 1;
-
-            toolsPopup = new Window("", App.skin);
-            toolsPopup.setSize(200 + colNumber * 100, 300);
-            toolsPopup.setPosition(
-                (stage.getWidth() - toolsPopup.getWidth()) / 2,
-                (stage.getHeight() - toolsPopup.getHeight()) / 2);
+            EscPopup = new Window("", App.newSkin);
+            EscPopup.setSize(650, 350);
+            EscPopup.setPosition(
+                (stage.getWidth() - EscPopup.getWidth()) / 2,
+                (stage.getHeight() - EscPopup.getHeight()) / 2);
 
 
             Table content = new Table();
-            createToolsTable(content, currentItem, availableTools);
+            createEscMenuButtons(content);
 
-            toolsPopup.add(content).expand().fill();
+            EscPopup.add(content).expand().fill();
 
             stage.addActor(helperBackGround);
-            stage.addActor(toolsPopup);
-            toolsMenuIsActivated = true;
+            stage.addActor(EscPopup);
+            EscMenuIsActivated = true;
         }
         else {
             helperBackGround.remove();
-            toolsPopup.remove();
-            toolsMenuIsActivated = false;
+            EscPopup.remove();
+            EscMenuIsActivated = false;
         }
     }
+    private void createEscMenuButtons (Table table) {
+
+        table.setFillParent(true);
+        table.defaults().align(Align.center).pad(10);
+        table.center();
+
+        TextButton inventoryButton = new TextButton("Inventory", App.newSkin);
+        TextButton skillsButton = new TextButton("Skills", App.newSkin);
+        TextButton SocialButton = new TextButton("Social", App.newSkin);
+        TextButton backButton = new TextButton("back", App.newSkin);
+        TextButton mapButton = new TextButton("Map", App.newSkin);
+
+
+        table.add(inventoryButton).width(250).center();
+        table.add(skillsButton).width(250).center();
+        table.row().pad(15, 0, 10, 0);
+        table.add(SocialButton).width(250).center();
+        table.add(mapButton).width(250).center();
+        table.row().pad(30, 0, 10, 0);
+
+        table.add(backButton).width(150).colspan(2).center();
+
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                helperBackGround.remove();
+                EscPopup.remove();
+                EscMenuIsActivated = false;
+            }
+        });
+
+        inventoryButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            }
+        });
+        skillsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            }
+        });
+        SocialButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            }
+        });
+        mapButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            }
+        });
+        stage.addActor(table);
+    }
+
+    private void createGrayBackGround () {
+        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+        helperBackGround.setColor(0, 0, 0, 0.5f);
+        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+    }
+
     private void drawCurrentItem() {
         if (currentGame.currentPlayer.currentItem != null) {
 
@@ -345,7 +463,6 @@ public class GameMenu implements  Screen, InputProcessor {
             Direction.lastDir = direction;
         }
     }
-
     private float getYForHands(Direction direction) {
 
         if (direction == Direction.Up)
@@ -363,13 +480,8 @@ public class GameMenu implements  Screen, InputProcessor {
         };
     }
 
-    private void inputController () {
 
-         if (Gdx.input.isKeyJustPressed(Keys.ToolsMenu))
-             createToolsMenu();
-         if (Gdx.input.isKeyJustPressed(Input.Keys.H))
-             Main.getMain().setScreen(new HomeMenu());
-    }
+
 
     public void resize(int i, int i1) {
 
@@ -386,7 +498,6 @@ public class GameMenu implements  Screen, InputProcessor {
     public void dispose() {
 
     }
-
 
     public boolean keyUp(int i) {
         return false;
@@ -411,6 +522,8 @@ public class GameMenu implements  Screen, InputProcessor {
         return false;
     }
     public boolean touchDown(int i, int i1, int i2, int i3) {
+
+
         return false;
     }
     public boolean touchCancelled(int i, int i1, int i2, int i3) {

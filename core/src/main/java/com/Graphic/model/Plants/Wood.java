@@ -1,6 +1,7 @@
 package com.Graphic.model.Plants;
 
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
@@ -26,6 +27,21 @@ public class Wood extends Items {
 
     @Override
     public int getSellPrice() {
+        return 10;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
         return 10;
     }
 }

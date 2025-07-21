@@ -9,9 +9,9 @@ import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.AllPlants.TreesSourceType;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.ItemType.*;
-import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Enum.WeatherTime.Season;
+import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.Items;
 import com.Graphic.model.Plants.BasicRock;
@@ -30,22 +30,155 @@ import com.Graphic.model.ToolsPackage.*;
 import com.Graphic.model.collisionRect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.checkTilesForCreateBarnOrCage;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
+import static com.Graphic.View.GameMenus.MarketMenu.*;
+import static com.Graphic.View.GameMenus.MarketMenu.marketType;
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.App.currentMenu;
+import static com.Graphic.model.Enum.ItemType.MarketType.*;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class Marketing {
+
+    public void closeWindow() {
+        getCloseButton().addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                removeImage();
+                getWindow().clear();
+                getWindow().remove();
+                showWindow = true;
+            }
+        });
+    }
+
+    public ImageButton createCloseButtonForDialog(Dialog dialog) {
+        Texture closeTexture = new Texture(Gdx.files.internal("Mohamadreza/close.png"));
+        Drawable closeDrawable = new TextureRegionDrawable(new TextureRegion(closeTexture));
+        ImageButton closeButton = new ImageButton(closeDrawable);
+        closeButton.setSize(50,50);
+        closeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                dialog.remove();
+            }
+        });
+        return closeButton;
+    }
+
+    public Result checkBuy(Items item , MarketType marketType) {
+        if (item instanceof BackPack) {
+            if (currentGame.currentPlayer.getBackPack().getType().equals(BackPackType.DeluxePack)
+                || currentGame.currentPlayer.getBackPack().getType().equals( ((BackPack) item).getType()) ) {
+                return new Result(false, "4");
+            }
+        }
+        if (item instanceof FishingPole) {
+            if ( ! ((FishingPole) item).type.checkAbility(currentGame.currentPlayer.getLevelFishing())) {
+                return new Result(false , "5");
+            }
+        }
+        if (item.getRemindInShop(marketType) == 0) {
+            return new Result(false,"1");
+        }
+        if (item.getMarketPrice(marketType) > currentGame.currentPlayer.getMoney() ) {
+            return new Result(false,"2");
+        }
+        if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+            if (! currentGame.currentPlayer.getBackPack().inventory.Items.containsKey(item)) {
+                return new Result(false,"3");
+            }
+        }
+        return new Result(true,"0");
+
+    }
+
+    public Result checkBuyBarnOrCage(BarnORCageType barnORCageType) {
+        if (currentGame.currentPlayer.getMoney() < barnORCageType.getPrice()) {
+            return new Result(false , "2");
+        }
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+
+        if (inventory.Items.containsKey(new Wood())) {
+            if (inventory.Items.get(new Wood()) < barnORCageType.getWoodNeeded()) {
+                return new Result(false , "6");
+            }
+        }
+        else {
+            return new Result(false , "6");
+        }
+
+        if (inventory.Items.containsKey(new BasicRock())) {
+            if (inventory.Items.get(new BasicRock()) < barnORCageType.getStoneNeeded()) {
+                return new Result(false , "7");
+            }
+        }
+        else {
+            return new Result(false , "7");
+        }
+        return new Result(true , "0");
+
+    }
+
+    private void makeCoinButton(Table table, TextButton coinButton, Table innerTable, String name, int price, int remindInShop) {
+        Label label;
+        innerTable.add().expandX();
+        coinButton.add(innerTable).grow();
+
+        table.add(coinButton).size(900,48);
+        label = new Label(name, getSkin());
+        coinButton.add(label).left().padLeft(50);
+        coinButton.add().expandX();
+        label = new Label(""+ price, getSkin());
+        coinButton.add(label).padRight(60);
+        coinButton.add(new Image(getCoinTexture())).size(20,20).padRight(50);
+        if (remindInShop == 0) {
+            coinButton.setColor(Color.DARK_GRAY);
+        }
+        table.row();
+    }
+
+    private void addDialogToTable(Dialog dialog, Label content) {
+        dialog.getContentTable().add(content);
+        ImageButton closeButton = createCloseButtonForDialog(dialog);
+        dialog.getTitleTable().add(closeButton).padRight(5).padTop(3).right();
+        dialog.show(getStage());
+        dialog.setPosition(400,100);
+        dialog.setSize(1000,48);
+    }
+
+    private Dialog createDialogError() {
+        Texture tex = new Texture(Gdx.files.internal("Mohamadreza/Error.png"));
+        NinePatch patch = new NinePatch(tex,10,10,3,3);
+        Drawable background = new NinePatchDrawable(patch);
+        Window.WindowStyle style = new Window.WindowStyle();
+        style.background = background;
+        style.titleFont = getFont();
+        Dialog dialog = new Dialog("Error",style);
+        return dialog;
+    }
 
     public void init() {
         currentGame.currentPlayer.setDirection(Direction.Up);
         currentGame.currentPlayer.sprite.setPosition(79 ,24 );
         currentGame.currentPlayer.sprite.setSize(16 , 16);
         currentGame.currentPlayer.sprite.draw(Main.getBatch());
+        closeWindow();
     }
 
     public void move() {
@@ -92,7 +225,427 @@ public class Marketing {
         currentGame.currentPlayer.sprite.draw(Main.getBatch());
     }
 
+    public void buy(TextButton button , Items item , MarketType marketType) {
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if (! checkBuy(item, marketType).IsSuccess()) {
+                    Dialog dialog=createDialogError();
+                    Label content = new Label(MarketType.endLimit(checkBuy(item,marketType).massage()), new Label.LabelStyle(getFont() , Color.BLACK));
+                    addDialogToTable(dialog, content);
+                }
+                else if (item instanceof BackPack) {
+                    currentGame.currentPlayer.getBackPack().setType(((BackPack) item).getType());
+                }
+                else {
+
+                    item.setRemindInShop(item.getRemindInShop(marketType) -1 , marketType);
+                    currentGame.currentPlayer.increaseMoney(- item.getMarketPrice(marketType));
+
+                    if (currentGame.currentPlayer.getBackPack().inventory.Items.containsKey(item)) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(item,(k,v) -> v + 1);
+                    }
+                    else {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.put(item, 1);
+                    }
+                    if (item.getRemindInShop(marketType) == 0) {
+                        button.setColor(Color.DARK_GRAY);
+                    }
+                }
+            }
+        });
+    }
+
+
+    public void buyBarnOrCage(TextButton button , BarnOrCage barnOrCage) {
+
+        button.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                if (! checkBuyBarnOrCage(barnOrCage.getBarnORCageType()).IsSuccess()) {
+                    Dialog dialog=createDialogError();
+                    Label content = new Label(MarketType.endLimit(checkBuyBarnOrCage(barnOrCage.getBarnORCageType()).massage()), new Label.LabelStyle(getFont() , Color.BLACK));
+                    addDialogToTable(dialog, content);
+                }
+                else {
+                    removeImage();
+                    getWindow().clear();
+                    getWindow().remove();
+                    Texture texture = TextureManager.get(barnOrCage.getBarnORCageType().getPath());
+                    Sprite sprite = new Sprite(texture);
+                    sprite.setAlpha(0.5f);
+                    mapSpriteToBarnOrCage().put(sprite, barnOrCage.getBarnORCageType());
+                    setWithMouse(sprite);
+                    choosePlace = true;
+                }
+            }
+        });
+    }
+
+
+    public void moveTextureWithMouse(Sprite sprite) {
+
+            if (choosePlace && !mapSpriteToBarnOrCage().get(sprite).isWaiting()) {
+                printMapForCreate();
+                sprite.setPosition(getVector().x - sprite.getWidth() / 2, getVector().y - sprite.getHeight() / 2);
+                sprite.draw(Main.getBatch());
+            }
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT) && choosePlace && ! mapSpriteToBarnOrCage().get(sprite).isWaiting()) {
+                mapSpriteToBarnOrCage().get(sprite).setWaiting(true);
+            }
+
+            if (mapSpriteToBarnOrCage().get(sprite).isWaiting()) {
+                setBarnOrCageOnFarm(sprite, mapSpriteToBarnOrCage().get(sprite));
+            }
+
+    }
+
+    private boolean isPlaced = false;
+    public void setBarnOrCageOnFarm(Sprite sprite ,BarnORCageType barnORCageType) {
+        int x = (int) (sprite.getX() / TEXTURE_SIZE) + 60 * currentGame.currentPlayer.topLeftX;
+        int y =30 -  (int) (sprite.getY() / TEXTURE_SIZE) + 60 * currentGame.currentPlayer.topLeftY;
+
+        if (! checkTilesForCreateBarnOrCage(x , y , barnORCageType.getWidth() , barnORCageType.getHeight()) && ! isPlaced ) {
+
+            Dialog dialog=createDialogError();
+            Label content = new Label(MarketType.endLimit("8") , new Label.LabelStyle(getFont() , Color.BLACK));
+            addDialogToTable(dialog, content);
+            barnORCageType.setWaiting(false);
+        }
+        else {
+            isPlaced = true;
+            for (int i = x ; i < x + barnORCageType.getWidth() ; i++) {
+                for (int j = y ; j < y + barnORCageType.getHeight() ; j++) {
+                    if (!(getTileByCoordinates(i , j).getGameObject() instanceof BarnOrCage )) {
+                        getTileByCoordinates(i , j).setGameObject(new BarnOrCage(barnORCageType , x , y));
+                    }
+                }
+            }
+            printMapForCreate();
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                TextButton confirm = new TextButton("" , getSkin());
+                TextButton TryAgain = new TextButton("" , getSkin());
+                Label con = new Label("Confirm" , getSkin());
+                Label Try = new Label("Try Again" , getSkin());
+                confirm.add(con).left().padLeft(10);
+                TryAgain.add(Try).left().padLeft(10);
+                getStage().addActor(confirm);
+                getStage().addActor(TryAgain);
+                confirm.setPosition(1200,480);
+                confirm.setSize(200 , 40);
+                TryAgain.setPosition(1200,400);
+                TryAgain.setSize(200 , 40);
+
+                confirm.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        isPlaced = false;
+                        payForBuilding((BarnOrCage) getTileByCoordinates(x,y).getGameObject());
+                        choosePlace = false;
+                        barnORCageType.setWaiting(false);
+                        confirm.remove();
+                        TryAgain.remove();
+
+                    }
+                });
+
+                TryAgain.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        barnORCageType.setWaiting(false);
+                        isPlaced = false;
+                        for (int i = x ; i < x + barnORCageType.getWidth() ; i++) {
+                            for (int j = y ; j < y + barnORCageType.getHeight() ; j++) {
+                                getTileByCoordinates(i , j).setGameObject(new Walkable());
+                            }
+                        }
+                        confirm.remove();
+                        TryAgain.remove();
+                    }
+                });
+            }
+        }
+    }
+
+    public void payForBuilding(BarnOrCage barnOrCage) {
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        inventory.Items.put(new Wood() , inventory.Items.get(new Wood()) - barnOrCage.getBarnORCageType().getWoodNeeded());
+        inventory.Items.put(new BasicRock() , inventory.Items.get(new BasicRock()) - barnOrCage.getBarnORCageType().getStoneNeeded());
+        inventory.Items.entrySet().removeIf(entry -> entry.getValue() == 0);
+        currentGame.currentPlayer.increaseMoney(- barnOrCage.getBarnORCageType().getPrice());
+        barnOrCage.setRemindInShop(barnOrCage.getRemindInShop(null) - 1 , null);
+        currentGame.currentPlayer.BarnOrCages.add(barnOrCage);
+    }
+
+    public void printMapForCreate() {
+        if (Gdx.input.isKeyPressed(Input.Keys.T)) {
+            System.out.println(currentGame.currentPlayer.topLeftX + " " + currentGame.currentPlayer.topLeftY);
+        }
+        for (int i = 0; i < 30; i++) {
+            for (int j = 0; j < 30; j++) {
+                try {
+                    Main.getBatch().draw(TextureManager.get("Places/Walkable.png"),
+                        TEXTURE_SIZE  * (i),
+                        TEXTURE_SIZE  * (30 -j) ,
+                        TEXTURE_SIZE  , TEXTURE_SIZE );
+
+                    Main.getBatch().draw(getTileByCoordinates(i + 60 * currentGame.currentPlayer.topLeftX , j + 60 * currentGame.currentPlayer.topLeftY)
+                            .getGameObject()
+                            .getSprite(TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
+                        TEXTURE_SIZE * (i) ,
+                        TEXTURE_SIZE  * (30 - j) ,
+                        TEXTURE_SIZE , TEXTURE_SIZE);
+
+                } catch (Exception e) {
+
+                }
+            }
+        }
+    }
+
+
+    public void createSelectBox(SelectBox selectBox , MarketType marketType) {
+        selectBox.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                String selected = selectBox.getSelected().toString();
+                    if (selected.equals("All Products")) {
+                        removeImage();
+                        getWindow().clear();
+                        getWindow().remove();
+                        switch (marketType) {
+                            case JojaMart -> showJojaProducts(1,true);
+                            case PierreGeneralStore -> showPierreProducts(1,true);
+                            case StardropSaloon -> showStardropProducts(1,true);
+                            case FishShop -> showFishProducts(1,true);
+                            case CarpenterShop -> showCarpenterProducts(1,true);
+                        }
+                    }
+                    if (selected.equals("Available Products")) {
+                        removeImage();
+                        getWindow().clear();
+                        getWindow().remove();
+                        switch (marketType) {
+                            case JojaMart -> showJojaProducts(2,true);
+                            case PierreGeneralStore -> showPierreProducts(2,true);
+                            case StardropSaloon -> showStardropProducts(2,true);
+                            case FishShop -> showFishProducts(2,true);
+                            case CarpenterShop -> showCarpenterProducts(2,true);
+                        }
+                    }
+            }
+        });
+    }
+
+    public void createWindow(ScrollPane pane , Image image ) {
+        getWindow().add(pane).width(1000).height(700);
+        getWindow().pack();
+        getWindow().setPosition(Gdx.graphics.getWidth()/2 - 500, Gdx.graphics.getHeight()/2 - 350);
+        getWindow().setVisible(true);
+        if (! MarketMenu.getStage().getActors().contains(image , true)) {
+            MarketMenu.getStage().addActor(image);
+        }
+        if (! MarketMenu.getStage().getActors().contains(getWindow() , true)) {
+            MarketMenu.getStage().addActor(getWindow());
+        }
+    }
+
+    public Table createTable(MarketType marketType) {
+        Table table = new Table();
+        SelectBox<String> filter = new SelectBox<>(getSkin());
+        filter.setItems("All Products","Available Products");
+        createSelectBox(filter , marketType);
+        table.add(filter);
+        table.add().expandX();
+        table.add(getCloseButton()).size(50,50).pad(5);
+
+        return table;
+    }
+
+    public void listForagingSeeds(int id ,Table table , MarketType marketType , Label label) {
+        for (ForagingSeedsType f : ForagingSeedsType.values()) {
+            if (f.getMarketTypes().contains(marketType) && (id == 1 || new ForagingSeeds(f).getRemindInShop(marketType) > 0) ) {
+                TextButton coinButton = new TextButton("",getSkin());
+                coinButton.clearChildren();
+                buy(coinButton , new ForagingSeeds(f) , marketType);
+
+                Table innerTable = new Table();
+                innerTable.add(new Image(new Texture(Gdx.files.internal(f.getInventoryIconPath())))).left().padLeft(60).size(24, 24);
+
+                makeCoinButton(table , coinButton , innerTable, f.getDisplayName(),
+                    f.getPrice(marketType),new ForagingSeeds(f).getRemindInShop(marketType) );
+            }
+
+        }
+    }
+
+    public void listMarketItems(int id , Table table , MarketType marketType , Label label) {
+
+        for (MarketItemType f : MarketItemType.values()) {
+            if (f.getMarketTypes().contains(marketType) && (id ==1 || new MarketItem(f).getRemindInShop(marketType) > 0)) {
+                TextButton coinButton = new TextButton("",getSkin());
+                coinButton.clearChildren();
+                if (f.equals(MarketItemType.Wood)) {
+                    buy(coinButton , new Wood() , marketType);
+                }
+                else if (f.equals(MarketItemType.Stone)) {
+                    buy(coinButton , new BasicRock() , marketType);
+                }
+                else {
+                    buy(coinButton, new MarketItem(f), marketType);
+                }
+
+                Table innerTable = new Table();
+                innerTable.add(new Image(new Texture(Gdx.files.internal(f.getPath())))).left().padLeft(60).size(24, 24);
+
+                makeCoinButton(table,coinButton,innerTable,f.getName(),
+                    new MarketItem(f).getMarketPrice(marketType),
+                    new MarketItem(f).getRemindInShop(marketType) );
+            }
+        }
+    }
+
+    public void listBarnOrCage(int id , Table table , MarketType marketType , Label label) {
+        for (BarnORCageType f : BarnORCageType.values()) {
+            if (id == 1 || new BarnOrCage(f , 0 , 0).getRemindInShop(marketType) > 0) {
+                TextButton coinButton = new TextButton("",getSkin());
+                coinButton.clearChildren();
+                buyBarnOrCage(coinButton , new BarnOrCage(f , 0 , 0));
+                Table innerTable = new Table();
+                innerTable.add(new Image(new Texture(Gdx.files.internal(f.getPath())))).left().padLeft(60).size(24, 24);
+
+                makeCoinButton(table , coinButton , innerTable , f.getName() , f.getPrice(),
+                    new BarnOrCage(f,0,0).getRemindInShop(marketType));
+            }
+        }
+    }
+
+
+    public void showJojaProducts(int id , boolean Filter) {
+        if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && showWindow) || Filter) {
+            showWindow = false;
+
+            Table table = createTable(JojaMart);
+            ScrollPane pane = new ScrollPane(table,getSkin());
+            Image image = getImage();
+            Label label = null;
+            pane.setFadeScrollBars(false);
+            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            listForagingSeeds(id , table , JojaMart, label);
+            listMarketItems(id,table,JojaMart,label);
+            pane.setWidget(table);
+            createWindow(pane , image);
+
+        }
+
+    }
+
+    public void showPierreProducts(int id , boolean Filter) {
+        if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && showWindow) || Filter) {
+            showWindow = false;
+
+            Table table = createTable(PierreGeneralStore);
+            ScrollPane pane = new ScrollPane(table,getSkin());
+            Image image = getImage();
+            Label label = null;
+            pane.setFadeScrollBars(false);
+
+            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            listForagingSeeds(id , table , PierreGeneralStore, label);
+            listMarketItems(id,table,PierreGeneralStore,label);
+
+            for (BackPackType f : BackPackType.values()) {
+                if (f.getInitialShopLimit() == 1) {
+                    BackPack backPack = new BackPack();
+                    backPack.setType(f);
+                    if (id == 1 || backPack.getRemindInShop(marketType) > 0) {
+                        TextButton coinButton = new TextButton("",getSkin());
+                        coinButton.clearChildren();
+                        buy(coinButton , backPack , PierreGeneralStore);
+
+                        Table innerTable = new Table();
+                        innerTable.add(new Image(new Texture(Gdx.files.internal(f.getPath())))).left().padLeft(60).size(24, 24);
+                        makeCoinButton(table, coinButton, innerTable, f.getName(),
+                            f.getPrice(), backPack.getRemindInShop(PierreGeneralStore));
+                    }
+                }
+            }
+
+            pane.setWidget(table);
+            createWindow(pane , image);
+
+        }
+    }
+
+    public void showStardropProducts(int id , boolean Filter) {
+        if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && showWindow) || Filter) {
+            showWindow = false;
+
+            Table table = createTable(StardropSaloon);
+            ScrollPane pane = new ScrollPane(table,getSkin());
+            Image image = getImage();
+            Label label = null;
+            pane.setFadeScrollBars(false);
+            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            listMarketItems(id,table,StardropSaloon,label);
+            pane.setWidget(table);
+            createWindow(pane , image);
+        }
+    }
+
+    public void showFishProducts(int id , boolean Filter) {
+        if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && showWindow) || Filter) {
+            showWindow = false;
+
+            Table table = createTable(FishShop);
+            ScrollPane pane = new ScrollPane(table,getSkin());
+            Image image = getImage();
+            Label label = null;
+            pane.setFadeScrollBars(false);
+            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            listMarketItems(id,table,FishShop,label);
+
+            for (FishingPoleType f : FishingPoleType.values()) {
+                if (id == 1 || f.shopLimit > 0) {
+                    TextButton coinButton = new TextButton("",getSkin());
+                    coinButton.clearChildren();
+                    FishingPole fishingPole = new FishingPole();
+                    fishingPole.type = f;
+                    buy(coinButton , fishingPole , FishShop);
+
+                    Table innerTable = new Table();
+                    innerTable.add(new Image(new Texture(Gdx.files.internal(f.getIconPath())))).left().padLeft(60).size(24, 24);
+                    makeCoinButton(table, coinButton, innerTable, f.getName(), f.getPrice(), fishingPole.getRemindInShop(FishShop));
+                }
+            }
+            pane.setWidget(table);
+            createWindow(pane , image);
+
+        }
+    }
+
+    public void showCarpenterProducts(int id , boolean Filter) {
+        if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && showWindow) || Filter) {
+            showWindow = false;
+
+            Table table = createTable(CarpenterShop);
+            ScrollPane pane = new ScrollPane(table,getSkin());
+            Image image = getImage();
+            Label label = null;
+            pane.setFadeScrollBars(false);
+            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            listMarketItems(id,table,CarpenterShop,label);
+            listBarnOrCage(id, table,CarpenterShop,label);
+            pane.setWidget(table);
+            createWindow(pane , image);
+        }
+    }
+
+
     public boolean checkColision() {
+
         for (collisionRect rect : MarketMenu.marketType.getRects()) {
             if (! rect.checkCollision(currentGame.currentPlayer)) {
                 return false;
@@ -128,7 +681,7 @@ public class Marketing {
             }
         }
         result.append(MarketItemType.Hay.getName()).append(", Price: ").append(MarketItemType.Hay.getPrice(0)).append("\n");
-        if (id ==1 || MilkPail.getRemindInShop() > 0) {
+        if (id ==1 || new MilkPail().getRemindInShop(null) > 0) {
             result.append("Milk Pail").append(", Price: ").append(MilkPail.coinNeeded).append("\n");
         }
         if (id == 1 || Shear.getRemindInshop() > 0) {
@@ -205,23 +758,23 @@ public class Marketing {
     public Result JojaMartProducts(int id) {
         StringBuilder result=new StringBuilder();
         if (id == 1) {
-            result.append(MarketType.JojaMart.name()).append(" Products:").append("\n");
+            result.append(JojaMart.name()).append(" Products:").append("\n");
         }
         else if (id == 2) {
-            result.append(MarketType.JojaMart.name()).append(" available Products:").append("\n");
+            result.append(JojaMart.name()).append(" available Products:").append("\n");
         }
 
         for (ForagingSeedsType foragingSeedsType : ForagingSeedsType.values()) {
-            if (foragingSeedsType.getMarketTypes().contains(MarketType.JojaMart)) {
+            if (foragingSeedsType.getMarketTypes().contains(JojaMart)) {
                 int remind = foragingSeedsType.JojaMartLimit;
                 if (id == 1 || (remind > 0 && checkSeason(foragingSeedsType.getDisplayName()) ) ) {
-                    int price=foragingSeedsType.getPrice(MarketType.JojaMart);
+                    int price=foragingSeedsType.getPrice(JojaMart);
                     result.append(foragingSeedsType.getDisplayName()).append(", Price: ").append(price).append("\n");
                 }
             }
         }
         for (MarketItemType marketItem : MarketItemType.values()) {
-            if (marketItem.getMarketTypes().contains(MarketType.JojaMart)) {
+            if (marketItem.getMarketTypes().contains(JojaMart)) {
                 int remind = marketItem.getOtherShopsLimit();
                 if (id == 1 || (remind > 0 && checkSeason(marketItem.getName()) ) ) {
                     result.append(marketItem.getName()).append(", Price: ").append(marketItem.getPrice(0)).append("\n");
@@ -284,7 +837,7 @@ public class Marketing {
             }
         }
         for (FishingPoleType fishingPoleType : FishingPoleType.values()) {
-            int remind = fishingPoleType.getshopLimit();
+            int remind = fishingPoleType.shopLimit;
             if (id == 1 || remind > 0 ) {
                 result.append(fishingPoleType.getName()).append(", Price: ").append(fishingPoleType.getPrice()).append("\n");
             }
@@ -376,53 +929,17 @@ public class Marketing {
 
     }
 
-    public Result createBarnOrCage(int topLeftX, int topLeftY, String name) {
-        BarnORCageType barnORCageType=null;
-        for (BarnORCageType x : BarnORCageType.values()) {
-            if (x.getName().equals(name)) {
-                barnORCageType=x;
-            }
-        }
+    public Result createBarnOrCage(int topLeftX, int topLeftY, BarnORCageType barnORCageType) {
 
-        if (barnORCageType==null) {
-            return new Result(false , "No such type of BarnORCage!");
-        }
-
-        if (barnORCageType.getShopLimit() == 0) {
-            return new Result(false , RED+"The purchase limit for this product has been reached" + RESET);
-        }
 
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         InputGameController gameController = InputGameController.getInstance();
 
-        if (findEnteredShopType() != MarketType.MarnieRanch) {
-            return new Result(false , "you can't create a barn or cage because you are not in Marnie's Ranch Market");
-        }
 
         if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, barnORCageType.getWidth(), barnORCageType.getHeight())) {
             return new Result(false, "you can't create barn or cage on this coordinate!");
         }
 
-        int Wood = 0;
-        int Stone= 0;
-        for (Map.Entry <Items, Integer> entry:inventory.Items.entrySet()) {
-            if (entry.getKey() instanceof Wood) {
-                Wood=entry.getValue();
-            }
-            if (entry.getKey() instanceof BasicRock) {
-                Stone=entry.getValue();
-            }
-        }
-
-        if (barnORCageType.getWoodNeeded() > Wood) {
-            return new Result(false , "you can't create barn or cage because you don't have enough wood!");
-        }
-        if (barnORCageType.getStoneNeeded() > Stone) {
-            return new Result(false , "you can't create barn or cage because you don't have enough stone!");
-        }
-        if (barnORCageType.getPrice() > currentGame.currentPlayer.getMoney() ) {
-            return new Result(false , "you can't create barn or cage because you don't have enough money!");
-        }
 
 
         BarnOrCage barnOrCage = new BarnOrCage(barnORCageType, topLeftX, topLeftY);
@@ -441,13 +958,6 @@ public class Marketing {
 
         currentGame.currentPlayer.increaseMoney(- barnORCageType.getPrice());
 
-        if (barnORCageType.equals(BarnORCageType.Barn) || barnORCageType.equals(BarnORCageType.BigBarn)
-                || barnORCageType.equals(BarnORCageType.DeluxeBarn)) {
-            barnOrCage.setCharactor('b');
-        }
-        else {
-            barnOrCage.setCharactor('c');
-        }
 
         for (int i = topLeftX; i < topLeftX + barnORCageType.getWidth(); i++) {
             for (int j = topLeftY; j < topLeftY + barnORCageType.getHeight(); j++) {
@@ -472,7 +982,7 @@ public class Marketing {
         Marketing marketing = new Marketing();
 
         if (marketing.findEnteredShopType() != MarketType.MarnieRanch) {
-            return new Result(false , "you can't create a Well because you are not in Marnie's Ranch Market");
+            return new Result(false , "you can't create makeCoinButton Well because you are not in Marnie's Ranch Market");
         }
 
         if (Well.getNeededStone() == 0) {
@@ -480,7 +990,7 @@ public class Marketing {
         }
 
         if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, Well.getWidth(), Well.getHeight())) {
-            return new Result(false, "you can't create a Well on this coordinate!");
+            return new Result(false, "you can't create makeCoinButton Well on this coordinate!");
         }
 
         int Stone= 0;
@@ -529,11 +1039,11 @@ public class Marketing {
         Marketing marketing = new Marketing();
 
         if (marketing.findEnteredShopType() != MarketType.CarpenterShop) {
-            return new Result(false , "you can't create a Shipping Bin because you are not in Carpenter Market");
+            return new Result(false , "you can't create makeCoinButton Shipping Bin because you are not in Carpenter Market");
         }
 
         if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, ShippingBin.getWidth(), ShippingBin.getHeight())) {
-            return new Result(false, "you can't create a Shipping Bin on this coordinate!");
+            return new Result(false, "you can't create makeCoinButton Shipping Bin on this coordinate!");
         }
 
         int Wood= 0;
@@ -673,7 +1183,7 @@ public class Marketing {
             if (amount == null) {
                 amount = 1;
             }
-            if (amount > MilkPail.getRemindInShop()) {
+            if (amount > new MilkPail().getRemindInShop(null)) {
                 return new Result(false , "The purchase limit for this product has been reached");
             }
             if (MilkPail.coinNeeded * amount > currentGame.currentPlayer.getMoney()){
@@ -698,7 +1208,7 @@ public class Marketing {
             if (amount == null) {
                 amount = 1;
             }
-            if (amount > Shear.getRemindInShop()) {
+            if (amount > new Shear().getRemindInShop(null)) {
                 return new Result(false , "The purchase limit for this product has been reached");
             }
             if (Shear.coinNeeded * amount > currentGame.currentPlayer.getMoney()){
@@ -890,7 +1400,7 @@ public class Marketing {
             }
             else {
                 foragingSeed.JojaMartLimit -= amount;
-                currentGame.currentPlayer.increaseMoney(- amount * foragingSeed.getPrice(MarketType.JojaMart));
+                currentGame.currentPlayer.increaseMoney(- amount * foragingSeed.getPrice(JojaMart));
             }
             ForagingSeeds foragingSeeds = new ForagingSeeds(foragingSeed) ;
             if (inventory.Items.containsKey(foragingSeeds)) {
@@ -904,7 +1414,7 @@ public class Marketing {
     }
 
     public Result purchaseFromJojaMart(String name , Integer amount) {
-        if (currentGame.currentDate.getHour() < MarketType.JojaMart.getStartHour() || currentGame.currentDate.getHour() > MarketType.JojaMart.getEndHour()) {
+        if (currentGame.currentDate.getHour() < JojaMart.getStartHour() || currentGame.currentDate.getHour() > JojaMart.getEndHour()) {
             return new Result(false , RED + "Sorry. Store is close at this time");
         }
         if (! checkSeason(name) ) {
@@ -919,17 +1429,17 @@ public class Marketing {
         ForagingSeedsType foragingSeed = null;
 
         for (MarketItemType type : MarketItemType.values()) {
-            if (type.getName().equals(name) && type.getMarketTypes().contains(MarketType.JojaMart)) {
+            if (type.getName().equals(name) && type.getMarketTypes().contains(JojaMart)) {
                 Product = type;
             }
         }
         for (ForagingSeedsType foragingSeeds : ForagingSeedsType.values()) {
-            if (foragingSeeds.getMarketTypes().contains(MarketType.JojaMart) && foragingSeeds.getDisplayName().equals(name)) {
+            if (foragingSeeds.getMarketTypes().contains(JojaMart) && foragingSeeds.getDisplayName().equals(name)) {
                 foragingSeed = foragingSeeds;
             }
         }
 
-        return buySeedsOrMarketItem(Product , foragingSeed , amount , MarketType.JojaMart);
+        return buySeedsOrMarketItem(Product , foragingSeed , amount , JojaMart);
 
     }
 
@@ -1061,7 +1571,7 @@ public class Marketing {
 
     private Result buyFishingPole(FishingPoleType poleType , Integer amount) {
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        if (amount > poleType.getshopLimit()) {
+        if (amount > poleType.shopLimit) {
             return new Result(false ,"The purchase limit for this product is reached");
         }
         if (currentGame.currentPlayer.getMoney() < amount * poleType.getPrice()) {

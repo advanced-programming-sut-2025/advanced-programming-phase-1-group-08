@@ -25,6 +25,9 @@ public enum Weather {
 
         return fishing;
     }
+    public String getIconPath() {
+        return "Erfan/Clock/Weather Icon/" + this.name() + ".png";
+    }
     public String getDisplayName() {
 
         if (this.equals(Sunny))

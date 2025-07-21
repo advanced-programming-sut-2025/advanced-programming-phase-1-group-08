@@ -1,20 +1,18 @@
 package com.Graphic.model.Plants;
 
-import com.Graphic.model.DateHour;
+import com.Graphic.model.Weather.DateHour;
 import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
-import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
 
 
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.HelpersClass.Color_Eraser.BG_BRIGHT_PURPLE;
-import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
-import static com.Graphic.model.DateHour.getDayDifferent;
+import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 
 public class GiantProduct extends Items { // TODO ابعاد
 
@@ -166,6 +164,21 @@ public class GiantProduct extends Items { // TODO ابعاد
 
     @Override
     public int getSellPrice() {
+        return 0;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return -1;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
         return 0;
     }
 }

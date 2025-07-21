@@ -113,7 +113,7 @@ public enum ForagingSeedsType {
     },
     CoffeeBean      ( "Coffee Bean",       false, CropsType.CoffeeBean,2,
             5, false, new int[]{1, 2, 2, 3, 2} , 1, 5 ,
-            "Erfan/plants/crops//.png", List.of(MarketType.JojaMart ) ) {
+            "Erfan/plants/crops/coffeeBean/Coffee_Bean.png", List.of(MarketType.JojaMart ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -170,7 +170,7 @@ public enum ForagingSeedsType {
     },
     BeanStarter     ( "Bean Starter",     false, GreenBean,3,
             5, false, new int[]{1, 1, 1, 3, 4} , 5 , 5 ,
-            "Erfan/plants/crops/GreenBean/.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/GreenBean/Green_Bean.png", List.of(MarketType.JojaMart,MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -383,7 +383,7 @@ public enum ForagingSeedsType {
     },
     RiceShoot       ( "Rice Shoot",       true, UnmilledRice,10000,
             4, false, new int[]{1, 2, 2, 3} , 0 , 5 ,
-            "Erfan/plants/crops/unmilledRice/.png", List.of(MarketType.PierreGeneralStore ) ) {
+            "Erfan/plants/crops/unmilledRice/Unmilled_Rice.png", List.of(MarketType.PierreGeneralStore ) ) {
 
         @Override
         public ArrayList<Season> getSeason() {
@@ -1348,6 +1348,13 @@ public enum ForagingSeedsType {
     }
     public void increasePierrGeneralLimit(int amount) {
         PierrGeneralLimit = Math.max(0 , JojaMartLimit + amount);
+    }
+
+    public int getJojaMartLimit() {
+        return JojaMartLimit;
+    }
+    public int getPierrGeneralLimit() {
+        return PierrGeneralLimit;
     }
 
     public List<MarketType> getMarketTypes() {

@@ -11,6 +11,8 @@ public class App {
 
 
     public static Skin skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
+    public static Skin newSkin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
+
     // TODO موقع سیو دیتا اینارو باید همشو سیو کرد و موقع ترمینیت پاک کرد
 //    public static Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
 //    public static Map<Set<User>, List<Trade>> trades = new HashMap<>();

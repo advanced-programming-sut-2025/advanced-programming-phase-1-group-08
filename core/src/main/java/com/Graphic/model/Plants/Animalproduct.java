@@ -1,6 +1,7 @@
 package com.Graphic.model.Plants;
 
 import com.Graphic.model.Enum.ItemType.AnimalProductType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.ItemType.Quantity;
 import com.Graphic.model.Items;
 
@@ -35,5 +36,20 @@ public class Animalproduct extends Items {
     @Override
     public int getSellPrice() {
         return (int) (type.getInitialPrice() * quantity.getValue() );
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return -1;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return 0;
     }
 }

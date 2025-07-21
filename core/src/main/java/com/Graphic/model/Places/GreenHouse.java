@@ -1,5 +1,6 @@
 package com.Graphic.model.Places;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.User;
 import com.Graphic.model.MapThings.WaterTank;
@@ -63,4 +64,13 @@ public class GreenHouse extends GameObject {
         return coordinateY;
     }
 
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return 0;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
 }

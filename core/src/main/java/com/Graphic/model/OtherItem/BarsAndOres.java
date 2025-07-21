@@ -1,6 +1,7 @@
 package com.Graphic.model.OtherItem;
 
 import com.Graphic.model.Enum.ItemType.BarsAndOreType;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
 
 public class BarsAndOres extends Items {
@@ -32,5 +33,20 @@ public class BarsAndOres extends Items {
     @Override
     public int getTakesTime() {
         return 4;
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return type.getPrice();
     }
 }

@@ -3,6 +3,9 @@ package com.Graphic.model.Enum;
 public enum GameTexturePath {
 
     Clock ("Erfan/Clock/Clock2.png"),
+    Cloud ("Erfan/Lightning/cloud2.png"),
+    Lightning ("Erfan/Lightning/light.png"),
+    CloudShadow ("Erfan/Lightning/shadow.png"),
     ;
 
 

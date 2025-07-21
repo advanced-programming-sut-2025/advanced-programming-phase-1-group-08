@@ -25,4 +25,27 @@ public enum Direction {
     public int getY() {
         return y;
     }
+
+    public static Direction getDirByCord(float mainX, float mainY, float cordX, float cordY) {
+
+        float dirX = cordX - mainX;
+        float dirY = cordY - mainY;
+        dirX = dirX < 0 ? -dirX : dirX;
+        dirY = dirY < 0 ? -dirY : dirY;
+
+        if (mainX < cordX && dirX >= dirY)
+            return Right;
+
+        else if (mainX > cordX && dirX >= dirY)
+            return Left;
+
+        else if (mainY < cordY && dirY >= dirX)
+            return Up;
+
+        else if (mainY > cordY && dirY >= dirX)
+            return Down;
+
+        else
+            return null;
+    }
 }

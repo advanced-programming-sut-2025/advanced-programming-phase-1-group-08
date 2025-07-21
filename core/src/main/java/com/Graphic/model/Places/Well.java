@@ -1,5 +1,6 @@
 package com.Graphic.model.Places;
 
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
 
 import static com.Graphic.model.HelpersClass.Color_Eraser.WHITE;
@@ -43,5 +44,15 @@ public class Well extends GameObject {
     @Override
     public String getIcon() {
         return WHITE + "W";
+    }
+
+    @Override
+    public int getRemindInShop(MarketType marketType) {
+        return remindInShop;
+    }
+
+    @Override
+    public void setRemindInShop(int amount, MarketType marketType) {
+        remindInShop = amount;
     }
 }
