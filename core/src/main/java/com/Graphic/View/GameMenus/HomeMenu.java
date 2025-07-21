@@ -19,10 +19,12 @@ import com.Graphic.model.User;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -59,6 +61,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     Texture bench;
     Texture carpet;
     Texture furniture;
+    Texture wndw;
     Texture wall;
     Texture houseWall;
     Texture wallSeparator;
@@ -69,6 +72,9 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
     private OrthographicCamera camera;
+
+    TiledMap roomMap;
+    OrthogonalTiledMapRenderer roomRenderer;
 
 
 
@@ -279,18 +285,6 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        homeBG = new Texture(Gdx.files.internal("Ariyo/home.jpg"));
-
-        background = new Texture(Gdx.files.internal("Ariyo/Flooring/Flooring_22.png"));
-        borderFullTexture = new Texture(Gdx.files.internal("Ariyo/Gravel_Path_Tile.png"));
-        borderTexture = new TextureRegion(borderFullTexture, 0, 30, 30, 80);
-        horizontalBorder = new Sprite(borderTexture);
-        horizontalBorder.setOriginCenter();  // چرخش از مرکز انجام بشه
-        horizontalBorder.setRotation(90);   // چرخش ۹۰ درجه ساعت‌گرد
-        corners = new Texture(Gdx.files.internal("Ariyo/Stepping_Stone_Path.png"));
-        wall = new Texture(Gdx.files.internal("Ariyo/bedroomWall.png"));
-        wallSeparator = new Texture(Gdx.files.internal("Ariyo/WallSeperator.jpg"));
-        houseWall = new Texture(Gdx.files.internal("Ariyo/walls_and_floors-2.psd"));
 
         kitchen =  new Texture(Gdx.files.internal("Ariyo/Flooring/Flooring_23.png"));
         fridge = new Texture(Gdx.files.internal("Ariyo/Mini-Fridge.png"));
@@ -301,7 +295,8 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         craftShop = new Texture(Gdx.files.internal("Ariyo/Flooring/Flooring_52.png"));
         carpet = new Texture(Gdx.files.internal("Ariyo/carpet.jpg"));
         furniture = new Texture(Gdx.files.internal("Ariyo/furniture-removebg-preview.png"));
-        bed = new Texture(Gdx.files.internal("Ariyo/bed-removebg-preview.png"));
+        bed = new Texture(Gdx.files.internal("Ariyo/bedd.png"));
+        wndw = new Texture(Gdx.files.internal("Ariyo/window.png"));
 
         recipePaper = new Texture(Gdx.files.internal("Ariyo/mail.png"));
 
@@ -314,6 +309,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
         tiledMap = new TmxMapLoader().load("Ariyo/Maps/FarmHouse1.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+
 
         float mapPixelWidth = tiledMap.getProperties().get("width", Integer.class) *
             tiledMap.getProperties().get("tilewidth", Integer.class);
@@ -369,17 +365,12 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
 
         // decorating
-//        Main.getBatch().draw(fridge, startX + (float) (areaWidth * 8) /10, startY + (float) (areaHeight * 7.5) /10, areaWidth/15, areaHeight/5);
-//        Main.getBatch().draw(chest, startX + (float) (areaWidth) /15, startY + (float) areaHeight/5);
-//        Main.getBatch().draw(furniture, startX + (float) (areaWidth*10) /15, (float) (startY + (float) areaHeight*(1.8)/7), areaWidth/8, areaHeight/5);
-//        Main.getBatch().draw(carpet, startX + (float) (areaWidth*10) /15, (float) (startY + (float) areaHeight*1.8/10), areaWidth/9, areaHeight/13);
-//        Main.getBatch().draw(bed, (float) (startX*11/10), (float) (startY + areaHeight*7.4/10), areaWidth/12, areaHeight/4);
         if (mode == HouseModes.home) {
-//            Main.getBatch().draw(homeBG, startX * 5 / 10f, startY * 2 / 10f, areaWidth * 1.1f, areaHeight * 1.3f);
             camera.update();
             mapRenderer.setView(camera);
             mapRenderer.render();
-
+            Main.getBatch().draw(bed, startX + areaWidth/8.5f, startY - areaHeight/30f);
+            Main.getBatch().draw(wndw, startX + areaWidth/20f, startY + areaHeight/24f);
         }
 
         if (mode == HouseModes.cook) {
@@ -406,6 +397,16 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         Main.getBatch().end();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
+//        Main.getBatch().begin();
+//        if (mode == HouseModes.home) {
+//            Main.getBatch().draw(fridge, startX + (float) (areaWidth * 8) /10, startY + (float) (areaHeight * 7.5) /10, areaWidth/15, areaHeight/5);
+//            Main.getBatch().draw(chest, startX + (float) (areaWidth) /15, startY + (float) areaHeight/5);
+//            Main.getBatch().draw(furniture, startX + (float) (areaWidth*10) /15, (float) (startY + (float) areaHeight*(1.8)/7), areaWidth/8, areaHeight/5);
+//            Main.getBatch().draw(carpet, startX + (float) (areaWidth*10) /15, (float) (startY + (float) areaHeight*1.8/10), areaWidth/9, areaHeight/13);
+//            Main.getBatch().draw(bed, (float) (startX*11/10), (float) (startY + areaHeight*7.4/10), areaWidth/12, areaHeight/4);
+//
+//        }
+//        Main.getBatch().end();
         mode = HomeController.handleHomeInputs(mode);
     }
 
