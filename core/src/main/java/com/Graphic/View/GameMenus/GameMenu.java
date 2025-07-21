@@ -24,6 +24,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -364,6 +367,8 @@ public class GameMenu implements  Screen, InputProcessor {
 
          if (Gdx.input.isKeyJustPressed(Keys.ToolsMenu))
              createToolsMenu();
+         if (Gdx.input.isKeyJustPressed(Input.Keys.H))
+             Main.getMain().setScreen(new HomeMenu());
     }
 
     public void resize(int i, int i1) {
