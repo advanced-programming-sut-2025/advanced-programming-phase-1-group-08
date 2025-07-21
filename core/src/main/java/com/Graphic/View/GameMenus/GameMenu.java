@@ -7,6 +7,7 @@ import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.GameAssetManager;
 import com.Graphic.model.HelpersClass.AnimatedImage;
+import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.Items;
@@ -190,14 +191,7 @@ public class GameMenu implements  Screen, InputProcessor {
             createToolsTable(content, currentItem, availableTools);
 
 
-            Texture sheet = new Texture("Erfan/Beauty/Skeleton/5.png");
-            TextureRegion[][] tmp = TextureRegion.split(sheet, 13, 13);
-
-            Array<TextureRegion> frames = new Array<>();
-            for (int i = 0; i < 4; i++)
-                frames.add(tmp[0][i]);
-
-            AnimatedImage animatedImage = new AnimatedImage(0.15f, frames, Animation.PlayMode.LOOP);
+            AnimatedImage animatedImage = new AnimatedImage(0.15f, SampleAnimation.Bat, Animation.PlayMode.LOOP);
 
             toolsPopup.add(content).expand().fill();
             toolsPopup.row();
