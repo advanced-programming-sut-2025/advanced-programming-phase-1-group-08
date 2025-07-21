@@ -122,7 +122,6 @@ public class InputGameController {
     public static boolean checkWalking() {
 
         try {
-            System.out.println(currentGame.currentPlayer.getPositionX() + " " + currentGame.currentPlayer.getPositionY());
 
             int x = (int) (currentGame.currentPlayer.getPositionX() + currentGame.currentPlayer.getDirection().getX() *
                 5 * Gdx.graphics.getDeltaTime());

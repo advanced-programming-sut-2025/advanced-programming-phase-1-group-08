@@ -6,6 +6,7 @@ import com.Graphic.model.App;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.GameAssetManager;
+import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.Items;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -51,6 +53,8 @@ public class GameMenu implements  Screen, InputProcessor {
     public long startTime;
     public long lastTime;
 
+    public Label energyLabel;
+
     private Group clockGroup;
     private Image seasonImage;
     private Image weatherImage;
@@ -64,6 +68,8 @@ public class GameMenu implements  Screen, InputProcessor {
 
     private boolean EscMenuIsActivated;
     private Window EscPopup;
+
+    private boolean anyMenuIsActivated; // TODO  تبدیل به تابع کن و خروجی || همه بولین هارو بفرسته
 
 
     private GameMenu() {
@@ -93,6 +99,7 @@ public class GameMenu implements  Screen, InputProcessor {
             updateClock(1);
 
         inputController();
+        updateEnergyLabel();
 
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -104,7 +111,6 @@ public class GameMenu implements  Screen, InputProcessor {
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-
     }
 
     private void initialize () {
@@ -117,6 +123,13 @@ public class GameMenu implements  Screen, InputProcessor {
         clockGroup = new Group();
         camera = new OrthographicCamera();
 
+
+        energyLabel = new Label("Energy : 100", App.newSkin);
+        energyLabel.setPosition(
+            (float) Gdx.graphics.getWidth() - energyLabel.getWidth() - 10,
+            10);
+
+        stage.addActor(energyLabel);
 
         timeLabel = new Label("", App.skin);
         dateLabel = new Label("", App.skin);
@@ -136,8 +149,21 @@ public class GameMenu implements  Screen, InputProcessor {
             updateClock(2);
         else if (Gdx.input.isKeyJustPressed(Keys.lighting))
             createCloud();
-
     }
+
+    private void updateEnergyLabel () {
+
+        energyLabel.setText("Energy : " + currentGame.currentPlayer.getHealth());
+        Label.LabelStyle style = energyLabel.getStyle();
+
+        if (currentGame.currentPlayer.getHealth() <= 20)
+            style.fontColor = Color.RED;
+        else
+            style.fontColor = Color.GREEN;
+
+        energyLabel.setStyle(style);
+    }
+
 
     private void createToolsMenu () {
 
@@ -150,7 +176,7 @@ public class GameMenu implements  Screen, InputProcessor {
 
             int colNumber = availableTools.size() / 2 + 1;
 
-            toolsPopup = new Window("", App.skin);
+            toolsPopup = new Window("", App.newSkin);
             toolsPopup.setSize(200 + colNumber * 100, 300);
             toolsPopup.setPosition(
                 (stage.getWidth() - toolsPopup.getWidth()) / 2,
@@ -160,7 +186,19 @@ public class GameMenu implements  Screen, InputProcessor {
             Table content = new Table();
             createToolsTable(content, currentItem, availableTools);
 
+
+            Texture sheet = new Texture("Erfan/Beauty/Skeleton/5.png");
+            TextureRegion[][] tmp = TextureRegion.split(sheet, 13, 13);
+
+            Array<TextureRegion> frames = new Array<>();
+            for (int i = 0; i < 4; i++)
+                frames.add(tmp[0][i]);
+
+            AnimatedImage animatedImage = new AnimatedImage(0.15f, frames, Animation.PlayMode.LOOP);
+
             toolsPopup.add(content).expand().fill();
+            toolsPopup.row();
+            toolsPopup.add(animatedImage).size(32, 32).right().padRight(10).padBottom(10);
 
             stage.addActor(helperBackGround);
             stage.addActor(toolsPopup);
@@ -213,10 +251,10 @@ public class GameMenu implements  Screen, InputProcessor {
             addToolName(content, entries, i, labelStyle);
     }
     private void addToolName(Table content, Array<Map.Entry<String, String>> entries,
-                             int i, Label.LabelStyle labelStyle) {
+                             int i, Label.LabelStyle labelStyle)  {
         Map.Entry<String, String> entry = entries.get(i);
         Label label1 = new Label(entry.getKey(), labelStyle);
-        label1.setColor(Color.BLACK);
+        label1.setColor(Color.WHITE);
         label1.setSize(15, 8);
         content.add(label1);
     }
@@ -334,8 +372,6 @@ public class GameMenu implements  Screen, InputProcessor {
             screenHeight - clockGroup.getHeight() - 10);
 
         stage.addActor(clockGroup);
-
-
     }
     private void updateClock(int hourPassed) {
 
@@ -475,6 +511,16 @@ public class GameMenu implements  Screen, InputProcessor {
             case Up -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 25;
             case Down -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 23;
         };
+    }
+
+    private void creatSkillMenu () {
+
+    }
+    private void createInventory () {
+
+    }
+    private void createSocialMenu () {
+
     }
 
 
