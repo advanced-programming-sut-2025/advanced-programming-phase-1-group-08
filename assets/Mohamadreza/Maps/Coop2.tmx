@@ -6,7 +6,7 @@
     <property name="Warp" type="string" value="2 10 Farm 21 11" />
   </properties>
   <tileset firstgid="1" name="Coop" tilewidth="16" tileheight="16" tilecount="76" columns="4">
-    <image source="coopTiles" width="64" height="304" />
+    <image source="coopTiles.png" width="64" height="304" />
     <tile id="12">
       <properties>
         <property name="Type" type="string" value="Wood" />
@@ -74,13 +74,13 @@
 49,9,10,11,49,49,49,49,49,49,49,49,49,49,49,49
 </data>
   </layer>
-  <objectgroup id="4" name="Back" visible="false" locked="false">
+  <objectgroup id="4" name="Back" locked="false">
     <object id="1" name="TileData" x="32" y="128" width="16" height="16" rotation="0">
       <properties>
         <property name="NPCBarrier" type="string" value="T" />
       </properties>
     </object>
   </objectgroup>
-  <objectgroup id="5" name="Buildings" visible="false" locked="false" />
-  <objectgroup id="6" name="Front" visible="false" locked="false" />
+  <objectgroup id="5" name="Buildings" locked="false" />
+  <objectgroup id="6" name="Front" locked="false" />
 </map>

@@ -5,9 +5,9 @@ import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.View.LoginMenu;
 import com.Graphic.View.MainMenu;
-import com.Graphic.View.RegisterMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class Main extends Game {
 
     private static Main main;
-    private static SpriteBatch batch;
+    private static Batch batch;
     private static Skin skin;
     private static InputGameController x;
 
@@ -41,7 +41,7 @@ public class Main extends Game {
         batch.dispose();
         skin.dispose();
     }
-    public static SpriteBatch getBatch() {
+    public static Batch getBatch() {
         return batch;
     }
     public static Skin getSkin() {return skin;}
