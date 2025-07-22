@@ -129,7 +129,7 @@ public class InputGameController {
             int y = (int) (currentGame.currentPlayer.getPositionY() + currentGame.currentPlayer.getDirection().getY() *
                 5 * Gdx.graphics.getDeltaTime());
 
-            if (getTileByCoordinates(x, y).getGameObject() instanceof Walkable) {
+            if (getTileByCoordinates(x, y).getGameObject() instanceof Walkable || getTileByCoordinates(x, y).getGameObject() instanceof door) {
                 return true;
             }
         }

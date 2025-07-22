@@ -11,6 +11,7 @@ import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.Items;
 import com.Graphic.model.Keys;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
@@ -139,6 +140,8 @@ public class GameMenu implements  Screen, InputProcessor {
             updateClock(2);
         else if (Gdx.input.isKeyJustPressed(Keys.lighting))
             createCloud();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.H))
+            Main.getMain().setScreen(new HomeMenu());
 
     }
 
