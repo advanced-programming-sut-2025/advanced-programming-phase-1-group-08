@@ -57,6 +57,7 @@ public class InputGameController {
 
     public void init () {
         GameControllerLogic.init();
+        startNewGame("a");
         gameMenu.isInFarmExterior = true;
     }
     public void update(OrthographicCamera camera, float v) {

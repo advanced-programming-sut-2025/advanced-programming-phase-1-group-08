@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -45,19 +46,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
-import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.Enum.GameTexturePath.Cloud;
-import static com.Graphic.model.Enum.GameTexturePath.CloudShadow;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 
 public class GameMenu implements  Screen, InputProcessor {
 
-    public static GameMenu gameMenu;
+    public static GameMenu gameMenu; // اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
 
     public static OrthographicCamera camera;
+    private final int hourSecond = 120000;
+    private Stage stage;
+
     private Vector3 mousePos;
     private String BarnOrCagePath;
     public boolean isInFarmExterior;
@@ -68,8 +69,6 @@ public class GameMenu implements  Screen, InputProcessor {
     private TiledMap map;
     private BitmapFont animalFont;
     private OrthogonalTiledMapRenderer renderer;
-    private final int hourSecond = 120000;
-    private Stage stage;
 
     private Image helperBackGround;
 
@@ -92,7 +91,17 @@ public class GameMenu implements  Screen, InputProcessor {
     private boolean EscMenuIsActivated;
     private Window EscPopup;
 
-    private boolean anyMenuIsActivated; // TODO  تبدیل به تابع کن و خروجی || همه بولین هارو بفرسته
+    private boolean inventoryIsActivated;
+    private Window inventoryPopup;
+
+    private boolean skillMenuIsActivated;
+    private Window skillPopup;
+
+    private boolean socialMenuIsActivated;
+    private Window socialPopup;
+
+    private boolean mapIsActivated;
+    private Window mapPopup;
 
 
     private GameMenu() {
@@ -111,7 +120,6 @@ public class GameMenu implements  Screen, InputProcessor {
         controller.init();
         mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        //controller.startNewGame("a");
         Gdx.input.setInputProcessor(stage);
         createClock();
         firstLoad = true;
@@ -165,9 +173,7 @@ public class GameMenu implements  Screen, InputProcessor {
 
 
         energyLabel = new Label("Energy : 100", App.newSkin);
-        energyLabel.setPosition(
-            (float) Gdx.graphics.getWidth() - energyLabel.getWidth() - 10,
-            10);
+        energyLabel.setPosition((float) Gdx.graphics.getWidth() - energyLabel.getWidth() - 10, 10);
 
         stage.addActor(energyLabel);
 
@@ -177,18 +183,58 @@ public class GameMenu implements  Screen, InputProcessor {
         weekDayLabel = new Label("", App.skin);
 
         toolsMenuIsActivated = false;
+        inventoryIsActivated = false;
+        skillMenuIsActivated = false;
+        mapIsActivated = false;
+        socialMenuIsActivated = false;
+        EscMenuIsActivated = false;
     }
 
     private void inputController () {
 
-        if (Gdx.input.isKeyJustPressed(Keys.ToolsMenu))
-            createToolsMenu();
-        else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
-            createEscMenu();
-        else if (Gdx.input.isKeyJustPressed(Keys.increaseTime))
-            updateClock(2);
-        else if (Gdx.input.isKeyJustPressed(Keys.lighting))
-            createCloud();
+        if (!anyMenuIsActivated()) {
+
+            if (Gdx.input.isKeyJustPressed(Keys.ToolsMenu))
+                createToolsMenu();
+            else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
+                createEscMenu();
+            else if (Gdx.input.isKeyJustPressed(Keys.increaseTime))
+                updateClock(2);
+            else if (Gdx.input.isKeyJustPressed(Keys.lighting))
+                createCloud();
+        }
+        else
+            if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
+                ExitOfMenu();
+    }
+    private void ExitOfMenu() {
+
+        if (toolsMenuIsActivated) {
+            helperBackGround.remove();
+            toolsPopup.remove();
+            toolsMenuIsActivated = false;
+        }
+        else if (inventoryIsActivated) {
+            inventoryPopup.remove();
+            inventoryIsActivated = false;
+        }
+        else if (skillMenuIsActivated) {
+            skillPopup.remove();
+            skillMenuIsActivated = false;
+        }
+        else if (socialMenuIsActivated) {
+            socialPopup.remove();
+            socialMenuIsActivated = false;
+        }
+        else if (mapIsActivated) {
+            mapPopup.remove();
+            mapIsActivated = false;
+        }
+        else if (EscMenuIsActivated) {
+            helperBackGround.remove();
+            EscPopup.remove();
+            EscMenuIsActivated = false;
+        }
     }
 
     private void updateEnergyLabel () {
@@ -204,44 +250,34 @@ public class GameMenu implements  Screen, InputProcessor {
         energyLabel.setStyle(style);
     }
 
-
     private void createToolsMenu () {
 
-        if (!toolsMenuIsActivated) {
+        createGrayBackGround();
 
-            createGrayBackGround();
+        HashMap<String, String> availableTools = controller.availableTools();
+        Items currentItem = currentGame.currentPlayer.currentItem;
 
-            HashMap<String, String> availableTools = controller.availableTools();
-            Items currentItem = currentGame.currentPlayer.currentItem;
+        int colNumber = availableTools.size() / 2 + 1;
 
-            int colNumber = availableTools.size() / 2 + 1;
-
-            toolsPopup = new Window("", App.newSkin);
-            toolsPopup.setSize(200 + colNumber * 100, 300);
-            toolsPopup.setPosition(
-                (stage.getWidth() - toolsPopup.getWidth()) / 2,
-                (stage.getHeight() - toolsPopup.getHeight()) / 2);
+        toolsPopup = new Window("", App.newSkin);
+        toolsPopup.setSize(200 + colNumber * 100, 300);
+        toolsPopup.setPosition(
+            (stage.getWidth() - toolsPopup.getWidth()) / 2,
+            (stage.getHeight() - toolsPopup.getHeight()) / 2);
 
 
-            Table content = new Table();
-            createToolsTable(content, currentItem, availableTools);
+        Table content = new Table();
+        createToolsTable(content, currentItem, availableTools);
 
 
-            AnimatedImage animatedImage = new AnimatedImage(0.15f, SampleAnimation.Bat, Animation.PlayMode.LOOP);
+        AnimatedImage animatedImage = new AnimatedImage(0.15f, SampleAnimation.Bat, Animation.PlayMode.LOOP);
 
-            toolsPopup.add(content).expand().fill();
-            toolsPopup.row();
-            toolsPopup.add(animatedImage).size(32, 32).right().padRight(10).padBottom(10);
+        toolsPopup.add(content).expand().fill();
+        toolsPopup.row();
+        toolsPopup.add(animatedImage).size(32, 32).right().padRight(10).padBottom(10);
 
-            stage.addActor(helperBackGround);
-            stage.addActor(toolsPopup);
-            toolsMenuIsActivated = true;
-        }
-        else {
-            helperBackGround.remove();
-            toolsPopup.remove();
-            toolsMenuIsActivated = false;
-        }
+        stage.addActor(toolsPopup);
+        toolsMenuIsActivated = true;
     }
     private void createToolsTable (Table content, Items currentItem, HashMap<String,String> tools) {
 
@@ -339,62 +375,6 @@ public class GameMenu implements  Screen, InputProcessor {
         content.add(img).size(30, 30);
     }
 
-    public Vector3 getMousePos() {
-        return mousePos;
-    }
-
-    public TiledMap getMap() {
-        return map;
-    }
-
-    public void setTiledMap(TiledMap tiledMap) {
-        map = tiledMap;
-    }
-
-    public boolean isFirstLoad() {
-        return firstLoad;
-    }
-    public void setFirstLoad(boolean firstLoad) {
-        this.firstLoad = firstLoad;
-    }
-    public OrthogonalTiledMapRenderer getRenderer() {
-        return renderer;
-    }
-    public void setRenderer(OrthogonalTiledMapRenderer renderer) {
-        this.renderer = renderer;
-    }
-    public BitmapFont getAnimalFont() {
-        if (animalFont != null) {
-            return animalFont;
-        }
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Erfan/Fonts/Stardew Valley Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 48;
-        parameter.color = Color.RED;
-
-        animalFont = generator.generateFont(parameter);
-        generator.dispose();
-        return animalFont;
-    }
-
-    private void moveAnimal() {
-        if (isInFarmExterior) {
-            for (Animal animal : shepherdingAnimals) {
-                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
-                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
-                    animal.setTimer(animal.getTimer() + Gdx.graphics.getDeltaTime());
-                }
-                else {
-                    animal.setTimer(0);
-                }
-            }
-        }
-    }
-
-    public ArrayList<Animal> getShepherdingAnimals() {
-        return shepherdingAnimals;
-    }
-
     private void createClock() {
 
         Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
@@ -478,31 +458,22 @@ public class GameMenu implements  Screen, InputProcessor {
 
     private void createEscMenu () {
 
-        if (!EscMenuIsActivated) {
+        createGrayBackGround();
 
-            createGrayBackGround();
-
-            EscPopup = new Window("", App.newSkin);
-            EscPopup.setSize(650, 350);
-            EscPopup.setPosition(
-                (stage.getWidth() - EscPopup.getWidth()) / 2,
-                (stage.getHeight() - EscPopup.getHeight()) / 2);
+        EscPopup = new Window("", App.newSkin);
+        EscPopup.setSize(650, 350);
+        EscPopup.setPosition(
+            (stage.getWidth() - EscPopup.getWidth()) / 2,
+            (stage.getHeight() - EscPopup.getHeight()) / 2);
 
 
-            Table content = new Table();
-            createEscMenuButtons(content);
+        Table content = new Table();
+        createEscMenuButtons(content);
 
-            EscPopup.add(content).expand().fill();
+        EscPopup.add(content).expand().fill();
 
-            stage.addActor(helperBackGround);
-            stage.addActor(EscPopup);
-            EscMenuIsActivated = true;
-        }
-        else {
-            helperBackGround.remove();
-            EscPopup.remove();
-            EscMenuIsActivated = false;
-        }
+        stage.addActor(EscPopup);
+        EscMenuIsActivated = true;
     }
     private void createEscMenuButtons (Table table) {
 
@@ -515,6 +486,12 @@ public class GameMenu implements  Screen, InputProcessor {
         TextButton SocialButton = new TextButton("Social", App.newSkin);
         TextButton backButton = new TextButton("back", App.newSkin);
         TextButton mapButton = new TextButton("Map", App.newSkin);
+
+
+//        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(backButton.getStyle()); // کپی مستقل
+//        Drawable newBackground = new TextureRegionDrawable(new TextureRegion(new Texture("Erfan/Cancel.png")));
+//        style.up = newBackground;
+//        backButton.setStyle(style);
 
 
         table.add(inventoryButton).width(250).center();
@@ -539,7 +516,7 @@ public class GameMenu implements  Screen, InputProcessor {
         inventoryButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                createInventory();
             }
         });
         skillsButton.addListener(new ClickListener() {
@@ -561,12 +538,6 @@ public class GameMenu implements  Screen, InputProcessor {
             }
         });
         stage.addActor(table);
-    }
-
-    private void createGrayBackGround () {
-        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
-        helperBackGround.setColor(0, 0, 0, 0.5f);
-        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
     }
 
     private void drawCurrentItem() {
@@ -607,12 +578,92 @@ public class GameMenu implements  Screen, InputProcessor {
     }
     private void createInventory () {
 
+        inventoryPopup = new Window("", App.newSkin);
+        inventoryPopup.setSize(1300, 700);
+        inventoryPopup.setPosition(
+            (stage.getWidth() - inventoryPopup.getWidth()) / 2,
+            (stage.getHeight() - inventoryPopup.getHeight()) / 2);
+
+        Drawable bg = new TextureRegionDrawable(new TextureRegion(new Texture("Erfan/Inventory/Inventory.png")));
+        inventoryPopup.setBackground(bg);
+
+
+
+        Table content = new Table();
+        createEscMenuButtons(content);
+
+        inventoryPopup.add(content).expand().fill();
+
+        stage.addActor(inventoryPopup);
+        inventoryIsActivated = true;
     }
     private void createSocialMenu () {
 
     }
+    private void createGrayBackGround () {
+        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+        helperBackGround.setColor(0, 0, 0, 0.5f);
+        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+        stage.addActor(helperBackGround);
+    }
 
 
+
+    public Vector3 getMousePos() {
+        return mousePos;
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public void setTiledMap(TiledMap tiledMap) {
+        map = tiledMap;
+    }
+
+    public boolean isFirstLoad() {
+        return firstLoad;
+    }
+    public void setFirstLoad(boolean firstLoad) {
+        this.firstLoad = firstLoad;
+    }
+    public OrthogonalTiledMapRenderer getRenderer() {
+        return renderer;
+    }
+    public void setRenderer(OrthogonalTiledMapRenderer renderer) {
+        this.renderer = renderer;
+    }
+    public BitmapFont getAnimalFont() {
+        if (animalFont != null) {
+            return animalFont;
+        }
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Erfan/Fonts/Stardew Valley Regular.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 48;
+        parameter.color = Color.RED;
+
+        animalFont = generator.generateFont(parameter);
+        generator.dispose();
+        return animalFont;
+    }
+
+    private void moveAnimal() {
+        if (isInFarmExterior) {
+            for (Animal animal : shepherdingAnimals) {
+                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
+                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
+                    animal.setTimer(animal.getTimer() + Gdx.graphics.getDeltaTime());
+                }
+                else {
+                    animal.setTimer(0);
+                }
+            }
+        }
+    }
+
+    public ArrayList<Animal> getShepherdingAnimals() {
+        return shepherdingAnimals;
+    }
 
     public String getBarnOrCagePath() {
         return BarnOrCagePath;
@@ -677,6 +728,9 @@ public class GameMenu implements  Screen, InputProcessor {
         actor.setPosition(centerX - actor.getWidth() / 2f, centerY - actor.getHeight() / 2f);
     }
 
+    public boolean anyMenuIsActivated () {
+        return toolsMenuIsActivated || EscMenuIsActivated;
+    }
     public Stage getStage() {
         return stage;
     }
