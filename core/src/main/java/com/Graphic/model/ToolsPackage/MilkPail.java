@@ -42,7 +42,7 @@ public class MilkPail extends Tools {
 
     @Override
     public String getIcon() {
-        return "MilkPail";
+        return "Mohamadreza/Milk_Pail.png";
     }
 
     @Override

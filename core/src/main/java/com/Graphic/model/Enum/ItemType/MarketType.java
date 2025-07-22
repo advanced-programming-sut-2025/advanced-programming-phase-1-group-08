@@ -162,6 +162,12 @@ public enum MarketType {
         if (id.equals("8")) {
             return "you can't create Barn Or Cage on this coordinate";
         }
+        if (id.equals("9")) {
+            return "You have an animal with this name";
+        }
+        if (id.equals("10")) {
+            return "you don't have enough capacity or suitable place for this animal";
+        }
         return null;
     }
 }
