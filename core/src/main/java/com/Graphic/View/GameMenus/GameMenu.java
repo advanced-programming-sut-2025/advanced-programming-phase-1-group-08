@@ -114,14 +114,9 @@ public class GameMenu implements  Screen, InputProcessor {
         //controller.startNewGame("a");
         Gdx.input.setInputProcessor(stage);
         createClock();
-        animateCloudWithLightning(stage,
-            new Image(TextureManager.get(Cloud.getPath())),
-            new Image(TextureManager.get(CloudShadow.getPath())),
-            currentGame.currentPlayer.getFarm(), 32f);
         firstLoad = true;
         currentBarnOrCage = new BarnOrCage(BarnORCageType.Coop ,0 , 0);
         shepherdingAnimals = new ArrayList<>();
-        //createClock();
 
     }
     public void render(float v) {
