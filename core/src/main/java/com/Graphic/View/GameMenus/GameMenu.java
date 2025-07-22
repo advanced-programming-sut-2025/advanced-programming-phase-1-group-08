@@ -47,6 +47,8 @@ import java.util.Map;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.Enum.GameTexturePath.Cloud;
+import static com.Graphic.model.Enum.GameTexturePath.CloudShadow;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
@@ -398,24 +400,6 @@ public class GameMenu implements  Screen, InputProcessor {
         return shepherdingAnimals;
     }
 
-    private void initialize () {
-
-        startTime = TimeUtils.millis();
-        lastTime = TimeUtils.millis();
-
-        controller = InputGameController.getInstance();
-        stage = new Stage(new ScreenViewport());
-        clockGroup = new Group();
-        camera = new OrthographicCamera();
-
-
-        timeLabel = new Label("", App.skin);
-        dateLabel = new Label("", App.skin);
-        moneyLabel = new Label("", App.skin);
-        weekDayLabel = new Label("", App.skin);
-
-        toolsMenuIsActivated = false;
-    }
     private void createClock() {
 
         Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
