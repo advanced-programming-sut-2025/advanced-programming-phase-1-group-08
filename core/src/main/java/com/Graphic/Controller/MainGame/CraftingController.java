@@ -31,6 +31,7 @@ public class CraftingController {
 
         return null;
     }
+
     public Result showCraftingRecipe() {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         StringBuilder output = new StringBuilder();
@@ -47,6 +48,7 @@ public class CraftingController {
 
         return new Result(true , output.toString());
     }
+
     public Result craftingCraft(String name) {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         CraftType type=null;

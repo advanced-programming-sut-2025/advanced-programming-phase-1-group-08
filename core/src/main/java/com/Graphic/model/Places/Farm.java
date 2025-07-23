@@ -26,7 +26,9 @@ public class Farm {
     public void setMine(Mine mine) {
         this.mine = mine;
     }
-    public void setHome(Home home) {this.home = home;}
+    public void setHome(Home home) {
+        this.home = home;
+    }
     public void setLake(Lake lake) {
         this.lake = lake;
     }

@@ -2,19 +2,18 @@ package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
+import com.Graphic.View.AppMenu;
+import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
-import com.Graphic.model.App;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
-import com.Graphic.model.GameAssetManager;
 import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
-import com.Graphic.model.Items;
-import com.Graphic.model.Keys;
+import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -53,7 +52,7 @@ import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 
-public class GameMenu implements  Screen, InputProcessor {
+public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     public static GameMenu gameMenu;
 
@@ -63,10 +62,15 @@ public class GameMenu implements  Screen, InputProcessor {
     public boolean isInFarmExterior;
     private BarnOrCage currentBarnOrCage;
     private ArrayList<Animal> shepherdingAnimals;
+    private CraftingItem isPlacing;
+    private Vector3 vector;
     private InputGameController controller;
     private boolean firstLoad;
     private TiledMap map;
     private BitmapFont animalFont;
+    private ArrayList<HeartAnimation> heartAnimations;
+    private boolean placeArtisanOnFarm;
+    private Sprite withMouse;
     private OrthogonalTiledMapRenderer renderer;
     private final int hourSecond = 120000;
     private Stage stage;
@@ -114,13 +118,16 @@ public class GameMenu implements  Screen, InputProcessor {
         //controller.startNewGame("a");
         Gdx.input.setInputProcessor(stage);
         createClock();
-        animateCloudWithLightning(stage,
-            new Image(TextureManager.get(Cloud.getPath())),
-            new Image(TextureManager.get(CloudShadow.getPath())),
-            currentGame.currentPlayer.getFarm(), 32f);
+//        animateCloudWithLightning(stage,
+//            new Image(TextureManager.get(Cloud.getPath())),
+//            new Image(TextureManager.get(CloudShadow.getPath())),
+//            currentGame.currentPlayer.getFarm(), 32f);
         firstLoad = true;
         currentBarnOrCage = new BarnOrCage(BarnORCageType.Coop ,0 , 0);
         shepherdingAnimals = new ArrayList<>();
+        heartAnimations = new ArrayList<>();
+        placeArtisanOnFarm = false;
+        withMouse = new Sprite();
         //createClock();
 
     }
@@ -381,7 +388,6 @@ public class GameMenu implements  Screen, InputProcessor {
         generator.dispose();
         return animalFont;
     }
-
     private void moveAnimal() {
         if (isInFarmExterior) {
             for (Animal animal : shepherdingAnimals) {
@@ -395,10 +401,40 @@ public class GameMenu implements  Screen, InputProcessor {
             }
         }
     }
-
     public ArrayList<Animal> getShepherdingAnimals() {
         return shepherdingAnimals;
     }
+    public ArrayList<HeartAnimation> getHeartAnimations() {
+        return heartAnimations;
+    }
+    public boolean isPlaceArtisanOnFarm() {
+        return placeArtisanOnFarm;
+    }
+    public void setPlaceArtisanOnFarm(boolean placeArtisanOnFarm) {
+        this.placeArtisanOnFarm = placeArtisanOnFarm;
+    }
+    public Sprite getWithMouse() {
+        return withMouse;
+    }
+    public void setWithMouse(Sprite withMouse) {
+        this.withMouse = withMouse;
+    }
+    public void setIsPlacing(CraftingItem craftingItem) {
+        this.isPlacing = craftingItem;
+    }
+    public CraftingItem getIsPlacing() {
+        return isPlacing;
+    }
+    public Vector3 getVector() {
+        if (vector == null) {
+            vector = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        }
+        vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
+        camera.unproject(vector);
+        return vector;
+    }
+
+
 
     private void createClock() {
 

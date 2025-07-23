@@ -462,7 +462,10 @@ public class RegisterMenu implements Screen, AppMenu {
         }
     }
 
-    @Override
-    public void check(Scanner scanner) throws IOException {
+//    @Override
+//    public void check(Scanner scanner) throws IOException {
+//    }
+    public Stage getStage() {
+        return stage;
     }
 }

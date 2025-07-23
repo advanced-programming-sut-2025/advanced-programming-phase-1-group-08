@@ -319,7 +319,7 @@ public class ProfileMenu implements Screen, AppMenu {
         if (isError) {
             messageLabel.setColor(1, 0.3f, 0.3f, 1);
         } else {
-            messageLabel.setColor(0.3f, 1, 0.3f, 1); 
+            messageLabel.setColor(0.3f, 1, 0.3f, 1);
         }
     }
 
@@ -353,7 +353,11 @@ public class ProfileMenu implements Screen, AppMenu {
         }
     }
 
-    @Override
-    public void check(Scanner scanner) throws IOException {
+    public Stage getStage() {
+        return stage;
     }
+
+//    @Override
+//    public void check(Scanner scanner) throws IOException {
+//    }
 }

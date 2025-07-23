@@ -6,115 +6,134 @@ import com.Graphic.model.Places.MarketItem;
 import java.util.Map;
 
 public enum CraftType {
-    CherryBomb("Cherry Bomb", 50, Map.of("Copper Ore", 4, "Coal", 1), "💣", "Ariyo/Craftable_item/Cherry_Bomb.png") {
+    CherryBomb("Cherry Bomb", 50, Map.of("Copper Ore", 4, "Coal", 1),
+        "Mohamadreza/CraftIcon/Cherry_Bomb.png", "Ariyo/Craftable_item/Cherry_Bomb.png",false) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelMining() >= 1;
         }
     },
-    Bomb("Bomb", 50, Map.of("Iron Ore", 4, "Coal", 1), "🧨", "Ariyo/Craftable_item/Bomb.png") {
+    Bomb("Bomb", 50, Map.of("Iron Ore", 4, "Coal", 1),
+        "Mohamadreza/CraftIcon/Bomb.png", "Ariyo/Craftable_item/Bomb.png",false) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelMining() >= 2;
         }
     },
-    MegaBomb("Mega Bomb", 50, Map.of("Gold Ore", 4, "Coal", 1), "💥", "Ariyo/Craftable_item/Mega_Bomb.png") {
+    MegaBomb("Mega Bomb", 50, Map.of("Gold Ore", 4, "Coal", 1),
+        "Mohamadreza/CraftIcon/Mega_Bomb.png", "Ariyo/Craftable_item/Mega_Bomb.png",false) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelMining() >= 3;
         }
     },
-    Sprinkler("Sprinkler", 0, Map.of("Copper Bar", 1, "Iron Bar", 1), "💧", "Ariyo/Craftable_item/Sprinkler.png") {
+    Sprinkler("Sprinkler", 0, Map.of("Copper Bar", 1, "Iron Bar", 1),
+        "Mohamadreza/CraftIcon/Sprinkler.png", "Ariyo/Craftable_item/Sprinkler.png",false) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelFarming() >= 1;
         }
     },
-    QualitySprinkler("Quality Sprinkler", 0, Map.of("Iron Bar", 1, "Gold Bar", 1), "💦", "Ariyo/Craftable_item/Quality_Sprinkler.png") {
+    QualitySprinkler("Quality Sprinkler", 0, Map.of("Iron Bar", 1, "Gold Bar", 1),
+        "Mohamadreza/CraftIcon/Quality_Sprinkler.png", "Ariyo/Craftable_item/Quality_Sprinkler.png",false) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelFarming() >= 2;
         }
     },
-    IridiumSprinkler("Iridium Sprinkler", 0, Map.of("Gold Bar", 1, "Iridium Bar", 1), "🌊", "Ariyo/Craftable_item/Iridium_Sprinkler.png") {
+    IridiumSprinkler("Iridium Sprinkler", 0, Map.of("Gold Bar", 1, "Iridium Bar", 1),
+        "Mohamadreza/CraftIcon/Iridium_Sprinkler.png", "Ariyo/Craftable_item/Iridium_Sprinkler.png",false) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelFarming() >= 3;
         }
     },
-    CharcoalKlin("Charcoal Klin", 0, Map.of("Wood", 20, "Copper Bar", 2), "🔥", "Ariyo/Craftable_item/Charcoal_Kiln.png") {
+    CharcoalKlin("Charcoal Klin", 0, Map.of("Wood", 20, "Copper Bar", 2),
+        "Mohamadreza/CraftIcon/Charcoal_Kiln.png", "Ariyo/Craftable_item/Charcoal_Kiln.png",true) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelForaging() >= 1;
         }
     },
-    Furnace("Furnace", 0, Map.of("Copper Ore", 20, "Stone", 25), "♨️", "Ariyo/Craftable_item/Furnace.png") {
+    Furnace("Furnace", 0, Map.of("Copper Ore", 20, "Stone", 25),
+        "Mohamadreza/CraftIcon/Furnace.png", "Ariyo/Craftable_item/Furnace.png",true) {
         @Override
         public boolean checkLevel() {
             return true;
         }
     },
-    Scarecrow("Scarecrow", 0, Map.of("Wood", 50, "Coal", 1, "Fiber", 20), "\uD83E\uDDD1\u200D\uD83C\uDF3E", "Ariyo/Craftable_item/Scarecrow.png") {
+    Scarecrow("Scarecrow", 0, Map.of("Wood", 50, "Coal", 1, "Fiber", 20),
+        "Mohamadreza/CraftIcon/Scarecrow.png", "Ariyo/Craftable_item/Scarecrow.png",false) {
         @Override
         public boolean checkLevel() {
             return true;
         }
     },
-    DeluxeScarecrow("Deluxe Scarecrow", 0, Map.of("Wood", 50, "Coal", 1, "Fiber", 20, "Iridium Ore", 1), "🎃", "Ariyo/Craftable_item/Deluxe_Scarecrow.png") {
+    DeluxeScarecrow("Deluxe Scarecrow", 0, Map.of("Wood", 50, "Coal", 1, "Fiber", 20, "Iridium Ore", 1),
+        "Mohamadreza/CraftIcon/Deluxe_Scarecrow.png", "Ariyo/Craftable_item/Deluxe_Scarecrow.png",false) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelFarming() >= 2;
         }
     },
-    BeeHouse("Bee House", 0, Map.of("Wood", 40, "Coal", 8, "Iron Bar", 1), "🐝", "Ariyo/Craftable_item/Bee_House.png") {
+    BeeHouse("Bee House", 0, Map.of("Wood", 40, "Coal", 8, "Iron Bar", 1),
+        "Mohamadreza/CraftIcon/Bee_House.png", "Ariyo/Craftable_item/Bee_House.png",true) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelFarming() >= 1;
         }
     },
-    ChessPress("Chess Press", 0, Map.of("Wood", 45, "Stone", 45, "Copper Bar", 1), "🪵", "Ariyo/Craftable_item/Cheese_Press.png") {
+    ChessPress("Chess Press", 0, Map.of("Wood", 45, "Stone", 45, "Copper Bar", 1),
+        "Mohamadreza/CraftIcon/Cheese_Press.png", "Ariyo/Craftable_item/Cheese_Press.png",true) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelFarming() >= 2;
         }
     },
-    Keg("Keg", 0, Map.of("Wood", 30, "Copper Bar", 1, "Iron Bar", 1), "🍺", "Ariyo/Craftable_item/Keg.png") {
+    Keg("Keg", 0, Map.of("Wood", 30, "Copper Bar", 1, "Iron Bar", 1),
+        "Mohamadreza/CraftIcon/Keg.png", "Ariyo/Craftable_item/Keg.png",true) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelFarming() >= 3;
         }
     },
-    Loom("Loom", 0, Map.of("Wood", 60, "Fiber", 30), "🧵", "Ariyo/Craftable_item/Loom.png") {
+    Loom("Loom", 0, Map.of("Wood", 60, "Fiber", 30),
+        "Mohamadreza/CraftIcon/Loom.png", "Ariyo/Craftable_item/Loom.png",true) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelFarming() >= 3;
         }
     },
-    MayonnaiseMachine("Mayonnaise Machine", 0, Map.of("Wood", 15, "Stone", 15, "Copper Bar", 1), "🥚", "Ariyo/Craftable_item/Mayonnaise_Machine.png") {
+    MayonnaiseMachine("Mayonnaise Machine", 0, Map.of("Wood", 15, "Stone", 15, "Copper Bar", 1),
+        "Mohamadreza/CraftIcon/Mayonnaise_Machine.png", "Ariyo/Craftable_item/Mayonnaise_Machine.png",true) {
         @Override
         public boolean checkLevel() {
             return true;
         }
     },
-    OilMaker("Oil Maker", 0, Map.of("Wood", 100, "Gold Bar", 1, "Iron Bar", 1), "🛢️", "Ariyo/Craftable_item/Oil_Maker.png") {
+    OilMaker("Oil Maker", 0, Map.of("Wood", 100, "Gold Bar", 1, "Iron Bar", 1),
+        "Mohamadreza/CraftIcon/Oil_Maker.png", "Ariyo/Craftable_item/Oil_Maker.png",true) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelFarming() >= 3;
         }
     },
-    PreservesJar("Preserves Jar", 0, Map.of("Wood", 50, "Stone", 40, "Coal", 8), "🥫", "Ariyo/Craftable_item/Preserves_Jar.png") {
+    PreservesJar("Preserves Jar", 0, Map.of("Wood", 50, "Stone", 40, "Coal", 8),
+        "Mohamadreza/CraftIcon/Preserves_Jar.png", "Ariyo/Craftable_item/Preserves_Jar.png",true) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelFarming() >= 2;
         }
     },
-    MysticTreeSeed("Mystic Tree Seed", 100, Map.of("Acorns", 5, "Maple Seeds", 5, "Pine Cones", 5, "Mahogany Seeds", 5), "🌱", "Ariyo/Craftable_item/Ancient_Seeds.png") {
+    MysticTreeSeed("Mystic Tree Seed", 100, Map.of("Acorns", 5, "Maple Seeds", 5, "Pine Cones", 5, "Mahogany Seeds", 5),
+        "Mohamadreza/CraftIcon/Mystic_Tree_Seed.png", "Ariyo/Craftable_item/Ancient_Seeds.png",true) {
         @Override
         public boolean checkLevel() {
             return App.currentGame.currentPlayer.getLevelForaging() >= 4;
         }
     },
-    Dehydrator("Dehydrator", 0, Map.of("Wood", 30, "Stone", 20, "Fiber", 30), "🌞", "Ariyo/Craftable_item/Dehydrator.png") {
+    Dehydrator("Dehydrator", 0, Map.of("Wood", 30, "Stone", 20, "Fiber", 30),
+        "Mohamadreza/Dehydrator.png", "Ariyo/Craftable_item/Dehydrator.png",true) {
         @Override
         public boolean checkLevel() {
             Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
@@ -128,7 +147,8 @@ public enum CraftType {
             return false;
         }
     },
-    GrassStarter("Grass Starter", 0, Map.of("Wood", 1, "Fiber", 1), "🌾", "Ariyo/Craftable_item/Spring_Seeds.png") {
+    GrassStarter("Grass Starter", 0, Map.of("Wood", 1, "Fiber", 1),
+        "Mohamadreza/Grass_Starter.png", "Ariyo/Craftable_item/Spring_Seeds.png",true) {
         @Override
         public boolean checkLevel() {
             Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
@@ -142,7 +162,8 @@ public enum CraftType {
             return false;
         }
     },
-    FishSmoker("Fish Smoker", 0, Map.of("Wood", 50, "Iron Bar", 3, "Coal", 10), "🐟", "Ariyo/Craftable_item/Fish_smoker.png") {
+    FishSmoker("Fish Smoker", 0, Map.of("Wood", 50, "Iron Bar", 3, "Coal", 10),
+        "Mohamadreza/Fish_Smoker.png", "Ariyo/Craftable_item/Fish_smoker.png",true) {
         @Override
         public boolean checkLevel() {
             Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
@@ -163,13 +184,15 @@ public enum CraftType {
     private Map<String , Integer> ingrediants;
     private final String icon;
     private final String address;
+    private final boolean canProduct;
 
-    CraftType(String name, int sellPrice, Map map , String icon, String address) {
+    CraftType(String name, int sellPrice, Map map , String icon, String address , boolean canProduct) {
         this.name = name;
         this.sellPrice = sellPrice;
         this.ingrediants=map;
         this.icon = icon;
         this.address = address;
+        this.canProduct=canProduct;
     }
 
     public abstract boolean checkLevel();
@@ -188,5 +211,9 @@ public enum CraftType {
     }
     public String getIcon() {
         return icon;
+    }
+
+    public boolean isCanProduct() {
+        return canProduct;
     }
 }
