@@ -42,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.*;
@@ -78,18 +77,15 @@ public class GameControllerLogic {
 
         createScreenOverlay(gameMenu.getStage());
     }
-    public static void update() {
-        EnterTheBarnOrCage();
-        if (!gameMenu.isInFarmExterior && gameMenu.isFirstLoad()) {
-            gameMenu.setFirstLoad(false);
-            camera.setToOrtho(false, 300, 150);
-            gameMenu.setTiledMap(new TmxMapLoader().load(gameMenu.getBarnOrCagePath()));
-            gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap(), 1f));
-        }
-    }
 
     public static void update(float delta) {
-
+            EnterTheBarnOrCage();
+            if (! gameMenu.isInFarmExterior && gameMenu.isFirstLoad()) {
+                gameMenu.setFirstLoad(false);
+                camera.setToOrtho(false , 300 , 150);
+                gameMenu.setTiledMap(new TmxMapLoader().load(gameMenu.getBarnOrCagePath()));
+                gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap() , 1f));
+            }
         handleLightning(delta);
 
         if (TimeUtils.millis() - lastTimeUpdate > 1000) {
