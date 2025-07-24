@@ -135,7 +135,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         heartAnimations = new ArrayList<>();
         placeArtisanOnFarm = false;
         withMouse = new Sprite();
-        //createClock();
 
     }
     public void render(float v) {
@@ -172,6 +171,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         stage.draw();
     }
 
+                                                    ///  ///  ///   Erfan
     private void initialize () {
 
         startTime = TimeUtils.millis();
@@ -385,90 +385,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         content.add(img).size(30, 30);
     }
-
-    public Vector3 getMousePos() {
-        return mousePos;
-    }
-
-    public TiledMap getMap() {
-        return map;
-    }
-
-    public void setTiledMap(TiledMap tiledMap) {
-        map = tiledMap;
-    }
-
-    public boolean isFirstLoad() {
-        return firstLoad;
-    }
-    public void setFirstLoad(boolean firstLoad) {
-        this.firstLoad = firstLoad;
-    }
-    public OrthogonalTiledMapRenderer getRenderer() {
-        return renderer;
-    }
-    public void setRenderer(OrthogonalTiledMapRenderer renderer) {
-        this.renderer = renderer;
-    }
-    public BitmapFont getAnimalFont() {
-        if (animalFont != null) {
-            return animalFont;
-        }
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Erfan/Fonts/Stardew Valley Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 48;
-        parameter.color = Color.RED;
-
-        animalFont = generator.generateFont(parameter);
-        generator.dispose();
-        return animalFont;
-    }
-    private void moveAnimal() {
-        if (isInFarmExterior) {
-            for (Animal animal : shepherdingAnimals) {
-                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
-                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
-                    animal.setTimer(animal.getTimer() + Gdx.graphics.getDeltaTime());
-                }
-                else {
-                    animal.setTimer(0);
-                }
-            }
-        }
-    }
-    public ArrayList<Animal> getShepherdingAnimals() {
-        return shepherdingAnimals;
-    }
-    public ArrayList<HeartAnimation> getHeartAnimations() {
-        return heartAnimations;
-    }
-    public boolean isPlaceArtisanOnFarm() {
-        return placeArtisanOnFarm;
-    }
-    public void setPlaceArtisanOnFarm(boolean placeArtisanOnFarm) {
-        this.placeArtisanOnFarm = placeArtisanOnFarm;
-    }
-    public Sprite getWithMouse() {
-        return withMouse;
-    }
-    public void setWithMouse(Sprite withMouse) {
-        this.withMouse = withMouse;
-    }
-    public void setIsPlacing(CraftingItem craftingItem) {
-        this.isPlacing = craftingItem;
-    }
-    public CraftingItem getIsPlacing() {
-        return isPlacing;
-    }
-    public Vector3 getVector() {
-        if (vector == null) {
-            vector = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        }
-        vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
-        camera.unproject(vector);
-        return vector;
-    }
-
 
 
     private void createClock() {
@@ -803,6 +719,97 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         stage.addActor(helperBackGround);
     }
 
+    public boolean anyMenuIsActivated () {
+        return toolsMenuIsActivated || EscMenuIsActivated ||
+            inventoryIsActivated || socialMenuIsActivated ||
+            skillMenuIsActivated || mapIsActivated;
+    }
+
+    public Vector3 getMousePos() {
+        return mousePos;
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public void setTiledMap(TiledMap tiledMap) {
+        map = tiledMap;
+    }
+
+    public boolean isFirstLoad() {
+        return firstLoad;
+    }
+    public void setFirstLoad(boolean firstLoad) {
+        this.firstLoad = firstLoad;
+    }
+    public OrthogonalTiledMapRenderer getRenderer() {
+        return renderer;
+    }
+    public void setRenderer(OrthogonalTiledMapRenderer renderer) {
+        this.renderer = renderer;
+    }
+    public BitmapFont getAnimalFont() {
+        if (animalFont != null) {
+            return animalFont;
+        }
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Erfan/Fonts/Stardew Valley Regular.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 48;
+        parameter.color = Color.RED;
+
+        animalFont = generator.generateFont(parameter);
+        generator.dispose();
+        return animalFont;
+    }
+    private void moveAnimal() {
+        if (isInFarmExterior) {
+            for (Animal animal : shepherdingAnimals) {
+                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
+                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
+                    animal.setTimer(animal.getTimer() + Gdx.graphics.getDeltaTime());
+                }
+                else {
+                    animal.setTimer(0);
+                }
+            }
+        }
+    }
+    public ArrayList<Animal> getShepherdingAnimals() {
+        return shepherdingAnimals;
+    }
+    public ArrayList<HeartAnimation> getHeartAnimations() {
+        return heartAnimations;
+    }
+    public boolean isPlaceArtisanOnFarm() {
+        return placeArtisanOnFarm;
+    }
+    public void setPlaceArtisanOnFarm(boolean placeArtisanOnFarm) {
+        this.placeArtisanOnFarm = placeArtisanOnFarm;
+    }
+    public Sprite getWithMouse() {
+        return withMouse;
+    }
+    public void setWithMouse(Sprite withMouse) {
+        this.withMouse = withMouse;
+    }
+    public void setIsPlacing(CraftingItem craftingItem) {
+        this.isPlacing = craftingItem;
+    }
+    public CraftingItem getIsPlacing() {
+        return isPlacing;
+    }
+    public Vector3 getVector() {
+        if (vector == null) {
+            vector = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        }
+        vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
+        camera.unproject(vector);
+        return vector;
+    }
+
+
+
 
 
 
@@ -871,9 +878,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         actor.setPosition(centerX - actor.getWidth() / 2f, centerY - actor.getHeight() / 2f);
     }
 
-    public boolean anyMenuIsActivated () {
-        return toolsMenuIsActivated || EscMenuIsActivated;
-    }
     public Stage getStage() {
         return stage;
     }
