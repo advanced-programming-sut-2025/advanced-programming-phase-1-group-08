@@ -218,8 +218,13 @@ public class MainMenu implements Screen, AppMenu {
         }
     }
 
-    @Override
-    public void check(Scanner scanner) throws IOException {
+//    @Override
+//    public void check(Scanner scanner) throws IOException {
+//
+//    }
 
+    @Override
+    public Stage getStage() {
+        return stage;
     }
 }

@@ -1,5 +1,7 @@
 package com.Graphic.model.MapThings;
 
+import com.Graphic.model.ToolsPackage.CraftingItem;
+
 public class Tile { // TODO
 
     private int x;

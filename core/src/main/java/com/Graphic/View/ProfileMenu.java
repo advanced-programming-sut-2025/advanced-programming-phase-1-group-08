@@ -354,7 +354,11 @@ public class ProfileMenu implements Screen, AppMenu {
         }
     }
 
-    @Override
-    public void check(Scanner scanner) throws IOException {
+    public Stage getStage() {
+        return stage;
     }
+
+//    @Override
+//    public void check(Scanner scanner) throws IOException {
+//    }
 }

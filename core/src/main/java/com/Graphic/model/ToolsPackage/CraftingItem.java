@@ -13,9 +13,11 @@ public class CraftingItem extends Items {
     private int x;
     private int y;
     private Map<Items , DateHour> buffer=new IdentityHashMap<>();
+    private boolean isWaiting;
 
     public CraftingItem(CraftType craftType) {
         this.type = craftType;
+        isWaiting = false;
     }
 
 
@@ -89,5 +91,13 @@ public class CraftingItem extends Items {
     @Override
     public int getMarketPrice(MarketType marketType) {
         return 0;
+    }
+
+    public boolean isWaiting() {
+        return isWaiting;
+    }
+
+    public void setWaiting(boolean waiting) {
+        isWaiting = waiting;
     }
 }

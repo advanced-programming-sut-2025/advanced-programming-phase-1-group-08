@@ -19,13 +19,20 @@ import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Enum.WeatherTime.Weather;
+import com.Graphic.model.Plants.Tree;
 import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.ToolsPackage.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 
 import java.awt.*;
@@ -35,11 +42,13 @@ import java.util.List;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 
+import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.Enum.Direction.getDirByCord;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
+import static com.badlogic.gdx.Input.Keys.ENTER;
 
 
 public class InputGameController {
@@ -61,17 +70,21 @@ public class InputGameController {
         gameMenu.isInFarmExterior = true;
     }
     public void update(OrthographicCamera camera, float v) {
-        if (gameMenu.isInFarmExterior) {
+        if (gameMenu.isInFarmExterior && !gameMenu.isPlaceArtisanOnFarm()) {
             updateMove();
             print();
             moveCamera(camera);
             GameControllerLogic.update(v);
+            showSelectBoxOnCrafting();
         }
-        else {
+        if (! gameMenu.isInFarmExterior && ! gameMenu.isPlaceArtisanOnFarm()) {
             walkInBarnOrCage();
             showAnimalsInBarnOrCage();
         }
         createAnimalInformationWindow(showAnimalInfo());
+        effectAfterPetAnimal();
+        openArtisanMenu();
+        placeItem();
     }
 
     public void updateMove() {
@@ -345,27 +358,18 @@ public class InputGameController {
             }
 
         for (User player : currentGame.players) {
-            //Main.getBatch().draw( player.getSprite().getTexture() ,player.getSprite().getX() , player.getSprite().getY() , TEXTURE_SIZE * 2 , TEXTURE_SIZE * 2);
-            player.sprite.draw(Main.getBatch());
+            player.getSprite().draw(Main.getBatch());
         }
 
         for (User player : currentGame.players) {
             for (BarnOrCage barnOrCage : player.BarnOrCages) {
                 for (Animal animal : barnOrCage.getAnimals()) {
-                    animal.getSprite().draw(Main.getBatch());
+                    if (animal.isOut()) {
+                        animal.getSprite().draw(Main.getBatch());
+                    }
                 }
             }
         }
-
-//        if (currentGame.currentPlayer.isMoving()) {
-//            moveAnimation();
-//        }
-//        else {
-//            currentGame.currentPlayer.setTimer(0);
-//        }
-
-
-
 
         return null;
     }
@@ -957,65 +961,59 @@ public class InputGameController {
         return new Result(false ,"You don't have Hay in your inventiry!");
     }
 
-//    public Result getProductAnimals(String name) {
-//        Animal animal=getAnimalByName(name);
-//
-//        if (! animal.isFeedPreviousDay()){
-//            return new Result(false , "No Product because you didn't feed " + animal.getName() + " in previous day");
-//        }
-//        if (animal.isProductCollected()) {
-//            return new Result(false , "Product was collected before");
-//        }
-//        if (! checkPeriod(animal)) {
-//            return new Result(false , "It's not time yet. This animal isn't ready to produce again");
-//        }
-//        if ( ! isNeighbor(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY() , animal.getPositionX() , animal.getPositionY())) {
-//            return new Result(false , "The animal is not in Neighbor Tile");
-//        }
-//
-//        if (animal.getType().equals(AnimalType.cow) || animal.getType().equals(AnimalType.goat) || animal.getType().equals(AnimalType.sheep)) {
-//            if (sheepOrGoatOrCow(animal) == null) {
-//                return sheepOrGoatOrCow(animal);
-//            }
-//        }
-//
-//
-//        double Quantity=((double) animal.getFriendShip() / 1000) * (0.5 * (1 + animal.getRandomProduction()));
-//        Quantity quantity=productQuantity(Quantity);
-//
-//        Animalproduct animalproduct = new Animalproduct(animal.getProductType(), quantity);
-//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-//        if (inventory.Items.containsKey(animalproduct)) {
-//            inventory.Items.compute(animalproduct , (k,v) -> v+1);
-//        }
-//        else {
-//            inventory.Items.put(animalproduct, 1);
-//        }
-//
-//        animal.setProductCollected(true);
-//
-//        return new Result(true , "product "+ animal.getProductType().getName() + "collected successfully");
-//    }
-    public Result produces() {
-        StringBuilder result=new StringBuilder();
-        result.append("Produces :\n");
-        for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
-            for (Animal animal : barnOrCage.animals) {
-                result.append(animal.getName()).append(",  Remaining Produces: ");
-                if (animal.isFeedPreviousDay() && checkPeriod(animal) && ! animal.isProductCollected()) {
-                    result.append(animal.getProductType().getName()).append(", ");
+    public Result getProductAnimals(Animal animal) {
 
-                    double Quantity=((double) animal.getFriendShip() / 1000) * (0.5 * (1 + animal.getRandomProduction()));
-                    Quantity quantity=productQuantity(Quantity);
+        if (! animal.isFeedPreviousDay()){
+            return new Result(false , "No Product because you didn't feed " + animal.getName() + " in previous day");
+        }
+        if (animal.isProductCollected()) {
+            return new Result(false , "Product was collected before");
+        }
+        if (! checkPeriod(animal)) {
+            return new Result(false , "It's not time yet. This animal isn't ready to produce again");
+        }
 
-                    result.append("Quantity: ").append(quantity.getName());
 
-                }
-                result.append("\n");
+        if (animal.getType().equals(AnimalType.cow) || animal.getType().equals(AnimalType.goat) || animal.getType().equals(AnimalType.sheep)) {
+            if (sheepOrGoatOrCow(animal) == null) {
+                return sheepOrGoatOrCow(animal);
             }
         }
+
+
+        double Quantity=((double) animal.getFriendShip() / 1000) * (0.5 * (1 + animal.getRandomProduction()));
+        Quantity quantity=productQuantity(Quantity);
+
+        Animalproduct animalproduct = new Animalproduct(animal.getProductType(), quantity);
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        if (inventory.Items.containsKey(animalproduct)) {
+            inventory.Items.compute(animalproduct , (k,v) -> v+1);
+        }
+        else {
+            inventory.Items.put(animalproduct, 1);
+        }
+
+        animal.setProductCollected(true);
+
+        return new Result(true , "product "+ animal.getProductType().getName() + "collected successfully");
+    }
+
+    public Result produces(Animal animal) {
+        StringBuilder result=new StringBuilder();
+        result.append("Remaining Produces:\n");
+
+        if (animal.isFeedPreviousDay() && checkPeriod(animal) && ! animal.isProductCollected()) {
+            result.append(animal.getProductType().getName()).append("\n");
+
+            double Quantity=((double) animal.getFriendShip() / 1000) * (0.5 * (1 + animal.getRandomProduction()));
+            Quantity quantity=productQuantity(Quantity);
+            result.append("Quantity: ").append(quantity.getName());
+
+        }
+
         return new Result(true , result.toString());
     }
+
     public Result sheepOrGoatOrCow(Animal animal) {
         if (animal.getType().equals(AnimalType.sheep) ) {
             if (!(currentGame.currentPlayer.currentTool instanceof Shear)) {
@@ -1097,26 +1095,26 @@ public class InputGameController {
         int x= tile.getX();
         int y= tile.getY();
 
-        for (int i=x ; i < x + domain ; i++) {
-            for (int j=y ; j < y + domain ; j++) {
-                Tile target=getTileByCoordinates(i,j);
-                if (target == null) {
-                    continue;
-                }
-                if (target.getGameObject() instanceof Tree) {
-                    target.setGameObject(new Walkable());
-                }
-                else if (target.getGameObject() instanceof ForagingCrops) {
-                    target.setGameObject(new Walkable());
-                }
-                else if (target.getGameObject() instanceof GiantProduct) {
-                    target.setGameObject(new Walkable());
-                }
-                else if (target.getGameObject() instanceof ForagingSeeds) {
-                    target.setGameObject(new Walkable());
-                }
-            }
-        }
+//        for (int i=x ; i < x + domain ; i++) {
+//            for (int j=y ; j < y + domain ; j++) {
+//                Tile target=getTileByCoordinates(i,j);
+//                if (target == null) {
+//                    continue;
+//                }
+//                if (target.getGameObject() instanceof Tree) {
+//                    target.setGameObject(new Walkable());
+//                }
+//                else if (target.getGameObject() instanceof ForagingCrops) {
+//                    target.setGameObject(new Walkable());
+//                }
+//                else if (target.getGameObject() instanceof GiantProduct) {
+//                    target.setGameObject(new Walkable());
+//                }
+//                else if (target.getGameObject() instanceof ForagingSeeds) {
+//                    target.setGameObject(new Walkable());
+//                }
+//            }
+//        }
         inventory.Items.compute(items , (k,v) -> v-1);
         inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() ==0);
 
@@ -1170,75 +1168,153 @@ public class InputGameController {
         }
         return new Result(false, RED + "Item not found" + RESET);
     }
-    public Result placeItem(String name, String dir) {
-        int direction=Integer.parseInt(dir);
-        if (direction < 1 || direction >8) {
-            return new Result(false , "invalid direction");
-        }
 
+
+    public Result checkPlaceItem(CraftingItem craftingItem) {
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        Tile tile=getTileByDir(direction);
-        if (tile == null) {
-            return new Result(false , "you can't place Item on this Tile");
+        if (! inventory.Items.containsKey(craftingItem)) {
+            return new Result(false , "tou don't have this craft in your inventory");
+        }
+        gameMenu.setPlaceArtisanOnFarm(true);
+        gameMenu.setWithMouse(new Sprite(craftingItem.getSprite(TextureManager.get(craftingItem.getType().getIcon()))));
+        gameMenu.getWithMouse().setAlpha(0.5f);
+        gameMenu.setIsPlacing(craftingItem);
+
+        return new Result(true , "");
+    }
+
+    private boolean bool = false;
+    public void placeItem() {
+        if (gameMenu.getIsPlacing() != null) {
+            if (gameMenu.isPlaceArtisanOnFarm() && ! gameMenu.getIsPlacing().isWaiting()) {
+                gameMenu.getWithMouse().setPosition(gameMenu.getVector().x - gameMenu.getWithMouse().getWidth() / 2, gameMenu.getVector().y - gameMenu.getWithMouse().getHeight() / 2);
+                Marketing.getInstance().printMapForCreate();
+                gameMenu.getWithMouse().draw(Main.getBatch());
+            }
+            if (gameMenu.isPlaceArtisanOnFarm() && !gameMenu.getIsPlacing().isWaiting() && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                gameMenu.getIsPlacing().setWaiting(true);
+            }
+            if (gameMenu.getIsPlacing().isWaiting()) {
+                setCraftInFarm(gameMenu.getWithMouse(), gameMenu.getIsPlacing());
+            }
+        }
+    }
+
+    public void setCraftInFarm(Sprite sprite , CraftingItem craftingItem) {
+        int x = (int) (sprite.getX() / TEXTURE_SIZE) + 60 * currentGame.currentPlayer.topLeftX;
+        int y =30 -  (int) (sprite.getY() / TEXTURE_SIZE) + 60 * currentGame.currentPlayer.topLeftY;
+
+        if (! (getTileByCoordinates(x , y).getGameObject() instanceof Walkable) && ! bool) {
+            Dialog dialog = Marketing.getInstance().createDialogError();
+            Label content = new Label("you can't place craft on this place" , new Label.LabelStyle(getFont() , Color.BLACK));
+            Marketing.getInstance().addDialogToTable(dialog, content , gameMenu);
+            craftingItem.setWaiting(false);
         }
 
-        Farm farm=null;
-        for (Farm farms : currentGame.farms) {
-            if (farms.Farm.contains(tile)) {
-                farm = farms;
+        else  {
+            Marketing.getInstance().printMapForCreate();
+            bool = true;
+            getTileByCoordinates(x,y).setGameObject(craftingItem);
+
+            if (Gdx.input.isKeyJustPressed(ENTER) ) {
+                TextButton Confirm = Marketing.getInstance().makeConfirmButton(gameMenu);
+                TextButton TryAgain = Marketing.getInstance().makeTryAgainButton(gameMenu);
+
+                Confirm.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        Confirm.remove();
+                        TryAgain.remove();
+                        gameMenu.setPlaceArtisanOnFarm(false);
+                        craftingItem.setWaiting(false);
+                        gameMenu.setIsPlacing(null);
+                        advanceItem(craftingItem , - 1);
+                        craftingItem.setX(x);
+                        craftingItem.setY(y);
+                    }
+                });
+
+                TryAgain.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        craftingItem.setWaiting(false);
+                        Confirm.remove();
+                        TryAgain.remove();
+                        getTileByCoordinates(x , y).setGameObject(new Walkable());
+                        bool = false;
+                    }
+                });
             }
         }
 
-        for (User user: currentGame.players) {
-            if (user.getFarm().equals(farm)) {
-                if (!user.equals(currentGame.currentPlayer) && ! user.getSpouse().equals(currentGame.currentPlayer) ) {
-                    return new Result(false , "you can't place Item on this Tile");
+    }
+
+    public void showSelectBoxOnCrafting() {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+
+        int x = (int) (gameMenu.getVector().x/TEXTURE_SIZE);
+        int y = (int) (gameMenu.getVector().y/TEXTURE_SIZE);
+
+            if (getTileByCoordinates(x , 90 - y)
+                .getGameObject() instanceof CraftingItem ) {
+
+                System.out.println("yes");
+
+                SelectBox selectBox = craftBox((CraftingItem) getTileByCoordinates(x, 90 - y)
+                   .getGameObject());
+           }
+
+       }
+       //System.out.println(gameMenu.getVector().x/TEXTURE_SIZE + "<<" + gameMenu.getVector().y/TEXTURE_SIZE);
+    }
+
+    private SelectBox<String> craftBox(CraftingItem craftingItem) {
+        SelectBox<String> selectBox = new SelectBox<>(getSkin());
+        selectBox.setItems("Use" , "Collect Product" , "cheat");
+        selectBox.setPosition(TEXTURE_SIZE * (craftingItem.getX()) , TEXTURE_SIZE * (90 - craftingItem.getY()) );
+        System.out.println(TEXTURE_SIZE * craftingItem.getX() +",,"+TEXTURE_SIZE * (90 - craftingItem.getY()));
+        System.out.println(gameMenu.getVector().x +",,"+gameMenu.getVector().y);
+        gameMenu.getStage().addActor(selectBox);
+
+
+        selectBox.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                String selected = selectBox.getSelected();
+                switch (selected) {
+                    case "Use" :{
+                        if (craftingItem.getType().equals(CraftType.Bomb)
+                            || craftingItem.getType().equals(CraftType.MegaBomb)
+                            || craftingItem.getType().equals(CraftType.CherryBomb)) {
+
+                            selectBox.remove();
+                        }
+                        else if (craftingItem.getType().equals(CraftType.Sprinkler)
+                            || craftingItem.getType().equals(CraftType.IridiumSprinkler)
+                            || craftingItem.getType().equals(CraftType.QualitySprinkler)) {
+                            selectBox.remove();
+                        }
+                        else if (craftingItem.getType().isCanProduct()) {
+                            selectBox.remove();
+                        }
+                    }
+                    case "Collect Product" : {
+                        selectBox.remove();
+                    }
+                    case "cheat" : {
+                        selectBox.remove();
+                    }
                 }
             }
-        }
-
-        if (farm == null) {
-            return new Result(false , "you can't place Item on this Tile");
-        }
-
-        if (!(tile.getGameObject() instanceof Walkable) ){
-            return new Result(false , "You can't place Item on this Tile");
-        }
-
-        if (tile.getGameObject() instanceof Walkable && !((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk")) {
-            return new Result(false , "You can't place Item on this Tile");
-        }
+        });
 
 
-        if (name.equals("Mystic Tree Seed")) {
-            //TODO
-        }
+        return selectBox;
 
-        Items items= CraftingController.numberOfIngrediants(name);
-        if (items == null) {
-            return new Result(false , name + "not found!");
-        }
-        switch (name) {
-            case "Grass Starter" -> {
-                ((Walkable) tile.getGameObject()).setGrassOrFiber("Grass");
-                return new Result(true, "Grass Starter placed successfully");
-            }
-            case "Chery Bomb", "Bomb", "Mega Bomb" -> {
-                return placeBomb(tile, name, items);
-            }
-            case "Quality Sprinkler", "Sprinkler", "Iridium Sprinkler" -> {
-                return placeOther(items, tile);
-            }
-            case "Scarecrow","Deluxe Scarecrow" -> {
-                return placeScarecrow(tile, name, items);
-            }
-            case "Furnace","Charcoal Klin","Bee House","Cheese Press","Keg","Loom","Mayonnaise Machine","Oil Maker","Preserves Jar","Dehydrator" ->{
-                return placeOther(items, tile);
-            }
-
-        }
-        return new Result(false , "Something went wrong");
     }
+
+
     public Result ArtisanUse(String artisanName , String first , String second) {
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         String newArtistName=artisanName.replace('_',' ');
@@ -1512,31 +1588,26 @@ public class InputGameController {
 //                if (choice != 1 && choice != 2) {
 //                    System.out.println("Choose between 1 and 2!");
 //                    continue;
-//                }
-
+//
                 int choice = 1; // TODO باید پاک بشه
 
                 if (counter == 1) {
                     user.setIcon("all image/Crops/Cactus_Stage_6.png");
-//                    user.setIcon(BRIGHT_CYAN + "∆ " + RESET);
                     user.topLeftX = 0;
                     user.topLeftY = 0;
                 }
                 else if (counter == 2) {
-//                    user.setIcon(BRIGHT_PURPLE + "∆ " + RESET);
                     user.setIcon("all image/Special_item/Cursed_Mannequin_%28F%29.png");
                     user.topLeftX = 1;
                     user.topLeftY = 0;
                 }
                 else if (counter == 3) {
                     user.setIcon("all image/Special_item/Deconstructor.png");
-//                    user.setIcon(BRIGHT_RED + "∆ " + RESET);
                     user.topLeftX = 0;
                     user.topLeftY = 1;
                 }
                 else if (counter == 4) {
                     user.setIcon("all image/Special_item/Wood_Chipper_On.png");
-//                    user.setIcon(BRIGHT_YELLOW + "∆ " + RESET);
                     user.topLeftX = 1;
                     user.topLeftY = 1;
                 }

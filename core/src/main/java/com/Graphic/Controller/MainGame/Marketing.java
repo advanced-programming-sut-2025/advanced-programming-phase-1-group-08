@@ -1,6 +1,7 @@
 package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
+import com.Graphic.View.AppMenu;
 import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
@@ -10,7 +11,6 @@ import com.Graphic.model.Enum.AllPlants.TreesSourceType;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.ToolsType.*;
-import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.Items;
@@ -55,6 +55,15 @@ import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class Marketing {
 
+    private static Marketing marketing;
+
+    public static Marketing getInstance() {
+        if (marketing == null) {
+            return marketing =  new Marketing();
+        }
+        return marketing;
+    }
+
     public void closeWindow() {
         getCloseButton().addListener(new ChangeListener() {
             @Override
@@ -75,7 +84,6 @@ public class Marketing {
         closeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                System.out.println("hello world");
                 dialog.remove();
             }
         });
@@ -154,11 +162,11 @@ public class Marketing {
         table.row();
     }
 
-    public void addDialogToTable(Dialog dialog, Label content) {
+    public void addDialogToTable(Dialog dialog, Label content , AppMenu menu) {
         dialog.getContentTable().add(content);
         ImageButton closeButton = createCloseButtonForDialog(dialog);
         dialog.getTitleTable().add(closeButton).padRight(5).padTop(3).right();
-        dialog.show(getStage());
+        dialog.show(menu.getStage());
         dialog.setPosition(400,100);
         dialog.setSize(1000,48);
     }
@@ -233,7 +241,7 @@ public class Marketing {
                 if (! checkBuy(item, marketType).IsSuccess()) {
                     Dialog dialog=createDialogError();
                     Label content = new Label(MarketType.endLimit(checkBuy(item,marketType).massage()), new Label.LabelStyle(getFont() , Color.BLACK));
-                    addDialogToTable(dialog, content);
+                    addDialogToTable(dialog, content , MarketMenu.getInstance());
                 }
                 else if (item instanceof BackPack) {
                     currentGame.currentPlayer.getBackPack().setType(((BackPack) item).getType());
@@ -267,7 +275,7 @@ public class Marketing {
                 if (! checkBuyBarnOrCage(barnOrCage.getBarnORCageType()).IsSuccess()) {
                     Dialog dialog=createDialogError();
                     Label content = new Label(MarketType.endLimit(checkBuyBarnOrCage(barnOrCage.getBarnORCageType()).massage()), new Label.LabelStyle(getFont() , Color.BLACK));
-                    addDialogToTable(dialog, content);
+                    addDialogToTable(dialog, content , MarketMenu.getInstance());
                 }
                 else {
                     removeImage();
@@ -370,7 +378,7 @@ public class Marketing {
                 mainTable.add(rightSide).width(500).height(700);
 
                 window.add(mainTable).expand().fill();
-                getStage().addActor(window);
+                MarketMenu.getInstance().getStage().addActor(window);
             }
         });
     }
@@ -439,7 +447,7 @@ public class Marketing {
 
             Dialog dialog=createDialogError();
             Label content = new Label(MarketType.endLimit("8") , new Label.LabelStyle(getFont() , Color.BLACK));
-            addDialogToTable(dialog, content);
+            addDialogToTable(dialog, content , MarketMenu.getInstance());
             barnORCageType.setWaiting(false);
         }
         else {
@@ -453,18 +461,8 @@ public class Marketing {
             }
             printMapForCreate();
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                TextButton confirm = new TextButton("" , getSkin());
-                TextButton TryAgain = new TextButton("" , getSkin());
-                Label con = new Label("Confirm" , getSkin());
-                Label Try = new Label("Try Again" , getSkin());
-                confirm.add(con).left().padLeft(10);
-                TryAgain.add(Try).left().padLeft(10);
-                getStage().addActor(confirm);
-                getStage().addActor(TryAgain);
-                confirm.setPosition(1200,480);
-                confirm.setSize(200 , 40);
-                TryAgain.setPosition(1200,400);
-                TryAgain.setSize(200 , 40);
+                TextButton confirm = makeConfirmButton(MarketMenu.getInstance());
+                TextButton TryAgain = makeTryAgainButton(MarketMenu.getInstance());
 
                 confirm.addListener(new ChangeListener() {
                     @Override
@@ -497,6 +495,26 @@ public class Marketing {
         }
     }
 
+    public TextButton makeConfirmButton(AppMenu menu) {
+        TextButton confirm = new TextButton("" , getSkin());
+        Label con = new Label("Confirm" , getSkin());
+        confirm.add(con).left().padLeft(10);
+        menu.getStage().addActor(confirm);
+        confirm.setPosition(1200,600);
+        confirm.setSize(200 , 40);
+        return confirm;
+    }
+
+    public TextButton makeTryAgainButton(AppMenu menu) {
+        TextButton TryAgain = new TextButton("" , getSkin());
+        Label Try = new Label("Try Again" , getSkin());
+        TryAgain.add(Try).left().padLeft(10);
+        menu.getStage().addActor(TryAgain);
+        TryAgain.setPosition(1200,480);
+        TryAgain.setSize(200 , 40);
+        return TryAgain;
+    }
+
     public void payForBuilding(BarnOrCage barnOrCage) {
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         inventory.Items.put(new Wood() , inventory.Items.get(new Wood()) - barnOrCage.getBarnORCageType().getWoodNeeded());
@@ -508,9 +526,6 @@ public class Marketing {
     }
 
     public void printMapForCreate() {
-        if (Gdx.input.isKeyPressed(Input.Keys.T)) {
-            System.out.println(currentGame.currentPlayer.topLeftX + " " + currentGame.currentPlayer.topLeftY);
-        }
         for (int i = 0; i < 30; i++) {
             for (int j = 0; j < 30; j++) {
                 try {
@@ -573,11 +588,11 @@ public class Marketing {
         getWindow().pack();
         getWindow().setPosition(Gdx.graphics.getWidth()/2 - 500, Gdx.graphics.getHeight()/2 - 350);
         getWindow().setVisible(true);
-        if (! MarketMenu.getStage().getActors().contains(image , true)) {
-            MarketMenu.getStage().addActor(image);
+        if (! MarketMenu.getInstance().getStage().getActors().contains(image , true)) {
+            MarketMenu.getInstance().getStage().addActor(image);
         }
-        if (! MarketMenu.getStage().getActors().contains(getWindow() , true)) {
-            MarketMenu.getStage().addActor(getWindow());
+        if (! MarketMenu.getInstance().getStage().getActors().contains(getWindow() , true)) {
+            MarketMenu.getInstance().getStage().addActor(getWindow());
         }
     }
 
@@ -692,7 +707,7 @@ public class Marketing {
             Image image = getImage();
             Label label = null;
             pane.setFadeScrollBars(false);
-            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            image.setSize(MarketMenu.getInstance().getStage().getWidth(), MarketMenu.getInstance().getStage().getHeight());
             listForagingSeeds(id , table , JojaMart, label);
             listMarketItems(id,table,JojaMart,label);
             pane.setWidget(table);
@@ -712,7 +727,7 @@ public class Marketing {
             Label label = null;
             pane.setFadeScrollBars(false);
 
-            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            image.setSize(MarketMenu.getInstance().getStage().getWidth(), MarketMenu.getInstance().getStage().getHeight());
             listForagingSeeds(id , table , PierreGeneralStore, label);
             listMarketItems(id,table,PierreGeneralStore,label);
             listTreeSources(id,table,PierreGeneralStore,label);
@@ -749,7 +764,7 @@ public class Marketing {
             Image image = getImage();
             Label label = null;
             pane.setFadeScrollBars(false);
-            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            image.setSize(MarketMenu.getInstance().getStage().getWidth(), MarketMenu.getInstance().getStage().getHeight());
             listMarketItems(id,table,StardropSaloon,label);
             pane.setWidget(table);
             createWindow(pane , image);
@@ -765,7 +780,7 @@ public class Marketing {
             Image image = getImage();
             Label label = null;
             pane.setFadeScrollBars(false);
-            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            image.setSize(MarketMenu.getInstance().getStage().getWidth(), MarketMenu.getInstance().getStage().getHeight());
             listMarketItems(id,table,FishShop,label);
 
             for (FishingPoleType f : FishingPoleType.values()) {
@@ -796,7 +811,7 @@ public class Marketing {
             Image image = getImage();
             Label label = null;
             pane.setFadeScrollBars(false);
-            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            image.setSize(MarketMenu.getInstance().getStage().getWidth(), MarketMenu.getInstance().getStage().getHeight());
             listMarketItems(id,table,CarpenterShop,label);
             listBarnOrCage(id, table,CarpenterShop,label);
             pane.setWidget(table);
@@ -813,7 +828,7 @@ public class Marketing {
             Image image = getImage();
             Label label = null;
             pane.setFadeScrollBars(false);
-            image.setSize(MarketMenu.getStage().getWidth(), MarketMenu.getStage().getHeight());
+            image.setSize(MarketMenu.getInstance().getStage().getWidth(), MarketMenu.getInstance().getStage().getHeight());
             listAnimals(id , table,MarnieRanch,label);
             listMarketItems(id , table , MarnieRanch,label);
 

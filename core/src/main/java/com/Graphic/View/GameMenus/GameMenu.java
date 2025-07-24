@@ -2,9 +2,11 @@ package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
+import com.Graphic.View.AppMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.App;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
@@ -15,6 +17,7 @@ import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.ToolsPackage.Tools;
+import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -50,7 +53,7 @@ import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 
-public class GameMenu implements  Screen, InputProcessor {
+public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     public static GameMenu gameMenu; // اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
 
@@ -63,10 +66,15 @@ public class GameMenu implements  Screen, InputProcessor {
     public boolean isInFarmExterior;
     private BarnOrCage currentBarnOrCage;
     private ArrayList<Animal> shepherdingAnimals;
+    private CraftingItem isPlacing;
+    private Vector3 vector;
     private InputGameController controller;
     private boolean firstLoad;
     private TiledMap map;
     private BitmapFont animalFont;
+    private ArrayList<HeartAnimation> heartAnimations;
+    private boolean placeArtisanOnFarm;
+    private Sprite withMouse;
     private OrthogonalTiledMapRenderer renderer;
 
     private Image helperBackGround;
@@ -124,6 +132,10 @@ public class GameMenu implements  Screen, InputProcessor {
         firstLoad = true;
         currentBarnOrCage = new BarnOrCage(BarnORCageType.Coop ,0 , 0);
         shepherdingAnimals = new ArrayList<>();
+        heartAnimations = new ArrayList<>();
+        placeArtisanOnFarm = false;
+        withMouse = new Sprite();
+        //createClock();
 
     }
     public void render(float v) {
@@ -373,6 +385,91 @@ public class GameMenu implements  Screen, InputProcessor {
 
         content.add(img).size(30, 30);
     }
+
+    public Vector3 getMousePos() {
+        return mousePos;
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public void setTiledMap(TiledMap tiledMap) {
+        map = tiledMap;
+    }
+
+    public boolean isFirstLoad() {
+        return firstLoad;
+    }
+    public void setFirstLoad(boolean firstLoad) {
+        this.firstLoad = firstLoad;
+    }
+    public OrthogonalTiledMapRenderer getRenderer() {
+        return renderer;
+    }
+    public void setRenderer(OrthogonalTiledMapRenderer renderer) {
+        this.renderer = renderer;
+    }
+    public BitmapFont getAnimalFont() {
+        if (animalFont != null) {
+            return animalFont;
+        }
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Erfan/Fonts/Stardew Valley Regular.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 48;
+        parameter.color = Color.RED;
+
+        animalFont = generator.generateFont(parameter);
+        generator.dispose();
+        return animalFont;
+    }
+    private void moveAnimal() {
+        if (isInFarmExterior) {
+            for (Animal animal : shepherdingAnimals) {
+                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
+                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
+                    animal.setTimer(animal.getTimer() + Gdx.graphics.getDeltaTime());
+                }
+                else {
+                    animal.setTimer(0);
+                }
+            }
+        }
+    }
+    public ArrayList<Animal> getShepherdingAnimals() {
+        return shepherdingAnimals;
+    }
+    public ArrayList<HeartAnimation> getHeartAnimations() {
+        return heartAnimations;
+    }
+    public boolean isPlaceArtisanOnFarm() {
+        return placeArtisanOnFarm;
+    }
+    public void setPlaceArtisanOnFarm(boolean placeArtisanOnFarm) {
+        this.placeArtisanOnFarm = placeArtisanOnFarm;
+    }
+    public Sprite getWithMouse() {
+        return withMouse;
+    }
+    public void setWithMouse(Sprite withMouse) {
+        this.withMouse = withMouse;
+    }
+    public void setIsPlacing(CraftingItem craftingItem) {
+        this.isPlacing = craftingItem;
+    }
+    public CraftingItem getIsPlacing() {
+        return isPlacing;
+    }
+    public Vector3 getVector() {
+        if (vector == null) {
+            vector = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        }
+        vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
+        camera.unproject(vector);
+        return vector;
+    }
+
+
 
     private void createClock() {
 
@@ -708,61 +805,8 @@ public class GameMenu implements  Screen, InputProcessor {
 
 
 
-    public Vector3 getMousePos() {
-        return mousePos;
-    }
 
-    public TiledMap getMap() {
-        return map;
-    }
 
-    public void setTiledMap(TiledMap tiledMap) {
-        map = tiledMap;
-    }
-
-    public boolean isFirstLoad() {
-        return firstLoad;
-    }
-    public void setFirstLoad(boolean firstLoad) {
-        this.firstLoad = firstLoad;
-    }
-    public OrthogonalTiledMapRenderer getRenderer() {
-        return renderer;
-    }
-    public void setRenderer(OrthogonalTiledMapRenderer renderer) {
-        this.renderer = renderer;
-    }
-    public BitmapFont getAnimalFont() {
-        if (animalFont != null) {
-            return animalFont;
-        }
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Erfan/Fonts/Stardew Valley Regular.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 48;
-        parameter.color = Color.RED;
-
-        animalFont = generator.generateFont(parameter);
-        generator.dispose();
-        return animalFont;
-    }
-
-    private void moveAnimal() {
-        if (isInFarmExterior) {
-            for (Animal animal : shepherdingAnimals) {
-                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
-                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
-                    animal.setTimer(animal.getTimer() + Gdx.graphics.getDeltaTime());
-                }
-                else {
-                    animal.setTimer(0);
-                }
-            }
-        }
-    }
-
-    public ArrayList<Animal> getShepherdingAnimals() {
-        return shepherdingAnimals;
-    }
 
     public String getBarnOrCagePath() {
         return BarnOrCagePath;
