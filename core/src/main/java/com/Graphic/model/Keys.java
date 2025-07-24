@@ -24,4 +24,5 @@ public class Keys {
     public static final int walkLeft = Input.Keys.A;
     public static final int walkDown = Input.Keys.S;
     public static final int walkRight = Input.Keys.D;
+    public static final int ArtisanMenu = Input.Keys.M;
 }

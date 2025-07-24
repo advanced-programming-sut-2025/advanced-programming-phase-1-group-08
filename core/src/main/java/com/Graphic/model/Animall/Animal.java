@@ -54,25 +54,25 @@ public class Animal extends GameObject {
         direction = Direction.Down;
         sprite = new Sprite(TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_down.png"));
         this.Up = new Animation<>(0.1f ,
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_up.png"),
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_up.png") ,
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_up.png"),
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_up.png"));
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_up.png"),
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_up.png") ,
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_up.png"),
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_up.png"));
         this.Left = new Animation<>(0.1f ,
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_left.png"),
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_left.png") ,
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_left.png"),
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_left.png"));
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_left.png"),
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_left.png") ,
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_left.png"),
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_left.png"));
         this.Right = new Animation<>(0.1f ,
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_right.png"),
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_right.png") ,
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_right.png"),
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_right.png"));
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_right.png"),
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_right.png") ,
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_right.png"),
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_right.png"));
         this.Down = new Animation<>(0.1f ,
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_down.png"),
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_down.png") ,
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_down.png"),
-            new Texture("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_down.png"));
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_down.png"),
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_down.png") ,
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_down.png"),
+            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_down.png"));
     }
 
     public String getName() {

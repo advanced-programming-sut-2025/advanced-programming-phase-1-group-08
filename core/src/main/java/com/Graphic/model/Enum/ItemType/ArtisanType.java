@@ -51,16 +51,7 @@ public enum ArtisanType {
             if (! newName.equals("Milk") && ! newName.equals("Large Milk")) {
                 return false;
             }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getType().getName().equals(newName)) {
-                        inventory.Items.remove(entry.getKey());
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return check(newName);
         }
     },
 
@@ -82,18 +73,7 @@ public enum ArtisanType {
             if (! newName.equals("Goat Milk") && ! newName.equals("Large Goat Milk")) {
                 return false;
             }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getType().getName().equals(newName)) {
-                        inventory.Items.remove(entry.getKey());
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return check(newName);
         }
     },
 
@@ -315,20 +295,7 @@ public enum ArtisanType {
 
         @Override
         public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_',' ' );
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof TreesProdct) {
-                    if (((TreesProdct) entry.getKey()).getType().getDisplayName().equals(newName)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return checkTreeProduct(first);
         }
     },
 
@@ -740,21 +707,7 @@ public enum ArtisanType {
 
         @Override
         public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_' , ' ');
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof TreesProdct) {
-
-                    if (((TreesProdct) entry.getKey()).getType().getDisplayName().equals(newName)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return checkTreeProduct(first);
         }
     },
     Smoked_Fish("Smoked Fish" , CraftType.FishSmoker , 300 , 1) {
@@ -863,6 +816,37 @@ public enum ArtisanType {
             return false;
         }
     };
+
+    private static boolean checkTreeProduct(String first) {
+        String newName= first.replace('_' , ' ');
+        Inventory inventory= App.currentGame.currentPlayer.getBackPack().inventory;
+        for (Map.Entry <Items, Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof TreesProdct) {
+
+                if (((TreesProdct) entry.getKey()).getType().getDisplayName().equals(newName)) {
+                    inventory.Items.put(entry.getKey() , entry.getValue()-1);
+                    if (entry.getValue()==0) {
+                        inventory.Items.remove(entry.getKey());
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean check(String newName) {
+        Inventory inventory= App.currentGame.currentPlayer.getBackPack().inventory;
+        for (Map.Entry <Items, Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof Animalproduct) {
+                if (((Animalproduct) entry.getKey()).getType().getName().equals(newName)) {
+                    inventory.Items.remove(entry.getKey());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     private final String name;
     private final CraftType craftType;

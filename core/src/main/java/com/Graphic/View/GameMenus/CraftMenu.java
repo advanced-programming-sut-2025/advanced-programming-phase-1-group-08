@@ -3,6 +3,7 @@ package com.Graphic.View.GameMenus;
 import com.Graphic.Controller.MainGame.CraftingController;
 import com.Graphic.View.AppMenu;
 import com.Graphic.model.Enum.Commands.CraftMenuCommands;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -28,5 +29,10 @@ public class CraftMenu implements AppMenu {
         }
         else
             System.out.println(RED+"Invalid command"+RESET);
+    }
+
+    @Override
+    public Stage getStage() {
+        return null;
     }
 }

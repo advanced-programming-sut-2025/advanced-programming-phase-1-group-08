@@ -26,6 +26,6 @@ public enum Menu {
         this.menu = menu;
     }
     public void checkCommand(Scanner scanner) throws IOException {
-        this.menu.check(scanner);
+        //this.menu.check(scanner);
     }
 }

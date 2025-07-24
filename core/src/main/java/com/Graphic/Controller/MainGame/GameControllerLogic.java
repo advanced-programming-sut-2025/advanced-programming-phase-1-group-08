@@ -42,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.*;
@@ -65,7 +64,7 @@ public class GameControllerLogic {
     static int turnCounter = 0;
     static Image helperBackGround;
     static Random rand = new Random();
-    static long lastTimeUpdate = TimeUtils.millis();
+    static DateHour lastTimeUpdate;
 
 
     static Cloud cloud;
@@ -77,23 +76,22 @@ public class GameControllerLogic {
     public static void init() {
 
         createScreenOverlay(gameMenu.getStage());
+        lastTimeUpdate = currentGame.currentDate.clone();
     }
-    public static void update() {
-        EnterTheBarnOrCage();
-        if (!gameMenu.isInFarmExterior && gameMenu.isFirstLoad()) {
-            gameMenu.setFirstLoad(false);
-            camera.setToOrtho(false, 300, 150);
-            gameMenu.setTiledMap(new TmxMapLoader().load(gameMenu.getBarnOrCagePath()));
-            gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap(), 1f));
-        }
-    }
-    public static void update(float delta) {
 
+    public static void update(float delta) {
+            EnterTheBarnOrCage();
+            if (! gameMenu.isInFarmExterior && gameMenu.isFirstLoad()) {
+                gameMenu.setFirstLoad(false);
+                camera.setToOrtho(false , 300 , 150);
+                gameMenu.setTiledMap(new TmxMapLoader().load(gameMenu.getBarnOrCagePath()));
+                gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap() , 1f));
+            }
         handleLightning(delta);
 
-        if (TimeUtils.millis() - lastTimeUpdate > 1000) {
+        if (currentGame.currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
             AutomaticFunctionAfterAnyAct();
-            lastTimeUpdate = TimeUtils.millis();
+            lastTimeUpdate = currentGame.currentDate.clone();
         }
 
     }
@@ -198,6 +196,10 @@ public class GameControllerLogic {
         }
         else
             inventory.Items.put(items, amount);
+
+        if (currentGame.currentPlayer.getBackPack().inventory.Items.get(items) == 0) {
+            currentGame.currentPlayer.getBackPack().inventory.Items.remove(items);
+        }
     }
 
 
@@ -852,8 +854,8 @@ public class GameControllerLogic {
             Window window = new Window("Information", getSkin(), "default");
             window.setSize(1000, 750);
             window.setPosition(Gdx.graphics.getWidth() / 2 - 500, Gdx.graphics.getHeight() / 2 - 375);
-            Image image = new Image(new Texture(Gdx.files.internal(animal.getType().getIcon())));
-            Texture background = new Texture(Gdx.files.internal("Mohamadreza/AnimalBackground2.png"));
+            Image image = new Image(TextureManager.get(animal.getType().getIcon()));
+            Texture background = TextureManager.get("Mohamadreza/AnimalBackground2.png");
             Drawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(background));
 
             Table content = new Table();
@@ -945,16 +947,58 @@ public class GameControllerLogic {
             }
         });
 
-        SelectBox<String> collectProduct = new SelectBox<>(getSkin());
-        collectProduct.clear();
-        collectProduct.setItems("Collect Products" , "Uncollected Produces");
+        TextButton Pet = new TextButton("",getSkin());
+        Pet.clearChildren();
+        Label pet = new Label("Pet",labelStyle);
+        Pet.add(pet).center();
 
-        right.add(Sell).center().size(200,100).top().row();
-        right.add(Feed).center().size(200,100).row();
+        Pet.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                pet(animal);
+                window.remove();
+                for (int i = 0 ; i < 5 ; i++) {
+                    gameMenu.getHeartAnimations().add(new HeartAnimation(
+                        TextureManager.get("Mohamadreza/heart.png") ,
+                        animal.getSprite().getX() , animal.getSprite().getY()));
+                }
+            }
+        });
+
+        SelectBox<String> collectProduct = getProduct(animal, lowerRight);
+
+        right.add(Pet).center().size(200,66).top().row();
+        right.add(Sell).center().size(200,66).row();
+        right.add(Feed).center().size(200,66).row();
         right.add(collectProduct).center().row();
 
         return right;
 
+    }
+
+    private static SelectBox<String> getProduct(Animal animal, Table lowerRight) {
+        SelectBox<String> collectProduct = new SelectBox<>(getSkin());
+        collectProduct.clear();
+        collectProduct.setItems("Collect Products" , "Uncollected Produces");
+        collectProduct.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                String selected = collectProduct.getSelected();
+                switch (selected) {
+                    case "Collect Products": {
+                        InputGameController controller = InputGameController.getInstance();
+                        Result result = controller.getProductAnimals(animal);
+                        createDialogError(result , lowerRight);
+                    }
+                    case "Uncollected Produces": {
+                        InputGameController controller = InputGameController.getInstance();
+                        Result result = controller.produces(animal);
+                        createDialogError(result , lowerRight);
+                    }
+                }
+            }
+        });
+        return collectProduct;
     }
 
     private static Table createRightMidWindow(Animal animal , Label.LabelStyle labelStyle , Drawable drawable , Table lowerRight , Window window) {
@@ -1080,13 +1124,29 @@ public class GameControllerLogic {
         }
     }
 
+    public static void pet(Animal animal) {
+        animal.increaseFriendShip(15);
+        animal.setPetToday(true);
+    }
+
+    public static void effectAfterPetAnimal() {
+        for (int i = gameMenu.getHeartAnimations().size() - 1 ; i>=0 ; i--) {
+            gameMenu.getHeartAnimations().get(i).update(Gdx.graphics.getDeltaTime());
+            if (gameMenu.getHeartAnimations().get(i).isFinished()) {
+                gameMenu.getHeartAnimations().remove(i);
+            }
+        }
+        for (HeartAnimation heart : gameMenu.getHeartAnimations()) {
+            heart.render(Main.getBatch());
+        }
+    }
 
     public static boolean checkTileForAnimalWalking(int x, int y) {
         Tile tile = getTileByCoordinates(x , y );
         if (tile == null) {
             return false;
         }
-        if (!(tile.getGameObject() instanceof Walkable) && !(tile.getGameObject() instanceof BarnOrCage)) {
+        if (!(tile.getGameObject() instanceof Walkable)) {
             return false;
         }
         return true;
@@ -1207,6 +1267,15 @@ public class GameControllerLogic {
     }
     public static boolean checkPeriod(Animal animal) {
         return currentGame.currentDate.getDate() - animal.getLastProduceDay() == 0;
+    }
+
+    public static void openArtisanMenu() {
+        if (Gdx.input.isKeyJustPressed(Keys.ArtisanMenu)) {
+            Texture bg = TextureManager.get("Mohamadreza/ArtisanMenu.png");
+            ArtisanMenuUI artisanMenuUI = new ArtisanMenuUI(getSkin() , bg);
+            artisanMenuUI.setPosition(100 , 100);
+            gameMenu.getStage().addActor(artisanMenuUI);
+        }
     }
 
     public static void checkSprinkler() {
@@ -1672,12 +1741,10 @@ public class GameControllerLogic {
             advanceItem(new TrashCan(TrashCanType.primaryTrashCan), 1);
 
             Home home = user.getFarm().getHome();
-            user.setPositionX( 60 * user.topLeftX + home.getTopLeftX() + home.getWidth() / 2);
-            user.setPositionY( 60 * user.topLeftY + home.getTopLeftY() + home.getLength());
+            user.setPositionX(home.getTopLeftX() + home.getWidth() / 2);
+            user.setPositionY(home.getTopLeftY() + home.getLength());
             user.increaseMoney(1000000 - user.getMoney());
-            advanceItem(new Wood() , 100000);
-            advanceItem(new BasicRock() , 100000);
-            advanceItem(new MarketItem(MarketItemType.Hay) , 5);
+            advanceItem(new CraftingItem(CraftType.Bomb) , 1);
         }
         currentGame.currentPlayer = user1;
     }

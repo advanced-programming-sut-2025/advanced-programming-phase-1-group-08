@@ -40,7 +40,9 @@ import static com.Graphic.View.GameMenus.GameMenu.gameMenu;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
-public class MarketMenu implements Screen , InputProcessor {
+public class MarketMenu implements Screen , InputProcessor , AppMenu{
+
+    private static MarketMenu marketMenu;
 
     TiledMap map;
     OrthogonalTiledMapRenderer renderer;
@@ -62,6 +64,13 @@ public class MarketMenu implements Screen , InputProcessor {
 
     public MarketMenu() {
 
+    }
+
+    public static MarketMenu getInstance() {
+        if (marketMenu == null) {
+            marketMenu = new MarketMenu();
+        }
+        return marketMenu;
     }
 
     @Override
@@ -112,10 +121,13 @@ public class MarketMenu implements Screen , InputProcessor {
 
 
     public static Skin getSkin() {
+        if (skin == null) {
+            return skin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
+        }
         return skin;
     }
 
-    public static Stage getStage() {
+    public Stage getStage() {
         return stage;
     }
 
