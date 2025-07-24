@@ -718,12 +718,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         helperBackGround.setSize(stage.getWidth(), stage.getHeight());
         stage.addActor(helperBackGround);
     }
-
     public boolean anyMenuIsActivated () {
         return toolsMenuIsActivated || EscMenuIsActivated ||
             inventoryIsActivated || socialMenuIsActivated ||
             skillMenuIsActivated || mapIsActivated;
     }
+
+
+
+                ///    ///////////                      Mohammad Reza
 
     public Vector3 getMousePos() {
         return mousePos;
