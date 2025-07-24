@@ -10,12 +10,11 @@ import com.Graphic.model.App;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
-import com.Graphic.model.Enum.ItemType.MarketItemType;
+import com.Graphic.model.Enum.Skills;
 import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
-import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.badlogic.gdx.Gdx;
@@ -29,14 +28,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -51,7 +48,6 @@ import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
-
 
 public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
@@ -82,6 +78,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public long startTime;
     public long lastTime;
 
+    private int lastHealth;
     public Label energyLabel;
 
     private Group clockGroup;
@@ -182,7 +179,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         clockGroup = new Group();
         camera = new OrthographicCamera();
 
-
+        lastHealth = -1;
         energyLabel = new Label("Energy : 100", App.newSkin);
         energyLabel.setPosition((float) Gdx.graphics.getWidth() - energyLabel.getWidth() - 10, 10);
 
@@ -192,6 +189,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         dateLabel = new Label("", App.skin);
         moneyLabel = new Label("", App.skin);
         weekDayLabel = new Label("", App.skin);
+
 
         toolsMenuIsActivated = false;
         inventoryIsActivated = false;
@@ -216,7 +214,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.H))
                 Main.getMain().setScreen(new HomeMenu());
-
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                 User temp = currentGame.currentPlayer;
@@ -275,15 +272,19 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private void updateEnergyLabel () {
 
-        energyLabel.setText("Energy : " + currentGame.currentPlayer.getHealth());
-        Label.LabelStyle style = energyLabel.getStyle();
+        int currentHealth = currentGame.currentPlayer.getHealth();
+        if (currentHealth != lastHealth) {
 
-        if (currentGame.currentPlayer.getHealth() <= 20)
-            style.fontColor = Color.RED;
-        else
-            style.fontColor = Color.GREEN;
+            energyLabel.setText("Energy : " + currentGame.currentPlayer.getHealth());
+            Label.LabelStyle style = energyLabel.getStyle();
 
-        energyLabel.setStyle(style);
+            if (currentGame.currentPlayer.getHealth() <= 20)
+                style.fontColor = Color.RED;
+            else
+                style.fontColor = Color.GREEN;
+
+            energyLabel.setStyle(style);
+        }
     }
 
     private void createToolsMenu () {
@@ -411,6 +412,94 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         content.add(img).size(30, 30);
     }
 
+    private void creatSkillMenu () {
+
+        int colNumber = 3;
+
+        skillPopup = new Window("", App.newSkin);
+        skillPopup.setSize(200 + colNumber * 100, 300);
+        skillPopup.setPosition(
+            (stage.getWidth() - skillPopup.getWidth()) / 2,
+            (stage.getHeight() - skillPopup.getHeight()) / 2);
+
+
+        Table content = new Table();
+        createSkillsTable(content);
+
+        AnimatedImage animatedImage = new AnimatedImage(0.15f, SampleAnimation.Pillow, Animation.PlayMode.LOOP);
+
+        skillPopup.add(content).expand().fill();
+        skillPopup.row();
+        skillPopup.add(animatedImage).size(32, 32).right().padRight(10).padBottom(10);
+
+        stage.addActor(skillPopup);
+        skillMenuIsActivated = true;
+    }
+    private void createSkillsTable (Table content) {
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = GameAssetManager.getGameAssetManager().getTinyFont();
+
+        content.setFillParent(true);
+        content.top();
+        content.defaults().pad(10);
+
+        content.row().padTop(60);
+
+        BitmapFont font = GameAssetManager.getGameAssetManager().getTinyFont();
+        font.getData().setScale(0.4f);
+        labelStyle.font = font;
+
+
+        addSkillImage(content, Skills.Fishing);
+        addSkillImage(content, Skills.Mining);
+        content.row();
+
+        addSkillName(content, labelStyle, Skills.Fishing);
+        addSkillName(content, labelStyle, Skills.Mining);
+
+        content.row();
+
+        addSkillImage(content, Skills.Farming);
+        addSkillImage(content, Skills.Foraging);
+
+        content.row();
+        addSkillName(content, labelStyle, Skills.Farming);
+        addSkillName(content, labelStyle, Skills.Foraging);
+    }
+    private void addSkillName(Table content, Label.LabelStyle labelStyle, Skills skill)  {
+
+        Label label1 = new Label(skill.name(), labelStyle);
+        label1.setColor(Color.WHITE);
+        label1.setSize(15, 8);
+        content.add(label1);
+
+    }
+    private void addSkillImage (Table content, Skills skill) {
+
+        Image img = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(skill.getPath()))));
+        img.setColor(1f, 1f, 1f, 0.8f);
+
+        final Label tooltipLabel = new Label(skill.getDiscription(), App.newSkin);
+        tooltipLabel.setVisible(false);
+        tooltipLabel.setColor(Color.LIGHT_GRAY);
+
+        img.addListener(new ClickListener() {
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                tooltipLabel.setVisible(true);
+            }
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                tooltipLabel.setVisible(false);
+            }
+        });
+
+        content.add(img).size(60, 60);
+        tooltipLabel.setPosition(img.getX() + img.getWidth() + 10, img.getY());
+        content.addActor(tooltipLabel);
+    }
 
     private void createClock() {
 
@@ -559,7 +648,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         skillsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                creatSkillMenu();
             }
         });
         SocialButton.addListener(new ClickListener() {
@@ -610,9 +699,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         };
     }
 
-    private void creatSkillMenu () {
-
-    }
     private void createInventory () {
 
         inventoryPopup = new Window("", App.newSkin);
@@ -620,6 +706,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         inventoryPopup.setPosition(
             (stage.getWidth() - inventoryPopup.getWidth()) / 2,
             (stage.getHeight() - inventoryPopup.getHeight()) / 2);
+
 
         Drawable bg = new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/Inventory/Inventory.png")));
         inventoryPopup.setBackground(bg);
