@@ -213,6 +213,31 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 updateClock(2);
             else if (Gdx.input.isKeyJustPressed(Keys.lighting))
                 createCloud();
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.H))
+                Main.getMain().setScreen(new HomeMenu());
+
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+                User temp = currentGame.currentPlayer;
+                ArrayList<User> list = currentGame.players;
+                if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
+                    currentGame.currentPlayer = list.get(0);
+                    return;
+                }
+                boolean found = false;
+                for (User user : list) {
+                    if (found) {
+                        currentGame.currentPlayer = user;
+                        return;
+                    }
+                    if (user.getUsername().equals(temp.getUsername())) {
+                        found = true;
+                    }
+                }
+            }
+
+
         }
         else
             if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
