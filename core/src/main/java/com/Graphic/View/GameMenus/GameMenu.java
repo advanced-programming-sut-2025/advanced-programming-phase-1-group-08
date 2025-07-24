@@ -2,39 +2,38 @@ package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
+import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
-import com.Graphic.model.App;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
-import com.Graphic.model.GameAssetManager;
+import com.Graphic.model.Enum.ItemType.MarketItemType;
 import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
-import com.Graphic.model.Items;
-import com.Graphic.model.Keys;
+import com.Graphic.model.Places.MarketItem;
+import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -584,18 +583,118 @@ public class GameMenu implements  Screen, InputProcessor {
             (stage.getWidth() - inventoryPopup.getWidth()) / 2,
             (stage.getHeight() - inventoryPopup.getHeight()) / 2);
 
-        Drawable bg = new TextureRegionDrawable(new TextureRegion(new Texture("Erfan/Inventory/Inventory.png")));
+        Drawable bg = new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/Inventory/Inventory.png")));
         inventoryPopup.setBackground(bg);
 
-
+        Table currentItemTable = new Table();
+        createCurrentItem(currentItemTable);
 
         Table content = new Table();
-        createEscMenuButtons(content);
+        createItems(content);
+        content.padRight(300);
+        content.padBottom(293);
 
-        inventoryPopup.add(content).expand().fill();
+        inventoryPopup.add(content);
+        inventoryPopup.add(currentItemTable).align(Align.topRight).padRight(215).padBottom(400);
 
         stage.addActor(inventoryPopup);
         inventoryIsActivated = true;
+    }
+    private void createItems (Table content) {
+
+        content.defaults().pad(5);
+        content.setFillParent(false);
+        content.sizeBy(350, 600);
+        content.setPosition(300, 300);
+        content.padLeft(50);
+
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+
+        int number = 0;
+
+        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+
+            if (number % 6 == 0)
+                content.row();
+
+            Items item = entry.getKey();
+            int count = entry.getValue();
+
+            Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
+
+            Items currentItem = currentGame.currentPlayer.currentItem;
+            boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
+
+            if (isCurrent) {
+                itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+                itemButton.setScale(1.3f);
+            } else
+                itemButton.setColor(1f, 1f, 1f, 0.8f);
+
+
+            Label countLabel = new Label("", App.newSkin);
+
+            if (!(item instanceof Tools))
+                countLabel.setText(count);
+
+            countLabel.setFontScale(0.9f);
+            countLabel.setColor(Color.BLACK);
+            countLabel.setAlignment(Align.bottomRight);
+
+            Table labelOverlay = new Table();
+            labelOverlay.setFillParent(false);
+            labelOverlay.add(countLabel).bottom().right().padLeft(35).padTop(50);
+
+            Stack stack = new Stack();
+            stack.add(itemButton);
+            stack.add(labelOverlay);
+
+            content.add(stack).width(60).height(60).padLeft(10);
+
+            itemButton.addListener(new ClickListener() {
+
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+
+                    if (currentItem != null && currentItem.getName().equals(item.getName()))
+                        currentGame.currentPlayer.currentItem = null;
+                    else
+                        controller.itemEquip(item.getName());
+
+                    helperBackGround.remove();
+                    inventoryPopup.remove();
+                    inventoryIsActivated = false;
+                }
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    itemButton.setColor(1f, 1f, 1f, 1f);
+                    itemButton.setScale(isCurrent ? 1.4f : 1.2f);
+                }
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    if (isCurrent) {
+                        itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+                        itemButton.setScale(1.3f);
+                    } else {
+                        itemButton.setColor(1f, 1f, 1f, 0.8f);
+                        itemButton.setScale(1f);
+                    }
+                }
+            });
+            number++;
+        }
+    }
+    private void createCurrentItem (Table content) {
+
+        Image img;
+        if (currentGame.currentPlayer.currentItem != null)
+            img = new Image(TextureManager.get(currentGame.currentPlayer.currentItem.getInventoryIconPath()));
+        else
+            img = new Image(TextureManager.get("Erfan/Cancel2.png"));
+
+        content.add(img).align(Align.topRight).width(150).height(150).right();
+        content.row();
+
     }
     private void createSocialMenu () {
 

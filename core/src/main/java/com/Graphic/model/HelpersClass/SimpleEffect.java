@@ -24,7 +24,7 @@ public class SimpleEffect {
         if (!animations.containsKey(type)) {
             Array<TextureRegion> frames = new Array<>();
             for (int i = 0; i < type.frameCount; i++) {
-                Texture texture = new Texture(type.basePath + i + ".png");
+                Texture texture = TextureManager.get(type.basePath + i + ".png");
                 frames.add(new TextureRegion(texture));
             }
             Animation<TextureRegion> animation = new Animation<>(type.speed / type.frameCount, frames, Animation.PlayMode.NORMAL);

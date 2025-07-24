@@ -4,6 +4,7 @@ import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
+import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.Farm;
 import com.Graphic.model.ToolsPackage.BackPack;
@@ -493,20 +494,20 @@ public class User {
 
     public void initAnimations () {
         this.Right = new Animation<>(0.1f,
-            new Texture("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png"),
-            new Texture("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png"));
+            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png"),
+            TextureManager.get("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png"));
 
         this.Left = new Animation<>(0.1f,
-            new Texture("Mohamadreza/PlayerSpriteIdle/Left" + farm.getIndex() + "," + gender + ".png"),
-            new Texture("Mohamadreza/PlayerSpriteMove/Left" + farm.getIndex() + "," + gender + ".png"));
+            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Left" + farm.getIndex() + "," + gender + ".png"),
+            TextureManager.get("Mohamadreza/PlayerSpriteMove/Left" + farm.getIndex() + "," + gender + ".png"));
 
         this.Up = new Animation<>(0.1f,
-            new Texture("Mohamadreza/PlayerSpriteIdle/Up" + farm.getIndex() + "," + gender + ".png"),
-            new Texture("Mohamadreza/PlayerSpriteMove/Up" + farm.getIndex() + "," + gender + ".png"));
+            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Up" + farm.getIndex() + "," + gender + ".png"),
+            TextureManager.get("Mohamadreza/PlayerSpriteMove/Up" + farm.getIndex() + "," + gender + ".png"));
 
         this.Down = new Animation<>(0.1f,
-            new Texture("Mohamadreza/PlayerSpriteIdle/Down" + farm.getIndex() + "," + gender + ".png"),
-            new Texture("Mohamadreza/PlayerSpriteMove/Down" + farm.getIndex() + "," + gender + ".png"));
+            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Down" + farm.getIndex() + "," + gender + ".png"),
+            TextureManager.get("Mohamadreza/PlayerSpriteMove/Down" + farm.getIndex() + "," + gender + ".png"));
 
         direction = Direction.Down;
         DirectionInWalk = new HashMap<>();

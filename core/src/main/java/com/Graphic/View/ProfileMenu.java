@@ -6,6 +6,7 @@ import com.Graphic.Main;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.HelpersClass.Result;
+import com.Graphic.model.HelpersClass.TextureManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -61,7 +62,7 @@ public class ProfileMenu implements Screen, AppMenu {
     }
 
     private void setupBackground() {
-        backgroundTexture = new Texture(Gdx.files.internal("Skin/back.png"));
+        backgroundTexture = TextureManager.get("Skin/back.png");
         TextureRegion textureRegion = new TextureRegion(backgroundTexture);
         textureRegion.setRegion(0, 0, 1628, 1090);
         Image backgroundImage = new Image(new TextureRegionDrawable(textureRegion));
@@ -319,7 +320,7 @@ public class ProfileMenu implements Screen, AppMenu {
         if (isError) {
             messageLabel.setColor(1, 0.3f, 0.3f, 1);
         } else {
-            messageLabel.setColor(0.3f, 1, 0.3f, 1); 
+            messageLabel.setColor(0.3f, 1, 0.3f, 1);
         }
     }
 

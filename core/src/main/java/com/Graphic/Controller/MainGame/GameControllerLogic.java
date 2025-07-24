@@ -65,7 +65,7 @@ public class GameControllerLogic {
     static int turnCounter = 0;
     static Image helperBackGround;
     static Random rand = new Random();
-    static long lastTimeUpdate = TimeUtils.millis();
+    static DateHour lastTimeUpdate;
 
 
     static Cloud cloud;
@@ -77,6 +77,7 @@ public class GameControllerLogic {
     public static void init() {
 
         createScreenOverlay(gameMenu.getStage());
+        lastTimeUpdate = currentGame.currentDate.clone();
     }
 
     public static void update(float delta) {
@@ -89,9 +90,9 @@ public class GameControllerLogic {
             }
         handleLightning(delta);
 
-        if (TimeUtils.millis() - lastTimeUpdate > 1000) {
+        if (currentGame.currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
             AutomaticFunctionAfterAnyAct();
-            lastTimeUpdate = TimeUtils.millis();
+            lastTimeUpdate = currentGame.currentDate.clone();
         }
 
     }
@@ -850,8 +851,8 @@ public class GameControllerLogic {
             Window window = new Window("Information", getSkin(), "default");
             window.setSize(1000, 750);
             window.setPosition(Gdx.graphics.getWidth() / 2 - 500, Gdx.graphics.getHeight() / 2 - 375);
-            Image image = new Image(new Texture(Gdx.files.internal(animal.getType().getIcon())));
-            Texture background = new Texture(Gdx.files.internal("Mohamadreza/AnimalBackground2.png"));
+            Image image = new Image(TextureManager.get(animal.getType().getIcon()));
+            Texture background = TextureManager.get("Mohamadreza/AnimalBackground2.png");
             Drawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(background));
 
             Table content = new Table();
