@@ -2,19 +2,16 @@ package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
+import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
-import com.Graphic.model.App;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
-import com.Graphic.model.GameAssetManager;
 import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
-import com.Graphic.model.Items;
-import com.Graphic.model.Keys;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -114,10 +111,10 @@ public class GameMenu implements  Screen, InputProcessor {
         //controller.startNewGame("a");
         Gdx.input.setInputProcessor(stage);
         createClock();
-        animateCloudWithLightning(stage,
-            new Image(TextureManager.get(Cloud.getPath())),
-            new Image(TextureManager.get(CloudShadow.getPath())),
-            currentGame.currentPlayer.getFarm(), 32f);
+//        animateCloudWithLightning(stage,
+//            new Image(TextureManager.get(Cloud.getPath())),
+//            new Image(TextureManager.get(CloudShadow.getPath())),
+//            currentGame.currentPlayer.getFarm(), 32f);
         firstLoad = true;
         currentBarnOrCage = new BarnOrCage(BarnORCageType.Coop ,0 , 0);
         shepherdingAnimals = new ArrayList<>();
@@ -188,6 +185,30 @@ public class GameMenu implements  Screen, InputProcessor {
 
         if (Gdx.input.isKeyJustPressed(Keys.ToolsMenu))
             createToolsMenu();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.H))
+            Main.getMain().setScreen(new HomeMenu());
+
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            User temp = currentGame.currentPlayer;
+            ArrayList<User> list = currentGame.players;
+            if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
+                currentGame.currentPlayer = list.get(0);
+                return;
+            }
+            boolean found = false;
+            for (User user : list) {
+                if (found) {
+                    currentGame.currentPlayer = user;
+                    return;
+                }
+                if (user.getUsername().equals(temp.getUsername())) {
+                    found = true;
+                }
+            }
+        }
+
+
         else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
             createEscMenu();
         else if (Gdx.input.isKeyJustPressed(Keys.increaseTime))

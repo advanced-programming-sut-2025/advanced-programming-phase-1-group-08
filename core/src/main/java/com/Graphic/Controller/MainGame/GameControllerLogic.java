@@ -27,6 +27,8 @@ import com.Graphic.model.ToolsPackage.*;
 import com.Graphic.model.Weather.Cloud;
 import com.Graphic.model.Weather.DateHour;
 import com.Graphic.model.Weather.LightningEffect;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -40,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.*;
@@ -77,12 +80,13 @@ public class GameControllerLogic {
     }
     public static void update() {
         EnterTheBarnOrCage();
-        if (! gameMenu.isInFarmExterior && gameMenu.isFirstLoad()) {
+        if (!gameMenu.isInFarmExterior && gameMenu.isFirstLoad()) {
             gameMenu.setFirstLoad(false);
-            camera.setToOrtho(false , 300 , 150);
+            camera.setToOrtho(false, 300, 150);
             gameMenu.setTiledMap(new TmxMapLoader().load(gameMenu.getBarnOrCagePath()));
-            gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap() , 1f));
+            gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap(), 1f));
         }
+    }
     public static void update(float delta) {
 
         handleLightning(delta);
