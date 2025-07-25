@@ -10,6 +10,7 @@ import com.Graphic.model.App;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
+import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.Skills;
 import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.SampleAnimation;
@@ -80,6 +81,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private int lastHealth;
     public Label energyLabel;
+    private Label.LabelStyle energyStyle;
 
     private Group clockGroup;
     private Image seasonImage;
@@ -179,8 +181,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         clockGroup = new Group();
         camera = new OrthographicCamera();
 
+        BitmapFont font = new BitmapFont();
+        energyStyle = new Label.LabelStyle();
+        energyStyle.font = font;
+        energyStyle.fontColor = Color.GREEN;
+
         lastHealth = -1;
-        energyLabel = new Label("Energy : 100", App.newSkin);
+        energyLabel = new Label("Energy : 100", energyStyle);
         energyLabel.setPosition((float) Gdx.graphics.getWidth() - energyLabel.getWidth() - 10, 10);
 
         stage.addActor(energyLabel);
@@ -417,7 +424,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         int colNumber = 3;
 
         skillPopup = new Window("", App.newSkin);
-        skillPopup.setSize(200 + colNumber * 100, 300);
+        skillPopup.setSize(200 + colNumber * 100, 320);
         skillPopup.setPosition(
             (stage.getWidth() - skillPopup.getWidth()) / 2,
             (stage.getHeight() - skillPopup.getHeight()) / 2);
@@ -638,7 +645,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 EscMenuIsActivated = false;
             }
         });
-
         inventoryButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -654,13 +660,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         SocialButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                createSocialMenu();
             }
         });
         mapButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                createMap();
             }
         });
         stage.addActor(table);
@@ -821,7 +827,52 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         content.row();
 
     }
+
     private void createSocialMenu () {
+
+        socialPopup = new Window("", App.newSkin);
+        socialPopup.setSize(650, 850);
+        socialPopup.setPosition(
+            (stage.getWidth() - socialPopup.getWidth()) / 2,
+            (stage.getHeight() - socialPopup.getHeight()) / 2);
+
+
+        Table content = new Table();
+        createDetailSocial(content);
+
+        socialPopup.add(content).expand().fill();
+
+        stage.addActor(socialPopup);
+        socialMenuIsActivated = true;
+
+    }
+    private void createDetailSocial (Table content) {
+
+        content.defaults().pad(5);
+        content.setFillParent(false);
+
+        AnimatedImage animatedImage1 = new AnimatedImage(0.18f, SampleAnimation.Heart, Animation.PlayMode.LOOP);
+        AnimatedImage animatedImage2 = new AnimatedImage(0.21f, SampleAnimation.Pyramid, Animation.PlayMode.LOOP);
+
+        content.add(animatedImage1).size(40).top().left();
+        content.add(animatedImage2).size(40).top().right();
+
+        for (NPC npc : NPC.values()) {
+
+            content.row();
+            content.add(new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(npc.getIconPath())))));
+
+            Label nameLabel = new Label("Friendship Level with " + npc.getName() +
+                " : " + currentGame.currentPlayer.getFriendshipLevel(npc), App.newSkin);
+
+            Label.LabelStyle copiedStyle = new Label.LabelStyle(nameLabel.getStyle());
+            copiedStyle.fontColor = Color.GRAY;
+            nameLabel.setStyle(copiedStyle);
+
+            content.add(nameLabel);
+        }
+    }
+    private void createMap () {
 
     }
     private void createGrayBackGround () {
@@ -838,7 +889,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
 
-                ///    ///////////                      Mohammad Reza
+                /// /// /// /// ///                      Mohammad Reza
 
     public Vector3 getMousePos() {
         return mousePos;

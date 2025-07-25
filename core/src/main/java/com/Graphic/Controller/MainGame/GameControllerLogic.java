@@ -11,7 +11,6 @@ import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.FoodTypes;
-import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.ToolsType.*;
@@ -56,7 +55,6 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 import static com.Graphic.model.Enum.AllPlants.ForagingMineralsType.*;
-import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class GameControllerLogic {
 
@@ -1724,7 +1722,7 @@ public class GameControllerLogic {
             currentGame.currentPlayer = user;
             user.setFriendshipPoint(new HashMap<>(Map.of(
                 NPC.Sebastian, 0,
-                NPC.Lia, 0,
+                NPC.Leah, 0,
                 NPC.Abigail, 0,
                 NPC.Harvey, 0,
                 NPC.Robin, 0)));
@@ -2849,7 +2847,7 @@ public class GameControllerLogic {
             case Sebastian -> "";
             case Abigail -> "  ";
             case Harvey -> "   ";
-            case Lia -> "      ";
+            case Leah -> "      ";
             default -> "    ";
         };
         int width = 60;
@@ -2900,7 +2898,7 @@ public class GameControllerLogic {
                 currentGame.currentPlayer.increaseMoney(number);
                 return new Result(true, "Your got +"+number+" money");
             }
-            case Lia -> {
+            case Leah -> {
                 int number = 500;
                 if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
                     number *= 2;
@@ -2953,7 +2951,7 @@ public class GameControllerLogic {
                 currentGame.currentPlayer.increaseFriendshipPoint(NPC.Abigail, 200);
                 return new Result(true, BRIGHT_BLUE+"Your friendship level with Harvey increased"+RESET);
             }
-            case Lia -> {
+            case Leah -> {
 
                 if (checkAmountProductAvailable(new MarketItem(MarketItemType.PancakesRecipe), 1) ||
                     currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
@@ -3036,7 +3034,7 @@ public class GameControllerLogic {
                 }
                 return new Result(true, RED+"Inventory is full"+RESET);
             }
-            case Lia -> {
+            case Leah -> {
 
                 if (checkAmountProductAvailable(new CraftingItem(CraftType.DeluxeScarecrow), 1) ||
                     currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {

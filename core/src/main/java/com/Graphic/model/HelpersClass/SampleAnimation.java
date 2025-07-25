@@ -7,7 +7,7 @@ public enum SampleAnimation {
     Heart ("Heart/Heart",9,9,6),
     Pillow ("Pillow/Pillow",11,12,6),
     Crystal ("Crystal/Crystal",13,13,4),
-    Pyramid ("Pyramid/Pyramid",13,11,4),
+    Pyramid ("Pyramid/Pyramid",13,13,4),
     Skeleton ("Skeleton/Skeleton",13,13,4),
     QuestionMark ("QuestionMark/QuestionMark",7,13,6),
 
