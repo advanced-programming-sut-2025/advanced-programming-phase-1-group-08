@@ -109,6 +109,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private boolean mapIsActivated;
     private Window mapPopup;
 
+    private boolean setEnergyIsActivated;
+    private Window setEnergyPopup;
+    private TextField energyInputField;
+    private TextButton confirmButton;
+
+
 
     private GameMenu() {
 
@@ -270,6 +276,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             mapPopup.remove();
             mapIsActivated = false;
         }
+        else if (setEnergyIsActivated) {
+            setEnergyPopup.remove();
+            setEnergyIsActivated = false;
+        }
         else if (EscMenuIsActivated) {
             helperBackGround.remove();
             EscPopup.remove();
@@ -292,6 +302,57 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             energyLabel.setStyle(style);
         }
+    }
+
+    private void createCheatEnergyMenu () {
+
+        setEnergyPopup = new Window("تنظیم انرژی", App.newSkin);
+        setEnergyPopup.setSize(300, 200);
+        setEnergyPopup.setPosition(
+            (stage.getViewport().getWorldWidth() - setEnergyPopup.getWidth()) / 2,
+            (stage.getViewport().getWorldHeight() - setEnergyPopup.getHeight()) / 2
+        );
+        setEnergyPopup.setMovable(false);
+
+        energyInputField = new TextField("", App.newSkin);
+        energyInputField.setMessageText("عدد انرژی...");
+        energyInputField.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
+
+
+        confirmButton = new TextButton("تأیید", App.newSkin);
+        confirmButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                String inputText = energyInputField.getText();
+                if (!inputText.isEmpty()) {
+                    try {
+                        int energy = Integer.parseInt(inputText);
+
+                        // مثلاً تنظیم انرژی بازیکن
+                        currentGame.currentPlayer.setHealth(energy);
+
+                        // بستن پنجره
+                        setEnergyPopup.remove();
+                        setEnergyIsActivated = false;
+
+                    } catch (NumberFormatException e) {
+                        System.out.println("ورودی نامعتبر");
+                    }
+                }
+            }
+        });
+
+        setEnergyPopup.defaults().pad(10);
+        setEnergyPopup.row();
+        setEnergyPopup.add(new Label("مقدار انرژی را وارد کنید:", App.newSkin));
+        setEnergyPopup.row();
+        setEnergyPopup.add(energyInputField).width(200);
+        setEnergyPopup.row();
+        setEnergyPopup.add(confirmButton).width(100);
+
+        stage.addActor(setEnergyPopup);
+        setEnergyIsActivated = true;
+
     }
 
     private void createToolsMenu () {
