@@ -18,6 +18,8 @@ import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.Places.Market;
+import com.Graphic.model.Plants.*;
+import com.Graphic.model.Plants.Tree;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.badlogic.gdx.Gdx;
@@ -113,6 +115,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private boolean setEnergyIsActivated;
     private Window setEnergyPopup;
+
     private TextField energyInputField;
     private TextButton confirmButton;
 
@@ -226,11 +229,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 updateClock(2);
             else if (Gdx.input.isKeyJustPressed(Keys.lighting))
                 createCloud();
+            else if (Gdx.input.isKeyJustPressed(Keys.energySet))
+                createCheatEnergyMenu();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
+                handleLeftClick();
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.H))
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.H))
                 Main.getMain().setScreen(new HomeMenu());
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                 User temp = currentGame.currentPlayer;
                 ArrayList<User> list = currentGame.players;
                 if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
@@ -306,10 +313,43 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }
     }
 
+    private void handleLeftClick () {
+
+        Direction direction = Direction.getDirByCord(
+            currentGame.currentPlayer.getSprite().getX(),
+            90 - currentGame.currentPlayer.getSprite().getY(),
+            getVector().x, 90 - getVector().y
+        );
+        if (direction != null) {
+
+            int dir = 0;
+            Items items = currentGame.currentPlayer.currentItem;
+            switch (direction) {
+
+                case Up -> dir = 3;
+                case Right -> dir = 1;
+                case Down -> dir = 7;
+                case Left -> dir = 5;
+            }
+            if (dir != 0) {
+                if (items instanceof Tools) {
+                    currentGame.currentPlayer.currentTool = (Tools) items;
+                    controller.useTools(dir);
+                }
+                else if (items instanceof TreeSource)
+                    plantTree(((TreeSource) items).getType(), dir);
+                else if (items instanceof ForagingSeeds)
+                    plantForagingSeed(((ForagingSeeds) items).getType(), dir);
+                else if (items instanceof MixedSeeds)
+                    plantMixedSeed(dir);
+            }
+        }
+    }
+
     private void createCheatEnergyMenu () {
 
-        setEnergyPopup = new Window("تنظیم انرژی", App.newSkin);
-        setEnergyPopup.setSize(300, 200);
+        setEnergyPopup = new Window("", App.newSkin);
+        setEnergyPopup.setSize(400, 300);
         setEnergyPopup.setPosition(
             (stage.getViewport().getWorldWidth() - setEnergyPopup.getWidth()) / 2,
             (stage.getViewport().getWorldHeight() - setEnergyPopup.getHeight()) / 2
@@ -317,11 +357,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         setEnergyPopup.setMovable(false);
 
         energyInputField = new TextField("", App.newSkin);
-        energyInputField.setMessageText("عدد انرژی...");
+        energyInputField.setMessageText("       Amount");
         energyInputField.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
 
 
-        confirmButton = new TextButton("تأیید", App.newSkin);
+        confirmButton = new TextButton("OK", App.newSkin);
         confirmButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -330,15 +370,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     try {
                         int energy = Integer.parseInt(inputText);
 
-                        // مثلاً تنظیم انرژی بازیکن
                         currentGame.currentPlayer.setHealth(energy);
 
-                        // بستن پنجره
                         setEnergyPopup.remove();
                         setEnergyIsActivated = false;
 
                     } catch (NumberFormatException e) {
-                        System.out.println("ورودی نامعتبر");
                     }
                 }
             }
@@ -346,7 +383,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         setEnergyPopup.defaults().pad(10);
         setEnergyPopup.row();
-        setEnergyPopup.add(new Label("مقدار انرژی را وارد کنید:", App.newSkin));
+        setEnergyPopup.add(new Label("Input energy amount", App.newSkin)).padTop(20);
         setEnergyPopup.row();
         setEnergyPopup.add(energyInputField).width(200);
         setEnergyPopup.row();
@@ -948,7 +985,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public boolean anyMenuIsActivated () {
         return toolsMenuIsActivated || EscMenuIsActivated ||
             inventoryIsActivated || socialMenuIsActivated ||
-            skillMenuIsActivated || mapIsActivated;
+            skillMenuIsActivated || mapIsActivated || setEnergyIsActivated;
     }
 
 
