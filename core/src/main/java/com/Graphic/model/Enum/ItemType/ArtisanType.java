@@ -1,6 +1,7 @@
 package com.Graphic.model.Enum.ItemType;
 
 import com.Graphic.model.*;
+import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.Plants.Fish;
 import com.Graphic.model.Enum.AllPlants.CropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
@@ -13,7 +14,10 @@ import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Plants.*;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import static com.Graphic.model.App.currentGame;
 
 public enum ArtisanType {
     Honey("Honey" , CraftType.BeeHouse , 350 , 96) {
@@ -25,14 +29,16 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct artisanProduct=new ArtisanProduct(Honey);
-            craftingItem.getBuffer().put(artisanProduct , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(artisanProduct);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            return true;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            return new Result(true , "you create Honey Successfully");
         }
     },
+
     Cheese("Cheese" , CraftType.ChessPress , 345 , 3) {
         @Override
         public int getEnergy(String name) {
@@ -42,16 +48,24 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct cheese=new ArtisanProduct(Cheese);
-            craftingItem.getBuffer().put(cheese , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(cheese);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_',' ');
-            if (! newName.equals("Milk") && ! newName.equals("Large Milk")) {
-                return false;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
+                if (entry.getKey() instanceof Animalproduct) {
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.milk)
+                        || ((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.bigMilk)) {
+
+                        currentGame.currentPlayer.getBackPack().inventory.Items.remove(entry.getKey());
+                        return new Result(true , "you create Cheese Successfully");
+                    }
+                }
             }
-            return check(newName);
+            return new Result(false , "you didn't choose suitable ingredients for Cheese");
         }
     },
 
@@ -64,16 +78,24 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct GoatCheese=new ArtisanProduct(Goat_Cheese);
-            craftingItem.getBuffer().put(GoatCheese , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(GoatCheese);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_',' ');
-            if (! newName.equals("Goat Milk") && ! newName.equals("Large Goat Milk")) {
-                return false;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
+                if (entry.getKey() instanceof Animalproduct) {
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.goatMilk)
+                        || ((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.bigGoatMilk)) {
+
+                        currentGame.currentPlayer.getBackPack().inventory.Items.remove(entry.getKey());
+                        return new Result(true , "you create Goat Cheese Successfully");
+                    }
+                }
             }
-            return check(newName);
+            return new Result(false , "you didn't choose suitable ingredients for Goat Cheese");
         }
     },
 
@@ -86,27 +108,18 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem beer=new MarketItem(MarketItemType.Beer);
-            craftingItem.getBuffer().put(beer , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(beer);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            if (! first.equals("Wheat") ) {
-                return false;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items wheat = new AllCrops(CropsType.Wheat);
+            if (ingredient.containsKey(wheat)) {
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(wheat,(k,v)-> v-1);
+                return new Result(true , "you create Wheat Successfully");
             }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof AllCrops) {
-                    if (((AllCrops) entry.getKey()).getType().equals(CropsType.Wheat)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return new Result(false , "you didn't choose suitable ingredients for Wheat");
         }
     },
 
@@ -120,23 +133,18 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem vinegar=new MarketItem(MarketItemType.Vinegar);
-            craftingItem.getBuffer().put(vinegar , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(vinegar);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            if (! first.equals("Rice") ) {
-                //System.out.println("fj");
-                return false;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items Rice = new MarketItem(MarketItemType.Rice);
+            if (ingredient.containsKey(Rice)) {
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(Rice,(k,v)-> v-1);
+                return new Result(true , "you create Vinegar Successfully");
             }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            MarketItem marketItem=new MarketItem(MarketItemType.Rice);
-            if (inventory.Items.containsKey(marketItem)) {
-                inventory.Items.compute(marketItem , (k,v) -> v-1 );
-                inventory.Items.entrySet().removeIf(e -> e.getValue()==0);
-                return true;
-            }
-            return false;
+            return new Result(false,"you didn't choose suitable ingredients for Vinegar");
         }
     },
 
@@ -150,27 +158,27 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem coffee=new MarketItem(MarketItemType.Coffee);
-            craftingItem.getBuffer().put(coffee , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(coffee);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            if (! first.equals("Coffee_Bean") ) {
-                return false;
-            }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof AllCrops) {
-                    if (((AllCrops) entry.getKey()).getType().equals(CropsType.CoffeeBean) && entry.getValue() >= 5) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-5);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
-                    }
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items items = new AllCrops(CropsType.CoffeeBean);
+            try {
+                int x = ingredient.get(items);
+                if (x < 5) {
+                    return new Result(false , "you should choose more Coffee Bean");
                 }
+                if (currentGame.currentPlayer.getBackPack().inventory.Items.get(items) < 5) {
+                    return new Result(false , "Not enough Coffee Bean in your inventory");
+                }
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(items,(k,v)-> v-5);
+                return new Result(true , "you create Coffee Successfully");
             }
-            return false;
+            catch (Exception e) {
+                return new Result(false , "you didn't choose suitable ingredients for Coffee");
+            }
         }
     },
 
@@ -184,32 +192,20 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct juice=new ArtisanProduct(Juice);
-            craftingItem.getBuffer().put(juice , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(juice);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            String newName=name().replace('_',' ' );
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof AllCrops) {
-
-                    if (((AllCrops) entry.getKey()).getType().getDisplayName().equals(newName)) {
-
-                        if (((AllCrops) entry.getKey()).getType().isVegetable()) {
-
-                            inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                            if (entry.getValue()==0) {
-                                inventory.Items.remove(entry.getKey());
-                            }
-                            return true;
-                        }
-
-                        return false;
-                    }
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (CropsType cropsType :CropsType.values()) {
+                Items items = new AllCrops(cropsType);
+                if (ingredient.containsKey(items)) {
+                    currentGame.currentPlayer.getBackPack().inventory.Items.compute(items,(k,v)-> v-1);
+                    return new Result(true , "you create Juice Successfully");
                 }
             }
-            return false;
+            return new Result(false , "you didn't choose suitable ingredients for Juice");
         }
     },
 
@@ -223,27 +219,18 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct mead=new ArtisanProduct(Mead);
-            craftingItem.getBuffer().put(mead , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(mead);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            if (! first.equals("Honey") ) {
-                return false;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items honey = new ArtisanProduct(Honey);
+            if (ingredient.containsKey(honey)) {
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(honey,(k,v)-> v-1);
+                return new Result(true , "you create Mead Successfully");
             }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof ArtisanProduct) {
-                    if (((ArtisanProduct) entry.getKey()).getType().equals(Honey)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return new Result(false,"you didn't choose suitable ingredients for Mead");
         }
     },
 
@@ -256,27 +243,18 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct pale=new ArtisanProduct(Pale_Ale);
-            craftingItem.getBuffer().put(pale , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(pale);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            if (! first.equals("Hops")) {
-                return false;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items hops = new AllCrops(CropsType.Hops);
+            if (ingredient.containsKey(hops)) {
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(hops,(k,v)-> v-1);
+                return new Result(true , "you create Hops Successfully");
             }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof AllCrops) {
-                    if (((AllCrops) entry.getKey()).getType().equals(CropsType.Hops)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return new Result(false,"you didn't choose suitable ingredients for Hops");
         }
     },
 
@@ -290,12 +268,13 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct wine=new ArtisanProduct(Wine);
-            craftingItem.getBuffer().put(wine , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(wine);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            return checkTreeProduct(first);
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            return checkTreeProduct(ingredient , "Wine" , 1);
         }
     },
 
@@ -308,30 +287,31 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DriedMushrooms=new ArtisanProduct(Dried_Mushrooms);
-            craftingItem.getBuffer().put(DriedMushrooms , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(DriedMushrooms);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_',' ' );
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
                 if (entry.getKey() instanceof ForagingCrops) {
-
-                    if (((ForagingCrops) entry.getKey()).getType().getDisplayName().equals(newName)) {
-
-                        if (entry.getValue() >= 5 && ((ForagingCrops) entry.getKey()).getType().isMushroom()) {
-                            inventory.Items.put(entry.getKey() , entry.getValue()-5);
-                            if (entry.getValue()==0) {
-                                inventory.Items.remove(entry.getKey());
+                    if (((ForagingCrops) entry.getKey()).getType().isMushroom()) {
+                        try {
+                            int x = ingredient.get(entry.getKey());
+                            if (x >= 5) {
+                                if (currentGame.currentPlayer.getBackPack().inventory.Items.get(entry.getKey()) >= 5) {
+                                    currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-5);
+                                    return new Result(true , "you create Dried Mushrooms Successfully");
+                                }
                             }
-                            return true;
+                        }
+                        catch (Exception e) {
+
                         }
                     }
                 }
             }
-            return false;
+            return new Result(false , "you didn't choose suitable ingredients for Dried Mushrooms");
         }
     },
 
@@ -344,27 +324,13 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DriedFruit=new ArtisanProduct(Dried_Fruit);
-            craftingItem.getBuffer().put(DriedFruit , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(DriedFruit);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_',' ' );
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof TreesProdct) {
-                    if (((TreesProdct) entry.getKey()).getType().getDisplayName().equals(newName)) {
-                        if (entry.getValue() >= 5 ) {
-                            inventory.Items.put(entry.getKey() , entry.getValue()-5);
-                            if (entry.getValue()==0) {
-                                inventory.Items.remove(entry.getKey());
-                            }
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            return checkTreeProduct(ingredient , "Dried Fruit" , 5);
         }
     },
 
@@ -377,29 +343,27 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct raisins=new ArtisanProduct(Raisins);
-            craftingItem.getBuffer().put(raisins ,App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(raisins);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            if (! first.equals("Grapes")) {
-                return false;
-            }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof AllCrops) {
-                    if (((AllCrops) entry.getKey()).getType().equals(CropsType.Grape)) {
-                        if (entry.getValue() >= 5 ) {
-                            inventory.Items.put(entry.getKey() , entry.getValue()-5);
-                            if (entry.getValue()==0) {
-                                inventory.Items.remove(entry.getKey());
-                            }
-                            return true;
-                        }
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items Grape = new AllCrops(CropsType.Grape);
+            try {
+                int x = ingredient.get(Grape);
+                if (x >= 5) {
+                    if (currentGame.currentPlayer.getBackPack().inventory.Items.get(Grape) >= 5) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(Grape,(k,v)-> v-5);
+                        return new Result(true , "you create Raisins Successfully");
                     }
+                    return new Result(false , "you don't have enough Grape in your inventory");
                 }
+                return new Result(false,"you should add more Grape for product of Raisins");
             }
-            return false;
+            catch (Exception e) {
+                return new Result(false,"you should add more Grape for product of Raisins");
+            }
         }
     },
 
@@ -412,27 +376,27 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ForagingMinerals coal = new ForagingMinerals(ForagingMineralsType.COAL);
-            craftingItem.getBuffer().put(coal , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(coal);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            if (! first.equals("Wood")) {
-                return false;
-            }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof Wood) {
-                    if (entry.getValue() >= 10 ) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-10);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items wood = new Wood();
+            try {
+                int x = ingredient.get(wood);
+                if (x >= 10) {
+                    if (currentGame.currentPlayer.getBackPack().inventory.Items.get(wood) >= 10) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(wood,(k,v)-> v-10);
+                        return new Result(true , "you create Wood Successfully");
                     }
+                    return new Result(false,"you don't have enough Wood in your inventory");
                 }
+                return new Result(false , "you should add more Wood for product of Coal");
             }
-            return false;
+            catch (Exception e) {
+                return new Result(false , "you should add more Wood for product of Coal");
+            }
         }
     },
 
@@ -445,34 +409,23 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct cloth=new ArtisanProduct(Cloth);
-            craftingItem.getBuffer().put(cloth , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(cloth);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            if (! first.equals("Wool")) {
-                return false;
-            }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.rabbits_Wool)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
-                    }
-                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.sheeps_Wool)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.rabbits_Wool)
+                        || ((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.sheeps_Wool)) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+
+                        return new Result(true , "you create Cloth Successfully");
                     }
                 }
             }
-            return false;
+            return new Result(false , "you didn't choose suitable ingredient for Cloth");
         }
     },
 
@@ -485,28 +438,23 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct mayonnaise=new ArtisanProduct(Mayonnaise);
-            craftingItem.getBuffer().put(mayonnaise , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(mayonnaise);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_' , ' ');
-            if (! newName.equals("Egg") && ! newName.equals("Large Egg")) {
-                return false;
-            }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getType().getName().equals(newName)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.Egg)
+                        || ((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.bigEgg)) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+
+                        return new Result(true , "you create Mayonnaise Successfully");
                     }
                 }
             }
-            return false;
+            return new Result(false , "you didn't choose suitable ingredient for Mayonnaise");
         }
     },
 
@@ -519,33 +467,27 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DuckMayonnaise=new ArtisanProduct(Duck_Mayonnaise);
-            craftingItem.getBuffer().put(DuckMayonnaise , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(DuckMayonnaise);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
+
         @Override
-        public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_' , ' ');
-            if (! newName.equals("Duck Egg") ) {
-                return false;
-            }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
                     if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.duckEgg)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+
+                        return new Result(true , "you create Duck Mayonnaise Successfully");
                     }
                 }
             }
-            return false;
+            return new Result(false , "you didn't choose suitable ingredient for Duck Mayonnaise");
         }
     },
 
-    Dinosaur_Mayonnaise("Dinosaur Mayonnaise" , CraftType.MayonnaiseMachine , 800 , 3
-    ) {
+    Dinosaur_Mayonnaise("Dinosaur Mayonnaise" , CraftType.MayonnaiseMachine , 800 , 3) {
         @Override
         public int getEnergy(String name) {
             return 125;
@@ -554,28 +496,22 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct DinosaurMayonnaise=new ArtisanProduct(Dinosaur_Mayonnaise);
-            craftingItem.getBuffer().put(DinosaurMayonnaise , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(DinosaurMayonnaise);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_' , ' ');
-            if (! newName.equals(AnimalProductType.dinosaurEgg.getName()) ) {
-                return false;
-            }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
                     if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.dinosaurEgg)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+
+                        return new Result(true , "you create Dinosaur Mayonnaise Successfully");
                     }
                 }
             }
-            return false;
+            return new Result(false , "you didn't choose suitable ingredient for Dinosaur Mayonnaise");
         }
     },
 
@@ -588,27 +524,22 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct TruffleOil=new ArtisanProduct(Truffle_Oil);
-            craftingItem.getBuffer().put(TruffleOil , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(TruffleOil);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            if (! first.equals(AnimalProductType.Truffle.getName())) {
-                return false;
-            }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
                 if (entry.getKey() instanceof Animalproduct) {
                     if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.Truffle)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+
+                        return new Result(true , "you create Truffle Successfully");
                     }
                 }
             }
-            return false;
+            return new Result(false , "you didn't choose suitable ingredient for Truffle");
         }
     },
 
@@ -621,37 +552,29 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             MarketItem oil=new MarketItem(MarketItemType.Oil);
-            craftingItem.getBuffer().put(oil , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(oil);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_' , ' ');
-            if (! newName.equals("Corn") && ! newName.equals("Sunflower") && ! newName.equals("Sunflower Seeds") ) {
-                return false;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items corn = new AllCrops(CropsType.Corn);
+            Items sunFlower = new AllCrops(CropsType.Sunflower);
+            Items sunFlowerSeed = new ForagingSeeds(ForagingSeedsType.SunflowerSeeds);
+
+            if (ingredient.containsKey(corn)) {
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(corn,(k,v)-> v-1);
+                return new Result(true , "you create Oil Successfully");
             }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof AllCrops) {
-                    if (((AllCrops) entry.getKey()).getType().equals(CropsType.Corn) || ((AllCrops) entry.getKey()).getType().equals(CropsType.Sunflower)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
-                    }
-                }
-                if (entry.getKey() instanceof ForagingSeeds) {
-                    if (((ForagingSeeds) entry.getKey()).getType().equals(ForagingSeedsType.SunflowerSeeds)) {
-                        inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                        if (entry.getValue()==0) {
-                            inventory.Items.remove(entry.getKey());
-                        }
-                        return true;
-                    }
-                }
+            if (ingredient.containsKey(sunFlower)) {
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(sunFlower,(k,v)-> v-1);
+                return new Result(true , "you create Oil Successfully");
             }
-            return false;
+            if (ingredient.containsKey(sunFlowerSeed)) {
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(sunFlowerSeed,(k,v)-> v-1);
+                return new Result(true , "you create Oil Successfully");
+            }
+            return new Result(false , "you didn't choose suitable ingredient for Oil");
         }
     },
 
@@ -665,30 +588,21 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct pickles=new ArtisanProduct(Pickles);
-            craftingItem.getBuffer().put(pickles , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(pickles);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            String newName= first.replace('_' , ' ');
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
                 if (entry.getKey() instanceof AllCrops) {
-
                     if (((AllCrops) entry.getKey()).getType().isVegetable()) {
-
-                        if (((AllCrops) entry.getKey()).getType().getDisplayName().equals(newName)) {
-
-                            inventory.Items.put(entry.getKey(), entry.getValue() - 1);
-                            if (entry.getValue() == 0) {
-                                inventory.Items.remove(entry.getKey());
-                            }
-                            return true;
-                        }
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+                        return new Result(true , "you create Pickles Successfully");
                     }
                 }
             }
-            return false;
+            return new Result(false , "you didn't choose suitable ingredient for Pickles");
         }
     },
 
@@ -702,15 +616,17 @@ public enum ArtisanType {
         @Override
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct jelly=new ArtisanProduct(Jelly);
-            craftingItem.getBuffer().put(jelly , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(jelly);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            return checkTreeProduct(first);
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            return checkTreeProduct(ingredient , "Jelly",1);
         }
     },
-    Smoked_Fish("Smoked Fish" , CraftType.FishSmoker , 300 , 1) {
+
+    Smoked_Fish("Smoked Fish" , CraftType.FishSmoker , 300 , 1)  {
         @Override
         public int getEnergy(String name) {
             return 15;
@@ -718,125 +634,98 @@ public enum ArtisanType {
 
         public void creatArtesian(String name, CraftingItem craftingItem) {
             ArtisanProduct smokedFish=new ArtisanProduct(Smoked_Fish);
-            craftingItem.getBuffer().put(smokedFish , App.currentGame.currentDate.clone());
+            craftingItem.getItems().add(smokedFish);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
         }
 
         @Override
-        public boolean checkIngredient(String first, String second) {
-            if (first == null || second == null) {
-                return false;
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items coal = new ForagingMinerals(ForagingMineralsType.COAL);
+            if (! ingredient.containsKey(coal)) {
+                return new Result(false , "you should add more Coal");
             }
-            String newFirstName= first.replace('_' , ' ');
-            String newSecondName= second.replace('_' , ' ');
-            Fish fish=null;
-            ForagingMinerals coal=null;
-
-            if ( ! newSecondName.equals(ForagingMineralsType.COAL.getDisplayName())) {
-                return false;
-            }
-
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof Fish && fish==null) {
-                    if (((Fish) entry.getKey()).getType().getName().equals(newFirstName)) {
-                        fish = (Fish) entry.getKey();
-                    }
-                }
-                if (entry.getKey() instanceof ForagingMinerals && coal==null) {
-                    if (((ForagingMinerals) entry.getKey()).getType().equals(ForagingMineralsType.COAL)) {
-                        coal = (ForagingMinerals) entry.getKey();
-                    }
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
+                if (entry.getKey() instanceof Fish) {
+                    currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+                    currentGame.currentPlayer.getBackPack().inventory.Items.compute(coal,(k,v)-> v-1);
+                    return new Result(true , "you create Smoked Fish Successfully");
                 }
             }
-            if (coal==null || fish==null) {
-                return false;
-            }
-            inventory.Items.compute(fish , (k,v) -> v-1);
-            if (inventory.Items.get(fish)==0) {
-                inventory.Items.remove(fish);
-            }
-            inventory.Items.compute(coal , (k,v) -> v-1);
-            if (inventory.Items.get(coal)==0) {
-                inventory.Items.remove(coal);
-            }
-            return true;
-        }
-    },
-
-    AnyMetalBar("Any_Metal_Bar" , CraftType.Furnace , 100 , 4) {
-        @Override
-        public int getEnergy(String name) {
-            return 0;
-        }
-
-        @Override
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            if (name.equals("Copper_Ore")) {
-                BarsAndOres copperBar=new BarsAndOres(BarsAndOreType.CopperBar);
-                craftingItem.getBuffer().put(copperBar , App.currentGame.currentDate.clone());
-            }
-            if (name.equals("Iron_Ore")) {
-                BarsAndOres ironBar =new BarsAndOres(BarsAndOreType.IronBar);
-                craftingItem.getBuffer().put(ironBar , App.currentGame.currentDate.clone());
-            }
-            if (name.equals("Gold_Ore")) {
-                BarsAndOres goldBar=new BarsAndOres(BarsAndOreType.GoldBar);
-                craftingItem.getBuffer().put(goldBar , App.currentGame.currentDate.clone());
-            }
-            if (name.equals("Iridium_Ore")) {
-                BarsAndOres iridiumBar=new BarsAndOres(BarsAndOreType.IridiumBar);
-                craftingItem.getBuffer().put(iridiumBar , App.currentGame.currentDate.clone());
-            }
-        }
-
-        @Override
-        public boolean checkIngredient(String first, String second) {
-            String newFirst=first.replace('_' , ' ');
-            String newSecond=second.replace('_' , ' ');
-
-            if (! newSecond.equals(ForagingMineralsType.COAL.getDisplayName())) {
-                return false;
-            }
-            Inventory inventory=App.currentGame.currentPlayer.getBackPack().inventory;
-            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof BarsAndOres) {
-
-                    if (((BarsAndOres) entry.getKey()).getType().getName().equals(newFirst)) {
-
-                        if (entry.getValue() >= 5) {
-                            inventory.Items.put(entry.getKey() , entry.getValue() - 5);
-                            if (entry.getValue() == 0) {
-                                inventory.Items.remove(entry.getKey());
-                            }
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
+            return new Result(false , "you should add a Fish");
         }
     };
 
-    private static boolean checkTreeProduct(String first) {
-        String newName= first.replace('_' , ' ');
-        Inventory inventory= App.currentGame.currentPlayer.getBackPack().inventory;
-        for (Map.Entry <Items, Integer> entry : inventory.Items.entrySet()) {
-            if (entry.getKey() instanceof TreesProdct) {
+//    AnyMetalBar("Any_Metal_Bar" , CraftType.Furnace , 100 , 4) {
+//        @Override
+//        public int getEnergy(String name) {
+//            return 0;
+//        }
+//
+//        @Override
+//        public void creatArtesian(String name, CraftingItem craftingItem) {
+//            if (name.equals("Copper_Ore")) {
+//                BarsAndOres copperBar=new BarsAndOres(BarsAndOreType.CopperBar);
+//                craftingItem.getBuffer().put(copperBar , currentGame.currentDate.clone());
+//            }
+//            if (name.equals("Iron_Ore")) {
+//                BarsAndOres ironBar =new BarsAndOres(BarsAndOreType.IronBar);
+//                craftingItem.getBuffer().put(ironBar , currentGame.currentDate.clone());
+//            }
+//            if (name.equals("Gold_Ore")) {
+//                BarsAndOres goldBar=new BarsAndOres(BarsAndOreType.GoldBar);
+//                craftingItem.getBuffer().put(goldBar , currentGame.currentDate.clone());
+//            }
+//            if (name.equals("Iridium_Ore")) {
+//                BarsAndOres iridiumBar=new BarsAndOres(BarsAndOreType.IridiumBar);
+//                craftingItem.getBuffer().put(iridiumBar , currentGame.currentDate.clone());
+//            }
+//        }
+//
+//        @Override
+//        public boolean checkIngredient(String first, String second) {
+//            String newFirst=first.replace('_' , ' ');
+//            String newSecond=second.replace('_' , ' ');
+//
+//            if (! newSecond.equals(ForagingMineralsType.COAL.getDisplayName())) {
+//                return false;
+//            }
+//            Inventory inventory= currentGame.currentPlayer.getBackPack().inventory;
+//            for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
+//                if (entry.getKey() instanceof BarsAndOres) {
+//
+//                    if (((BarsAndOres) entry.getKey()).getType().getName().equals(newFirst)) {
+//
+//                        if (entry.getValue() >= 5) {
+//                            inventory.Items.put(entry.getKey() , entry.getValue() - 5);
+//                            if (entry.getValue() == 0) {
+//                                inventory.Items.remove(entry.getKey());
+//                            }
+//                            return true;
+//                        }
+//                    }
+//                }
+//            }
+//            return false;
+//        }
+//    };
 
-                if (((TreesProdct) entry.getKey()).getType().getDisplayName().equals(newName)) {
-                    inventory.Items.put(entry.getKey() , entry.getValue()-1);
-                    if (entry.getValue()==0) {
-                        inventory.Items.remove(entry.getKey());
+    private static Result checkTreeProduct(HashMap<Items,Integer> ingredient , String name , int number) {
+        for (Map.Entry <Items, Integer> entry : ingredient.entrySet()) {
+            if (entry.getKey() instanceof TreesProdct) {
+                if (entry.getValue() >= number) {
+                    if (currentGame.currentPlayer.getBackPack().inventory.Items.get(entry.getKey()) >= number) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey() , (key,v) -> v-number);
+                        return new Result(true , "you create "+name+" Successfully");
                     }
-                    return true;
                 }
+
             }
         }
-        return false;
+        return new Result(false , "you didn't choose suitable ingredient for "+name);
     }
 
     private static boolean check(String newName) {
-        Inventory inventory= App.currentGame.currentPlayer.getBackPack().inventory;
+        Inventory inventory= currentGame.currentPlayer.getBackPack().inventory;
         for (Map.Entry <Items, Integer> entry : inventory.Items.entrySet()) {
             if (entry.getKey() instanceof Animalproduct) {
                 if (((Animalproduct) entry.getKey()).getType().getName().equals(newName)) {
@@ -852,7 +741,7 @@ public enum ArtisanType {
     private final CraftType craftType;
     public abstract int getEnergy(String name);
     public abstract void creatArtesian(String name , CraftingItem craftingItem);
-    public abstract boolean checkIngredient(String first , String second);
+    public abstract Result checkIngredient(HashMap<Items,Integer> ingrediant);
     private final int price;
     private final int takesTime;
 

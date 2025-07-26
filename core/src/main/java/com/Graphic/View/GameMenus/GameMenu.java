@@ -55,7 +55,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public static GameMenu gameMenu; // اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
 
     public static OrthographicCamera camera;
-    private final int hourSecond = 120000;
+    private final int hourSecond = 12000;
     private Stage stage;
 
     private Vector3 mousePos;
@@ -70,6 +70,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private TiledMap map;
     private BitmapFont animalFont;
     private ArrayList<HeartAnimation> heartAnimations;
+    private boolean isInMine;
     private boolean placeArtisanOnFarm;
     private Sprite withMouse;
     private OrthogonalTiledMapRenderer renderer;
@@ -120,6 +121,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     public void show() {
 
+        stage = new Stage(new ScreenViewport());
         initialize();
         controller.init();
         mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -132,6 +134,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         heartAnimations = new ArrayList<>();
         placeArtisanOnFarm = false;
         withMouse = new Sprite();
+        isInMine = false;
         //createClock();
 
     }
@@ -149,6 +152,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             Main.getMain().setScreen(new MarketMenu());
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
+            System.out.println(mousePos.x + ",," + mousePos.y);
         }
 
         if (! isInFarmExterior) {
@@ -464,6 +471,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
         camera.unproject(vector);
         return vector;
+    }
+    public boolean getIsInMine() {
+        return isInMine;
+    }
+    public void setIsInMine(boolean inMine) {
+        this.isInMine = inMine;
     }
 
 

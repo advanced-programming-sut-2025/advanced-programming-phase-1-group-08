@@ -30,6 +30,7 @@ import com.Graphic.model.Weather.LightningEffect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -39,11 +40,18 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -79,14 +87,24 @@ public class GameControllerLogic {
     }
 
     public static void update(float delta) {
-            EnterTheBarnOrCage();
+        EnterTheBarnOrCage();
+        EnterTheMine();
+            if (! gameMenu.isInFarmExterior && gameMenu.isFirstLoad() && gameMenu.getIsInMine()) {
+                gameMenu.setFirstLoad(false);
+                camera.setToOrtho(false ,Gdx.graphics.getWidth() / 4 , Gdx.graphics.getHeight() / 4);
+                gameMenu.setTiledMap(new TmxMapLoader().load("Mohamadreza/Maps/Mines/10.tmx"));
+                gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap(),1f));
+
+            }
             if (! gameMenu.isInFarmExterior && gameMenu.isFirstLoad()) {
                 gameMenu.setFirstLoad(false);
                 camera.setToOrtho(false , 300 , 150);
                 gameMenu.setTiledMap(new TmxMapLoader().load(gameMenu.getBarnOrCagePath()));
                 gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap() , 1f));
             }
+
         handleLightning(delta);
+
 
         if (TimeUtils.millis() - lastTimeUpdate > 1000) {
             AutomaticFunctionAfterAnyAct();
@@ -655,6 +673,31 @@ public class GameControllerLogic {
             || tile.getGameObject() instanceof GreenHouse;
     }
 
+    public static void EnterTheMine() {
+        if (currentGame.currentPlayer.getDirection().equals(Direction.Up)) {
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                if (currentGame.currentPlayer.getFarm().getMine().getDoor().checkCollisionMouse(gameMenu.getMousePos())
+                    && currentGame.currentPlayer.getFarm().getMine().getDoor().checkCollision(currentGame.currentPlayer) ) {
+
+                    gameMenu.isInFarmExterior = false;
+                    gameMenu.setIsInMine(true);
+
+                    currentGame.currentPlayer.sprite.setPosition(140 , 68);
+                }
+            }
+        }
+    }
+
+    public static void showForagingMinerals(Mine mine) {
+        if (gameMenu.getIsInMine()) {
+            for (ForagingMinerals foragingMinerals : mine.getForagingMinerals()) {
+                foragingMinerals.getSprite().setPosition(foragingMinerals.getPosition().x, foragingMinerals.getPosition().y);
+                foragingMinerals.getSprite().setSize(TEXTURE_SIZE / 2 , TEXTURE_SIZE / 2);
+                foragingMinerals.getSprite().draw(Main.getBatch());
+            }
+        }
+    }
+
 
 
 
@@ -732,8 +775,6 @@ public class GameControllerLogic {
                         camera.setToOrtho(false , 300,150);
                         return;
                     }
-                    //System.out.println(gameMenu.getMousePos().x + "," + gameMenu.getMousePos().y);
-                    //System.out.println(barnOrCage.getDoor().getX()+ " "+ barnOrCage.getDoor().getWidth()+ " " + barnOrCage.getDoor().getY() + " " + barnOrCage.getDoor().getHeight());
                 }
             }
         }
@@ -780,7 +821,12 @@ public class GameControllerLogic {
 //            currentGame.currentPlayer.sprite.setPosition(x , y);
 //        }
         currentGame.currentPlayer.sprite.draw(Main.getBatch());
-        gameMenu.getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(currentGame.currentPlayer);
+        try {
+            gameMenu.getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(currentGame.currentPlayer);
+        }
+        catch (Exception e) {
+
+        }
     }
 
     public static void showAnimalsInBarnOrCage() {
@@ -1271,85 +1317,13 @@ public class GameControllerLogic {
     public static void openArtisanMenu() {
         if (Gdx.input.isKeyJustPressed(Keys.ArtisanMenu)) {
             Texture bg = TextureManager.get("Mohamadreza/ArtisanMenu.png");
-            ArtisanMenuUI artisanMenuUI = new ArtisanMenuUI(getSkin() , bg);
+            ArtisanMenuUI artisanMenuUI = new ArtisanMenuUI(getSkin() , bg , 1);
             artisanMenuUI.setPosition(100 , 100);
             gameMenu.getStage().addActor(artisanMenuUI);
         }
     }
 
-    public static void checkSprinkler() {
-        int domain=0;
-        Tile Sprinkler=null;
 
-        for (int dir =1 ; dir<9 ; dir++) {
-            Tile tile1=getTileByDir(dir);
-            if (tile1 != null) {
-                if (tile1.getGameObject() instanceof CraftingItem) {
-                    if (((CraftingItem) tile1.getGameObject()).getType().equals(CraftType.Sprinkler)) {
-                        Sprinkler = tile1;
-                        domain = 4;
-                        break;
-                    }
-                    if (((CraftingItem) tile1.getGameObject()).getType().equals(CraftType.QualitySprinkler)) {
-                        Sprinkler = tile1;
-                        domain = 8;
-                        break;
-                    }
-                    if (((CraftingItem) tile1.getGameObject()).getType().equals(CraftType.IridiumSprinkler)) {
-                        Sprinkler = tile1;
-                        domain = 24;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (Sprinkler != null) {
-            for (int i=- domain /2 ; i < domain /2 ; i++) {
-                for (int j=- domain /2 ; j < domain /2 ; j++) {
-                    Tile tile1 = getTileByCoordinates(i + Sprinkler.getX(), j+Sprinkler.getY());
-                    if (tile1.getGameObject() instanceof Tree ) {
-                        ((Tree) tile1.getGameObject()).setLastWater(currentGame.currentDate.clone());
-                    }
-                    else if (tile1.getGameObject() instanceof ForagingSeeds) {
-                        ((ForagingSeeds) tile1.getGameObject()).setLastWater(currentGame.currentDate.clone());
-                    }
-                    else if (tile1.getGameObject() instanceof GiantProduct) {
-                        ((GiantProduct) tile1.getGameObject()).setLastWater(currentGame.currentDate.clone());
-                    }
-                }
-            }
-        }
-    }
-    public static CraftingItem isNeighborWithCrafting(String name) {
-//        int [] dirx={0,0,1,1,1,-1,-1,-1};
-//        int [] diry={1,-1,0,1,-1,0,1,-1};
-//
-//        for (int x = currentGame.currentPlayer.getPositionX(); x <currentGame.currentPlayer.getPositionX()+ dirx.length; x++) {
-//            for (int y=currentGame.currentPlayer.getPositionY() ; y< currentGame.currentPlayer.getPositionY()+ diry.length; y++) {
-//                Tile tile=getTileByCoordinates(x,y);
-//                if (tile == null) {
-//                    continue;
-//                }
-//                if (tile.getGameObject() instanceof CraftingItem) {
-//                    if (((CraftingItem) tile.getGameObject()).getType().getName().equals(name)) {
-//                        return (CraftingItem) tile.getGameObject();
-//                    }
-//                }
-//            }
-//        }
-        return null;
-    }
-    public static void addArtisanToInventory(Items item) {
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
-            if (entry.getKey().equals(item)) {
-                inventory.Items.put(item, entry.getValue() + 1);
-                return;
-            }
-        }
-        inventory.Items.put(item, 1);
-    }
 
 
 
@@ -1743,7 +1717,8 @@ public class GameControllerLogic {
             user.setPositionX(home.getTopLeftX() + home.getWidth() / 2);
             user.setPositionY(home.getTopLeftY() + home.getLength());
             user.increaseMoney(1000000 - user.getMoney());
-            advanceItem(new CraftingItem(CraftType.Bomb) , 1);
+            advanceItem(new Wood() , 100000);
+            advanceItem(new BasicRock() , 100000);
         }
         currentGame.currentPlayer = user1;
     }
@@ -1916,7 +1891,7 @@ public class GameControllerLogic {
                 if (user.getFriendshipLevel(npc) == 3 && user.getLevel3Date(npc) == currentGame.currentDate)
                     user.setLevel3Date(npc, currentGame.currentDate.clone());
         }
-        checkSprinkler();
+
 
 //        if (checkForDeath()) {
 //            currentGame.currentPlayer.setSleepTile(
@@ -2200,14 +2175,10 @@ public class GameControllerLogic {
     }
     public static void    createRandomMinerals () {
         for (User user : currentGame.players) {
-            int x1 = user.getFarm().getMine().getStartX() + 1;
-            int y1 = user.getFarm().getMine().getStartY() + 1;
 
-            List<int[]> positions = new ArrayList<>();
-            for (int dx = 0; dx < 4; dx++) {
-                for (int dy = 0; dy < 4; dy++) {
-                    positions.add(new int[]{x1 + dx, y1 + dy});
-                }
+            List<Integer> positions = new ArrayList<>();
+            for (int i = 0 ; i < 16 ; i++) {
+                positions.add(i);
             }
 
             Collections.shuffle(positions);
@@ -2222,13 +2193,24 @@ public class GameControllerLogic {
             int posIndex = 0;
             for (ForagingMineralsType mineral : minerals) {
                 while (posIndex < positions.size()) {
-                    int[] pos = positions.get(posIndex++);
-                    Tile tile = getTileByCoordinates(pos[0], pos[1]);
+                    Point point = new Point(
+                        user.getFarm().getMine().getPositions().get(positions.get(posIndex)));
 
-                    if (tile.getGameObject() instanceof Walkable && Math.random() < mineral.getProbability()) {
-                        tile.setGameObject(new ForagingMinerals(mineral));
-                        break; // بریم سراغ ماده بعدی
+                    if (user.getFarm().getMine().checkPositionForMineral(point)) {
+                        if (Math.random() <= mineral.getProbability()) {
+                            if (user.equals(currentGame.currentPlayer)) {
+                                System.out.println("jdsfkfhbsk");
+                            }
+                            ForagingMinerals f = new ForagingMinerals(mineral);
+                            f.setPosition(point);
+                            user.getFarm().getMine().getForagingMinerals().add(f);
+                            user.getFarm().getMine().getTaken().add(point);
+                            break;
+                        }
                     }
+
+                    posIndex ++;
+
                 }
             }
         }

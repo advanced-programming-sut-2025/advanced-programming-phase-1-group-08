@@ -1,6 +1,7 @@
 package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
+import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
@@ -10,6 +11,8 @@ import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.HelpersClass.Result;
+import com.Graphic.model.HelpersClass.SFX;
+import com.Graphic.model.HelpersClass.SFXManager;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.*;
 import com.Graphic.model.OtherItem.*;
@@ -22,18 +25,26 @@ import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.Plants.Tree;
 import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.ToolsPackage.*;
+import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import java.awt.*;
 import java.io.IOException;
@@ -42,6 +53,7 @@ import java.util.List;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 
+import static com.Graphic.View.GameMenus.GameMenu.camera;
 import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.Enum.Direction.getDirByCord;
@@ -66,10 +78,10 @@ public class InputGameController {
 
     public void init () {
         GameControllerLogic.init();
-        startNewGame("a");
         gameMenu.isInFarmExterior = true;
     }
     public void update(OrthographicCamera camera, float v) {
+
         if (gameMenu.isInFarmExterior && !gameMenu.isPlaceArtisanOnFarm()) {
             updateMove();
             print();
@@ -81,10 +93,24 @@ public class InputGameController {
             walkInBarnOrCage();
             showAnimalsInBarnOrCage();
         }
+        if (gameMenu.getIsInMine()) {
+            walkInBarnOrCage();
+        }
         createAnimalInformationWindow(showAnimalInfo());
         effectAfterPetAnimal();
         openArtisanMenu();
         placeItem();
+        placeBomb(CraftingItem.Bombing);
+        useSprikler(CraftingItem.currentSprinkler);
+        showForagingMinerals(currentGame.currentPlayer.getFarm().getMine());
+
+        for (int i = 0  ; i < 90 ; i ++) {
+            for (int j = 0; j < 90 ; j ++) {
+                if (getTileByCoordinates(i, j).getGameObject() instanceof CraftingItem) {
+                    showProgressOnArtisans((CraftingItem) getTileByCoordinates(i,j).getGameObject());
+                }
+            }
+        }
     }
 
     public void updateMove() {
@@ -351,11 +377,13 @@ public class InputGameController {
                         LakeAnimation((Lake) getTileByCoordinates(i , j).getGameObject());
                     }
 
+
                 }
                 catch (Exception e) {
 
                 }
             }
+
 
         for (User player : currentGame.players) {
             player.getSprite().draw(Main.getBatch());
@@ -1065,108 +1093,99 @@ public class InputGameController {
     }
 
 
-    private Result placeBomb(Tile tile , String name , Items items) {
-        if (currentGame.currentPlayer.getFarm().isInHome(tile.getX(), tile.getY())) {
-            return new Result(false , "you can't place Bomb in your Home because it is dangerous");
-        }
-
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        int domain=0;
-        CraftType Bomb=null;
-
-        for (CraftType craftType:CraftType.values()) {
-            if (craftType.name().equals(name)) {
-                Bomb=craftType;
-                break;
+    private void placeBomb(CraftingItem craftingItem) {
+        int domain = 0 ;
+        try {
+            switch (craftingItem.getType()) {
+                case CherryBomb -> domain = 3;
+                case Bomb -> domain = 5;
+                case MegaBomb -> domain = 7;
             }
-        }
 
-        assert Bomb != null;
-        if (Bomb.equals(CraftType.CherryBomb)) {
-            domain=3;
-        }
-        if (Bomb.equals(CraftType.Bomb)) {
-            domain=5;
-        }
-        if (Bomb.equals(CraftType.MegaBomb)) {
-            domain=7;
-        }
 
-        int x= tile.getX();
-        int y= tile.getY();
-
-//        for (int i=x ; i < x + domain ; i++) {
-//            for (int j=y ; j < y + domain ; j++) {
-//                Tile target=getTileByCoordinates(i,j);
-//                if (target == null) {
-//                    continue;
-//                }
-//                if (target.getGameObject() instanceof Tree) {
-//                    target.setGameObject(new Walkable());
-//                }
-//                else if (target.getGameObject() instanceof ForagingCrops) {
-//                    target.setGameObject(new Walkable());
-//                }
-//                else if (target.getGameObject() instanceof GiantProduct) {
-//                    target.setGameObject(new Walkable());
-//                }
-//                else if (target.getGameObject() instanceof ForagingSeeds) {
-//                    target.setGameObject(new Walkable());
-//                }
-//            }
-//        }
-        inventory.Items.compute(items , (k,v) -> v-1);
-        inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() ==0);
-
-        return new Result(true , "Bomb successfully replaced and everything destroyed");
-    }
-    private Result placeScarecrow(Tile tile , String name, Items items) {
-
-//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-//        if (currentGame.currentPlayer.getFarm().isInHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY())) {
-//            return new Result(false , "you can't place "+name+" in your Home because it is not for this place");
-//        }
-//
-//        if (name.equals("Scarecrow")) {
-//            tile.setGameObject(items);
-//            inventory.Items.compute(items , (k,v) -> v-1);
-//            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() == 0);
-//            return new Result(true , "Scarecrow successfully placed");
-//        }
-//        else  {
-//            tile.setGameObject(items);
-//            inventory.Items.compute(items , (k,v) -> v-1);
-//            inventory.Items.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue() == 0);
-//            return new Result(true , "Deluxe Scarecrow successfully placed");
-//        }
-        return null;
-    }
-    private Result placeOther(Items items , Tile tile) {
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-
-        if (items instanceof CraftingItem) {
-            if (((CraftingItem) items).getType().equals(CraftType.BeeHouse)) {
-
-                if (currentGame.currentPlayer.getFarm().isInHome(tile.getX(), tile.getY())) {
-                    return new Result(false , "you should place Bee House in Farm!");
+            for (int i = craftingItem.getX(); i < craftingItem.getX() + domain; i++) {
+                for (int j = craftingItem.getY(); j < craftingItem.getY() + domain; j++) {
+                    try {
+                        Main.getBatch().draw(
+                            craftingItem.getBomb().getKeyFrame(craftingItem.getTimer()), TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j));
+                    }
+                    catch (Exception e) {}
                 }
-                tile.setGameObject(items);
-                inventory.Items.compute(items , (k,v) -> v-1);
-                if (inventory.Items.get(items) == 0) {
-                    inventory.Items.remove(items);
-                }
-                return new Result(true , "Item placed Successfully");
+            }
+            if (!craftingItem.getBomb().isAnimationFinished(craftingItem.getTimer())) {
+                craftingItem.setTimer(craftingItem.getTimer() + Gdx.graphics.getDeltaTime());
             }
 
-            tile.setGameObject(items);
-            inventory.Items.compute(items , (k,v) -> v-1);
-            if (inventory.Items.get(items) == 0) {
-                inventory.Items.remove(items);
+            else {
+
+                craftingItem.setTimer(0);
+                CraftingItem.Bombing = null;
+                getTileByCoordinates(craftingItem.getX(), craftingItem.getY()).setGameObject(new Walkable());
+                for (int i = craftingItem.getX(); i < craftingItem.getX() + domain; i++) {
+                    for (int j = craftingItem.getY(); j < craftingItem.getY() + domain; j++) {
+                        try {
+                            Tile target = getTileByCoordinates(i, j);
+
+                            if (target.getGameObject() instanceof Tree) {
+                                target.setGameObject(new Walkable());
+                            } else if (target.getGameObject() instanceof ForagingCrops) {
+                                target.setGameObject(new Walkable());
+                            } else if (target.getGameObject() instanceof GiantProduct) {
+                                target.setGameObject(new Walkable());
+                            } else if (target.getGameObject() instanceof ForagingSeeds) {
+                                target.setGameObject(new Walkable());
+                            } else if (target.getGameObject() instanceof BasicRock) {
+                                target.setGameObject(new Walkable());
+                            }
+                        }
+                        catch (Exception e) {}
+                    }
+                }
             }
-            return new Result(true , "Item placed Successfully");
+        }
+        catch (Exception e) {
 
         }
-        return new Result(false, RED + "Item not found" + RESET);
+    }
+
+    private void useSprikler(CraftingItem craftingItem) {
+        int domain = 0 ;
+        try {
+            switch (craftingItem.getType()) {
+                case Sprinkler -> domain = 4;
+                case QualitySprinkler -> domain = 8;
+                case IridiumSprinkler -> domain = 24;
+            }
+
+            Main.getBatch().draw(craftingItem.getSprinkler().getKeyFrame(craftingItem.getTimer()),
+                TEXTURE_SIZE * (craftingItem.getX() - 2) ,
+                TEXTURE_SIZE * (90 - craftingItem.getY() - 2 ) ,
+                   TEXTURE_SIZE * 4 , TEXTURE_SIZE * 4);
+
+            if (!craftingItem.getSprinkler().isAnimationFinished(craftingItem.getTimer())) {
+                craftingItem.setTimer(craftingItem.getTimer() + Gdx.graphics.getDeltaTime());
+            } else {
+                craftingItem.setTimer(0);
+                CraftingItem.currentSprinkler = null;
+                for (int i = -domain / 2; i < domain / 2; i++) {
+                    for (int j = -domain / 2; j < domain / 2; j++) {
+                        try {
+                            Tile tile1 = getTileByCoordinates(i + craftingItem.getX(), j + craftingItem.getY());
+                            if (tile1.getGameObject() instanceof Tree) {
+                                ((Tree) tile1.getGameObject()).setLastWater(currentGame.currentDate.clone());
+                            } else if (tile1.getGameObject() instanceof ForagingSeeds) {
+                                ((ForagingSeeds) tile1.getGameObject()).setLastWater(currentGame.currentDate.clone());
+                            } else if (tile1.getGameObject() instanceof GiantProduct) {
+                                ((GiantProduct) tile1.getGameObject()).setLastWater(currentGame.currentDate.clone());
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception e) {}
+
     }
 
 
@@ -1204,47 +1223,51 @@ public class InputGameController {
         int x = (int) (sprite.getX() / TEXTURE_SIZE) + 60 * currentGame.currentPlayer.topLeftX;
         int y =30 -  (int) (sprite.getY() / TEXTURE_SIZE) + 60 * currentGame.currentPlayer.topLeftY;
 
-        if (! (getTileByCoordinates(x , y).getGameObject() instanceof Walkable) && ! bool) {
-            Dialog dialog = Marketing.getInstance().createDialogError();
-            Label content = new Label("you can't place craft on this place" , new Label.LabelStyle(getFont() , Color.BLACK));
-            Marketing.getInstance().addDialogToTable(dialog, content , gameMenu);
-            craftingItem.setWaiting(false);
-        }
+        try {
+            if (!(getTileByCoordinates(x, y).getGameObject() instanceof Walkable) && !bool) {
+                Dialog dialog = Marketing.getInstance().createDialogError();
+                Label content = new Label("you can't place craft on this place", new Label.LabelStyle(getFont(), Color.BLACK));
+                Marketing.getInstance().addDialogToTable(dialog, content, gameMenu);
+                craftingItem.setWaiting(false);
+            } else {
+                Marketing.getInstance().printMapForCreate();
+                bool = true;
+                getTileByCoordinates(x, y).setGameObject(craftingItem);
 
-        else  {
-            Marketing.getInstance().printMapForCreate();
-            bool = true;
-            getTileByCoordinates(x,y).setGameObject(craftingItem);
+                if (Gdx.input.isKeyJustPressed(ENTER)) {
+                    TextButton Confirm = Marketing.getInstance().makeConfirmButton(gameMenu);
+                    TextButton TryAgain = Marketing.getInstance().makeTryAgainButton(gameMenu);
 
-            if (Gdx.input.isKeyJustPressed(ENTER) ) {
-                TextButton Confirm = Marketing.getInstance().makeConfirmButton(gameMenu);
-                TextButton TryAgain = Marketing.getInstance().makeTryAgainButton(gameMenu);
+                    Confirm.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent changeEvent, Actor actor) {
+                            Confirm.remove();
+                            TryAgain.remove();
+                            gameMenu.setPlaceArtisanOnFarm(false);
+                            craftingItem.setWaiting(false);
+                            gameMenu.setIsPlacing(null);
+                            advanceItem(craftingItem, -1);
+                            craftingItem.setX(x);
+                            craftingItem.setY(y);
+                            camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                        }
+                    });
 
-                Confirm.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent changeEvent, Actor actor) {
-                        Confirm.remove();
-                        TryAgain.remove();
-                        gameMenu.setPlaceArtisanOnFarm(false);
-                        craftingItem.setWaiting(false);
-                        gameMenu.setIsPlacing(null);
-                        advanceItem(craftingItem , - 1);
-                        craftingItem.setX(x);
-                        craftingItem.setY(y);
-                    }
-                });
-
-                TryAgain.addListener(new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent changeEvent, Actor actor) {
-                        craftingItem.setWaiting(false);
-                        Confirm.remove();
-                        TryAgain.remove();
-                        getTileByCoordinates(x , y).setGameObject(new Walkable());
-                        bool = false;
-                    }
-                });
+                    TryAgain.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent changeEvent, Actor actor) {
+                            craftingItem.setWaiting(false);
+                            Confirm.remove();
+                            TryAgain.remove();
+                            getTileByCoordinates(x, y).setGameObject(new Walkable());
+                            bool = false;
+                        }
+                    });
+                }
             }
+        }
+        catch (Exception e) {
+
         }
 
     }
@@ -1271,9 +1294,8 @@ public class InputGameController {
     private SelectBox<String> craftBox(CraftingItem craftingItem) {
         SelectBox<String> selectBox = new SelectBox<>(getSkin());
         selectBox.setItems("Use" , "Collect Product" , "cheat");
-        selectBox.setPosition(TEXTURE_SIZE * (craftingItem.getX()) , TEXTURE_SIZE * (90 - craftingItem.getY()) );
-        System.out.println(TEXTURE_SIZE * craftingItem.getX() +",,"+TEXTURE_SIZE * (90 - craftingItem.getY()));
-        System.out.println(gameMenu.getVector().x +",,"+gameMenu.getVector().y);
+        Vector2 click = gameMenu.getStage().screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+        selectBox.setPosition( click.x , click.y);
         gameMenu.getStage().addActor(selectBox);
 
 
@@ -1288,22 +1310,30 @@ public class InputGameController {
                             || craftingItem.getType().equals(CraftType.MegaBomb)
                             || craftingItem.getType().equals(CraftType.CherryBomb)) {
 
-                            selectBox.remove();
+                            CraftingItem.Bombing = craftingItem;
                         }
                         else if (craftingItem.getType().equals(CraftType.Sprinkler)
                             || craftingItem.getType().equals(CraftType.IridiumSprinkler)
                             || craftingItem.getType().equals(CraftType.QualitySprinkler)) {
+                            CraftingItem.currentSprinkler = craftingItem;
                             selectBox.remove();
                         }
                         else if (craftingItem.getType().isCanProduct()) {
+                            Texture bg = TextureManager.get("Mohamadreza/ArtisanMenu.png");
+                            ArtisanMenuUI artisanMenuUI = new ArtisanMenuUI(getSkin() , bg , 2);
+                            showProductsOfArtisan(craftingItem, artisanMenuUI);
                             selectBox.remove();
                         }
+                        break;
                     }
                     case "Collect Product" : {
                         selectBox.remove();
+                        ArtisanGetProduct(craftingItem);
+                        break;
                     }
                     case "cheat" : {
                         selectBox.remove();
+                        break;
                     }
                 }
             }
@@ -1314,89 +1344,118 @@ public class InputGameController {
 
     }
 
-
-    public Result ArtisanUse(String artisanName , String first , String second) {
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        String newArtistName=artisanName.replace('_',' ');
-
-        boolean found=false;
-
-        for (ArtisanType artisan : ArtisanType.values()) {
-            if (artisan.getCraftType().getName().equals(newArtistName)) {
-                found=true;
-                break;
-            }
-        }
-        if (! found) {
-            return new Result(false , "No such type Of Crafting!");
-        }
-        CraftingItem craftingItem=isNeighborWithCrafting(newArtistName.trim());
-
-        if (craftingItem==null) {
-            return new Result(false , "you can't use this Crafting because you are not close to it");
-        }
-
-
-        if (second !=null) {
-            second=second.trim();
-        }
+    private void showProductsOfArtisan(CraftingItem craftingItem , ArtisanMenuUI artisanMenuUI) {
+        Table table = new Table();
+        ScrollPane pane = new ScrollPane(table,getSkin());
+        pane.setFadeScrollBars(false);
+        Window window = new Window("Options",getSkin() , "default");
+        Vector2 click = gameMenu.getStage().screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
         for (ArtisanType artisanType : ArtisanType.values()) {
             if (artisanType.getCraftType().equals(craftingItem.getType())) {
-
-                if (artisanType.checkIngredient(first.trim(), second)) {
-                    artisanType.creatArtesian(first.trim(), craftingItem);
-                    return new Result(true , "you use "+newArtistName+" successfully");
-                }
+                TextButton button = new TextButton("",getSkin());
+                button.clearChildren();
+                Label label = new Label(artisanType.getName(),getSkin());
+                button.add(label).center();
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        window.remove();
+                        artisanMenuUI.setGoingToProduce(new ArtisanProduct(artisanType));
+                        artisanMenuUI.setCrafting(craftingItem);
+                        artisanMenuUI.setPosition(100 , 100);
+                        gameMenu.getStage().addActor(artisanMenuUI);
+                    }
+                });
+                table.add(button).width(100).height(50);
+                table.row();
             }
         }
-        return new Result(false , "Not enough ingredient for use");
+        pane.setWidget(table);
+        window.add(pane).width(100).height(50);
+        window.pack();
+        window.setPosition(click.x , click.y);
+        gameMenu.getStage().addActor(window);
+    }
+
+    public void showProgressOnArtisans(CraftingItem craftingItem) {
+        for (int i = 0 ; i < craftingItem.getItems().size() ; i++) {
+            Main.getBatch().draw(TextureManager.get("Mohamadreza/bgProgress.png") ,
+                TEXTURE_SIZE * craftingItem.getX() , TEXTURE_SIZE * (90 - craftingItem.getY()) + TEXTURE_SIZE + (TEXTURE_SIZE / 2) * i ,
+                TEXTURE_SIZE * 2 , TEXTURE_SIZE / 2);
+        }
+
+        Main.getBatch().end();
+
+
+        for (int i = 0 ; i < craftingItem.getItems().size() ; i++) {
+            craftingItem.getShapeRenderers().get(i).setProjectionMatrix(Main.getBatch().getProjectionMatrix());
+            craftingItem.getShapeRenderers().get(i).begin(ShapeRenderer.ShapeType.Filled);
+            craftingItem.getShapeRenderers().get(i).setColor(0,1,0,1);
+            float x = getX(craftingItem, i);
+            craftingItem.getShapeRenderers().get(i).rect(TEXTURE_SIZE * craftingItem.getX() + 6 ,
+                TEXTURE_SIZE * (90 - craftingItem.getY()) + TEXTURE_SIZE + (TEXTURE_SIZE/2) * i + 3 ,
+                (TEXTURE_SIZE * 2) * x - 10 , TEXTURE_SIZE/2 - 7);
+
+            craftingItem.getShapeRenderers().get(i).end();
+        }
+
+        Main.getBatch().begin();
 
     }
 
+    private static float getX(CraftingItem craftingItem, int i) {
+        float x =0;
+        for (ArtisanType artisanType : ArtisanType.values()) {
+            if (craftingItem.getItems().get(i).getName().toLowerCase().equals(artisanType.getName().toLowerCase())) {
+                x = (float) (DateHour.getHourDifferent(craftingItem.getDateHours().get(i))) / artisanType.getTakesTime();
 
-                                                                    // Ario
-//    public Result ArtisanGetProduct(String name) {
-//        int [] dirx={0,0,1,1,1,-1,-1,-1};
-//        int [] diry={1,-1,0,1,-1,0,1,-1};
-//
-//        Inventory inventory= currentGame.currentPlayer.getBackPack().inventory;
-//        if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() ==0) {
-//            return new Result(false , "you can't get product because your backpack is full");
-//        }
-//        Items items=null;
-//        StringBuilder result=new StringBuilder();
-//        result.append("Produces:").append('\n');
-//
-//        for (int x = 0 ; x<dirx.length ; x++) {
-//            Tile tile=getTileByCoordinates(currentGame.currentPlayer.getPositionX() + dirx[x],currentGame.currentPlayer.getPositionY() + diry[x]);
-//                if (tile.getGameObject() instanceof CraftingItem) {
-//                    if (((CraftingItem) tile.getGameObject()).getName().equals(name)) {
-//                        Map <Items , DateHour> map=((CraftingItem) tile.getGameObject()).getBuffer();
-//                        for (Map.Entry <Items , DateHour> entry : map.entrySet()) {
-//                            for (ArtisanType artisan : ArtisanType.values()) {
-//                                if (artisan.getName().equals(entry.getKey().getName()) ) {
-//                                    if (DateHour.getHourDifferent(entry.getValue()) >= artisan.getTakesTime()){
-//                                        entry.setValue(null);
-//                                        if (inventory.Items.containsKey(entry.getKey())) {
-//                                            inventory.Items.compute(entry.getKey(), (k, v) -> v + 1);
-//                                        }
-//                                        else {
-//                                            inventory.Items.put(entry.getKey(), 1);
-//                                        }
-//                                        result.append(BLUE + entry.getKey().getName() +RESET);
-//                                    }
-//                                }
-//                            }
-//                        }
-//
-//                        map.entrySet().removeIf(entry -> entry.getValue() == null);
-//                    }
-//                }
-//            }
-//
-//        return new Result(false , result.toString());
-//    }
+                if (x >= 1) {
+                    x = 1;
+                }
+                //System.out.println(x);
+            }
+        }
+        return x;
+    }
+
+
+    // Ario
+    public void ArtisanGetProduct(CraftingItem craftingItem) {
+        StringBuilder result = new StringBuilder();
+
+        for (int i =craftingItem.getItems().size() - 1 ; i >= 0 ; i--) {
+            for (ArtisanType artisanType : ArtisanType.values()) {
+                if (artisanType.getName().toLowerCase().equals(craftingItem.getItems().get(i).getName().toLowerCase())) {
+                    if (DateHour.getHourDifferent(craftingItem.getDateHours().get(i)) >= artisanType.getTakesTime()) {
+                        if (currentGame.currentPlayer.getBackPack().inventory.Items.containsKey(craftingItem.getItems().get(i))) {
+                            currentGame.currentPlayer.getBackPack().inventory.Items.compute(craftingItem.getItems().get(i) , (k,v)->v+1);
+                        }
+                        else {
+                            currentGame.currentPlayer.getBackPack().inventory.Items.put(craftingItem.getItems().get(i), 1);
+                        }
+                        result.append(artisanType.getName()+", ");
+                        craftingItem.getDateHours().remove(i);
+                        craftingItem.getShapeRenderers().remove(i);
+                        craftingItem.getItems().remove(i);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        Label label;
+        Dialog dialog = Marketing.getInstance().createDialogError();
+        if (!result.isEmpty()) {
+            label = new Label(result.toString() + "was added to your inventory", getSkin());
+        }
+        else {
+            label = new Label("please wait more",getSkin());
+        }
+        Marketing.getInstance().addDialogToTable(dialog,label,gameMenu);
+    }
+
     public Result sell(String name , Integer amount) {
         ShippingBin shippingBin=ShippingBin.isNearShippingBin();
         if (shippingBin == null ) {
