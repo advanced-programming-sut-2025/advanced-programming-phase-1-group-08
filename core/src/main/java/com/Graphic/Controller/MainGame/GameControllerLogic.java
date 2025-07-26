@@ -11,7 +11,6 @@ import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.FoodTypes;
-import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.ToolsType.*;
@@ -59,7 +58,6 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 import static com.Graphic.model.Enum.AllPlants.ForagingMineralsType.*;
-import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class GameControllerLogic {
 
@@ -212,23 +210,23 @@ public class GameControllerLogic {
         float x = currentGame.currentPlayer.getPositionX();
         float y = currentGame.currentPlayer.getPositionY();
 
-//        if (dir == 1)
-//            return getTileByCoordinates(x+1, y);
-//        else if (dir == 2)
-//            return getTileByCoordinates(x+1, y+1);
-//        else if (dir == 3)
-//            return getTileByCoordinates(x, y+1);
-//        else if (dir == 4)
-//            return getTileByCoordinates(x-1, y+1);
-//        else if (dir == 5)
-//            return getTileByCoordinates(x-1, y);
-//        else if (dir == 6)
-//            return getTileByCoordinates(x-1, y-1);
-//        else if (dir == 7)
-//            return getTileByCoordinates(x, y-1);
-//        else if (dir == 8)
-//            return getTileByCoordinates(x+1, y-1);
-//        else
+        if (dir == 1)
+            return getTileByCoordinates((int) (x+1), (int) y);
+        else if (dir == 2)
+            return getTileByCoordinates((int)x+1, (int)y+1);
+        else if (dir == 3)
+            return getTileByCoordinates((int)x, (int)y+1);
+        else if (dir == 4)
+            return getTileByCoordinates((int)x-1, (int)y+1);
+        else if (dir == 5)
+            return getTileByCoordinates((int)x-1, (int)y);
+        else if (dir == 6)
+            return getTileByCoordinates((int)x-1, (int)y-1);
+        else if (dir == 7)
+            return getTileByCoordinates((int)x, (int)y-1);
+        else if (dir == 8)
+            return getTileByCoordinates((int)x+1, (int)y-1);
+        else
             return null;
     }
     public static Tile getTileByCoordinates(int x, int y) {
@@ -1763,7 +1761,7 @@ public class GameControllerLogic {
             currentGame.currentPlayer = user;
             user.setFriendshipPoint(new HashMap<>(Map.of(
                 NPC.Sebastian, 0,
-                NPC.Lia, 0,
+                NPC.Leah, 0,
                 NPC.Abigail, 0,
                 NPC.Harvey, 0,
                 NPC.Robin, 0)));
@@ -2299,6 +2297,29 @@ public class GameControllerLogic {
     }
 
     // other plant task
+
+    public static boolean checkForPlanting (int dir) {
+
+        Tile tile = getTileByDir(dir);
+
+        if ((!currentGame.currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
+            !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY())) {
+
+            Dialog dialog = Marketing.getInstance().createDialogError();
+            final Label tooltipLabel = new Label("You can't planting in this tile", App.newSkin);
+            tooltipLabel.setColor(Color.LIGHT_GRAY);
+
+            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                @Override
+                public void run() {
+                    dialog.remove();
+                }
+            }, 3);
+            return false;
+        }
+        return true;
+    }
     public static String showTree (Tree tree) {
 
 
@@ -2334,100 +2355,161 @@ public class GameControllerLogic {
             "\nToday fertilize :" + giantProduct.isTodayFertilize() +
             "\nStage :" + giantProduct.getStage();
     }
-    public static Result plantTree (TreesSourceType type1, int dir) {
+    public static void plantTree (TreesSourceType type1, int dir) {
 
-        if (!checkAmountProductAvailable(new TreeSource(type1), 1))
-            return new Result(false, RED+"You don't have this tree source!"+RESET);
+        if (checkForPlanting(dir)) {
 
-        Tile tile = getTileByDir(dir);
-
-        if (!isInGreenHouse(tile))
-            if (!type1.getSeason().contains(currentGame.currentDate.getSeason()))
-                return new Result(false, RED+"You can't plant this tree in "
-                    + currentGame.currentDate.getSeason());
-
-        GameObject object = tile.getGameObject();
-        if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
-            return new Result(false, RED+"First you must create green House"+RESET);
-
-        if ((tile.getGameObject() instanceof Walkable &&
-            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
-            tile.getGameObject() instanceof GreenHouse) {
-
-            Tree tree = new Tree(type1.getTreeType(), currentGame.currentDate);
-            tile.setGameObject(tree);
-            advanceItem(new TreeSource(type1), -1);
-            return new Result(true, BLUE+"The tree begins its journey"+RESET);
-        }
-        else
-            return new Result(false, RED+"First, you must plow the tile"+RESET);
-    }
-    public static Result plantMixedSeed (int dir) {
-
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        MixedSeeds mixedSeeds = new MixedSeeds();
-
-        if (inventory.Items.containsKey(mixedSeeds)) {
-
-            ForagingSeedsType type = mixedSeeds.getSeeds(currentGame.currentDate.getSeason());
-            advanceItem(mixedSeeds, -1);
+            Dialog dialog = Marketing.getInstance().createDialogError();
             Tile tile = getTileByDir(dir);
 
+            if (!isInGreenHouse(tile))
+                if (!type1.getSeason().contains(currentGame.currentDate.getSeason())) {
+
+                    Label tooltipLabel = new Label("You can't plant this tree in "
+                        + currentGame.currentDate.getSeason(), App.newSkin);
+                    tooltipLabel.setColor(Color.LIGHT_GRAY);
+                    Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                }
+
             GameObject object = tile.getGameObject();
-            if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
-                return new Result(false, RED+"First you must create green House"+RESET);
+            if (object instanceof GreenHouse && !((GreenHouse) object).isCreated()) {
+                Label tooltipLabel = new Label("First you must create green House", App.newSkin);
+                tooltipLabel.setColor(Color.LIGHT_GRAY);
+                Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+            }
 
             if ((tile.getGameObject() instanceof Walkable &&
                 ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
                 tile.getGameObject() instanceof GreenHouse) {
 
-                tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
-                return new Result(true, BRIGHT_BLUE +
-                    "The plant "+type.getDisplayName()+" has come to life! \uD83C\uDF31✨" + RESET);
+                Tree tree = new Tree(type1.getTreeType(), currentGame.currentDate);
+                tile.setGameObject(tree);
+                advanceItem(new TreeSource(type1), -1);
+
+                Label tooltipLabel = new Label("The tree begins its journey", App.newSkin);
+                tooltipLabel.setColor(Color.LIGHT_GRAY);
+                Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+
+            } else {
+                Label tooltipLabel = new Label("First, you must plow the tile", App.newSkin);
+                tooltipLabel.setColor(Color.LIGHT_GRAY);
+                Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
             }
-            else
-                return new Result(false, RED+"First, you must plow the tile."+RESET);
-        }
-        return new Result(false, RED + "You don't have Mixed seed!" + RESET);
-    }
-    public static Result plantForagingSeed (ForagingSeedsType type, int dir) {
 
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-
-        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
-
-            if (entry.getKey() instanceof ForagingSeeds && ((ForagingSeeds) entry.getKey()).getType().equals(type)) {
-                if (entry.getValue() > 0) {
-
-                    Tile tile = getTileByDir(dir);
-
-                    if (!isInGreenHouse(tile))
-                        if (!type.getSeason().contains(currentGame.currentDate.getSeason()))
-                            return new Result(false, RED + "You can't plant this seed in "
-                                + currentGame.currentDate.getSeason() + RESET);
-
-                    GameObject object = tile.getGameObject();
-                    if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
-                        return new Result(false, RED+"First you must create green House"+RESET);
-
-                    if (tile.getGameObject() instanceof Walkable && (!((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")))
-                        return new Result(false, RED+"First, you must plow the tile"+RESET);
-
-                    if ((tile.getGameObject() instanceof Walkable &&
-                        ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
-                        tile.getGameObject() instanceof GreenHouse) {
-
-                        tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
-                        inventory.Items.put(entry.getKey(), entry.getValue() - 1);
-                        return new Result(true, BLUE+"The earth welcomes your seed"+RESET);
-
-                    } else
-                        return new Result(false, RED+"You can't plant in this tile"+RESET);
+            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                @Override
+                public void run() {
+                    dialog.remove();
                 }
-                else
-                    return new Result(false, RED + "You don't have this seed!" + RESET);
+            }, 3);
+        }
+    }
+    public static void plantMixedSeed (int dir) {
+
+        if (checkForPlanting(dir)) {
+            Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+            MixedSeeds mixedSeeds = new MixedSeeds();
+
+            if (inventory.Items.containsKey(mixedSeeds)) {
+
+                ForagingSeedsType type = mixedSeeds.getSeeds(currentGame.currentDate.getSeason());
+                advanceItem(mixedSeeds, -1);
+                Tile tile = getTileByDir(dir);
+
+                GameObject object = tile.getGameObject();
+                Dialog dialog = Marketing.getInstance().createDialogError();
+
+                if (object instanceof GreenHouse && !((GreenHouse) object).isCreated()) {
+
+                    Label tooltipLabel = new Label("First you must create green House", App.newSkin);
+                    tooltipLabel.setColor(Color.LIGHT_GRAY);
+                    Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                }
+
+                if ((tile.getGameObject() instanceof Walkable &&
+                    ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
+                    tile.getGameObject() instanceof GreenHouse) {
+
+                    tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
+
+                    Label tooltipLabel = new Label("The plant \" + type.getDisplayName() + \" has come to life! \\uD83C\\uDF31✨", App.newSkin);
+                    tooltipLabel.setColor(Color.LIGHT_GRAY);
+                    Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+
+                } else {
+                    Label tooltipLabel = new Label("First, you must plow the tile.", App.newSkin);
+                    tooltipLabel.setColor(Color.LIGHT_GRAY);
+                    Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                }
+
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        dialog.remove();
+                    }
+                }, 3);
             }
-        return new Result(false, RED + "You don't have this seed!" + RESET);
+        }
+    }
+    public static void plantForagingSeed (ForagingSeedsType type, int dir) {
+
+        if (checkForPlanting(dir)) {
+
+            Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+            Dialog dialog = Marketing.getInstance().createDialogError();
+
+            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet())
+
+                if (entry.getKey() instanceof ForagingSeeds && ((ForagingSeeds) entry.getKey()).getType().equals(type)) {
+                    if (entry.getValue() > 0) {
+
+                        Tile tile = getTileByDir(dir);
+
+                        if (!isInGreenHouse(tile))
+                            if (!type.getSeason().contains(currentGame.currentDate.getSeason())) {
+                                Label tooltipLabel = new Label("You can't plant this seed in "
+                                    + currentGame.currentDate.getSeason(), App.newSkin);
+                                tooltipLabel.setColor(Color.LIGHT_GRAY);
+                                Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                            }
+
+                        GameObject object = tile.getGameObject();
+                        if (object instanceof GreenHouse && !((GreenHouse) object).isCreated()) {
+                            Label tooltipLabel = new Label("First you must create green House", App.newSkin);
+                            tooltipLabel.setColor(Color.LIGHT_GRAY);
+                            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                        }
+
+                        if (tile.getGameObject() instanceof Walkable && (!((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed"))) {
+                            Label tooltipLabel = new Label("First, you must plow the tile.", App.newSkin);
+                            tooltipLabel.setColor(Color.LIGHT_GRAY);
+                            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                        }
+                        if ((tile.getGameObject() instanceof Walkable &&
+                            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
+                            tile.getGameObject() instanceof GreenHouse) {
+
+                            tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
+                            inventory.Items.put(entry.getKey(), entry.getValue() - 1);
+
+                            Label tooltipLabel = new Label("The earth welcomes your seed", App.newSkin);
+                            tooltipLabel.setColor(Color.LIGHT_GRAY);
+                            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+
+                        } else {
+                            Label tooltipLabel = new Label("You can't plant in this tile", App.newSkin);
+                            tooltipLabel.setColor(Color.LIGHT_GRAY);
+                            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                        }
+                    }
+                }
+            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                @Override
+                public void run() {
+                    dialog.remove();
+                }
+            }, 3);
+        }
     }
 
     // Tools
@@ -2888,7 +2970,7 @@ public class GameControllerLogic {
             case Sebastian -> "";
             case Abigail -> "  ";
             case Harvey -> "   ";
-            case Lia -> "      ";
+            case Leah -> "      ";
             default -> "    ";
         };
         int width = 60;
@@ -2939,7 +3021,7 @@ public class GameControllerLogic {
                 currentGame.currentPlayer.increaseMoney(number);
                 return new Result(true, "Your got +"+number+" money");
             }
-            case Lia -> {
+            case Leah -> {
                 int number = 500;
                 if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
                     number *= 2;
@@ -2992,7 +3074,7 @@ public class GameControllerLogic {
                 currentGame.currentPlayer.increaseFriendshipPoint(NPC.Abigail, 200);
                 return new Result(true, BRIGHT_BLUE+"Your friendship level with Harvey increased"+RESET);
             }
-            case Lia -> {
+            case Leah -> {
 
                 if (checkAmountProductAvailable(new MarketItem(MarketItemType.PancakesRecipe), 1) ||
                     currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
@@ -3075,7 +3157,7 @@ public class GameControllerLogic {
                 }
                 return new Result(true, RED+"Inventory is full"+RESET);
             }
-            case Lia -> {
+            case Leah -> {
 
                 if (checkAmountProductAvailable(new CraftingItem(CraftType.DeluxeScarecrow), 1) ||
                     currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
