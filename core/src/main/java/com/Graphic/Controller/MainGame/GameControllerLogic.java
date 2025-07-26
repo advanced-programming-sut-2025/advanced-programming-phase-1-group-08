@@ -11,7 +11,6 @@ import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.FoodTypes;
-import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.ToolsType.*;
@@ -36,6 +35,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -54,6 +55,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 
 import static com.Graphic.View.GameMenus.GameMenu.*;
@@ -63,7 +65,6 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 import static com.Graphic.model.Enum.AllPlants.ForagingMineralsType.*;
-import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class GameControllerLogic {
 
@@ -72,7 +73,7 @@ public class GameControllerLogic {
     static int turnCounter = 0;
     static Image helperBackGround;
     static Random rand = new Random();
-    static long lastTimeUpdate = TimeUtils.millis();
+    static DateHour lastTimeUpdate;
 
 
     static Cloud cloud;
@@ -84,6 +85,7 @@ public class GameControllerLogic {
     public static void init() {
 
         createScreenOverlay(gameMenu.getStage());
+        lastTimeUpdate = currentGame.currentDate.clone();
     }
 
     public static void update(float delta) {
@@ -106,9 +108,9 @@ public class GameControllerLogic {
         handleLightning(delta);
 
 
-        if (TimeUtils.millis() - lastTimeUpdate > 1000) {
+        if (currentGame.currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
             AutomaticFunctionAfterAnyAct();
-            lastTimeUpdate = TimeUtils.millis();
+            lastTimeUpdate = currentGame.currentDate.clone();
         }
 
     }
@@ -225,23 +227,23 @@ public class GameControllerLogic {
         float x = currentGame.currentPlayer.getPositionX();
         float y = currentGame.currentPlayer.getPositionY();
 
-//        if (dir == 1)
-//            return getTileByCoordinates(x+1, y);
-//        else if (dir == 2)
-//            return getTileByCoordinates(x+1, y+1);
-//        else if (dir == 3)
-//            return getTileByCoordinates(x, y+1);
-//        else if (dir == 4)
-//            return getTileByCoordinates(x-1, y+1);
-//        else if (dir == 5)
-//            return getTileByCoordinates(x-1, y);
-//        else if (dir == 6)
-//            return getTileByCoordinates(x-1, y-1);
-//        else if (dir == 7)
-//            return getTileByCoordinates(x, y-1);
-//        else if (dir == 8)
-//            return getTileByCoordinates(x+1, y-1);
-//        else
+        if (dir == 1)
+            return getTileByCoordinates((int) (x+1), (int) y);
+        else if (dir == 2)
+            return getTileByCoordinates((int)x+1, (int)y+1);
+        else if (dir == 3)
+            return getTileByCoordinates((int)x, (int)y+1);
+        else if (dir == 4)
+            return getTileByCoordinates((int)x-1, (int)y+1);
+        else if (dir == 5)
+            return getTileByCoordinates((int)x-1, (int)y);
+        else if (dir == 6)
+            return getTileByCoordinates((int)x-1, (int)y-1);
+        else if (dir == 7)
+            return getTileByCoordinates((int)x, (int)y-1);
+        else if (dir == 8)
+            return getTileByCoordinates((int)x+1, (int)y-1);
+        else
             return null;
     }
     public static Tile getTileByCoordinates(int x, int y) {
@@ -899,8 +901,8 @@ public class GameControllerLogic {
             Window window = new Window("Information", getSkin(), "default");
             window.setSize(1000, 750);
             window.setPosition(Gdx.graphics.getWidth() / 2 - 500, Gdx.graphics.getHeight() / 2 - 375);
-            Image image = new Image(new Texture(Gdx.files.internal(animal.getType().getIcon())));
-            Texture background = new Texture(Gdx.files.internal("Mohamadreza/AnimalBackground2.png"));
+            Image image = new Image(TextureManager.get(animal.getType().getIcon()));
+            Texture background = TextureManager.get("Mohamadreza/AnimalBackground2.png");
             Drawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(background));
 
             Table content = new Table();
@@ -1417,13 +1419,15 @@ public class GameControllerLogic {
         }
         System.out.println(RED+"Couldn't find the next Player!"+RESET);
     }
-    public static void DisplayFriendships () {
+    public static String DisplayFriendships () {
         String targetName = currentGame.currentPlayer.getUsername();
 
         for (HumanCommunications f : currentGame.friendships) {
             if (f.getPlayer1().getUsername().equals(targetName) || f.getPlayer2().getUsername().equals(targetName))
-                f.printInfo();
+                return f.printInfo();
         }
+
+        return null;
     }
     public static void cheatAddXp (String input) {
         int xp = Integer.parseInt(GameMenuCommands.addXpCheat.getMatcher(input).group("xp"));
@@ -1432,34 +1436,89 @@ public class GameControllerLogic {
         HumanCommunications f = getFriendship(currentGame.currentPlayer, other);
         f.addXP(xp);
     }
-    public static void talking (String input) {
-        String destinationUsername = GameMenuCommands.talking.getMatcher(input).group("username");
-        String message = GameMenuCommands.talking.getMatcher(input).group("message");
+    public static void showChatDialog(Stage stage, Skin skin, Consumer<String> onMessageSent) {
+
+        // تعریف متغیرهای اولیه
+        TextField messageField = new TextField("", newSkin);
+        messageField.setMessageText("Type your message...");
+        messageField.setMaxLength(200);
+
+        // دیالوگ به صورت subclass تا متد result را override کنیم
+        Dialog chatDialog = new Dialog("Send Message", newSkin) {
+            @Override
+            protected void result(Object obj) {
+                if (obj.equals(true)) {
+                    String message = messageField.getText().trim();
+                    if (!message.isEmpty()) {
+                        onMessageSent.accept(message);
+                    }
+                }
+            }
+        };
+
+        // ایموجی‌ها
+        Table emojiTable = new Table();
+        String[] emojis = {"😊", "😂", "❤️", "😢", "💔", "👍", "🎉"};
+        for (String emoji : emojis) {
+            TextButton emojiButton = new TextButton(emoji, skin);
+            emojiButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    messageField.setText(messageField.getText() + emoji);
+                }
+            });
+            emojiTable.add(emojiButton).pad(3);
+        }
+
+        // اضافه کردن به دیالوگ
+        chatDialog.getContentTable().add(messageField).width(300).pad(10);
+        chatDialog.getContentTable().row();
+        chatDialog.getContentTable().add(emojiTable).pad(10);
+
+        // دکمه‌ها + مقدار برگردان
+        chatDialog.button("Send", true);   // این مقدار به result داده میشه
+        chatDialog.button("Cancel", false);
+        chatDialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
+
+        chatDialog.show(stage);
+    }
+
+
+    public static void talking(String destinationUsername, Consumer<Result> onResult) {
         User destinationUser = null;
         boolean found = false;
-        for (User player: currentGame.players) {
+
+        for (User player : currentGame.players) {
             if (player.getUsername().equals(destinationUsername)) {
                 found = true;
                 destinationUser = player;
                 break;
             }
         }
+
         if (!found) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
+            onResult.accept(new Result(false, "Player is Unavailable!"));
             return;
         }
+
         if (destinationUsername.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
+            onResult.accept(new Result(false, "You can't Talk to Yourself!"));
             return;
         }
+
         HumanCommunications f = getFriendship(currentGame.currentPlayer, destinationUser);
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            onResult.accept(new Result(false, "No Friendship Among These Users!"));
             return;
         }
-        Result result = f.talk(message);
-        System.out.println(result);
+
+        // گرفتن پیام از کاربر و فراخوانی تابع talk
+        showChatDialog(GameMenu.gameMenu.getStage(), newSkin, message -> {
+            Result result = f.talk(message);
+            onResult.accept(result);
+        });
     }
+
     public static void DisplayingTalkHistory (String input) {
         String username = GameMenuCommands.talkHistory.getMatcher(input).group("username");
         User destinationUser = null;
@@ -1487,23 +1546,19 @@ public class GameControllerLogic {
         Result result = f.talkingHistory();
         System.out.println(result);
     }
-    public static void hug (String input) {
+    public static Result hug (String input) {
         String username = GameMenuCommands.hug.getMatcher(input).group("username");
         if (!currentGame.players.contains(findPlayerInGame(username))) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
-            return;
+            return new Result(false,"Username is Unavailable!");
         }
         if (username.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't Hug " + RED+"Yourself"+RESET + "!");
-            return;
+            return new Result(false, "You can't Hug Yourself!");
         }
         HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
-            return;
+            return new Result(false, "There's no Friendship Among these Users!");
         }
-        Result result = f.Hug();
-        System.out.println(result);
+        return f.Hug();
     }
 
     public static void sendGifts (String input) {
@@ -1537,51 +1592,34 @@ public class GameControllerLogic {
             currentGame.conversations.get(key).add(new MessageHandling(currentGame.currentPlayer, findPlayerInGame(username), currentGame.currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!"));
         }
     }
-    public static void giveFlowers (String input) {
-        String username = GameMenuCommands.giveFlower.getMatcher(input).group("username");
+    public static Result giveFlowers (String username) {
         if (!currentGame.players.contains(findPlayerInGame(username))) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
-            return;
+
+            return new Result(false, "Username is Unavailable!");
         }
         if (username.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't give Flower to " + RED+"Yourself"+RESET + "!");
-            return;
+            return new Result(false, "You can't give Flower to Yourself!");
         }
         HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
-            return;
+            return new Result(false, "There's no Friendship Among these Users!");
         }
-        Result result = f.buyFlowers();
-        System.out.println(result);
+        return f.buyFlowers();
     }
-    public static void propose(String input) {
-        String username = GameMenuCommands.propose.getMatcher(input).group("username");
+    public static Result propose(String username) {
         User wife = findPlayerInGame(username);
         if (wife == null) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
-            return;
+            return new Result(false, "Username is Unavailable!");
         }
         if (username.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't Propose to " + RED+"Yourself"+RESET + "!");
-            return;
+            return new Result(false, "You can't Propose to Yourself!");
         }
         HumanCommunications f = getFriendship(currentGame.currentPlayer, wife);
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
-            return;
+            return new Result(false, "There's no Friendship Among these Users");
         }
 
-        String ring = GameMenuCommands.propose.getMatcher(input).group("ring");
-        if (!(ring.equalsIgnoreCase("ring") || ring.equalsIgnoreCase("wedding ring") || ring.equalsIgnoreCase("wedding"))) {
-            System.out.println(RED+"Wrong Ring Name!"+RESET);
-            System.out.println("'"+ring+"'");
-            return;
-        }
-
-        Result result = f.propose();
-        System.out.println(result);
-
+        return f.propose();
     }
     public static void unlockRecipe(String input) {
         Matcher matcher = GameMenuCommands.recipeUnlock.getMatcher(input);
@@ -1696,7 +1734,7 @@ public class GameControllerLogic {
             currentGame.currentPlayer = user;
             user.setFriendshipPoint(new HashMap<>(Map.of(
                 NPC.Sebastian, 0,
-                NPC.Lia, 0,
+                NPC.Leah, 0,
                 NPC.Abigail, 0,
                 NPC.Harvey, 0,
                 NPC.Robin, 0)));
@@ -2240,6 +2278,29 @@ public class GameControllerLogic {
     }
 
     // other plant task
+
+    public static boolean checkForPlanting (int dir) {
+
+        Tile tile = getTileByDir(dir);
+
+        if ((!currentGame.currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
+            !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY())) {
+
+            Dialog dialog = Marketing.getInstance().createDialogError();
+            final Label tooltipLabel = new Label("You can't planting in this tile", App.newSkin);
+            tooltipLabel.setColor(Color.LIGHT_GRAY);
+
+            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                @Override
+                public void run() {
+                    dialog.remove();
+                }
+            }, 3);
+            return false;
+        }
+        return true;
+    }
     public static String showTree (Tree tree) {
 
 
@@ -2275,100 +2336,161 @@ public class GameControllerLogic {
             "\nToday fertilize :" + giantProduct.isTodayFertilize() +
             "\nStage :" + giantProduct.getStage();
     }
-    public static Result plantTree (TreesSourceType type1, int dir) {
+    public static void plantTree (TreesSourceType type1, int dir) {
 
-        if (!checkAmountProductAvailable(new TreeSource(type1), 1))
-            return new Result(false, RED+"You don't have this tree source!"+RESET);
+        if (checkForPlanting(dir)) {
 
-        Tile tile = getTileByDir(dir);
-
-        if (!isInGreenHouse(tile))
-            if (!type1.getSeason().contains(currentGame.currentDate.getSeason()))
-                return new Result(false, RED+"You can't plant this tree in "
-                    + currentGame.currentDate.getSeason());
-
-        GameObject object = tile.getGameObject();
-        if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
-            return new Result(false, RED+"First you must create green House"+RESET);
-
-        if ((tile.getGameObject() instanceof Walkable &&
-            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
-            tile.getGameObject() instanceof GreenHouse) {
-
-            Tree tree = new Tree(type1.getTreeType(), currentGame.currentDate);
-            tile.setGameObject(tree);
-            advanceItem(new TreeSource(type1), -1);
-            return new Result(true, BLUE+"The tree begins its journey"+RESET);
-        }
-        else
-            return new Result(false, RED+"First, you must plow the tile"+RESET);
-    }
-    public static Result plantMixedSeed (int dir) {
-
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        MixedSeeds mixedSeeds = new MixedSeeds();
-
-        if (inventory.Items.containsKey(mixedSeeds)) {
-
-            ForagingSeedsType type = mixedSeeds.getSeeds(currentGame.currentDate.getSeason());
-            advanceItem(mixedSeeds, -1);
+            Dialog dialog = Marketing.getInstance().createDialogError();
             Tile tile = getTileByDir(dir);
 
+            if (!isInGreenHouse(tile))
+                if (!type1.getSeason().contains(currentGame.currentDate.getSeason())) {
+
+                    Label tooltipLabel = new Label("You can't plant this tree in "
+                        + currentGame.currentDate.getSeason(), App.newSkin);
+                    tooltipLabel.setColor(Color.LIGHT_GRAY);
+                    Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                }
+
             GameObject object = tile.getGameObject();
-            if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
-                return new Result(false, RED+"First you must create green House"+RESET);
+            if (object instanceof GreenHouse && !((GreenHouse) object).isCreated()) {
+                Label tooltipLabel = new Label("First you must create green House", App.newSkin);
+                tooltipLabel.setColor(Color.LIGHT_GRAY);
+                Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+            }
 
             if ((tile.getGameObject() instanceof Walkable &&
                 ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
                 tile.getGameObject() instanceof GreenHouse) {
 
-                tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
-                return new Result(true, BRIGHT_BLUE +
-                    "The plant "+type.getDisplayName()+" has come to life! \uD83C\uDF31✨" + RESET);
+                Tree tree = new Tree(type1.getTreeType(), currentGame.currentDate);
+                tile.setGameObject(tree);
+                advanceItem(new TreeSource(type1), -1);
+
+                Label tooltipLabel = new Label("The tree begins its journey", App.newSkin);
+                tooltipLabel.setColor(Color.LIGHT_GRAY);
+                Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+
+            } else {
+                Label tooltipLabel = new Label("First, you must plow the tile", App.newSkin);
+                tooltipLabel.setColor(Color.LIGHT_GRAY);
+                Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
             }
-            else
-                return new Result(false, RED+"First, you must plow the tile."+RESET);
-        }
-        return new Result(false, RED + "You don't have Mixed seed!" + RESET);
-    }
-    public static Result plantForagingSeed (ForagingSeedsType type, int dir) {
 
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-
-        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
-
-            if (entry.getKey() instanceof ForagingSeeds && ((ForagingSeeds) entry.getKey()).getType().equals(type)) {
-                if (entry.getValue() > 0) {
-
-                    Tile tile = getTileByDir(dir);
-
-                    if (!isInGreenHouse(tile))
-                        if (!type.getSeason().contains(currentGame.currentDate.getSeason()))
-                            return new Result(false, RED + "You can't plant this seed in "
-                                + currentGame.currentDate.getSeason() + RESET);
-
-                    GameObject object = tile.getGameObject();
-                    if (object instanceof GreenHouse && !((GreenHouse) object).isCreated())
-                        return new Result(false, RED+"First you must create green House"+RESET);
-
-                    if (tile.getGameObject() instanceof Walkable && (!((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")))
-                        return new Result(false, RED+"First, you must plow the tile"+RESET);
-
-                    if ((tile.getGameObject() instanceof Walkable &&
-                        ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
-                        tile.getGameObject() instanceof GreenHouse) {
-
-                        tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
-                        inventory.Items.put(entry.getKey(), entry.getValue() - 1);
-                        return new Result(true, BLUE+"The earth welcomes your seed"+RESET);
-
-                    } else
-                        return new Result(false, RED+"You can't plant in this tile"+RESET);
+            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                @Override
+                public void run() {
+                    dialog.remove();
                 }
-                else
-                    return new Result(false, RED + "You don't have this seed!" + RESET);
+            }, 3);
+        }
+    }
+    public static void plantMixedSeed (int dir) {
+
+        if (checkForPlanting(dir)) {
+            Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+            MixedSeeds mixedSeeds = new MixedSeeds();
+
+            if (inventory.Items.containsKey(mixedSeeds)) {
+
+                ForagingSeedsType type = mixedSeeds.getSeeds(currentGame.currentDate.getSeason());
+                advanceItem(mixedSeeds, -1);
+                Tile tile = getTileByDir(dir);
+
+                GameObject object = tile.getGameObject();
+                Dialog dialog = Marketing.getInstance().createDialogError();
+
+                if (object instanceof GreenHouse && !((GreenHouse) object).isCreated()) {
+
+                    Label tooltipLabel = new Label("First you must create green House", App.newSkin);
+                    tooltipLabel.setColor(Color.LIGHT_GRAY);
+                    Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                }
+
+                if ((tile.getGameObject() instanceof Walkable &&
+                    ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
+                    tile.getGameObject() instanceof GreenHouse) {
+
+                    tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
+
+                    Label tooltipLabel = new Label("The plant \" + type.getDisplayName() + \" has come to life! \\uD83C\\uDF31✨", App.newSkin);
+                    tooltipLabel.setColor(Color.LIGHT_GRAY);
+                    Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+
+                } else {
+                    Label tooltipLabel = new Label("First, you must plow the tile.", App.newSkin);
+                    tooltipLabel.setColor(Color.LIGHT_GRAY);
+                    Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                }
+
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        dialog.remove();
+                    }
+                }, 3);
             }
-        return new Result(false, RED + "You don't have this seed!" + RESET);
+        }
+    }
+    public static void plantForagingSeed (ForagingSeedsType type, int dir) {
+
+        if (checkForPlanting(dir)) {
+
+            Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+            Dialog dialog = Marketing.getInstance().createDialogError();
+
+            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet())
+
+                if (entry.getKey() instanceof ForagingSeeds && ((ForagingSeeds) entry.getKey()).getType().equals(type)) {
+                    if (entry.getValue() > 0) {
+
+                        Tile tile = getTileByDir(dir);
+
+                        if (!isInGreenHouse(tile))
+                            if (!type.getSeason().contains(currentGame.currentDate.getSeason())) {
+                                Label tooltipLabel = new Label("You can't plant this seed in "
+                                    + currentGame.currentDate.getSeason(), App.newSkin);
+                                tooltipLabel.setColor(Color.LIGHT_GRAY);
+                                Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                            }
+
+                        GameObject object = tile.getGameObject();
+                        if (object instanceof GreenHouse && !((GreenHouse) object).isCreated()) {
+                            Label tooltipLabel = new Label("First you must create green House", App.newSkin);
+                            tooltipLabel.setColor(Color.LIGHT_GRAY);
+                            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                        }
+
+                        if (tile.getGameObject() instanceof Walkable && (!((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed"))) {
+                            Label tooltipLabel = new Label("First, you must plow the tile.", App.newSkin);
+                            tooltipLabel.setColor(Color.LIGHT_GRAY);
+                            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                        }
+                        if ((tile.getGameObject() instanceof Walkable &&
+                            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
+                            tile.getGameObject() instanceof GreenHouse) {
+
+                            tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
+                            inventory.Items.put(entry.getKey(), entry.getValue() - 1);
+
+                            Label tooltipLabel = new Label("The earth welcomes your seed", App.newSkin);
+                            tooltipLabel.setColor(Color.LIGHT_GRAY);
+                            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+
+                        } else {
+                            Label tooltipLabel = new Label("You can't plant in this tile", App.newSkin);
+                            tooltipLabel.setColor(Color.LIGHT_GRAY);
+                            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                        }
+                    }
+                }
+            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                @Override
+                public void run() {
+                    dialog.remove();
+                }
+            }, 3);
+        }
     }
 
     // Tools
@@ -2829,7 +2951,7 @@ public class GameControllerLogic {
             case Sebastian -> "";
             case Abigail -> "  ";
             case Harvey -> "   ";
-            case Lia -> "      ";
+            case Leah -> "      ";
             default -> "    ";
         };
         int width = 60;
@@ -2880,7 +3002,7 @@ public class GameControllerLogic {
                 currentGame.currentPlayer.increaseMoney(number);
                 return new Result(true, "Your got +"+number+" money");
             }
-            case Lia -> {
+            case Leah -> {
                 int number = 500;
                 if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
                     number *= 2;
@@ -2933,7 +3055,7 @@ public class GameControllerLogic {
                 currentGame.currentPlayer.increaseFriendshipPoint(NPC.Abigail, 200);
                 return new Result(true, BRIGHT_BLUE+"Your friendship level with Harvey increased"+RESET);
             }
-            case Lia -> {
+            case Leah -> {
 
                 if (checkAmountProductAvailable(new MarketItem(MarketItemType.PancakesRecipe), 1) ||
                     currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
@@ -3016,7 +3138,7 @@ public class GameControllerLogic {
                 }
                 return new Result(true, RED+"Inventory is full"+RESET);
             }
-            case Lia -> {
+            case Leah -> {
 
                 if (checkAmountProductAvailable(new CraftingItem(CraftType.DeluxeScarecrow), 1) ||
                     currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {

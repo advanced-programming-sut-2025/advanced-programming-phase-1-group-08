@@ -172,7 +172,7 @@ public class Marketing {
     }
 
     public Dialog createDialogError() {
-        Texture tex = new Texture(Gdx.files.internal("Mohamadreza/Error.png"));
+        Texture tex = TextureManager.get("Mohamadreza/Error.png");
         NinePatch patch = new NinePatch(tex,10,10,3,3);
         Drawable background = new NinePatchDrawable(patch);
         Window.WindowStyle style = new Window.WindowStyle();
@@ -302,11 +302,11 @@ public class Marketing {
                 window.setPosition(Gdx.graphics.getWidth()/2 - 500 , Gdx.graphics.getHeight()/2 - 350);
                 getWindow().setVisible(false);
 
-                Image image = new Image(new Texture(Gdx.files.internal(animalType.getIcon())));
+                Image image = new Image(TextureManager.get(animalType.getIcon()));
 
-                Texture background = new Texture(Gdx.files.internal("Mohamadreza/AnimalBackground.png"));
+                Texture background = TextureManager.get("Mohamadreza/AnimalBackground.png");
                 Drawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(background));
-                Texture Name = new Texture(Gdx.files.internal("Mohamadreza/NameBackground.png"));
+                Texture Name = TextureManager.get("Mohamadreza/NameBackground.png");
                 Drawable NameDrawable = new TextureRegionDrawable(new TextureRegion(Name));
 
                 TextField nameField = new TextField("" , getSkin());

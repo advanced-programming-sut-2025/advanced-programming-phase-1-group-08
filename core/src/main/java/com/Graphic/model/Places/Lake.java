@@ -2,6 +2,7 @@ package com.Graphic.model.Places;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.GameObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -56,8 +57,8 @@ public class Lake extends GameObject {
             for (int j = topLeftY; j < topLeftY + height; j++) {
                 if (GameControllerLogic.getTileByCoordinates(i, j).getGameObject().equals(this)) {
                     int x = width * (j - topLeftY) + i -topLeftX + 1;
-                    first = new Sprite(new Texture(Gdx.files.internal("Places/Lake1,"+x+".png")));
-                    second = new Sprite(new Texture(Gdx.files.internal("Places/Lake2,"+x+".png")));
+                    first = new Sprite(TextureManager.get("Places/Lake1,"+x+".png"));
+                    second = new Sprite(TextureManager.get("Places/Lake2,"+x+".png"));
                     first.setSize(TEXTURE_SIZE , TEXTURE_SIZE);
                     second.setSize(TEXTURE_SIZE , TEXTURE_SIZE);
                     LakeAnimation = new Animation<>(0.5f , first.getTexture() , second.getTexture());

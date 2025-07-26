@@ -47,14 +47,11 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     Stage stage;
     private Dialog activeDialog = null;
     private long dialogExpirationTime = 0;
-    Texture background;
-    Texture borderFullTexture;
     TextureRegion borderTexture;
-    Sprite horizontalBorder;
-    Texture corners;
     Texture kitchen;
     Texture livingFloor;
     Texture bedroomFloor;
+    Texture bedroomWall;
     Texture craftShop;
     Texture fridge;
     Texture chest;
@@ -62,12 +59,12 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     Texture carpet;
     Texture furniture;
     Texture wndw;
-    Texture wall;
-    Texture houseWall;
-    Texture wallSeparator;
     Texture recipePaper;
     Texture bed;
-    Texture homeBG;
+    Texture simpleTable;
+    Texture chimney;
+    Texture carpet2;
+    Texture tree;
 
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
@@ -233,7 +230,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
 
     public void showTimedDialog(String message, float durationSeconds) {
-        activeDialog = new Dialog("", skin);
+        activeDialog = new Dialog("", newSkin);
         activeDialog.text(message);
         activeDialog.pack();
         activeDialog.setPosition(
@@ -292,11 +289,16 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         bench = new Texture(Gdx.files.internal("Ariyo/Workbench.png"));
         livingFloor = new Texture(Gdx.files.internal("Ariyo/Flooring/Flooring_89.png"));
         bedroomFloor = new Texture(Gdx.files.internal("Ariyo/Flooring/Flooring_02.png"));
+        bedroomWall = new Texture(Gdx.files.internal("Ariyo/bedroomWall.png"));
         craftShop = new Texture(Gdx.files.internal("Ariyo/Flooring/Flooring_52.png"));
         carpet = new Texture(Gdx.files.internal("Ariyo/carpet.jpg"));
         furniture = new Texture(Gdx.files.internal("Ariyo/furniture-removebg-preview.png"));
         bed = new Texture(Gdx.files.internal("Ariyo/bedd.png"));
         wndw = new Texture(Gdx.files.internal("Ariyo/window.png"));
+        simpleTable = new Texture(Gdx.files.internal("Ariyo/simpleTable.png"));
+        chimney = new Texture(Gdx.files.internal("Ariyo/chimney.png"));
+        carpet2 =  new Texture(Gdx.files.internal("Ariyo/carpet.png"));
+        tree = new Texture(Gdx.files.internal("Ariyo/tree.png"));
 
         recipePaper = new Texture(Gdx.files.internal("Ariyo/mail.png"));
 
@@ -369,6 +371,19 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             camera.update();
             mapRenderer.setView(camera);
             mapRenderer.render();
+
+            //bedroom walls
+            Main.getBatch().draw(bedroomWall, startX + areaWidth/8.67f, startY + areaHeight/28.5f, bedroomWall.getWidth(), bedroomWall.getHeight()*100/95f);
+            Main.getBatch().draw(bedroomWall, startX + areaWidth/5.7f, startY + areaHeight/28.5f, bedroomWall.getWidth(), bedroomWall.getHeight()*100/95f);
+            Main.getBatch().draw(bedroomWall, startX + areaWidth/5f, startY + areaHeight/28.5f, bedroomWall.getWidth(), bedroomWall.getHeight()*100/95f);
+            Main.getBatch().draw(bedroomWall, startX + areaWidth/6.5f, startY + areaHeight/28.5f, bedroomWall.getWidth(), bedroomWall.getHeight()*100/95f);
+            Main.getBatch().draw(bedroomWall, startX + areaWidth/7.5f, startY + areaHeight/28.5f, bedroomWall.getWidth(), bedroomWall.getHeight()*100/95f);
+            Main.getBatch().draw(bedroomWall, startX + areaWidth/4f - bedroomWall.getWidth(), startY + areaHeight/28.5f, bedroomWall.getWidth(), bedroomWall.getHeight()*100/95f);
+
+            Main.getBatch().draw(tree, startX + areaWidth/4.7f, startY - areaHeight/7f);
+            Main.getBatch().draw(carpet2, startX, startY - areaHeight/9.5f);
+            Main.getBatch().draw(chimney, startX - areaWidth/28.5f, startY + areaHeight/40f);
+            Main.getBatch().draw(simpleTable, startX + areaWidth/32f, startY - areaHeight/28.5f);
             Main.getBatch().draw(bed, startX + areaWidth/8.5f, startY - areaHeight/30f);
             Main.getBatch().draw(wndw, startX + areaWidth/20f, startY + areaHeight/24f);
         }
@@ -388,7 +403,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         }
 
         if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
-            System.out.println("hi");
+            activeDialog.setSize(400, 100);
             stage.addActor(activeDialog);
         } else {
             activeDialog = null; // اگر زمانش تموم شده، دیالوگ رو حذف کن

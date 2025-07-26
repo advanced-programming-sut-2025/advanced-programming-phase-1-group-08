@@ -103,7 +103,7 @@ public class CraftingItem extends Items {
 
     @Override
     public String getInventoryIconPath() { // TODO
-        return "";
+        return type.getIcon();
     }
 
     @Override

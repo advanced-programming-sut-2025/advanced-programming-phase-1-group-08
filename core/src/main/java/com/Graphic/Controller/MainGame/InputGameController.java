@@ -50,13 +50,14 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import com.badlogic.gdx.utils.Timer;
+
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 
 import static com.Graphic.View.GameMenus.GameMenu.camera;
 import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
-import static com.Graphic.model.Enum.Direction.getDirByCord;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
@@ -1948,35 +1949,10 @@ public class InputGameController {
         return new Result(true, BLUE+"Whoa! Infinite energy mode activated!"+RESET);
     }
 
+
                                                                    // input command plant
-    public Result planting (String name, String direction) {
 
-        if (directionIncorrect(direction))
-            return new Result(false, RED+"Direction is invalid"+RESET);
 
-        int dir = Integer.parseInt(direction);
-
-        Tile tile = getTileByDir(dir);
-
-        if ((!currentGame.currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
-                !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
-            return new Result(false, RED+"You must select your tile"+RESET);
-
-        if (name.matches("\\s*(?i)Mixed\\s*seed(s)?\\s*"))
-            return plantMixedSeed(dir);
-
-        try {
-            ForagingSeedsType type = ForagingSeedsType.fromDisplayName(name.trim());
-            return plantForagingSeed(type, dir);
-        } catch (Exception e) {
-            try {
-                TreesSourceType type2 = TreesSourceType.fromDisplayName(name.trim());
-                return plantTree(type2, dir);
-            } catch (Exception e2) {
-                return new Result(false, RED+"Hmm... that seed name doesn’t seem right!"+RESET);
-            }
-        }
-    }
     public Result WateringPlant (String direction) {
 
         if (directionIncorrect(direction))
@@ -2289,8 +2265,7 @@ public class InputGameController {
 
         return null;
     }
-    public Result useTools (String direction) {
-
+    public Result useTools (int dir) {
         if (!currentGame.currentPlayer.isHealthUnlimited()) {
             if (currentGame.currentPlayer.getHealth() < currentGame.currentPlayer.currentTool.healthCost())
                 return new Result(false, RED+"you are not in your hand"+RESET);
@@ -2298,37 +2273,44 @@ public class InputGameController {
             currentGame.currentPlayer.increaseHealth(currentGame.currentPlayer.currentTool.healthCost());
         }
 
-        if (directionIncorrect(direction))
-            return new Result(false, RED+"Direction is invalid"+RESET);
-
-        int dir = Integer.parseInt(direction);
-
         Tools tools = currentGame.currentPlayer.currentTool;
 
         if (currentGame.currentPlayer.currentTool == null)
             return new Result(false, RED + "please pick up a tools" + RESET);
 
-        if (tools instanceof Axe)
-            return useAxe(dir);
-        else if (tools instanceof Hoe) {
-            if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0) currentGame.currentPlayer.increaseHealth(1);
-            return useHoe(dir);
-        } else if (tools instanceof MilkPail) {
-            if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0) currentGame.currentPlayer.increaseHealth(1);
-            return useMilkPail(dir);
-        } else if (tools instanceof Scythe) {
-            if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0) currentGame.currentPlayer.increaseHealth(1);
-            return useScythe(dir);
+        switch (tools) {
+            case Axe axe -> {
+                return useAxe(dir);
+            }
+            case Hoe hoe -> {
+                if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0)
+                    currentGame.currentPlayer.increaseHealth(1);
+                return useHoe(dir);
+            }
+            case MilkPail milkPail -> {
+                if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0)
+                    currentGame.currentPlayer.increaseHealth(1);
+                return useMilkPail(dir);
+            }
+            case Scythe scythe -> {
+                if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0)
+                    currentGame.currentPlayer.increaseHealth(1);
+                return useScythe(dir);
+            }
+            case Shear shear -> {
+                if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0)
+                    currentGame.currentPlayer.increaseHealth(1);
+                return useShear(dir);
+            }
+            case WateringCan wateringCan -> {
+                return useWateringCan(dir);
+            }
+            case PickAxe pickAxe -> {
+                return usePickAxe(dir);
+            }
+            default -> {
+            }
         }
-        else if (tools instanceof Shear) {
-            if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0) currentGame.currentPlayer.increaseHealth(1);
-            return useShear(dir);
-        }
-        else if (tools instanceof WateringCan)
-            return useWateringCan(dir);
-        else if (tools instanceof PickAxe)
-            return usePickAxe(dir);
-
         return new Result(false, RED + "please pick up a tools" + RESET);
     }
 

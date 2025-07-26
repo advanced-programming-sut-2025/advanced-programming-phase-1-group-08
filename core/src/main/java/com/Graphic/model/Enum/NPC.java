@@ -209,7 +209,7 @@ public enum NPC {
         }
     },
 
-    Lia("Lia",  new LinkedHashMap<>(Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
+    Leah("Leah",  new LinkedHashMap<>(Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
             new Wood(), 200,
             new BasicRock(),   200)), 42, 52, 6, 5,
             new MarketItem(MarketItemType.Salad), 25) {
@@ -386,6 +386,9 @@ public enum NPC {
     }
     public int getTopLeftY() {
         return topLeftY;
+    }
+    public String getIconPath() {
+        return "Erfan/NPC_Avatar/" + this.name + ".png";
     }
     public Items getGiftItem() {
         return giftItem;
