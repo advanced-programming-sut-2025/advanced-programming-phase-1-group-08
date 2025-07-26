@@ -1,6 +1,7 @@
 package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.InputGameController;
+import com.Graphic.Controller.MainGame.Marketing;
 import com.Graphic.Main;
 import com.Graphic.View.AppMenu;
 import com.Graphic.model.*;
@@ -16,6 +17,7 @@ import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
+import com.Graphic.model.Places.Market;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.badlogic.gdx.Gdx;
@@ -548,25 +550,26 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Image img = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(skill.getPath()))));
         img.setColor(1f, 1f, 1f, 0.8f);
 
+        Dialog dialog = Marketing.getInstance().createDialogError();
         final Label tooltipLabel = new Label(skill.getDiscription(), App.newSkin);
-        tooltipLabel.setVisible(false);
+        tooltipLabel.setVisible(true);
         tooltipLabel.setColor(Color.LIGHT_GRAY);
+
+        Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, this);
+
 
         img.addListener(new ClickListener() {
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                tooltipLabel.setVisible(true);
+                dialog.setVisible(true);
             }
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                tooltipLabel.setVisible(false);
+                dialog.setVisible(false);
             }
         });
-
         content.add(img).size(60, 60);
-        tooltipLabel.setPosition(img.getX() + img.getWidth() + 10, img.getY());
-        content.addActor(tooltipLabel);
     }
 
     private void createClock() {

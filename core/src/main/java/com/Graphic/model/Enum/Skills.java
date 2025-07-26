@@ -4,10 +4,10 @@ import static com.Graphic.model.App.currentGame;
 
 public enum Skills {
 
-    Foraging ("this is Foraging ability \n Level : "),
-    Farming  ("this is Farming ability \n Level : "),
-    Fishing  ("this is Fishing ability \n Level : "),
-    Mining   ("this is Mining ability \n Level : ");
+    Foraging ("this is Foraging ability   Level : "),
+    Farming  ("this is Farming ability   Level : "),
+    Fishing  ("this is Fishing ability   Level : "),
+    Mining   ("this is Mining ability   Level : ");
 
     private final String discription;
 
