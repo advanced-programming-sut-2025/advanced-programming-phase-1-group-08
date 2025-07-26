@@ -103,9 +103,9 @@ public class HumanCommunications {
         if (FriendshipLevel < 4)
             FriendshipLevel--;
     }
-    public void printInfo() {
+    public String printInfo() {
         updateLevel();
-        System.out.println(player1.getNickname() + " <-> " + player2.getNickname() + " | FriendshipLevel: " + getLevel() + " | FriendshipXP: " + XP);
+        return player1.getNickname() + " & " + player2.getNickname() + " | Level: " + getLevel() + " | XP: " + XP;
     }
 
     // LEVEL ZERO TASKS
@@ -233,7 +233,7 @@ public class HumanCommunications {
 //            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Hug " + other.getNickname() + "!"+RESET);
 //        }
         if (getLevel() < 2) {
-            return new Result(false, RED+"You can't Hug in your Current Friendship Level."+RESET);
+            return new Result(false, "You can't Hug in your Current Friendship Level.");
         }
 
 
@@ -245,7 +245,7 @@ public class HumanCommunications {
                 currentGame.currentPlayer.getSpouse().increaseHealth(50);
             }
         updateLevel(); // to get Updated
-        return new Result(true, GREEN+"You Hugged " + other.getNickname() + "."+RESET);
+        return new Result(true, "You Hugged " + other.getNickname() + ".");
     }
     public Result buyFlowers() {
         User other;
@@ -258,8 +258,8 @@ public class HumanCommunications {
         Inventory otherInventory = other.getBackPack().inventory;
 
         //if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) return new Result(false, RED+"You Should Get Closer in Order to Buy Flower for " + other.getNickname() + "!"+RESET);
-        if (getLevel() < 2) return new Result(false, RED+"You can't Buy Flower in your Current " + "Friendship Level" + "."+RESET);
-        if (getXP() < 300) return new Result(false, RED+"You Have to Reach 300 XPs to Give Bouquet!"+RESET);
+        if (getLevel() < 2) return new Result(false, "You can't Buy Flower in your Current " + "Friendship Level" + ".");
+        if (getXP() < 300) return new Result(false, "You Have to Reach 300 XPs to Give Bouquet!");
 
 
         MarketItem marketItem = new MarketItem(MarketItemType.Bouquet);
@@ -268,7 +268,7 @@ public class HumanCommunications {
             myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
         }
         else {
-            return new Result(false, RED+"You Don't Have Bouquet to Give!"+RESET);
+            return new Result(false, "You Don't Have Bouquet to Give!");
         }
 
 
@@ -277,7 +277,7 @@ public class HumanCommunications {
             if (entry instanceof MarketItem) {
                 if (((MarketItem)entry).getType().equals(MarketItemType.Bouquet)) {
                     otherInventory.Items.put(entry.getKey(), entry.getValue() + 1);
-                    return new Result(true, GREEN+"You Gave Bouquet to " + other.getNickname()+RESET);
+                    return new Result(true, "You Gave Bouquet to " + other.getNickname());
                 }
             }
         }
@@ -293,7 +293,7 @@ public class HumanCommunications {
                 currentGame.currentPlayer.getSpouse().increaseHealth(50);
             }
 
-        return new Result(true, GREEN+"You Gave Bouquet to " + other.getNickname()+RESET);
+        return new Result(true, "You Gave Bouquet to " + other.getNickname());
     }
 
     // LEVEL THREE TASKS

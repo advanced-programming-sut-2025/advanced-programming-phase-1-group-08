@@ -35,17 +35,21 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.*;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 
 import static com.Graphic.View.GameMenus.GameMenu.*;
@@ -1444,13 +1448,15 @@ public class GameControllerLogic {
         }
         System.out.println(RED+"Couldn't find the next Player!"+RESET);
     }
-    public static void DisplayFriendships () {
+    public static String DisplayFriendships () {
         String targetName = currentGame.currentPlayer.getUsername();
 
         for (HumanCommunications f : currentGame.friendships) {
             if (f.getPlayer1().getUsername().equals(targetName) || f.getPlayer2().getUsername().equals(targetName))
-                f.printInfo();
+                return f.printInfo();
         }
+
+        return null;
     }
     public static void cheatAddXp (String input) {
         int xp = Integer.parseInt(GameMenuCommands.addXpCheat.getMatcher(input).group("xp"));
@@ -1459,34 +1465,89 @@ public class GameControllerLogic {
         HumanCommunications f = getFriendship(currentGame.currentPlayer, other);
         f.addXP(xp);
     }
-    public static void talking (String input) {
-        String destinationUsername = GameMenuCommands.talking.getMatcher(input).group("username");
-        String message = GameMenuCommands.talking.getMatcher(input).group("message");
+    public static void showChatDialog(Stage stage, Skin skin, Consumer<String> onMessageSent) {
+
+        // تعریف متغیرهای اولیه
+        TextField messageField = new TextField("", newSkin);
+        messageField.setMessageText("Type your message...");
+        messageField.setMaxLength(200);
+
+        // دیالوگ به صورت subclass تا متد result را override کنیم
+        Dialog chatDialog = new Dialog("Send Message", newSkin) {
+            @Override
+            protected void result(Object obj) {
+                if (obj.equals(true)) {
+                    String message = messageField.getText().trim();
+                    if (!message.isEmpty()) {
+                        onMessageSent.accept(message);
+                    }
+                }
+            }
+        };
+
+        // ایموجی‌ها
+        Table emojiTable = new Table();
+        String[] emojis = {"😊", "😂", "❤️", "😢", "💔", "👍", "🎉"};
+        for (String emoji : emojis) {
+            TextButton emojiButton = new TextButton(emoji, skin);
+            emojiButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    messageField.setText(messageField.getText() + emoji);
+                }
+            });
+            emojiTable.add(emojiButton).pad(3);
+        }
+
+        // اضافه کردن به دیالوگ
+        chatDialog.getContentTable().add(messageField).width(300).pad(10);
+        chatDialog.getContentTable().row();
+        chatDialog.getContentTable().add(emojiTable).pad(10);
+
+        // دکمه‌ها + مقدار برگردان
+        chatDialog.button("Send", true);   // این مقدار به result داده میشه
+        chatDialog.button("Cancel", false);
+        chatDialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
+
+        chatDialog.show(stage);
+    }
+
+
+    public static void talking(String destinationUsername, Consumer<Result> onResult) {
         User destinationUser = null;
         boolean found = false;
-        for (User player: currentGame.players) {
+
+        for (User player : currentGame.players) {
             if (player.getUsername().equals(destinationUsername)) {
                 found = true;
                 destinationUser = player;
                 break;
             }
         }
+
         if (!found) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
+            onResult.accept(new Result(false, "Player is Unavailable!"));
             return;
         }
+
         if (destinationUsername.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
+            onResult.accept(new Result(false, "You can't Talk to Yourself!"));
             return;
         }
+
         HumanCommunications f = getFriendship(currentGame.currentPlayer, destinationUser);
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            onResult.accept(new Result(false, "No Friendship Among These Users!"));
             return;
         }
-        Result result = f.talk(message);
-        System.out.println(result);
+
+        // گرفتن پیام از کاربر و فراخوانی تابع talk
+        showChatDialog(GameMenu.gameMenu.getStage(), newSkin, message -> {
+            Result result = f.talk(message);
+            onResult.accept(result);
+        });
     }
+
     public static void DisplayingTalkHistory (String input) {
         String username = GameMenuCommands.talkHistory.getMatcher(input).group("username");
         User destinationUser = null;
@@ -1514,23 +1575,19 @@ public class GameControllerLogic {
         Result result = f.talkingHistory();
         System.out.println(result);
     }
-    public static void hug (String input) {
+    public static Result hug (String input) {
         String username = GameMenuCommands.hug.getMatcher(input).group("username");
         if (!currentGame.players.contains(findPlayerInGame(username))) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
-            return;
+            return new Result(false,"Username is Unavailable!");
         }
         if (username.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't Hug " + RED+"Yourself"+RESET + "!");
-            return;
+            return new Result(false, "You can't Hug Yourself!");
         }
         HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
-            return;
+            return new Result(false, "There's no Friendship Among these Users!");
         }
-        Result result = f.Hug();
-        System.out.println(result);
+        return f.Hug();
     }
 
     public static void sendGifts (String input) {
@@ -1564,51 +1621,34 @@ public class GameControllerLogic {
             currentGame.conversations.get(key).add(new MessageHandling(currentGame.currentPlayer, findPlayerInGame(username), currentGame.currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!"));
         }
     }
-    public static void giveFlowers (String input) {
-        String username = GameMenuCommands.giveFlower.getMatcher(input).group("username");
+    public static Result giveFlowers (String username) {
         if (!currentGame.players.contains(findPlayerInGame(username))) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
-            return;
+
+            return new Result(false, "Username is Unavailable!");
         }
         if (username.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't give Flower to " + RED+"Yourself"+RESET + "!");
-            return;
+            return new Result(false, "You can't give Flower to Yourself!");
         }
         HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
-            return;
+            return new Result(false, "There's no Friendship Among these Users!");
         }
-        Result result = f.buyFlowers();
-        System.out.println(result);
+        return f.buyFlowers();
     }
-    public static void propose(String input) {
-        String username = GameMenuCommands.propose.getMatcher(input).group("username");
+    public static Result propose(String username) {
         User wife = findPlayerInGame(username);
         if (wife == null) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
-            return;
+            return new Result(false, "Username is Unavailable!");
         }
         if (username.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't Propose to " + RED+"Yourself"+RESET + "!");
-            return;
+            return new Result(false, "You can't Propose to Yourself!");
         }
         HumanCommunications f = getFriendship(currentGame.currentPlayer, wife);
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
-            return;
+            return new Result(false, "There's no Friendship Among these Users");
         }
 
-        String ring = GameMenuCommands.propose.getMatcher(input).group("ring");
-        if (!(ring.equalsIgnoreCase("ring") || ring.equalsIgnoreCase("wedding ring") || ring.equalsIgnoreCase("wedding"))) {
-            System.out.println(RED+"Wrong Ring Name!"+RESET);
-            System.out.println("'"+ring+"'");
-            return;
-        }
-
-        Result result = f.propose();
-        System.out.println(result);
-
+        return f.propose();
     }
     public static void unlockRecipe(String input) {
         Matcher matcher = GameMenuCommands.recipeUnlock.getMatcher(input);
