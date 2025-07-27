@@ -18,19 +18,19 @@ public class Main extends Game {
     private static Main main;
     private static Batch batch;
     private static Skin skin;
-    private static InputGameController x;
+    //private static InputGameController x;
 
     @Override
     public void create() {
 
         main = this;
         batch = new SpriteBatch();
-        x = InputGameController.getInstance();
-        x.startNewGame("a");
-        main.setScreen(GameMenu.getInstance());
+        //x = InputGameController.getInstance();
+        //x.startNewGame("a");
+        //main.setScreen(GameMenu.getInstance());
 
         skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-//        main.setScreen(new LoginMenu());
+        main.setScreen(new LoginMenu());
 
     }
 

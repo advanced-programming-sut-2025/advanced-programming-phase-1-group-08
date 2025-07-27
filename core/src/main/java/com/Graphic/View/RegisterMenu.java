@@ -84,15 +84,15 @@ public class RegisterMenu implements Screen, AppMenu {
 
         createFormFields(registerContainer);
 
-        mainTable.add(scrollPane).width(500).height(600);
+        mainTable.add(scrollPane).width(1125).height(800);
         stage.addActor(mainTable);
 
         setupValidationListeners();
     }
 
     private void createFormFields(Table container) {
-        float fieldWidth = 300;
-        float labelWidth = 120;
+        float fieldWidth = 400;
+        float labelWidth = 250;
 
         container.add(new Label("Username:", Main.getSkin())).width(labelWidth).align(Align.left);
         usernameField = new TextField("", Main.getSkin());
@@ -174,9 +174,9 @@ public class RegisterMenu implements Screen, AppMenu {
         TextButton loginButton = new TextButton("Go to Login", Main.getSkin());
         TextButton exitButton = new TextButton("Exit", Main.getSkin());
 
-        buttonTable.add(registerButton).width(150).padRight(10);
-        buttonTable.add(loginButton).width(150).padRight(10);
-        buttonTable.add(exitButton).width(100);
+        buttonTable.add(registerButton).width(250).padRight(10);
+        buttonTable.add(loginButton).width(250).padRight(10);
+        buttonTable.add(exitButton).width(200);
 
         container.add(buttonTable).colspan(3).padBottom(10).row();
 
