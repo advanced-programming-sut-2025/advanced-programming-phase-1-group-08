@@ -55,7 +55,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public static GameMenu gameMenu; // اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
 
     public static OrthographicCamera camera;
-    private final int hourSecond = 12000;
+    private final int hourSecond = 120000;
     private Stage stage;
 
     private Vector3 mousePos;
