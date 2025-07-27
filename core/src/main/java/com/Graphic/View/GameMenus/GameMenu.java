@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -127,7 +128,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private Window socialPopup;
 
     private boolean mapIsActivated;
-    private Window mapPopup;
+    private Group mapGroup;
 
     private boolean setEnergyIsActivated;
     private Window setEnergyPopup;
@@ -413,7 +414,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         return interactionDialog;
     }
-
     private Dialog makingFriendDialog() {
         friendsListdialog = new Dialog("", newSkin);
         friendsListdialog.setModal(true);
@@ -485,7 +485,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         return friendsListdialog;
     }
-
     public void showTimedDialog(String message, float durationSeconds) {
         activeDialog = new Dialog("", skin);
         activeDialog.text(message);
@@ -497,7 +496,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         dialogExpirationTime = TimeUtils.millis() + (long)(durationSeconds * 1000);
     }
-
 
 
     private void inputController () {
@@ -574,7 +572,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             socialMenuIsActivated = false;
         }
         else if (mapIsActivated) {
-            mapPopup.remove();
+            mapGroup.remove();
             mapIsActivated = false;
         }
         else if (setEnergyIsActivated) {
@@ -586,6 +584,46 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             EscPopup.remove();
             EscMenuIsActivated = false;
         }
+    }
+
+
+    public void createMap () {
+
+        mapGroup = new Group();
+
+        Texture texture = new Texture(Gdx.files.internal(GameTexturePath.map.getPath()));
+        Image image = new Image(new TextureRegionDrawable(new TextureRegion(texture)));
+
+        image.setHeight(image.getHeight() * 3);
+        image.setWidth(image.getWidth() * 3);
+
+
+        image.setPosition(
+            stage.getWidth() / 2f - image.getWidth() / 2f,
+            stage.getHeight() / 2f - image.getHeight() / 2f + 50
+        );
+
+        TextButton backButton = new TextButton("Back", App.newSkin);
+        backButton.setSize(100, 40);
+        backButton.setPosition(
+            stage.getWidth() / 2f - backButton.getWidth() / 2f,
+            image.getY() - 60
+        );
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mapGroup.remove();
+                texture.dispose();
+            }
+        });
+
+        mapIsActivated = true;
+
+        mapGroup.addActor(image);
+        mapGroup.addActor(backButton);
+
+        stage.addActor(mapGroup);
     }
 
     private void updateEnergyLabel () {
@@ -1264,9 +1302,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             content.add(nameLabel);
         }
-    }
-    private void createMap () {
-
     }
     private void createGrayBackGround () {
         helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
