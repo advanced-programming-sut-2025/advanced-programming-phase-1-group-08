@@ -2,13 +2,14 @@ package com.Graphic.model.HelpersClass;
 
 public enum SFX {
 
-    test ("test","SFX/name.wav"),
+    //test ("test","SFX/name.wav"),
+    explosion("explosion","Music/explosion.wav");
     ;
 
     public final String name;
     public final String path;
 
-    private SFX(String name, String path) {
+    SFX(String name, String path) {
         this.name = name;
         this.path = path;
     }

@@ -72,7 +72,7 @@ public class LoginMenu implements Screen, AppMenu {
 
         Table loginContainer = new Table();
         loginContainer.background(Main.getSkin().getDrawable("window"));
-        loginContainer.pad(40);
+        loginContainer.pad(80);
 
         Label usernameLabel = new Label("Username:", Main.getSkin());
         usernameField = new TextField("", Main.getSkin());
@@ -94,7 +94,7 @@ public class LoginMenu implements Screen, AppMenu {
         messageLabel.setAlignment(Align.center);
 
         float fieldWidth = 300;
-        float buttonWidth = 200;
+        float buttonWidth = 400;
 
         loginContainer.add(usernameLabel).align(Align.left).padBottom(5).row();
         loginContainer.add(usernameField).width(fieldWidth).padBottom(15).row();
@@ -184,7 +184,7 @@ public class LoginMenu implements Screen, AppMenu {
         forgotPasswordWindow.setMovable(true);
 
         Table content = new Table();
-        content.pad(20);
+        content.pad(40);
 
         Label instructionLabel = new Label("Enter your username:", Main.getSkin());
         forgotUsernameField = new TextField("", Main.getSkin());
@@ -197,8 +197,8 @@ public class LoginMenu implements Screen, AppMenu {
         content.add(forgotUsernameField).width(250).padBottom(20).row();
 
         Table buttonTable = new Table();
-        buttonTable.add(submitButton).width(100).padRight(10);
-        buttonTable.add(cancelButton).width(100);
+        buttonTable.add(submitButton).width(200).padRight(10);
+        buttonTable.add(cancelButton).width(200);
         content.add(buttonTable).row();
 
         Label forgotMessageLabel = new Label("", Main.getSkin());

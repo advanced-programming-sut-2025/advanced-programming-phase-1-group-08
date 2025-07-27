@@ -95,7 +95,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private Dialog activeDialog = null;
     private long dialogExpirationTime = 0;
 
-    private Image helperBackGround;
+    public static Image helperBackGround;
 
     public long startTime;
     public long lastTime;
@@ -235,6 +235,94 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             tempFriend.setVisible(true);
         }
     }
+
+    ///  ///  ///   Erfan
+    private void initialize () {
+
+        startTime = TimeUtils.millis();
+        lastTime = TimeUtils.millis();
+
+        controller = InputGameController.getInstance();
+        stage = new Stage(new ScreenViewport());
+        clockGroup = new Group();
+        camera = new OrthographicCamera();
+
+        BitmapFont font = new BitmapFont();
+        energyStyle = new Label.LabelStyle();
+        energyStyle.font = font;
+        energyStyle.fontColor = Color.GREEN;
+
+        Texture iconTexture = new Texture("Ariyo/Shane_Icon.png");
+        Drawable iconDrawable = new TextureRegionDrawable(new TextureRegion(iconTexture));
+        tempFriend = new ImageButton(iconDrawable);
+        tempFriend.setSize(100, 100);
+        tempFriend.setVisible(false);
+        tempFriend.setPosition((float) ((float) Gdx.graphics.getWidth() *6.8/9), (float) ((float) Gdx.graphics.getHeight() *6/9));
+        stage.addActor(tempFriend);
+
+        tempFriend.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                makingInteractionDialog().show(stage);
+            }
+        });
+
+
+
+        energyLabel = new Label("Energy : 100", newSkin);
+        lastHealth = -1;
+        energyLabel = new Label("Energy : 100", energyStyle);
+        energyLabel.setPosition((float) Gdx.graphics.getWidth() - energyLabel.getWidth() - 10, 10);
+        stage.addActor(energyLabel);
+
+        friendsListTexture = new Texture(Gdx.files.internal("Ariyo/Friendship_101.png"));
+        buttonDrawable = new TextureRegionDrawable(new TextureRegion(friendsListTexture));
+        friendButton = new ImageButton(buttonDrawable);
+        friendButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                makingFriendDialog().show(stage);
+            }
+        });
+        friendButton.setPosition((float) Gdx.graphics.getWidth() *7/9, (float) ((float) Gdx.graphics.getHeight() *6.7/9));
+//        friendButton.setPosition(100, 100);
+        stage.addActor(friendButton);
+
+        bouquetImage = new Image(new Texture(Gdx.files.internal("Ariyo/Bouquet.png")));
+        bouquetImage.setPosition(Gdx.graphics.getWidth() / 2f - bouquetImage.getWidth(),
+            Gdx.graphics.getHeight() / 2f - bouquetImage.getHeight() / 2f);
+        bouquetImage.getColor().a = 0f;
+        bouquetImage.setSize(bouquetImage.getWidth()*3, bouquetImage.getHeight()*3);
+        stage.addActor(bouquetImage);
+
+        hugImage = new Image(new Texture(Gdx.files.internal("Ariyo/hug.png")));
+        hugImage.setPosition(Gdx.graphics.getWidth() / 2f - hugImage.getWidth(), Gdx.graphics.getHeight() / 2f - hugImage.getHeight() / 2f);
+        hugImage.setSize(hugImage.getWidth()*3, hugImage.getHeight()*3);
+        hugImage.getColor().a = 0f;
+        stage.addActor(hugImage);
+
+        ringImage = new Image(new Texture(Gdx.files.internal("Ariyo/Sturdy_Ring.png")));
+        ringImage.setPosition(Gdx.graphics.getWidth() / 2f - ringImage.getWidth(),  Gdx.graphics.getHeight() / 2f - ringImage.getHeight() / 2f);
+        ringImage.setSize(ringImage.getWidth()*3, ringImage.getHeight()*3);
+        ringImage.getColor().a = 0f;
+        stage.addActor(ringImage);
+
+
+
+        timeLabel = new Label("", skin);
+        dateLabel = new Label("", skin);
+        moneyLabel = new Label("", skin);
+        weekDayLabel = new Label("", skin);
+
+
+        toolsMenuIsActivated = false;
+        inventoryIsActivated = false;
+        skillMenuIsActivated = false;
+        mapIsActivated = false;
+        socialMenuIsActivated = false;
+        EscMenuIsActivated = false;
+    }
+
     private Dialog makingInteractionDialog() {
         Dialog interactionDialog = new Dialog("", newSkin);
 
@@ -261,10 +349,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     // fade in -> wait 1s -> fade out
                     if (result.IsSuccess())
                         bouquetImage.addAction(Actions.sequence(
-                            Actions.alpha(0f),
-                            Actions.fadeIn(0.3f),
-                            Actions.delay(1f),
-                            Actions.fadeOut(0.5f)
+                        Actions.alpha(0f),
+                        Actions.fadeIn(0.3f),
+                        Actions.delay(1f),
+                        Actions.fadeOut(0.5f)
                         ));
                     else {
                         showTimedDialog(result.massage(), 2f);
@@ -297,7 +385,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 talking(finalOther2.getUsername(), result -> {
-                    showTimedDialog(result.massage(), 2f);
+                        showTimedDialog(result.massage(), 2f);
                 });
             }
         });
@@ -514,9 +602,18 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 handleLeftClick();
 
 
-           else if (Gdx.input.isKeyJustPressed(Input.Keys.H))
-                Main.getMain().setScreen(new HomeMenu());
-           else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
+                Main.getMain().setScreen(
+                    new TransitionScreen(
+                        Main.getMain(),
+                        this,
+                        new HomeMenu(),
+                        1f
+                    )
+                );
+            }
+
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                 User temp = currentGame.currentPlayer;
                 ArrayList<User> list = currentGame.players;
                 if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
@@ -1463,6 +1560,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public boolean getIsInMine() {
+        return true;
+    }
+
+    public void setIsInMine(boolean b) {
     }
 
 

@@ -2,6 +2,8 @@ package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
 import com.Graphic.View.GameMenus.GameMenu;
+import com.Graphic.View.GameMenus.HomeMenu;
+import com.Graphic.View.GameMenus.TransitionScreen;
 import com.Graphic.model.*;
 import com.Graphic.model.Enum.Commands.HomeMenuCommands;
 import com.Graphic.model.Enum.FoodTypes;
@@ -32,7 +34,7 @@ public class HomeController {
         return true;
     }
 
-
+    private static HomeMenu homeMenu = null;
 
     public static Result fridgePick (String input) {
         if (NotInHome(currentGame.currentPlayer))
@@ -222,13 +224,26 @@ public class HomeController {
     }
 
 
-    public static HouseModes handleHomeInputs (HouseModes mode) {
+    public static HouseModes handleHomeInputs (HouseModes mode, HomeMenu hM) {
+        if (homeMenu == null) {
+            homeMenu = hM;
+        }
+
+
         if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.C))
             return cook(mode);
         if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.B))
             return HouseModes.craft;
-        if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
-            Main.getMain().setScreen(GameMenu.getInstance());
+        if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.H)) {
+            Main.getMain().setScreen(
+                new TransitionScreen(
+                    Main.getMain(),
+                    homeMenu,
+                    GameMenu.getInstance(),
+                    1f
+                )
+            );
+        }
 
         return mode;
     }

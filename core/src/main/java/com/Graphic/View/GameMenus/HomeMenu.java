@@ -6,6 +6,7 @@ import com.Graphic.Controller.MainGame.HomeController;
 import com.Graphic.Main;
 import com.Graphic.View.AppMenu;
 import com.Graphic.View.AppView;
+import com.Graphic.model.*;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Commands.HomeMenuCommands;
 import com.Graphic.model.Enum.FoodTypes;
@@ -14,10 +15,12 @@ import com.Graphic.model.Enum.ItemType.CraftType;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Game;
 import com.Graphic.model.HelpersClass.Result;
-import com.Graphic.model.Recipe;
-import com.Graphic.model.User;
+import com.Graphic.model.HelpersClass.TextureManager;
+import com.Graphic.model.OtherItem.Fridge;
+import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,24 +28,34 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
 import static com.Graphic.Controller.MainGame.HomeController.foodPrepare;
 
+import static com.Graphic.Controller.MainGame.InputGameController.moveAnimation;
+import static com.Graphic.View.GameMenus.GameMenu.helperBackGround;
 import static com.Graphic.model.App.*;
 
 public class HomeMenu extends AppView implements AppMenu, Screen {
+
+    int startX, startY;
+    int areaWidth;
+    int areaHeight;
 
     Stage stage;
     private Dialog activeDialog = null;
@@ -53,7 +66,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     Texture bedroomFloor;
     Texture bedroomWall;
     Texture craftShop;
-    Texture fridge;
+    Image fridge;
     Texture chest;
     Texture bench;
     Texture carpet;
@@ -65,6 +78,24 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     Texture chimney;
     Texture carpet2;
     Texture tree;
+    Texture pool;
+    Animation<TextureRegion> oldmanAnimation;
+    float oldmanStateTime = 0f;
+    Texture plant;
+    Texture barrel;
+    Texture deck;
+    Texture lib;
+    Texture torch;
+    Texture board;
+    Texture kitchenTable;
+    Texture kitchenChair;
+    Texture bedroomCarpet;
+
+
+
+    private boolean fridgeIsActivated;
+    private Window fridgePopup;
+
 
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
@@ -283,8 +314,25 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         Gdx.input.setInputProcessor(stage);
 
 
+        int tileSize = 120;
+
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+
+// سه چهارم صفحه
+        areaWidth = (int)(screenWidth * 0.75f);
+        areaHeight = (int)(screenHeight * 0.75f);
+
+// نزدیک‌ترین مقدار که قابل تقسیم بر tileSize باشه
+        areaWidth = (areaWidth / tileSize) * tileSize;
+        areaHeight = (areaHeight / tileSize) * tileSize;
+
+// محاسبه‌ی موقعیت ناحیه مرکزی
+        startX = (screenWidth - areaWidth) / 2;
+        startY = (screenHeight - areaHeight) / 2;
+
+
         kitchen =  new Texture(Gdx.files.internal("Ariyo/Flooring/Flooring_23.png"));
-        fridge = new Texture(Gdx.files.internal("Ariyo/Mini-Fridge.png"));
         chest = new Texture(Gdx.files.internal("Ariyo/Chest.png"));
         bench = new Texture(Gdx.files.internal("Ariyo/Workbench.png"));
         livingFloor = new Texture(Gdx.files.internal("Ariyo/Flooring/Flooring_89.png"));
@@ -293,14 +341,53 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         craftShop = new Texture(Gdx.files.internal("Ariyo/Flooring/Flooring_52.png"));
         carpet = new Texture(Gdx.files.internal("Ariyo/carpet.jpg"));
         furniture = new Texture(Gdx.files.internal("Ariyo/furniture-removebg-preview.png"));
-        bed = new Texture(Gdx.files.internal("Ariyo/bedd.png"));
+        bed = new Texture(Gdx.files.internal("Ariyo/bedd2.png"));
         wndw = new Texture(Gdx.files.internal("Ariyo/window.png"));
         simpleTable = new Texture(Gdx.files.internal("Ariyo/simpleTable.png"));
         chimney = new Texture(Gdx.files.internal("Ariyo/chimney.png"));
         carpet2 =  new Texture(Gdx.files.internal("Ariyo/carpet.png"));
         tree = new Texture(Gdx.files.internal("Ariyo/tree.png"));
+        pool = new Texture(Gdx.files.internal("Ariyo/pool.png"));
+        TextureRegion[] frames = {new TextureRegion(new Texture(Gdx.files.internal("Ariyo/oldman1.png"))), new TextureRegion(new Texture(Gdx.files.internal("Ariyo/oldman2.png")))};
+        oldmanAnimation = new Animation<TextureRegion>(0.7f,
+            frames
+            );
+        plant = new Texture(Gdx.files.internal("Ariyo/plant.png"));
+        barrel = new Texture(Gdx.files.internal("Ariyo/barrel.png"));
+        deck = new Texture(Gdx.files.internal("Ariyo/deck.png"));
+        lib = new Texture(Gdx.files.internal("Ariyo/lib.png"));
+        torch = new Texture(Gdx.files.internal("Ariyo/torch.png"));
+        board = new Texture(Gdx.files.internal("Ariyo/board.png"));
+        kitchenTable = new Texture(Gdx.files.internal("Ariyo/kitchenTable.png"));
+        kitchenChair = new Texture(Gdx.files.internal("Ariyo/kitchenChair.png"));
+        fridge = new Image(new Texture(Gdx.files.internal("Ariyo/fridge.png")));
+        fridge.setColor(1f, 1f, 1f, 0.3f);
+        fridge.addListener(new InputListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+//                fridge.setVisible(true);
+                fridge.setColor(0.5f, 0.5f, 0.5f, 1f);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+//                fridge.setVisible(false);
+                fridge.setColor(1f, 1f, 1f, 0.3f);
+            }
+
+        });
+        fridge.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                createFridge();
+            }
+        });
+        fridge.setSize(fridge.getWidth() * 2.5f, fridge.getHeight() * 2.9f);
+        fridge.setPosition(startX + areaWidth/8.2f, startY + areaHeight/1.74f);
+        stage.addActor(fridge);
 
         recipePaper = new Texture(Gdx.files.internal("Ariyo/mail.png"));
+        bedroomCarpet =  new Texture(Gdx.files.internal("Ariyo/bedroomCarpet.png"));
 
 
 
@@ -340,30 +427,141 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
     }
 
+    private void createFridge() {
+        fridgePopup = new Window("", newSkin);
+        fridgePopup.setSize(1300, 700);
+        fridgePopup.setPosition(
+            (stage.getWidth() - fridgePopup.getWidth()) / 2,
+            (stage.getHeight() - fridgePopup.getHeight()) / 2);
+
+
+        Drawable bg = new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/Inventory/Inventory.png")));
+        fridgePopup.setBackground(bg);
+
+        Table currentItemTable = new Table();
+        createCurrentItem(currentItemTable);
+
+        Table content = new Table();
+        createItems(content);
+        content.padRight(300);
+        content.padBottom(293);
+
+        fridgePopup.add(content);
+        fridgePopup.add(currentItemTable).align(Align.topRight).padRight(215).padBottom(400);
+
+        stage.addActor(fridgePopup);
+        fridgeIsActivated = true;
+    }
+    private void createItems (Table content) {
+
+        content.defaults().pad(5);
+        content.setFillParent(false);
+        content.sizeBy(350, 600);
+        content.setPosition(300, 300);
+        content.padLeft(50);
+
+        Fridge f = currentGame.currentPlayer.getFarm().getHome().getFridge();
+//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+
+        int number = 0;
+
+        for (Map.Entry<Items, Integer> entry : f.items.entrySet()) {
+
+            if (number % 6 == 0)
+                content.row();
+
+            Items item = entry.getKey();
+            int count = entry.getValue();
+
+            Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
+
+            Items currentItem = currentGame.currentPlayer.currentItem;
+            boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
+
+            if (isCurrent) {
+                itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+                itemButton.setScale(1.3f);
+            } else
+                itemButton.setColor(1f, 1f, 1f, 0.8f);
+
+
+            Label countLabel = new Label("", newSkin);
+
+            if (!(item instanceof Tools))
+                countLabel.setText(count);
+
+            countLabel.setFontScale(0.9f);
+            countLabel.setColor(Color.BLACK);
+            countLabel.setAlignment(Align.bottomRight);
+
+            Table labelOverlay = new Table();
+            labelOverlay.setFillParent(false);
+            labelOverlay.add(countLabel).bottom().right().padLeft(35).padTop(50);
+
+            Stack stack = new Stack();
+            stack.add(itemButton);
+            stack.add(labelOverlay);
+
+            content.add(stack).width(60).height(60).padLeft(10);
+
+            itemButton.addListener(new ClickListener() {
+
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+
+//                    if (currentItem != null && currentItem.getName().equals(item.getName()))
+//                        currentGame.currentPlayer.currentItem = null;
+//                    else
+//                        controller.itemEquip(item.getName());
+
+                    if (helperBackGround == null) {
+                        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+                        helperBackGround.setColor(0, 0, 0, 0.5f);
+                        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+                        stage.addActor(helperBackGround);
+                    }
+                    helperBackGround.remove();
+                    fridgePopup.remove();
+                    fridgeIsActivated = false;
+                }
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    itemButton.setColor(1f, 1f, 1f, 1f);
+                    itemButton.setScale(isCurrent ? 1.4f : 1.2f);
+                }
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    if (isCurrent) {
+                        itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+                        itemButton.setScale(1.3f);
+                    } else {
+                        itemButton.setColor(1f, 1f, 1f, 0.8f);
+                        itemButton.setScale(1f);
+                    }
+                }
+            });
+            number++;
+        }
+    }
+    private void createCurrentItem (Table content) {
+
+        Image img;
+        if (currentGame.currentPlayer.currentItem != null)
+            img = new Image(TextureManager.get(currentGame.currentPlayer.currentItem.getInventoryIconPath()));
+        else
+            img = new Image(TextureManager.get("Erfan/Cancel2.png"));
+
+        content.add(img).align(Align.topRight).width(150).height(150).right();
+        content.row();
+
+    }
+
     @Override
     public void render(float v) {
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+
         ScreenUtils.clear(0, 0, 0, 1);
         Main.getBatch().begin();
 
-
-        int tileSize = 120;
-
-        int screenWidth = Gdx.graphics.getWidth();
-        int screenHeight = Gdx.graphics.getHeight();
-
-// سه چهارم صفحه
-        int areaWidth = (int)(screenWidth * 0.75f);
-        int areaHeight = (int)(screenHeight * 0.75f);
-
-// نزدیک‌ترین مقدار که قابل تقسیم بر tileSize باشه
-        areaWidth = (areaWidth / tileSize) * tileSize;
-        areaHeight = (areaHeight / tileSize) * tileSize;
-
-// محاسبه‌ی موقعیت ناحیه مرکزی
-        int startX = (screenWidth - areaWidth) / 2;
-        int startY = (screenHeight - areaHeight) / 2;
 
 
         // decorating
@@ -380,12 +578,31 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             Main.getBatch().draw(bedroomWall, startX + areaWidth/7.5f, startY + areaHeight/28.5f, bedroomWall.getWidth(), bedroomWall.getHeight()*100/95f);
             Main.getBatch().draw(bedroomWall, startX + areaWidth/4f - bedroomWall.getWidth(), startY + areaHeight/28.5f, bedroomWall.getWidth(), bedroomWall.getHeight()*100/95f);
 
-            Main.getBatch().draw(tree, startX + areaWidth/4.7f, startY - areaHeight/7f);
-            Main.getBatch().draw(carpet2, startX, startY - areaHeight/9.5f);
+            Main.getBatch().draw(tree, startX + areaWidth/4.9f, startY - areaHeight/7.7f);
+            Main.getBatch().draw(plant, startX + areaWidth/5.8f, startY - areaHeight/5.7f);
+            Main.getBatch().draw(carpet2, startX, startY - areaHeight/9.2f);
             Main.getBatch().draw(chimney, startX - areaWidth/28.5f, startY + areaHeight/40f);
-            Main.getBatch().draw(simpleTable, startX + areaWidth/32f, startY - areaHeight/28.5f);
+            Main.getBatch().draw(simpleTable, startX + areaWidth/60f, startY - areaHeight/28.2f);
             Main.getBatch().draw(bed, startX + areaWidth/8.5f, startY - areaHeight/30f);
-            Main.getBatch().draw(wndw, startX + areaWidth/20f, startY + areaHeight/24f);
+            Main.getBatch().draw(torch,  startX + areaWidth/10.4f, startY +  areaHeight/60f);
+            Main.getBatch().draw(wndw, startX + areaWidth/60f, startY + areaHeight/90f);
+            Main.getBatch().draw(pool, startX - areaWidth/21f, startY - areaHeight/13f,  pool.getWidth()*8/10f, pool.getHeight()*8/10f);
+            oldmanStateTime += Gdx.graphics.getDeltaTime();
+            TextureRegion currentFrame = oldmanAnimation.getKeyFrame(oldmanStateTime, true);
+            Main.getBatch().draw(currentFrame, startX + areaWidth/30f, startY - areaHeight/9f);
+            Main.getBatch().draw(barrel, startX + areaWidth/28.7f, startY - areaHeight/28.5f);
+            Main.getBatch().draw(lib, startX + areaWidth/5.5f, startY - areaHeight/80f);
+            Main.getBatch().draw(deck, startX + areaWidth/6f, startY - areaHeight/24f, deck.getWidth()*8/10f, deck.getHeight()*8/10f);
+            Main.getBatch().draw(torch, startX - areaWidth/90f, startY + areaHeight/60f);
+            Main.getBatch().draw(torch, startX - areaWidth/15f, startY + areaHeight/60f);
+            Main.getBatch().draw(torch, startX - areaWidth/9f, startY + areaHeight/60f);
+            Main.getBatch().draw(torch, startX - areaWidth/6f, startY + areaHeight/60f);
+            Main.getBatch().draw(board, startX + areaWidth/7.7f, startY + areaHeight/80f);
+            Main.getBatch().draw(kitchenChair, startX - areaWidth/6f, startY - areaHeight/7f);
+            Main.getBatch().draw(kitchenChair, startX - areaWidth/7.6f, startY - areaHeight/7f);
+            Main.getBatch().draw(kitchenChair, startX - areaWidth/6.7f, startY - areaHeight/9.4f);
+            Main.getBatch().draw(kitchenTable, startX - areaWidth/6.7f, startY - areaHeight/8f);
+            Main.getBatch().draw(bedroomCarpet, startX + areaWidth/8f, startY - areaHeight/8f, bedroomCarpet.getWidth()*9/10f, bedroomCarpet.getHeight()*9/10f);
         }
 
         if (mode == HouseModes.cook) {
@@ -409,20 +626,21 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             activeDialog = null; // اگر زمانش تموم شده، دیالوگ رو حذف کن
         }
 
+        if (mode == HouseModes.home)
+            drawPlayer();
+
         Main.getBatch().end();
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
-//        Main.getBatch().begin();
-//        if (mode == HouseModes.home) {
-//            Main.getBatch().draw(fridge, startX + (float) (areaWidth * 8) /10, startY + (float) (areaHeight * 7.5) /10, areaWidth/15, areaHeight/5);
-//            Main.getBatch().draw(chest, startX + (float) (areaWidth) /15, startY + (float) areaHeight/5);
-//            Main.getBatch().draw(furniture, startX + (float) (areaWidth*10) /15, (float) (startY + (float) areaHeight*(1.8)/7), areaWidth/8, areaHeight/5);
-//            Main.getBatch().draw(carpet, startX + (float) (areaWidth*10) /15, (float) (startY + (float) areaHeight*1.8/10), areaWidth/9, areaHeight/13);
-//            Main.getBatch().draw(bed, (float) (startX*11/10), (float) (startY + areaHeight*7.4/10), areaWidth/12, areaHeight/4);
-//
-//        }
-//        Main.getBatch().end();
-        mode = HomeController.handleHomeInputs(mode);
+
+        mode = HomeController.handleHomeInputs(mode, this);
+    }
+
+    private void drawPlayer() {
+        Sprite player = currentGame.currentPlayer.getSprite();
+        Main.getBatch().draw(player, startX - areaWidth/22f , startY - areaHeight/7f);
+
+
     }
 
     @Override
