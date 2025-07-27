@@ -35,6 +35,8 @@ public class User {
     private String MySecurityAnswer;
     private int daysDepressedLeft = 0;
     private List<Recipe> recipes;
+
+
     public Sprite sprite;
     private Animation<Texture> Right;
     private Animation<Texture> Left;
@@ -45,6 +47,18 @@ public class User {
     private boolean isMoving;
     private float Timer = 0.0f;
     private boolean first = true;
+    private boolean isInMine = false;
+    private boolean isPlaceArtisanOrShippingBin = false;
+    private boolean isInBarnOrCage = false;
+    private boolean isInHome = false;
+    private boolean isInMarket = false;
+    private boolean isInFarmExterior=false;
+    private boolean isWaiting = false;
+    private Sprite withMouse;
+    private Items droppedItem;
+    private String BarnOrCagePath;
+    private BarnOrCage currentBarnOrCage;
+
 
     // buffs
     public int Buff_maxEnergy_100_hoursLeft = 0;
@@ -563,5 +577,93 @@ public class User {
     }
     public void setTimer(float timer) {
         Timer = timer;
+    }
+
+    public BarnOrCage getCurrentBarnOrCage() {
+        return currentBarnOrCage;
+    }
+
+    public String getBarnOrCagePath() {
+        return BarnOrCagePath;
+    }
+
+    public boolean isInMine() {
+        return isInMine;
+    }
+
+    public Items getDroppedItem() {
+        return droppedItem;
+    }
+
+    public boolean isPlaceArtisanOrShippingBin() {
+        return isPlaceArtisanOrShippingBin;
+    }
+
+    public Sprite getWithMouse() {
+        return withMouse;
+    }
+
+    public boolean isInBarnOrCage() {
+        return isInBarnOrCage;
+    }
+
+    public boolean isInHome() {
+        return isInHome;
+    }
+
+    public boolean isInMarket() {
+        return isInMarket;
+    }
+
+    public void setCurrentBarnOrCage(BarnOrCage currentBarnOrCage) {
+        this.currentBarnOrCage = currentBarnOrCage;
+    }
+
+    public void setBarnOrCagePath(String barnOrCagePath) {
+        BarnOrCagePath = barnOrCagePath;
+    }
+
+    public void setInMine(boolean inMine) {
+        isInMine = inMine;
+    }
+
+    public void setDroppedItem(Items droppedItem) {
+        this.droppedItem = droppedItem;
+    }
+
+    public void setIsPlaceArtisanOrShippingBin(boolean placeArtisanOrShippingBin) {
+        isPlaceArtisanOrShippingBin = placeArtisanOrShippingBin;
+    }
+
+    public void setIsInBarnOrCage(boolean inBarnOrCage) {
+        isInBarnOrCage = inBarnOrCage;
+    }
+
+    public void setIsInHome(boolean inHome) {
+        isInHome = inHome;
+    }
+
+    public void setIsInMarket(boolean inMarket) {
+        isInMarket = inMarket;
+    }
+
+    public boolean isInFarmExterior() {
+        return isInFarmExterior;
+    }
+
+    public void setInFarmExterior(boolean inFarmExterior) {
+        this.isInFarmExterior = inFarmExterior;
+    }
+
+    public void setWithMouse(Sprite withMouse) {
+        this.withMouse = withMouse;
+    }
+
+    public void setWaiting(boolean waiting) {
+        isWaiting = waiting;
+    }
+
+    public boolean isWaiting() {
+        return isWaiting;
     }
 }

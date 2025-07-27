@@ -13,22 +13,18 @@ import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoord
 import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
 
 
-public class ShippingBin extends GameObject {
+public  class ShippingBin extends Items {
     private static final int width=1;
     private static final int height=1;
     private static final int coinNeeded=250;
     private static final int woodNeeded=150;
     private static int remindInShop=1;
 
-    private final int topLeftX;
-    private final int topLeftY;
+    private int topLeftX;
+    private int topLeftY;
 
     public HashMap<Items, Integer> binContents=new HashMap<>();
 
-    public ShippingBin(int topLeftX , int topLeftY) {
-        this.topLeftX = topLeftX;
-        this.topLeftY = topLeftY;
-    }
 
     public int getTopLeftX() {
         return topLeftX;
@@ -78,7 +74,7 @@ public class ShippingBin extends GameObject {
 
     @Override
     public String getIcon() {
-        return RED + "S";
+        return "Mohamadreza/Shipping Bin.png";
     }
 
     @Override
@@ -89,5 +85,31 @@ public class ShippingBin extends GameObject {
     @Override
     public void setRemindInShop(int amount, MarketType marketType) {
         remindInShop = amount;
+    }
+
+    @Override
+    public int getSellPrice() {
+        return 0;
+    }
+    public String getName() {
+        return "Shipping Bin";
+    }
+
+    @Override
+    public String getInventoryIconPath() {
+        return "Mohamadreza/Shipping Bin.png";
+    }
+
+    @Override
+    public int getMarketPrice(MarketType marketType) {
+        return 250;
+    }
+
+    @Override
+    public void setX(int x) {
+        topLeftX = x;
+    }
+    public void setY(int y) {
+        topLeftY = y;
     }
 }

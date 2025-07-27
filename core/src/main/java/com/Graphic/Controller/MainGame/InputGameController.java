@@ -2,6 +2,7 @@ package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
 import com.Graphic.View.GameMenus.GameMenu;
+import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
@@ -34,23 +35,33 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import java.awt.*;
 import java.io.IOException;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
+
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
@@ -66,6 +77,7 @@ import static com.badlogic.gdx.Input.Keys.ENTER;
 
 public class InputGameController {
 
+    private static final Logger log = LoggerFactory.getLogger(InputGameController.class);
     public static InputGameController inputGameController;
 
     private InputGameController() {
@@ -79,22 +91,22 @@ public class InputGameController {
 
     public void init () {
         GameControllerLogic.init();
-        gameMenu.isInFarmExterior = true;
+        currentGame.currentPlayer.setInFarmExterior(true);
     }
     public void update(OrthographicCamera camera, float v) {
 
-        if (gameMenu.isInFarmExterior && !gameMenu.isPlaceArtisanOnFarm()) {
+        if (currentGame.currentPlayer.isInFarmExterior()) {
             updateMove();
             print();
             moveCamera(camera);
             GameControllerLogic.update(v);
             showSelectBoxOnCrafting();
         }
-        if (! gameMenu.isInFarmExterior && ! gameMenu.isPlaceArtisanOnFarm()) {
+        if (currentGame.currentPlayer.isInBarnOrCage()) {
             walkInBarnOrCage();
             showAnimalsInBarnOrCage();
         }
-        if (gameMenu.getIsInMine()) {
+        if (currentGame.currentPlayer.isInMine()) {
             walkInBarnOrCage();
         }
         createAnimalInformationWindow(showAnimalInfo());
@@ -102,8 +114,9 @@ public class InputGameController {
         openArtisanMenu();
         placeItem();
         placeBomb(CraftingItem.Bombing);
-        useSprikler(CraftingItem.currentSprinkler);
+        useSprinkler(CraftingItem.currentSprinkler);
         showForagingMinerals(currentGame.currentPlayer.getFarm().getMine());
+        showSellMenu();
 
         for (int i = 0  ; i < 90 ; i ++) {
             for (int j = 0; j < 90 ; j ++) {
@@ -1070,17 +1083,26 @@ public class InputGameController {
     }
 
     public Result removeAnimal(Animal animal) {
-        for (Animal animal1 : gameMenu.getCurrentBarnOrCage().animals) {
-            if (animal1.equals(animal)) {
-                gameMenu.getCurrentBarnOrCage().animals.remove(animal1);
-                break;
+        BarnOrCage current=null;
+        for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
+            for (Animal animal1 : barnOrCage.animals) {
+                if (animal1.equals(animal)) {
+                    barnOrCage.animals.remove(animal1);
+                    current=barnOrCage;
+                    break;
+                }
             }
         }
 
         int index=0;
-        for (Animal animal1 : gameMenu.getCurrentBarnOrCage().animals) {
-            animal1.setIndex(index);
-            index++;
+        try {
+            for (Animal animal1 : current.animals) {
+                animal1.setIndex(index);
+                index++;
+            }
+        }
+        catch (Exception e) {
+
         }
 
         return new Result(true , animal.getName() +" was sold successfully");
@@ -1149,7 +1171,7 @@ public class InputGameController {
         }
     }
 
-    private void useSprikler(CraftingItem craftingItem) {
+    private void useSprinkler(CraftingItem craftingItem) {
         int domain = 0 ;
         try {
             switch (craftingItem.getType()) {
@@ -1193,34 +1215,38 @@ public class InputGameController {
     public Result checkPlaceItem(CraftingItem craftingItem) {
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         if (! inventory.Items.containsKey(craftingItem)) {
-            return new Result(false , "tou don't have this craft in your inventory");
+            return new Result(false , "you don't have this craft in your inventory");
         }
-        gameMenu.setPlaceArtisanOnFarm(true);
-        gameMenu.setWithMouse(new Sprite(craftingItem.getSprite(TextureManager.get(craftingItem.getType().getIcon()))));
-        gameMenu.getWithMouse().setAlpha(0.5f);
-        gameMenu.setIsPlacing(craftingItem);
+        currentGame.currentPlayer.setIsPlaceArtisanOrShippingBin(true);
+        currentGame.currentPlayer.setWithMouse(new Sprite(craftingItem.getSprite(TextureManager.get(craftingItem.getType().getIcon()))));
+        currentGame.currentPlayer.getWithMouse().setAlpha(0.5f);
+        currentGame.currentPlayer.setDroppedItem(craftingItem);
 
         return new Result(true , "");
     }
 
     private boolean bool = false;
-    public void placeItem() {
-        if (gameMenu.getIsPlacing() != null) {
-            if (gameMenu.isPlaceArtisanOnFarm() && ! gameMenu.getIsPlacing().isWaiting()) {
-                gameMenu.getWithMouse().setPosition(gameMenu.getVector().x - gameMenu.getWithMouse().getWidth() / 2, gameMenu.getVector().y - gameMenu.getWithMouse().getHeight() / 2);
+    public void placeItem()
+    {
+        if (currentGame.currentPlayer.getDroppedItem() != null) {
+            if (currentGame.currentPlayer.isPlaceArtisanOrShippingBin() && ! currentGame.currentPlayer.isWaiting()) {
+                currentGame.currentPlayer.getWithMouse().setPosition(
+                    gameMenu.getVector().x - currentGame.currentPlayer.getWithMouse().getWidth() / 2,
+                    gameMenu.getVector().y - currentGame.currentPlayer.getWithMouse().getHeight() / 2);
                 Marketing.getInstance().printMapForCreate();
-                gameMenu.getWithMouse().draw(Main.getBatch());
+                currentGame.currentPlayer.getWithMouse().draw(Main.getBatch());
             }
-            if (gameMenu.isPlaceArtisanOnFarm() && !gameMenu.getIsPlacing().isWaiting() && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-                gameMenu.getIsPlacing().setWaiting(true);
+            if (currentGame.currentPlayer.isPlaceArtisanOrShippingBin() &&
+                !currentGame.currentPlayer.isWaiting() && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                currentGame.currentPlayer.setWaiting(true);
             }
-            if (gameMenu.getIsPlacing().isWaiting()) {
-                setCraftInFarm(gameMenu.getWithMouse(), gameMenu.getIsPlacing());
+            if (currentGame.currentPlayer.isWaiting()) {
+                setCraftInFarm(currentGame.currentPlayer.getWithMouse(), currentGame.currentPlayer.getDroppedItem());
             }
         }
     }
 
-    public void setCraftInFarm(Sprite sprite , CraftingItem craftingItem) {
+    public void setCraftInFarm(Sprite sprite , Items items) {
         int x = (int) (sprite.getX() / TEXTURE_SIZE) + 60 * currentGame.currentPlayer.topLeftX;
         int y =30 -  (int) (sprite.getY() / TEXTURE_SIZE) + 60 * currentGame.currentPlayer.topLeftY;
 
@@ -1229,35 +1255,43 @@ public class InputGameController {
                 Dialog dialog = Marketing.getInstance().createDialogError();
                 Label content = new Label("you can't place craft on this place", new Label.LabelStyle(getFont(), Color.BLACK));
                 Marketing.getInstance().addDialogToTable(dialog, content, gameMenu);
-                craftingItem.setWaiting(false);
+                currentGame.currentPlayer.setWaiting(false);
             } else {
                 Marketing.getInstance().printMapForCreate();
                 bool = true;
-                getTileByCoordinates(x, y).setGameObject(craftingItem);
+                getTileByCoordinates(x, y).setGameObject(items);
 
                 if (Gdx.input.isKeyJustPressed(ENTER)) {
-                    TextButton Confirm = Marketing.getInstance().makeConfirmButton(gameMenu);
-                    TextButton TryAgain = Marketing.getInstance().makeTryAgainButton(gameMenu);
+                    TextButton Confirm = Marketing.getInstance().makeConfirmButton(currentMenu.getMenu());
+                    TextButton TryAgain = Marketing.getInstance().makeTryAgainButton(currentMenu.getMenu());
 
                     Confirm.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent changeEvent, Actor actor) {
                             Confirm.remove();
                             TryAgain.remove();
-                            gameMenu.setPlaceArtisanOnFarm(false);
-                            craftingItem.setWaiting(false);
-                            gameMenu.setIsPlacing(null);
-                            advanceItem(craftingItem, -1);
-                            craftingItem.setX(x);
-                            craftingItem.setY(y);
+                            currentGame.currentPlayer.setIsPlaceArtisanOrShippingBin(false);
+                            currentGame.currentPlayer.setWaiting(false);
+                            currentGame.currentPlayer.setDroppedItem(null);
+                            advanceItem(items, -1);
+                            items.setX(x);
+                            items.setY(y);
                             camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                            choosePlace = false;
+                            try {
+                                System.out.println("buy");
+                                currentGame.currentPlayer.getFarm().shippingBins.add((ShippingBin) items);
+                            }
+                            catch (Exception e) {
+                                System.out.println("don't worry");
+                            }
                         }
                     });
 
                     TryAgain.addListener(new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent changeEvent, Actor actor) {
-                            craftingItem.setWaiting(false);
+                            currentGame.currentPlayer.setWaiting(false);
                             Confirm.remove();
                             TryAgain.remove();
                             getTileByCoordinates(x, y).setGameObject(new Walkable());
@@ -1420,8 +1454,6 @@ public class InputGameController {
         return x;
     }
 
-
-    // Ario
     public void ArtisanGetProduct(CraftingItem craftingItem) {
         StringBuilder result = new StringBuilder();
 
@@ -1456,6 +1488,156 @@ public class InputGameController {
         }
         Marketing.getInstance().addDialogToTable(dialog,label,gameMenu);
     }
+
+    public void showSellMenu() {
+        int x = (int) (gameMenu.getMousePos().x / TEXTURE_SIZE);
+        int y = (int) (gameMenu.getMousePos().y / TEXTURE_SIZE);
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && currentGame.currentPlayer.isInFarmExterior()) {
+            try {
+                Tile tile = getTileByCoordinates(x , 90 - y);
+                if (tile.getGameObject() instanceof ShippingBin) {
+                    Table table = new Table();
+                    Drawable drawable = new TextureRegionDrawable(new TextureRegion(TextureManager.get("Mohamadreza/Sell.png")));
+                    table.setBackground(drawable);
+                    table.setPosition(Gdx.graphics.getWidth() / 2 - 400 , Gdx.graphics.getHeight() / 2 - 400);
+                    table.setSize(800,800);
+
+                    Table buttonTable = new Table();
+                    buttonTable.setPosition(648,168);
+                    buttonTable.defaults().size(75,62).pad(0);
+                    buttonTable.setSize(75 * 6 , 62 * 4);
+                    gameMenu.getStage().addActor(table);
+                    gameMenu.getStage().addActor(buttonTable);
+                    createButtonsForSellMenu(buttonTable , (ShippingBin) tile.getGameObject() , table);
+                }
+                System.out.println(tile.getGameObject().getIcon());
+            }
+            catch (Exception e) {
+
+            }
+        }
+    }
+
+    public void createButtonsForSellMenu(Table table , ShippingBin shippingBin , Table mainTable) {
+        int x =600;
+        int y =710;
+        int width = 0;
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        Table UpTable = new Table();
+        table.top().left();
+        for (Map.Entry<Items,Integer> entry : inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof Fish || entry.getKey() instanceof Animalproduct) {
+                TextButton button = new TextButton("",getSkin());
+                button.clearChildren();
+                button.add(new Image(TextureManager.get(entry.getKey().getInventoryIconPath()))).size(73,50);
+                width = width + 1;
+                width = width % 7;
+                if (width == 0) {
+                    table.add(button).size(75,62);
+                    table.row();
+                }
+                else {
+                    table.add(button).size(75,62);
+                }
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent changeEvent, Actor actor) {
+                        makeUpTableForSell(UpTable , entry.getKey() , shippingBin , table , mainTable);
+                    }
+                });
+            }
+        }
+
+
+
+    }
+
+    public void makeUpTableForSell(Table UpTable , Items items , ShippingBin shippingBin , Table table , Table mainTable) {
+        try {
+            UpTable.remove();
+            UpTable.clear();
+        }
+        catch (Exception e) {
+            System.out.println("dsnkjf");
+        }
+        UpTable.defaults().size(274,40).pad(10);
+        UpTable.setPosition(813, 710);
+        UpTable.setSize(300,140);
+
+        TextButton Back = new TextButton("",getSkin());
+        Label back = new Label("Back",getSkin());
+        Back.clearChildren();
+        Back.add(back).center();
+        Back.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                UpTable.remove();
+                UpTable.clear();
+                table.clear();
+                table.remove();
+                mainTable.remove();
+                mainTable.clear();
+            }
+        });
+
+        TextField Field = new TextField("",getSkin());
+        Field.setMessageText("Number");
+
+        TextButton Submit = new TextButton("",getSkin());
+        Label submit = new Label("Submit",getSkin());
+        Submit.clearChildren();
+        Submit.add(submit).center();
+        Submit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                try {
+                    int number = Integer.parseInt(Field.getText());
+                    if (number <= 0) {
+                        Dialog dialog = Marketing.getInstance().createDialogError();
+                        Label label = new Label("please Enter an integer Number greater tan 0",getSkin());
+                        Marketing.getInstance().addDialogToTable(dialog,label,gameMenu);
+                    }
+                    else {
+                        if (currentGame.currentPlayer.getBackPack().inventory.Items.get(items) < number) {
+                            Dialog dialog = Marketing.getInstance().createDialogError();
+                            Label label = new Label("you don't have this number of "+items.getName(),getSkin());
+                            Marketing.getInstance().addDialogToTable(dialog,label,gameMenu);
+                        }
+                        else {
+                            if (shippingBin.binContents.containsKey(items)) {
+                                shippingBin.binContents.compute(items , (k,v) -> v + number);
+                            }
+                            else {
+                                System.out.println("hello");
+                                shippingBin.binContents.put(items, number);
+                            }
+                            advanceItem(items , - number);
+                            Dialog dialog = Marketing.getInstance().createDialogError();
+                            Label label = new Label("you sell "+items.getName()+" successfully. tomorrow your money will increase",getSkin());
+                            Marketing.getInstance().addDialogToTable(dialog,label,gameMenu);
+                            UpTable.remove();
+                            UpTable.clear();
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    Dialog dialog = Marketing.getInstance().createDialogError();
+                    Label label = new Label("please Enter an integer Number greater tan 0",getSkin());
+                    Marketing.getInstance().addDialogToTable(dialog,label,gameMenu);
+                }
+            }
+        });
+
+
+        UpTable.top();
+        UpTable.add(Field).size(274,33).row();
+        UpTable.add(Submit).size(274,33).row();
+        UpTable.add(Back).size(274,33).row();
+
+        currentMenu.getMenu().getStage().addActor(UpTable);
+    }
+    // Ario
 
     public Result sell(String name , Integer amount) {
         ShippingBin shippingBin=ShippingBin.isNearShippingBin();

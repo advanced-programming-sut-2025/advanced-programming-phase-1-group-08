@@ -2,6 +2,8 @@ package com.Graphic.model;
 
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
+import com.Graphic.model.Places.ShippingBin;
+import com.Graphic.model.ToolsPackage.CraftingItem;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -107,6 +109,22 @@ public abstract class Items extends GameObject {
     public abstract String getInventoryIconPath ();
     public abstract void setRemindInShop(int amount , MarketType marketType);
     public abstract int getMarketPrice(MarketType marketType);
+    public void setX(int x) {
+        if (this instanceof CraftingItem) {
+            ((CraftingItem) this).setX(x);
+        }
+        if (this instanceof ShippingBin) {
+            ((ShippingBin) this).setX(x);
+        }
+    };
+    public void setY(int y) {
+        if (this instanceof CraftingItem) {
+            ((CraftingItem) this).setY(y);
+        }
+        if (this instanceof ShippingBin) {
+            ((ShippingBin) this).setY(y);
+        }
+    }
 
     public  int getTakesTime() {
         return 0;

@@ -5,6 +5,8 @@ import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.View.LoginMenu;
 import com.Graphic.View.MainMenu;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.HelpersClass.SFXManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -28,6 +30,7 @@ public class Main extends Game {
         x = InputGameController.getInstance();
         x.startNewGame("a");
         main.setScreen(GameMenu.getInstance());
+        App.currentMenu = Menu.GameMenu;
 
         skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
 //        main.setScreen(new LoginMenu());

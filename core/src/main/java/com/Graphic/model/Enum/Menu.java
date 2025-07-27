@@ -2,6 +2,7 @@ package com.Graphic.model.Enum;
 
 import com.Graphic.View.*;
 import com.Graphic.View.GameMenus.CraftMenu;
+import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.View.GameMenus.HomeMenu;
 import com.Graphic.View.GameMenus.MarketMenu;
 
@@ -17,14 +18,21 @@ public enum Menu {
     ExitMenu(new ExitMenu()),
     MainMenu(new MainMenu()),
     HomeMenu(new HomeMenu()),
+    GameMenu(com.Graphic.View.GameMenus.GameMenu.gameMenu),
+    MarketMenu(com.Graphic.View.GameMenus.MarketMenu.getInstance()),
     CraftMenu(new CraftMenu());
 
 
     private final AppMenu menu;
 
+    public AppMenu getMenu() {
+        return menu;
+    }
+
     Menu(AppMenu menu) {
         this.menu = menu;
     }
+
     public void checkCommand(Scanner scanner) throws IOException {
         //this.menu.check(scanner);
     }

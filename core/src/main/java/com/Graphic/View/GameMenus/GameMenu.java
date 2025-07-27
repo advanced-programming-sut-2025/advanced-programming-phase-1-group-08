@@ -8,11 +8,8 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.App;
-import com.Graphic.model.Enum.Direction;
-import com.Graphic.model.Enum.GameTexturePath;
+import com.Graphic.model.Enum.*;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
-import com.Graphic.model.Enum.NPC;
-import com.Graphic.model.Enum.Skills;
 import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.SampleAnimation;
@@ -23,10 +20,7 @@ import com.Graphic.model.Plants.*;
 import com.Graphic.model.Plants.Tree;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.ToolsPackage.CraftingItem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -67,20 +61,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private Stage stage;
 
     private Vector3 mousePos;
-    private String BarnOrCagePath;
-    public boolean isInFarmExterior;
-    private BarnOrCage currentBarnOrCage;
     private ArrayList<Animal> shepherdingAnimals;
-    private CraftingItem isPlacing;
     private Vector3 vector;
     private InputGameController controller;
     private boolean firstLoad;
     private TiledMap map;
     private BitmapFont animalFont;
     private ArrayList<HeartAnimation> heartAnimations;
-    private boolean placeArtisanOnFarm;
-    private Sprite withMouse;
     private OrthogonalTiledMapRenderer renderer;
+    private InputMultiplexer multiplexer;
 
     Texture friendsListTexture;
     TextureRegionDrawable buttonDrawable;
@@ -153,14 +142,14 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         controller.init();
         mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        Gdx.input.setInputProcessor(stage);
+        multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(this);
+        Gdx.input.setInputProcessor(multiplexer);
         createClock();
         firstLoad = true;
-        currentBarnOrCage = new BarnOrCage(BarnORCageType.Coop ,0 , 0);
         shepherdingAnimals = new ArrayList<>();
         heartAnimations = new ArrayList<>();
-        placeArtisanOnFarm = false;
-        withMouse = new Sprite();
 
     }
     public void render(float v) {
@@ -177,9 +166,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             Main.getMain().setScreen(new MarketMenu());
+            currentMenu = Menu.MarketMenu;
         }
 
-        if (! isInFarmExterior) {
+        if (! currentGame.currentPlayer.isInFarmExterior()) {
             getRenderer().setView(camera);
             getRenderer().render();
         }
@@ -1278,15 +1268,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public Vector3 getMousePos() {
         return mousePos;
     }
-
     public TiledMap getMap() {
         return map;
     }
-
     public void setTiledMap(TiledMap tiledMap) {
         map = tiledMap;
     }
-
     public boolean isFirstLoad() {
         return firstLoad;
     }
@@ -1313,7 +1300,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         return animalFont;
     }
     private void moveAnimal() {
-        if (isInFarmExterior) {
+        if (currentGame.currentPlayer.isInMine()) {
             for (Animal animal : shepherdingAnimals) {
                 animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
                 if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
@@ -1331,51 +1318,18 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public ArrayList<HeartAnimation> getHeartAnimations() {
         return heartAnimations;
     }
-    public boolean isPlaceArtisanOnFarm() {
-        return placeArtisanOnFarm;
-    }
-    public void setPlaceArtisanOnFarm(boolean placeArtisanOnFarm) {
-        this.placeArtisanOnFarm = placeArtisanOnFarm;
-    }
-    public Sprite getWithMouse() {
-        return withMouse;
-    }
-    public void setWithMouse(Sprite withMouse) {
-        this.withMouse = withMouse;
-    }
-    public void setIsPlacing(CraftingItem craftingItem) {
-        this.isPlacing = craftingItem;
-    }
-    public CraftingItem getIsPlacing() {
-        return isPlacing;
-    }
     public Vector3 getVector() {
         if (vector == null) {
             vector = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         }
         vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
-        camera.unproject(vector);
+        if (currentMenu.getMenu().equals(gameMenu)) {
+            camera.unproject(vector);
+        }
+        if (currentMenu.getMenu().equals(MarketMenu.getInstance())) {
+            return MarketMenu.getVector();
+        }
         return vector;
-    }
-
-
-
-
-
-
-
-
-    public String getBarnOrCagePath() {
-        return BarnOrCagePath;
-    }
-    public void setBarnOrCagePath(String barnOrCagePath) {
-        BarnOrCagePath = barnOrCagePath;
-    }
-    public BarnOrCage getCurrentBarnOrCage() {
-        return currentBarnOrCage;
-    }
-    public void setCurrentBarnOrCage(BarnOrCage currentBarnOrCage) {
-        this.currentBarnOrCage = currentBarnOrCage;
     }
 
     public void resize(int i, int i1) {
@@ -1417,9 +1371,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         return false;
     }
     public boolean touchDown(int i, int i1, int i2, int i3) {
-
-
-        return false;
+        Vector2 stageCoords = stage.screenToStageCoordinates(new Vector2(i, i1));
+        System.out.println("Clicked on stage at: x=" + stageCoords.x + ", y=" + stageCoords.y);
+        return true;
     }
     public boolean touchCancelled(int i, int i1, int i2, int i3) {
         return false;
