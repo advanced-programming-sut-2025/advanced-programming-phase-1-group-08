@@ -94,7 +94,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private Dialog activeDialog = null;
     private long dialogExpirationTime = 0;
 
-    private Image helperBackGround;
+    public static Image helperBackGround;
 
     public long startTime;
     public long lastTime;
@@ -518,9 +518,18 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 handleLeftClick();
 
 
-           else if (Gdx.input.isKeyJustPressed(Input.Keys.H))
-                Main.getMain().setScreen(new HomeMenu());
-           else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
+                Main.getMain().setScreen(
+                    new TransitionScreen(
+                        Main.getMain(),
+                        this,
+                        new HomeMenu(),
+                        1f
+                    )
+                );
+            }
+
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                 User temp = currentGame.currentPlayer;
                 ArrayList<User> list = currentGame.players;
                 if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
@@ -1430,6 +1439,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public boolean getIsInMine() {
+        return true;
+    }
+
+    public void setIsInMine(boolean b) {
     }
 
 
