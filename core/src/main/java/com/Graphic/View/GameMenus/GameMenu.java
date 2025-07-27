@@ -35,6 +35,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -48,6 +49,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -126,7 +128,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private Window socialPopup;
 
     private boolean mapIsActivated;
-    private Window mapPopup;
+    private Group mapGroup;
 
     private boolean setEnergyIsActivated;
     private Window setEnergyPopup;
@@ -233,93 +235,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             tempFriend.setVisible(true);
         }
     }
-
-    ///  ///  ///   Erfan
-    private void initialize () {
-
-        startTime = TimeUtils.millis();
-        lastTime = TimeUtils.millis();
-
-        controller = InputGameController.getInstance();
-        stage = new Stage(new ScreenViewport());
-        clockGroup = new Group();
-        camera = new OrthographicCamera();
-
-        BitmapFont font = new BitmapFont();
-        energyStyle = new Label.LabelStyle();
-        energyStyle.font = font;
-        energyStyle.fontColor = Color.GREEN;
-
-        Texture iconTexture = new Texture("Ariyo/Shane_Icon.png");
-        Drawable iconDrawable = new TextureRegionDrawable(new TextureRegion(iconTexture));
-        tempFriend = new ImageButton(iconDrawable);
-        tempFriend.setSize(100, 100);
-        tempFriend.setVisible(false);
-        tempFriend.setPosition((float) ((float) Gdx.graphics.getWidth() *6.8/9), (float) ((float) Gdx.graphics.getHeight() *6/9));
-        stage.addActor(tempFriend);
-
-        tempFriend.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                makingInteractionDialog().show(stage);
-            }
-        });
-
-
-
-        energyLabel = new Label("Energy : 100", newSkin);
-        lastHealth = -1;
-        energyLabel = new Label("Energy : 100", energyStyle);
-        energyLabel.setPosition((float) Gdx.graphics.getWidth() - energyLabel.getWidth() - 10, 10);
-        stage.addActor(energyLabel);
-
-        friendsListTexture = new Texture(Gdx.files.internal("Ariyo/Friendship_101.png"));
-        buttonDrawable = new TextureRegionDrawable(new TextureRegion(friendsListTexture));
-        friendButton = new ImageButton(buttonDrawable);
-        friendButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                makingFriendDialog().show(stage);
-            }
-        });
-        friendButton.setPosition((float) Gdx.graphics.getWidth() *7/9, (float) ((float) Gdx.graphics.getHeight() *6.7/9));
-        stage.addActor(friendButton);
-
-        bouquetImage = new Image(new Texture(Gdx.files.internal("Ariyo/Bouquet.png")));
-        bouquetImage.setPosition(Gdx.graphics.getWidth() / 2f - bouquetImage.getWidth(),
-            Gdx.graphics.getHeight() / 2f - bouquetImage.getHeight() / 2f);
-        bouquetImage.getColor().a = 0f;
-        bouquetImage.setSize(bouquetImage.getWidth()*3, bouquetImage.getHeight()*3);
-        stage.addActor(bouquetImage);
-
-        hugImage = new Image(new Texture(Gdx.files.internal("Ariyo/hug.png")));
-        hugImage.setPosition(Gdx.graphics.getWidth() / 2f - hugImage.getWidth(), Gdx.graphics.getHeight() / 2f - hugImage.getHeight() / 2f);
-        hugImage.setSize(hugImage.getWidth()*3, hugImage.getHeight()*3);
-        hugImage.getColor().a = 0f;
-        stage.addActor(hugImage);
-
-        ringImage = new Image(new Texture(Gdx.files.internal("Ariyo/Sturdy_Ring.png")));
-        ringImage.setPosition(Gdx.graphics.getWidth() / 2f - ringImage.getWidth(),  Gdx.graphics.getHeight() / 2f - ringImage.getHeight() / 2f);
-        ringImage.setSize(ringImage.getWidth()*3, ringImage.getHeight()*3);
-        ringImage.getColor().a = 0f;
-        stage.addActor(ringImage);
-
-
-
-        timeLabel = new Label("", skin);
-        dateLabel = new Label("", skin);
-        moneyLabel = new Label("", skin);
-        weekDayLabel = new Label("", skin);
-
-
-        toolsMenuIsActivated = false;
-        inventoryIsActivated = false;
-        skillMenuIsActivated = false;
-        mapIsActivated = false;
-        socialMenuIsActivated = false;
-        EscMenuIsActivated = false;
-    }
-
     private Dialog makingInteractionDialog() {
         Dialog interactionDialog = new Dialog("", newSkin);
 
@@ -346,10 +261,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     // fade in -> wait 1s -> fade out
                     if (result.IsSuccess())
                         bouquetImage.addAction(Actions.sequence(
-                        Actions.alpha(0f),
-                        Actions.fadeIn(0.3f),
-                        Actions.delay(1f),
-                        Actions.fadeOut(0.5f)
+                            Actions.alpha(0f),
+                            Actions.fadeIn(0.3f),
+                            Actions.delay(1f),
+                            Actions.fadeOut(0.5f)
                         ));
                     else {
                         showTimedDialog(result.massage(), 2f);
@@ -382,7 +297,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 talking(finalOther2.getUsername(), result -> {
-                        showTimedDialog(result.massage(), 2f);
+                    showTimedDialog(result.massage(), 2f);
                 });
             }
         });
@@ -411,7 +326,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         return interactionDialog;
     }
-
     private Dialog makingFriendDialog() {
         friendsListdialog = new Dialog("", newSkin);
         friendsListdialog.setModal(true);
@@ -483,7 +397,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         return friendsListdialog;
     }
-
     public void showTimedDialog(String message, float durationSeconds) {
         activeDialog = new Dialog("", skin);
         activeDialog.text(message);
@@ -497,6 +410,91 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
 
+    ///  ///  ///   Erfan
+    private void initialize () {
+
+        startTime = TimeUtils.millis();
+        lastTime = TimeUtils.millis();
+
+        controller = InputGameController.getInstance();
+        stage = new Stage(new ScreenViewport());
+        clockGroup = new Group();
+        camera = new OrthographicCamera();
+
+        BitmapFont font = new BitmapFont();
+        energyStyle = new Label.LabelStyle();
+        energyStyle.font = font;
+        energyStyle.fontColor = Color.GREEN;
+
+        Texture iconTexture = TextureManager.get(GameTexturePath.Book.getPath());
+        Drawable iconDrawable = new TextureRegionDrawable(new TextureRegion(iconTexture));
+        tempFriend = new ImageButton(iconDrawable);
+        tempFriend.setSize(100, 100);
+        tempFriend.setVisible(false);
+        tempFriend.setPosition((float) ((float) Gdx.graphics.getWidth() *6.8/9), (float) ((float) Gdx.graphics.getHeight() *6/9));
+        stage.addActor(tempFriend);
+
+        tempFriend.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                makingInteractionDialog().show(stage);
+            }
+        });
+
+
+
+        energyLabel = new Label("Energy : 100", newSkin);
+        lastHealth = -1;
+        energyLabel = new Label("Energy : 100", energyStyle);
+        energyLabel.setPosition((float) Gdx.graphics.getWidth() - energyLabel.getWidth() - 10, 10);
+        stage.addActor(energyLabel);
+
+        friendsListTexture = new Texture(Gdx.files.internal("Ariyo/Friendship_101.png"));
+        buttonDrawable = new TextureRegionDrawable(new TextureRegion(friendsListTexture));
+        friendButton = new ImageButton(buttonDrawable);
+        friendButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                makingFriendDialog().show(stage);
+            }
+        });
+        friendButton.setPosition((float) Gdx.graphics.getWidth() *7/9, (float) ((float) Gdx.graphics.getHeight() *6.7/9));
+        stage.addActor(friendButton);
+
+        bouquetImage = new Image(new Texture(Gdx.files.internal("Ariyo/Bouquet.png")));
+        bouquetImage.setPosition(Gdx.graphics.getWidth() / 2f - bouquetImage.getWidth(),
+            Gdx.graphics.getHeight() / 2f - bouquetImage.getHeight() / 2f);
+        bouquetImage.getColor().a = 0f;
+        bouquetImage.setSize(bouquetImage.getWidth()*3, bouquetImage.getHeight()*3);
+        stage.addActor(bouquetImage);
+
+        hugImage = new Image(new Texture(Gdx.files.internal("Ariyo/hug.png")));
+        hugImage.setPosition(Gdx.graphics.getWidth() / 2f - hugImage.getWidth(), Gdx.graphics.getHeight() / 2f - hugImage.getHeight() / 2f);
+        hugImage.setSize(hugImage.getWidth()*3, hugImage.getHeight()*3);
+        hugImage.getColor().a = 0f;
+        stage.addActor(hugImage);
+
+        ringImage = new Image(new Texture(Gdx.files.internal("Ariyo/Sturdy_Ring.png")));
+        ringImage.setPosition(Gdx.graphics.getWidth() / 2f - ringImage.getWidth(),  Gdx.graphics.getHeight() / 2f - ringImage.getHeight() / 2f);
+        ringImage.setSize(ringImage.getWidth()*3, ringImage.getHeight()*3);
+        ringImage.getColor().a = 0f;
+        stage.addActor(ringImage);
+
+
+
+        timeLabel = new Label("", skin);
+        dateLabel = new Label("", skin);
+        moneyLabel = new Label("", skin);
+        weekDayLabel = new Label("", skin);
+
+
+        toolsMenuIsActivated = false;
+        inventoryIsActivated = false;
+        skillMenuIsActivated = false;
+        mapIsActivated = false;
+        socialMenuIsActivated = false;
+        EscMenuIsActivated = false;
+    }
 
     private void inputController () {
 
@@ -563,7 +561,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             socialMenuIsActivated = false;
         }
         else if (mapIsActivated) {
-            mapPopup.remove();
+            mapGroup.remove();
             mapIsActivated = false;
         }
         else if (setEnergyIsActivated) {
@@ -575,6 +573,46 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             EscPopup.remove();
             EscMenuIsActivated = false;
         }
+    }
+
+
+    public void createMap () {
+
+        mapGroup = new Group();
+
+        Texture texture = new Texture(Gdx.files.internal(GameTexturePath.map.getPath()));
+        Image image = new Image(new TextureRegionDrawable(new TextureRegion(texture)));
+
+        image.setHeight(image.getHeight() * 3);
+        image.setWidth(image.getWidth() * 3);
+
+
+        image.setPosition(
+            stage.getWidth() / 2f - image.getWidth() / 2f,
+            stage.getHeight() / 2f - image.getHeight() / 2f + 50
+        );
+
+        TextButton backButton = new TextButton("Back", App.newSkin);
+        backButton.setSize(100, 40);
+        backButton.setPosition(
+            stage.getWidth() / 2f - backButton.getWidth() / 2f,
+            image.getY() - 60
+        );
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mapGroup.remove();
+                texture.dispose();
+            }
+        });
+
+        mapIsActivated = true;
+
+        mapGroup.addActor(image);
+        mapGroup.addActor(backButton);
+
+        stage.addActor(mapGroup);
     }
 
     private void updateEnergyLabel () {
@@ -1253,9 +1291,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             content.add(nameLabel);
         }
-    }
-    private void createMap () {
-
     }
     private void createGrayBackGround () {
         helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
