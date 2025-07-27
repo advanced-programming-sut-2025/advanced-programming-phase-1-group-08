@@ -1,33 +1,41 @@
 package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.InputGameController;
+import com.Graphic.Controller.MainGame.Marketing;
 import com.Graphic.Main;
 import com.Graphic.View.AppMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.App;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
+import com.Graphic.model.Enum.NPC;
+import com.Graphic.model.Enum.Skills;
 import com.Graphic.model.HelpersClass.AnimatedImage;
+import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
+import com.Graphic.model.Places.Market;
+import com.Graphic.model.Plants.*;
+import com.Graphic.model.Plants.Tree;
+import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -37,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -45,10 +54,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
-import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.App.*;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
-
 
 public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
@@ -70,17 +78,30 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private TiledMap map;
     private BitmapFont animalFont;
     private ArrayList<HeartAnimation> heartAnimations;
-    private boolean isInMine;
     private boolean placeArtisanOnFarm;
     private Sprite withMouse;
     private OrthogonalTiledMapRenderer renderer;
+
+    Texture friendsListTexture;
+    TextureRegionDrawable buttonDrawable;
+    ImageButton friendButton;
+    Dialog friendsListdialog;
+    ImageButton tempFriend;
+    private Table contextMenu;
+    Image bouquetImage;
+    Image hugImage;
+    Image ringImage;
+    private Dialog activeDialog = null;
+    private long dialogExpirationTime = 0;
 
     private Image helperBackGround;
 
     public long startTime;
     public long lastTime;
 
+    private int lastHealth;
     public Label energyLabel;
+    private Label.LabelStyle energyStyle;
 
     private Group clockGroup;
     private Image seasonImage;
@@ -108,6 +129,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private boolean mapIsActivated;
     private Window mapPopup;
 
+    private boolean setEnergyIsActivated;
+    private Window setEnergyPopup;
+
+    private TextField energyInputField;
+    private TextButton confirmButton;
+
+
 
     private GameMenu() {
 
@@ -121,7 +149,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     public void show() {
 
-        stage = new Stage(new ScreenViewport());
         initialize();
         controller.init();
         mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -134,8 +161,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         heartAnimations = new ArrayList<>();
         placeArtisanOnFarm = false;
         withMouse = new Sprite();
-        isInMine = false;
-        //createClock();
 
     }
     public void render(float v) {
@@ -154,13 +179,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             Main.getMain().setScreen(new MarketMenu());
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
-            System.out.println(mousePos.x + ",," + mousePos.y);
-        }
-
         if (! isInFarmExterior) {
             getRenderer().setView(camera);
             getRenderer().render();
+        }
+
+        checkFriendDistance();
+        if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
+            System.out.println("hi");
+            stage.addActor(activeDialog);
+        } else {
+            activeDialog = null;
         }
 
         Main.getBatch().begin();
@@ -176,6 +205,37 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         stage.draw();
     }
 
+    private void checkFriendDistance() {
+        boolean someoneClose = false;
+
+        for (User p : currentGame.players) {
+            if (p.getUsername().equalsIgnoreCase(currentGame.currentPlayer.getUsername())) continue;
+
+            float deltaX = Math.abs((float)currentGame.currentPlayer.getPositionX() - p.getPositionX());
+            float deltaY = Math.abs((float) currentGame.currentPlayer.getPositionY() - p.getPositionY());
+            if (deltaY < 3f && deltaX < 3f) {
+                someoneClose = true;
+
+                // تغییر عکس دکمه بر اساس جنسیت
+                Texture iconTexture;
+                if (p.getGender().equalsIgnoreCase("man"))
+                    iconTexture = new Texture("Ariyo/Shane_Icon.png");
+                else
+                    iconTexture = new Texture("Ariyo/Sandy_Icon.png");
+
+                tempFriend.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
+
+                tempFriend.setVisible(true);
+                break;
+            }
+        }
+
+        if (!someoneClose) {
+            tempFriend.setVisible(true);
+        }
+    }
+
+    ///  ///  ///   Erfan
     private void initialize () {
 
         startTime = TimeUtils.millis();
@@ -186,16 +246,73 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         clockGroup = new Group();
         camera = new OrthographicCamera();
 
+        BitmapFont font = new BitmapFont();
+        energyStyle = new Label.LabelStyle();
+        energyStyle.font = font;
+        energyStyle.fontColor = Color.GREEN;
 
-        energyLabel = new Label("Energy : 100", App.newSkin);
+        Texture iconTexture = new Texture("Ariyo/Shane_Icon.png");
+        Drawable iconDrawable = new TextureRegionDrawable(new TextureRegion(iconTexture));
+        tempFriend = new ImageButton(iconDrawable);
+        tempFriend.setSize(100, 100);
+        tempFriend.setVisible(false);
+        tempFriend.setPosition((float) ((float) Gdx.graphics.getWidth() *6.8/9), (float) ((float) Gdx.graphics.getHeight() *6/9));
+        stage.addActor(tempFriend);
+
+        tempFriend.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                makingInteractionDialog().show(stage);
+            }
+        });
+
+
+
+        energyLabel = new Label("Energy : 100", newSkin);
+        lastHealth = -1;
+        energyLabel = new Label("Energy : 100", energyStyle);
         energyLabel.setPosition((float) Gdx.graphics.getWidth() - energyLabel.getWidth() - 10, 10);
-
         stage.addActor(energyLabel);
 
-        timeLabel = new Label("", App.skin);
-        dateLabel = new Label("", App.skin);
-        moneyLabel = new Label("", App.skin);
-        weekDayLabel = new Label("", App.skin);
+        friendsListTexture = new Texture(Gdx.files.internal("Ariyo/Friendship_101.png"));
+        buttonDrawable = new TextureRegionDrawable(new TextureRegion(friendsListTexture));
+        friendButton = new ImageButton(buttonDrawable);
+        friendButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                makingFriendDialog().show(stage);
+            }
+        });
+        friendButton.setPosition((float) Gdx.graphics.getWidth() *7/9, (float) ((float) Gdx.graphics.getHeight() *6.7/9));
+//        friendButton.setPosition(100, 100);
+        stage.addActor(friendButton);
+
+        bouquetImage = new Image(new Texture(Gdx.files.internal("Ariyo/Bouquet.png")));
+        bouquetImage.setPosition(Gdx.graphics.getWidth() / 2f - bouquetImage.getWidth(),
+            Gdx.graphics.getHeight() / 2f - bouquetImage.getHeight() / 2f);
+        bouquetImage.getColor().a = 0f;
+        bouquetImage.setSize(bouquetImage.getWidth()*3, bouquetImage.getHeight()*3);
+        stage.addActor(bouquetImage);
+
+        hugImage = new Image(new Texture(Gdx.files.internal("Ariyo/hug.png")));
+        hugImage.setPosition(Gdx.graphics.getWidth() / 2f - hugImage.getWidth(), Gdx.graphics.getHeight() / 2f - hugImage.getHeight() / 2f);
+        hugImage.setSize(hugImage.getWidth()*3, hugImage.getHeight()*3);
+        hugImage.getColor().a = 0f;
+        stage.addActor(hugImage);
+
+        ringImage = new Image(new Texture(Gdx.files.internal("Ariyo/Sturdy_Ring.png")));
+        ringImage.setPosition(Gdx.graphics.getWidth() / 2f - ringImage.getWidth(),  Gdx.graphics.getHeight() / 2f - ringImage.getHeight() / 2f);
+        ringImage.setSize(ringImage.getWidth()*3, ringImage.getHeight()*3);
+        ringImage.getColor().a = 0f;
+        stage.addActor(ringImage);
+
+
+
+        timeLabel = new Label("", skin);
+        dateLabel = new Label("", skin);
+        moneyLabel = new Label("", skin);
+        weekDayLabel = new Label("", skin);
+
 
         toolsMenuIsActivated = false;
         inventoryIsActivated = false;
@@ -204,6 +321,184 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         socialMenuIsActivated = false;
         EscMenuIsActivated = false;
     }
+
+    private Dialog makingInteractionDialog() {
+        Dialog interactionDialog = new Dialog("", newSkin);
+
+        User me = currentGame.currentPlayer;
+        User other = null;
+        for (User p : currentGame.players) {
+            if (p.getUsername().equalsIgnoreCase(me.getUsername())) continue;
+
+            float deltaX = Math.abs((float)currentGame.currentPlayer.getPositionX() - p.getPositionX());
+            float deltaY = Math.abs((float) currentGame.currentPlayer.getPositionY() - p.getPositionY());
+            if (deltaY < 3f && deltaX < 3f) {
+                other = p;
+                break;
+            }
+        }
+
+        User finalOther = other;
+        interactionDialog.button("Send Flower").addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Result result;
+                if (getFriendship(me, finalOther) != null) {
+                    result = giveFlowers(finalOther.getUsername());
+                    // fade in -> wait 1s -> fade out
+                    if (result.IsSuccess())
+                        bouquetImage.addAction(Actions.sequence(
+                        Actions.alpha(0f),
+                        Actions.fadeIn(0.3f),
+                        Actions.delay(1f),
+                        Actions.fadeOut(0.5f)
+                        ));
+                    else {
+                        showTimedDialog(result.massage(), 2f);
+                    }
+                }
+            }
+        });
+        User finalOther1 = other;
+        interactionDialog.button("Hug").addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Result result;
+                if (getFriendship(me, finalOther1) != null) {
+                    result = hug(finalOther1.getUsername());
+                    if (result.IsSuccess())
+                        hugImage.addAction(Actions.sequence(
+                            Actions.alpha(0f),
+                            Actions.fadeIn(0.3f),
+                            Actions.delay(1f),
+                            Actions.fadeOut(0.5f)
+                        ));
+                    else {
+                        showTimedDialog(result.massage(), 2f);
+                    }
+                }
+            }
+        });
+        User finalOther2 = other;
+        interactionDialog.button("Talk").addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                talking(finalOther2.getUsername(), result -> {
+                        showTimedDialog(result.massage(), 2f);
+                });
+            }
+        });
+        User finalOther3 = other;
+        interactionDialog.button("Propose").addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Result result;
+                if (getFriendship(me, finalOther3) != null) {
+                    result = propose(finalOther3.getUsername());
+                    if (result.IsSuccess()) {
+                        ringImage.addAction(Actions.sequence(
+                            Actions.alpha(0f),
+                            Actions.fadeIn(0.3f),
+                            Actions.delay(1.3f),
+                            Actions.fadeOut(0.5f)
+                        ));
+                    }
+                    else {
+                        showTimedDialog(result.massage(), 2f);
+                    }
+                }
+            }
+        });
+
+
+        return interactionDialog;
+    }
+
+    private Dialog makingFriendDialog() {
+        friendsListdialog = new Dialog("", newSkin);
+        friendsListdialog.setModal(true);
+        friendsListdialog.setMovable(true);
+
+        Table friendTable = new Table();
+        friendTable.top().left().pad(10);
+
+
+        String targetName = currentGame.currentPlayer.getUsername();
+        User friendUser;
+
+        for (HumanCommunications f : currentGame.friendships) {
+            if (f.getPlayer1().getUsername().equals(targetName)) {
+                friendUser = f.getPlayer2();
+            }
+            else if (f.getPlayer2().getUsername().equals(targetName)) {
+                friendUser = f.getPlayer1();
+            }
+            else continue;
+
+            // ستون 1: عکس پروفایل
+            Texture avatarTexture;
+            if (friendUser.getGender().equalsIgnoreCase("man"))
+                avatarTexture = new Texture(Gdx.files.internal("Ariyo/Pierre.png"));
+            else avatarTexture = new Texture(Gdx.files.internal("Ariyo/Marnie.png"));
+            Image avatar = new Image(new TextureRegionDrawable(new TextureRegion(avatarTexture)));
+            avatar.setSize(32, 32);
+            avatar.setScaling(Scaling.fit);
+
+            // ستون 2: نام
+            Label nameLabel = new Label(friendUser.getNickname(), skin);
+            nameLabel.setColor(Color.CYAN);
+
+            // ستون 3: XP و Level
+            Label statsLabel = new Label("   Level " + f.getLevel(), skin);
+            statsLabel.setFontScale(0.8F);
+            statsLabel.setColor(Color.WHITE);
+
+            // ستون 4: دکمه هدیه
+            Texture giftTexture = new Texture(Gdx.files.internal("Ariyo/Emojis152.png"));
+            Drawable giftDrawable = new TextureRegionDrawable(new TextureRegion(giftTexture));
+            ImageButton giftButton = new ImageButton(giftDrawable);
+            giftButton.setSize(32, 32);
+            giftButton.getImage().setScaling(Scaling.fit);
+
+            // رویداد کلیک روی هدیه
+            User finalFriendUser = friendUser;
+            giftButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    System.out.println("Sending Gift to " + finalFriendUser.getNickname());
+                }
+            });
+
+            // اضافه کردن به ردیف جدول
+            friendTable.row().pad(5);
+            friendTable.add(avatar).size(32, 32).padRight(10);
+            friendTable.add(nameLabel).width(100).left().padRight(10);
+            friendTable.add(statsLabel).width(150).left().padRight(10);
+            friendTable.add(giftButton).width(80).right();
+        }
+
+        ScrollPane scrollPane = new ScrollPane(friendTable, skin); // در صورت زیاد بودن
+        scrollPane.setFadeScrollBars(false);
+
+        friendsListdialog.getContentTable().add(scrollPane).width(450).height(250).pad(10);
+        friendsListdialog.button("CLOSE");
+
+        return friendsListdialog;
+    }
+
+    public void showTimedDialog(String message, float durationSeconds) {
+        activeDialog = new Dialog("", skin);
+        activeDialog.text(message);
+        activeDialog.pack();
+        activeDialog.setPosition(
+            (Gdx.graphics.getWidth() - activeDialog.getWidth()) / 2,
+            (Gdx.graphics.getHeight() - activeDialog.getHeight()) / 2
+        );
+
+        dialogExpirationTime = TimeUtils.millis() + (long)(durationSeconds * 1000);
+    }
+
+
 
     private void inputController () {
 
@@ -217,10 +512,38 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 updateClock(2);
             else if (Gdx.input.isKeyJustPressed(Keys.lighting))
                 createCloud();
+            else if (Gdx.input.isKeyJustPressed(Keys.energySet))
+                createCheatEnergyMenu();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
+                handleLeftClick();
+
+
+           else if (Gdx.input.isKeyJustPressed(Input.Keys.H))
+                Main.getMain().setScreen(new HomeMenu());
+           else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+                User temp = currentGame.currentPlayer;
+                ArrayList<User> list = currentGame.players;
+                if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
+                    currentGame.currentPlayer = list.get(0);
+                    return;
+                }
+                boolean found = false;
+                for (User user : list) {
+                    if (found) {
+                        currentGame.currentPlayer = user;
+                        return;
+                    }
+                    if (user.getUsername().equals(temp.getUsername())) {
+                        found = true;
+                    }
+                }
+            }
+
+
         }
         else
-        if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
-            ExitOfMenu();
+            if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
+                ExitOfMenu();
     }
     private void ExitOfMenu() {
 
@@ -245,6 +568,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             mapPopup.remove();
             mapIsActivated = false;
         }
+        else if (setEnergyIsActivated) {
+            setEnergyPopup.remove();
+            setEnergyIsActivated = false;
+        }
         else if (EscMenuIsActivated) {
             helperBackGround.remove();
             EscPopup.remove();
@@ -254,15 +581,100 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private void updateEnergyLabel () {
 
-        energyLabel.setText("Energy : " + currentGame.currentPlayer.getHealth());
-        Label.LabelStyle style = energyLabel.getStyle();
+        int currentHealth = currentGame.currentPlayer.getHealth();
+        if (currentHealth != lastHealth) {
 
-        if (currentGame.currentPlayer.getHealth() <= 20)
-            style.fontColor = Color.RED;
-        else
-            style.fontColor = Color.GREEN;
+            energyLabel.setText("Energy : " + currentGame.currentPlayer.getHealth());
+            Label.LabelStyle style = energyLabel.getStyle();
 
-        energyLabel.setStyle(style);
+            if (currentGame.currentPlayer.getHealth() <= 20)
+                style.fontColor = Color.RED;
+            else
+                style.fontColor = Color.GREEN;
+
+            energyLabel.setStyle(style);
+        }
+    }
+
+    private void handleLeftClick () {
+
+        Direction direction = Direction.getDirByCord(
+            currentGame.currentPlayer.getSprite().getX(),
+            90 - currentGame.currentPlayer.getSprite().getY(),
+            getVector().x, 90 - getVector().y
+        );
+        if (direction != null) {
+
+            int dir = 0;
+            Items items = currentGame.currentPlayer.currentItem;
+            switch (direction) {
+
+                case Up -> dir = 3;
+                case Right -> dir = 1;
+                case Down -> dir = 7;
+                case Left -> dir = 5;
+            }
+            if (dir != 0) {
+                if (items instanceof Tools) {
+                    currentGame.currentPlayer.currentTool = (Tools) items;
+                    controller.useTools(dir);
+                }
+                else if (items instanceof TreeSource)
+                    plantTree(((TreeSource) items).getType(), dir);
+                else if (items instanceof ForagingSeeds)
+                    plantForagingSeed(((ForagingSeeds) items).getType(), dir);
+                else if (items instanceof MixedSeeds)
+                    plantMixedSeed(dir);
+            }
+        }
+    }
+
+    private void createCheatEnergyMenu () {
+
+        setEnergyPopup = new Window("", App.newSkin);
+        setEnergyPopup.setSize(400, 300);
+        setEnergyPopup.setPosition(
+            (stage.getViewport().getWorldWidth() - setEnergyPopup.getWidth()) / 2,
+            (stage.getViewport().getWorldHeight() - setEnergyPopup.getHeight()) / 2
+        );
+        setEnergyPopup.setMovable(false);
+
+        energyInputField = new TextField("", App.newSkin);
+        energyInputField.setMessageText("       Amount");
+        energyInputField.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
+
+
+        confirmButton = new TextButton("OK", App.newSkin);
+        confirmButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                String inputText = energyInputField.getText();
+                if (!inputText.isEmpty()) {
+                    try {
+                        int energy = Integer.parseInt(inputText);
+
+                        currentGame.currentPlayer.setHealth(energy);
+
+                        setEnergyPopup.remove();
+                        setEnergyIsActivated = false;
+
+                    } catch (NumberFormatException e) {
+                    }
+                }
+            }
+        });
+
+        setEnergyPopup.defaults().pad(10);
+        setEnergyPopup.row();
+        setEnergyPopup.add(new Label("Input energy amount", App.newSkin)).padTop(20);
+        setEnergyPopup.row();
+        setEnergyPopup.add(energyInputField).width(200);
+        setEnergyPopup.row();
+        setEnergyPopup.add(confirmButton).width(100);
+
+        stage.addActor(setEnergyPopup);
+        setEnergyIsActivated = true;
+
     }
 
     private void createToolsMenu () {
@@ -274,7 +686,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         int colNumber = availableTools.size() / 2 + 1;
 
-        toolsPopup = new Window("", App.newSkin);
+        toolsPopup = new Window("", newSkin);
         toolsPopup.setSize(200 + colNumber * 100, 300);
         toolsPopup.setPosition(
             (stage.getWidth() - toolsPopup.getWidth()) / 2,
@@ -390,12 +802,95 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         content.add(img).size(30, 30);
     }
 
-    public Vector3 getMousePos() {
-        return mousePos;
+    private void creatSkillMenu () {
+
+        int colNumber = 3;
+
+        skillPopup = new Window("", App.newSkin);
+        skillPopup.setSize(200 + colNumber * 100, 320);
+        skillPopup.setPosition(
+            (stage.getWidth() - skillPopup.getWidth()) / 2,
+            (stage.getHeight() - skillPopup.getHeight()) / 2);
+
+
+        Table content = new Table();
+        createSkillsTable(content);
+
+        AnimatedImage animatedImage = new AnimatedImage(0.15f, SampleAnimation.Pillow, Animation.PlayMode.LOOP);
+
+        skillPopup.add(content).expand().fill();
+        skillPopup.row();
+        skillPopup.add(animatedImage).size(32, 32).right().padRight(10).padBottom(10);
+
+        stage.addActor(skillPopup);
+        skillMenuIsActivated = true;
     }
+    private void createSkillsTable (Table content) {
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = GameAssetManager.getGameAssetManager().getTinyFont();
+
+        content.setFillParent(true);
+        content.top();
+        content.defaults().pad(10);
+
+        content.row().padTop(60);
+
+        BitmapFont font = GameAssetManager.getGameAssetManager().getTinyFont();
+        font.getData().setScale(0.4f);
+        labelStyle.font = font;
 
 
+        addSkillImage(content, Skills.Fishing);
+        addSkillImage(content, Skills.Mining);
+        content.row();
 
+        addSkillName(content, labelStyle, Skills.Fishing);
+        addSkillName(content, labelStyle, Skills.Mining);
+
+        content.row();
+
+        addSkillImage(content, Skills.Farming);
+        addSkillImage(content, Skills.Foraging);
+
+        content.row();
+        addSkillName(content, labelStyle, Skills.Farming);
+        addSkillName(content, labelStyle, Skills.Foraging);
+    }
+    private void addSkillName(Table content, Label.LabelStyle labelStyle, Skills skill)  {
+
+        Label label1 = new Label(skill.name(), labelStyle);
+        label1.setColor(Color.WHITE);
+        label1.setSize(15, 8);
+        content.add(label1);
+
+    }
+    private void addSkillImage (Table content, Skills skill) {
+
+        Image img = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(skill.getPath()))));
+        img.setColor(1f, 1f, 1f, 0.8f);
+
+        Dialog dialog = Marketing.getInstance().createDialogError();
+        final Label tooltipLabel = new Label(skill.getDiscription(), App.newSkin);
+        tooltipLabel.setVisible(true);
+        tooltipLabel.setColor(Color.LIGHT_GRAY);
+
+        Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, this);
+
+
+        img.addListener(new ClickListener() {
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                dialog.setVisible(true);
+            }
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                dialog.setVisible(false);
+            }
+        });
+        content.add(img).size(60, 60);
+    }
 
     private void createClock() {
 
@@ -482,7 +977,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         createGrayBackGround();
 
-        EscPopup = new Window("", App.newSkin);
+        EscPopup = new Window("", newSkin);
         EscPopup.setSize(650, 350);
         EscPopup.setPosition(
             (stage.getWidth() - EscPopup.getWidth()) / 2,
@@ -503,11 +998,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         table.defaults().align(Align.center).pad(10);
         table.center();
 
-        TextButton inventoryButton = new TextButton("Inventory", App.newSkin);
-        TextButton skillsButton = new TextButton("Skills", App.newSkin);
-        TextButton SocialButton = new TextButton("Social", App.newSkin);
-        TextButton backButton = new TextButton("back", App.newSkin);
-        TextButton mapButton = new TextButton("Map", App.newSkin);
+        TextButton inventoryButton = new TextButton("Inventory", newSkin);
+        TextButton skillsButton = new TextButton("Skills", newSkin);
+        TextButton SocialButton = new TextButton("Social", newSkin);
+        TextButton backButton = new TextButton("back", newSkin);
+        TextButton mapButton = new TextButton("Map", newSkin);
 
 
 //        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(backButton.getStyle()); // کپی مستقل
@@ -534,7 +1029,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 EscMenuIsActivated = false;
             }
         });
-
         inventoryButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -544,19 +1038,19 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         skillsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                creatSkillMenu();
             }
         });
         SocialButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                createSocialMenu();
             }
         });
         mapButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                createMap();
             }
         });
         stage.addActor(table);
@@ -595,31 +1089,174 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         };
     }
 
-    private void creatSkillMenu () {
-
-    }
     private void createInventory () {
 
-        inventoryPopup = new Window("", App.newSkin);
+        inventoryPopup = new Window("", newSkin);
         inventoryPopup.setSize(1300, 700);
         inventoryPopup.setPosition(
             (stage.getWidth() - inventoryPopup.getWidth()) / 2,
             (stage.getHeight() - inventoryPopup.getHeight()) / 2);
 
-        Drawable bg = new TextureRegionDrawable(new TextureRegion(new Texture("Erfan/Inventory/Inventory.png")));
+
+        Drawable bg = new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/Inventory/Inventory.png")));
         inventoryPopup.setBackground(bg);
 
-
+        Table currentItemTable = new Table();
+        createCurrentItem(currentItemTable);
 
         Table content = new Table();
-        createEscMenuButtons(content);
+        createItems(content);
+        content.padRight(300);
+        content.padBottom(293);
 
-        inventoryPopup.add(content).expand().fill();
+        inventoryPopup.add(content);
+        inventoryPopup.add(currentItemTable).align(Align.topRight).padRight(215).padBottom(400);
 
         stage.addActor(inventoryPopup);
         inventoryIsActivated = true;
     }
+    private void createItems (Table content) {
+
+        content.defaults().pad(5);
+        content.setFillParent(false);
+        content.sizeBy(350, 600);
+        content.setPosition(300, 300);
+        content.padLeft(50);
+
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+
+        int number = 0;
+
+        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+
+            if (number % 6 == 0)
+                content.row();
+
+            Items item = entry.getKey();
+            int count = entry.getValue();
+
+            Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
+
+            Items currentItem = currentGame.currentPlayer.currentItem;
+            boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
+
+            if (isCurrent) {
+                itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+                itemButton.setScale(1.3f);
+            } else
+                itemButton.setColor(1f, 1f, 1f, 0.8f);
+
+
+            Label countLabel = new Label("", newSkin);
+
+            if (!(item instanceof Tools))
+                countLabel.setText(count);
+
+            countLabel.setFontScale(0.9f);
+            countLabel.setColor(Color.BLACK);
+            countLabel.setAlignment(Align.bottomRight);
+
+            Table labelOverlay = new Table();
+            labelOverlay.setFillParent(false);
+            labelOverlay.add(countLabel).bottom().right().padLeft(35).padTop(50);
+
+            Stack stack = new Stack();
+            stack.add(itemButton);
+            stack.add(labelOverlay);
+
+            content.add(stack).width(60).height(60).padLeft(10);
+
+            itemButton.addListener(new ClickListener() {
+
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+
+                    if (currentItem != null && currentItem.getName().equals(item.getName()))
+                        currentGame.currentPlayer.currentItem = null;
+                    else
+                        controller.itemEquip(item.getName());
+
+                    helperBackGround.remove();
+                    inventoryPopup.remove();
+                    inventoryIsActivated = false;
+                }
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    itemButton.setColor(1f, 1f, 1f, 1f);
+                    itemButton.setScale(isCurrent ? 1.4f : 1.2f);
+                }
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    if (isCurrent) {
+                        itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+                        itemButton.setScale(1.3f);
+                    } else {
+                        itemButton.setColor(1f, 1f, 1f, 0.8f);
+                        itemButton.setScale(1f);
+                    }
+                }
+            });
+            number++;
+        }
+    }
+    private void createCurrentItem (Table content) {
+
+        Image img;
+        if (currentGame.currentPlayer.currentItem != null)
+            img = new Image(TextureManager.get(currentGame.currentPlayer.currentItem.getInventoryIconPath()));
+        else
+            img = new Image(TextureManager.get("Erfan/Cancel2.png"));
+
+        content.add(img).align(Align.topRight).width(150).height(150).right();
+        content.row();
+
+    }
+
     private void createSocialMenu () {
+
+        socialPopup = new Window("", App.newSkin);
+        socialPopup.setSize(650, 850);
+        socialPopup.setPosition(
+            (stage.getWidth() - socialPopup.getWidth()) / 2,
+            (stage.getHeight() - socialPopup.getHeight()) / 2);
+
+
+        Table content = new Table();
+        createDetailSocial(content);
+
+        socialPopup.add(content).expand().fill();
+
+        stage.addActor(socialPopup);
+        socialMenuIsActivated = true;
+
+    }
+    private void createDetailSocial (Table content) {
+
+        content.defaults().pad(5);
+        content.setFillParent(false);
+
+        AnimatedImage animatedImage1 = new AnimatedImage(0.18f, SampleAnimation.Heart, Animation.PlayMode.LOOP);
+        AnimatedImage animatedImage2 = new AnimatedImage(0.21f, SampleAnimation.Pyramid, Animation.PlayMode.LOOP);
+
+        content.add(animatedImage1).size(40).top().left();
+        content.add(animatedImage2).size(40).top().right();
+
+        for (NPC npc : NPC.values()) {
+
+            content.row();
+            content.add(new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(npc.getIconPath())))));
+
+            Label nameLabel = new Label("Friendship Level with " + npc.getName() +
+                " : " + currentGame.currentPlayer.getFriendshipLevel(npc), App.newSkin);
+
+            Label.LabelStyle copiedStyle = new Label.LabelStyle(nameLabel.getStyle());
+            copiedStyle.fontColor = Color.GRAY;
+            nameLabel.setStyle(copiedStyle);
+
+            content.add(nameLabel);
+        }
+    }
+    private void createMap () {
 
     }
     private void createGrayBackGround () {
@@ -628,30 +1265,28 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         helperBackGround.setSize(stage.getWidth(), stage.getHeight());
         stage.addActor(helperBackGround);
     }
-
-
-
-
-
-
-    public String getBarnOrCagePath() {
-        return BarnOrCagePath;
+    public boolean anyMenuIsActivated () {
+        return toolsMenuIsActivated || EscMenuIsActivated ||
+            inventoryIsActivated || socialMenuIsActivated ||
+            skillMenuIsActivated || mapIsActivated || setEnergyIsActivated;
     }
-    public void setBarnOrCagePath(String barnOrCagePath) {
-        BarnOrCagePath = barnOrCagePath;
+
+
+
+                /// /// /// /// ///                      Mohammad Reza
+
+    public Vector3 getMousePos() {
+        return mousePos;
     }
-    public BarnOrCage getCurrentBarnOrCage() {
-        return currentBarnOrCage;
-    }
-    public void setCurrentBarnOrCage(BarnOrCage currentBarnOrCage) {
-        this.currentBarnOrCage = currentBarnOrCage;
-    }
+
     public TiledMap getMap() {
         return map;
     }
+
     public void setTiledMap(TiledMap tiledMap) {
         map = tiledMap;
     }
+
     public boolean isFirstLoad() {
         return firstLoad;
     }
@@ -722,11 +1357,25 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         camera.unproject(vector);
         return vector;
     }
-    public boolean getIsInMine() {
-        return isInMine;
+
+
+
+
+
+
+
+
+    public String getBarnOrCagePath() {
+        return BarnOrCagePath;
     }
-    public void setIsInMine(boolean inMine) {
-        this.isInMine = inMine;
+    public void setBarnOrCagePath(String barnOrCagePath) {
+        BarnOrCagePath = barnOrCagePath;
+    }
+    public BarnOrCage getCurrentBarnOrCage() {
+        return currentBarnOrCage;
+    }
+    public void setCurrentBarnOrCage(BarnOrCage currentBarnOrCage) {
+        this.currentBarnOrCage = currentBarnOrCage;
     }
 
     public void resize(int i, int i1) {
@@ -779,9 +1428,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         actor.setPosition(centerX - actor.getWidth() / 2f, centerY - actor.getHeight() / 2f);
     }
 
-    public boolean anyMenuIsActivated () {
-        return toolsMenuIsActivated || EscMenuIsActivated;
-    }
     public Stage getStage() {
         return stage;
     }
