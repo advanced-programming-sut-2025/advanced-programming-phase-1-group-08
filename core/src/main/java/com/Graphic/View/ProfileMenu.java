@@ -80,30 +80,30 @@ public class ProfileMenu implements Screen, AppMenu {
 
         Table profileContainer = new Table();
         profileContainer.background(Main.getSkin().getDrawable("window"));
-        profileContainer.pad(30);
+        profileContainer.pad(40); // کاهش padding برای فضای بیشتر
 
         Table infoSection = new Table();
         infoSection.add(new Label("User Information", Main.getSkin(), "bold")).colspan(2).padBottom(20).row();
 
-        infoSection.add(new Label("Username: ", Main.getSkin())).align(Align.left).padRight(10);
+        infoSection.add(new Label("Username: ", Main.getSkin())).align(Align.left).padRight(20);
         usernameLabel = new Label("", Main.getSkin());
-        infoSection.add(usernameLabel).align(Align.left).row();
+        infoSection.add(usernameLabel).align(Align.left).padRight(50).row();
 
-        infoSection.add(new Label("Nickname: ", Main.getSkin())).align(Align.left).padRight(10).padTop(10);
+        infoSection.add(new Label("Nickname: ", Main.getSkin())).align(Align.left).padRight(20).padTop(10);
         nicknameLabel = new Label("", Main.getSkin());
-        infoSection.add(nicknameLabel).align(Align.left).padTop(10).row();
+        infoSection.add(nicknameLabel).align(Align.left).padRight(50).padTop(10).row();
 
-        infoSection.add(new Label("Email: ", Main.getSkin())).align(Align.left).padRight(10).padTop(10);
+        infoSection.add(new Label("Email: ", Main.getSkin())).align(Align.left).padRight(20).padTop(10);
         emailLabel = new Label("", Main.getSkin());
-        infoSection.add(emailLabel).align(Align.left).padTop(10).row();
+        infoSection.add(emailLabel).align(Align.left).padRight(50).padTop(10).row();
 
-        infoSection.add(new Label("Max Gold: ", Main.getSkin())).align(Align.left).padRight(10).padTop(10);
+        infoSection.add(new Label("Max Gold: ", Main.getSkin())).align(Align.left).padRight(20).padTop(10);
         pointsLabel = new Label("", Main.getSkin(), "xp");
-        infoSection.add(pointsLabel).align(Align.left).padTop(10).row();
+        infoSection.add(pointsLabel).align(Align.left).padRight(50).padTop(10).row();
 
-        infoSection.add(new Label("Games Played: ", Main.getSkin())).align(Align.left).padRight(10).padTop(10);
+        infoSection.add(new Label("Games Played: ", Main.getSkin())).align(Align.left).padRight(20).padTop(10);
         gamesLabel = new Label("", Main.getSkin());
-        infoSection.add(gamesLabel).align(Align.left).padTop(10).row();
+        infoSection.add(gamesLabel).align(Align.left).padRight(50).padTop(10).row();
 
         profileContainer.add(infoSection).padBottom(30).row();
 
@@ -112,36 +112,36 @@ public class ProfileMenu implements Screen, AppMenu {
         Table editSection = new Table();
         editSection.add(new Label("Edit Profile", Main.getSkin(), "bold")).colspan(3).padBottom(20).row();
 
-        float fieldWidth = 200;
-        float buttonWidth = 80;
+        float fieldWidth = 300; // افزایش عرض فیلدها
+        float buttonWidth = 120; // افزایش عرض دکمه‌ها
 
-        editSection.add(new Label("Username:", Main.getSkin())).align(Align.left).padRight(10);
+        editSection.add(new Label("Username:", Main.getSkin())).align(Align.left).padRight(20).width(150);
         newUsernameField = new TextField("", Main.getSkin());
         newUsernameField.setMessageText("New username");
-        editSection.add(newUsernameField).width(fieldWidth).padRight(10);
+        editSection.add(newUsernameField).width(fieldWidth).padRight(20);
         editUsernameButton = new TextButton("Change", Main.getSkin());
-        editSection.add(editUsernameButton).width(buttonWidth).row();
+        editSection.add(editUsernameButton).width(250).row();
         editSection.add().padBottom(10).row();
 
-        editSection.add(new Label("Nickname:", Main.getSkin())).align(Align.left).padRight(10);
+        editSection.add(new Label("Nickname:", Main.getSkin())).align(Align.left).padRight(20).width(150);
         newNicknameField = new TextField("", Main.getSkin());
         newNicknameField.setMessageText("New nickname");
-        editSection.add(newNicknameField).width(fieldWidth).padRight(10);
+        editSection.add(newNicknameField).width(fieldWidth).padRight(20);
         editNicknameButton = new TextButton("Change", Main.getSkin());
-        editSection.add(editNicknameButton).width(buttonWidth).row();
+        editSection.add(editNicknameButton).width(250).row();
         editSection.add().padBottom(10).row();
 
-        editSection.add(new Label("Email:", Main.getSkin())).align(Align.left).padRight(10);
+        editSection.add(new Label("Email:", Main.getSkin())).align(Align.left).padRight(20).width(150);
         newEmailField = new TextField("", Main.getSkin());
         newEmailField.setMessageText("New email");
-        editSection.add(newEmailField).width(fieldWidth).padRight(10);
+        editSection.add(newEmailField).width(fieldWidth).padRight(20);
         editEmailButton = new TextButton("Change", Main.getSkin());
-        editSection.add(editEmailButton).width(buttonWidth).row();
+        editSection.add(editEmailButton).width(250).row();
         editSection.add().padBottom(20).row();
 
         editSection.add(new Label("Change Password", Main.getSkin(), "bold")).colspan(3).padBottom(10).row();
 
-        editSection.add(new Label("Old Password:", Main.getSkin())).align(Align.left).padRight(10);
+        editSection.add(new Label("Old Password:", Main.getSkin())).align(Align.left).padRight(20).width(150);
         oldPasswordField = new TextField("", Main.getSkin());
         oldPasswordField.setPasswordMode(true);
         oldPasswordField.setPasswordCharacter('*');
@@ -149,32 +149,33 @@ public class ProfileMenu implements Screen, AppMenu {
         editSection.add(oldPasswordField).width(fieldWidth).colspan(2).row();
         editSection.add().padBottom(5).row();
 
-        editSection.add(new Label("New Password:", Main.getSkin())).align(Align.left).padRight(10);
+        editSection.add(new Label("New Password:", Main.getSkin())).align(Align.left).padRight(20).width(150);
         newPasswordField = new TextField("", Main.getSkin());
         newPasswordField.setPasswordMode(true);
         newPasswordField.setPasswordCharacter('*');
         newPasswordField.setMessageText("New password");
-        editSection.add(newPasswordField).width(fieldWidth).padRight(10);
+        editSection.add(newPasswordField).width(fieldWidth).padRight(20);
         TextButton randomButton = new TextButton("Random", Main.getSkin());
-        editSection.add(randomButton).width(buttonWidth).row();
+        editSection.add(randomButton).width(250).row();
         editSection.add().padBottom(10).row();
 
         changePasswordButton = new TextButton("Change Password", Main.getSkin());
-        editSection.add(changePasswordButton).colspan(3).width(150).padBottom(20).row();
+        editSection.add(changePasswordButton).colspan(3).width(400).padBottom(20).row();
 
         profileContainer.add(editSection).row();
 
         messageLabel = new Label("", Main.getSkin());
         messageLabel.setAlignment(Align.center);
         messageLabel.setWrap(true);
-        profileContainer.add(messageLabel).width(400).padTop(10).row();
+        profileContainer.add(messageLabel).width(600).padTop(10).row();
 
         TextButton backButton = new TextButton("Back to Main Menu", Main.getSkin());
         profileContainer.add(backButton).padTop(20).row();
 
         ScrollPane scrollPane = new ScrollPane(profileContainer, Main.getSkin());
         scrollPane.setFadeScrollBars(false);
-        mainTable.add(scrollPane).width(600).height(650);
+        scrollPane.setScrollingDisabled(true, false);
+        mainTable.add(scrollPane).width(900).height(700);
 
         stage.addActor(mainTable);
 
