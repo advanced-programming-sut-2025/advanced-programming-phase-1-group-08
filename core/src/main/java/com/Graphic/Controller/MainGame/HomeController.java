@@ -16,17 +16,15 @@ import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Plants.Food;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.MathUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
 import static com.Graphic.model.App.AllFromDisplayNames;
 import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
+import static com.Graphic.model.Plants.Food.checkInventorySpaceForFood;
 
 public class HomeController {
     public static boolean NotInHome(User user) {
@@ -36,82 +34,49 @@ public class HomeController {
 
     private static HomeMenu homeMenu = null;
 
-    public static Result fridgePick (String input) {
-        if (NotInHome(currentGame.currentPlayer))
-            return new Result(false, RED+"You're Not in Your Home!"+RESET);
+    public static Result fridgePick (Items item) {
 
-
-        Matcher matcher = HomeMenuCommands.fridgePick.getMatcher(input);
-        if (matcher == null)
-            return new Result(false, RED+"Wrong Command!"+RESET);
-        Items item = AllFromDisplayNames(matcher.group("item"));
-        if (item == null)
-            return new Result(false, RED+"Item Not Found!"+RESET);
-
-
-        Fridge fridge = currentGame.currentPlayer.getFarm().getHome().getFridge();
-
-        boolean foundInFridge = false;
-        for (Map.Entry<Items, Integer> e: fridge.items.entrySet()) { // از یخچال بردار
-            if (e.getKey().equals(item)) {
-                fridge.items.put(e.getKey(), e.getValue() - 1);
-                fridge.items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
-                foundInFridge = true;
-                break;
-            }
+        currentGame.currentPlayer.getFarm().getHome().getFridge().items.compute(item, (k, x) -> x - 1);
+        if (currentGame.currentPlayer.getFarm().getHome().getFridge().items.get(item) == 0) {
+            currentGame.currentPlayer.getFarm().getHome().getFridge().items.remove(item);
         }
-        if (!foundInFridge)
-            return new Result(false, RED+"You Don't Have it in Fridge!"+RESET);
 
-        boolean alreadyInInventory = false;
-        for (Map.Entry<Items, Integer> entry: currentGame.currentPlayer.getBackPack().inventory.Items.entrySet()) {
-            if (entry.getKey().equals(item)) {
-                currentGame.currentPlayer.getBackPack().inventory.Items.put(entry.getKey(), entry.getValue() + 1);
-                alreadyInInventory = true;
-                break;
-            }
+        boolean freeSpace = checkAmountProductAvailable(item, 1) ||
+            currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0;
+        if (!freeSpace) {
+            return new Result(false, "Free some space in your inventory!");
         }
-        if (!alreadyInInventory)
-            currentGame.currentPlayer.getBackPack().inventory.Items.put(item, 1);
 
-        return new Result(true, GREEN+"Done!"+RESET);
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+
+        if (inventory.Items.containsKey(item)) {
+            inventory.Items.compute(item, (k, x) -> x + 1);
+        }
+        else
+            inventory.Items.put(item, 1);
+
+
+        return new Result(true, "Added to inventory.");
 
     }
-    public static Result fridgePut (String input) {
-        if (NotInHome(currentGame.currentPlayer))
-            return new Result(false, RED+"You're Not in Your Home!"+RESET);
+    public static Result fridgePut (Items item) {
 
-        Items item = AllFromDisplayNames(HomeMenuCommands.fridgePut.getMatcher(input).group("item"));
-        if (item == null)
-            return new Result(false, RED+"Item Not Found!"+RESET);
-
-        boolean foundInInventory = false;
-        for (Map.Entry<Items, Integer> e: currentGame.currentPlayer.getBackPack().inventory.Items.entrySet()) {
-            if (e.getKey().equals(item)) {
-                currentGame.currentPlayer.getBackPack().inventory.Items.put(e.getKey(), e.getValue() - 1);
-                currentGame.currentPlayer.getBackPack().inventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
-                foundInInventory = true;
-                break;
-            }
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        inventory.Items.compute(item, (k, x) -> x - 1);
+        if (inventory.Items.get(item) == 0) {
+            inventory.Items.remove(item);
         }
-        if (!foundInInventory)
-            return new Result(false, RED+"You Don't Have it in Inventory!"+RESET);
 
 
         Fridge fridge = currentGame.currentPlayer.getFarm().getHome().getFridge();
 
-        boolean alreadyInFridge = false;
-        for (Map.Entry<Items, Integer> entry: fridge.items.entrySet()) {
-            if (entry.getKey().equals(item)) {
-                fridge.items.put(entry.getKey(), entry.getValue() + 1);
-                alreadyInFridge = true;
-                break;
-            }
+        if (fridge.items.containsKey(item)) {
+            fridge.items.compute(item, (k, x) -> x + 1);
         }
-        if (!alreadyInFridge)
+        else
             fridge.items.put(item, 1);
 
-        return new Result(true, GREEN+"Done!"+RESET);
+        return new Result(true, "Added to fridge.");
     }
     public static Recipe findRecipeByName (String name) {
         for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
@@ -152,7 +117,7 @@ public class HomeController {
 
         // check inventory space for food
         FoodTypes t = recipe.getType();
-        boolean inventorySpace = Food.checkInventorySpaceForFood(t);
+        boolean inventorySpace = checkInventorySpaceForFood(t);
         if (!inventorySpace)
             return new Result(false, "No Space in Inventory!");
 
@@ -234,7 +199,7 @@ public class HomeController {
             return cook(mode);
         if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.B))
             return HouseModes.craft;
-        if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.H)) {
+        if (mode == HouseModes.home && Gdx.input.isKeyJustPressed(Input.Keys.S)) {
             Main.getMain().setScreen(
                 new TransitionScreen(
                     Main.getMain(),

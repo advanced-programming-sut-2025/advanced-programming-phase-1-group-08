@@ -29,7 +29,7 @@ public class Fish extends Items {
 
     @Override
     public String getInventoryIconPath() {
-        return "";
+        return this.type.getIconPath();
     }
 
     @Override

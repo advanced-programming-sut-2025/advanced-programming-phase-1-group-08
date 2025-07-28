@@ -148,7 +148,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     public void show() {
-
         initialize();
         controller.init();
         mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -1098,7 +1097,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         };
     }
 
-    private void createInventory () {
+    public void createInventory () {
 
         inventoryPopup = new Window("", newSkin);
         inventoryPopup.setSize(1300, 700);
