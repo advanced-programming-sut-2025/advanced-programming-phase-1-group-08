@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 public class Keys {
 
     public static final int clickLeft = Input.Buttons.LEFT;
+    public static final int informationMenu = Input.Keys.I;
     public static final int increaseTime = Input.Keys.P;
     public static final int EscMenu = Input.Keys.ESCAPE;
     public static final int energySet = Input.Keys.O;

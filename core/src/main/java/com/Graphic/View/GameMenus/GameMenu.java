@@ -8,6 +8,10 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.App;
+import com.Graphic.model.Enum.AllPlants.CropsType;
+import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
+import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
+import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
@@ -18,9 +22,7 @@ import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
-import com.Graphic.model.Places.Market;
 import com.Graphic.model.Plants.*;
-import com.Graphic.model.Plants.Tree;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.badlogic.gdx.Gdx;
@@ -32,7 +34,6 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -49,7 +50,6 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +62,7 @@ import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     public static GameMenu gameMenu; // اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
-
+        // TODO مملی ورودی گرفتن برای حرمت مردن رو هم بیار تو تابع اینپوت کنترلر چون مثلا منو باز میشه من میخوام a بنویسم دوربین حرکت میکنه مثلا و وقتی بیاری اونجا اوکی میشه
     public static OrthographicCamera camera;
     private final int hourSecond = 120000;
     private Stage stage;
@@ -133,8 +133,19 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private boolean setEnergyIsActivated;
     private Window setEnergyPopup;
 
+    private boolean informationIsActivated;
+    private Window mainInformationPopup;
+
+    private boolean showInformationIsActivated;
+    private Window showInformationPopup;
+
+    private boolean subMenuIsActivated;
+    private Window subMenuGroup;
+
+
     private TextField energyInputField;
     private TextButton confirmButton;
+
 
 
 
@@ -315,12 +326,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         weekDayLabel = new Label("", skin);
 
 
+        showInformationIsActivated = false;
+        informationIsActivated = false;
+        socialMenuIsActivated = false;
         toolsMenuIsActivated = false;
         inventoryIsActivated = false;
         skillMenuIsActivated = false;
-        mapIsActivated = false;
-        socialMenuIsActivated = false;
         EscMenuIsActivated = false;
+        subMenuIsActivated = false;
+        mapIsActivated = false;
     }
 
     private Dialog makingInteractionDialog() {
@@ -512,8 +526,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 createCloud();
             else if (Gdx.input.isKeyJustPressed(Keys.energySet))
                 createCheatEnergyMenu();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) // TODO
                 handleLeftClick();
+            else if (Gdx.input.isKeyJustPressed(Keys.informationMenu))
+                showInformationMenu();
 
 
             else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
@@ -584,7 +600,205 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             EscPopup.remove();
             EscMenuIsActivated = false;
         }
+
     }
+
+    public void showInformationMenu () {
+
+        Skin skin = App.newSkin;
+        createGrayBackGround();
+
+        mainInformationPopup = new Window("", newSkin);
+
+        mainInformationPopup.setSize(400, 450);
+        mainInformationPopup.setPosition(
+            (stage.getViewport().getWorldWidth() - mainInformationPopup.getWidth()) / 2,
+            (stage.getViewport().getWorldHeight() - mainInformationPopup.getHeight()) / 2
+        );
+
+        Table menuTable = new Table(skin);
+        menuTable.setFillParent(true);
+        menuTable.center().pad(10f);
+
+        String[] options = {"Tree", "Mineral", "Crops", "Plant"};
+        for (String option : options) {
+            TextButton button = new TextButton(option, skin);
+            button.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    mainInformationPopup.remove();
+                    helperBackGround.remove();
+                    informationIsActivated = false;
+                    showSubMenu(option);
+                }
+            });
+            menuTable.row().pad(10);
+            menuTable.add(button).width(200).height(50);
+        }
+
+        TextButton backButton = new TextButton("Back", skin);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mainInformationPopup.remove();
+                informationIsActivated = false;
+                helperBackGround.remove();
+            }
+        });
+
+        menuTable.row().pad(10);
+        menuTable.add(backButton).width(200).height(50);
+
+        informationIsActivated = true;
+
+        mainInformationPopup.addActor(menuTable);
+        stage.addActor(mainInformationPopup);
+    }
+    public void showSubMenu(String type) {
+
+        Skin skin = App.newSkin;
+        createGrayBackGround();
+
+
+        subMenuGroup = new Window("", newSkin);
+
+        subMenuGroup.setSize(400, 250);
+        subMenuGroup.setPosition(
+            (stage.getViewport().getWorldWidth() - subMenuGroup.getWidth()) / 2,
+            (stage.getViewport().getWorldHeight() - subMenuGroup.getHeight()) / 2
+        );
+
+        Table subMenuTable = new Table(skin);
+        subMenuTable.setFillParent(true);
+        subMenuTable.center().pad(10f);
+
+        Label title = new Label("Enter name for: " + type, skin);
+        TextField nameField = new TextField("", skin);
+
+        TextButton submitButton = new TextButton("Submit", skin);
+        submitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                String enteredName = nameField.getText();
+                subMenuGroup.remove();
+                subMenuIsActivated = false;
+                helperBackGround.remove();
+                handleInformationSubmit(type, enteredName);
+            }
+        });
+
+        TextButton backButton = new TextButton("Back", skin);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                subMenuGroup.remove();
+                subMenuIsActivated = false;
+                helperBackGround.remove();
+                showInformationMenu();
+            }
+        });
+
+        subMenuTable.add(title).colspan(2).padBottom(10).row();
+        subMenuTable.add(nameField).width(250).colspan(2).padBottom(10).row();
+        subMenuTable.add(submitButton).width(120).padRight(10);
+        subMenuTable.add(backButton).width(120);
+
+        subMenuIsActivated = true;
+
+        subMenuGroup.addActor(subMenuTable);
+        stage.addActor(subMenuGroup);
+    }
+    private void handleInformationSubmit(String type, String name) {
+
+        createGrayBackGround();
+
+        showInformationPopup = new Window("", newSkin);
+        showInformationPopup.setSize(500, 600);
+        showInformationPopup.setPosition(
+            (stage.getViewport().getWorldWidth() - showInformationPopup.getWidth()) / 2,
+            (stage.getViewport().getWorldHeight() - showInformationPopup.getHeight()) / 2
+        );
+
+        String description = "No description found.";
+        Image image = new Image();
+
+        try {
+            switch (type) {
+                case "Tree": {
+                    TreeType tree = TreeType.fromDisplayName(name);
+                    description = TreeType.getInformation(tree);
+                    image = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(tree.getPath(5)))));
+                    image.setHeight(160);
+                    image.setWidth(96);
+                    break;
+                }
+                case "Mineral": {
+                    ForagingMineralsType mineral = ForagingMineralsType.fromDisplayName(name);
+                    description = mineral.getDescription();
+                    image = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(mineral.getTexturePath()))));
+                    image.setHeight(70);
+                    image.setWidth(70);
+                    break;
+                }
+                case "Crops": {
+                    CropsType crop = CropsType.fromDisplayName(name);
+                    description = CropsType.getInformation(crop);
+                    image = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(crop.getIconPath()))));
+                    image.setHeight(70);
+                    image.setWidth(70);
+                    break;
+                }
+                case "Plant": {
+                    ForagingCropsType plant = ForagingCropsType.fromDisplayName(name);
+                    description = ForagingCropsType.getInformation(plant);
+                    image = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(plant.getTexturePath()))));
+                    image.setHeight(70);
+                    image.setWidth(70);
+                    break;
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            description = "Invalid name: " + name;
+        }
+
+
+        Label descriptionLabel = new Label(description, App.newSkin);
+        descriptionLabel.setWrap(true);
+        descriptionLabel.setWidth(360);
+
+        image.setPosition(
+            (showInformationPopup.getWidth() - image.getWidth()) / 2,
+            showInformationPopup.getHeight() - image.getHeight() - 30
+        );
+
+        descriptionLabel.setPosition(
+            (showInformationPopup.getWidth() - descriptionLabel.getWidth()) / 2,
+                image.getY() - descriptionLabel.getHeight()
+        );
+
+        showInformationPopup.addActor(image);
+        showInformationPopup.addActor(descriptionLabel);
+
+
+        TextButton backButton = new TextButton("Back", newSkin);
+        backButton.setSize(100, 40);
+        backButton.setPosition((showInformationPopup.getWidth() - backButton.getWidth()) / 2, 20);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                showInformationPopup.remove();
+                showInformationIsActivated = false;
+                helperBackGround.remove();
+            }
+        });
+
+        showInformationPopup.addActor(backButton);
+
+        showInformationIsActivated = true;
+        stage.addActor(showInformationPopup);
+    }
+
+
 
 
     public void createMap () {
@@ -1312,7 +1526,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public boolean anyMenuIsActivated () {
         return toolsMenuIsActivated || EscMenuIsActivated ||
             inventoryIsActivated || socialMenuIsActivated ||
-            skillMenuIsActivated || mapIsActivated || setEnergyIsActivated;
+            skillMenuIsActivated || mapIsActivated || setEnergyIsActivated ||
+            informationIsActivated || subMenuIsActivated;
     }
 
 
