@@ -55,7 +55,7 @@ public class MainMenu implements Screen, AppMenu {
 
         Table menuContainer = new Table();
         menuContainer.background(Main.getSkin().getDrawable("window"));
-        menuContainer.pad(40);
+        menuContainer.pad(80);
 
         TextButton playButton = new TextButton("Play Game", Main.getSkin());
         TextButton craftingButton = new TextButton("Crafting Guide", Main.getSkin());
@@ -119,10 +119,6 @@ public class MainMenu implements Screen, AppMenu {
 
         mainTable.add(menuContainer);
         stage.addActor(mainTable);
-
-        Label versionLabel = new Label("Craftacular v1.0", Main.getSkin(), "dim");
-        versionLabel.setPosition(10, 10);
-        stage.addActor(versionLabel);
     }
 
     private void showCraftingGuide() {

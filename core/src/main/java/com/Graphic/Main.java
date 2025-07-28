@@ -5,6 +5,9 @@ import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.View.LoginMenu;
 import com.Graphic.View.MainMenu;
+import com.Graphic.View.ProfileMenu;
+import com.Graphic.model.App;
+import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.HelpersClass.SFXManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -25,12 +28,12 @@ public class Main extends Game {
 
         main = this;
         batch = new SpriteBatch();
-        InputGameController x = InputGameController.getInstance();
-        x.startNewGame("a");
-        main.setScreen(GameMenu.getInstance());
+//        InputGameController x = InputGameController.getInstance();
+//        x.startNewGame("a");
+//        main.setScreen(GameMenu.getInstance());
 
-//        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-//        main.setScreen(new LoginMenu());
+        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
+        main.setScreen(new ProfileMenu());
 
     }
 
