@@ -1,5 +1,6 @@
 package com.Graphic.View.GameMenus;
 
+import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.Marketing;
 import com.Graphic.Main;
 import com.Graphic.View.AppMenu;
@@ -8,6 +9,7 @@ import com.Graphic.model.App.*;
 import com.Graphic.model.Enum.Commands.MarketMenuCommands;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.Enum.Menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -37,6 +39,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 
 import static com.Graphic.View.GameMenus.GameMenu.gameMenu;
+import static com.Graphic.model.App.currentMenu;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
@@ -128,7 +131,11 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
     }
 
     public Stage getStage() {
+        if (stage == null) {
+            stage = new Stage(new ScreenViewport());
+        }
         return stage;
+
     }
 
     public static Window getWindow() {
@@ -242,22 +249,9 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
         Main.getBatch().setProjectionMatrix( camera.combined);
 
         Main.getBatch().begin();
-//        if (Gdx.input.isKeyPressed(Input.Keys.T) && !showWindow) {
-//            try {
-//                image.remove();
-//                getWindow().clear();
-//                getWindow().remove();
-//                showWindow = true;
-//            }
-//            catch (Exception e) {
-//
-//            }
-//        }
         marketing.move();
         marketing.showCarpenterProducts(1,false);
-        marketing.showMarnieProducts(1,false);
-        //marketing.showMarnieProducts(1,false);
-        //marketing.moveTextureWithMouse(getWithMouse());
+       // marketing.showMarnieProducts(1,false);
 
         if (! choosePlace) {
             camera.setToOrtho(false , 300 , 150);
@@ -265,13 +259,19 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
             renderer.render();
         }
         else {
-            marketing.moveTextureWithMouse(getWithMouse());
+            try {
+                marketing.moveTextureWithMouse(getWithMouse());
+            }
+            catch (Exception e) {
+                InputGameController.getInstance().placeItem();
+            }
             camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
             camera.zoom = 2f;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
             marketType = null;
             Main.getMain().setScreen(GameMenu.getInstance());
+            currentMenu = Menu.GameMenu;
         }
         camera.update();
         Main.getBatch().end();

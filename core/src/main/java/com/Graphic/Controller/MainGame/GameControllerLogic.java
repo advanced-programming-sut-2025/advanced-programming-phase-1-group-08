@@ -91,17 +91,17 @@ public class GameControllerLogic {
     public static void update(float delta) {
         EnterTheBarnOrCage();
         EnterTheMine();
-            if (! gameMenu.isInFarmExterior && gameMenu.isFirstLoad() && gameMenu.getIsInMine()) {
+            if ( gameMenu.isFirstLoad() && currentGame.currentPlayer.isInMine()) {
                 gameMenu.setFirstLoad(false);
                 camera.setToOrtho(false ,Gdx.graphics.getWidth() / 4 , Gdx.graphics.getHeight() / 4);
                 gameMenu.setTiledMap(new TmxMapLoader().load("Mohamadreza/Maps/Mines/10.tmx"));
                 gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap(),1f));
 
             }
-            if (! gameMenu.isInFarmExterior && gameMenu.isFirstLoad()) {
+            else if ( gameMenu.isFirstLoad() && currentGame.currentPlayer.isInBarnOrCage()) {
                 gameMenu.setFirstLoad(false);
                 camera.setToOrtho(false , 300 , 150);
-                gameMenu.setTiledMap(new TmxMapLoader().load(gameMenu.getBarnOrCagePath()));
+                gameMenu.setTiledMap(new TmxMapLoader().load(currentGame.currentPlayer.getBarnOrCagePath()));
                 gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap() , 1f));
             }
 
@@ -681,8 +681,9 @@ public class GameControllerLogic {
                 if (currentGame.currentPlayer.getFarm().getMine().getDoor().checkCollisionMouse(gameMenu.getMousePos())
                     && currentGame.currentPlayer.getFarm().getMine().getDoor().checkCollision(currentGame.currentPlayer) ) {
 
-                    gameMenu.isInFarmExterior = false;
-                    gameMenu.setIsInMine(true);
+                    currentGame.currentPlayer.setInMine(true);
+                    currentGame.currentPlayer.setInFarmExterior(false);
+
 
                     currentGame.currentPlayer.sprite.setPosition(140 , 68);
                 }
@@ -691,7 +692,7 @@ public class GameControllerLogic {
     }
 
     public static void showForagingMinerals(Mine mine) {
-        if (gameMenu.getIsInMine()) {
+        if (currentGame.currentPlayer.isInMine()) {
             for (ForagingMinerals foragingMinerals : mine.getForagingMinerals()) {
                 foragingMinerals.getSprite().setPosition(foragingMinerals.getPosition().x, foragingMinerals.getPosition().y);
                 foragingMinerals.getSprite().setSize(TEXTURE_SIZE / 2 , TEXTURE_SIZE / 2);
@@ -770,11 +771,11 @@ public class GameControllerLogic {
             if ( Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) ) {
                 for (BarnOrCage barnOrCage :currentGame.currentPlayer.BarnOrCages) {
                     if (barnOrCage.getDoor().checkCollisionMouse(gameMenu.getMousePos()) && barnOrCage.getDoor().checkCollision(currentGame.currentPlayer)) {
-                        gameMenu.setBarnOrCagePath(barnOrCage.getBarnORCageType().getEntryIconPath());
-                        gameMenu.isInFarmExterior = false;
+                        currentGame.currentPlayer.setBarnOrCagePath(barnOrCage.getBarnORCageType().getEntryIconPath());
                         currentGame.currentPlayer.sprite.setPosition(barnOrCage.getBarnORCageType().getInitX() , barnOrCage.getBarnORCageType().getInitY());
-                        gameMenu.setCurrentBarnOrCage(barnOrCage);
+                        currentGame.currentPlayer.setCurrentBarnOrCage(barnOrCage);
                         camera.setToOrtho(false , 300,150);
+                        currentGame.currentPlayer.setInFarmExterior(false);
                         return;
                     }
                 }
@@ -824,7 +825,7 @@ public class GameControllerLogic {
 //        }
         currentGame.currentPlayer.sprite.draw(Main.getBatch());
         try {
-            gameMenu.getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(currentGame.currentPlayer);
+            currentGame.currentPlayer.getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(currentGame.currentPlayer);
         }
         catch (Exception e) {
 
@@ -832,7 +833,7 @@ public class GameControllerLogic {
     }
 
     public static void showAnimalsInBarnOrCage() {
-        for (Animal animal : gameMenu.getCurrentBarnOrCage().animals) {
+        for (Animal animal : currentGame.currentPlayer.getCurrentBarnOrCage().animals) {
             if (! animal.isOut()) {
                 animal.getSprite().draw(Main.getBatch());
                 animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
@@ -844,8 +845,8 @@ public class GameControllerLogic {
                 }
 
                 animal.getSprite().setPosition(
-                    gameMenu.getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x,
-                    gameMenu.getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
+                    currentGame.currentPlayer.getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x,
+                    currentGame.currentPlayer.getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
                 //System.out.println(animal.getSprite().getX()+ ",,"+animal.getSprite().getY());
                 animal.getSprite().setSize(animal.getType().getX() , animal.getType().getY());
 
@@ -856,8 +857,8 @@ public class GameControllerLogic {
     }
 
     public static Animal showAnimalInfo() {
-        if (! gameMenu.isInFarmExterior) {
-            for (Animal animal : gameMenu.getCurrentBarnOrCage().animals) {
+        if (currentGame.currentPlayer.isInBarnOrCage()) {
+            for (Animal animal : currentGame.currentPlayer.getCurrentBarnOrCage().animals) {
                 if (!animal.isOut()) {
                     if (gameMenu.getMousePos().x >= animal.getSprite().getX() &&
                         gameMenu.getMousePos().x <= animal.getSprite().getX() + animal.getSprite().getWidth() &&
@@ -1337,6 +1338,7 @@ public class GameControllerLogic {
             Farm farm = user.getFarm();
             for (ShippingBin shippingBin : farm.shippingBins) {
                 for (Map.Entry<Items,Integer> entry : shippingBin.binContents.entrySet()) {
+                    System.out.println(entry.getKey().getName() + " " + entry.getValue());
                     if (entry.getKey() instanceof Fish) {
                         Fish fish = (Fish) entry.getKey();
                         currentGame.currentPlayer.increaseMoney(fish.getSellPrice() * entry.getValue());
@@ -1754,9 +1756,11 @@ public class GameControllerLogic {
             Home home = user.getFarm().getHome();
             user.setPositionX(home.getTopLeftX() + home.getWidth() / 2);
             user.setPositionY(home.getTopLeftY() + home.getLength());
-            user.increaseMoney(1000000 - user.getMoney());
-            advanceItem(new Wood() , 100000);
-            advanceItem(new BasicRock() , 100000);
+            user.increaseMoney(500 - user.getMoney());
+            advanceItem(new Fish(FishType.Salmon , Quantity.Iridium) , 1);
+            advanceItem(new Fish(FishType.Salmon , Quantity.Golden), 1);
+            advanceItem(new Fish(FishType.Sardine , Quantity.Normal) , 1);
+            advanceItem(new Wood(),400);
         }
         currentGame.currentPlayer = user1;
     }

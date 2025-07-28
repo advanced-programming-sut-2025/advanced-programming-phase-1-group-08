@@ -44,11 +44,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import java.util.Map;
 
-import static com.Graphic.Controller.MainGame.GameControllerLogic.checkTilesForCreateBarnOrCage;
-import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
+import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.View.GameMenus.MarketMenu.marketType;
 import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.App.currentMenu;
 import static com.Graphic.model.Enum.ItemType.MarketType.*;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
@@ -102,15 +102,27 @@ public class Marketing {
                 return new Result(false , "5");
             }
         }
+        if (item instanceof ShippingBin) {
+            try {
+                if (currentGame.currentPlayer.getBackPack().inventory.Items.get(new Wood()) < 150) {
+                    return new Result(false, "6");
+                }
+            }
+            catch (Exception e) {
+                return new Result(false, "6");
+            }
+        }
         if (item.getRemindInShop(marketType) == 0) {
             return new Result(false,"1");
         }
         if (item.getMarketPrice(marketType) > currentGame.currentPlayer.getMoney() ) {
             return new Result(false,"2");
         }
-        if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
-            if (! currentGame.currentPlayer.getBackPack().inventory.Items.containsKey(item)) {
-                return new Result(false,"3");
+        if (! (item instanceof ShippingBin) && ! (item instanceof BackPack) ) {
+            if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+                if (!currentGame.currentPlayer.getBackPack().inventory.Items.containsKey(item)) {
+                    return new Result(false, "3");
+                }
             }
         }
         return new Result(true,"0");
@@ -194,10 +206,6 @@ public class Marketing {
         float x = currentGame.currentPlayer.sprite.getX();
         float y = currentGame.currentPlayer.sprite.getY();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
-            System.out.println(currentGame.currentPlayer.sprite.getX() + ", " + currentGame.currentPlayer.sprite.getY());
-        }
-
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             InputGameController.moveAnimation();
             currentGame.currentPlayer.setDirection(Direction.Up);
@@ -245,6 +253,15 @@ public class Marketing {
                 }
                 else if (item instanceof BackPack) {
                     currentGame.currentPlayer.getBackPack().setType(((BackPack) item).getType());
+                }
+                else if (item instanceof ShippingBin) {
+                    currentGame.currentPlayer.setDroppedItem(new ShippingBin());
+                    currentGame.currentPlayer.setIsPlaceArtisanOrShippingBin(true);
+                    currentGame.currentPlayer.setWithMouse(new Sprite(TextureManager.get("Mohamadreza/Shipping Bin.png")));
+                    currentGame.currentPlayer.getWithMouse().setAlpha(0.5f);
+                    choosePlace = true;
+                    getWindow().remove();
+                    removeImage();
                 }
                 else {
 
@@ -474,6 +491,7 @@ public class Marketing {
                         confirm.remove();
                         TryAgain.remove();
                         showWindow = true;
+                        setWithMouse(null);
                     }
                 });
 
@@ -588,11 +606,11 @@ public class Marketing {
         getWindow().pack();
         getWindow().setPosition(Gdx.graphics.getWidth()/2 - 500, Gdx.graphics.getHeight()/2 - 350);
         getWindow().setVisible(true);
-        if (! MarketMenu.getInstance().getStage().getActors().contains(image , true)) {
-            MarketMenu.getInstance().getStage().addActor(image);
+        if (! currentMenu.getMenu().getStage().getActors().contains(image , true)) {
+            currentMenu.getMenu().getStage().addActor(image);
         }
-        if (! MarketMenu.getInstance().getStage().getActors().contains(getWindow() , true)) {
-            MarketMenu.getInstance().getStage().addActor(getWindow());
+        if (! currentMenu.getMenu().getStage().getActors().contains(getWindow() , true)) {
+            currentMenu.getMenu().getStage().addActor(getWindow());
         }
     }
 
@@ -814,6 +832,13 @@ public class Marketing {
             image.setSize(MarketMenu.getInstance().getStage().getWidth(), MarketMenu.getInstance().getStage().getHeight());
             listMarketItems(id,table,CarpenterShop,label);
             listBarnOrCage(id, table,CarpenterShop,label);
+            //Shipping Bin
+            TextButton coinButton = new TextButton("",getSkin());
+            coinButton.clearChildren();
+            buy(coinButton , new ShippingBin() , CarpenterShop);
+            Table innerTable = new Table();
+            innerTable.add(new Image(new Texture(Gdx.files.internal(new ShippingBin().getIcon())))).left().padLeft(60).size(24, 24);
+            makeCoinButton(table,coinButton,innerTable,"Shipping bin",250,new ShippingBin().getRemindInShop(CarpenterShop));
             pane.setWidget(table);
             createWindow(pane , image);
         }
@@ -939,58 +964,6 @@ public class Marketing {
 
     }
 
-    public Result createShippingBin(int topLeftX , int topLeftY) {
-        InputGameController gameController = InputGameController.getInstance();
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        Marketing marketing = new Marketing();
-
-        if (marketing.findEnteredShopType() != MarketType.CarpenterShop) {
-            return new Result(false , "you can't create makeCoinButton Shipping Bin because you are not in Carpenter Market");
-        }
-
-        if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, ShippingBin.getWidth(), ShippingBin.getHeight())) {
-            return new Result(false, "you can't create makeCoinButton Shipping Bin on this coordinate!");
-        }
-
-        int Wood= 0;
-        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
-            if (entry.getKey() instanceof Wood) {
-                Wood=entry.getValue();
-            }
-        }
-
-        if (ShippingBin.getWoodNeeded() > Wood) {
-            return new Result(false , "you can't create Shipping Bin because you don't have enough Wood!");
-        }
-
-        if (ShippingBin.getCoinNeeded() > currentGame.currentPlayer.getMoney() ) {
-            return new Result(false , "you can't create Shipping Bin because you don't have enough money!");
-        }
-
-
-
-        ShippingBin shippingBin = new ShippingBin(topLeftX, topLeftY);
-        shippingBin.setCharactor('s');
-
-        Tile tile = getTileByCoordinates(topLeftX , topLeftY);
-        if (tile.getGameObject() instanceof Walkable) {
-            tile.setGameObject(shippingBin);
-        }
-        else {
-            return new Result(false , RED + "you can't create shipping been on this coordinate!" +RESET);
-        }
-
-        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
-            if (entry.getKey() instanceof Wood) {
-                entry.setValue(entry.getValue() - ShippingBin.getWoodNeeded());
-            }
-        }
-        inventory.Items.entrySet().removeIf(entry -> entry.getValue() == 0);
-        currentGame.currentPlayer.increaseMoney(- ShippingBin.getCoinNeeded());
-
-        currentGame.currentPlayer.getFarm().shippingBins.add(shippingBin);
-        return new Result(true, "Shipping Bin Created Successfully");
-    }
 
     public Result purchaseFromBlackSmith(String name , Integer amount) {
         if (currentGame.currentDate.getHour() < MarketType.Blacksmith.getStartHour() || currentGame.currentDate.getHour() > MarketType.Blacksmith.getEndHour()) {
@@ -1051,17 +1024,7 @@ public class Marketing {
 
     }
 
-
-    private boolean isExistInArray(String [] array , String item) {
-        for (String string : array) {
-            if (string.equals(item)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
+    
     public Result upgradeTool (String name) {
         if (currentGame.currentDate.getHour() < MarketType.FishShop.getStartHour() || currentGame.currentDate.getHour() > MarketType.FishShop.getEndHour()) {
             return new Result(false , RED + "Sorry. Store is close at this time"+RESET);

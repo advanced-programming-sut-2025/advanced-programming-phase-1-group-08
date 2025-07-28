@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static com.Graphic.View.GameMenus.GameMenu.camera;
 import static com.Graphic.View.GameMenus.GameMenu.gameMenu;
+import static com.Graphic.model.App.currentGame;
 
 public enum BarnORCageType {
 
@@ -167,7 +168,7 @@ public enum BarnORCageType {
     public void exitBarnOrCage(User user) {
         if (exit.contains(new Vector2(user.sprite.getX(), user.sprite.getY()))
                 && user.getDirection().equals(Direction.Down)) {
-            gameMenu.isInFarmExterior = true;
+            currentGame.currentPlayer.setInFarmExterior(true);
             camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
     }
