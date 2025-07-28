@@ -1520,8 +1520,6 @@ public class InputGameController {
     }
 
     public void createButtonsForSellMenu(Table table , ShippingBin shippingBin , Table mainTable) {
-        int x =600;
-        int y =710;
         int width = 0;
         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
         Table UpTable = new Table();
