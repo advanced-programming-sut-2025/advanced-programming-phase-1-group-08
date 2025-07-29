@@ -6,14 +6,12 @@ import com.Graphic.Main;
 import com.Graphic.View.AppMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
-import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.AllPlants.CropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
 import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.*;
-import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.Skills;
 import com.Graphic.model.HelpersClass.AnimatedImage;
@@ -23,7 +21,6 @@ import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.ToolsPackage.Tools;
-import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -41,13 +38,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -135,9 +128,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private boolean subMenuIsActivated;
     private Window subMenuGroup;
 
-
     private TextField energyInputField;
     private TextButton confirmButton;
+
+    private Sprite currentItemSprite;
+    private boolean startRotation;
+    private float currentRotation = 0f;
+
 
 
 
@@ -146,14 +143,16 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     }
     public static GameMenu getInstance() {
-        if (gameMenu == null)
+        if (gameMenu == null) {
             gameMenu = new GameMenu();
+            gameMenu.initialize();
+        }
 
         return gameMenu;
     }
 
+
     public void show() {
-        initialize();
         controller.init();
         mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -240,9 +239,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }
     }
 
-    ///  ///  ///   Erfan
+                                                                //  //  //  //   Erfan
     private void initialize () {
 
+        currentMenu = Menu.GameMenu;
         startTime = TimeUtils.millis();
         lastTime = TimeUtils.millis();
 
@@ -328,6 +328,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         EscMenuIsActivated = false;
         subMenuIsActivated = false;
         mapIsActivated = false;
+        startRotation = false;
     }
 
     private Dialog makingInteractionDialog() {
@@ -523,6 +524,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 handleLeftClick();
             else if (Gdx.input.isKeyJustPressed(Keys.informationMenu))
                 showInformationMenu();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+                useCurrentItem();
+                System.out.println("kir");
+            }
 
 
             else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
@@ -1311,21 +1316,55 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     private void drawCurrentItem() {
-        if (currentGame.currentPlayer.currentItem != null) {
+        Items currentItem = currentGame.currentPlayer.currentItem;
+        if (currentItem == null) return;
 
-            Items currentItem = currentGame.currentPlayer.currentItem;
-            Direction direction = currentGame.currentPlayer.getDirection();
+        Direction direction = currentGame.currentPlayer.getDirection();
+        float x = getXForHands(direction), y = getYForHands(direction);
 
-            float x = getXForHands(direction), y = getYForHands(direction);
-            Sprite toolSprite = currentItem.getSprite(TextureManager.get(currentItem.getInventoryIconPath()));
-
-            toolSprite.flip(Direction.lastDir != null && Direction.lastDir != direction &&
-                (direction == Direction.Left || Direction.lastDir == Direction.Left), false);
-
-            Main.getBatch().draw(toolSprite, x, y, EQUIP_THING_SIZE, EQUIP_THING_SIZE);
-            Direction.lastDir = direction;
+        if (currentItemSprite == null || !currentItemSprite.getTexture().equals(TextureManager.get(currentItem.getInventoryIconPath()))) {
+            currentItemSprite = new Sprite(TextureManager.get(currentItem.getInventoryIconPath()));
         }
+
+
+        currentItemSprite.flip(Direction.lastDir != null && Direction.lastDir != direction &&
+            (direction == Direction.Left || Direction.lastDir == Direction.Left), false);
+
+        if (direction == Direction.Left) {
+            currentItemSprite.setOrigin(currentItemSprite.getWidth(), 0);
+        } else {
+            currentItemSprite.setOrigin(0, 0);
+        }
+
+        currentItemSprite.setRotation(currentRotation);
+
+        currentItemSprite.setPosition(x, y);
+        currentItemSprite.setSize(EQUIP_THING_SIZE, EQUIP_THING_SIZE);
+        Direction.lastDir = direction;
+        currentItemSprite.draw(Main.getBatch());
     }
+
+
+    private void useCurrentItem() {
+        Items currentItem = currentGame.currentPlayer.currentItem;
+
+        if (!(currentItem instanceof Tools)) return;
+
+        currentRotation = 45f;
+
+        new Timer().scheduleTask(new Timer.Task() {
+            @Override
+            public void run() {
+                currentRotation = 0f;
+            }
+        }, 0.3f);
+    }
+
+
+
+
+
+
     private float getYForHands(Direction direction) {
 
         if (direction == Direction.Up)
