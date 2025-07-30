@@ -524,10 +524,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 handleLeftClick();
             else if (Gdx.input.isKeyJustPressed(Keys.informationMenu))
                 showInformationMenu();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-                useCurrentItem();
-                System.out.println("kir");
-            }
+
 
 
             else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
@@ -856,7 +853,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     private void handleLeftClick () {
-
+        useCurrentItem();
         Direction direction = Direction.getDirByCord(
             currentGame.currentPlayer.getSprite().getX(),
             90 - currentGame.currentPlayer.getSprite().getY(),

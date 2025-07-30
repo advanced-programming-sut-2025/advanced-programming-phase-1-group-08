@@ -7,6 +7,7 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
 import com.Graphic.model.Enum.Direction;
+import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
@@ -73,6 +74,7 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 import static com.badlogic.gdx.Input.Keys.ENTER;
+import static com.badlogic.gdx.Input.Keys.T;
 
 
 public class InputGameController {
@@ -371,6 +373,7 @@ public class InputGameController {
 
     public Result print(){
 
+
         for (int i =0 ; i< 90 ; i++)
             for (int j =0 ; j< 90 ; j++) {
                 try {
@@ -398,6 +401,15 @@ public class InputGameController {
                 }
             }
 
+        for (User player : currentGame.players) {
+
+            GreenHouse greenHouse = player.getFarm().getGreenHouse();
+
+            Main.getBatch().draw(TextureManager.get(GameTexturePath.GreenHouse.getPath()),
+                (greenHouse.getCoordinateX() + 1) * TEXTURE_SIZE, TEXTURE_SIZE * (92 - greenHouse.getCoordinateY() - greenHouse.getLength()),
+                (greenHouse.getWidth() - 2) * TEXTURE_SIZE, (greenHouse.getLength() - 2 )* TEXTURE_SIZE
+            );
+        }
 
         for (User player : currentGame.players) {
             player.getSprite().draw(Main.getBatch());
@@ -1226,8 +1238,7 @@ public class InputGameController {
     }
 
     private boolean bool = false;
-    public void placeItem()
-    {
+    public void placeItem() {
         if (currentGame.currentPlayer.getDroppedItem() != null) {
             if (currentGame.currentPlayer.isPlaceArtisanOrShippingBin() && ! currentGame.currentPlayer.isWaiting()) {
                 currentGame.currentPlayer.getWithMouse().setPosition(

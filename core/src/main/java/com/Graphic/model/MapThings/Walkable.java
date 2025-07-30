@@ -23,6 +23,7 @@ public class Walkable extends GameObject {
     public String getIcon () {
 
         switch (this.grassOrFiber) {
+
             case "Walk" -> {
                 return "Places/Walkable.png";
             }
@@ -32,9 +33,9 @@ public class Walkable extends GameObject {
             case "Fiber" -> {
                 return "Crops/Fiber.png";
             }
-//            case "PLowed", "Marnie's Ranch" -> {
-//                return BG_BRIGHT_BROWN + ". " + RESET;
-//            }
+            case "PLowed", "Marnie's Ranch" -> {
+                return "Erfan/Floor.png";
+            }
 //            case "Blacksmith" , "Sebastian" -> {
 //                return BG_BRIGHT_BLACK + ". " + RESET;
 //            }
