@@ -2340,6 +2340,7 @@ public class InputGameController {
             if (entry.getKey() != null && entry.getKey().getName().equals(name))
                 currentGame.currentPlayer.currentItem = entry.getKey();
 
+
     }
     public HashMap<String, String> availableTools() {
 

@@ -1,5 +1,6 @@
 package com.Graphic.View.GameMenus;
 
+import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.Marketing;
 import com.Graphic.Main;
@@ -136,9 +137,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private float currentRotation = 0f;
 
 
-
-
-
     private GameMenu() {
 
     }
@@ -207,6 +205,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+
     }
 
     private void checkFriendDistance() {
@@ -558,8 +557,18 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
 
 
-        }
-        else
+        } else if (inventoryIsActivated) {
+
+            if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
+                ExitOfMenu();
+            else if (Gdx.input.isKeyJustPressed(Keys.delete) && currentGame.currentPlayer.currentItem != null) {
+                GameControllerLogic.advanceItem(
+                    currentGame.currentPlayer.currentItem,
+                    - currentGame.currentPlayer.getBackPack().inventory.Items.get(currentGame.currentPlayer.currentItem));
+                ExitOfMenu();
+                createInventory();
+            }
+        } else
             if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
                 ExitOfMenu();
     }
@@ -792,8 +801,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         showInformationIsActivated = true;
         stage.addActor(showInformationPopup);
     }
-
-
 
 
     public void createMap () {
@@ -1357,11 +1364,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }, 0.3f);
     }
 
-
-
-
-
-
     private float getYForHands(Direction direction) {
 
         if (direction == Direction.Up)
@@ -1499,7 +1501,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         content.add(img).align(Align.topRight).width(150).height(150).right();
         content.row();
-
     }
 
     private void createSocialMenu () {
