@@ -7,12 +7,21 @@ import java.util.Random;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class UnWalkable extends GameObject {
-    Random rand = new Random();
-    int x = rand.nextInt();
 
+    Random rand = new Random();
+    int x;
+
+    public UnWalkable() {
+        x = rand.nextInt();
+        x = (x % 6) + 1;
+        if (x == 4 || x == 5) {
+            super.setTextureHeight(1.5f);
+            super.setTextureWidth(1.2f);
+        }
+
+    }
     @Override
     public String getIcon() {
-        x = (x % 6) + 1;
         return "Tree/unWalkable"+x+".png";
     }
 

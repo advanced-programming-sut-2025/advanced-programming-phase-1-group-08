@@ -33,7 +33,7 @@ public class Walkable extends GameObject {
             case "Fiber" -> {
                 return "Crops/Fiber.png";
             }
-            case "PLowed", "Marnie's Ranch" -> {
+            case "Plowed", "Marnie's Ranch" -> {
                 return "Erfan/Floor.png";
             }
 //            case "Blacksmith" , "Sebastian" -> {

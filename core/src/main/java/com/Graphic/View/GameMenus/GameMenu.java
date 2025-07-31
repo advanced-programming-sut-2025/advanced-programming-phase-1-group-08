@@ -20,6 +20,9 @@ import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.UnWalkable;
+import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.*;
@@ -524,8 +527,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 handleLeftClick();
             else if (Gdx.input.isKeyJustPressed(Keys.informationMenu))
                 showInformationMenu();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.B)) // TODO
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.B))
                 showSettingMenu();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.F))
+                alaki();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.G))
+                plow();
 
 
             else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
@@ -611,6 +618,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             helperBackGround.remove();
             settingIsActivated = false;
         }
+
+    }
+    private void alaki () {
+
+        for (int i = 0; i < 30 ; i++)
+            for (int j = 0; j < 30 ; j++) {
+                Tile tile = getTileByCoordinates(j, i);
+                if (tile.getGameObject() instanceof Walkable)
+                    System.out.println(((Walkable) tile.getGameObject()).getGrassOrFiber());
+            }
+
 
     }
 

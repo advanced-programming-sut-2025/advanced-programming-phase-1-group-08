@@ -10,6 +10,7 @@ public abstract class GameObject {
     private char Charactor;
     private float textureWidth;
     private float textureHeight;
+    private Texture texture;
 
     public GameObject() {
         this.textureHeight = 1;
@@ -27,9 +28,11 @@ public abstract class GameObject {
 
     public Sprite getSprite(Texture texture) {
 
-        if (sprite == null)
+        if (sprite == null) {
             sprite = new Sprite(texture);
-
+            this.texture = texture;
+        }
+        sprite.setRegion(texture);
         return sprite;
     }
     public void setSprite(Sprite sprite) {

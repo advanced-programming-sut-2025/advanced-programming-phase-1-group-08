@@ -377,18 +377,21 @@ public class InputGameController {
         for (int i =0 ; i< 90 ; i++)
             for (int j =0 ; j< 90 ; j++) {
                 try {
+
+                    Tile tile = getTileByCoordinates(i, j);
+                    GameObject gameObject = tile.getGameObject();
+
                     Main.getBatch().draw(TextureManager.get("Places/Walkable.png") ,
                         TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
 
-                    if (getTileByCoordinates(i,j).getGameObject() instanceof UnWalkable) {
+                    if (gameObject instanceof UnWalkable) {
                         Main.getBatch().draw(TextureManager.get("Tree/unWalkable6.png"),
                             TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
                     }
 
-                    Main.getBatch().draw(getTileByCoordinates(i , j)
-                       .getGameObject()
-                       .getSprite(TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
-                                     TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
+                    Main.getBatch().draw(gameObject.getSprite
+                            (TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
+                        TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE * gameObject.getTextureWidth(), TEXTURE_SIZE * gameObject.getTextureHeight());
 
                     if (getTileByCoordinates(i , j).getGameObject() instanceof Lake) {
                         LakeAnimation((Lake) getTileByCoordinates(i , j).getGameObject());
