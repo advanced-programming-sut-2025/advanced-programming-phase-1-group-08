@@ -5,35 +5,35 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
 public enum AnimalProductType {
 
-    Egg("Egg" , 50 , "Mohamadreza/Animal Product/Egg.png"),
-    bigEgg("Large Egg",95 , "Mohamadreza/Animal Product/Large_Egg.png"),
+    Egg("Egg" , 50, "Ariyo/Animal_product/Egg.png"),
+    bigEgg("Large Egg",95, "Ariyo/Animal_product/Large_Egg.png"),
 
-    duckEgg("Duck Egg", 95 , "Mohamadreza/Animal Product/Duck_Egg.png"),
-    duckFeather("Duck Feather", 250 , "Mohamadreza/Animal Product/Duck_Feather.png"),
+    duckEgg("Duck Egg", 95, "Ariyo/Animal_product/Duck_Egg.png"),
+    duckFeather("Duck Feather", 250, "Ariyo/Animal_product/Duck_Feather.png"),
 
-    rabbits_Wool("Rabbit's Wool" , 340 , "Mohamadreza/Animal Product/Wool.png"),
-    rabbits_Foot("Rabbit's Foot", 565 , "Mohamadreza/Animal Product/Foot.png"),
+    rabbits_Wool("Rabbit's Wool" , 340, "Ariyo/Animal_product/Wool.png"),
+    rabbits_Foot("Rabbit's Foot", 565, "Ariyo/Animal_product/Rabbit%27s_Foot.png"),
 
-    dinosaurEgg("Dinosaur Egg" , 350 , "Mohamadreza/Animal Product/Dinosaur_Egg.png"),
+    dinosaurEgg("Dinosaur Egg" , 350, "Ariyo/Animal_product/Dinosaur_Egg.png"),
 
-    milk("Milk" , 125 , "Mohamadreza/Animal Product/Milk.png"),
-    bigMilk("Large Milk", 190 , "Mohamadreza/Animal Product/Large_Milk.png"),
+    milk("Milk" , 125, "Ariyo/Animal_product/Milk.png"),
+    bigMilk("Large Milk", 190, "Ariyo/Animal_product/Large_Milk.png"),
 
-    goatMilk("Goat Milk" , 225 , "Mohamadreza/Animal Product/Goat_Milk.png"),
-    bigGoatMilk("Large Goat Milk" , 345 , "Mohamadreza/Animal Product/Large_Goat_Milk.png"),
+    goatMilk("Goat Milk" , 225, "Ariyo/Animal_product/Goat_Milk.png"),
+    bigGoatMilk("Large Goat Milk" , 345, "Ariyo/Animal_product/Large_Goat_Milk.png"),
 
-    sheeps_Wool("Sheep's Wool" , 340 , "Mohamadreza/Animal Product/Wool.png"),
+    sheeps_Wool("Sheep's Wool" , 340, "Ariyo/Animal_product/Wool.png"),
 
-    Truffle("Truffle" , 625 , "Mohamadreza/Animal Product/Truffle.png");
+    Truffle("Truffle" , 625, "Ariyo/Animal_product/Truffle.png"),;
 
     private final String name;
     private final int initialPrice;
-    private final String Path;
+    private final String iconPath;
 
-    AnimalProductType(String name, int initialPrice , String Path) {
+    AnimalProductType(String name, int initialPrice, String iconPath) {
         this.name = name;
         this.initialPrice = initialPrice;
-        this.Path = Path;
+        this.iconPath = iconPath;
     }
 
     public int getInitialPrice() {
@@ -44,14 +44,14 @@ public enum AnimalProductType {
         return name;
     }
 
+    public String getIconPath() {
+        return iconPath;
+    }
+
     public static AnimalProductType fromDisplayName(String displayName) {
         for (AnimalProductType type : AnimalProductType.values())
             if (type.getName().equals(displayName))
                 return type;
         throw new IllegalArgumentException(RED+"wrong name!"+RESET);
-    }
-
-    public String getPath() {
-        return Path;
     }
 }

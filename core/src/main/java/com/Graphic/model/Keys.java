@@ -5,11 +5,14 @@ import com.badlogic.gdx.Input;
 public class Keys {
 
     public static final int clickLeft = Input.Buttons.LEFT;
+    public static final int informationMenu = Input.Keys.I;
     public static final int increaseTime = Input.Keys.P;
     public static final int EscMenu = Input.Keys.ESCAPE;
     public static final int energySet = Input.Keys.O;
     public static final int ToolsMenu = Input.Keys.T;
     public static final int lighting = Input.Keys.L;
+    public static final int delete = Input.Keys.DEL;
+
 
     public static final int Test1 = Input.Keys.NUM_1;
     public static final int Test2 = Input.Keys.NUM_2;

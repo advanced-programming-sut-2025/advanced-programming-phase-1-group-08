@@ -83,7 +83,6 @@ public class GameControllerLogic {
 
 
     public static void init() {
-
         createScreenOverlay(gameMenu.getStage());
         lastTimeUpdate = currentGame.currentDate.clone();
     }
@@ -2499,6 +2498,7 @@ public class GameControllerLogic {
 
     // Tools
     public static Result useHoe (int dir) {
+        plow();
 
         Tile tile = getTileByDir(dir);
 
@@ -2509,6 +2509,7 @@ public class GameControllerLogic {
             return new Result(false, RED+"You can't plow this tile!"+RESET);
 
         ((Walkable) tile.getGameObject()).setGrassOrFiber("Plowed");
+        System.out.println("TEST");
         return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
     }
     public static Result useWateringCan (int dir) {
@@ -3164,6 +3165,17 @@ public class GameControllerLogic {
             }
             default -> {
                 return new Result(true, "");
+            }
+        }
+    }
+
+    public static void plow () {
+        for (int i = 0; i < 30 ; i++) {
+            for (int j = 0; j < 30 ; j++) {
+                Tile tile = getTileByCoordinates(i,j);
+                if (tile.getGameObject() instanceof Walkable) {
+                    ((Walkable) tile.getGameObject()).setGrassOrFiber("Plowed");
+                }
             }
         }
     }

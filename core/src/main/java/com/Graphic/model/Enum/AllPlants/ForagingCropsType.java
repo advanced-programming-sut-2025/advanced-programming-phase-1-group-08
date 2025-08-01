@@ -123,13 +123,13 @@ public enum ForagingCropsType {
     public static String getInformation (ForagingCropsType type) {
 
         StringBuilder builder = new StringBuilder();
-        builder.append(BLUE+"Name : "+BRIGHT_GREEN).append(type.displayName)
-                .append(BLUE+"\nPrice  : "+BRIGHT_RED).append(type.price)
-                .append(BLUE+"\nEnergy : "+BRIGHT_RED).append(type.energy)
-                .append(BLUE+"\nSeasons : "+RESET);
+        builder.append("Name : ").append(type.displayName)
+                .append("\nPrice  : ").append(type.price)
+                .append("\nEnergy : ").append(type.energy)
+                .append("\nSeasons : ");
 
         for (Season season : type.seasons)
-            builder.append(season.getDisplayName()).append(" ").append(RESET);
+            builder.append(season.getDisplayName()).append(" ");
 
         builder.deleteCharAt(builder.length() - 1);
 
@@ -139,6 +139,6 @@ public enum ForagingCropsType {
         for (ForagingCropsType type : ForagingCropsType.values())
             if (type.getDisplayName().equalsIgnoreCase(displayName))
                 return type;
-        throw new IllegalArgumentException(RED+"wrong name!"+RESET);
+        throw new IllegalArgumentException("wrong name!");
     }
 }

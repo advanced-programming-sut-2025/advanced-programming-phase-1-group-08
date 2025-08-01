@@ -1,37 +1,35 @@
 package com.Graphic.View.GameMenus;
 
 import com.Graphic.Controller.MainGame.CraftingController;
-import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.HomeController;
 import com.Graphic.Main;
 import com.Graphic.View.AppMenu;
 import com.Graphic.View.AppView;
 import com.Graphic.model.*;
-import com.Graphic.model.Enum.Commands.GameMenuCommands;
-import com.Graphic.model.Enum.Commands.HomeMenuCommands;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.HouseModes;
-import com.Graphic.model.Enum.ItemType.CraftType;
-import com.Graphic.model.Enum.SecurityQuestions;
-import com.Graphic.model.Game;
+import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.OtherItem.Fridge;
+import com.Graphic.model.Places.MarketItem;
+import com.Graphic.model.Plants.Animalproduct;
+import com.Graphic.model.Plants.Fish;
+import com.Graphic.model.Plants.Food;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -42,16 +40,13 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.Map;
-import java.util.Scanner;
-import java.util.regex.Matcher;
 
-import static com.Graphic.Controller.MainGame.HomeController.foodPrepare;
-
-import static com.Graphic.Controller.MainGame.InputGameController.moveAnimation;
+import static com.Graphic.Controller.MainGame.HomeController.*;
 import static com.Graphic.View.GameMenus.GameMenu.helperBackGround;
 import static com.Graphic.model.App.*;
 
 public class HomeMenu extends AppView implements AppMenu, Screen {
+    private static boolean test = false;
 
     int startX, startY;
     int areaWidth;
@@ -95,6 +90,8 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
     private boolean fridgeIsActivated;
     private Window fridgePopup;
+    private boolean inventoryIsActivated;
+    private Window inventoryPopup;
 
 
     private TiledMap tiledMap;
@@ -160,7 +157,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     Result result = foodPrepare(f.getName());
-                    showTimedDialog(result.massage(), 2f);
+                    showTimedDialog(result.massage(), 2f, stage);
                 }
             });
 
@@ -237,7 +234,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     Result result = craftingController.craftingCraft(c.getName());
-                    showTimedDialog(result.massage(), 2f);
+                    showTimedDialog(result.massage(), 2f,  stage);
                 }
             });
 
@@ -260,53 +257,30 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     }
 
 
-    public void showTimedDialog(String message, float durationSeconds) {
+    public void showTimedDialog(String message, float durationSeconds, Stage stage) {
+        if (activeDialog != null) {
+            activeDialog.remove();
+        }
+
         activeDialog = new Dialog("", newSkin);
-        activeDialog.text(message);
+        Label.LabelStyle whiteStyle = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        whiteStyle.fontColor = Color.WHITE;
+
+        Label label = new Label(message, whiteStyle);
+        activeDialog.getContentTable().add(label).pad(10);
+
         activeDialog.pack();
         activeDialog.setPosition(
             (Gdx.graphics.getWidth() - activeDialog.getWidth()) / 2,
             (Gdx.graphics.getHeight() - activeDialog.getHeight()) / 2
         );
 
+        activeDialog.show(stage);
+
         dialogExpirationTime = TimeUtils.millis() + (long)(durationSeconds * 1000);
     }
 
 
-//    @Override
-//    public void check(Scanner scanner) {
-//        boolean startCrafting = false;
-//        String input = scanner.nextLine();
-//        Matcher matcher;
-//        if (HomeMenuCommands.startCooking.getMatcher(input) != null) {
-////            HomeController.cook();
-//        }
-//
-//
-//        else if (input.trim().toLowerCase().matches("\\s*show\\s+current\\s+menu\\s*"))
-//            System.out.println("Home Menu");
-//        // else if (input.toLowerCase().matches("\\s*exit\\s*"))
-//            // App.currentMenu = Menu.GameMenu;
-//
-//        else if ((matcher=HomeMenuCommands.startCrafting.getMatcher(input))!=null)
-//            System.out.println(homeController.goToCraftingMenu());
-//
-//
-//        else if((matcher = GameMenuCommands.inventoryShow.getMatcher(input)) != null) {
-//            InputGameController controller = InputGameController.getInstance();
-//            System.out.println(controller.showInventory());
-//        }
-//
-//        else if ((matcher=GameMenuCommands.addItem.getMatcher(input)) != null) {
-//            InputGameController controller = InputGameController.getInstance();
-//            System.out.println(controller.addItem(matcher.group(1), Integer.parseInt(matcher.group(2).trim())));
-//        }
-//
-//
-//
-//        else
-//            System.out.println("Invalid Command!");
-//    }
 
     @Override
     public void show() {
@@ -412,7 +386,6 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         Gdx.input.setInputProcessor(new InputMultiplexer(stage, new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
-                System.out.println("oh yos");
                 if (mode == HouseModes.home && keycode == Input.Keys.ESCAPE) {
                     Main.getMain().setScreen(GameMenu.getInstance());
                 }
@@ -428,30 +401,239 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     }
 
     private void createFridge() {
+        if (!test) {
+            test = true;
+            Fridge f = currentGame.currentPlayer.getFarm().getHome().getFridge();
+            f.items.put(new Animalproduct(AnimalProductType.Egg, Quantity.Normal), 1);
+            f.items.put(new Fish(FishType.Salmon, Quantity.Normal), 1);
+            f.items.put(new Fish(FishType.Sardine, Quantity.Normal), 1);
+            f.items.put(new Fish(FishType.Tilapia, Quantity.Normal), 1);
+            f.items.put(new Animalproduct(AnimalProductType.sheeps_Wool, Quantity.Normal), 1);
+            f.items.put(new MarketItem(MarketItemType.Coffee), 1);
+            f.items.put(new MarketItem(MarketItemType.Beer), 1);
+            f.items.put(new MarketItem(MarketItemType.Bread), 1);
+            f.items.put(new MarketItem(MarketItemType.BasicRetainingSoil), 1);
+            f.items.put(new Fish(FishType.Blue_Discus, Quantity.Normal), 1);
+            f.items.put(new Fish(FishType.Legend, Quantity.Normal), 1);
+            f.items.put(new Fish(FishType.Crimsonfish, Quantity.Normal), 1);
+            f.items.put(new Fish(FishType.Herring, Quantity.Normal), 1);
+        }
+
+
+
         fridgePopup = new Window("", newSkin);
         fridgePopup.setSize(1300, 700);
         fridgePopup.setPosition(
             (stage.getWidth() - fridgePopup.getWidth()) / 2,
             (stage.getHeight() - fridgePopup.getHeight()) / 2);
 
+        System.out.println("1");
+        for (Map.Entry<Items, Integer> entry : currentGame.currentPlayer.getFarm().getHome().getFridge().items.entrySet()) {
+            System.out.println(entry.getKey().getName() + ": " + entry.getValue());
+        }
 
         Drawable bg = new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/Inventory/Inventory.png")));
         fridgePopup.setBackground(bg);
+
+
+        Table content = new Table();
+        content.top().left();
+        content.setOrigin(Align.topLeft);
+        content.setPosition(0, stage.getHeight());
+        createItems(content);
+
+
+        content.setPosition(fridgePopup.getWidth() - content.getWidth(), fridgePopup.getHeight() - content.getHeight(), Align.topLeft);
+        fridgePopup.add(content).expand().top().left().padTop(areaHeight/4.4f).padLeft(areaWidth/16f);
+
+        Label details = new Label("Choose an item to pick\nfrom the fridge,\nor select the '+' to add\nan item to fridge.", newSkin);
+        details.setPosition(startX + areaWidth/1.8f, startY - areaHeight/17f); // دقیقاً 50 پیکسل از چپ و 100 از پایین
+        fridgePopup.addActor(details);   // به جای add() از addActor استفاده کن
+
+        Image img = new Image(new Texture(Gdx.files.internal("Ariyo/Energy.png")));
+        img.setPosition(startX + areaWidth/1.56f, startY + areaHeight/1.57f);
+        img.setSize(img.getWidth()*6, img.getHeight()*6);
+        img.setColor(0.5f, 0.5f, 0.5f, 1f);
+        img.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                img.setColor(0.5f, 0.5f, 0.5f, 1f);
+                img.setSize(img.getWidth()*2/3f, img.getHeight()*2/3f);
+                img.setPosition(startX + areaWidth/1.56f, startY + areaHeight/1.57f);
+                addToFridge();
+            }
+        });
+        img.addListener(new InputListener() {
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                img.setColor(1f, 1f, 1f, 1f);
+                img.setSize(img.getWidth()*1.5f, img.getHeight()*1.5f);
+                img.setPosition(startX + areaWidth/1.62f, startY + areaHeight/1.7f);
+            }
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                img.setColor(0.5f, 0.5f, 0.5f, 1f);
+                img.setSize(img.getWidth()*2/3f, img.getHeight()*2/3f);
+                img.setPosition(startX + areaWidth/1.56f, startY + areaHeight/1.57f);
+            }
+        });
+        fridgePopup.addActor(img);
+
+        stage.addActor(fridgePopup);
+        fridgePopup.getColor().a = 0f;
+        fridgePopup.addAction(Actions.fadeIn(1f));
+        fridgeIsActivated = true;
+    }
+
+    private void addToFridge() {
+        fridgePopup.remove();
+        createInventory();
+    }
+
+    public void createInventory () {
+
+        inventoryPopup = new Window("", newSkin);
+        inventoryPopup.setSize(1300, 700);
+        inventoryPopup.setPosition(
+            (stage.getWidth() - inventoryPopup.getWidth()) / 2,
+            (stage.getHeight() - inventoryPopup.getHeight()) / 2);
+
+
+        Drawable bg = new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/Inventory/Inventory.png")));
+        inventoryPopup.setBackground(bg);
 
         Table currentItemTable = new Table();
         createCurrentItem(currentItemTable);
 
         Table content = new Table();
-        createItems(content);
+        createInventoryItems(content);
         content.padRight(300);
         content.padBottom(293);
 
-        fridgePopup.add(content);
-        fridgePopup.add(currentItemTable).align(Align.topRight).padRight(215).padBottom(400);
+        inventoryPopup.add(content);
+        inventoryPopup.add(currentItemTable).align(Align.topRight).padRight(215).padBottom(400);
 
-        stage.addActor(fridgePopup);
-        fridgeIsActivated = true;
+        stage.addActor(inventoryPopup);
+        inventoryIsActivated = true;
     }
+
+    private void createInventoryItems(Table content) {
+        content.defaults().pad(5);
+        content.setFillParent(false);
+        content.sizeBy(350, 600);
+        content.setPosition(300, 300);
+        content.padLeft(50);
+
+        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+
+        int number = 0;
+
+        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+
+            if (number % 6 == 0)
+                content.row();
+
+            Items item = entry.getKey();
+            int count = entry.getValue();
+
+            Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
+
+            Items currentItem = currentGame.currentPlayer.currentItem;
+            boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
+
+            if (isCurrent) {
+                itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+                itemButton.setScale(1.3f);
+            } else
+                itemButton.setColor(1f, 1f, 1f, 0.8f);
+
+
+            Label countLabel = new Label("", newSkin);
+
+            if (!(item instanceof Tools))
+                countLabel.setText(count);
+
+            countLabel.setFontScale(0.9f);
+            countLabel.setColor(Color.BLACK);
+            countLabel.setAlignment(Align.bottomRight);
+
+            Table labelOverlay = new Table();
+            labelOverlay.setFillParent(false);
+            labelOverlay.add(countLabel).bottom().right().padLeft(35).padTop(50);
+
+            Stack stack = new Stack();
+            stack.add(itemButton);
+            stack.add(labelOverlay);
+
+            content.add(stack).width(60).height(60).padLeft(10);
+
+            itemButton.addListener(new ClickListener() {
+
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+
+                    if (!(item instanceof Food || item instanceof Animalproduct ||
+                        item instanceof Fish || (item instanceof MarketItem && ((MarketItem) item).getType().isEatable()))) {
+
+                        showTimedDialog("Choose an eatable Item!", 2f, stage);
+                        if (helperBackGround == null) {
+                            helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+                            helperBackGround.setColor(0, 0, 0, 0.5f);
+                            helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+                            stage.addActor(helperBackGround);
+                        }
+                        helperBackGround.remove();
+                        inventoryPopup.remove();
+                        inventoryIsActivated = false;
+                        return;
+                    }
+
+
+                    Result result = fridgePut(item);
+
+                    if (helperBackGround == null) {
+                        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+                        helperBackGround.setColor(0, 0, 0, 0.5f);
+                        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+                        stage.addActor(helperBackGround);
+                    }
+                    helperBackGround.remove();
+                    inventoryPopup.remove();
+                    inventoryIsActivated = false;
+
+                    showTimedDialog(result.massage(), 2f, stage);
+                }
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    itemButton.setColor(1f, 1f, 1f, 1f);
+                    itemButton.setScale(isCurrent ? 1.4f : 1.2f);
+                }
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    if (isCurrent) {
+                        itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+                        itemButton.setScale(1.3f);
+                    } else {
+                        itemButton.setColor(1f, 1f, 1f, 0.8f);
+                        itemButton.setScale(1f);
+                    }
+                }
+            });
+            number++;
+        }
+    }
+
+    private void createCurrentItem (Table content) {
+
+        Image img;
+        if (currentGame.currentPlayer.currentItem != null)
+            img = new Image(TextureManager.get(currentGame.currentPlayer.currentItem.getInventoryIconPath()));
+        else
+            img = new Image(TextureManager.get("Erfan/Cancel2.png"));
+
+        content.add(img).align(Align.topRight).width(150).height(150).right();
+        content.row();
+
+    }
+
     private void createItems (Table content) {
 
         content.defaults().pad(5);
@@ -464,6 +646,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 //        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
 
         int number = 0;
+
 
         for (Map.Entry<Items, Integer> entry : f.items.entrySet()) {
 
@@ -509,11 +692,8 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
 
-//                    if (currentItem != null && currentItem.getName().equals(item.getName()))
-//                        currentGame.currentPlayer.currentItem = null;
-//                    else
-//                        controller.itemEquip(item.getName());
-
+                    Result result = fridgePick(item);
+                    showTimedDialog(result.massage(), 1f, stage);
                     if (helperBackGround == null) {
                         helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
                         helperBackGround.setColor(0, 0, 0, 0.5f);
@@ -521,7 +701,14 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
                         stage.addActor(helperBackGround);
                     }
                     helperBackGround.remove();
-                    fridgePopup.remove();
+                    fridgePopup.addAction(Actions.sequence(
+                        Actions.fadeOut(1f),
+                        Actions.run(() -> {
+                            fridgePopup.remove(); // حذف کامل از stage
+                            fridgePopup = null;
+                        })
+                    ));
+
                     fridgeIsActivated = false;
                 }
                 @Override
@@ -543,18 +730,6 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             number++;
         }
     }
-    private void createCurrentItem (Table content) {
-
-        Image img;
-        if (currentGame.currentPlayer.currentItem != null)
-            img = new Image(TextureManager.get(currentGame.currentPlayer.currentItem.getInventoryIconPath()));
-        else
-            img = new Image(TextureManager.get("Erfan/Cancel2.png"));
-
-        content.add(img).align(Align.topRight).width(150).height(150).right();
-        content.row();
-
-    }
 
     @Override
     public void render(float v) {
@@ -562,6 +737,11 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         ScreenUtils.clear(0, 0, 0, 1);
         Main.getBatch().begin();
 
+
+        if (activeDialog != null && TimeUtils.millis() > dialogExpirationTime) {
+            activeDialog.remove();
+            activeDialog = null;
+        }
 
 
         // decorating
@@ -619,12 +799,11 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             showCraftings();
         }
 
-        if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
-            activeDialog.setSize(400, 100);
-            stage.addActor(activeDialog);
-        } else {
-            activeDialog = null; // اگر زمانش تموم شده، دیالوگ رو حذف کن
+        if (activeDialog != null && TimeUtils.millis() > dialogExpirationTime) {
+            activeDialog.remove();
+            activeDialog = null;
         }
+
 
         if (mode == HouseModes.home)
             drawPlayer();

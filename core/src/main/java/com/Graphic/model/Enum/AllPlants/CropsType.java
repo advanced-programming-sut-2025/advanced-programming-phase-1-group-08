@@ -137,9 +137,9 @@ public enum CropsType {
 
         ForagingSeedsType seedsType = ForagingSeedsType.valueOf(type.sourceName);
 
-        builder.append(BLUE+"Name: "+RESET).append(type.displayName)
-                .append(BLUE+"\nSource: "+RESET).append(seedsType.getDisplayName())
-                .append(BLUE+"\nStages: "+RESET);
+        builder.append("Name: ").append(type.displayName)
+                .append("\nSource: ").append(seedsType.getDisplayName())
+                .append("\nStages: ");
         for (int i = 0; i < seedsType.getGrowthStages(); i++)
             builder.append(seedsType.getStageDate(i)).append("-");
 
@@ -150,28 +150,28 @@ public enum CropsType {
             total += integer;
 
 
-        builder.append(BLUE+"\nTotal Harvest Time: "+RESET).append(total)
-                .append(BLUE+"\nOne Time: "+RESET).append(seedsType.isOneTimeUse())
-                .append(BLUE+"\nRegrowth Time: "+RESET);
+        builder.append("\nTotal Harvest Time: ").append(total)
+                .append("\nOne Time: ").append(seedsType.isOneTimeUse())
+                .append("\nRegrowth Time: ");
 
         if (!seedsType.isOneTimeUse())
             builder.append(seedsType.getRegrowthTime());
 
-        builder.append(BLUE+"\nBase Sell Price: "+RESET).append(type.getPrice())
-                .append(BLUE+"\nIs Edible: "+RESET).append(type.isEdible)
-                .append(BLUE+"\nBase Energy: "+RESET).append(type.energy)
-                .append(BLUE+"\nSeason: "+RESET);
+        builder.append("\nBase Sell Price: ").append(type.getPrice())
+                .append("\nIs Edible: ").append(type.isEdible)
+                .append("\nBase Energy: ").append(type.energy)
+                .append("\nSeason: ");
 
         ArrayList<Season> seasons = seedsType.getSeason();
         for (Season season : seasons) builder.append(season.getDisplayName()).append(" ");
 
-        builder.append(BLUE+"\nCan Become Giant: "+RESET).append(seedsType.canGrowGiant());
+        builder.append("\nCan Become Giant: ").append(seedsType.canGrowGiant());
         return builder.toString();
     }
     public static CropsType fromDisplayName(String displayName) {
         for (CropsType type : CropsType.values())
             if (type.getDisplayName().equalsIgnoreCase(displayName))
                 return type;
-        throw new IllegalArgumentException(RED+"wrong name!"+RESET);
+        throw new IllegalArgumentException("wrong name!");
     }
 }

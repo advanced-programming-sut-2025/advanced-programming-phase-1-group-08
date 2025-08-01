@@ -185,9 +185,9 @@ public enum TreeType {
     public int getHarvestYield() {return harvestYield;}
     public static String getInformation (TreeType type) {
 
-        return BLUE+"Name : "+BRIGHT_PURPLE + type.displayName +
-                BLUE+"\nFruit : "+BRIGHT_PURPLE + type.productType.getDisplayName() +
-                BLUE+"\nFruit Harvest Cycle : "+BRIGHT_PURPLE + type.harvestYield;
+        return "Name : "+ type.displayName +
+                "\nFruit : "+ type.productType.getDisplayName() +
+                "\nFruit Harvest Cycle : "+ type.harvestYield;
     }
 
     public static TreeType fromDisplayName(String displayName) {

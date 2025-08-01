@@ -3,6 +3,7 @@ package com.Graphic;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.View.GameMenus.MarketMenu;
+import com.Graphic.View.GameMenus.TransitionScreen;
 import com.Graphic.View.LoginMenu;
 import com.Graphic.View.MainMenu;
 import com.Graphic.View.ProfileMenu;
@@ -33,21 +34,27 @@ public class Main extends Game {
     @Override
     public void create() {
 
-        System.out.println(Gdx.files.internal("").file().getAbsolutePath());
         main = this;
         batch = new SpriteBatch();
-        //x = InputGameController.getInstance();
-        //x.startNewGame("a");
-        //main.setScreen(GameMenu.getInstance());
+        InputGameController x = InputGameController.getInstance();
+        x.startNewGame("a");
 
-        skin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
-        main.setScreen(new MainMenu());
+//        Main.getMain().setScreen(
+//            new TransitionScreen(Main.getMain(),
+//                this,
+//                new HomeMenu(),
+//                1f
+//            )
+//        );
+        main.setScreen(GameMenu.getInstance());
+
+//        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
+//        main.setScreen(new ProfileMenu());
 
     }
 
     public void render() {
-        super.
-            render();
+        super.render();
     }
     public void dispose() {
         batch.dispose();

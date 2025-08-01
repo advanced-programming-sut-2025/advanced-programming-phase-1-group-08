@@ -30,7 +30,7 @@ public class Animalproduct extends Items {
 
     @Override
     public String getInventoryIconPath() {
-        return type.getPath();
+        return this.type.getIconPath();
     }
 
     @Override

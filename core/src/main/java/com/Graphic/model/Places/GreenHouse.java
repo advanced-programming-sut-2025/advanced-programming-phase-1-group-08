@@ -17,7 +17,6 @@ public class GreenHouse extends GameObject {
     private int coordinateX; // برا اساس مپ عدد بدیم
     private int coordinateY; // برا اساس مپ عدد بدیم
 
-    private User Owner;
     private WaterTank waterTank; // مقدار اب مخزن
     private boolean isCreated=false;
 
@@ -44,10 +43,7 @@ public class GreenHouse extends GameObject {
     }
 
     public String getIcon () {
-        if (isCreated)
-            return GREEN+"G "+ RESET;
-        else
-            return GRAY+"G "+ RESET;
+        return "";
     }
     public int getLength() {
         return length;
@@ -73,4 +69,6 @@ public class GreenHouse extends GameObject {
     public void setRemindInShop(int amount, MarketType marketType) {
 
     }
+
+
 }
