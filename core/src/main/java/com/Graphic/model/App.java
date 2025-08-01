@@ -18,7 +18,7 @@ public class App {
 //    public static Map<Set<User>, List<Trade>> trades = new HashMap<>();
 //    public static ArrayList<HumanCommunications> friendships = new ArrayList<>();
 //    public static Skin skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-    public static ArrayList<Game> games = new ArrayList<>();
+    public static HashMap<String , Game> games = new HashMap<>();
     public static Game currentGame;
 
 //    public static ArrayList<User> players = new ArrayList<>();

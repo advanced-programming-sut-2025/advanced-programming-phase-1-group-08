@@ -8,11 +8,15 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class UnWalkable extends GameObject {
     Random rand = new Random();
-    int x = rand.nextInt();
+    int x;
+
+    public UnWalkable() {
+        x = rand.nextInt();
+        x = (x % 6) + 1;
+    }
 
     @Override
     public String getIcon() {
-        x = (x % 6) + 1;
         return "Tree/unWalkable"+x+".png";
     }
 

@@ -792,19 +792,19 @@ public class GameControllerLogic {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            InputGameController.moveAnimation();
+            //InputGameController.moveAnimation();
             currentGame.currentPlayer.setDirection(Direction.Up);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            InputGameController.moveAnimation();
+            //InputGameController.moveAnimation();
             currentGame.currentPlayer.setDirection(Direction.Down);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            InputGameController.moveAnimation();
+            //InputGameController.moveAnimation();
             currentGame.currentPlayer.setDirection(Direction.Left);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            InputGameController.moveAnimation();
+            //InputGameController.moveAnimation();
             currentGame.currentPlayer.setDirection(Direction.Right);
         }
 

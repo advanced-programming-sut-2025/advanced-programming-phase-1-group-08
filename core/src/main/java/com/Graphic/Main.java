@@ -7,6 +7,8 @@ import com.Graphic.View.LoginMenu;
 import com.Graphic.View.MainMenu;
 import com.Graphic.View.ProfileMenu;
 import com.Graphic.model.App;
+import com.Graphic.model.ClientServer.Client;
+import com.Graphic.model.ClientServer.ClientWork;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.HelpersClass.SFXManager;
 import com.badlogic.gdx.Game;
@@ -21,19 +23,25 @@ public class Main extends Game {
     private static Main main;
     private static Batch batch;
     private static Skin skin;
+    private static ClientWork client;
+
+    public Main(ClientWork client) {
+        Main.client = client;
+    }
     //private static InputGameController x;
 
     @Override
     public void create() {
 
+        System.out.println(Gdx.files.internal("").file().getAbsolutePath());
         main = this;
         batch = new SpriteBatch();
         //x = InputGameController.getInstance();
         //x.startNewGame("a");
         //main.setScreen(GameMenu.getInstance());
 
-        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-        main.setScreen(new ProfileMenu());
+        skin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
+        main.setScreen(new MainMenu());
 
     }
 
@@ -54,5 +62,9 @@ public class Main extends Game {
     }
     public static void setMain(Main main) {
         Main.main = main;
+    }
+
+    public static ClientWork getClient() {
+        return client;
     }
 }

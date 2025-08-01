@@ -7,6 +7,7 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
 import com.Graphic.model.Enum.Direction;
+import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
