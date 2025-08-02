@@ -32,18 +32,14 @@ public class CraftingController {
         return null;
     }
 
-    public Result showCraftingRecipe() {
+    public Result showCraftingRecipe(CraftType craftType) {
         Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         StringBuilder output = new StringBuilder();
+        output.append(craftType.getName()).append("\n\n");
 
-//        if (! App.currentGame.currentPlayer.getFarm().isInHome(App.currentGame.currentPlayer.getPositionX(),App.currentGame.currentPlayer.getPositionY())) {
-//            return new Result(false, "you are not in home");
-//        }
-
-        for (CraftType craftType : CraftType.values()) {
-            if (craftType.checkLevel()) {
-                output.append(craftType.name()).append("\n");
-            }
+        Map<String , Integer> ingredients = craftType.getIngrediants();
+        for (Map.Entry < String , Integer> entry : ingredients.entrySet()) {
+            output.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
         }
 
         return new Result(true , output.toString());
