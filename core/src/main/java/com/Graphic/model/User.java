@@ -2,7 +2,7 @@ package com.Graphic.model;
 
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Direction;
-import com.Graphic.model.Enum.NPC;
+import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.Tile;

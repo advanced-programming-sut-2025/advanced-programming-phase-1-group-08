@@ -2,18 +2,15 @@ package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
 import com.Graphic.View.GameMenus.GameMenu;
-import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.ItemType.*;
-import com.Graphic.model.Enum.NPC;
+import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.HelpersClass.Result;
-import com.Graphic.model.HelpersClass.SFX;
-import com.Graphic.model.HelpersClass.SFXManager;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.*;
 import com.Graphic.model.OtherItem.*;
@@ -30,7 +27,6 @@ import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -40,7 +36,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -48,18 +43,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import java.awt.*;
 import java.io.IOException;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -191,6 +182,8 @@ public class InputGameController {
                 5 * Gdx.graphics.getDeltaTime());
             int y = (int) (currentGame.currentPlayer.getPositionY() + currentGame.currentPlayer.getDirection().getY() *
                 5 * Gdx.graphics.getDeltaTime());
+
+            System.out.println(x + " " + y);
 
             if (getTileByCoordinates(x, y).getGameObject() instanceof Walkable || getTileByCoordinates(x, y).getGameObject() instanceof door) {
                 return true;
@@ -382,10 +375,10 @@ public class InputGameController {
                             TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
                     }
 
-                    Main.getBatch().draw(getTileByCoordinates(i , j)
-                       .getGameObject()
-                       .getSprite(TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
-                                     TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
+                    Main.getBatch().draw(getTileByCoordinates(i, j)
+                            .getGameObject()
+                            .getSprite(TextureManager.get(getTileByCoordinates(i, j).getGameObject().getIcon())),
+                        TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE, TEXTURE_SIZE);
 
                     if (getTileByCoordinates(i , j).getGameObject() instanceof Lake) {
                         LakeAnimation((Lake) getTileByCoordinates(i , j).getGameObject());
@@ -394,7 +387,6 @@ public class InputGameController {
 
                 }
                 catch (Exception e) {
-
                 }
             }
 
@@ -1853,6 +1845,7 @@ public class InputGameController {
                 }
                 createInitialFarm(choice);
                 user.initAnimations();
+                GameMenu.getInstance().initializeNPCs();
                 counter++;
                 break;
             }

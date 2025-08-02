@@ -12,7 +12,8 @@ import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.ItemType.*;
-import com.Graphic.model.Enum.NPC;
+import com.Graphic.model.Enum.NPC.NPC;
+import com.Graphic.model.Enum.NPC.NPCHouse;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Enum.WeatherTime.*;
 import com.Graphic.model.HelpersClass.Result;
@@ -466,21 +467,31 @@ public class GameControllerLogic {
 
                 else if (NPC.wallOrDoor(i, j) != null) {
                     NPC npc = NPC.wallOrDoor(i, j);
-                    if (i == npc.getTopLeftX() + npc.getWidth() -1 && j==npc.getTopLeftY() + 2) {
-                        Tile tile=new Tile(i , j , dor);
+
+                        NPCHouse house = new NPCHouse(npc);
+                        Tile tile = new Tile(i, j, house);
                         currentGame.bigMap.add(tile);
-                    }
-                    else {
-                        Tile tile=new Tile(i , j , wall);
-                        currentGame.bigMap.add(tile);
-                    }
+
+//                        if (i == npc.getTopLeftX() + npc.getWidth() -1 && j==npc.getTopLeftY() + 2) {
+//                        Tile tile=new Tile(i , j , dor);
+//                        currentGame.bigMap.add(tile);
+//                    }
+//                    else {
+//                        Tile tile=new Tile(i , j , wall);
+//                        currentGame.bigMap.add(tile);
+//                    }
                 }
                 else if (isInNpc(i , j) != null) {
                     NPC npc = isInNpc(i, j);
-                    Walkable walkable=new Walkable();
-                    walkable.setGrassOrFiber(npc.getName());
-                    Tile tile=new Tile(i , j , walkable);
-                    currentGame.bigMap.add(tile);
+                        NPCHouse house = new NPCHouse(npc);
+                        Tile tile = new Tile(i, j, house);
+                        currentGame.bigMap.add(tile);
+//                     else {
+//                        Walkable walkable = new Walkable();
+//                        walkable.setGrassOrFiber(npc.getName());
+//                        Tile tile = new Tile(i, j, walkable);
+//                        currentGame.bigMap.add(tile);
+//                    }
                 }
                 else {
                     Walkable walkable=new Walkable();
@@ -1643,39 +1654,23 @@ public class GameControllerLogic {
         System.out.println(GREEN+"Done!"+RESET);
 
     }
-    public static void eatFood (String input) {
-        Matcher matcher = GameMenuCommands.eatFood.getMatcher(input);
-        if (matcher == null) {
-            System.out.println(RED+"Unknown Error!"+RESET);
-            return;
-        }
-        String foodName = matcher.group("food");
+    public static Result eatFood (String foodName) {
 
         Recipe recipe = Recipe.findRecipeByName(foodName);
-        if (recipe == null) {
-            System.out.println(RED+"Food Name Unavailable!"+RESET);
-            return;
-        }
 
         FoodTypes type = recipe.getType();
 
         Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
-        Fridge fridge = currentGame.currentPlayer.getFarm().getHome().getFridge();
         Items i = new Food(type);
         if (checkAmountProductAvailable(i, 1)) {
             myInventory.Items.put(i, myInventory.Items.get(i) - 1);
             myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
-        } else if (fridge.items.containsKey(i) && fridge.items.get(i) >= 1) {
-            fridge.items.put(i, fridge.items.get(i) - 1);
-            fridge.items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
         } else {
-            System.out.println(RED+"None of This Item in Fridge or Inventory!"+RESET);
-            return;
+            return new Result(false, "None of This Item in Inventory!");
         }
         currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + recipe.getEnergy());
         recipe.applyEffect(currentGame.currentPlayer);
-
-        System.out.println(GREEN+"Eaten Successfully."+RESET);
+        return new Result(true, "Eaten, Successfully.");
     }
     public static void exitGame () {
         if (currentGame.currentPlayer != currentUser) {
@@ -1753,8 +1748,10 @@ public class GameControllerLogic {
             advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
             advanceItem(new TrashCan(TrashCanType.primaryTrashCan), 1);
 
+
+
             Home home = user.getFarm().getHome();
-            user.setPositionX(home.getTopLeftX() + home.getWidth() / 2);
+            user.setPositionX(home.getTopLeftX() + home.getWidth() / 2f);
             user.setPositionY(home.getTopLeftY() + home.getLength());
             user.increaseMoney(500 - user.getMoney());
             advanceItem(new Fish(FishType.Salmon , Quantity.Iridium) , 1);

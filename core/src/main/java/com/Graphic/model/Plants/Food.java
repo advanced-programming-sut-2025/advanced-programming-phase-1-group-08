@@ -3,6 +3,7 @@ package com.Graphic.model.Plants;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
+import com.Graphic.model.Places.MarketItem;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.checkAmountProductAvailable;
 import static com.Graphic.model.App.currentGame;
@@ -23,10 +24,14 @@ public class Food extends Items {
         return checkAmountProductAvailable(new Food(type), 1) ||
                 currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0;
     }
+    public static boolean itemIsEatable(Items item) {
+        return item instanceof Food || item instanceof Animalproduct
+            || item instanceof Fish || (item instanceof MarketItem && ((MarketItem) item).getType().isEatable());
+    }
 
     @Override
     public String getName() {
-        return type.name();
+        return type.getName();
     }
 
     @Override
