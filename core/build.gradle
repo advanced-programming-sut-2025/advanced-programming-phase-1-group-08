@@ -11,8 +11,25 @@ dependencies {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
 
+  //implementation project(":core")
+  implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+  implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+
   implementation 'com.google.code.gson:gson:2.10.1'
   implementation 'org.reflections:reflections:0.10.2' // آخرین نسخه از صفحه رسمی گیتهاب چک شود
 
   implementation('com.google.code.gson:gson:2.10.1')
 }
+
+task runClient(type: JavaExec) {
+  group = "application"
+  description = "Run the client class"
+
+
+  classpath = sourceSets.main.runtimeClasspath
+  mainClass = 'com.Graphic.model.ClientServer.Client' // اسم کامل پکیج و کلاس
+  workingDir = rootProject.file("assets")
+  // اگه آرگومان می‌خوای اضافه کن:
+  args = []
+}
+

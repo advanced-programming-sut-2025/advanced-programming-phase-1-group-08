@@ -1,5 +1,7 @@
 package com.Graphic.model;
 
+import com.Graphic.model.ClientServer.GameState;
+import com.Graphic.model.ClientServer.PlayerHandler;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.WeatherTime.Weather;
@@ -12,6 +14,8 @@ import com.Graphic.model.Weather.DateHour;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.*;
 
 public class Game {
@@ -31,6 +35,7 @@ public class Game {
 
     public User currentPlayer;
     public Menu currentMenu;
+
 
     public Menu getCurrentMenu() {
         return this.currentMenu;
@@ -73,5 +78,65 @@ public class Game {
             e.printStackTrace();
         }
 
+    }
+
+    // بالایی ها همه باید اصلاح بشن
+
+    private GameState gameState = new GameState();
+    private final LinkedList<String> stateHistory = new LinkedList<>();
+    private final List<PlayerHandler> Players = new ArrayList<>();
+    private final Map<String , Integer> lastSentIndex = new HashMap<>();
+    private boolean gameStarted = false;
+
+
+    public synchronized void addPlayer(User u , Socket socket) {
+        if (Players.size() >= 4) {
+            try {
+                PrintWriter out = new PrintWriter(socket.getOutputStream() , true);
+                out.println("Game is Full");
+            } catch (IOException e) {
+
+            }
+        }
+
+        PlayerHandler handler = new PlayerHandler(u , socket , this);
+        Players.add(handler);
+        lastSentIndex.put(u.getUsername(), 0);
+
+        new Thread(handler).start();
+
+        if (Players.size() == 4 && !gameStarted) {
+            gameStarted = true;
+
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        synchronized (stateHistory) {
+                            stateHistory.add("hello");
+                        }
+                        Thread.sleep(100);
+                    }
+                    catch (Exception e) {
+                        break;
+                    }
+
+                }
+            }).start();
+        }
+
+    }
+
+
+    public String getStateFromPlayer(User u) {
+        synchronized (stateHistory) {
+            int idx = lastSentIndex.get(u.getUsername());
+
+            if (lastSentIndex.size() > idx) {
+                String state = stateHistory.get(idx);
+                lastSentIndex.put(u.getUsername(), idx + 1);
+                return state;
+            }
+            return "NO-DIFF";
+        }
     }
 }

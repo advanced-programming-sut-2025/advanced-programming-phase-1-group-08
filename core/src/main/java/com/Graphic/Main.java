@@ -3,10 +3,13 @@ package com.Graphic;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.View.GameMenus.MarketMenu;
+import com.Graphic.View.GameMenus.TransitionScreen;
 import com.Graphic.View.LoginMenu;
 import com.Graphic.View.MainMenu;
 import com.Graphic.View.ProfileMenu;
 import com.Graphic.model.App;
+import com.Graphic.model.ClientServer.Client;
+import com.Graphic.model.ClientServer.ClientWork;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.HelpersClass.SFXManager;
 import com.badlogic.gdx.Game;
@@ -21,6 +24,11 @@ public class Main extends Game {
     private static Main main;
     private static Batch batch;
     private static Skin skin;
+    private static ClientWork client;
+
+    public Main(ClientWork client) {
+        Main.client = client;
+    }
     //private static InputGameController x;
 
     @Override
@@ -30,15 +38,23 @@ public class Main extends Game {
         batch = new SpriteBatch();
         InputGameController x = InputGameController.getInstance();
         x.startNewGame("a");
+
+//        Main.getMain().setScreen(
+//            new TransitionScreen(Main.getMain(),
+//                this,
+//                new HomeMenu(),
+//                1f
+//            )
+//        );
         main.setScreen(GameMenu.getInstance());
 
-        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
+//        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
 //        main.setScreen(new ProfileMenu());
+
     }
 
     public void render() {
-        super.
-            render();
+        super.render();
     }
     public void dispose() {
         batch.dispose();
@@ -53,5 +69,9 @@ public class Main extends Game {
     }
     public static void setMain(Main main) {
         Main.main = main;
+    }
+
+    public static ClientWork getClient() {
+        return client;
     }
 }

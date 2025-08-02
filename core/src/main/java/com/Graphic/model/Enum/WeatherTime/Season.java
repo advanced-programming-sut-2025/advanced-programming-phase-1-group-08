@@ -1,9 +1,5 @@
 package com.Graphic.model.Enum.WeatherTime;
 
-
-
-import static com.Graphic.model.HelpersClass.Color_Eraser.*;
-
 public enum Season {
 
     Winter("Winter","❄️Winter❄️") {
@@ -113,15 +109,7 @@ public enum Season {
         this.displayName = displayName;
     }
     public String getDisplayName() {
-
-        if (this.equals(Summer))
-            return YELLOW+displayName+RESET;
-        if (this.equals(Spring))
-            return PURPLE+displayName+RESET;
-        if (this.equals(Winter))
-            return CYAN+displayName+RESET;
-        else
-            return RED+displayName+RESET;
+        return displayName;
     }
 
     public String getIconPath() {

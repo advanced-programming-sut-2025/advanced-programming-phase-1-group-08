@@ -6,6 +6,8 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
 import com.Graphic.model.Enum.Direction;
+import com.Graphic.model.Enum.GameTexturePath;
+import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
@@ -64,6 +66,7 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 import static com.badlogic.gdx.Input.Keys.ENTER;
+import static com.badlogic.gdx.Input.Keys.T;
 
 
 public class InputGameController {
@@ -182,8 +185,6 @@ public class InputGameController {
                 5 * Gdx.graphics.getDeltaTime());
             int y = (int) (currentGame.currentPlayer.getPositionY() + currentGame.currentPlayer.getDirection().getY() *
                 5 * Gdx.graphics.getDeltaTime());
-
-            System.out.println(x + " " + y);
 
             if (getTileByCoordinates(x, y).getGameObject() instanceof Walkable || getTileByCoordinates(x, y).getGameObject() instanceof door) {
                 return true;
@@ -364,21 +365,25 @@ public class InputGameController {
 
     public Result print(){
 
+
         for (int i =0 ; i< 90 ; i++)
             for (int j =0 ; j< 90 ; j++) {
                 try {
+
+                    Tile tile = getTileByCoordinates(i, j);
+                    GameObject gameObject = tile.getGameObject();
+
                     Main.getBatch().draw(TextureManager.get("Places/Walkable.png") ,
                         TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
 
-                    if (getTileByCoordinates(i,j).getGameObject() instanceof UnWalkable) {
+                    if (gameObject instanceof UnWalkable) {
                         Main.getBatch().draw(TextureManager.get("Tree/unWalkable6.png"),
                             TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
                     }
 
-                    Main.getBatch().draw(getTileByCoordinates(i, j)
-                            .getGameObject()
-                            .getSprite(TextureManager.get(getTileByCoordinates(i, j).getGameObject().getIcon())),
-                        TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE, TEXTURE_SIZE);
+                    Main.getBatch().draw(gameObject.getSprite
+                            (TextureManager.get(getTileByCoordinates(i, j).getGameObject().getIcon())),
+                        TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE* gameObject.getTextureWidth(), TEXTURE_SIZE * gameObject.getTextureHeight());
 
                     if (getTileByCoordinates(i , j).getGameObject() instanceof Lake) {
                         LakeAnimation((Lake) getTileByCoordinates(i , j).getGameObject());
@@ -390,6 +395,15 @@ public class InputGameController {
                 }
             }
 
+        for (User player : currentGame.players) {
+
+            GreenHouse greenHouse = player.getFarm().getGreenHouse();
+
+            Main.getBatch().draw(TextureManager.get(GameTexturePath.GreenHouse.getPath()),
+                (greenHouse.getCoordinateX() + 1) * TEXTURE_SIZE, TEXTURE_SIZE * (92 - greenHouse.getCoordinateY() - greenHouse.getLength()),
+                (greenHouse.getWidth() - 2) * TEXTURE_SIZE, (greenHouse.getLength() - 2 )* TEXTURE_SIZE
+            );
+        }
 
         for (User player : currentGame.players) {
             player.getSprite().draw(Main.getBatch());
@@ -1218,8 +1232,7 @@ public class InputGameController {
     }
 
     private boolean bool = false;
-    public void placeItem()
-    {
+    public void placeItem() {
         if (currentGame.currentPlayer.getDroppedItem() != null) {
             if (currentGame.currentPlayer.isPlaceArtisanOrShippingBin() && ! currentGame.currentPlayer.isWaiting()) {
                 currentGame.currentPlayer.getWithMouse().setPosition(
@@ -2321,6 +2334,7 @@ public class InputGameController {
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
             if (entry.getKey() != null && entry.getKey().getName().equals(name))
                 currentGame.currentPlayer.currentItem = entry.getKey();
+
 
     }
     public HashMap<String, String> availableTools() {

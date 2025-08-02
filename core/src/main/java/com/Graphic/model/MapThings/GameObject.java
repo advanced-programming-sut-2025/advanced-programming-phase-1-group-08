@@ -1,19 +1,23 @@
 package com.Graphic.model.MapThings;
 
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.collisionRect;
 import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Circle;
 
 public abstract class GameObject {
 
     private char Charactor;
     private float textureWidth;
     private float textureHeight;
+    private Texture texture;
 
     public GameObject() {
         this.textureHeight = 1;
         this.textureWidth = 1;
+
     }
 
     public char getCharactor() {
@@ -27,9 +31,11 @@ public abstract class GameObject {
 
     public Sprite getSprite(Texture texture) {
 
-        if (sprite == null)
+        if (sprite == null) {
             sprite = new Sprite(texture);
-
+            this.texture = texture;
+        }
+        sprite.setRegion(texture);
         return sprite;
     }
     public void setSprite(Sprite sprite) {
@@ -42,6 +48,7 @@ public abstract class GameObject {
     public String getIcon() {
         return null;
     }
+
 
     public float getTextureWidth() {
         return textureWidth;

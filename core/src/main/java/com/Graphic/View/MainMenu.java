@@ -99,7 +99,7 @@ public class MainMenu implements Screen, AppMenu {
         avatarButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Opening avatar menu...");
+                Main.getMain().setScreen(new AvatarMenu());
             }
         });
 
@@ -220,7 +220,5 @@ public class MainMenu implements Screen, AppMenu {
 //    }
 
     @Override
-    public Stage getStage() {
-        return stage;
-    }
+    public Stage getStage() {return stage;}
 }
