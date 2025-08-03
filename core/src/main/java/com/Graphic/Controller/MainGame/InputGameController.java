@@ -1,6 +1,7 @@
 package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
+import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
@@ -9,7 +10,7 @@ import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.Menu;
-import com.Graphic.model.Enum.NPC;
+import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.HelpersClass.Result;
@@ -89,8 +90,6 @@ public class InputGameController {
         GameControllerLogic.init();
         currentGame.currentPlayer.setInFarmExterior(true);
 
-        Abigail.setX((int) currentGame.currentPlayer.getPositionX() / TEXTURE_SIZE);
-        Abigail.setY((int) currentGame.currentPlayer.getPositionY() / TEXTURE_SIZE - 3); // TODO
     }
     public void update(OrthographicCamera camera, float v, Boolean menuActivated) {
 
@@ -392,8 +391,8 @@ public class InputGameController {
                     }
 
                     Main.getBatch().draw(gameObject.getSprite
-                            (TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
-                        TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE * gameObject.getTextureWidth(), TEXTURE_SIZE * gameObject.getTextureHeight());
+                            (TextureManager.get(getTileByCoordinates(i, j).getGameObject().getIcon())),
+                        TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE* gameObject.getTextureWidth(), TEXTURE_SIZE * gameObject.getTextureHeight());
 
                     if (getTileByCoordinates(i , j).getGameObject() instanceof Lake) {
                         LakeAnimation((Lake) getTileByCoordinates(i , j).getGameObject());
@@ -402,7 +401,6 @@ public class InputGameController {
 
                 }
                 catch (Exception e) {
-
                 }
             }
 
@@ -1727,10 +1725,10 @@ public class InputGameController {
 
     }
     public Result backToMainMenu () {
-        if (currentUser.isCurrently_in_game())
+        if (App.currentUser.isCurrently_in_game())
             return new Result(false, RED+"You Are Currently in a Game!"+RESET);
         else {
-            currentMenu = Menu.MainMenu;
+            currentMenu = com.Graphic.model.Enum.Menu.MainMenu;
             return new Result(true, GREEN+"Returned to Main Menu."+RESET);
         }
     }
@@ -1869,6 +1867,7 @@ public class InputGameController {
                 }
                 createInitialFarm(choice);
                 user.initAnimations();
+                GameMenu.getInstance().initializeNPCs();
                 counter++;
                 break;
             }

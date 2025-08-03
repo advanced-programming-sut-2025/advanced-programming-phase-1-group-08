@@ -2,6 +2,8 @@ package com.Graphic.model.Enum;
 
 import com.Graphic.model.*;
 import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.Enum.Direction;
+import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.Enum.AllPlants.CropsType;
@@ -9,11 +11,17 @@ import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.OtherItem.ArtisanProduct;
 import com.Graphic.model.OtherItem.BarsAndOres;
 import com.Graphic.model.Places.MarketItem;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
+
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
@@ -21,8 +29,9 @@ public enum NPC {
 
     Sebastian("Sebastian", new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.IronOre), 50,
             new Food(FoodTypes.pumpkinPie), 1,
-            new BasicRock(), 150 )), 42, 45, 6, 5,
-            new MarketItem(MarketItemType.Oil), 10) {
+            new BasicRock(), 150 )), 42, 45, 5, 5,
+            new MarketItem(MarketItemType.Oil), 10,
+            new NPCDirectionSet("Mohamadreza/NPC/Sebastian")) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -31,15 +40,15 @@ public enum NPC {
 
             dialogues.put(1, Map.of(
                     Weather.Sunny, "Morning'! Perfect day for planting.",
-                    Weather.Rainy, "Rain's coming'... crops needed it.",
-                    Weather.Stormy, "Storm's wrecking' my fields!",
-                    Weather.Snowy, "Snow's covered everything'..."
+                    Weather.Rainy, "Rain's coming'... crops needed that.",
+                    Weather.Stormy, "Storm's wrecking my fields!",
+                    Weather.Snowy, "Snow's covered everything..."
             ));
 
             dialogues.put(0, Map.of(
                     Weather.Sunny, "Morning'! Perfect day for planting.",
                     Weather.Rainy, "Rain's coming'... crops needed it.",
-                    Weather.Stormy, "Storm's wrecking' my fields!",
+                    Weather.Stormy, "Storm's wrecking my fields!",
                     Weather.Snowy, "Snow's covered everything'..."
             ));
 
@@ -89,8 +98,9 @@ public enum NPC {
 
     Abigail("Abigail",  new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.GoldBar), 1,
             new AllCrops(CropsType.Pumpkin), 1,
-            new AllCrops(CropsType.Wheat),   50)), 51, 45, 6, 5,
-            new MarketItem(MarketItemType.Bouquet), 20) {
+            new AllCrops(CropsType.Wheat),   50)), 51, 45, 5, 5,
+            new MarketItem(MarketItemType.Bouquet), 20,
+            new NPCDirectionSet("Mohamadreza/NPC/Abigail")) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -152,8 +162,9 @@ public enum NPC {
 
     Harvey("Harvey", new LinkedHashMap<>(Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
             new AllCrops(CropsType.Kale), 12,
-            new ArtisanProduct(ArtisanType.Wine),   1)), 32, 52, 6, 5,
-            new MarketItem(MarketItemType.Bread), 15) {
+            new ArtisanProduct(ArtisanType.Wine),   1)), 32, 52, 5, 5,
+            new MarketItem(MarketItemType.Bread), 15,
+            new NPCDirectionSet("Mohamadreza/NPC/Harvey")) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -215,8 +226,9 @@ public enum NPC {
 
     Leah("Leah",  new LinkedHashMap<>(Map.of(new Fish(FishType.Salmon, Quantity.Normal), 1,
             new Wood(), 200,
-            new BasicRock(),   200)), 42, 52, 6, 5,
-            new MarketItem(MarketItemType.Salad), 25) {
+            new BasicRock(),   200)), 42, 52, 5, 5,
+            new MarketItem(MarketItemType.Salad), 25,
+            new NPCDirectionSet("Mohamadreza/NPC/Leah")) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -278,8 +290,9 @@ public enum NPC {
 
     Robin("Robin",  new LinkedHashMap<>(Map.of(new BarsAndOres(BarsAndOreType.IronBar), 10,
             new Wood(), 80,
-            new MixedSeeds(),   10)), 51, 52, 6, 5,
-            new MarketItem(MarketItemType.Coffee), 18) {
+            new MixedSeeds(),   10)), 51, 52, 5, 5,
+            new MarketItem(MarketItemType.Coffee), 18,
+            new NPCDirectionSet("Mohamadreza/NPC/Robin")) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -354,6 +367,50 @@ public enum NPC {
 
     private long lastConversation;
 
+    private Sprite sprite;
+    private Animation<Texture> Left;
+    private Animation<Texture> Up;
+    private Animation<Texture> Down;
+    private Animation<Texture> Right;
+    private HashMap<Direction, Texture> DirectionInWalk;
+    private boolean isMoving;
+    private Direction direction;
+    private final NPCDirectionSet directionSet;
+    private float Timer = 0.0f;
+    private boolean isWaiting = false;
+    private float positionX;
+    private float positionY;
+
+    private float elapsedTime = 0f;
+    public float getElapsedTime() {
+        return elapsedTime;
+    }
+    public void setElapsedTime(float elapsedTime) {
+        this.elapsedTime = elapsedTime;
+    }
+    private float waitDuration = 2 + new Random().nextFloat() * 3;
+    public float getWaitDuration() {
+        return waitDuration;
+    }
+    public void setWaitDuration(float waitDuration) {
+        this.waitDuration = waitDuration;
+    }
+    private int moveDistance = 8 + new Random().nextInt(4);
+    public int getMoveDistance() {
+        return moveDistance;
+    }
+    public void setMoveDistance(int moveDistance) {
+        this.moveDistance = moveDistance;
+    }
+    private boolean isAutoWalking = true;
+    public boolean isAutoWalking() {
+        return isAutoWalking;
+    }
+    public void setAutoWalking(boolean autoWalking) {
+        isAutoWalking = autoWalking;
+    }
+
+
 
     public abstract boolean isItFavorite (Items items);
     public abstract String getDialogue(int level, Weather weather);
@@ -361,7 +418,7 @@ public enum NPC {
 
 
     NPC (String name, LinkedHashMap<Items, Integer> request, int topLeftX, int topLeftY,
-         int width, int height, Items giftItem, int request3DayNeeded) {
+         int width, int height, Items giftItem, int request3DayNeeded, NPCDirectionSet directionSet) {
 
         Request = request;
         this.name = name;
@@ -400,6 +457,14 @@ public enum NPC {
         int delY = Math.abs(y - this.getY());
 
         return delX < 4 && delY < 4;
+        this.directionSet = directionSet;
+
+        this.DirectionInWalk = directionSet.loadAllTextures();
+        this.direction = Direction.Down;
+        this.sprite = new Sprite(DirectionInWalk.get(direction));
+        this.sprite.setPosition(TEXTURE_SIZE * topLeftX, TEXTURE_SIZE * (90 - topLeftY));
+        this.positionX = topLeftX;
+        this.positionY = (90 - topLeftY);
     }
 
     public String getName() {
@@ -424,6 +489,117 @@ public enum NPC {
 
     public Items getGiftItem() {
         return giftItem;
+    }
+
+    public Sprite getSprite() {
+        return sprite;
+    }
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+    }
+    public Animation<Texture> getLeft() {
+        return Left;
+    }
+    public void setLeft(Animation<Texture> left) {
+        Left = left;
+    }
+    public Animation<Texture> getUp() {
+        return Up;
+    }
+    public void setUp(Animation<Texture> up) {
+        Up = up;
+    }
+    public Animation<Texture> getDown() {
+        return Down;
+    }
+    public void setDown(Animation<Texture> down) {
+        Down = down;
+    }
+    public Animation<Texture> getRight() {
+        return Right;
+    }
+    public void setRight(Animation<Texture> right) {
+        Right = right;
+    }
+    public NPCDirectionSet getDirectionSet() {
+        return directionSet;
+    }
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+    public Direction getDirection() {
+        return direction;
+    }
+    public float getTimer() {
+        return Timer;
+    }
+    public void setTimer(float timer) {
+        Timer = timer;
+    }
+    public Animation<Texture> getAnimation() {
+        switch (direction) {
+            case Up -> {
+                return Up;
+            }
+            case Down -> {
+                return Down;
+            }
+            case Left -> {
+                return Left;
+            }
+            case Right -> {
+                return Right;
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+    public void setPositionX(float x) {
+        positionX = x;
+    }
+    public float getPositionX() {
+        return positionX;
+    }
+    public void setPositionY(float y) {
+        positionY = y;
+    }
+    public float getPositionY() {
+        return positionY;
+    }
+
+    public void setMoving(boolean moving) {
+        isMoving = moving;
+    }
+    public boolean isMoving() {
+        return isMoving;
+    }
+
+    public void setWaiting(boolean waiting) {
+        isWaiting = waiting;
+    }
+
+    public boolean isWaiting() {
+        return isWaiting;
+    }
+
+
+    public static NPC wallOrDoor (int x, int y) {
+        for (NPC npc : NPC.values()) {
+            if (x == npc.getTopLeftX() && y >= npc.getTopLeftY() && y < npc.getTopLeftY() + npc.getHeight()) {
+                return npc;
+            }
+            if (x==npc.getTopLeftX() + npc.getWidth() -1 && y >= npc.getTopLeftY() && y < npc.getTopLeftY() + npc.getHeight()) {
+                return npc;
+            }
+            if (y == npc.getTopLeftY() && x >= npc.getTopLeftX() && x < npc.getTopLeftX() + npc.getWidth()) {
+                return npc;
+            }
+            if (y== npc.getTopLeftY() + npc.getHeight() -1 && x >= npc.getTopLeftX() && x < npc.getTopLeftX() + npc.getWidth()) {
+                return npc;
+            }
+        }
+        return null;
     }
 
     public int getRequest3DayNeeded() {

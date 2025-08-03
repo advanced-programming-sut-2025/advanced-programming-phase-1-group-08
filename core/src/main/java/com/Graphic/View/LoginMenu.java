@@ -3,6 +3,7 @@ package com.Graphic.View;
 import com.Graphic.Controller.Menu.LoginController;
 import com.Graphic.Main;
 import com.Graphic.model.App;
+import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.SaveData.SessionManager;
@@ -137,25 +138,27 @@ public class LoginMenu implements Screen, AppMenu {
                 String password = passwordField.getText().trim();
                 boolean stayLoggedIn = stayLoggedInCheckbox.isChecked();
 
-                if (username.isEmpty() || password.isEmpty()) {
+                if (username.isEmpty() /*|| password.isEmpty()*/) {
                     showMessage("Please fill all fields!", true);
                     return;
                 }
 
                 try {
-                    Result result = controller.LoginRes(username, password);
+                    //Result result = controller.LoginRes(username, password);
+                    Message message = controller.requestLogin(username, password);
+                    Main.getClient(null).getRequests().add(message);
 
-                    if (result.IsSuccess()) {
-                        User user = UserDataBase.findUserByUsername(username);
-                        if (user != null) {
-                            App.currentUser = user;
-                            SessionManager.saveSession(user.getUsername(), stayLoggedIn);
-                        }
-                        App.currentMenu = Menu.MainMenu;
-                        Main.getMain().setScreen(new MainMenu());
-                    } else {
-                        showMessage(result.toString(), true);
-                    }
+//                    if (result.IsSuccess()) {
+//                        User user = UserDataBase.findUserByUsername(username);
+//                        if (user != null) {
+//                            App.currentUser = user;
+//                            SessionManager.saveSession(user.getUsername(), stayLoggedIn);
+//                        }
+//                        App.currentMenu = Menu.MainMenu;
+//                        Main.getMain().setScreen(new MainMenu());
+//                    } else {
+//                        showMessage(result.toString(), true);
+//                    }
                 } catch (IOException e) {
                     showMessage("Login failed: " + e.getMessage(), true);
                 }

@@ -19,7 +19,7 @@ public class CraftMenu implements AppMenu {
         CraftingController controller = new CraftingController();
 
         if ((matcher = CraftMenuCommands.craftingRecipe.getMatcher(input)) != null) {
-            System.out.println(controller.showCraftingRecipe());
+//            System.out.println(controller.showCraftingRecipe());
         }
         else if ((matcher = CraftMenuCommands.craftingCraft.getMatcher(input)) != null) {
             System.out.println(controller.craftingCraft(matcher.group(1).trim()));

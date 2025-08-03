@@ -2,9 +2,11 @@ package com.Graphic.model.SaveData;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.Graphic.model.Weather.DateHour;
-import com.Graphic.model.Enum.NPC;
+import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Items;
 import com.Graphic.model.User;
 
@@ -55,8 +57,41 @@ public class UserStorage {
 
     public static List<User> loadUsers() throws IOException {
         if (!Files.exists(FILE_PATH)) return new ArrayList<>();
-        String json = Files.readString(FILE_PATH);
-        Type listType = new TypeToken<List<User>>() {}.getType();
-        return gson.fromJson(json, listType);
+
+        try {
+            String json = Files.readString(FILE_PATH);
+            Type listType = new TypeToken<List<User>>() {}.getType();
+
+            List<User> users = gson.fromJson(json, listType);
+
+            if (users == null) {
+                System.err.println("JSON parsed to null — check JSON structure.");
+                return new ArrayList<>();
+            }
+
+            for (int i = 0; i < users.size(); i++) {
+                User user = users.get(i);
+                if (user == null) {
+                    System.err.println("Null user object at index: " + i);
+                } else if (user.getUsername() == null) {
+                    System.err.println("Null 'username' at index: " + i);
+                } else if (user.getPassword() == null) {
+                    System.err.println("Null 'password' at index: " + i);
+                }
+                // ادامه بررسی سایر فیلدها...
+            }
+
+            return users;
+
+        } catch (JsonSyntaxException | JsonIOException e) {
+            System.err.println("Error parsing JSON: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+
     }
 }

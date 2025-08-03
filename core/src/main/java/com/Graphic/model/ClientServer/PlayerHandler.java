@@ -4,33 +4,37 @@ import com.Graphic.model.User;
 
 import com.Graphic.model.Game;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
+
+import static com.Graphic.model.Enum.Commands.CommandType.INDEX;
 
 public class PlayerHandler extends Thread {
 
     private User Player;
     private Socket clientSocket;
     private Game game;
-    PrintWriter out;
+    DataOutputStream out;
+    HashMap<String , Object> body = new HashMap<>();
 
-    public PlayerHandler(User player , Socket clientSocket , Game game) {
+    public PlayerHandler(User player , Socket clientSocket , Game game , int index) throws IOException {
         this.Player = player;
         this.clientSocket = clientSocket;
         this.game = game;
+        out = new DataOutputStream(clientSocket.getOutputStream());
+        body.put("index", index);
+        sendMessage(new Message(INDEX , body));
     }
 
     public void run() {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
             String line;
             while ((line = in.readLine()) != null) {
                 switch (line) {
                     case "GET_DIFF"-> {
-                        out.println(game.getStateFromPlayer(Player));
+                        //out.println(game.getStateFromPlayer(Player));
                         break;
                     }
                     default -> {
@@ -50,5 +54,10 @@ public class PlayerHandler extends Thread {
 
             }
         }
+    }
+
+    public void sendMessage(Message message) throws IOException {
+        String result = JSONUtils.toJson(message);
+        out.writeUTF(result);
     }
 }
