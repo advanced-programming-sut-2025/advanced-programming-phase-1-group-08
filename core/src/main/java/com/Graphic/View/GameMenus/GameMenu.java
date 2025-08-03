@@ -20,9 +20,6 @@ import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
-import com.Graphic.model.MapThings.Tile;
-import com.Graphic.model.MapThings.UnWalkable;
-import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.*;
@@ -126,17 +123,27 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private boolean informationIsActivated;
     private Window mainInformationPopup;
 
+    private boolean NPCMenuIsActivated;
+    private Window NPCMenuPopup;
+
     private boolean showInformationIsActivated;
     private Window showInformationPopup;
 
     private boolean subMenuIsActivated;
     private Window subMenuGroup;
 
+    private boolean questsIsActivated;
+    private Window questsMenuGroup;
+
     private boolean settingIsActivated;
     private Window settingMenuGroup;
 
     private TextField energyInputField;
     private TextButton confirmButton;
+
+    private boolean waitingForGiftItemSelection = false;
+    private NPC npc;
+
 
     private Sprite currentItemSprite;
     private boolean startRotation;
@@ -172,20 +179,28 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
     public void render(float v) {
 
+        inputController();
         if (TimeUtils.millis() - lastTime > hourSecond)
             updateClock(1);
 
-        inputController();
         updateEnergyLabel();
+        giftNPCMenu();
 
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Main.getBatch().setProjectionMatrix(camera.combined);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            Main.getMain().setScreen(new MarketMenu());
-            currentMenu = Menu.MarketMenu;
-        }
+        Main.getBatch().begin();
+        controller.update(camera, v, anyMenuIsActivated());
+        drawCurrentItem();
+        moveAnimal();
+        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mousePos);
+        camera.update();
+        Main.getBatch().end();
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+
 
         if (! currentGame.currentPlayer.isInFarmExterior()) {
             getRenderer().setView(camera);
@@ -199,18 +214,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         } else {
             activeDialog = null;
         }
-
-        Main.getBatch().begin();
-        controller.update(camera, v);
-        drawCurrentItem();
-        moveAnimal();
-        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.unproject(mousePos);
-        camera.update();
-        Main.getBatch().end();
-
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
 
     }
 
@@ -505,6 +508,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         skillMenuIsActivated = false;
         EscMenuIsActivated = false;
         subMenuIsActivated = false;
+        questsIsActivated = false;
         mapIsActivated = false;
         startRotation = false;
     }
@@ -527,12 +531,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 handleLeftClick();
             else if (Gdx.input.isKeyJustPressed(Keys.informationMenu))
                 showInformationMenu();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.B))
+            else if (Gdx.input.isKeyJustPressed(Keys.settingMenu))
                 showSettingMenu();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.F))
-                alaki();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.G))
-                plow();
+            else if (Gdx.input.isKeyJustPressed(Keys.NPCMenu))
+                showNPCMenu();
 
 
             else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
@@ -618,19 +620,150 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             helperBackGround.remove();
             settingIsActivated = false;
         }
+        else if (NPCMenuIsActivated) {
+            NPCMenuPopup.remove();
+            helperBackGround.remove();
+            NPCMenuIsActivated = false;
+        }
 
     }
-    private void alaki () {
 
-        for (int i = 0; i < 30 ; i++)
-            for (int j = 0; j < 30 ; j++) {
-                Tile tile = getTileByCoordinates(j, i);
-                if (tile.getGameObject() instanceof Walkable)
-                    System.out.println(((Walkable) tile.getGameObject()).getGrassOrFiber());
+    private void giftNPCMenu () {
+
+        if (waitingForGiftItemSelection && !inventoryIsActivated) {
+
+            if (currentGame.currentPlayer.currentItem != null)
+                controller.giftNPC(currentGame.currentPlayer.currentItem, stage, npc);
+            else {
+                Dialog dialog = Marketing.getInstance().createDialogError();
+                final Label tooltipLabel = new Label("Firs you must select Item", App.newSkin);
+                tooltipLabel.setColor(Color.LIGHT_GRAY);
+
+                Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        dialog.remove();
+                    }
+                }, 3);
             }
-
-
+            waitingForGiftItemSelection = false;
+        }
     }
+    private void showNPCMenu() {
+
+        if (NPCMenuIsActivated) {
+            NPCMenuIsActivated = false;
+            NPCMenuPopup.remove();
+            helperBackGround.remove();
+        } else {
+
+            npc = controller.findNPC();
+
+            if (npc == null)
+                return;
+
+            createGrayBackGround();
+            NPCMenuIsActivated = true;
+
+            NPCMenuPopup = new Window("", newSkin);
+            NPCMenuPopup.setMovable(false);
+            NPCMenuPopup.pad(20);
+            NPCMenuPopup.defaults().width(200).pad(10);
+
+            TextButton talkButton = new TextButton("Meet", newSkin);
+            TextButton giftButton = new TextButton("Gift", newSkin);
+            TextButton backButton = new TextButton("Back", newSkin);
+            TextButton questsButton = new TextButton("Quests", newSkin);
+            TextButton friendshipButton = new TextButton("Friend Level", newSkin);
+
+            NPCMenuPopup.add(talkButton);
+            NPCMenuPopup.add(giftButton).row();
+            NPCMenuPopup.add(friendshipButton);
+            NPCMenuPopup.add(questsButton).row();
+            NPCMenuPopup.add(backButton).width(150).colspan(2).row();
+
+            NPCMenuPopup.pack();
+            NPCMenuPopup.setPosition(
+                (stage.getWidth() - NPCMenuPopup.getWidth()) / 2,
+                (stage.getHeight() - NPCMenuPopup.getHeight()) / 2
+            );
+
+            stage.addActor(NPCMenuPopup);
+
+            backButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    NPCMenuPopup.remove();
+                    NPCMenuIsActivated = false;
+                    helperBackGround.remove();
+                }
+            });
+
+            talkButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (controller.checkForNPC())
+                        controller.meetNPC(stage, npc);
+                }
+            });
+
+            giftButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (controller.checkForNPC()) {
+                        createInventory();
+                        waitingForGiftItemSelection = true;
+                    }
+                }
+            });
+
+            friendshipButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    createSocialMenu();
+                }
+            });
+
+            questsButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    createQuestMenu();
+                }
+            });
+        }
+    }
+    private void createQuestMenu () {
+        socialPopup = new Window("", App.newSkin);
+        socialPopup.setSize(650, 900);
+        socialPopup.setPosition(
+            (stage.getWidth() - socialPopup.getWidth()) / 2,
+            (stage.getHeight() - socialPopup.getHeight()) / 2);
+
+        Table content = new Table();
+        createDetailQuest(content);
+
+        ScrollPane scrollPane = new ScrollPane(content, App.newSkin);
+        scrollPane.setFadeScrollBars(false);
+
+        socialPopup.add(scrollPane).expand().fill();
+
+        stage.addActor(socialPopup);
+        socialMenuIsActivated = true;
+    }
+
+    private void createDetailQuest (Table content) {
+
+        content.defaults().pad(5);
+        content.setFillParent(false);
+        content.row();
+
+        Label questLabel = new Label(controller.questsNPCList(), App.newSkin);
+
+        content.add(questLabel);
+        content.row();
+    }
+
 
     private void showSettingMenu() {
 
@@ -900,7 +1033,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         showInformationIsActivated = true;
         stage.addActor(showInformationPopup);
     }
-
 
     public void createMap () {
 
@@ -1367,12 +1499,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         TextButton mapButton = new TextButton("Map", newSkin);
 
 
-//        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(backButton.getStyle()); // کپی مستقل
-//        Drawable newBackground = new TextureRegionDrawable(new TextureRegion(new Texture("Erfan/Cancel.png")));
-//        style.up = newBackground;
-//        backButton.setStyle(style);
-
-
         table.add(inventoryButton).width(250).center();
         table.add(skillsButton).width(250).center();
         table.row().pad(15, 0, 10, 0);
@@ -1639,13 +1765,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         content.add(animatedImage1).size(40).top().left();
         content.add(animatedImage2).size(40).top().right();
 
-        for (NPC npc : NPC.values()) {
+        for (NPC npc1 : NPC.values()) {
 
             content.row();
-            content.add(new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(npc.getIconPath())))));
+            content.add(new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(npc1.getIconPath())))));
 
-            Label nameLabel = new Label("Friendship Level with " + npc.getName() +
-                " : " + currentGame.currentPlayer.getFriendshipLevel(npc), App.newSkin);
+            Label nameLabel = new Label("Friendship Level with " + npc1.getName() +
+                " : " + currentGame.currentPlayer.getFriendshipLevel(npc1), App.newSkin);
 
             Label.LabelStyle copiedStyle = new Label.LabelStyle(nameLabel.getStyle());
             copiedStyle.fontColor = Color.GRAY;
@@ -1666,7 +1792,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             informationIsActivated || subMenuIsActivated ||
             toolsMenuIsActivated || EscMenuIsActivated ||
             setEnergyIsActivated || settingIsActivated ||
-            skillMenuIsActivated || mapIsActivated;
+            skillMenuIsActivated || mapIsActivated ||
+            NPCMenuIsActivated || questsIsActivated;
     }
 
 
@@ -1800,280 +1927,4 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     public void setIsInMine(boolean b) {
     }
-
-
-    //    public void check(Scanner scanner) throws IOException {
-//
-//        String input = scanner.nextLine();
-//
-//
-//        if (GameMenuCommands.makeNewGame.getMatcher(input) != null)
-//            controller.startNewGame(input);
-//
-//        else if (GameMenuCommands.back.getMatcher(input) != null)
-//            System.out.println(controller.backToMainMenu().massage());
-//
-//        else if ((matcher = GameMenuCommands.printMap.getMatcher(input)) != null) {
-//            System.out.println(controller.print(
-//                    Integer.parseInt(matcher.group(1).trim()),
-//                    Integer.parseInt(matcher.group(2).trim()),
-//                    Integer.parseInt(matcher.group(3).trim())));
-//        }
-//
-//        else if (GameMenuCommands.nextTurn.getMatcher(input) != null)
-//            GameControllerLogic.nextTurn();
-//
-//        else if (GameMenuCommands.openHomeMenu.getMatcher(input) != null)
-//            System.out.println(controller.goToHomeMenu() );
-//
-//        else if (GameMenuCommands.eatFood.getMatcher(input) != null)
-//            GameControllerLogic.eatFood(input);
-//
-//        else if (GameMenuCommands.recipeUnlock.getMatcher(input) != null)
-//            GameControllerLogic.unlockRecipe(input);
-//
-//        else if (GameMenuCommands.friendships.getMatcher(input) != null)
-//            GameControllerLogic.DisplayFriendships();
-//
-//        else if (GameMenuCommands.addXpCheat.getMatcher(input) != null)
-//            GameControllerLogic.cheatAddXp(input);
-//
-//        else if (GameMenuCommands.talking.getMatcher(input) != null)
-//            GameControllerLogic.talking(input);
-//
-//        else if (GameMenuCommands.hug.getMatcher(input) != null)
-//            GameControllerLogic.hug(input);
-//
-//        else if (GameMenuCommands.sendGift.getMatcher(input) != null)
-//            GameControllerLogic.sendGifts(input);
-//
-////        else if (GameMenuCommands.giftList.getMatcher(input) != null)  پاکش نکنین!
-////            System.out.println(controller.giftList().massage());
-//
-//        else if (GameMenuCommands.trade.getMatcher(input) != null) {
-//            TradeController tradeController = new TradeController();
-//            tradeController.tradeStart();
-//        }
-//        else if (GameMenuCommands.propose.getMatcher(input) != null)
-//            GameControllerLogic.propose(input);
-//
-//        else if (GameMenuCommands.giveFlower.getMatcher(input) != null)
-//            GameControllerLogic.giveFlowers(input);
-//
-//        else if (GameMenuCommands.talkHistory.getMatcher(input) != null)
-//            GameControllerLogic.DisplayingTalkHistory(input);
-//
-//        else if (GameMenuCommands.showTime.getMatcher(input) != null)
-//            System.out.println(controller.showTime());
-//
-//        else if (GameMenuCommands.showDate.getMatcher(input) != null)
-//            System.out.println(controller.showDate());
-//
-//        else if (GameMenuCommands.showDateTime.getMatcher(input) != null)
-//            System.out.println(controller.showDateTime());
-//
-//        else if (GameMenuCommands.showDayOfWeek.getMatcher(input) != null)
-//            System.out.println(controller.showDayOfWeek());
-//
-//        else if (GameMenuCommands.showSeason.getMatcher(input) != null)
-//            System.out.println(controller.showSeason());
-//
-//        else if ((matcher = GameMenuCommands.advanceTime.getMatcher(input)) != null)
-//            System.out.println(controller.increaseHour(matcher.group("hour").trim()));
-//
-//        else if ((matcher = GameMenuCommands.advanceDate.getMatcher(input)) != null)
-//            System.out.println(controller.increaseDate(matcher.group("date").trim()));
-//
-//        else if (GameMenuCommands.showWeather.getMatcher(input) != null)
-//            System.out.println(controller.showWeather(true));
-//
-//        else if (GameMenuCommands.showTomorrowWeather.getMatcher(input) != null)
-//            System.out.println(controller.showWeather(false));
-//
-//        else if ((matcher = GameMenuCommands.setWeather.getMatcher(input)) != null)
-//            System.out.println(controller.setWeather(matcher.group("Weather").trim()));
-//
-//        else if (GameMenuCommands.showEnergy.getMatcher(input) != null)
-//            System.out.println(controller.showEnergy());
-//
-//        else if ((matcher = GameMenuCommands.setEnergy.getMatcher(input)) != null)
-//            System.out.println(controller.setEnergy(matcher.group("amount").trim()));
-//
-//        else if (GameMenuCommands.energyUnlimit.getMatcher(input) != null)
-//            System.out.println(controller.EnergyUnlimited());
-//
-//        else if ((matcher = GameMenuCommands.showFruitInfo.getMatcher(input)) != null)
-//            System.out.println(controller.showFruitInfo(matcher.group("name").trim()));
-//
-//        else if (GameMenuCommands.buildGreenHouse.getMatcher(input) != null)
-//            System.out.println(controller.buildGreenHouse());
-//
-//        else if ((matcher = GameMenuCommands.planting.getMatcher(input)) != null)
-//            System.out.println(controller.planting(matcher.group("seed").trim(),
-//                    matcher.group("direction").trim()));
-//
-//        else if (GameMenuCommands.howMuchWater.getMatcher(input) != null)
-//            System.out.println(controller.howMuchWater());
-//
-//        else if ((matcher = GameMenuCommands.createThor.getMatcher(input)) != null)
-//            System.out.println(controller.thor(matcher.group("x").trim(),
-//                    matcher.group("y").trim()));
-//
-//        else if ((matcher = GameMenuCommands.showPlant.getMatcher(input)) != null)
-//            System.out.println(controller.showPlant(matcher.group("x").trim(),
-//                    matcher.group("y").trim()));
-//
-//        else if ((matcher = GameMenuCommands.fertilize.getMatcher(input)) != null)
-//            System.out.println(controller.fertilize(matcher.group("fertilizer")
-//                    .trim(), matcher.group("direction").trim()));
-//
-//        else if ((matcher = GameMenuCommands.showTreeInfo.getMatcher(input)) != null)
-//            System.out.println(controller.info(matcher.group("name").trim()));
-//
-//        else if (GameMenuCommands.questsList.getMatcher(input) != null)
-//            System.out.println(controller.questsNPCList());
-//
-//        else if (GameMenuCommands.friendshipNPCList.getMatcher(input) != null)
-//            System.out.println(controller.friendshipNPCList());
-//
-//        else if ((matcher = GameMenuCommands.meetNPC.getMatcher(input)) != null)
-//            System.out.println(controller.meetNPC(matcher.group("name").trim()));
-//
-//        else if ((matcher = GameMenuCommands.questsFinish.getMatcher(input)) != null)
-//            System.out.println(controller.doQuest(matcher.group("name").trim(),
-//                    matcher.group("index").trim()));
-//
-//        else if ((matcher = GameMenuCommands.giftNPC.getMatcher(input)) != null)
-//            System.out.println(controller.giftNPC(matcher.group("name").trim(),
-//                    matcher.group("item").trim()));
-//
-//        else if (GameMenuCommands.showTool.getMatcher(input) != null)
-//            System.out.println(controller.showCurrentTool());
-//
-//        else if (GameMenuCommands.toolsAvailable.getMatcher(input) != null)
-//            System.out.println(controller.availableTools());
-//
-//        else if ((matcher = GameMenuCommands.toolsEquip.getMatcher(input)) != null)
-//            System.out.println(controller.toolsEquip(matcher.group("name").trim()));
-//
-//
-//        else if ((matcher = GameMenuCommands.toolsUse.getMatcher(input)) != null)
-//            System.out.println(controller.useTools(matcher.group("direction").trim()));
-//
-//        else if ((matcher = GameMenuCommands.wateringPlant.getMatcher(input)) != null)
-//            System.out.println(controller.WateringPlant(matcher.group("direction").trim()));
-//
-//
-//        else if (input.matches("\\s*show\\s*current\\s*menu\\s*"))
-//            System.out.println("Game Menu");
-//
-//        else if (input.matches("\\s*exit\\s*game\\s*"))
-//            GameControllerLogic.exitGame();
-//        else if (input.matches("\\s*force\\s*terminate\\s*"))
-//            GameControllerLogic.forceTerminate();
-//
-//
-//        else if((matcher=GameMenuCommands.walk.getMatcher(input)) != null)
-//            System.out.println(controller.walk(Integer.parseInt(matcher.group(1).trim())
-//                    , Integer.parseInt(matcher.group(2).trim()) ));
-//
-//        else if((matcher=GameMenuCommands.inventoryShow.getMatcher(input)) != null)
-//            System.out.println(controller.showInventory());
-//
-//        else if((matcher=GameMenuCommands.removeItem.getMatcher(input)) != null)
-//            System.out.println(controller.removeItemToTrashcan(matcher.group(1).trim(), null));
-//
-//        else if ((matcher=GameMenuCommands.removeItemFlags.getMatcher(input)) != null)
-//            System.out.println(controller.removeItemToTrashcan(matcher.group(1).trim(), matcher.group(2).trim()) );
-//
-//        else if ((matcher=GameMenuCommands.fishing.getMatcher(input)) != null)
-//            System.out.println(controller.Fishing(matcher.group(1).trim()));
-//
-//        else if ((matcher=GameMenuCommands.pet.getMatcher(input)) != null)
-//            System.out.println(controller.pet(matcher.group(1).trim()));
-//
-//        else if ((matcher=GameMenuCommands.animals.getMatcher(input)) != null)
-//            System.out.println(controller.animals());
-//
-//        else if ((matcher=GameMenuCommands.shepherdAnimals.getMatcher(input)) != null) {
-//            System.out.println(controller.shepherdAnimals(matcher.group(2).trim()
-//                    , matcher.group(3).trim() , matcher.group(1).trim()));
-//        }
-//
-//        else if ((matcher=GameMenuCommands.feedHay.getMatcher(input)) != null)
-//            System.out.println(controller.feedHay(matcher.group("name").trim()));
-//
-//        else if ((matcher=GameMenuCommands.produces.getMatcher(input)) != null)
-//            System.out.println(controller.produces());
-//
-//        else if ((matcher=GameMenuCommands.collectProduct.getMatcher(input)) != null)
-//            System.out.println(controller.getProductAnimals(matcher.group("name").trim()));
-//
-//        else if ((matcher=GameMenuCommands.sellAnimal.getMatcher(input)) != null)
-//            System.out.println(controller.sellAnimal(matcher.group("name").trim()));
-//
-//        else if ((matcher=GameMenuCommands.placeItem.getMatcher(input)) != null)
-//            System.out.println(controller.placeItem(matcher.group("name").trim() , matcher.group(2).trim()));
-//
-//        else if ((matcher=GameMenuCommands.artisan.getMatcher(input)) != null)
-//            System.out.println(controller.ArtisanUse(matcher.group(1).trim() , matcher.group(2).trim() , null));
-//
-//        else if ((matcher=GameMenuCommands.artisanUse.getMatcher(input)) != null)
-//            System.out.println(controller.ArtisanUse(matcher.group(1).trim() , matcher.group(2).trim() , matcher.group(3).trim() ));
-//
-//        else if ((matcher=GameMenuCommands.artisanGet.getMatcher(input)) != null)
-//            System.out.println(controller.ArtisanGetProduct(matcher.group(1).trim()));
-//
-//        else if ((matcher=GameMenuCommands.sellByCount.getMatcher(input)) != null)
-//            System.out.println(controller.sell(matcher.group("name").trim() , Integer.parseInt(matcher.group(2).trim()) ));
-//
-//        else if ((matcher=GameMenuCommands.sell.getMatcher(input)) != null)
-//            System.out.println(controller.sell(matcher.group("name").trim() , -1));
-//
-//        else if ((matcher=GameMenuCommands.cheatSetFriendship.getMatcher(input)) != null)
-//            System.out.println(controller.cheatSetFriendship(matcher.group(1).trim() , Integer.parseInt(matcher.group(2).trim()) ));
-//
-//        else if ((matcher=GameMenuCommands.addDollar.getMatcher(input)) != null)
-//            System.out.println(controller.addDollar(Integer.parseInt(matcher.group(1).trim())));
-//
-//        else if ((matcher=GameMenuCommands.setDollar.getMatcher(input)) != null)
-//            System.out.println(controller.setDollar(Integer.parseInt(matcher.group(1).trim())));
-//
-//        else if ((matcher=GameMenuCommands.addItem.getMatcher(input)) != null)
-//            System.out.println(controller.addItem(matcher.group(1) , Integer.parseInt(matcher.group(2).trim())));
-//
-//        else if ((matcher=GameMenuCommands.MarketMenu.getMatcher(input)) != null)
-//            System.out.println(controller.goToMarketMenu());
-//
-//        else if (input.matches("\\s*plant\\s*"))
-//            controller.plantCreator();
-//
-//
-//        else if ((matcher = GameMenuCommands.getGameObject.getMatcher(input)) != null)
-//            System.out.println(controller.getObject(matcher.group("dir").trim()));
-//        else if ((matcher = GameMenuCommands.getGameObject2.getMatcher(input)) != null)
-//            System.out.println(controller.getObject2(matcher.group("x").trim(), matcher.group("y").trim()));
-//
-//        else if (input.matches("(i?)\\s*print\\s*"))
-//            System.out.println(controller.print(0, 0, 30));
-//
-//        else if (input.matches("(i?)\\s*print\\s*all\\s*"))
-//            System.out.println(controller.print(0, 0, 90));
-//
-//        else if ((matcher = GameMenuCommands.remove.getMatcher(input)) != null)
-//            controller.remove(Integer.parseInt(matcher.group(1)));
-//
-//        else if (input.matches("(?i)\\s*add\\s*money\\s*"))
-//            currentGame.currentPlayer.increaseMoney(10000);
-//
-//        else if (input.matches("\\s*clear\\s*"))
-//            controller.clear();
-//
-//        else if (input.matches("\\s*plow\\s*"))
-//            controller.plow();
-//
-//        else
-//            System.out.println(RED+"Invalid Command, Try Again"+RESET);
-//
-//    }
 }

@@ -4,8 +4,14 @@ import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
 
 public class BasicRock extends Items {
-    //این کلاس برای سنگ عادی اول بازی زده شده.
+
     public static final int price=20;
+
+
+    public BasicRock() {
+        super.setTextureHeight(0.7f);
+        super.setTextureWidth(0.7f);
+    }
 
     @Override
     public String getIcon() {

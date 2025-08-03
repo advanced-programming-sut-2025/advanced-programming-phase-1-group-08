@@ -2868,85 +2868,49 @@ public class GameControllerLogic {
             }
         currentGame.currentPlayer = saveUser;
     }
-    public static String padRight(String text, int length) {
-
-        if (text.length() >= length)
-            return text.substring(0, length);
-
-        return text + " ".repeat(length - text.length());
-    }
     public static String OneNPCQuestsList (NPC npc) {
 
         StringBuilder sb = new StringBuilder();
 
-        int width = 100;
-        String title = BRIGHT_BLUE + npc.getName() + RESET;
+        String title = npc.getName();
         String quest2;
         String quest3;
+
         ArrayList<String> requests = new ArrayList<>();
         ArrayList<Integer> numbers = new ArrayList<>(npc.getRequests().values());
 
         for (Items item : npc.getRequests().keySet())
             requests.add(item.getName());
 
+        sb.append(title).append("\n\n");
 
-        String str = BRIGHT_PURPLE + "|" + RESET;
-        String check = BLUE + "|" + RESET;
-
-        int padding = (width - 2 - title.length()) / 2;
-        sb.append(str)
-            .append(" ".repeat(padding + 3))
-            .append(title)
-            .append(" ".repeat(padding + 6))
-            .append(str).append("\n");
-
-        sb.append(str).append(" ".repeat(width - 2)).append(str).append("\n");
-        sb.append(str).append(" ".repeat(width - 2)).append(str).append("\n");
-
-
-
-        sb.append(str).append(" ").append(padRight(BRIGHT_GREEN+"Quest 1 "+RESET+":", width + 6)).append(str).append("\n");
-        sb.append(str).append(" ".repeat(width - 2)).append(str).append("\n");
-
-        String result = BRIGHT_CYAN + numbers.getFirst()+" "+requests.getFirst() + BRIGHT_BLACK + " ---> " + BRIGHT_YELLOW + npc.getReward(1);
-        sb.append(str).append(" ".repeat(10)).append(padRight(result, width + 3)).append(str).append("\n");
-        sb.append(str).append(" ".repeat(width - 2)).append(str).append("\n");
-
-
+        sb.append("Quest 1:\n");
+        sb.append(numbers.getFirst()).append(" ").append(requests.getFirst())
+            .append("  --->  ").append(npc.getReward(1)).append("\n\n");
 
         if (currentGame.currentPlayer.getFriendshipLevel(npc) >= 1)
-            quest2 = BRIGHT_GREEN+"Quest 2 "+RESET+":";
+            quest2 = "Quest 2:";
         else
-            quest2 = BRIGHT_GREEN+"Quest 2 " + RESET + ": " + RED + "(unlock at friendship level 1)" + RESET;
+            quest2 = "Quest 2: (unlock at friendship level 1)";
 
-        sb.append(str).append(" ").append(padRight(quest2, width + 15)).append(str).append("\n");
-        sb.append(str).append(" ".repeat(width - 2)).append(str).append("\n");
-
-        String result2 = BRIGHT_CYAN +numbers.get(1)+" "+requests.get(1) + BRIGHT_BLACK + " ---> " + BRIGHT_YELLOW + npc.getReward(2);
-        sb.append(str).append(" ".repeat(10)).append(padRight(result2, width + 3)).append(str).append("\n");
-        sb.append(str).append(" ".repeat(width - 2)).append(str).append("\n");
-
-
-
+        sb.append(quest2).append("\n");
+        sb.append(numbers.get(1)).append(" ").append(requests.get(1))
+            .append("  --->  ").append(npc.getReward(2)).append("\n\n");
 
         int dif = getDayDifferent(currentGame.currentPlayer.getLevel3Date(npc), currentGame.currentDate);
 
         if (currentGame.currentPlayer.getFriendshipLevel(npc) >= 3) {
             if (dif > npc.getRequest3DayNeeded())
-                quest3 = BRIGHT_GREEN+"Quest 3 "+RESET+":";
+                quest3 = "Quest 3:";
             else
-                quest3 = BRIGHT_GREEN+"Quest 3 " + RESET + ": " + RED + "(unlock in " + (npc.getRequest3DayNeeded()-dif) + " days later)" + RESET;
+                quest3 = "Quest 3: (unlock in " + (npc.getRequest3DayNeeded() - dif) + " days)";
+        } else {
+            quest3 = "Quest 3: (unlock at friendship level 3)";
         }
-        else
-            quest3 = BRIGHT_GREEN+"Quest 3 " + RESET + ": " + RED + "(unlock at friendship level 3)" + RESET;
 
-        sb.append(str).append(" ").append(padRight(quest3, width + 15)).append(str).append("\n");
-        sb.append(str).append(" ".repeat(width - 2)).append(str).append("\n");
-
-        String result3 = BRIGHT_CYAN +numbers.get(2)+" "+requests.get(2) + BRIGHT_BLACK +" ---> " + BRIGHT_YELLOW +npc.getReward(3);
-        sb.append(str).append(" ".repeat(10)).
-            append(padRight(result3, width + 3)).append(str).append("\n");
-        sb.append(str).append(" ".repeat(width - 2)).append(str).append("\n");
+        sb.append(quest3).append("\n");
+        sb.append(numbers.get(2)).append(" ").append(requests.get(2))
+            .append("  --->  ").append(npc.getReward(3)).append("\n");
 
         return sb.toString();
     }
@@ -2964,9 +2928,7 @@ public class GameControllerLogic {
         String result = str + "Level : " + currentGame.currentPlayer.getFriendshipLevel(npc) +
             "       point : " + currentGame.currentPlayer.getFriendshipPoint(npc);
 
-        return RED+"|" + " ".repeat(width - 2) + "|\n" +
-            "| " +BRIGHT_BLUE + padRight(npc.getName() +RESET+ " : " + BRIGHT_GREEN +
-            result, width + 6) + RED + "|\n" + RESET;
+        return npc.getName() + " : " + result;
     }
     public static Result doTask1 (NPC npc) {
 

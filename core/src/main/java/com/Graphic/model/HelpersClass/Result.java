@@ -7,7 +7,4 @@ public record Result(boolean IsSuccess, String massage) {
         return massage;
     }
 
-    public String getMessage() {
-        return "sa";
-    }
 }

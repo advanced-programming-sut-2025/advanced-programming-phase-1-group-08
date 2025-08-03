@@ -1,6 +1,7 @@
 package com.Graphic.model.Enum;
 
 import com.Graphic.model.*;
+import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.Enum.AllPlants.CropsType;
@@ -8,10 +9,13 @@ import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.OtherItem.ArtisanProduct;
 import com.Graphic.model.OtherItem.BarsAndOres;
 import com.Graphic.model.Places.MarketItem;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public enum NPC {
 
@@ -335,6 +339,7 @@ public enum NPC {
         }
     };
 
+
     private final String name;
     private final int Width;
     private final int Hight;
@@ -343,6 +348,11 @@ public enum NPC {
     private final Items giftItem;
     private final int request3DayNeeded;
     private final LinkedHashMap<Items, Integer> Request;
+
+    private float positionX;
+    private float positionY;
+
+    private long lastConversation;
 
 
     public abstract boolean isItFavorite (Items items);
@@ -361,37 +371,9 @@ public enum NPC {
         this.topLeftY = topLeftY;
         this.giftItem = giftItem;
         this.request3DayNeeded = request3DayNeeded;
-    }
 
-    public String getName() {
-
-        return name;
-    }
-
-
-    public boolean isInHisHome (int x, int y) {
-
-        return x > this.topLeftX && x < this.topLeftX + this.Width &&
-                y > this.topLeftY && y < this.topLeftY + this.Hight;
-    }
-
-    public int getWidth() {
-        return Width;
-    }
-    public int getHeight() {
-        return Hight;
-    }
-    public int getTopLeftX() {
-        return topLeftX;
-    }
-    public int getTopLeftY() {
-        return topLeftY;
-    }
-    public String getIconPath() {
-        return "Erfan/NPC_Avatar/" + this.name + ".png";
-    }
-    public Items getGiftItem() {
-        return giftItem;
+        this.positionX = topLeftX;
+        this.positionY = (90 - topLeftY);
     }
 
     public static NPC wallOrDoor (int x, int y) {
@@ -412,6 +394,38 @@ public enum NPC {
         return null;
     }
 
+    public boolean isTileCloseToNPC (int x, int y) {
+
+        int delX = Math.abs(x - this.getX());
+        int delY = Math.abs(y - this.getY());
+
+        return delX < 4 && delY < 4;
+    }
+
+    public String getName() {
+
+        return name;
+    }
+    public int getWidth() {
+        return Width;
+    }
+    public int getHeight() {
+        return Hight;
+    }
+    public int getTopLeftX() {
+        return topLeftX;
+    }
+    public int getTopLeftY() {
+        return topLeftY;
+    }
+    public String getIconPath() {
+        return "Erfan/NPC_Avatar/" + this.name + ".png";
+    }
+
+    public Items getGiftItem() {
+        return giftItem;
+    }
+
     public int getRequest3DayNeeded() {
 
         return request3DayNeeded;
@@ -421,4 +435,27 @@ public enum NPC {
         return Request;
     }
 
+    public int getY() {
+        return (int) (90 - (positionY / TEXTURE_SIZE));
+    }
+    public void setY(int y) {
+        positionY = (90 - y) * TEXTURE_SIZE;
+    }
+    public int getX() {
+        return (int) (positionX / TEXTURE_SIZE);
+    }
+    public void setX(int x) {
+        positionX = x * TEXTURE_SIZE;
+    }
+    public void setPosition(Tile tile) {
+        positionX = tile.getX() * TEXTURE_SIZE;
+        positionY = tile.getY() * TEXTURE_SIZE;
+    }
+
+    public boolean canTalk () {
+        return TimeUtils.millis() - this.lastConversation > 10000;
+    }
+    public void setLastConversation(long lastConversation) {
+        this.lastConversation = lastConversation;
+    }
 }

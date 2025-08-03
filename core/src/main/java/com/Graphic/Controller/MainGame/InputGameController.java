@@ -1,20 +1,17 @@
 package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
-import com.Graphic.View.GameMenus.GameMenu;
-import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.*;
+import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.HelpersClass.Result;
-import com.Graphic.model.HelpersClass.SFX;
-import com.Graphic.model.HelpersClass.SFXManager;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.*;
 import com.Graphic.model.OtherItem.*;
@@ -31,7 +28,6 @@ import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -40,8 +36,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -49,18 +46,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import java.awt.*;
 import java.io.IOException;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,11 +63,11 @@ import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.View.GameMenus.GameMenu.camera;
 import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
+import static com.Graphic.model.Enum.NPC.Abigail;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 import static com.badlogic.gdx.Input.Keys.ENTER;
-import static com.badlogic.gdx.Input.Keys.T;
 
 
 public class InputGameController {
@@ -94,38 +87,46 @@ public class InputGameController {
     public void init () {
         GameControllerLogic.init();
         currentGame.currentPlayer.setInFarmExterior(true);
+
+        Abigail.setX((int) currentGame.currentPlayer.getPositionX() / TEXTURE_SIZE);
+        Abigail.setY((int) currentGame.currentPlayer.getPositionY() / TEXTURE_SIZE - 3); // TODO
     }
-    public void update(OrthographicCamera camera, float v) {
+    public void update(OrthographicCamera camera, float v, Boolean menuActivated) {
 
-        if (currentGame.currentPlayer.isInFarmExterior()) {
-            updateMove();
-            print();
-            moveCamera(camera);
-            GameControllerLogic.update(v);
-            showSelectBoxOnCrafting();
-        }
-        if (currentGame.currentPlayer.isInBarnOrCage()) {
-            walkInBarnOrCage();
-            showAnimalsInBarnOrCage();
-        }
-        if (currentGame.currentPlayer.isInMine()) {
-            walkInBarnOrCage();
-        }
-        createAnimalInformationWindow(showAnimalInfo());
-        effectAfterPetAnimal();
-        openArtisanMenu();
-        placeItem();
-        placeBomb(CraftingItem.Bombing);
-        useSprinkler(CraftingItem.currentSprinkler);
-        showForagingMinerals(currentGame.currentPlayer.getFarm().getMine());
-        showSellMenu();
+        if (!menuActivated) {
+            if (currentGame.currentPlayer.isInFarmExterior()) {
+                updateMove();
+                print();
+                moveCamera(camera);
+                GameControllerLogic.update(v);
+                showSelectBoxOnCrafting();
+            }
+            if (currentGame.currentPlayer.isInBarnOrCage()) {
+                walkInBarnOrCage();
+                showAnimalsInBarnOrCage();
+            }
+            if (currentGame.currentPlayer.isInMine()) {
+                walkInBarnOrCage();
+            }
+            createAnimalInformationWindow(showAnimalInfo());
+            effectAfterPetAnimal();
+            openArtisanMenu();
+            placeItem();
+            placeBomb(CraftingItem.Bombing);
+            useSprinkler(CraftingItem.currentSprinkler);
+            showForagingMinerals(currentGame.currentPlayer.getFarm().getMine());
+            showSellMenu();
 
-        for (int i = 0  ; i < 90 ; i ++) {
-            for (int j = 0; j < 90 ; j ++) {
-                if (getTileByCoordinates(i, j).getGameObject() instanceof CraftingItem) {
-                    showProgressOnArtisans((CraftingItem) getTileByCoordinates(i,j).getGameObject());
+            for (int i = 0; i < 90; i++) {
+                for (int j = 0; j < 90; j++) {
+                    if (getTileByCoordinates(i, j).getGameObject() instanceof CraftingItem) {
+                        showProgressOnArtisans((CraftingItem) getTileByCoordinates(i, j).getGameObject());
+                    }
                 }
             }
+        } else {
+            if (currentGame.currentPlayer.isInFarmExterior())
+                print();
         }
     }
 
@@ -1725,10 +1726,10 @@ public class InputGameController {
 
     }
     public Result backToMainMenu () {
-        if (App.currentUser.isCurrently_in_game())
+        if (currentUser.isCurrently_in_game())
             return new Result(false, RED+"You Are Currently in a Game!"+RESET);
         else {
-            currentMenu = com.Graphic.model.Enum.Menu.MainMenu;
+            currentMenu = Menu.MainMenu;
             return new Result(true, GREEN+"Returned to Main Menu."+RESET);
         }
     }
@@ -2509,98 +2510,197 @@ public class InputGameController {
         return new Result(false, RED + "please pick up a tools" + RESET);
     }
 
-                                                                    // input NPC command
-    public Result meetNPC (String name) {
+                                                                      // input NPC command
+    public NPC findNPC () {
 
-//        NPC npc;
-//        try {
-//            npc = NPC.valueOf(name);
-//        } catch (Exception e) {
-//            return new Result(false, RED+"You're looking for someone who isn't real"+RESET);
-//        }
-//
-//        if (!npc.isInHisHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY()))
-//            return new Result(false, RED+"You should go to their place first"+RESET);
-//
-//        if (!currentGame.currentPlayer.getTodayTalking(npc)) {
-//            currentGame.currentPlayer.setTodayTalking(npc,true);
-//            currentGame.currentPlayer.increaseFriendshipPoint(npc, 20);
-//        }
-//
-//        return new Result(true, npc.getName() + " : " + BLUE +
-//                npc.getDialogue(currentGame.currentPlayer.getFriendshipLevel(npc), currentGame.currentWeather)+RESET);
-        return null;
+        User player = currentGame.currentPlayer;
+        NPC npc = null;
+
+        for (NPC npc1 : NPC.values())
+            if (npc1.isTileCloseToNPC((int) player.getPositionX() / TEXTURE_SIZE, (int) player.getPositionY() / TEXTURE_SIZE))
+                npc = npc1;
+
+        return npc;
     }
-    public Result giftNPC (String name, String itemName) {
+    public boolean checkForNPC () {
 
-        NPC npc;
-        try {
-            npc = NPC.valueOf(name);
-        } catch (Exception e) {
-            return new Result(false, RED+"You're looking for someone who isn't real"+RESET);
+        User player = currentGame.currentPlayer;
+        NPC npc = null;
+
+        for (NPC npc1 : NPC.values())
+            if (npc1.isTileCloseToNPC((int) player.getPositionX() / TEXTURE_SIZE, (int) player.getPositionY() / TEXTURE_SIZE))
+                npc = npc1;
+
+        return npc != null;
+    }
+    public void meetNPC (Stage stage, NPC npc) {
+
+        User player = currentGame.currentPlayer;
+
+        if (!player.getTodayTalking(npc)) {
+            player.setTodayTalking(npc,true);
+            player.increaseFriendshipPoint(npc, 20);
+        }
+        int level = player.getFriendshipLevel(npc);
+        drawNPCDialogue(stage, npc, level, currentGame.currentWeather);
+        npc.setLastConversation(System.currentTimeMillis());
+
+    }
+    private void drawNPCDialogue(Stage stage, NPC npc, int friendshipLevel, Weather weather) {
+
+        String iconPath = npc.getIconPath();
+        Texture npcTexture = TextureManager.get(iconPath);
+        Image npcImage = new Image(new TextureRegionDrawable(new TextureRegion(npcTexture)));
+        npcImage.setSize(64, 64);
+
+        Label.LabelStyle style = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        style.fontColor = Color.WHITE;
+
+        Label nameLabel = new Label(npc.getName(), style);
+
+        Label.LabelStyle style1 = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        style1.fontColor = Color.GRAY;
+
+        String dialogue = npc.getDialogue(friendshipLevel, weather);
+        Label dialogueLabel = new Label(dialogue, style1);
+        dialogueLabel.setWrap(true);
+        dialogueLabel.setWidth(300);
+
+
+        Window dialogueWindow = new Window("", newSkin);
+        dialogueWindow.setMovable(false);
+        dialogueWindow.pad(10);
+
+        Table contentTable = new Table();
+        contentTable.top().left();
+        contentTable.defaults().left().pad(5);
+
+        contentTable.add(npcImage).size(64, 64);
+        contentTable.add(nameLabel).left().top().padLeft(10);
+        contentTable.row();
+
+        contentTable.add(dialogueLabel).colspan(2).width(300).left().top();
+        contentTable.row();
+
+        dialogueWindow.add(contentTable).left().top();
+        dialogueWindow.pack();
+        dialogueWindow.setPosition(10, stage.getHeight() - dialogueWindow.getHeight() - 7);
+
+        dialogueWindow.addAction(
+            Actions.sequence(
+                Actions.delay(3f),
+                Actions.fadeOut(0.5f),
+                Actions.removeActor()
+            )
+        );
+
+        stage.addActor(dialogueWindow);
+    }
+    public void giftNPC (Items item, Stage stage, NPC npc) {
+
+        User player = currentGame.currentPlayer;
+
+        if (npc == null) {return;}
+
+        if (item == null) {
+            createGiftMenu(new Result(false, "You can only gift items from the market, crops and fruit"), stage, npc);
+            return;
         }
 
-//        if (!npc.isInHisHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY()))
-//            return new Result(false, RED+"You should go to their place first"+RESET);
+        Inventory inventory = player.getBackPack().inventory;
 
-        Items item = AllFromDisplayNames(itemName);
 
-        if (item == null)
-            return new Result(false, RED+"You can only gift items from the market, crops and fruit"+RESET);
+        if (!inventory.Items.containsKey(item)) {
+            createGiftMenu(new Result(false, "You don't have this item"), stage, npc);
+            return;
+        }
 
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        if (item instanceof Tools) {
+            createGiftMenu(new Result(false, "you can't gift tools"), stage, npc);
+            return;
+        }
 
-        if (!inventory.Items.containsKey(item))
-            return new Result(false, RED+"You don't have this item"+RESET);
-
-        if (item instanceof Tools)
-            return new Result(false, RED + "you can't gift tools" + RESET);
         advanceItem(item, -1);
 
-        if (!currentGame.currentPlayer.getTodayGifting(npc)) {
+        if (!player.getTodayGifting(npc)) {
 
             if (npc.isItFavorite(item))
-                currentGame.currentPlayer.increaseFriendshipPoint(npc, 200);
+                player.increaseFriendshipPoint(npc, 200);
             else
-                currentGame.currentPlayer.increaseFriendshipPoint(npc, 50);
+                player.increaseFriendshipPoint(npc, 50);
         } else {
 
             if (npc.isItFavorite(item))
-                currentGame.currentPlayer.increaseFriendshipPoint(npc, 50);
+                player.increaseFriendshipPoint(npc, 50);
             else
-                currentGame.currentPlayer.increaseFriendshipPoint(npc, 15);
+                player.increaseFriendshipPoint(npc, 15);
         }
-        currentGame.currentPlayer.setTodayGifting(npc, true);
-        return new Result(false, BRIGHT_BLUE+"Your gift successfully sent to "
-                + BRIGHT_GREEN + npc.getName() + RESET);
+        player.setTodayGifting(npc, true);
+        createGiftMenu (new Result(true, "Your gift successfully sent to " + npc.getName()), stage, npc);
     }
-    public Result questsNPCList () {
+    private void createGiftMenu (Result message, Stage stage, NPC npc) {
+
+        String iconPath = npc.getIconPath();
+        Texture npcTexture = TextureManager.get(iconPath);
+        Image npcImage = new Image(new TextureRegionDrawable(new TextureRegion(npcTexture)));
+        npcImage.setSize(64, 64);
+
+        Label.LabelStyle style = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        style.fontColor = Color.WHITE;
+
+        Label nameLabel = new Label(npc.getName(), style);
+
+        Label.LabelStyle style1 = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+
+        if (message.IsSuccess())
+            style1.fontColor = Color.GREEN;
+        else
+            style1.fontColor = Color.RED;
+
+        Label dialogueLabel = new Label(message.massage(), style1);
+        dialogueLabel.setWrap(true);
+        dialogueLabel.setWidth(400);
+
+
+        Window dialogueWindow = new Window("", newSkin);
+        dialogueWindow.setMovable(false);
+        dialogueWindow.pad(10);
+
+        Table contentTable = new Table();
+        contentTable.top().left();
+        contentTable.defaults().left().pad(5);
+
+        contentTable.add(npcImage).size(64, 64);
+        contentTable.add(nameLabel).left().top().padLeft(10);
+        contentTable.row();
+
+        contentTable.add(dialogueLabel).colspan(2).width(300).left().top();
+        contentTable.row();
+
+        dialogueWindow.add(contentTable).left().top();
+        dialogueWindow.pack();
+        dialogueWindow.setPosition(10, stage.getHeight() - dialogueWindow.getHeight() - 7);
+
+        dialogueWindow.addAction(
+            Actions.sequence(
+                Actions.delay(3f),
+                Actions.fadeOut(0.5f),
+                Actions.removeActor()
+            )
+        );
+
+        stage.addActor(dialogueWindow);
+    }
+    public String questsNPCList () {
 
         StringBuilder sb = new StringBuilder();
-
-        sb.append("+").append(BRIGHT_PURPLE).append("-".repeat(100 - 2)).append(RESET).append("+\n");
 
         for (NPC npc : NPC.values())
             sb.append(OneNPCQuestsList(npc));
 
-        sb.append("+").append(BRIGHT_PURPLE).append("-".repeat(100 - 2)).append(RESET).append("+");
-
-        return new Result(true, sb.toString());
+        return sb.toString();
     }
-    public Result friendshipNPCList () {
 
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("+").append(RED).append("-".repeat(60 - 2)).append(RESET).append("+\n");
-
-        for (NPC npc : NPC.values())
-            sb.append(OneNPCFriendshipList(npc));
-
-        sb.append(RED + "|").append(" ".repeat(60 - 2)).append("|\n").
-                append(RESET).append("+").append(RED).append("-".repeat(60 - 2)).append(RESET).append("+");
-
-        return new Result(true, sb.toString());
-    }
     public Result doQuest (String name, String index) {
 
         int ID;

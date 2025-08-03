@@ -32,8 +32,8 @@ public class Wall extends GameObject {
             return Path ="Places/wall1.png";
         }
         else if (index == 1) {
-            super.setTextureWidth(1);
-            super.setTextureHeight(2);
+            super.setTextureWidth(0.7f);
+            super.setTextureHeight(1.5f);
             return Path ="Places/wall2.png";
         }
         return null;
