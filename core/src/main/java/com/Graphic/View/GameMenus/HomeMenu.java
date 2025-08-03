@@ -25,25 +25,23 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.HomeController.*;
 import static com.Graphic.View.GameMenus.GameMenu.helperBackGround;
 import static com.Graphic.model.App.*;
+import static com.Graphic.model.Recipe.createAllRecipes;
 
 public class HomeMenu extends AppView implements AppMenu, Screen {
     private static boolean test = false;
@@ -86,6 +84,8 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     Texture kitchenChair;
     Texture bedroomCarpet;
 
+    Group cookingGroup;
+    Group craftingGroup;
 
 
     private boolean fridgeIsActivated;
@@ -117,6 +117,13 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     HomeController homeController=new HomeController();
 
     public void showRecipes () {
+        TextureRegion recipePaper2 = new TextureRegion(recipePaper, 0, recipePaper.getHeight()/1000, recipePaper.getWidth(), (recipePaper.getHeight()*100)/512);
+        Image recipePaperImage = new Image(recipePaper2);
+        recipePaperImage.setPosition((float) (startX * 6) / 10, (float) (startY * 3) / 10);
+        recipePaperImage.setSize(startX + areaWidth, startY + areaHeight);
+        cookingGroup.addActor(recipePaperImage);
+
+
         int tileSize = 120;
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
@@ -129,7 +136,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
         Label letsCook = new Label("What Are You Cooking?", skin);
         letsCook.setPosition((float) (startX + (float) areaWidth*2.2/7), startY + (float) (areaHeight * 11) /10);
-        stage.addActor(letsCook);
+        cookingGroup.addActor(letsCook);
 
         float x = 0, y = 0; // فرض بر اینه که قبلاً تعریف شده
         for (int i = 0; i < FoodTypes.values().length; i++) {
@@ -146,18 +153,66 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             image.setPosition(imageX, imageY);
 
             if (!usable) {
-                image.setColor(1, 1, 1, 0.3f); // شفافیت پایین برای غیرقابل استفاده
+                image.setColor(1, 1, 1, 0.3f);
                 l.setColor(Color.LIGHT_GRAY);
             } else {
-                l.setColor(Color.GRAY);
+                l.setColor(Color.DARK_GRAY);
             }
 
-            // لیسنر کلیک
+
             image.addListener(new ClickListener() {
+                private boolean longPressTriggered = false;
+                private Timer.Task longPressTask;
+
                 @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Result result = foodPrepare(f.getName());
-                    showTimedDialog(result.massage(), 2f, stage);
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    longPressTriggered = false;
+
+                    if (longPressTask != null) {
+                        longPressTask.cancel();
+                    }
+
+                    longPressTask = Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            if (!longPressTriggered) {
+                                longPressTriggered = true;
+                                // Long Press
+                                showThisOnesRecipe(f);
+                            }
+                        }
+                    }, 0.5f);
+
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    if (longPressTask != null) {
+                        longPressTask.cancel();
+                        longPressTask = null;
+                    }
+
+                    if (!longPressTriggered) {
+                        // Simple Click
+                        Result result = foodPrepare(f.getName());
+                        showTimedDialog(result.massage(), 2f, stage);
+                    }
+                    super.touchUp(event, x, y, pointer, button);
+                }
+
+            });
+            image.addListener(new InputListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    if (usable) {
+                        image.setColor(0.3f, 0.3f, 0.3f, 0.3f);
+                    }
+                }
+                public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    if (usable) {
+                        image.setColor(1, 1, 1, 1f);
+                    }
                 }
             });
 
@@ -165,11 +220,14 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             l.setPosition(imageX, startY + (float) (areaHeight * 8.3) / 10 - y);
             l.setFontScale(0.5f);
 
-            // اضافه کردن به استیج
-            stage.addActor(image);
-            stage.addActor(l);
+            if (!usable) {
+                image.setColor(0.5f, 0.5f, 0.5f, 0.6f); // رنگ خاکستری تیره
+            }
 
-            // مدیریت موقعیت‌ها
+            cookingGroup.addActor(image);
+            cookingGroup.addActor(l);
+
+
             if (x < areaWidth * 7 / 10f) {
                 x += 2 * tileSize;
             } else {
@@ -178,10 +236,48 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             }
         }
 
+        stage.addActor(cookingGroup);
+    }
 
+    private void showThisOnesRecipe(FoodTypes f) {
+        Recipe recipe = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(f.getName()).append("\n\n");
+        java.util.List<Recipe> recipeList = createAllRecipes();
+
+        for (Recipe r : recipeList) {
+            if (r.getName().equals(f.getName())) {
+                recipe = r;
+                break;
+            }
+        }
+
+        if (recipe == null) return;
+
+        HashMap<Items, Integer> ingredients = recipe.getIngredients();
+        for (Map.Entry<Items, Integer> entry : ingredients.entrySet()) {
+            Items item = entry.getKey();
+            int count = entry.getValue();
+
+            String itemName = item.getName();
+
+            stringBuilder.append(itemName)
+                .append(" : ")
+                .append(count)
+                .append("\n");
+        }
+
+        showTimedDialog(stringBuilder.toString(), 4f, stage);
     }
 
     private void showCraftings () {
+        TextureRegion recipePaper2 = new TextureRegion(recipePaper, 0, recipePaper.getHeight()/1000, recipePaper.getWidth(), (recipePaper.getHeight()*100)/512);
+        Image recipePaperImage = new Image(recipePaper2);
+        recipePaperImage.setPosition((float) (startX * 6) / 10, (float) (startY * 3) / 10);
+        recipePaperImage.setSize(startX + areaWidth, startY + areaHeight);
+        craftingGroup.addActor(recipePaperImage);
+
+
         int tileSize = 120;
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
@@ -194,9 +290,9 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
         Label craftMenu = new Label("Craft Menu", skin);
         craftMenu.setPosition((float) (startX + (float) areaWidth*2.5/7), startY + (float) (areaHeight * 11) /10);
-        stage.addActor(craftMenu);
+        craftingGroup.addActor(craftMenu);
 
-        float x = 0, y = 0; // فرض بر اینه که قبلاً تعریف شده
+        float x = 0, y = 0;
         for (int i = 0; i < CraftType.values().length; i++) {
             CraftType c = CraftType.values()[i];
             Texture t = new Texture(Gdx.files.internal(c.getAddress()));
@@ -209,44 +305,103 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
                     type = craftType;
                 }
             }
-            boolean usable = true;
+            boolean usable;
             if (type == null) {
                 continue;
             }
             if (!type.checkLevel()) {
                 usable = false;
+            } else {
+                usable = true;
             }
 
-            // موقعیت تصویر
             float imageX = startX + x;
             float imageY = startY + (float) (areaHeight * 9) / 10 - y;
             image.setPosition(imageX, imageY);
 
             if (!usable) {
-                image.setColor(1, 1, 1, 0.3f); // شفافیت پایین برای غیرقابل استفاده
+                image.setColor(1, 1, 1, 0.3f);
                 l.setColor(Color.LIGHT_GRAY);
             } else {
-                l.setColor(Color.GRAY);
+                l.setColor(Color.DARK_GRAY);
             }
 
-            // لیسنر کلیک
+
+
             image.addListener(new ClickListener() {
+                private boolean longPressTriggered = false;
+                private Timer.Task longPressTask;
+
                 @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Result result = craftingController.craftingCraft(c.getName());
-                    showTimedDialog(result.massage(), 2f,  stage);
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    longPressTriggered = false;
+
+                    if (longPressTask != null) {
+                        longPressTask.cancel();
+                    }
+
+                    longPressTask = Timer.schedule(new Timer.Task() {
+                        @Override
+                        public void run() {
+                            if (!longPressTriggered) {
+                                longPressTriggered = true;
+                                // Long Press
+                                Result result = craftingController.showCraftingRecipe(c);
+                                showTimedDialog(result.massage(), 4f, stage);
+                            }
+                        }
+                    }, 0.5f);
+
+                    return super.touchDown(event, x, y, pointer, button);
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    if (longPressTask != null) {
+                        longPressTask.cancel();
+                        longPressTask = null;
+                    }
+
+                    if (!longPressTriggered) {
+                        // Simple Click
+                        Result result = craftingController.craftingCraft(c.getName());
+                        showTimedDialog(result.massage(), 2f,  stage);
+                    }
+                    super.touchUp(event, x, y, pointer, button);
+                }
+
+            });
+            image.addListener(new InputListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    if (usable) {
+                        image.setColor(0.3f, 0.3f, 0.3f, 0.3f);
+                    }
+                }
+                public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    if (usable) {
+                        image.setColor(1, 1, 1, 1f);
+                    }
                 }
             });
 
-            // موقعیت لیبل
-            l.setPosition(imageX, startY + (float) (areaHeight * 8.5) / 10 - y);
+
+
+
+
+
+            l.setPosition(imageX, startY + (float) (areaHeight * 8.3) / 10 - y);
             l.setFontScale(0.5f);
+            image.setSize(image.getWidth(), image.getHeight()/1.2f);
 
-            // اضافه کردن به استیج
-            stage.addActor(image);
-            stage.addActor(l);
+            if (!usable) {
+                image.setColor(0.5f, 0.5f, 0.5f, 0.6f);
+            }
 
-            // مدیریت موقعیت‌ها
+
+            craftingGroup.addActor(image);
+            craftingGroup.addActor(l);
+
             if (x < areaWidth * 7 / 10f) {
                 x += 2 * tileSize;
             } else {
@@ -254,6 +409,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
                 y += tileSize;
             }
         }
+        stage.addActor(craftingGroup);
     }
 
 
@@ -304,6 +460,10 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 // محاسبه‌ی موقعیت ناحیه مرکزی
         startX = (screenWidth - areaWidth) / 2;
         startY = (screenHeight - areaHeight) / 2;
+
+
+        cookingGroup = new Group();
+        craftingGroup = new Group();
 
 
         kitchen =  new Texture(Gdx.files.internal("Ariyo/Flooring/Flooring_23.png"));
@@ -378,11 +538,9 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             tiledMap.getProperties().get("tilewidth", Integer.class);
         float mapPixelHeight = tiledMap.getProperties().get("height", Integer.class) *
             tiledMap.getProperties().get("tileheight", Integer.class);
-// دوربین روی وسط نقشه
         camera.position.set(mapPixelWidth / 2f, mapPixelHeight / 2f, 0);
         camera.update();
 
-//// تنظیم input برای بستن با ESC
         Gdx.input.setInputProcessor(new InputMultiplexer(stage, new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
@@ -426,11 +584,6 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         fridgePopup.setPosition(
             (stage.getWidth() - fridgePopup.getWidth()) / 2,
             (stage.getHeight() - fridgePopup.getHeight()) / 2);
-
-        System.out.println("1");
-        for (Map.Entry<Items, Integer> entry : currentGame.currentPlayer.getFarm().getHome().getFridge().items.entrySet()) {
-            System.out.println(entry.getKey().getName() + ": " + entry.getValue());
-        }
 
         Drawable bg = new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/Inventory/Inventory.png")));
         fridgePopup.setBackground(bg);
@@ -749,6 +902,13 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             camera.update();
             mapRenderer.setView(camera);
             mapRenderer.render();
+            fridge.setVisible(true);
+            if (cookingGroup != null) {
+                cookingGroup.remove();
+            }
+            if (craftingGroup != null) {
+                craftingGroup.remove();
+            }
 
             //bedroom walls
             Main.getBatch().draw(bedroomWall, startX + areaWidth/8.67f, startY + areaHeight/28.5f, bedroomWall.getWidth(), bedroomWall.getHeight()*100/95f);
@@ -784,18 +944,17 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             Main.getBatch().draw(kitchenTable, startX - areaWidth/6.7f, startY - areaHeight/8f);
             Main.getBatch().draw(bedroomCarpet, startX + areaWidth/8f, startY - areaHeight/8f, bedroomCarpet.getWidth()*9/10f, bedroomCarpet.getHeight()*9/10f);
         }
+        if (mode != HouseModes.home) {
+            fridge.setVisible(false);
+        }
 
         if (mode == HouseModes.cook) {
             ScreenUtils.clear(Color.BLACK);
-            TextureRegion recipePaper2 = new TextureRegion(recipePaper, 0, recipePaper.getHeight()/1000, recipePaper.getWidth(), (recipePaper.getHeight()*100)/512);
-            Main.getBatch().draw(recipePaper2, (float) (startX * 6) /10, (float) (startY * 3) /10, startX + areaWidth, startY + areaHeight);
             showRecipes();
         }
 
         if (mode == HouseModes.craft) {
             ScreenUtils.clear(Color.BLACK);
-            TextureRegion recipePaper2 = new TextureRegion(recipePaper, 0, recipePaper.getHeight()/1000, recipePaper.getWidth(), (recipePaper.getHeight()*100)/512);
-            Main.getBatch().draw(recipePaper2, (float) (startX * 6) /10, (float) (startY * 3) /10, startX + areaWidth, startY + areaHeight);
             showCraftings();
         }
 
