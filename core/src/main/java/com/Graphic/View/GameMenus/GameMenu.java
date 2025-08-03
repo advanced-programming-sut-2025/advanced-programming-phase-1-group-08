@@ -15,7 +15,7 @@ import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.*;
 import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.NPC.NPCManager;
-import com.Graphic.model.Enum.NPC;
+
 import com.Graphic.model.Enum.Skills;
 import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.Result;
