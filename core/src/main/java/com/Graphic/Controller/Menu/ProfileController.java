@@ -159,7 +159,8 @@ public class ProfileController {
 
 
     public String generatePassword() {
-        return generateRandomPass();
+        //TODO return generateRandomPass();
+        return null;
     }
 
     @Deprecated

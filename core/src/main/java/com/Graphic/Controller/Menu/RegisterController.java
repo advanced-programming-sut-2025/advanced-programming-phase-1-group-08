@@ -1,5 +1,7 @@
 package com.Graphic.Controller.Menu;
 
+import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Game;
 import com.Graphic.model.HelpersClass.Result;
@@ -7,6 +9,8 @@ import com.Graphic.model.SaveData.UserStorage;
 import com.Graphic.model.User;
 
 import java.io.IOException;
+import java.lang.reflect.Member;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -14,6 +18,79 @@ import java.util.regex.Pattern;
 import static com.Graphic.model.App.currentUser;
 
 public class RegisterController {
+
+    public Message attemptRegistration(Message message) {
+        //String username = usernameField.getText().trim();
+        //String password = passwordField.getText();
+        //String confirmPassword = confirmPasswordField.getText();
+        //String nickname = nicknameField.getText().trim();
+        //String email = emailField.getText().trim();
+        //String gender = genderBox.getSelected();
+        //int questionIndex = securityQuestionBox.getSelectedIndex();
+        //String answer = securityAnswerField.getText().trim();
+        //String confirmAnswer = confirmAnswerField.getText().trim();
+
+        try {
+            Message result = validateUsername(message.getFromBody("Username"));
+            if (result != null) {
+                return result;
+            }
+
+            result = validatePassword(message.getFromBody("Password"), message.getFromBody("Confirm Password"));
+            if (result != null) {
+                return result;
+            }
+
+            result = validateEmail(message.getFromBody("Email"));
+            if (result != null) {
+                return result;
+            }
+
+            result = validateNickname(message.getFromBody("Nickname"));
+            if (result != null) {
+                return result;
+            }
+
+            if (message.getFromBody("Gender").equals("Select Gender")) {
+                HashMap<String , Object> body = new HashMap<>();
+                body.put("Error","Please select your gender!");
+                return new Message(CommandType.ERROR , body);
+            }
+
+            if (message.getIntFromBody("Question Index") == 0) {
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("Error", "Please select a security question!");
+                return new Message(CommandType.ERROR, body);
+            }
+
+            if (message.getFromBody("Answer") == null) {
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("Error", "Please provide a security answer!");
+                return new Message(CommandType.ERROR, body);
+            }
+
+            if (! message.getFromBody("Answer").equals(message.getFromBody("Confirm Answer")) ) {
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("Error", "Security answers don't match!");
+                return new Message(CommandType.ERROR, body);
+            }
+
+
+            SecurityQuestions secQuestion = SecurityQuestions.values()[message.getIntFromBody("Question Index") - 1];
+            result = completeRegistration(
+                message.getFromBody("Username"), message.getFromBody("Password"),
+                message.getFromBody("Nickname"), message.getFromBody("Email"),
+                message.getFromBody("Gender"),
+                secQuestion, message.getFromBody("Answer"));
+
+            return result;
+
+        } catch (IOException e) {
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("Error" , "Registration error");
+            return new Message(CommandType.ERROR, body);
+        }
+    }
 
     public static boolean CheckName(String name) {
         return name != null && name.matches("^[a-zA-Z0-9-]+$");
@@ -65,7 +142,7 @@ public class RegisterController {
         return username;
     }
 
-    public static String generateRandomPass() {
+    public static Message generateRandomPass() {
         String possibleDigits = "0123456789";
         String possibleUppers = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String possibleLowers = possibleUppers.toLowerCase();
@@ -94,41 +171,73 @@ public class RegisterController {
             sb.append(randomChar);
         }
 
-        return sb.toString();
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("Password" ,sb.toString() );
+
+        return new Message(CommandType.GENERATE_RANDOM_PASS , body);
+
     }
 
-    public Result validateUsername(String username) throws IOException {
-        if (!usernameCheck(username))
-            return new Result(false, "Username format is invalid!");
-        if (!isUnique(username))
-            return new Result(false, "Username is already taken!");
-        return new Result(true, "Username is valid");
+    public Message validateUsername(String username) throws IOException {
+        HashMap<String , Object> body = new HashMap<>();
+        if (!usernameCheck(username)) {
+            body.put("Error", "Username is not valid!");
+            return new Message(CommandType.ERROR, body);
+        }
+        if (!isUnique(username)) {
+            body.put("Error", "Username is already taken!");
+            return new Message(CommandType.ERROR, body);
+        }
+
+        return null;
     }
 
-    public Result validatePassword(String password, String confirmPassword) {
-        if (!passCheck(password))
-            return new Result(false, "Password format is invalid!");
+    public Message validatePassword(String password, String confirmPassword) {
+        HashMap<String , Object> body = new HashMap<>();
+        if (!passCheck(password)) {
+            body.put("Error", "Password is not valid!");
+            return new Message(CommandType.ERROR , body);
+            //return new Result(false, "Password format is invalid!");
+        }
 
         String strengthError = passIsStrong(password);
-        if (strengthError != null)
-            return new Result(false, strengthError);
+        if (strengthError != null) {
+            body.put("Error", strengthError);
+            return new Message(CommandType.ERROR , body);
+            //return new Result(false, strengthError);
+        }
 
-        if (!password.equals(confirmPassword))
-            return new Result(false, "Passwords don't match!");
+        if (!password.equals(confirmPassword)) {
+            body.put("Error", "Passwords don't match!");
+            return new Message(CommandType.ERROR , body);
+            //return new Result(false, "Passwords don't match!");
+        }
+        return null;
 
-        return new Result(true, "Password is valid");
+        //return new Result(true, "Password is valid");
     }
 
-    public Result validateEmail(String email) {
-        if (!emailCheck(email))
-            return new Result(false, "Email format is invalid!");
-        return new Result(true, "Email is valid");
+    public Message validateEmail(String email) {
+        HashMap<String , Object> body = new HashMap<>();
+        if (!emailCheck(email)) {
+            body.put("Error" , "Email is not valid!");
+            return new Message(CommandType.ERROR , body);
+            //return new Result(false, "Email format is invalid!");
+        }
+        return null;
+        //return new Result(true, "Email is valid");
     }
 
-    public Result validateNickname(String nickname) {
-        if (!CheckName(nickname))
-            return new Result(false, "Nickname format is invalid!");
-        return new Result(true, "Nickname is valid");
+    public Message validateNickname(String nickname) {
+        HashMap<String , Object> body = new HashMap<>();
+
+        if (!CheckName(nickname)) {
+            body.put("Error" , "Nickname is not valid!");
+            return new Message(CommandType.ERROR , body);
+            //return new Result(false, "Nickname format is invalid!");
+        }
+        //return new Result(true, "Nickname is valid");
+        return null;
     }
 
     public Result validateGender(String gender) {
@@ -137,7 +246,7 @@ public class RegisterController {
         return new Result(true, "Gender is valid");
     }
 
-    public Result completeRegistration(String username, String password, String nickname,
+    public Message completeRegistration(String username, String password, String nickname,
                                        String email, String gender, SecurityQuestions securityQuestion,
                                        String securityAnswer) throws IOException {
         Game.AddNewUser(username, password, nickname, email, gender, securityQuestion, securityAnswer);
@@ -147,14 +256,17 @@ public class RegisterController {
             .findFirst()
             .orElse(null);
 
+        HashMap<String , Object> body = new HashMap<>();
+
         if (newUser != null) {
-            currentUser = newUser;
-            currentUser.setMySecurityQuestion(securityQuestion);
-            currentUser.setMySecurityAnswer(securityAnswer);
-            return new Result(true, "User registered successfully! Welcome to the game!");
+            newUser.setMySecurityQuestion(securityQuestion);
+            newUser.setMySecurityAnswer(securityAnswer);
+            body.put("Player", newUser);
+            return new Message(CommandType.LOGIN_SUCCESS , body);
         }
 
-        return new Result(false, "Registration failed!");
+        body.put("Error" ,"Registration failed!" );
+        return new Message(CommandType.ERROR , body);
     }
 
     @Deprecated

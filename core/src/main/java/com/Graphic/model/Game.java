@@ -89,7 +89,7 @@ public class Game {
     private boolean gameStarted = false;
 
 
-    public synchronized void addPlayer(User u , Socket socket) {
+    public synchronized void addPlayer(User u , Socket socket) throws IOException {
         if (Players.size() >= 4) {
             try {
                 PrintWriter out = new PrintWriter(socket.getOutputStream() , true);
@@ -99,7 +99,7 @@ public class Game {
             }
         }
 
-        PlayerHandler handler = new PlayerHandler(u , socket , this);
+        PlayerHandler handler = new PlayerHandler(u , socket , this , Players.size() + 1);
         Players.add(handler);
         lastSentIndex.put(u.getUsername(), 0);
 
