@@ -59,7 +59,7 @@ import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     public static GameMenu gameMenu; // اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
-        // TODO مملی ورودی گرفتن برای حرمت مردن رو هم بیار تو تابع اینپوت کنترلر چون مثلا منو باز میشه من میخوام a بنویسم دوربین حرکت میکنه مثلا و وقتی بیاری اونجا اوکی میشه
+    // TODO مملی ورودی گرفتن برای حرمت مردن رو هم بیار تو تابع اینپوت کنترلر چون مثلا منو باز میشه من میخوام a بنویسم دوربین حرکت میکنه مثلا و وقتی بیاری اونجا اوکی میشه
     public static OrthographicCamera camera;
     private final int hourSecond = 120000;
     private Stage stage;
@@ -165,6 +165,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private GameMenu() {
 
     }
+
     public static GameMenu getInstance() {
         if (gameMenu == null) {
             gameMenu = new GameMenu();
@@ -181,7 +182,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         controller.init();
         mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         multiplexer = new InputMultiplexer();
 
@@ -215,6 +216,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         heartAnimations = new ArrayList<>();
 
     }
+
     public void render(float v) {
 
         inputController();
@@ -224,7 +226,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         updateEnergyLabel();
         giftNPCMenu();
 
-        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Main.getBatch().setProjectionMatrix(camera.combined);
 
@@ -252,7 +254,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         stage.draw();
 
 
-        if (! currentGame.currentPlayer.isInFarmExterior()) {
+        if (!currentGame.currentPlayer.isInFarmExterior()) {
             getRenderer().setView(camera);
             getRenderer().render();
         }
@@ -273,7 +275,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         for (User p : currentGame.players) {
             if (p.getUsername().equalsIgnoreCase(currentGame.currentPlayer.getUsername())) continue;
 
-            float deltaX = Math.abs((float)currentGame.currentPlayer.getPositionX() - p.getPositionX());
+            float deltaX = Math.abs((float) currentGame.currentPlayer.getPositionX() - p.getPositionX());
             float deltaY = Math.abs((float) currentGame.currentPlayer.getPositionY() - p.getPositionY());
             if (deltaY < 3f && deltaX < 3f) {
                 someoneClose = true;
@@ -296,6 +298,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             tempFriend.setVisible(true);
         }
     }
+
     public void eatingManagement(float delta) {
         if (ePressed) {
             holdTime += delta;
@@ -345,7 +348,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         for (User p : currentGame.players) {
             if (p.getUsername().equalsIgnoreCase(me.getUsername())) continue;
 
-            float deltaX = Math.abs((float)currentGame.currentPlayer.getPositionX() - p.getPositionX());
+            float deltaX = Math.abs((float) currentGame.currentPlayer.getPositionX() - p.getPositionX());
             float deltaY = Math.abs((float) currentGame.currentPlayer.getPositionY() - p.getPositionY());
             if (deltaY < 3f && deltaX < 3f) {
                 other = p;
@@ -363,10 +366,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     // fade in -> wait 1s -> fade out
                     if (result.IsSuccess())
                         bouquetImage.addAction(Actions.sequence(
-                        Actions.alpha(0f),
-                        Actions.fadeIn(0.3f),
-                        Actions.delay(1f),
-                        Actions.fadeOut(0.5f)
+                            Actions.alpha(0f),
+                            Actions.fadeIn(0.3f),
+                            Actions.delay(1f),
+                            Actions.fadeOut(0.5f)
                         ));
                     else {
                         showTimedDialog(result.massage(), 2f);
@@ -399,7 +402,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 talking(finalOther2.getUsername(), result -> {
-                        showTimedDialog(result.massage(), 2f);
+                    showTimedDialog(result.massage(), 2f);
                 });
             }
         });
@@ -417,8 +420,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                             Actions.delay(1.3f),
                             Actions.fadeOut(0.5f)
                         ));
-                    }
-                    else {
+                    } else {
                         showTimedDialog(result.massage(), 2f);
                     }
                 }
@@ -428,6 +430,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         return interactionDialog;
     }
+
     private Dialog makingFriendDialog() {
         friendsListdialog = new Dialog("", newSkin);
         friendsListdialog.setModal(true);
@@ -443,11 +446,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         for (HumanCommunications f : currentGame.friendships) {
             if (f.getPlayer1().getUsername().equals(targetName)) {
                 friendUser = f.getPlayer2();
-            }
-            else if (f.getPlayer2().getUsername().equals(targetName)) {
+            } else if (f.getPlayer2().getUsername().equals(targetName)) {
                 friendUser = f.getPlayer1();
-            }
-            else continue;
+            } else continue;
 
             // ستون 1: عکس پروفایل
             Texture avatarTexture;
@@ -499,6 +500,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         return friendsListdialog;
     }
+
     public void showTimedDialog(String message, float durationSeconds) {
         activeDialog = new Dialog("", newSkin);
         activeDialog.text(message);
@@ -510,11 +512,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         activeDialog.show(stage);
 
-        dialogExpirationTime = TimeUtils.millis() + (long)(durationSeconds * 1000);
+        dialogExpirationTime = TimeUtils.millis() + (long) (durationSeconds * 1000);
     }
 
-                                                                //  //  //  //   Erfan
-    private void initialize () {
+    //  //  //  //   Erfan
+    private void initialize() {
 
         currentMenu = Menu.GameMenu;
         startTime = TimeUtils.millis();
@@ -535,7 +537,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         tempFriend = new ImageButton(iconDrawable);
         tempFriend.setSize(100, 100);
         tempFriend.setVisible(false);
-        tempFriend.setPosition((float) ((float) Gdx.graphics.getWidth() *6.8/9), (float) ((float) Gdx.graphics.getHeight() *6/9));
+        tempFriend.setPosition((float) ((float) Gdx.graphics.getWidth() * 6.8 / 9), (float) ((float) Gdx.graphics.getHeight() * 6 / 9));
         stage.addActor(tempFriend);
 
         tempFriend.addListener(new ClickListener() {
@@ -544,7 +546,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 makingInteractionDialog().show(stage);
             }
         });
-
 
 
         energyLabel = new Label("Energy : 100", newSkin);
@@ -556,7 +557,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         shapeRenderer = new ShapeRenderer();
 
 
-
         friendsListTexture = new Texture(Gdx.files.internal("Ariyo/Friendship_101.png"));
         buttonDrawable = new TextureRegionDrawable(new TextureRegion(friendsListTexture));
         friendButton = new ImageButton(buttonDrawable);
@@ -566,7 +566,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 makingFriendDialog().show(stage);
             }
         });
-        friendButton.setPosition((float) Gdx.graphics.getWidth() *7/9, (float) ((float) Gdx.graphics.getHeight() *6.7/9));
+        friendButton.setPosition((float) Gdx.graphics.getWidth() * 7 / 9, (float) ((float) Gdx.graphics.getHeight() * 6.7 / 9));
 //        friendButton.setPosition(100, 100);
         stage.addActor(friendButton);
 
@@ -574,21 +574,20 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         bouquetImage.setPosition(Gdx.graphics.getWidth() / 2f - bouquetImage.getWidth(),
             Gdx.graphics.getHeight() / 2f - bouquetImage.getHeight() / 2f);
         bouquetImage.getColor().a = 0f;
-        bouquetImage.setSize(bouquetImage.getWidth()*3, bouquetImage.getHeight()*3);
+        bouquetImage.setSize(bouquetImage.getWidth() * 3, bouquetImage.getHeight() * 3);
         stage.addActor(bouquetImage);
 
         hugImage = new Image(new Texture(Gdx.files.internal("Ariyo/hug.png")));
         hugImage.setPosition(Gdx.graphics.getWidth() / 2f - hugImage.getWidth(), Gdx.graphics.getHeight() / 2f - hugImage.getHeight() / 2f);
-        hugImage.setSize(hugImage.getWidth()*3, hugImage.getHeight()*3);
+        hugImage.setSize(hugImage.getWidth() * 3, hugImage.getHeight() * 3);
         hugImage.getColor().a = 0f;
         stage.addActor(hugImage);
 
         ringImage = new Image(new Texture(Gdx.files.internal("Ariyo/Sturdy_Ring.png")));
-        ringImage.setPosition(Gdx.graphics.getWidth() / 2f - ringImage.getWidth(),  Gdx.graphics.getHeight() / 2f - ringImage.getHeight() / 2f);
-        ringImage.setSize(ringImage.getWidth()*3, ringImage.getHeight()*3);
+        ringImage.setPosition(Gdx.graphics.getWidth() / 2f - ringImage.getWidth(), Gdx.graphics.getHeight() / 2f - ringImage.getHeight() / 2f);
+        ringImage.setSize(ringImage.getWidth() * 3, ringImage.getHeight() * 3);
         ringImage.getColor().a = 0f;
         stage.addActor(ringImage);
-
 
 
         timeLabel = new Label("", skin);
@@ -610,7 +609,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         startRotation = false;
     }
 
-    private void inputController () {
+    private void inputController() {
 
         if (!anyMenuIsActivated()) {
 
@@ -643,9 +642,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                         1f
                     )
                 );
-            }
-
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                 User temp = currentGame.currentPlayer;
                 ArrayList<User> list = currentGame.players;
                 if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
@@ -672,52 +669,44 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             else if (Gdx.input.isKeyJustPressed(Keys.delete) && currentGame.currentPlayer.currentItem != null) {
                 GameControllerLogic.advanceItem(
                     currentGame.currentPlayer.currentItem,
-                    - currentGame.currentPlayer.getBackPack().inventory.Items.get(currentGame.currentPlayer.currentItem));
+                    -currentGame.currentPlayer.getBackPack().inventory.Items.get(currentGame.currentPlayer.currentItem));
                 ExitOfMenu();
                 createInventory();
             }
-        } else
-            if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
-                ExitOfMenu();
+        } else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
+            ExitOfMenu();
     }
+
     private void ExitOfMenu() {
 
         if (toolsMenuIsActivated) {
             helperBackGround.remove();
             toolsPopup.remove();
             toolsMenuIsActivated = false;
-        }
-        else if (inventoryIsActivated) {
+        } else if (inventoryIsActivated) {
             inventoryPopup.remove();
             inventoryIsActivated = false;
-        }
-        else if (skillMenuIsActivated) {
+        } else if (skillMenuIsActivated) {
             skillPopup.remove();
             skillMenuIsActivated = false;
-        }
-        else if (socialMenuIsActivated) {
+        } else if (socialMenuIsActivated) {
             socialPopup.remove();
             socialMenuIsActivated = false;
-        }
-        else if (mapIsActivated) {
+        } else if (mapIsActivated) {
             mapGroup.remove();
             mapIsActivated = false;
-        }
-        else if (setEnergyIsActivated) {
+        } else if (setEnergyIsActivated) {
             setEnergyPopup.remove();
             setEnergyIsActivated = false;
-        }
-        else if (EscMenuIsActivated) {
+        } else if (EscMenuIsActivated) {
             helperBackGround.remove();
             EscPopup.remove();
             EscMenuIsActivated = false;
-        }
-        else if (settingIsActivated) {
+        } else if (settingIsActivated) {
             settingMenuGroup.remove();
             helperBackGround.remove();
             settingIsActivated = false;
-        }
-        else if (NPCMenuIsActivated) {
+        } else if (NPCMenuIsActivated) {
             NPCMenuPopup.remove();
             helperBackGround.remove();
             NPCMenuIsActivated = false;
@@ -725,7 +714,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     }
 
-    private void giftNPCMenu () {
+    private void giftNPCMenu() {
 
         if (waitingForGiftItemSelection && !inventoryIsActivated) {
 
