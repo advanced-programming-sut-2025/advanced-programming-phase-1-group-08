@@ -131,6 +131,7 @@ public class RegisterController {
             if (user.getUsername().equals(username))
                 return false;
         }
+        System.out.println("TEST");
         return true;
     }
 

@@ -53,6 +53,7 @@ public class PlayGameMenu implements Screen, AppMenu {
         menuContainer.background(Main.getSkin().getDrawable("window"));
         menuContainer.pad(80);
 
+        TextButton profileMenu = new TextButton("Profile", Main.getSkin());
         TextButton newGameButton = new TextButton("New Game", Main.getSkin());
         TextButton loadGameButton = new TextButton("Load Game", Main.getSkin());
         TextButton joinGameButton = new TextButton("Join Game", Main.getSkin());
@@ -67,6 +68,18 @@ public class PlayGameMenu implements Screen, AppMenu {
             public void clicked(InputEvent event, float x, float y) {
                 try {
                     Main.getMain().setScreen(GameMenu.getInstance());
+                    System.out.println("Starting new game...");
+                } catch (Exception e) {
+                    System.err.println("Error starting new game: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
+        profileMenu.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                try {
+                    Main.getMain().setScreen(new ProfileMenu());
                     System.out.println("Starting new game...");
                 } catch (Exception e) {
                     System.err.println("Error starting new game: " + e.getMessage());
@@ -96,6 +109,7 @@ public class PlayGameMenu implements Screen, AppMenu {
             }
         });
 
+        menuContainer.add(profileMenu).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
         menuContainer.add(newGameButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
         menuContainer.add(loadGameButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
         menuContainer.add(joinGameButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
@@ -104,6 +118,7 @@ public class PlayGameMenu implements Screen, AppMenu {
         mainTable.add(menuContainer);
         stage.addActor(mainTable);
     }
+
 
     private void showLoadGameDialog() {
         Window loadWindow = new Window("Load Game", Main.getSkin());

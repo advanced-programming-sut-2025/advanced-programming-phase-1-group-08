@@ -12,8 +12,7 @@ public class Client extends Game {
     private GameState localGameState = new GameState();
 
 
-    public static void main(String[] args) {
-
+    public Client()
         try {
             ClientWork clientWork = new ClientWork();
             Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
@@ -22,8 +21,6 @@ public class Client extends Game {
             config.useVsync(true);
             config.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate + 1);
             new Lwjgl3Application(new Main(clientWork), config);
-
-
 
         }
 

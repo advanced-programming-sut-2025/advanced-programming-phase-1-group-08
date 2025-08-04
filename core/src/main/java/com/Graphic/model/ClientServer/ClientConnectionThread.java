@@ -50,6 +50,7 @@ public class ClientConnectionThread extends Thread {
                 sendMessage(controller.LoginRes(message));
             }
             case SIGN_UP -> {
+                System.out.println("SERVER");
                 sendMessage(registerController.attemptRegistration(message));
             }
             case GENERATE_RANDOM_PASS -> {

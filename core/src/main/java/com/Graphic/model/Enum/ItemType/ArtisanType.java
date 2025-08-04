@@ -20,7 +20,8 @@ import java.util.Map;
 import static com.Graphic.model.App.currentGame;
 
 public enum ArtisanType {
-    Honey("Honey" , CraftType.BeeHouse , 350 , 96) {
+
+    Honey       ("Honey" , CraftType.BeeHouse , 350 , 96) {
         @Override
         public int getEnergy(String name) {
             return 75;
@@ -38,8 +39,7 @@ public enum ArtisanType {
             return new Result(true , "you create Honey Successfully");
         }
     },
-
-    Cheese("Cheese" , CraftType.ChessPress , 345 , 3) {
+    Cheese      ("Cheese" , CraftType.ChessPress , 345 , 3) {
         @Override
         public int getEnergy(String name) {
             return 100;
@@ -68,8 +68,7 @@ public enum ArtisanType {
             return new Result(false , "you didn't choose suitable ingredients for Cheese");
         }
     },
-
-    Goat_Cheese("Goat Cheese" , CraftType.ChessPress , 600 , 3) {
+    Goat_Cheese ("Goat Cheese" , CraftType.ChessPress , 600 , 3) {
         @Override
         public int getEnergy(String name) {
             return 100;
@@ -98,8 +97,7 @@ public enum ArtisanType {
             return new Result(false , "you didn't choose suitable ingredients for Goat Cheese");
         }
     },
-
-    Beer("Beer" , CraftType.Keg , 200 , 24) {
+    Beer        ("Beer" , CraftType.Keg , 200 , 24) {
         @Override
         public int getEnergy(String name) {
             return 50;
@@ -122,8 +120,7 @@ public enum ArtisanType {
             return new Result(false , "you didn't choose suitable ingredients for Wheat");
         }
     },
-
-    Vinegar("Vinegar" , CraftType.Keg , 100 , 10) {
+    Vinegar     ("Vinegar" , CraftType.Keg , 100 , 10) {
         @Override
         public int getEnergy(String name) {
             return 13;
@@ -147,8 +144,7 @@ public enum ArtisanType {
             return new Result(false,"you didn't choose suitable ingredients for Vinegar");
         }
     },
-
-    Coffee("Coffee" , CraftType.Keg , 150 , 2) {
+    Coffee      ("Coffee" , CraftType.Keg , 150 , 2) {
         @Override
         public int getEnergy(String name) {
             return 75;
@@ -181,8 +177,7 @@ public enum ArtisanType {
             }
         }
     },
-
-    Juice("Juice" , CraftType.Keg , 300 , 96) {
+    Juice       ("Juice" , CraftType.Keg , 300 , 96) {
         @Override
         public int getEnergy(String name) {
             CropsType cropsType = CropsType.valueOf(name);
@@ -208,8 +203,7 @@ public enum ArtisanType {
             return new Result(false , "you didn't choose suitable ingredients for Juice");
         }
     },
-
-    Mead("Mead",CraftType.Keg , 300 , 10) {
+    Mead        ("Mead",CraftType.Keg , 300 , 10) {
         @Override
         public int getEnergy(String name) {
             return 100;
@@ -233,8 +227,7 @@ public enum ArtisanType {
             return new Result(false,"you didn't choose suitable ingredients for Mead");
         }
     },
-
-    Pale_Ale("Pale Ale",CraftType.Keg , 300 , 72) {
+    Pale_Ale    ("Pale Ale",CraftType.Keg , 300 , 72) {
         @Override
         public int getEnergy(String name) {
             return 50;
@@ -257,8 +250,7 @@ public enum ArtisanType {
             return new Result(false,"you didn't choose suitable ingredients for Hops");
         }
     },
-
-    Wine("Wine" , CraftType.Keg , 400 , 168) {
+    Wine        ("Wine" , CraftType.Keg , 400 , 168) {
         @Override
         public int getEnergy(String name) {
             TreesProductType type = TreesProductType.valueOf(name);
@@ -277,7 +269,279 @@ public enum ArtisanType {
             return checkTreeProduct(ingredient , "Wine" , 1);
         }
     },
+    Dried_Fruit ("Dried Fruit" , CraftType.Dehydrator , 425 , 12) {
+        @Override
+        public int getEnergy(String name) {
+            return 75;
+        }
 
+        @Override
+        public void creatArtesian(String name, CraftingItem craftingItem) {
+            ArtisanProduct DriedFruit=new ArtisanProduct(Dried_Fruit);
+            craftingItem.getItems().add(DriedFruit);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
+        }
+
+        @Override
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            return checkTreeProduct(ingredient , "Dried Fruit" , 5);
+        }
+    },
+    Raisins     ("Raisins" , CraftType.Dehydrator , 600 , 12) {
+        @Override
+        public int getEnergy(String name) {
+            return 125;
+        }
+
+        @Override
+        public void creatArtesian(String name, CraftingItem craftingItem) {
+            ArtisanProduct raisins=new ArtisanProduct(Raisins);
+            craftingItem.getItems().add(raisins);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
+        }
+
+        @Override
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items Grape = new AllCrops(CropsType.Grape);
+            try {
+                int x = ingredient.get(Grape);
+                if (x >= 5) {
+                    if (currentGame.currentPlayer.getBackPack().inventory.Items.get(Grape) >= 5) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(Grape,(k,v)-> v-5);
+                        return new Result(true , "you create Raisins Successfully");
+                    }
+                    return new Result(false , "you don't have enough Grape in your inventory");
+                }
+                return new Result(false,"you should add more Grape for product of Raisins");
+            }
+            catch (Exception e) {
+                return new Result(false,"you should add more Grape for product of Raisins");
+            }
+        }
+    },
+    Coal        ("Coal",CraftType.CharcoalKlin , 50 , 1) {
+        @Override
+        public int getEnergy(String name) {
+            return 0;
+        }
+
+        @Override
+        public void creatArtesian(String name, CraftingItem craftingItem) {
+            ForagingMinerals coal = new ForagingMinerals(ForagingMineralsType.COAL);
+            craftingItem.getItems().add(coal);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
+        }
+
+        @Override
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items wood = new Wood();
+            try {
+                int x = ingredient.get(wood);
+                if (x >= 10) {
+                    if (currentGame.currentPlayer.getBackPack().inventory.Items.get(wood) >= 10) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(wood,(k,v)-> v-10);
+                        return new Result(true , "you create Wood Successfully");
+                    }
+                    return new Result(false,"you don't have enough Wood in your inventory");
+                }
+                return new Result(false , "you should add more Wood for product of Coal");
+            }
+            catch (Exception e) {
+                return new Result(false , "you should add more Wood for product of Coal");
+            }
+        }
+    },
+    Cloth       ("Cloth",CraftType.Loom , 470 , 4) {
+        @Override
+        public int getEnergy(String name) {
+            return 0;
+        }
+
+        @Override
+        public void creatArtesian(String name, CraftingItem craftingItem) {
+            ArtisanProduct cloth=new ArtisanProduct(Cloth);
+            craftingItem.getItems().add(cloth);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
+        }
+
+        @Override
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
+                if (entry.getKey() instanceof Animalproduct) {
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.rabbits_Wool)
+                        || ((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.sheeps_Wool)) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+
+                        return new Result(true , "you create Cloth Successfully");
+                    }
+                }
+            }
+            return new Result(false , "you didn't choose suitable ingredient for Cloth");
+        }
+    },
+    Mayonnaise  ("Mayonnaise" , CraftType.MayonnaiseMachine , 237 , 3) {
+        @Override
+        public int getEnergy(String name) {
+            return 50;
+        }
+
+        @Override
+        public void creatArtesian(String name, CraftingItem craftingItem) {
+            ArtisanProduct mayonnaise=new ArtisanProduct(Mayonnaise);
+            craftingItem.getItems().add(mayonnaise);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
+        }
+
+        @Override
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
+                if (entry.getKey() instanceof Animalproduct) {
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.Egg)
+                        || ((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.bigEgg)) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+
+                        return new Result(true , "you create Mayonnaise Successfully");
+                    }
+                }
+            }
+            return new Result(false , "you didn't choose suitable ingredient for Mayonnaise");
+        }
+    },
+    Truffle_Oil ("Truffle Oil" , CraftType.OilMaker , 1065 , 6) {
+        @Override
+        public int getEnergy(String name) {
+            return 6;
+        }
+
+        @Override
+        public void creatArtesian(String name, CraftingItem craftingItem) {
+            ArtisanProduct TruffleOil=new ArtisanProduct(Truffle_Oil);
+            craftingItem.getItems().add(TruffleOil);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
+        }
+
+        @Override
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
+                if (entry.getKey() instanceof Animalproduct) {
+                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.Truffle)) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+
+                        return new Result(true , "you create Truffle Successfully");
+                    }
+                }
+            }
+            return new Result(false , "you didn't choose suitable ingredient for Truffle");
+        }
+    },
+    Oil         ("Oil", CraftType.OilMaker , 100 , 6) {
+        @Override
+        public int getEnergy(String name) {
+            return 13;
+        }
+
+        @Override
+        public void creatArtesian(String name, CraftingItem craftingItem) {
+            MarketItem oil=new MarketItem(MarketItemType.Oil);
+            craftingItem.getItems().add(oil);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
+        }
+
+        @Override
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items corn = new AllCrops(CropsType.Corn);
+            Items sunFlower = new AllCrops(CropsType.Sunflower);
+            Items sunFlowerSeed = new ForagingSeeds(ForagingSeedsType.SunflowerSeeds);
+
+            if (ingredient.containsKey(corn)) {
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(corn,(k,v)-> v-1);
+                return new Result(true , "you create Oil Successfully");
+            }
+            if (ingredient.containsKey(sunFlower)) {
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(sunFlower,(k,v)-> v-1);
+                return new Result(true , "you create Oil Successfully");
+            }
+            if (ingredient.containsKey(sunFlowerSeed)) {
+                currentGame.currentPlayer.getBackPack().inventory.Items.compute(sunFlowerSeed,(k,v)-> v-1);
+                return new Result(true , "you create Oil Successfully");
+            }
+            return new Result(false , "you didn't choose suitable ingredient for Oil");
+        }
+    },
+    Pickles     ("Pickles" , CraftType.PreservesJar , 200 , 6) {
+        @Override
+        public int getEnergy(String name) {
+            CropsType cropsType = CropsType.valueOf(name);
+            return (7 * cropsType.getEnergy() ) / 4;
+        }
+
+        @Override
+        public void creatArtesian(String name, CraftingItem craftingItem) {
+            ArtisanProduct pickles=new ArtisanProduct(Pickles);
+            craftingItem.getItems().add(pickles);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
+        }
+
+        @Override
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
+                if (entry.getKey() instanceof AllCrops) {
+                    if (((AllCrops) entry.getKey()).getType().isVegetable()) {
+                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+                        return new Result(true , "you create Pickles Successfully");
+                    }
+                }
+            }
+            return new Result(false , "you didn't choose suitable ingredient for Pickles");
+        }
+    },
+    Jelly       ("Jelly" , CraftType.PreservesJar , 200 , 72) {
+        @Override
+        public int getEnergy(String name) {
+            TreesProductType type = TreesProductType.valueOf(name);
+            return 2 * type.getEnergy();
+        }
+
+        @Override
+        public void creatArtesian(String name, CraftingItem craftingItem) {
+            ArtisanProduct jelly=new ArtisanProduct(Jelly);
+            craftingItem.getItems().add(jelly);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
+        }
+
+        @Override
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            return checkTreeProduct(ingredient , "Jelly",1);
+        }
+    },
+    Smoked_Fish ("Smoked Fish" , CraftType.FishSmoker , 300 , 1)  {
+        @Override
+        public int getEnergy(String name) {
+            return 15;
+        }
+
+        public void creatArtesian(String name, CraftingItem craftingItem) {
+            ArtisanProduct smokedFish=new ArtisanProduct(Smoked_Fish);
+            craftingItem.getItems().add(smokedFish);
+            craftingItem.getDateHours().add(currentGame.currentDate.clone());
+        }
+
+        @Override
+        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
+            Items coal = new ForagingMinerals(ForagingMineralsType.COAL);
+            if (! ingredient.containsKey(coal)) {
+                return new Result(false , "you should add more Coal");
+            }
+            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
+                if (entry.getKey() instanceof Fish) {
+                    currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
+                    currentGame.currentPlayer.getBackPack().inventory.Items.compute(coal,(k,v)-> v-1);
+                    return new Result(true , "you create Smoked Fish Successfully");
+                }
+            }
+            return new Result(false , "you should add a Fish");
+        }
+    },
     Dried_Mushrooms("Dried Mushrooms" , CraftType.Dehydrator , 400 , 12) {
         @Override
         public int getEnergy(String name) {
@@ -314,150 +578,6 @@ public enum ArtisanType {
             return new Result(false , "you didn't choose suitable ingredients for Dried Mushrooms");
         }
     },
-
-    Dried_Fruit("Dried Fruit" , CraftType.Dehydrator , 425 , 12) {
-        @Override
-        public int getEnergy(String name) {
-            return 75;
-        }
-
-        @Override
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            ArtisanProduct DriedFruit=new ArtisanProduct(Dried_Fruit);
-            craftingItem.getItems().add(DriedFruit);
-            craftingItem.getDateHours().add(currentGame.currentDate.clone());
-        }
-
-        @Override
-        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
-            return checkTreeProduct(ingredient , "Dried Fruit" , 5);
-        }
-    },
-
-    Raisins("Raisins" , CraftType.Dehydrator , 600 , 12) {
-        @Override
-        public int getEnergy(String name) {
-            return 125;
-        }
-
-        @Override
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            ArtisanProduct raisins=new ArtisanProduct(Raisins);
-            craftingItem.getItems().add(raisins);
-            craftingItem.getDateHours().add(currentGame.currentDate.clone());
-        }
-
-        @Override
-        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
-            Items Grape = new AllCrops(CropsType.Grape);
-            try {
-                int x = ingredient.get(Grape);
-                if (x >= 5) {
-                    if (currentGame.currentPlayer.getBackPack().inventory.Items.get(Grape) >= 5) {
-                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(Grape,(k,v)-> v-5);
-                        return new Result(true , "you create Raisins Successfully");
-                    }
-                    return new Result(false , "you don't have enough Grape in your inventory");
-                }
-                return new Result(false,"you should add more Grape for product of Raisins");
-            }
-            catch (Exception e) {
-                return new Result(false,"you should add more Grape for product of Raisins");
-            }
-        }
-    },
-
-    Coal("Coal",CraftType.CharcoalKlin , 50 , 1) {
-        @Override
-        public int getEnergy(String name) {
-            return 0;
-        }
-
-        @Override
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            ForagingMinerals coal = new ForagingMinerals(ForagingMineralsType.COAL);
-            craftingItem.getItems().add(coal);
-            craftingItem.getDateHours().add(currentGame.currentDate.clone());
-        }
-
-        @Override
-        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
-            Items wood = new Wood();
-            try {
-                int x = ingredient.get(wood);
-                if (x >= 10) {
-                    if (currentGame.currentPlayer.getBackPack().inventory.Items.get(wood) >= 10) {
-                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(wood,(k,v)-> v-10);
-                        return new Result(true , "you create Wood Successfully");
-                    }
-                    return new Result(false,"you don't have enough Wood in your inventory");
-                }
-                return new Result(false , "you should add more Wood for product of Coal");
-            }
-            catch (Exception e) {
-                return new Result(false , "you should add more Wood for product of Coal");
-            }
-        }
-    },
-
-    Cloth("Cloth",CraftType.Loom , 470 , 4) {
-        @Override
-        public int getEnergy(String name) {
-            return 0;
-        }
-
-        @Override
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            ArtisanProduct cloth=new ArtisanProduct(Cloth);
-            craftingItem.getItems().add(cloth);
-            craftingItem.getDateHours().add(currentGame.currentDate.clone());
-        }
-
-        @Override
-        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
-            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
-                if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.rabbits_Wool)
-                        || ((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.sheeps_Wool)) {
-                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
-
-                        return new Result(true , "you create Cloth Successfully");
-                    }
-                }
-            }
-            return new Result(false , "you didn't choose suitable ingredient for Cloth");
-        }
-    },
-
-    Mayonnaise("Mayonnaise" , CraftType.MayonnaiseMachine , 237 , 3) {
-        @Override
-        public int getEnergy(String name) {
-            return 50;
-        }
-
-        @Override
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            ArtisanProduct mayonnaise=new ArtisanProduct(Mayonnaise);
-            craftingItem.getItems().add(mayonnaise);
-            craftingItem.getDateHours().add(currentGame.currentDate.clone());
-        }
-
-        @Override
-        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
-            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
-                if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.Egg)
-                        || ((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.bigEgg)) {
-                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
-
-                        return new Result(true , "you create Mayonnaise Successfully");
-                    }
-                }
-            }
-            return new Result(false , "you didn't choose suitable ingredient for Mayonnaise");
-        }
-    },
-
     Duck_Mayonnaise("Duck Mayonnaise" , CraftType.MayonnaiseMachine , 37 , 3) {
         @Override
         public int getEnergy(String name) {
@@ -486,7 +606,6 @@ public enum ArtisanType {
             return new Result(false , "you didn't choose suitable ingredient for Duck Mayonnaise");
         }
     },
-
     Dinosaur_Mayonnaise("Dinosaur Mayonnaise" , CraftType.MayonnaiseMachine , 800 , 3) {
         @Override
         public int getEnergy(String name) {
@@ -512,146 +631,6 @@ public enum ArtisanType {
                 }
             }
             return new Result(false , "you didn't choose suitable ingredient for Dinosaur Mayonnaise");
-        }
-    },
-
-    Truffle_Oil("Truffle Oil" , CraftType.OilMaker , 1065 , 6) {
-        @Override
-        public int getEnergy(String name) {
-            return 6;
-        }
-
-        @Override
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            ArtisanProduct TruffleOil=new ArtisanProduct(Truffle_Oil);
-            craftingItem.getItems().add(TruffleOil);
-            craftingItem.getDateHours().add(currentGame.currentDate.clone());
-        }
-
-        @Override
-        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
-            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
-                if (entry.getKey() instanceof Animalproduct) {
-                    if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.Truffle)) {
-                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
-
-                        return new Result(true , "you create Truffle Successfully");
-                    }
-                }
-            }
-            return new Result(false , "you didn't choose suitable ingredient for Truffle");
-        }
-    },
-
-    Oil("Oil", CraftType.OilMaker , 100 , 6) {
-        @Override
-        public int getEnergy(String name) {
-            return 13;
-        }
-
-        @Override
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            MarketItem oil=new MarketItem(MarketItemType.Oil);
-            craftingItem.getItems().add(oil);
-            craftingItem.getDateHours().add(currentGame.currentDate.clone());
-        }
-
-        @Override
-        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
-            Items corn = new AllCrops(CropsType.Corn);
-            Items sunFlower = new AllCrops(CropsType.Sunflower);
-            Items sunFlowerSeed = new ForagingSeeds(ForagingSeedsType.SunflowerSeeds);
-
-            if (ingredient.containsKey(corn)) {
-                currentGame.currentPlayer.getBackPack().inventory.Items.compute(corn,(k,v)-> v-1);
-                return new Result(true , "you create Oil Successfully");
-            }
-            if (ingredient.containsKey(sunFlower)) {
-                currentGame.currentPlayer.getBackPack().inventory.Items.compute(sunFlower,(k,v)-> v-1);
-                return new Result(true , "you create Oil Successfully");
-            }
-            if (ingredient.containsKey(sunFlowerSeed)) {
-                currentGame.currentPlayer.getBackPack().inventory.Items.compute(sunFlowerSeed,(k,v)-> v-1);
-                return new Result(true , "you create Oil Successfully");
-            }
-            return new Result(false , "you didn't choose suitable ingredient for Oil");
-        }
-    },
-
-    Pickles("Pickles" , CraftType.PreservesJar , 200 , 6) {
-        @Override
-        public int getEnergy(String name) {
-            CropsType cropsType = CropsType.valueOf(name);
-            return (7 * cropsType.getEnergy() ) / 4;
-        }
-
-        @Override
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            ArtisanProduct pickles=new ArtisanProduct(Pickles);
-            craftingItem.getItems().add(pickles);
-            craftingItem.getDateHours().add(currentGame.currentDate.clone());
-        }
-
-        @Override
-        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
-            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
-                if (entry.getKey() instanceof AllCrops) {
-                    if (((AllCrops) entry.getKey()).getType().isVegetable()) {
-                        currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
-                        return new Result(true , "you create Pickles Successfully");
-                    }
-                }
-            }
-            return new Result(false , "you didn't choose suitable ingredient for Pickles");
-        }
-    },
-
-    Jelly("Jelly" , CraftType.PreservesJar , 200 , 72) {
-        @Override
-        public int getEnergy(String name) {
-            TreesProductType type = TreesProductType.valueOf(name);
-            return 2 * type.getEnergy();
-        }
-
-        @Override
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            ArtisanProduct jelly=new ArtisanProduct(Jelly);
-            craftingItem.getItems().add(jelly);
-            craftingItem.getDateHours().add(currentGame.currentDate.clone());
-        }
-
-        @Override
-        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
-            return checkTreeProduct(ingredient , "Jelly",1);
-        }
-    },
-
-    Smoked_Fish("Smoked Fish" , CraftType.FishSmoker , 300 , 1)  {
-        @Override
-        public int getEnergy(String name) {
-            return 15;
-        }
-
-        public void creatArtesian(String name, CraftingItem craftingItem) {
-            ArtisanProduct smokedFish=new ArtisanProduct(Smoked_Fish);
-            craftingItem.getItems().add(smokedFish);
-            craftingItem.getDateHours().add(currentGame.currentDate.clone());
-        }
-
-        @Override
-        public Result checkIngredient(HashMap<Items,Integer> ingredient) {
-            Items coal = new ForagingMinerals(ForagingMineralsType.COAL);
-            if (! ingredient.containsKey(coal)) {
-                return new Result(false , "you should add more Coal");
-            }
-            for (Map.Entry<Items,Integer> entry : ingredient.entrySet()) {
-                if (entry.getKey() instanceof Fish) {
-                    currentGame.currentPlayer.getBackPack().inventory.Items.compute(entry.getKey(),(k,v)-> v-1);
-                    currentGame.currentPlayer.getBackPack().inventory.Items.compute(coal,(k,v)-> v-1);
-                    return new Result(true , "you create Smoked Fish Successfully");
-                }
-            }
-            return new Result(false , "you should add a Fish");
         }
     };
 
@@ -747,24 +726,24 @@ public enum ArtisanType {
 
     ArtisanType(String name, CraftType craftType , int price ,int takesTime) {
         this.name = name;
-        this.craftType = craftType;
         this.price = price;
+        this.craftType = craftType;
         this.takesTime = takesTime;
     }
 
     public String getName() {
         return name;
     }
-
     public CraftType getCraftType() {
         return craftType;
     }
-
     public int getPrice() {
         return price;
     }
-
     public int getTakesTime() {
         return takesTime;
+    }
+    public String getPath() {
+        return "Erfan/Artisan/" + this.name + ".png";
     }
 }

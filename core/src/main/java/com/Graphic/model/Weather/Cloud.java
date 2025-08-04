@@ -25,7 +25,6 @@ public class Cloud {
     private boolean lightningTriggered = false;
 
     public Cloud (Tile targetTile) {
-        System.out.println("Creating Cloud");
         this.cloudTexture = TextureManager.get(GameTexturePath.Cloud.getPath());
         this.shadowTexture = TextureManager.get(GameTexturePath.CloudShadow.getPath());
         this.targetTile = targetTile;

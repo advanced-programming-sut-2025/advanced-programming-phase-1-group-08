@@ -3,6 +3,7 @@ package com.Graphic.model.ClientServer;
 import com.Graphic.Main;
 import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.View.MainMenu;
+import com.Graphic.View.PlayGameMenu;
 import com.Graphic.View.RegisterMenu;
 import com.badlogic.gdx.Gdx;
 
@@ -69,7 +70,7 @@ public class Client2ServerThread extends Thread{
                 HashMap<String,Object> body = new HashMap<>();
                 body.put("null","null");
                 sendMessage(new Message(LOGGED_IN , body));
-                Main.getMain().setScreen(new MainMenu());
+                Main.getMain().setScreen(new PlayGameMenu());
                 Main.getClient(null).setPlayer(message.getFromBody("Player"));
             }
             case INDEX -> {

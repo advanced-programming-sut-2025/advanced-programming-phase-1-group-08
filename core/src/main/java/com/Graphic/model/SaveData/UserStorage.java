@@ -56,6 +56,7 @@ public class UserStorage {
     }
 
     public static List<User> loadUsers() throws IOException {
+        System.out.println("kir");
         if (!Files.exists(FILE_PATH)) return new ArrayList<>();
 
         try {
@@ -63,12 +64,12 @@ public class UserStorage {
             Type listType = new TypeToken<List<User>>() {}.getType();
 
             List<User> users = gson.fromJson(json, listType);
-
+            System.out.println("ki2r");
             if (users == null) {
                 System.err.println("JSON parsed to null — check JSON structure.");
                 return new ArrayList<>();
             }
-
+            System.out.println("kieer");
             for (int i = 0; i < users.size(); i++) {
                 User user = users.get(i);
                 if (user == null) {
@@ -79,8 +80,9 @@ public class UserStorage {
                     System.err.println("Null 'password' at index: " + i);
                 }
                 // ادامه بررسی سایر فیلدها...
+                System.out.println("kirasdasd");
             }
-
+            System.out.println("ki1111");
             return users;
 
         } catch (JsonSyntaxException | JsonIOException e) {

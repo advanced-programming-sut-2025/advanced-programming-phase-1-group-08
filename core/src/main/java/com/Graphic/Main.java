@@ -6,6 +6,7 @@ import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.View.GameMenus.TransitionScreen;
 import com.Graphic.View.LoginMenu;
 import com.Graphic.View.MainMenu;
+import com.Graphic.View.PlayGameMenu;
 import com.Graphic.View.ProfileMenu;
 import com.Graphic.model.App;
 import com.Graphic.model.ClientServer.Client;
@@ -63,7 +64,7 @@ public class Main extends Game {
         }
         //client.startListening();
         main.setScreen(new LoginMenu());
-
+        //main.setScreen(new PlayGameMenu());
 //        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
 //        main.setScreen(new ProfileMenu());
 
