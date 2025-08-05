@@ -4,6 +4,7 @@ import com.Graphic.Controller.Menu.LoginController;
 import com.Graphic.Controller.Menu.RegisterController;
 import com.Graphic.Main;
 import com.Graphic.model.Enum.Commands.CommandType;
+import com.badlogic.gdx.Gdx;
 
 import java.io.*;
 import java.net.Socket;
@@ -33,7 +34,7 @@ public class ClientConnectionThread extends Thread {
             try {
                 String line = in.readUTF();
                 handleMessage(JSONUtils.fromJson(line));
-                if (JSONUtils.fromJson(line).getCommandType() == CommandType.LOGIN_SUCCESS) {
+                if (JSONUtils.fromJson(line).getCommandType() == CommandType.GAME_START) {
                     break;
                 }
             }
@@ -44,7 +45,7 @@ public class ClientConnectionThread extends Thread {
         }
     }
 
-    public void handleMessage(Message message) throws IOException {
+    public synchronized void handleMessage(Message message) throws IOException {
         switch (message.getCommandType()) {
             case LOGIN -> {
                 sendMessage(controller.LoginRes(message));
@@ -63,7 +64,7 @@ public class ClientConnectionThread extends Thread {
         }
     }
 
-    public void sendMessage(Message message) throws IOException {
+    public synchronized void sendMessage(Message message) throws IOException {
         out.writeUTF(JSONUtils.toJson(message));
         out.flush();
         System.out.println(JSONUtils.toJson(message));

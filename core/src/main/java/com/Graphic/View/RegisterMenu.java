@@ -305,7 +305,8 @@ public class RegisterMenu implements Screen, AppMenu {
         body.put("Confirm Password", confirmPasswordField.getText());
         body.put("Nickname", nicknameField.getText());
         body.put("Gender",genderBox.getSelected().trim());
-        body.put("Question index" , securityAnswerField.getText().trim());
+        body.put("Question index" , securityQuestionBox.getSelectedIndex());
+        System.out.println(securityQuestionBox.getSelectedIndex());
         body.put("Answer" , securityAnswerField.getText().trim());
         body.put("Confirm Answer", confirmAnswerField.getText().trim());
 
@@ -380,7 +381,7 @@ public class RegisterMenu implements Screen, AppMenu {
         stage.addActor(suggestionWindow);
     }
 
-    private void showMessage(Message message) {
+    public void showMessage(Message message) {
         if (message.getCommandType() == CommandType.ERROR) {
             if (message.getFromBody("Error").equals("Username is already taken!")) {
                 showUsernameSuggestion(message.getFromBody("Username"));

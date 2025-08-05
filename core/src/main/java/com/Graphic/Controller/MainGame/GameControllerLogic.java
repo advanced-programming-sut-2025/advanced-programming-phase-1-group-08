@@ -3,10 +3,14 @@ package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
 import com.Graphic.View.GameMenus.GameMenu;
+import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.ClientServer.GameState;
+import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.Enum.AllPlants.*;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
@@ -91,6 +95,8 @@ public class GameControllerLogic {
     public static void update(float delta) {
         EnterTheBarnOrCage();
         EnterTheMine();
+        EnterTheMarket(Main.getClient(null).getPlayer());
+        addPlayerToMarket(Main.getClient(null).getPlayer());
             if ( gameMenu.isFirstLoad() && currentGame.currentPlayer.isInMine()) {
                 gameMenu.setFirstLoad(false);
                 camera.setToOrtho(false ,Gdx.graphics.getWidth() / 4 , Gdx.graphics.getHeight() / 4);
@@ -246,18 +252,26 @@ public class GameControllerLogic {
         else
             return null;
     }
-    public static Tile getTileByCoordinates(int x, int y) {
+    public static Tile getTileByCoordinates(int x , int y) {
         if (x<0 || y<0 || x>=90 || y>=90) {
             return null;
         }
-        Tile targetTile = currentGame.bigMap.get(90 * y + x);
+        Tile tarfetTile = currentGame.bigMap.get(90 * y + x);
+        return tarfetTile;
+    }
+
+    public static Tile getTileByCoordinates(int x, int y , GameState gameState) {
+        if (x<0 || y<0 || x>=90 || y>=90) {
+            return null;
+        }
+        Tile targetTile = gameState.bigMap.get(90 * y + x);
         return targetTile;
     }
 
     // create initial map
 
-    public static void createInitialMine( int x, int y , int topLeftX, int topLeftY, int width , int height) {
-        Farm farm = currentGame.currentPlayer.getFarm();
+    public static void createInitialMine( int x, int y , int topLeftX, int topLeftY, int width , int height , User Player , GameState gameState) {
+        Farm farm = Player.getFarm();
 
         Mine mine=null;
 
@@ -266,27 +280,29 @@ public class GameControllerLogic {
                 mine = new Mine(topLeftX + 60 *x , topLeftY + 60 * y ,width , height);
                 Tile tile = new Tile(i , j , mine);
                 farm.Farm.add(tile);
-                currentGame.bigMap.add(tile);
+                gameState.bigMap.add(tile);
             }
         }
         farm.setMine(mine);
     }
-    public static void createInitialLake( int x, int y , int topLeftX , int topLeftY , int width , int height) {
-        Farm farm = currentGame.currentPlayer.getFarm();
+
+    public static void createInitialLake( int x, int y , int topLeftX , int topLeftY , int width , int height , User Player , GameState gameState) {
+        Farm farm = Player.getFarm();
         Lake lake = null;
         for (int i = topLeftX + 60 * x; i < topLeftX + 60 * x + width; i++) {
             for (int j = topLeftY + 60 * y; j < topLeftY + 60 * y + height; j++) {
                 lake = new Lake(topLeftX + 60 * x, topLeftY + 60 * y, width, height);
                 Tile tile = new Tile(i, j, lake);
                 farm.Farm.add(tile);
-                currentGame.bigMap.add(tile);
+                gameState.bigMap.add(tile);
             }
         }
         farm.setLake(lake);
 
     }
-    public static void createInitialHouse(int x, int y , int topLeftX , int topLeftY , int width , int height) {
-        Farm farm = currentGame.currentPlayer.getFarm();
+
+    public static void createInitialHouse(int x, int y , int topLeftX , int topLeftY , int width , int height , User Player , GameState gameState) {
+        Farm farm = Player.getFarm();
         Wall wall = new Wall(3);
         wall.setWallType(WallType.House);
         wall.setCharactor('#');
@@ -299,33 +315,24 @@ public class GameControllerLogic {
 
         for (int i = topLeftX + 60 * x; i < topLeftX + 60 * x + width ; i++) {
             for (int j = topLeftY + 60 * y; j < topLeftY + 60 * y + height ; j++) {
-//                if (i == topLeftX + 60 * x + width / 2 && j == topLeftY + 60 * y + height-1) {
-//                    Tile tile = new Tile(i, j, houseDoor);
-//                    farm.Farm.add(tile);
-//                    currentGame.bigMap.add(tile);
-//                }
                 if (i == topLeftX + 60 * x + width -2 && j == topLeftY + 60 * y + height-2) {
                     Tile tile = new Tile(i, j, fridge);
                     farm.Farm.add(tile);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
-//                else if (i == topLeftX + 60 * x || i == topLeftX + 60 * x + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
-//                    Tile tile = new Tile(i, j, wall);
-//                    farm.Farm.add(tile);
-//                    currentGame.bigMap.add(tile);
-//                }
                 else {
                     Home home = new Home(topLeftX + 60 * x, topLeftY + 60 * y,width,height, fridge);
                     Tile tile = new Tile(i, j, home);
                     farm.Farm.add(tile);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
             }
         }
         farm.setHome(new Home(topLeftX + 60 * x, topLeftY + 60 * y,width,height, fridge));
     }
-    public static void createInitialGreenHouse(int x, int y , int topLeftX , int topLeftY , int width , int height) {
-        Farm farm = currentGame.currentPlayer.getFarm();
+
+    public static void createInitialGreenHouse(int x, int y , int topLeftX , int topLeftY , int width , int height , User Player , GameState gameState) {
+        Farm farm = Player.getFarm();
         Wall GreenWall = new Wall(3);
         GreenWall.setWallType(WallType.GreenHouse);
         GreenWall.setCharactor('#');
@@ -342,12 +349,12 @@ public class GameControllerLogic {
                 if (i==topLeftX + 60 * x + width/2 && j==topLeftY + 60 * y + height-1) {
                     Tile tile = new Tile(i, j, greenHouseDoor);
                     farm.Farm.add(tile);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
                 else if (i== topLeftX + 60*x + width/2 && j==topLeftY + 60*y + 1) {
                     Tile tile = new Tile(i, j, waterTank);
                     farm.Farm.add(tile);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
                 else if (i == topLeftX + 60 * x || i == topLeftX + 60 * x + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
                     Tile tile = new Tile(i, j, GreenWall);
@@ -358,42 +365,50 @@ public class GameControllerLogic {
                 else {
                     Tile tile = new Tile(i, j, greenHouse);
                     farm.Farm.add(tile);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
             }
         }
         farm.setGreenHouse(greenHouse);
     }
 
-    public static void buildHall() {
+    public static Message build(GameState gameState) {
+        buildHall(gameState);
+        buildNpcVillage(gameState);
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("BigMap" , gameState.bigMap);
+        sortMap(gameState.bigMap);
+        return new Message(CommandType.BIG_MAP , body);
+    }
+    public static void buildHall( GameState gameState ) {
         Walkable walkable=new Walkable();
 
         for (int j = 30 ; j<60 ; j++) {
             Tile tile=new Tile(15 , j , walkable);
-            currentGame.bigMap.add(tile);
+            gameState.bigMap.add(tile);
         }
         for (int i=30 ; i<60 ; i++) {
             Tile tile=new Tile(i , 15 , walkable);
-            currentGame.bigMap.add(tile);
+            gameState.bigMap.add(tile);
         }
         for (int i = 30 ; i<60 ; i++) {
             Tile tile=new Tile(i , 75 , walkable);
-            currentGame.bigMap.add(tile);
+            gameState.bigMap.add(tile);
         }
         for (int j=30 ; j<60 ; j++) {
             Tile tile=new Tile(75 , j , walkable);
-            currentGame.bigMap.add(tile);
+            gameState.bigMap.add(tile);
         }
         for (int i=30 ; i<60 ; i++) {
             for (int j=0 ; j<30 ; j++) {
                 if (i==45 && j >= 16) {
                     Tile tile=new Tile(i , j , walkable);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
                 else if (j != 15) {
                     UnWalkable unWalkable=new UnWalkable();
                     Tile tile=new Tile(i , j , unWalkable);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
             }
         }
@@ -402,12 +417,12 @@ public class GameControllerLogic {
 
                 if (j==45 && i>=16) {
                     Tile tile=new Tile(i , j , walkable);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
                 else if (i!=15) {
                     UnWalkable unWalkable=new UnWalkable();
                     Tile tile=new Tile(i , j , unWalkable);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
             }
         }
@@ -415,12 +430,12 @@ public class GameControllerLogic {
             for (int j=60 ; j<90 ; j++) {
                 if (i==45 && j <= 74) {
                     Tile tile=new Tile(i , j , walkable);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
                 else if (j!=75) {
                     UnWalkable unWalkable=new UnWalkable();
                     Tile tile=new Tile(i , j , unWalkable);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
             }
         }
@@ -428,17 +443,17 @@ public class GameControllerLogic {
             for (int j=30 ; j<60 ; j++) {
                 if (j == 45 && i <= 74) {
                     Tile tile=new Tile(i , j , walkable);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
                 else if (i!=75) {
                     UnWalkable unWalkable=new UnWalkable();
                     Tile tile=new Tile(i , j , unWalkable);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
             }
         }
     }
-    public static void buildNpcVillage() {
+    public static void buildNpcVillage(GameState gameState) {
         Wall wall=new Wall(3);
         wall.setWallType(WallType.Npc);
         door dor=new door();
@@ -450,18 +465,18 @@ public class GameControllerLogic {
                 if (i== 30 || i==59 || j==30 || j==59) {
                     if ( (i==30 && j==45 ) || (i==45 && j==30) || (i==45 && j==59) || (i==59 && j==45) ) {
                         Tile tile=new Tile(i , j , dor);
-                        currentGame.bigMap.add(tile);
+                        gameState.bigMap.add(tile);
                     }
                     else {
                         Tile tile = new Tile(i, j, wall);
-                        currentGame.bigMap.add(tile);
+                        gameState.bigMap.add(tile);
                     }
                 }
                 else if (Market.isInMarket(i , j) != null) {
                     MarketType marketType = Market.isInMarket(i, j);
                     Market market = new Market(marketType);
                     Tile tile=new Tile(i , j , market);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
 
                 else if (NPC.wallOrDoor(i, j) != null) {
@@ -469,7 +484,7 @@ public class GameControllerLogic {
 
                         NPCHouse house = new NPCHouse(npc);
                         Tile tile = new Tile(i, j, house);
-                        currentGame.bigMap.add(tile);
+                        gameState.bigMap.add(tile);
 
 //                        if (i == npc.getTopLeftX() + npc.getWidth() -1 && j==npc.getTopLeftY() + 2) {
 //                        Tile tile=new Tile(i , j , dor);
@@ -484,7 +499,7 @@ public class GameControllerLogic {
                     NPC npc = isInNpc(i, j);
                         NPCHouse house = new NPCHouse(npc);
                         Tile tile = new Tile(i, j, house);
-                        currentGame.bigMap.add(tile);
+                        gameState.bigMap.add(tile);
 //                     else {
 //                        Walkable walkable = new Walkable();
 //                        walkable.setGrassOrFiber(npc.getName());
@@ -495,11 +510,12 @@ public class GameControllerLogic {
                 else {
                     Walkable walkable=new Walkable();
                     Tile tile=new Tile(i , j , walkable);
-                    currentGame.bigMap.add(tile);
+                    gameState.bigMap.add(tile);
                 }
             }
         }
     }
+
     public static NPC isInNpc(int x , int y) {
         for (NPC npc : NPC.values()) {
             int tlx=npc.getTopLeftX();
@@ -510,10 +526,11 @@ public class GameControllerLogic {
         }
         return null;
     }
-    public static void createInitialFarm(int id) {
+    public static Message createInitialFarm(int id , User Player , GameState gameState) {
 
         long seed=System.currentTimeMillis();
-        Farm farm= currentGame.currentPlayer.getFarm();
+        Player.setFarm(new Farm());
+        Farm farm= Player.getFarm();
         Mine mine=null;
         Lake lake=null;
         Home home=null;
@@ -543,74 +560,86 @@ public class GameControllerLogic {
                 assert mine != null;
                 if (i >= mine.getStartX() && i<mine.getStartX() + mine.getWidth() && j>=mine.getStartY() && j< mine.getStartY() + mine.getHeight() ) {
                     if (! createMine) {
-                        createInitialMine(currentGame.currentPlayer.topLeftX, currentGame.currentPlayer.topLeftY, mine.getStartX(), mine.getStartY(), mine.getWidth(), mine.getHeight());
+                        createInitialMine(currentGame.currentPlayer.topLeftX,
+                            currentGame.currentPlayer.topLeftY, mine.getStartX(),
+                            mine.getStartY(), mine.getWidth(), mine.getHeight() , Player , gameState);
                         createMine = true;
                     }
                 }
+
                 else if(i >= lake.getTopLeftX() && i< lake.getTopLeftX() + lake.getWidth() && j>=lake.getTopLeftY() && j< lake.getTopLeftY() + lake.getHeight()) {
                     if (! createLake) {
-                        createInitialLake(currentGame.currentPlayer.topLeftX, currentGame.currentPlayer.topLeftY, lake.getTopLeftX(), lake.getTopLeftY(), lake.getWidth(), lake.getHeight());
+                        createInitialLake(currentGame.currentPlayer.topLeftX,
+                            currentGame.currentPlayer.topLeftY, lake.getTopLeftX(),
+                            lake.getTopLeftY(), lake.getWidth(), lake.getHeight() , Player , gameState);
                         createLake = true;
                     }
                 }
+
                 else if(i>=greenHouse.getCoordinateX()  && i < greenHouse.getCoordinateX() + greenHouse.getWidth()
                     && j>=greenHouse.getCoordinateY() && j<greenHouse.getCoordinateY() + greenHouse.getLength() ) {
 
                     if (! createGreenHouse) {
                         createInitialGreenHouse(currentGame.currentPlayer.topLeftX, currentGame.currentPlayer.topLeftY, greenHouse.getCoordinateX(), greenHouse.getCoordinateY(),
-                            greenHouse.getWidth(), greenHouse.getLength());
+                            greenHouse.getWidth(), greenHouse.getLength() , Player , gameState);
 
                         createGreenHouse = true;
                     }
                 }
+
                 else if (i >= home.getTopLeftX() && i<home.getTopLeftX() + home.getWidth() && j >= home.getTopLeftY() && j<home.getTopLeftY() + home.getLength() ) {
                     if (! createHome) {
-                        createInitialHouse(currentGame.currentPlayer.topLeftX, currentGame.currentPlayer.topLeftY, home.getTopLeftX(), home.getTopLeftY(), home.getWidth(), home.getLength());
+                        createInitialHouse(currentGame.currentPlayer.topLeftX, currentGame.currentPlayer.topLeftY,
+                            home.getTopLeftX(), home.getTopLeftY(), home.getWidth(), home.getLength() , Player , gameState);
                         createHome = true;
                     }
                 }
+
                 else {
-                    treeNumber+=MapGenerator(i,j,seed , treeNumber);
+                    treeNumber+=MapGenerator(i,j,seed , treeNumber , Player , gameState);
                 }
             }
         }
-        farm.setX(60 * currentGame.currentPlayer.topLeftX);
-        farm.setY(60 * currentGame.currentPlayer.topLeftY);
-        farm.setIndex(2 * currentGame.currentPlayer.topLeftY + currentGame.currentPlayer.topLeftX + 1);
-        currentGame.farms.add(farm);
+
+        farm.setX(60 * Player.topLeftX);
+        farm.setY(60 * Player.topLeftY);
+        farm.setIndex(2 * Player.topLeftY + Player.topLeftX + 1);
+        gameState.getFarms().add(farm);
+        gameState.bigMap.addAll(farm.Farm);
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("Farm", farm);
+        return new Message(CommandType.FARM , body);
     }
-    public static int MapGenerator(int i,int j,long seed , int treeNumber){
+
+    public static int MapGenerator(int i,int j,long seed , int treeNumber , User Player , GameState gameState){
         if (i == 0 || i == 29 || j == 0 || j == 29) {
             if ((i == 15 && j == 29) || (i==15 && j == 0 ) ){
                 door FarmDoor=new door();
                 FarmDoor.setDoor(Door.Farm);
                 FarmDoor.setCharactor('D');
-                Tile tile=new Tile(i + 60 * currentGame.currentPlayer.topLeftX,j + 60 * currentGame.currentPlayer.topLeftY,FarmDoor);
-                currentGame.currentPlayer.getFarm().Farm.add(tile);
-                currentGame.bigMap.add(tile);
+                Tile tile=new Tile(i + 60 * Player.topLeftX,j + 60 * Player.topLeftY,FarmDoor);
+                Player.getFarm().Farm.add(tile);
                 return 0;
             }
             else if ((i==29 && j==15) || (i==0 && j==15)){
                 door FarmDoor=new door();
                 FarmDoor.setDoor(Door.Farm);
                 FarmDoor.setCharactor('D');
-                Tile tile=new Tile(i + 60 * currentGame.currentPlayer.topLeftX,j + 60 * currentGame.currentPlayer.topLeftY,FarmDoor);
-                currentGame.currentPlayer.getFarm().Farm.add(tile);
-                currentGame.bigMap.add(tile);
+                Tile tile=new Tile(i + 60 * Player.topLeftX,j + 60 * Player.topLeftY,FarmDoor);
+                Player.getFarm().Farm.add(tile);
                 return 0;
             }
             else {
                 if (i == 0 || i == 29) {
                     Wall wall = new Wall(1);
-                    Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, wall);
-                    currentGame.currentPlayer.getFarm().Farm.add(tile);
-                    currentGame.bigMap.add(tile);
+                    Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, wall);
+                    Player.getFarm().Farm.add(tile);
                 }
                 else {
                     Wall wall = new Wall(0);
-                    Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, wall);
-                    currentGame.currentPlayer.getFarm().Farm.add(tile);
-                    currentGame.bigMap.add(tile);
+                    Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, wall);
+                    Player.getFarm().Farm.add(tile);
                 }
                 return 0;
             }
@@ -619,49 +648,49 @@ public class GameControllerLogic {
         else {
             if (i ==15 && j == 20) {
                 Walkable walkable=new Walkable();
-                Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, walkable);
-                currentGame.currentPlayer.getFarm().Farm.add(tile);
-                currentGame.bigMap.add(tile);
+                Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, walkable);
+                Player.getFarm().Farm.add(tile);
                 return 0;
             }
             PerlinNoise perlinNoise = new PerlinNoise(seed);
 
             double noise = perlinNoise.noise(i * 0.1, j * 0.1);
-            if (-1.2 < noise && noise < -0.9 && treeNumber <30) {
-                Tree tree = new Tree(TreeType.OakTree,currentGame.currentDate.clone());
-                Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, tree);
-                currentGame.currentPlayer.getFarm().Farm.add(tile);
-                currentGame.bigMap.add(tile);
+            if (-1.2 < noise && noise < -0.9 && treeNumber <30)
+            {
+                Tree tree = new Tree(TreeType.OakTree,gameState.currentDate.clone());
+                Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
+                Player.getFarm().Farm.add(tile);
+                gameState.bigMap.add(tile);
                 return 1;
             }
             else if(noise > -0.9 && noise <-0.5 && treeNumber <30){
-                Tree tree = new Tree(TreeType.MapleTree,currentGame.currentDate.clone());
-                Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, tree);
-                currentGame.currentPlayer.getFarm().Farm.add(tile);
-                currentGame.bigMap.add(tile);
+                Tree tree = new Tree(TreeType.MapleTree,gameState.currentDate.clone());
+                Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
+                Player.getFarm().Farm.add(tile);
+                gameState.bigMap.add(tile);
                 return 1;
             }
             else if (noise > -0.5 && noise < - 0.2 && treeNumber <30){
-                Tree tree = new Tree(TreeType.PineTree,currentGame.currentDate.clone());
-                Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, tree);
-                currentGame.currentPlayer.getFarm().Farm.add(tile);
-                currentGame.bigMap.add(tile);
+                Tree tree = new Tree(TreeType.PineTree, gameState.currentDate.clone());
+                Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
+                Player.getFarm().Farm.add(tile);
+                gameState.bigMap.add(tile);
                 return 1;
             }
             else if (-0.1 < noise && noise < 0.0) {
                 BasicRock basicRock = new BasicRock();
                 basicRock.setCharactor('S');
-                Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, basicRock);
-                currentGame.currentPlayer.getFarm().Farm.add(tile);
-                currentGame.bigMap.add(tile);
+                Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, basicRock);
+                Player.getFarm().Farm.add(tile);
+                gameState.bigMap.add(tile);
                 return 0;
             }
             else {
                 Walkable walkable = new Walkable();
                 walkable.setCharactor('.');
-                Tile tile = new Tile(i + 60 * currentGame.currentPlayer.topLeftX, j + 60 * currentGame.currentPlayer.topLeftY, walkable);
-                currentGame.currentPlayer.getFarm().Farm.add(tile);
-                currentGame.bigMap.add(tile);
+                Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, walkable);
+                Player.getFarm().Farm.add(tile);
+                gameState.bigMap.add(tile);
                 return 0;
             }
 
@@ -701,6 +730,51 @@ public class GameControllerLogic {
         }
     }
 
+    public static void EnterTheMarket(User Player) {
+        if (Player.getDirection().equals(Direction.Up) && Player.isInFarmExterior()) {
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                for (MarketType market : MarketType.values()) {
+                    if (market.getOutsideDoor().checkCollisionMouse(gameMenu.getMousePos()) &&
+                        market.getOutsideDoor().checkCollision(Player)) {
+
+                        HashMap<String , Object> body = new HashMap<>();
+                        body.put("Player", Player);
+                        body.put("Market", market);
+                        Main.getClient(null).getRequests().add(new Message(CommandType.ENTER_THE_MARKET , body));
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public static void AnswerEnterTheMarket(Message message , Game game) {
+        for (User user : game.getGameState().getPlayers()) {
+            if (message.getFromBody("Player").equals(user)) {
+                user.setIsInMarket(true);
+                user.setInFarmExterior(false);
+                MarketType market = message.getFromBody("Market");
+                user.setPositionX(market.getInsideDoor().getX());
+                user.setPositionY(market.getInsideDoor().getY());
+                HashMap<String , Object> body = new HashMap<>();
+                body.put("Player", user);
+                body.put("Market", market);
+                body.put("X" , market.getInsideDoor().getX());
+                body.put("Y" , market.getInsideDoor().getY());
+                body.put("Is in farm" , false);
+                body.put("Is in Market" , true);
+                game.getDiffQueue().add(new Message(CommandType.ENTER_THE_MARKET , body));
+            }
+        }
+    }
+
+    public static void addPlayerToMarket(User Player) {
+        while (Player.getJoinMarket().isEmpty()) {
+            User P  = Player.getJoinMarket().poll();
+            MarketMenu.getInstance().users().add(P);
+            MarketMenu.getInstance().addUserRenderer(P);
+        }
+    }
     public static void showForagingMinerals(Mine mine) {
         if (currentGame.currentPlayer.isInMine()) {
             for (ForagingMinerals foragingMinerals : mine.getForagingMinerals()) {
@@ -759,15 +833,16 @@ public class GameControllerLogic {
         return Quantity.Iridium;
     }
     public static boolean checkTilesForCreateBarnOrCage(int x, int y, int width, int height) {
-        if (x<60 * currentGame.currentPlayer.topLeftX || y< 60 * currentGame.currentPlayer.topLeftY) {
+        if (x<60 * Main.getClient(null).getPlayer().topLeftX || y< 60 * Main.getClient(null).getPlayer().topLeftY) {
             return false;
         }
-        if (x + width > 30 + 60 * currentGame.currentPlayer.topLeftX || y + height > 30 + 60 * currentGame.currentPlayer.topLeftY) {
+        if (x + width > 30 + 60 * Main.getClient(null).getPlayer().topLeftX ||
+            y + height > 30 + 60 * Main.getClient(null).getPlayer().topLeftY) {
             return false;
         }
         for (int i = x; i < x+width; i++) {
             for (int j = y; j < y+height; j++) {
-                Tile tile = getTileByCoordinates(i , j);
+                Tile tile = getTileByCoordinates(i , j ,Main.getClient(null).getLocalGameState());
                 if (!(tile.getGameObject() instanceof Walkable)) {
                     return false;
                 }
@@ -1165,8 +1240,10 @@ public class GameControllerLogic {
                             animal.setDirection(Direction.Left);
                         }
                         animal.setTimer(0);
-                        animal.getSprite().setPosition(TEXTURE_SIZE * Path.get(finalI+1).getX(), TEXTURE_SIZE * (90 - Path.get(finalI+1).getY()));
-                        animal.getSprite().setSize(TEXTURE_SIZE, TEXTURE_SIZE);
+                        animal.setPositionX(TEXTURE_SIZE * Path.get(finalI+1).getX());
+                        animal.setPositionY(TEXTURE_SIZE * (90 - Path.get(finalI+1).getY()));
+                        //animal.setPosition(TEXTURE_SIZE * Path.get(finalI+1).getX(), TEXTURE_SIZE * (90 - Path.get(finalI+1).getY()));
+                        //animal.getSprite().setSize(TEXTURE_SIZE, TEXTURE_SIZE);
 
                         if (finalI == Path.size() - 2) {
                             gameMenu.getShepherdingAnimals().remove(animal);
@@ -1451,12 +1528,12 @@ public class GameControllerLogic {
     public static void showChatDialog(Stage stage, Skin skin, Consumer<String> onMessageSent) {
 
         // تعریف متغیرهای اولیه
-        TextField messageField = new TextField("", newSkin);
+        TextField messageField = new TextField("", Main.getNewSkin());
         messageField.setMessageText("Type your message...");
         messageField.setMaxLength(200);
 
         // دیالوگ به صورت subclass تا متد result را override کنیم
-        Dialog chatDialog = new Dialog("Send Message", newSkin) {
+        Dialog chatDialog = new Dialog("Send Message", Main.getNewSkin()) {
             @Override
             protected void result(Object obj) {
                 if (obj.equals(true)) {
@@ -1525,7 +1602,7 @@ public class GameControllerLogic {
         }
 
         // گرفتن پیام از کاربر و فراخوانی تابع talk
-        showChatDialog(GameMenu.gameMenu.getStage(), newSkin, message -> {
+        showChatDialog(GameMenu.gameMenu.getStage(), Main.getNewSkin(), message -> {
             Result result = f.talk(message);
             onResult.accept(result);
         });
@@ -2287,7 +2364,7 @@ public class GameControllerLogic {
             !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY())) {
 
             Dialog dialog = Marketing.getInstance().createDialogError();
-            final Label tooltipLabel = new Label("You can't planting in this tile", App.newSkin);
+            final Label tooltipLabel = new Label("You can't planting in this tile", Main.getNewSkin());
             tooltipLabel.setColor(Color.LIGHT_GRAY);
 
             Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
@@ -2347,14 +2424,14 @@ public class GameControllerLogic {
                 if (!type1.getSeason().contains(currentGame.currentDate.getSeason())) {
 
                     Label tooltipLabel = new Label("You can't plant this tree in "
-                        + currentGame.currentDate.getSeason(), App.newSkin);
+                        + currentGame.currentDate.getSeason(), Main.getNewSkin());
                     tooltipLabel.setColor(Color.LIGHT_GRAY);
                     Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
                 }
 
             GameObject object = tile.getGameObject();
             if (object instanceof GreenHouse && !((GreenHouse) object).isCreated()) {
-                Label tooltipLabel = new Label("First you must create green House", App.newSkin);
+                Label tooltipLabel = new Label("First you must create green House", Main.getNewSkin());
                 tooltipLabel.setColor(Color.LIGHT_GRAY);
                 Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
             }
@@ -2367,12 +2444,12 @@ public class GameControllerLogic {
                 tile.setGameObject(tree);
                 advanceItem(new TreeSource(type1), -1);
 
-                Label tooltipLabel = new Label("The tree begins its journey", App.newSkin);
+                Label tooltipLabel = new Label("The tree begins its journey", Main.getNewSkin());
                 tooltipLabel.setColor(Color.LIGHT_GRAY);
                 Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
 
             } else {
-                Label tooltipLabel = new Label("First, you must plow the tile", App.newSkin);
+                Label tooltipLabel = new Label("First, you must plow the tile", Main.getNewSkin());
                 tooltipLabel.setColor(Color.LIGHT_GRAY);
                 Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
             }
@@ -2402,7 +2479,7 @@ public class GameControllerLogic {
 
                 if (object instanceof GreenHouse && !((GreenHouse) object).isCreated()) {
 
-                    Label tooltipLabel = new Label("First you must create green House", App.newSkin);
+                    Label tooltipLabel = new Label("First you must create green House", Main.getNewSkin());
                     tooltipLabel.setColor(Color.LIGHT_GRAY);
                     Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
                 }
@@ -2413,12 +2490,12 @@ public class GameControllerLogic {
 
                     tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
 
-                    Label tooltipLabel = new Label("The plant \" + type.getDisplayName() + \" has come to life! \\uD83C\\uDF31✨", App.newSkin);
+                    Label tooltipLabel = new Label("The plant \" + type.getDisplayName() + \" has come to life! \\uD83C\\uDF31✨", Main.getNewSkin());
                     tooltipLabel.setColor(Color.LIGHT_GRAY);
                     Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
 
                 } else {
-                    Label tooltipLabel = new Label("First, you must plow the tile.", App.newSkin);
+                    Label tooltipLabel = new Label("First, you must plow the tile.", Main.getNewSkin());
                     tooltipLabel.setColor(Color.LIGHT_GRAY);
                     Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
                 }
@@ -2449,20 +2526,20 @@ public class GameControllerLogic {
                         if (!isInGreenHouse(tile))
                             if (!type.getSeason().contains(currentGame.currentDate.getSeason())) {
                                 Label tooltipLabel = new Label("You can't plant this seed in "
-                                    + currentGame.currentDate.getSeason(), App.newSkin);
+                                    + currentGame.currentDate.getSeason(), Main.getNewSkin());
                                 tooltipLabel.setColor(Color.LIGHT_GRAY);
                                 Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
                             }
 
                         GameObject object = tile.getGameObject();
                         if (object instanceof GreenHouse && !((GreenHouse) object).isCreated()) {
-                            Label tooltipLabel = new Label("First you must create green House", App.newSkin);
+                            Label tooltipLabel = new Label("First you must create green House", Main.getNewSkin());
                             tooltipLabel.setColor(Color.LIGHT_GRAY);
                             Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
                         }
 
                         if (tile.getGameObject() instanceof Walkable && (!((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed"))) {
-                            Label tooltipLabel = new Label("First, you must plow the tile.", App.newSkin);
+                            Label tooltipLabel = new Label("First, you must plow the tile.", Main.getNewSkin());
                             tooltipLabel.setColor(Color.LIGHT_GRAY);
                             Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
                         }
@@ -2473,12 +2550,12 @@ public class GameControllerLogic {
                             tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
                             inventory.Items.put(entry.getKey(), entry.getValue() - 1);
 
-                            Label tooltipLabel = new Label("The earth welcomes your seed", App.newSkin);
+                            Label tooltipLabel = new Label("The earth welcomes your seed", Main.getNewSkin());
                             tooltipLabel.setColor(Color.LIGHT_GRAY);
                             Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
 
                         } else {
-                            Label tooltipLabel = new Label("You can't plant in this tile", App.newSkin);
+                            Label tooltipLabel = new Label("You can't plant in this tile", Main.getNewSkin());
                             tooltipLabel.setColor(Color.LIGHT_GRAY);
                             Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
                         }

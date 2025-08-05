@@ -28,6 +28,7 @@ public class Main extends Game {
     private static Main main;
     private static Batch batch;
     private static Skin skin;
+    public static Skin newSkin;
     private static ClientWork client;
 
     public Main(ClientWork client) {
@@ -80,7 +81,9 @@ public class Main extends Game {
     public static Batch getBatch() {
         return batch;
     }
-    public static Skin getSkin() {return skin;}
+    public static Skin getSkin() {
+        return skin;
+    }
     public static Main getMain() {
         return main;
     }
@@ -90,5 +93,11 @@ public class Main extends Game {
 
     public static synchronized ClientWork getClient(ClientWork c) {
         return client;
+    }
+    public static Skin getNewSkin() {
+        if (newSkin == null) {
+            newSkin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
+        }
+        return newSkin;
     }
 }

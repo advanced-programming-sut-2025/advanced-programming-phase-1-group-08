@@ -3,6 +3,7 @@ package com.Graphic.View.GameMenus;
 import com.Graphic.Controller.MainGame.CraftingController;
 import com.Graphic.View.AppMenu;
 import com.Graphic.model.Enum.Commands.CraftMenuCommands;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import java.util.Scanner;
@@ -11,7 +12,7 @@ import java.util.regex.Matcher;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
-public class CraftMenu implements AppMenu {
+public class CraftMenu implements AppMenu , Screen {
     public void check(Scanner scanner) {
         String input = scanner.nextLine();
         Matcher matcher;
@@ -34,5 +35,40 @@ public class CraftMenu implements AppMenu {
     @Override
     public Stage getStage() {
         return null;
+    }
+
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float v) {
+
+    }
+
+    @Override
+    public void resize(int i, int i1) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }

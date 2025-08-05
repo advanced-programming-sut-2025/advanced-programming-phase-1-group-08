@@ -7,9 +7,12 @@ import com.Graphic.View.AppMenu;
 import com.Graphic.model.App;
 import com.Graphic.model.App.*;
 import com.Graphic.model.Enum.Commands.MarketMenuCommands;
+import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.User;
+import com.Graphic.model.UserRenderer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -34,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -49,9 +53,9 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
 
     TiledMap map;
     OrthogonalTiledMapRenderer renderer;
-    private static OrthographicCamera camera;
+    private static   OrthographicCamera camera;
     Marketing marketing;
-    public static MarketType marketType;
+    public MarketType marketType;
     private static Stage stage;
     private static Skin skin;
     private static Window window;
@@ -63,6 +67,8 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
     private static Vector3 vector;
     private static Sprite withMouse;
     private static HashMap <Sprite , BarnORCageType> mapSpriteToBarnOrCage;
+    private ArrayList<User> users = new ArrayList<>();
+    private ArrayList<UserRenderer> userRenderers = new ArrayList<>();
 
 
     public MarketMenu() {
@@ -204,21 +210,36 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
         MarketMenu.withMouse = withMouse;
     }
 
+    public ArrayList<User> users() {
+        return users;
+    }
+    public void addUserRenderer(User Player) {
+        UserRenderer userRenderer = new UserRenderer();
+        userRenderer.addToAnimations(Direction.Up , Player.getUp());
+        userRenderer.addToAnimations(Direction.Down , Player.getDown());
+        userRenderer.addToAnimations(Direction.Left , Player.getRight());
+        userRenderer.addToAnimations(Direction.Right , Player.getLeft());
+    }
+
+    public ArrayList<UserRenderer> getUserRenderers() {
+        return userRenderers;
+    }
+
     @Override
     public void show() {
 //        App.currentGame.currentPlayer.sprite.setSize(16 , 32);
         marketing = new Marketing();
-        marketType = MarketType.JojaMart;
+        marketType = Main.getClient(null).getPlayer().getMarketType();
         camera = new OrthographicCamera();
         camera.setToOrtho(false , 300 , 150);
-        map = new TmxMapLoader().load("Mohamadreza/Maps/JojaMart.tmx");
+        map = new TmxMapLoader().load("Mohamadreza/Maps/" + marketType.getName() + ".tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1f);
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
 
         Main.getBatch().begin();
-        marketing.init();
+        marketing.init(Main.getClient(null).getPlayer());
         Main.getBatch().end();
 
 
@@ -233,29 +254,34 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            camera.translate(0, 200 * Gdx.graphics.getDeltaTime());
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            camera.translate(0, - 200 * Gdx.graphics.getDeltaTime());
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            camera.translate(- 200 * Gdx.graphics.getDeltaTime(), 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            camera.translate( 200 * Gdx.graphics.getDeltaTime(), 0);
-        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+//            camera.translate(0, 200 * Gdx.graphics.getDeltaTime());
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+//            camera.translate(0, - 200 * Gdx.graphics.getDeltaTime());
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+//            camera.translate(- 200 * Gdx.graphics.getDeltaTime(), 0);
+//        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+//            camera.translate( 200 * Gdx.graphics.getDeltaTime(), 0);
+//        }
         camera.update();
         Main.getBatch().setProjectionMatrix( camera.combined);
 
         Main.getBatch().begin();
-        marketing.move();
-        marketing.showCarpenterProducts(1,false);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Marketing.getInstance().openProductsMenu(marketType);
+        }
+        //marketing.showCarpenterProducts(1,false);
        // marketing.showMarnieProducts(1,false);
 
         if (! choosePlace) {
             camera.setToOrtho(false , 300 , 150);
             renderer.setView(camera);
+            camera.position.set(Main.getClient(null).getPlayer().getPositionX() , Main.getClient(null).getPlayer().getPositionY() , 0f);
+            marketing.move(Main.getClient(null).getPlayer());
+            marketing.printPlayers();
             renderer.render();
         }
         else {

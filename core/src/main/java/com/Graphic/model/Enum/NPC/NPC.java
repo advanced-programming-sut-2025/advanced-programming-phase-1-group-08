@@ -29,7 +29,7 @@ public enum NPC {
             new Food(FoodTypes.pumpkinPie), 1,
             new BasicRock(), 150 )), 42, 45, 5, 5,
             new MarketItem(MarketItemType.Oil), 10,
-            new NPCDirectionSet("Mohamadreza/NPC/Sebastian")) {
+            new NPCDirectionSet("Mohamadreza/NPC/Sebastian") ) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -98,7 +98,7 @@ public enum NPC {
             new AllCrops(CropsType.Pumpkin), 1,
             new AllCrops(CropsType.Wheat),   50)), 51, 45, 5, 5,
             new MarketItem(MarketItemType.Bouquet), 20,
-            new NPCDirectionSet("Mohamadreza/NPC/Abigail")) {
+            new NPCDirectionSet("Mohamadreza/NPC/Abigail") ) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -162,7 +162,7 @@ public enum NPC {
             new AllCrops(CropsType.Kale), 12,
             new ArtisanProduct(ArtisanType.Wine),   1)), 32, 52, 5, 5,
             new MarketItem(MarketItemType.Bread), 15,
-            new NPCDirectionSet("Mohamadreza/NPC/Harvey")) {
+            new NPCDirectionSet("Mohamadreza/NPC/Harvey") ) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -226,7 +226,7 @@ public enum NPC {
             new Wood(), 200,
             new BasicRock(),   200)), 42, 52, 5, 5,
             new MarketItem(MarketItemType.Salad), 25,
-            new NPCDirectionSet("Mohamadreza/NPC/Leah")) {
+            new NPCDirectionSet("Mohamadreza/NPC/Leah") ) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -290,7 +290,7 @@ public enum NPC {
             new Wood(), 80,
             new MixedSeeds(),   10)), 51, 52, 5, 5,
             new MarketItem(MarketItemType.Coffee), 18,
-            new NPCDirectionSet("Mohamadreza/NPC/Robin")) {
+            new NPCDirectionSet("Mohamadreza/NPC/Robin") ) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {

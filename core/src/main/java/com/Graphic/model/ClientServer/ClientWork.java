@@ -1,6 +1,7 @@
 package com.Graphic.model.ClientServer;
 
 import com.Graphic.model.Enum.Commands.CommandType;
+import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.User;
 import com.badlogic.gdx.Gdx;
 
@@ -24,6 +25,7 @@ public class ClientWork  {
     private Client2ClientThread client2ClientThread;
     private BlockingQueue<Message> requests = new LinkedBlockingQueue();
     private User Player;
+    private Menu currentMenu;
 
     public void initFromArgs(String ip, int port) {
             try {
@@ -58,41 +60,6 @@ public class ClientWork  {
 
     }
 
-    public void handleInputThread() {
-        new Thread(new Runnable() {
-            public void run() {
-                HashMap<String , Object> body = new HashMap<>();
-                while (running) {
-                    body.clear();
-
-                    try {
-
-                        if (Gdx.input.isKeyPressed(W)) {
-                            body.put("Player",index);
-                            sendMessage(new Message(CommandType.UP , body) );
-                        }
-                        else if (Gdx.input.isKeyPressed(A)) {
-                            body.put("Player",index);
-                            sendMessage(new Message(CommandType.LEFT , body) );
-                        }
-                        else if (Gdx.input.isKeyPressed(S)) {
-                            body.put("Player",index);
-                            sendMessage(new Message(CommandType.DOWN , body) );
-                        }
-                        else if (Gdx.input.isKeyPressed(D)) {
-                            body.put("Player",index);
-                            sendMessage(new Message(CommandType.RIGHT , body) );
-                        }
-                        Thread.sleep(16);
-                    }
-                    catch (Exception e) {
-                        running = false;
-                    }
-                }
-            }
-        });
-    }
-
 
     public boolean isExit() {
         return exit;
@@ -120,12 +87,27 @@ public class ClientWork  {
         return running;
     }
 
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
     public User getPlayer() {
         return Player;
     }
 
     public void setPlayer(User player) {
         this.Player = player;
+    }
+
+    public GameState getLocalGameState() {
+        return localGameState;
+    }
+
+    public Menu getCurrentMenu() {
+        return currentMenu;
+    }
+    public void setCurrentMenu(Menu currentMenu) {
+        this.currentMenu = currentMenu;
     }
 
 }

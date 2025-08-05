@@ -59,10 +59,10 @@ public class UserStorage {
         System.out.println("kir");
         if (!Files.exists(FILE_PATH)) return new ArrayList<>();
 
+
         try {
             String json = Files.readString(FILE_PATH);
             Type listType = new TypeToken<List<User>>() {}.getType();
-
             List<User> users = gson.fromJson(json, listType);
             System.out.println("ki2r");
             if (users == null) {

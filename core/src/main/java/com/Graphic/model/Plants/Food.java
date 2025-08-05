@@ -45,6 +45,11 @@ public class Food extends Items {
     }
 
     @Override
+    public String getIcon() {
+        return type.getAddress();
+    }
+
+    @Override
     public int getRemindInShop(MarketType marketType) {
         return -1;
     }

@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.util.ArrayList;
+
 public class Animal extends GameObject {
 
     private AnimalType type;
@@ -30,14 +32,16 @@ public class Animal extends GameObject {
     private boolean productCollected;
     private boolean isOut;
     private int index;
-    private Animation<Texture> Up;
-    private Animation<Texture> Left;
-    private Animation<Texture> Right;
-    private Animation<Texture> Down;
+    private ArrayList<String> Up;
+    private ArrayList<String> Left;
+    private ArrayList<String> Right;
+    private ArrayList<String> Down;
     private float timer = 0.0f;
     private Direction direction;
-    private Sprite AnimalSprite;
+    private String AnimalSpritePath;
     private boolean isMoving;
+    private float x;
+    private float y;
 
     public Animal(AnimalType type,int friendShip, String name, int day ) {
         this.type = type;
@@ -52,27 +56,28 @@ public class Animal extends GameObject {
         isOut=false;
         isMoving = false;
         direction = Direction.Down;
-        AnimalSprite = new Sprite(TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_down.png"));
-        this.Up = new Animation<>(0.1f ,
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_up.png"),
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_up.png") ,
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_up.png"),
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_up.png"));
-        this.Left = new Animation<>(0.1f ,
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_left.png"),
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_left.png") ,
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_left.png"),
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_left.png"));
-        this.Right = new Animation<>(0.1f ,
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_right.png"),
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_right.png") ,
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_right.png"),
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_right.png"));
-        this.Down = new Animation<>(0.1f ,
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_down.png"),
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_down.png") ,
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_down.png"),
-            TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_down.png"));
+        AnimalSpritePath = "Mohamadreza/animal/"+type.getType().toLowerCase() + 1 + "_down.png";
+        this.Up = new ArrayList<>();
+        this.Left = new ArrayList<>();
+        this.Right = new ArrayList<>();
+        this.Down = new ArrayList<>();
+        this.Up.add("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_up.png");
+        this.Up.add("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_up.png");
+        this.Up.add("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_up.png");
+        this.Up.add("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_up.png");
+        this.Left.add("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_left.png");
+        this.Left.add("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_left.png");
+        this.Left.add("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_left.png");
+        this.Left.add("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_left.png");
+        this.Right.add("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_right.png");
+        this.Right.add("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_right.png");
+        this.Right.add("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_right.png");
+        this.Right.add("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_right.png");
+        this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_down.png");
+        this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_down.png");
+        this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_down.png");
+        this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_down.png");
+
     }
 
     public String getName() {
@@ -200,17 +205,17 @@ public class Animal extends GameObject {
         this.index = index;
     }
 
-    public Animation<Texture> getUp() {
+    public ArrayList<String> getUp() {
         return Up;
     }
 
-    public Animation<Texture> getDown() {
+    public ArrayList<String> getDown() {
         return Down;
     }
-    public Animation<Texture> getLeft() {
+    public ArrayList<String> getLeft() {
         return Left;
     }
-    public Animation<Texture> getRight() {
+    public ArrayList<String> getRight() {
         return Right;
     }
 
@@ -227,7 +232,7 @@ public class Animal extends GameObject {
     public void setTimer(float timer) {
         this.timer = timer;
     }
-    public Animation<Texture> getAnimation() {
+    public ArrayList<String> getAnimation() {
         switch (direction) {
             case Up: return Up;
             case Down: return Down;
@@ -237,8 +242,18 @@ public class Animal extends GameObject {
         return null;
     }
 
-    public Sprite getSprite() {
-        return AnimalSprite;
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+    public float getX() {
+        return x;
+    }
+    public float getY() {
+        return y;
     }
 
     public boolean isMoving() {

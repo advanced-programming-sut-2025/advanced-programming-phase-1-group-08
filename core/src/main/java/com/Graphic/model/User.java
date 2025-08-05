@@ -2,6 +2,7 @@ package com.Graphic.model;
 
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Direction;
+import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.HelpersClass.TextureManager;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.math.Circle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Queue;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
@@ -39,12 +41,12 @@ public class User {
 
 
     public Sprite sprite;
-    private Animation<Texture> Right;
-    private Animation<Texture> Left;
-    private Animation<Texture> Up;
-    private Animation<Texture> Down;
+    private ArrayList<String> Right;
+    private ArrayList<String> Left;
+    private ArrayList<String> Up;
+    private ArrayList<String> Down;
     private Direction direction;
-    private HashMap<Direction , Texture> DirectionInWalk;
+    private HashMap<Direction , String> DirectionInWalk;
     private boolean isMoving;
     private float Timer = 0.0f;
     private boolean first = true;
@@ -55,10 +57,12 @@ public class User {
     private boolean isInMarket = false;
     private boolean isInFarmExterior=false;
     private boolean isWaiting = false;
-    private Sprite withMouse;
+    private String withMouse;
     private Items droppedItem;
     private String BarnOrCagePath;
     private BarnOrCage currentBarnOrCage;
+    private MarketType currentMarket;
+    private Queue<User> joinMarket;
 
 
     // buffs
@@ -104,7 +108,7 @@ public class User {
 
 
 
-    private final Farm farm = new Farm();
+    private  Farm farm;
     public int topLeftX;
     public int topLeftY; // اینا باید برن تو فارم
     private float positionX;
@@ -508,38 +512,60 @@ public class User {
     }
 
     public void initAnimations () {
-        this.Right = new Animation<>(0.1f,
-            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png"),
-            TextureManager.get("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png"));
+        this.Right = new ArrayList<>();
+        this.Left = new ArrayList<>();
+        this.Up = new ArrayList<>();
+        this.Down = new ArrayList<>();
+        this.Right.add("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png");
+        this.Right.add("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png");
+        this.Left.add("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png");
+        this.Left.add("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png");
+        this.Up.add("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png");
+        this.Up.add("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png");
+        this.Down.add("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png");
+        this.Down.add("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png");
 
-        this.Left = new Animation<>(0.1f,
-            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Left" + farm.getIndex() + "," + gender + ".png"),
-            TextureManager.get("Mohamadreza/PlayerSpriteMove/Left" + farm.getIndex() + "," + gender + ".png"));
 
-        this.Up = new Animation<>(0.1f,
-            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Up" + farm.getIndex() + "," + gender + ".png"),
-            TextureManager.get("Mohamadreza/PlayerSpriteMove/Up" + farm.getIndex() + "," + gender + ".png"));
 
-        this.Down = new Animation<>(0.1f,
-            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Down" + farm.getIndex() + "," + gender + ".png"),
-            TextureManager.get("Mohamadreza/PlayerSpriteMove/Down" + farm.getIndex() + "," + gender + ".png"));
+
+//        this.Right = new Animation<>(0.1f,
+//            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png"),
+//            TextureManager.get("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png"));
+//
+//        this.Left = new Animation<>(0.1f,
+//            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Left" + farm.getIndex() + "," + gender + ".png"),
+//            TextureManager.get("Mohamadreza/PlayerSpriteMove/Left" + farm.getIndex() + "," + gender + ".png"));
+//
+//        this.Up = new Animation<>(0.1f,
+//            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Up" + farm.getIndex() + "," + gender + ".png"),
+//            TextureManager.get("Mohamadreza/PlayerSpriteMove/Up" + farm.getIndex() + "," + gender + ".png"));
+//
+//        this.Down = new Animation<>(0.1f,
+//            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Down" + farm.getIndex() + "," + gender + ".png"),
+//            TextureManager.get("Mohamadreza/PlayerSpriteMove/Down" + farm.getIndex() + "," + gender + ".png"));
 
         direction = Direction.Down;
         DirectionInWalk = new HashMap<>();
-        DirectionInWalk.put(Direction.Up , new Texture(Gdx.files.internal(Direction.Up.getPath() + farm.getIndex() + "," + gender + ".png")));
-        DirectionInWalk.put(Direction.Down , new Texture(Gdx.files.internal(Direction.Down.getPath() + farm.getIndex() + "," + gender + ".png")));
-        DirectionInWalk.put(Direction.Right , new Texture(Gdx.files.internal(Direction.Right.getPath() + farm.getIndex() + "," + gender + ".png")));
-        DirectionInWalk.put(Direction.Left , new Texture(Gdx.files.internal(Direction.Left.getPath() + farm.getIndex() + "," + gender + ".png")));
-        sprite = new Sprite(DirectionInWalk.get(direction));
-        sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
+        DirectionInWalk.put(Direction.Up , Direction.Up.getPath() + farm.getIndex() + "," + gender + ".png");
+        DirectionInWalk.put(Direction.Down , Direction.Down.getPath() + farm.getIndex() + "," + gender + ".png");
+        DirectionInWalk.put(Direction.Left , Direction.Left.getPath() + farm.getIndex() + "," + gender + ".png");
+        DirectionInWalk.put(Direction.Right, Direction.Right.getPath() + farm.getIndex() + "," + gender + ".png");
+//        DirectionInWalk.put(Direction.Up , new Texture(Gdx.files.internal(Direction.Up.getPath() + farm.getIndex() + "," + gender + ".png")));
+//        DirectionInWalk.put(Direction.Down , new Texture(Gdx.files.internal(Direction.Down.getPath() + farm.getIndex() + "," + gender + ".png")));
+//        DirectionInWalk.put(Direction.Right , new Texture(Gdx.files.internal(Direction.Right.getPath() + farm.getIndex() + "," + gender + ".png")));
+//        DirectionInWalk.put(Direction.Left , new Texture(Gdx.files.internal(Direction.Left.getPath() + farm.getIndex() + "," + gender + ".png")));
+
+
+        //sprite = new Sprite(DirectionInWalk.get(direction));
+        //sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
     }
 
-    public Sprite getSprite() {
-        sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
-        sprite.setSize(TEXTURE_SIZE, TEXTURE_SIZE);
-
-        return sprite;
-    }
+//    public Sprite getSprite() {
+//        sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
+//        sprite.setSize(TEXTURE_SIZE, TEXTURE_SIZE);
+//
+//        return sprite;
+//    }
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
@@ -553,7 +579,7 @@ public class User {
     public void setMoving(boolean isMoving) {
         this.isMoving = isMoving;
     }
-    public Animation<Texture> getAnimation() {
+    public ArrayList<String> getAnimation() {
         switch (direction) {
             case Up -> {
                 return Up;
@@ -600,7 +626,7 @@ public class User {
         return isPlaceArtisanOrShippingBin;
     }
 
-    public Sprite getWithMouse() {
+    public String getWithMouse() {
         return withMouse;
     }
 
@@ -656,7 +682,7 @@ public class User {
         this.isInFarmExterior = inFarmExterior;
     }
 
-    public void setWithMouse(Sprite withMouse) {
+    public void setWithMouse(String withMouse) {
         this.withMouse = withMouse;
     }
 
@@ -666,5 +692,30 @@ public class User {
 
     public boolean isWaiting() {
         return isWaiting;
+    }
+
+    public void setFarm(Farm farm) {
+        this.farm = farm;
+    }
+    public ArrayList<String> getUp() {
+        return Up;
+    }
+    public ArrayList<String> getDown() {
+        return Down;
+    }
+    public ArrayList<String> getLeft() {
+        return Left;
+    }
+    public ArrayList<String> getRight() {
+        return Right;
+    }
+    public MarketType getMarketType() {
+        return currentMarket;
+    }
+    public void setCurrentMarket(MarketType currentMarket) {
+        this.currentMarket = currentMarket;
+    }
+    public Queue<User> getJoinMarket() {
+        return joinMarket;
     }
 }

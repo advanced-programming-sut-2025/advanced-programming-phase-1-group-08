@@ -50,6 +50,11 @@ public class PickAxe extends Tools {
     }
 
     @Override
+    public String getIcon() {
+        return type.getIconPath();
+    }
+
+    @Override
     public int getRemindInShop(MarketType marketType) {
         return -1;
     }

@@ -7,6 +7,7 @@ import com.Graphic.model.Game;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.SaveData.UserStorage;
 import com.Graphic.model.User;
+import com.badlogic.gdx.Gdx;
 
 import java.io.IOException;
 import java.lang.reflect.Member;
@@ -57,7 +58,7 @@ public class RegisterController {
                 return new Message(CommandType.ERROR , body);
             }
 
-            if (message.getIntFromBody("Question Index") == 0) {
+            if (message.getIntFromBody("Question index") == 0) {
                 HashMap<String, Object> body = new HashMap<>();
                 body.put("Error", "Please select a security question!");
                 return new Message(CommandType.ERROR, body);
@@ -76,7 +77,7 @@ public class RegisterController {
             }
 
 
-            SecurityQuestions secQuestion = SecurityQuestions.values()[message.getIntFromBody("Question Index") - 1];
+            SecurityQuestions secQuestion = SecurityQuestions.values()[message.getIntFromBody("Question index") - 1];
             result = completeRegistration(
                 message.getFromBody("Username"), message.getFromBody("Password"),
                 message.getFromBody("Nickname"), message.getFromBody("Email"),
@@ -250,6 +251,7 @@ public class RegisterController {
     public Message completeRegistration(String username, String password, String nickname,
                                        String email, String gender, SecurityQuestions securityQuestion,
                                        String securityAnswer) throws IOException {
+
         Game.AddNewUser(username, password, nickname, email, gender, securityQuestion, securityAnswer);
 
         User newUser = UserStorage.loadUsers().stream()

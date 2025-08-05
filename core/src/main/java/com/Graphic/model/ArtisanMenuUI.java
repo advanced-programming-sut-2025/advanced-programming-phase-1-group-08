@@ -2,7 +2,7 @@ package com.Graphic.model;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.Marketing;
-import com.Graphic.View.GameMenus.GameMenu;
+import com.Graphic.Main;
 import com.Graphic.model.Enum.ItemType.CraftType;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.TextureManager;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static com.Graphic.View.GameMenus.GameMenu.gameMenu;
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.App.skin;
+//import static com.Graphic.model.App.skin;
 
 public class ArtisanMenuUI extends Group {
     private Table table;
@@ -211,11 +211,11 @@ public class ArtisanMenuUI extends Group {
                     if (result.IsSuccess()) {
                         goingToProduce.getType().creatArtesian(null, craftingItem);
                         ArtisanMenuUI.this.remove();
-                        craftingItem.createAnotherShapeRender();
+                        //craftingItem.createAnotherShapeRender();
                     }
 
                     Dialog dialog = Marketing.getInstance().createDialogError();
-                    Label success = new Label(result.toString() , skin);
+                    Label success = new Label(result.toString() , Main.getSkin());
                     Marketing.getInstance().addDialogToTable(dialog,success,gameMenu);
                 }
             });

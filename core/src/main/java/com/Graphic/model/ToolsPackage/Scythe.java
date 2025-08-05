@@ -9,6 +9,11 @@ public class Scythe extends Tools {
         super("Scythe");
     }
 
+    @Override
+    public String getIcon() {
+        return "Erfan/Tools/Scythe.png";
+    }
+
 
     @Override
     public int healthCost() {

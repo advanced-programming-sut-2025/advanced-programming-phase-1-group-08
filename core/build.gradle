@@ -32,4 +32,17 @@ task runClient(type: JavaExec) {
   // اگه آرگومان می‌خوای اضافه کن:
   args = []
 }
+task runServer(type: JavaExec) {
+  group = "application"
+  description = "Run the MultiGameServer class"
+
+  classpath = sourceSets.main.runtimeClasspath
+  mainClass = 'com.Graphic.model.ClientServer.MultiGameServer' // مسیر کامل کلاس سرور
+  // معمولاً سرور نیازی به workingDir در assets نداره، مگر اینکه از فایل‌های داخلی استفاده کنه
+   workingDir = rootProject.file("assets")
+
+  // آرگومان‌ها رو اینجا بنویس اگر نیازه
+  args = []
+}
+
 

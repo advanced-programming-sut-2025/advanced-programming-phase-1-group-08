@@ -2,9 +2,16 @@ package com.Graphic.model.ClientServer;
 
 import com.Graphic.Main;
 import com.Graphic.View.GameMenus.MarketMenu;
+import com.Graphic.View.LoginMenu;
 import com.Graphic.View.MainMenu;
 import com.Graphic.View.PlayGameMenu;
 import com.Graphic.View.RegisterMenu;
+import com.Graphic.model.Enum.ItemType.BackPackType;
+import com.Graphic.model.Enum.ItemType.BarnORCageType;
+import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.Items;
+import com.Graphic.model.User;
 import com.badlogic.gdx.Gdx;
 
 import java.io.DataInputStream;
@@ -13,8 +20,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 
-import static com.Graphic.model.Enum.Commands.CommandType.GET_DIFF;
-import static com.Graphic.model.Enum.Commands.CommandType.LOGGED_IN;
+import static com.Graphic.model.Enum.Commands.CommandType.*;
 
 public class Client2ServerThread extends Thread{
 
@@ -42,8 +48,10 @@ public class Client2ServerThread extends Thread{
             try {
                 if (! Main.getClient(null).getRequests().isEmpty()) {
                     System.out.println(2);
-                    sendMessage(Main.getClient(null).getRequests().poll());
+                    message = Main.getClient(null).getRequests().poll();
+                    sendMessage(message);
                     line = in.readUTF();
+                    System.out.println(line);
                     message = JSONUtils.fromJson(line);
                     handleMessage(message);
                 }
@@ -72,14 +80,82 @@ public class Client2ServerThread extends Thread{
                 sendMessage(new Message(LOGGED_IN , body));
                 Main.getMain().setScreen(new PlayGameMenu());
                 Main.getClient(null).setPlayer(message.getFromBody("Player"));
-            }
-            case INDEX -> {
-                Main.getClient(null).setIndex(message.getIntFromBody("index"));
+                break;
             }
             case GENERATE_RANDOM_PASS -> {
                 Gdx.app.postRunnable(() -> {
                     RegisterMenu.getInstance().setPasswordField(message);
                 });
+                break;
+            }
+            case GAME_START -> {
+                Main.getClient(null).getLocalGameState().getPlayers().addAll(message.getFromBody("Players"));
+                Main.getClient(null).setRunning(true);
+                sendMessage(message);
+                break;
+            }
+            case FARM -> {
+                Main.getClient(null).getLocalGameState().getFarms().add(message.getFromBody("Farm"));
+            }
+            case BIG_MAP -> {
+                Main.getClient(null).getLocalGameState().bigMap.addAll(message.getFromBody("BigMap"));
+            }
+            case ERROR -> {
+                Gdx.app.postRunnable(() -> {
+                    RegisterMenu.getInstance().showMessage(message);
+                });
+            }
+            case CAN_MOVE -> {
+
+            }
+            case ENTER_THE_MARKET -> {
+                for (User player : Main.getClient(null).getLocalGameState().getPlayers()) {
+                    if (message.getFromBody("Player").equals(player)) {
+                        player.setPositionX(message.getFromBody("X"));
+                        player.setPositionY(message.getFromBody("Y"));
+                        player.setInFarmExterior(message.getFromBody("Is in farm"));
+                        player.setIsInMarket(message.getFromBody("Is in market"));
+                        if (Main.getClient(null).getPlayer().equals(player)) {
+                            Main.getClient(null).getLocalGameState().currentMenu = Menu.MarketMenu;
+                        }
+                        player.getJoinMarket().add(player);
+                    }
+                }
+            }
+            case CHANGE_MONEY -> {
+                User user = message.getFromBody("Player");
+                if (Main.getClient(null).getPlayer().getUsername().trim().equals(user.getUsername().trim())) {
+                    Main.getClient(null).getPlayer().increaseMoney(message.getFromBody("Money"));
+                }
+                else if (Main.getClient(null).getPlayer().getUsername().trim().equals(user.getSpouse().getUsername().trim())) {
+                    Main.getClient(null).getPlayer().increaseMoney(message.getFromBody("Money"));
+                }
+            }
+            case CHANGE_INVENTORY -> {
+                Items items = message.getFromBody("Item");
+                int amount = message.getIntFromBody("amount");
+                if (Main.getClient(null).getPlayer().getBackPack().inventory.Items.containsKey(items)) {
+                    Main.getClient(null).getPlayer().getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
+                    if (Main.getClient(null).getPlayer().getBackPack().inventory.Items.get(items) == 0) {
+                        Main.getClient(null).getPlayer().getBackPack().inventory.Items.remove(items);
+                    }
+                }
+                else {
+                    Main.getClient(null).getPlayer().getBackPack().inventory.Items.put(items,amount);
+                }
+            }
+            case REDUCE_PRODUCT -> {
+                Items items = message.getFromBody("Item");
+                MarketType marketType = message.getFromBody("Market");
+                items.setRemindInShop(items.getRemindInShop(marketType) - 1 , marketType);
+            }
+            case BUY_BACKPACK -> {
+                BackPackType backPackType = message.getFromBody("BackPack");
+                Main.getClient(null).getPlayer().getBackPack().setType(backPackType);
+            }
+            case REDUCE_BARN_CAGE -> {
+                BarnORCageType barnORCageType = message.getFromBody("BarnORCageType");
+                barnORCageType.setShopLimit(0);
             }
         }
     }

@@ -106,7 +106,7 @@ public abstract class Items extends GameObject {
     public abstract int getSellPrice();
     public abstract int getRemindInShop(MarketType marketType);
     public abstract String getName();
-    public abstract String getInventoryIconPath ();
+    public abstract String getInventoryIconPath();
     public abstract void setRemindInShop(int amount , MarketType marketType);
     public abstract int getMarketPrice(MarketType marketType);
     public void setX(int x) {

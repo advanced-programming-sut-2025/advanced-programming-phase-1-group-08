@@ -33,6 +33,7 @@ public class LoginMenu implements Screen, AppMenu {
     private TextField passwordField;
     private CheckBox stayLoggedInCheckbox;
     private Label messageLabel;
+    private Skin skin;
 
     private Window forgotPasswordWindow;
     private TextField forgotUsernameField;
@@ -43,6 +44,7 @@ public class LoginMenu implements Screen, AppMenu {
 
     @Override
     public void show() {
+        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         setupBackground();
@@ -64,34 +66,34 @@ public class LoginMenu implements Screen, AppMenu {
         mainTable.center();
 
         if (Gdx.files.internal("Skin/craftacular-ui.png").exists()) {
-            Label titleLabel = new Label("LOGIN", Main.getSkin(), "title");
+            Label titleLabel = new Label("LOGIN", skin, "title");
             mainTable.add(titleLabel).padBottom(40).row();
         } else {
-            Label titleLabel = new Label("LOGIN", Main.getSkin(), "title");
+            Label titleLabel = new Label("LOGIN", skin, "title");
             mainTable.add(titleLabel).padBottom(40).row();
         }
 
         Table loginContainer = new Table();
-        loginContainer.background(Main.getSkin().getDrawable("window"));
+        loginContainer.background(skin.getDrawable("window"));
         loginContainer.pad(80);
 
-        Label usernameLabel = new Label("Username:", Main.getSkin());
-        usernameField = new TextField("", Main.getSkin());
+        Label usernameLabel = new Label("Username:", skin);
+        usernameField = new TextField("", skin);
         usernameField.setMessageText("Enter username");
 
-        Label passwordLabel = new Label("Password:", Main.getSkin());
-        passwordField = new TextField("", Main.getSkin());
+        Label passwordLabel = new Label("Password:", skin);
+        passwordField = new TextField("", skin);
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
         passwordField.setMessageText("Enter password");
 
-        stayLoggedInCheckbox = new CheckBox(" Stay logged in", Main.getSkin());
+        stayLoggedInCheckbox = new CheckBox(" Stay logged in", skin);
 
-        TextButton loginButton = new TextButton("Login", Main.getSkin());
-        TextButton forgotPasswordButton = new TextButton("Forgot Password?", Main.getSkin());
-        TextButton signUpButton = new TextButton("Create New Account", Main.getSkin());
+        TextButton loginButton = new TextButton("Login", skin);
+        TextButton forgotPasswordButton = new TextButton("Forgot Password?", skin);
+        TextButton signUpButton = new TextButton("Create New Account", skin);
 
-        messageLabel = new Label("", Main.getSkin());
+        messageLabel = new Label("", skin);
         messageLabel.setAlignment(Align.center);
 
         float fieldWidth = 300;
@@ -116,7 +118,7 @@ public class LoginMenu implements Screen, AppMenu {
 
         setupListeners(loginButton, forgotPasswordButton, signUpButton);
 
-        TextButton exitButton = new TextButton("Exit", Main.getSkin());
+        TextButton exitButton = new TextButton("Exit", skin);
         exitButton.setPosition(stage.getWidth() - exitButton.getWidth() - 10,
             stage.getHeight() - exitButton.getHeight() - 10);
         exitButton.addListener(new ClickListener() {
@@ -182,19 +184,19 @@ public class LoginMenu implements Screen, AppMenu {
     }
 
     private void showForgotPasswordDialog() {
-        forgotPasswordWindow = new Window("Forgot Password - Step 1", Main.getSkin());
+        forgotPasswordWindow = new Window("Forgot Password - Step 1", skin);
         forgotPasswordWindow.setModal(true);
         forgotPasswordWindow.setMovable(true);
 
         Table content = new Table();
         content.pad(40);
 
-        Label instructionLabel = new Label("Enter your username:", Main.getSkin());
-        forgotUsernameField = new TextField("", Main.getSkin());
+        Label instructionLabel = new Label("Enter your username:", skin);
+        forgotUsernameField = new TextField("", skin);
         forgotUsernameField.setMessageText("Username");
 
-        TextButton submitButton = new TextButton("Submit", Main.getSkin());
-        TextButton cancelButton = new TextButton("Cancel", Main.getSkin());
+        TextButton submitButton = new TextButton("Submit", skin);
+        TextButton cancelButton = new TextButton("Cancel", skin);
 
         content.add(instructionLabel).padBottom(10).row();
         content.add(forgotUsernameField).width(250).padBottom(20).row();
@@ -204,7 +206,7 @@ public class LoginMenu implements Screen, AppMenu {
         buttonTable.add(cancelButton).width(200);
         content.add(buttonTable).row();
 
-        Label forgotMessageLabel = new Label("", Main.getSkin());
+        Label forgotMessageLabel = new Label("", skin);
         forgotMessageLabel.setAlignment(Align.center);
         content.add(forgotMessageLabel).padTop(10);
 
@@ -253,20 +255,20 @@ public class LoginMenu implements Screen, AppMenu {
     }
 
     private void showSecurityQuestionDialog(String question) {
-        Window securityWindow = new Window("Security Question", Main.getSkin());
+        Window securityWindow = new Window("Security Question", skin);
         securityWindow.setModal(true);
         securityWindow.setMovable(true);
 
         Table content = new Table();
         content.pad(20);
 
-        Label questionLabel = new Label(question, Main.getSkin());
+        Label questionLabel = new Label(question, skin);
         questionLabel.setWrap(true);
-        TextField answerField = new TextField("", Main.getSkin());
+        TextField answerField = new TextField("", skin);
         answerField.setMessageText("Your answer");
 
-        TextButton submitButton = new TextButton("Submit", Main.getSkin());
-        TextButton cancelButton = new TextButton("Cancel", Main.getSkin());
+        TextButton submitButton = new TextButton("Submit", skin);
+        TextButton cancelButton = new TextButton("Cancel", skin);
 
         content.add(questionLabel).width(300).padBottom(15).row();
         content.add(answerField).width(250).padBottom(20).row();
@@ -276,7 +278,7 @@ public class LoginMenu implements Screen, AppMenu {
         buttonTable.add(cancelButton).width(100);
         content.add(buttonTable).row();
 
-        Label messageLabel = new Label("", Main.getSkin());
+        Label messageLabel = new Label("", skin);
         messageLabel.setAlignment(Align.center);
         content.add(messageLabel).padTop(10);
 
@@ -320,24 +322,24 @@ public class LoginMenu implements Screen, AppMenu {
     }
 
     private void showNewPasswordDialog() {
-        Window passwordWindow = new Window("Set New Password", Main.getSkin());
+        Window passwordWindow = new Window("Set New Password", skin);
         passwordWindow.setModal(true);
         passwordWindow.setMovable(true);
 
         Table content = new Table();
         content.pad(20);
 
-        Label instructionLabel = new Label("Enter your new password:", Main.getSkin());
-        TextField passwordField = new TextField("", Main.getSkin());
+        Label instructionLabel = new Label("Enter your new password:", skin);
+        TextField passwordField = new TextField("", skin);
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
         passwordField.setMessageText("New password");
 
-        TextButton submitButton = new TextButton("Set Password", Main.getSkin());
-        TextButton randomButton = new TextButton("Generate Random", Main.getSkin());
-        TextButton cancelButton = new TextButton("Cancel", Main.getSkin());
+        TextButton submitButton = new TextButton("Set Password", skin);
+        TextButton randomButton = new TextButton("Generate Random", skin);
+        TextButton cancelButton = new TextButton("Cancel", skin);
 
-        Label suggestedLabel = new Label("", Main.getSkin(), "dim");
+        Label suggestedLabel = new Label("", skin, "dim");
         suggestedLabel.setAlignment(Align.center);
 
         content.add(instructionLabel).padBottom(10).row();
@@ -350,7 +352,7 @@ public class LoginMenu implements Screen, AppMenu {
         buttonTable.add(cancelButton).width(80);
         content.add(buttonTable).row();
 
-        Label messageLabel = new Label("", Main.getSkin());
+        Label messageLabel = new Label("", skin);
         messageLabel.setAlignment(Align.center);
         messageLabel.setWrap(true);
         content.add(messageLabel).width(350).padTop(10);

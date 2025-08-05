@@ -17,6 +17,11 @@ public class BackPack extends Items {
         this.inventory = new Inventory();
     }
 
+    @Override
+    public String getIcon() {
+        return Type.getPath();
+    }
+
     public BackPackType getType() {
         return Type;
     }

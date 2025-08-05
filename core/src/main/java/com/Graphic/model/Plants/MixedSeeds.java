@@ -11,6 +11,11 @@ public class MixedSeeds extends Items {
 
     }
 
+    @Override
+    public String getIcon() {
+        return "Erfan/plants/crops/Mixed/Mixed_Seeds.png";
+    }
+
     public ForagingSeedsType getSeeds (Season season) {
 
         double probability = Math.random();

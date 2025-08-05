@@ -35,6 +35,11 @@ public class ArtisanProduct extends Items {
     }
 
     @Override
+    public String getIcon() {
+        return "";
+    }
+
+    @Override
     public int getRemindInShop(MarketType marketType) {
         return -1;
     }

@@ -60,6 +60,11 @@ public class ForagingCrops extends Items {
     }
 
     @Override
+    public String getIcon() {
+        return type.getTexturePath();
+    }
+
+    @Override
     public int getRemindInShop(MarketType marketType) {
         return -1;
     }

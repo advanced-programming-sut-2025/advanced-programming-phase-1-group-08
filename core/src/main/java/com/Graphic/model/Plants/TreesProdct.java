@@ -37,6 +37,11 @@ public class TreesProdct extends Items {
     }
 
     @Override
+    public String getIcon() {
+        return type.getInventoryIconPath();
+    }
+
+    @Override
     public int getRemindInShop(MarketType marketType) {
         return -1;
     }

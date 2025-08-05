@@ -48,6 +48,10 @@ public class TrashCan extends Tools {
         return type.getIconPath();
     }
 
+    public String getIcon() {
+        return type.getIconPath();
+    }
+
     @Override
     public int getRemindInShop(MarketType marketType) {
         return -1;

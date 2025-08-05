@@ -1,5 +1,6 @@
 package com.Graphic.model.Enum.ItemType;
 
+import com.Graphic.Main;
 import com.Graphic.model.*;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.Plants.Fish;
@@ -60,7 +61,7 @@ public enum ArtisanType {
                     if (((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.milk)
                         || ((Animalproduct) entry.getKey()).getType().equals(AnimalProductType.bigMilk)) {
 
-                        currentGame.currentPlayer.getBackPack().inventory.Items.remove(entry.getKey());
+                        Main.getClient(null).getPlayer().getBackPack().inventory.Items.remove(entry.getKey());
                         return new Result(true , "you create Cheese Successfully");
                     }
                 }

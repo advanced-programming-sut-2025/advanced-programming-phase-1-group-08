@@ -4,7 +4,11 @@ import com.Graphic.Main;
 import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
+import com.Graphic.model.Animall.AnimalRenderer;
+import com.Graphic.model.ClientServer.GameState;
+import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.Enum.AllPlants.*;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.*;
@@ -71,6 +75,7 @@ import static com.badlogic.gdx.Input.Keys.ENTER;
 
 public class InputGameController {
 
+    private static final Logger log = LoggerFactory.getLogger(InputGameController.class);
     public static InputGameController inputGameController;
 
     private InputGameController() {
@@ -90,18 +95,18 @@ public class InputGameController {
     public void update(OrthographicCamera camera, float v, Boolean menuActivated) {
 
         if (!menuActivated) {
-            if (currentGame.currentPlayer.isInFarmExterior()) {
+            if (Main.getClient(null).getPlayer().isInFarmExterior()) {
                 updateMove();
                 print();
                 moveCamera(camera);
                 GameControllerLogic.update(v);
                 showSelectBoxOnCrafting();
             }
-            if (currentGame.currentPlayer.isInBarnOrCage()) {
+            if (Main.getClient(null).getPlayer().isInBarnOrCage()) {
                 walkInBarnOrCage();
                 showAnimalsInBarnOrCage();
             }
-            if (currentGame.currentPlayer.isInMine()) {
+            if (Main.getClient(null).getPlayer().isInMine()) {
                 walkInBarnOrCage();
             }
             createAnimalInformationWindow(showAnimalInfo());
@@ -127,45 +132,90 @@ public class InputGameController {
     }
 
     public void updateMove() {
+        float x;
+        float y;
+        float time = Main.getClient(null).getPlayer().getTimer() + Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.UP) ) {
-            currentGame.currentPlayer.setDirection(Direction.Up);
-            if (checkWalking()) {
-                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() - 5 * Gdx.graphics.getDeltaTime());
-            }
-            currentGame.currentPlayer.setMoving(true);
-            moveAnimation();
+            x = Main.getClient(null).getPlayer().getPositionX();
+            y = Main.getClient(null).getPlayer().getPositionY() - 5 * Gdx.graphics.getDeltaTime();
+            HashMap<String , Object> body = new HashMap<>();
+            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Direction" , Direction.Up);
+            body.put("X" , x);
+            body.put("Y" , y);
+            body.put("Time" , time);
+            Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_FARM, body));
+            return;
+//            currentGame.currentPlayer.setDirection(Direction.Up);
+//            if (checkWalking()) {
+//                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() - 5 * Gdx.graphics.getDeltaTime());
+//            }
+//            currentGame.currentPlayer.setMoving(true);
+//            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) ) {
-            currentGame.currentPlayer.setDirection(Direction.Down);
-            if (checkWalking()) {
-                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() + 5 * Gdx.graphics.getDeltaTime());
-            }
-            currentGame.currentPlayer.setMoving(true);
-            moveAnimation();
+            x = Main.getClient(null).getPlayer().getPositionX();
+            y = Main.getClient(null).getPlayer().getPositionY() + 5 * Gdx.graphics.getDeltaTime();
+            HashMap<String , Object> body = new HashMap<>();
+            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Direction" , Direction.Down);
+            body.put("X" , x);
+            body.put("Y" , y);
+            body.put("Time" , time);
+            Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_FARM, body));
+            return;
+//            currentGame.currentPlayer.setDirection(Direction.Down);
+//            if (checkWalking()) {
+//                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() + 5 * Gdx.graphics.getDeltaTime());
+//            }
+//            currentGame.currentPlayer.setMoving(true);
+//            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) ) {
-            currentGame.currentPlayer.setDirection(Direction.Left);
-            if (checkWalking()) {
-                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() - 5 * Gdx.graphics.getDeltaTime());
-            }
-            currentGame.currentPlayer.setMoving(true);
-            moveAnimation();
+            x = Main.getClient(null).getPlayer().getPositionX() - 5 * Gdx.graphics.getDeltaTime();
+            y = Main.getClient(null).getPlayer().getPositionY();
+            HashMap<String , Object> body = new HashMap<>();
+            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Direction" , Direction.Left);
+            body.put("X" , x);
+            body.put("Y" , y);
+            body.put("Time" , time);
+            Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_FARM, body));
+            return;
+//            currentGame.currentPlayer.setDirection(Direction.Left);
+//            if (checkWalking()) {
+//                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() - 5 * Gdx.graphics.getDeltaTime());
+//            }
+//            currentGame.currentPlayer.setMoving(true);
+//            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) ) {
-            currentGame.currentPlayer.setDirection(Direction.Right);
-            if (checkWalking()) {
-                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() + 5 * Gdx.graphics.getDeltaTime());
-            }
-            currentGame.currentPlayer.setMoving(true);
-            moveAnimation();
+            x = Main.getClient(null).getPlayer().getPositionX() + 5 * Gdx.graphics.getDeltaTime();
+            y = Main.getClient(null).getPlayer().getPositionY();
+            HashMap<String , Object> body = new HashMap<>();
+            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Direction" , Direction.Right);
+            body.put("X" , x);
+            body.put("Y" , y);
+            body.put("Time" , time);
+            Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_FARM, body));
+            return;
+//            currentGame.currentPlayer.setDirection(Direction.Right);
+//            if (checkWalking()) {
+//                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() + 5 * Gdx.graphics.getDeltaTime());
+//            }
+//            currentGame.currentPlayer.setMoving(true);
+//            moveAnimation();
         }
 
-        else {
-            currentGame.currentPlayer.setMoving(false);
-            currentGame.currentPlayer.setTimer(0);
-            currentGame.currentPlayer.getSprite().setRegion(currentGame.currentPlayer.getAnimation().getKeyFrame(0));
+        Main.getClient(null).getPlayer().setTimer(Main.getClient(null).getPlayer().getTimer() - Gdx.graphics.getDeltaTime());
 
-        }
+//        else {
+//            currentGame.currentPlayer.setMoving(false);
+//            currentGame.currentPlayer.setTimer(0);
+//            currentGame.currentPlayer.getSprite().setRegion(currentGame.currentPlayer.getAnimation().getKeyFrame(0));
+//
+//        }
     }
 
     public static void moveAnimation() {
@@ -182,24 +232,110 @@ public class InputGameController {
 
     }
 
-    public static boolean checkWalking() {
+    public Message checkWalking(Message message , Game game) {
+        User Player = message.getFromBody("Player");
+        Direction Direction = message.getFromBody("Direction");
+        float x = message.getFromBody("X");
+        float y = message.getFromBody("Y");
+        float Time = message.getFromBody("Time");
+        HashMap<String , Object> body = new HashMap<>();
 
         try {
 
-            int x = (int) (currentGame.currentPlayer.getPositionX() + currentGame.currentPlayer.getDirection().getX() *
-                5 * Gdx.graphics.getDeltaTime());
-            int y = (int) (currentGame.currentPlayer.getPositionY() + currentGame.currentPlayer.getDirection().getY() *
-                5 * Gdx.graphics.getDeltaTime());
+            if (getTileByCoordinates((int) x, (int)y , game.getGameState()).getGameObject() instanceof Walkable ||
+                getTileByCoordinates((int) x, (int)y , game.getGameState()).getGameObject() instanceof door) {
 
-            if (getTileByCoordinates(x, y).getGameObject() instanceof Walkable || getTileByCoordinates(x, y).getGameObject() instanceof door) {
-                return true;
+                body.put("Player" , Player);
+                body.put("Direction" , Direction);
+                body.put("X" , x);
+                body.put("Y" , y);
+                body.put("Time" , Time);
+                return new Message(CommandType.CAN_MOVE , body);
             }
+
         }
         catch (Exception e) {
-            return false;
+            body.put("Player" , Player);
+            body.put("Direction" , Direction);
+            body.put("Time" , Time);
+            return new Message(CommandType.CAN_NOT_MOVE , body);
         }
 
-        return false;
+        body.put("Player" , Player);
+        body.put("Direction" , Direction);
+        body.put("Time" , Time);
+        return new Message(CommandType.CAN_NOT_MOVE , body);
+
+    }
+
+    public void Move(Message message , GameState gameState) {
+        if (message.getCommandType() == CommandType.CAN_MOVE) {
+            for (User Player : gameState.getPlayers()) {
+                if (Player.equals(message.getFromBody("Player"))) {
+                    Player.setPositionX(message.getFromBody("X"));
+                    Player.setPositionY(message.getFromBody("Y"));
+                    Player.setDirection(message.getFromBody("Direction"));
+                    if ((float) message.getFromBody("Time") >= 0.1f) {
+                        Player.setTimer(0.0f);
+                    }
+                    else {
+                        Player.setTimer(message.getFromBody("Time"));
+                    }
+                }
+            }
+        }
+        if (message.getCommandType() == CommandType.CAN_NOT_MOVE) {
+            for (User Player : gameState.getPlayers()) {
+                if (Player.equals(message.getFromBody("Player"))) {
+                    Player.setDirection(message.getFromBody("Direction"));
+                    if ((float) message.getFromBody("Time") >= 0.1f) {
+                        Player.setTimer(0.0f);
+                    }
+                    else {
+                        Player.setTimer(message.getFromBody("Time"));
+                    }
+                }
+            }
+        }
+    }
+
+    public void chooseMap() {
+        Skin skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
+        TextField choose = new TextField("",skin);
+        choose.setMessageText("Please select a number between 1 and 2");
+        Table table = new Table();
+        table.setFillParent(true);
+        Texture backGround = TextureManager.get("Skin/back.png");
+        Drawable backGroundDrawable = new TextureRegionDrawable(new TextureRegion(backGround));
+        table.setBackground(backGroundDrawable);
+        table.add(choose).center().size(200 , 48).row();
+        table.row();
+        TextButton button = new TextButton("",skin);
+        Label label = new Label("Submit" , skin);
+        button.add(label).center();
+        GameMenu.getInstance().getStage().addActor(table);
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                String result = choose.getText();
+                if (result != null) {
+                    try {
+                        int index = Integer.parseInt(result);
+                        if (index == 1 || index == 2) {
+                            HashMap<String , Object> body = new HashMap<>();
+                            body.put("Player" , Main.getClient(null).getPlayer());
+                            body.put("Index" , index);
+                            Main.getClient(null).getRequests().add(new Message(CommandType.FARM , body));
+                            table.remove();
+                        }
+
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        });
+
 
     }
 
@@ -371,11 +507,14 @@ public class InputGameController {
     public Result print(){
 
 
+        camera.position.set(Main.getClient(null).getPlayer().getPositionX() , Main.getClient(null).getPlayer().getPositionY() , 0f);
+        camera.update();
+
         for (int i =0 ; i< 90 ; i++)
             for (int j =0 ; j< 90 ; j++) {
                 try {
 
-                    Tile tile = getTileByCoordinates(i, j);
+                    Tile tile = getTileByCoordinates(i, j , gameMenu.gameState);
                     GameObject gameObject = tile.getGameObject();
 
                     Main.getBatch().draw(TextureManager.get("Places/Walkable.png") ,
@@ -386,12 +525,12 @@ public class InputGameController {
                             TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
                     }
 
-                    Main.getBatch().draw(gameObject.getSprite
-                            (TextureManager.get(getTileByCoordinates(i, j).getGameObject().getIcon())),
+                    Main.getBatch().draw(
+                        (TextureManager.get(getTileByCoordinates(i, j, gameMenu.gameState).getGameObject().getIcon())),
                         TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE* gameObject.getTextureWidth(), TEXTURE_SIZE * gameObject.getTextureHeight());
 
-                    if (getTileByCoordinates(i , j).getGameObject() instanceof Lake) {
-                        LakeAnimation((Lake) getTileByCoordinates(i , j).getGameObject());
+                    if (getTileByCoordinates(i , j , gameMenu.gameState).getGameObject() instanceof Lake) {
+                        LakeAnimation((Lake) getTileByCoordinates(i , j , gameMenu.gameState).getGameObject());
                     }
 
 
@@ -400,7 +539,7 @@ public class InputGameController {
                 }
             }
 
-        for (User player : currentGame.players) {
+        for (User player : gameMenu.gameState.getPlayers()) {
 
             GreenHouse greenHouse = player.getFarm().getGreenHouse();
 
@@ -410,17 +549,24 @@ public class InputGameController {
             );
         }
 
-        for (User player : currentGame.players) {
-            player.getSprite().draw(Main.getBatch());
+        for (int i = 0 ; i < gameMenu.gameState.getPlayers().size() ; i ++) {
+            if (gameMenu.gameState.getPlayers().get(i).isInFarmExterior()) {
+                gameMenu.getUserRenderer().get(i).render(gameMenu.gameState.getPlayers().get(i));
+            }
         }
 
-        for (User player : currentGame.players) {
-            for (BarnOrCage barnOrCage : player.BarnOrCages) {
-                for (Animal animal : barnOrCage.getAnimals()) {
-                    if (animal.isOut()) {
-                        animal.getSprite().draw(Main.getBatch());
-                    }
-                }
+//        for (User player : Main.getClient(null).getLocalGameState().getPlayers()) {
+//            for (BarnOrCage barnOrCage : player.BarnOrCages) {
+//                for (Animal animal : barnOrCage.getAnimals()) {
+//                    if (animal.isOut()) {
+//                        animal.getSprite().draw(Main.getBatch());
+//                    }
+//                }
+//            }
+//        }
+        for (Map.Entry<Animal , AnimalRenderer> entry : gameMenu.getAnimalRendererMap().entrySet()) {
+            if (entry.getKey().isOut()) {
+                entry.getValue().render(entry.getKey());
             }
         }
 
@@ -1861,7 +2007,7 @@ public class InputGameController {
                     user.topLeftX = 1;
                     user.topLeftY = 1;
                 }
-                createInitialFarm(choice);
+                //createInitialFarm(choice);
                 user.initAnimations();
                 GameMenu.getInstance().initializeNPCs();
                 counter++;
@@ -1883,8 +2029,8 @@ public class InputGameController {
         for (User player: currentGame.players) {
             player.setRecipes(Recipe.createAllRecipes());
         }
-        buildHall();
-        buildNpcVillage();
+        //buildHall();
+        //buildNpcVillage();
         sortMap(currentGame.bigMap);
         initializePlayer();
         //fadeToNextDay();
@@ -2011,7 +2157,7 @@ public class InputGameController {
                     user.topLeftX = 1;
                     user.topLeftY = 1;
                 }
-                createInitialFarm(choice);
+                //createInitialFarm(choice);
                 counter++;
                 break;
             }
@@ -2029,8 +2175,8 @@ public class InputGameController {
         for (User player: currentGame.players) {
             player.setRecipes(Recipe.createAllRecipes());
         }
-        buildHall();
-        buildNpcVillage();
+        //buildHall();
+        //buildNpcVillage();
         sortMap(currentGame.bigMap);
         initializePlayer();
         fadeToNextDay();
@@ -2549,12 +2695,12 @@ public class InputGameController {
         Image npcImage = new Image(new TextureRegionDrawable(new TextureRegion(npcTexture)));
         npcImage.setSize(64, 64);
 
-        Label.LabelStyle style = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        Label.LabelStyle style = new Label.LabelStyle(Main.getNewSkin().get(Label.LabelStyle.class));
         style.fontColor = Color.WHITE;
 
         Label nameLabel = new Label(npc.getName(), style);
 
-        Label.LabelStyle style1 = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        Label.LabelStyle style1 = new Label.LabelStyle(Main.getNewSkin().get(Label.LabelStyle.class));
         style1.fontColor = Color.GRAY;
 
         String dialogue = npc.getDialogue(friendshipLevel, weather);
@@ -2563,7 +2709,7 @@ public class InputGameController {
         dialogueLabel.setWidth(300);
 
 
-        Window dialogueWindow = new Window("", newSkin);
+        Window dialogueWindow = new Window("", Main.getNewSkin());
         dialogueWindow.setMovable(false);
         dialogueWindow.pad(10);
 
@@ -2641,12 +2787,12 @@ public class InputGameController {
         Image npcImage = new Image(new TextureRegionDrawable(new TextureRegion(npcTexture)));
         npcImage.setSize(64, 64);
 
-        Label.LabelStyle style = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        Label.LabelStyle style = new Label.LabelStyle(Main.getNewSkin().get(Label.LabelStyle.class));
         style.fontColor = Color.WHITE;
 
         Label nameLabel = new Label(npc.getName(), style);
 
-        Label.LabelStyle style1 = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        Label.LabelStyle style1 = new Label.LabelStyle(Main.getNewSkin().get(Label.LabelStyle.class));
 
         if (message.IsSuccess())
             style1.fontColor = Color.GREEN;
@@ -2658,7 +2804,7 @@ public class InputGameController {
         dialogueLabel.setWidth(400);
 
 
-        Window dialogueWindow = new Window("", newSkin);
+        Window dialogueWindow = new Window("", Main.getNewSkin());
         dialogueWindow.setMovable(false);
         dialogueWindow.pad(10);
 

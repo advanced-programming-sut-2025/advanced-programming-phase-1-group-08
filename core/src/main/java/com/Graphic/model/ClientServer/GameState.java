@@ -1,7 +1,11 @@
 package com.Graphic.model.ClientServer;
 
+import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.Places.Farm;
 import com.Graphic.model.User;
+import com.Graphic.model.Weather.DateHour;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -10,7 +14,17 @@ public class GameState {
 
 
     private ArrayList<User> players = new ArrayList<>();
-    private ArrayList<Tile> bigMap = new ArrayList<>();
+    public ArrayList<Tile> bigMap = new ArrayList<>();
+    private ArrayList<Farm> farms = new ArrayList<>();
+
+    public Weather tomorrowWeather;
+    public Weather currentWeather;
+    public DateHour currentDate;
+    public Menu currentMenu;
+
+    private int numberOfMaps = 0;
+
+
 
 
 
@@ -20,9 +34,20 @@ public class GameState {
         return players;
     }
 
-    public ArrayList<Tile> getBigMap() {
-        return bigMap;
+
+    public ArrayList<Farm> getFarms() {
+        return farms;
     }
+
+    public synchronized int getNumberOfMaps() {
+        return numberOfMaps;
+    }
+
+    public void incrementNumberOfMaps() {
+        numberOfMaps++;
+    }
+
+
 
 
     public static boolean equals(Object a, Object b) {

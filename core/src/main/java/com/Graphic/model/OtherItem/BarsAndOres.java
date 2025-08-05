@@ -26,6 +26,11 @@ public class BarsAndOres extends Items {
     }
 
     @Override
+    public String getIcon() {
+        return type.getAddress();
+    }
+
+    @Override
     public int getSellPrice() {
         return type.getPrice();
     }

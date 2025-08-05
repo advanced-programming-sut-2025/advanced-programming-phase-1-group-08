@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.HomeController.*;
+import static com.Graphic.Main.newSkin;
 import static com.Graphic.View.GameMenus.GameMenu.helperBackGround;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.Recipe.createAllRecipes;
@@ -134,7 +135,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         int startX = (screenWidth - areaWidth) / 2;
         int startY = (screenHeight - areaHeight) / 2;
 
-        Label letsCook = new Label("What Are You Cooking?", skin);
+        Label letsCook = new Label("What Are You Cooking?", Main.getSkin());
         letsCook.setPosition((float) (startX + (float) areaWidth*2.2/7), startY + (float) (areaHeight * 11) /10);
         cookingGroup.addActor(letsCook);
 
@@ -143,7 +144,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             FoodTypes f = FoodTypes.values()[i];
             Texture t = new Texture(Gdx.files.internal(f.getAddress()));
             Image image = new Image(t);
-            Label l = new Label(f.getName(), skin);
+            Label l = new Label(f.getName(), Main.getSkin());
 
             boolean usable = Recipe.findRecipeByName(f.getName()).isUsable();
 
@@ -288,7 +289,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         int startX = (screenWidth - areaWidth) / 2;
         int startY = (screenHeight - areaHeight) / 2;
 
-        Label craftMenu = new Label("Craft Menu", skin);
+        Label craftMenu = new Label("Craft Menu", Main.getSkin());
         craftMenu.setPosition((float) (startX + (float) areaWidth*2.5/7), startY + (float) (areaHeight * 11) /10);
         craftingGroup.addActor(craftMenu);
 
@@ -297,7 +298,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             CraftType c = CraftType.values()[i];
             Texture t = new Texture(Gdx.files.internal(c.getAddress()));
             Image image = new Image(t);
-            Label l = new Label(c.getName(), skin);
+            Label l = new Label(c.getName(), Main.getSkin());
 
             CraftType type=null;
             for (CraftType craftType : CraftType.values()) {
