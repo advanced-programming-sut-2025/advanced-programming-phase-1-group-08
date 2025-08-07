@@ -21,19 +21,13 @@ import java.net.Socket;
 import java.util.*;
 
 public class Game {
+
     public Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
     public Map<Set<User>, List<Trade>> trades = new HashMap<>();
     public ArrayList<HumanCommunications> friendships = new ArrayList<>();
 
-//    public ArrayList<User> players = new ArrayList<>();
-//    public ArrayList<Farm> farms  = new ArrayList<>();
-//    public ArrayList<Tile> bigMap = new ArrayList<>();
-//
-//    public Weather tomorrowWeather;
-//    public Weather currentWeather;
-//    public DateHour currentDate;
-//
-//    public User currentPlayer;
+
+
     public Menu currentMenu;
 
 

@@ -38,12 +38,9 @@ public class GameState {
     public ArrayList<User> getPlayers() {
         return players;
     }
-
-
     public ArrayList<Farm> getFarms() {
         return farms;
     }
-
     public synchronized int getNumberOfMaps() {
         return numberOfMaps;
     }
@@ -93,5 +90,21 @@ public class GameState {
     }
     public void setChooseMap(boolean chooseMap) {
         this.chooseMap = chooseMap;
+    }
+
+    public Weather getTomorrowWeather() {
+        return tomorrowWeather;
+    }
+    public Weather getCurrentWeather() {
+        return currentWeather;
+    }
+    public DateHour getCurrentDate() {
+        return currentDate;
+    }
+    public Menu getCurrentMenu() {
+        return currentMenu;
+    }
+    public void addUser (User user) {
+        players.add(user);
     }
 }

@@ -148,11 +148,11 @@ public class InputGameController {
             body.put("Time" , time);
             Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_FARM, body));
             return;
-//            currentGame.currentPlayer.setDirection(Direction.Up);
+//            Main.getClient(null).getPlayer().setDirection(Direction.Up);
 //            if (checkWalking()) {
-//                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() - 5 * Gdx.graphics.getDeltaTime());
+//                Main.getClient(null).getPlayer().setPositionY(Main.getClient(null).getPlayer().getPositionY() - 5 * Gdx.graphics.getDeltaTime());
 //            }
-//            currentGame.currentPlayer.setMoving(true);
+//            Main.getClient(null).getPlayer().setMoving(true);
 //            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) ) {
@@ -166,11 +166,11 @@ public class InputGameController {
             body.put("Time" , time);
             Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_FARM, body));
             return;
-//            currentGame.currentPlayer.setDirection(Direction.Down);
+//            Main.getClient(null).getPlayer().setDirection(Direction.Down);
 //            if (checkWalking()) {
-//                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() + 5 * Gdx.graphics.getDeltaTime());
+//                Main.getClient(null).getPlayer()Main.getClient(null).getPlayer().setPositionY(Main.getClient(null).getPlayer().getPositionY() + 5 * Gdx.graphics.getDeltaTime());
 //            }
-//            currentGame.currentPlayer.setMoving(true);
+//            Main.getClient(null).getPlayer().setMoving(true);
 //            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) ) {
@@ -184,11 +184,11 @@ public class InputGameController {
             body.put("Time" , time);
             Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_FARM, body));
             return;
-//            currentGame.currentPlayer.setDirection(Direction.Left);
+//            Main.getClient(null).getPlayer().setDirection(Direction.Left);
 //            if (checkWalking()) {
-//                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() - 5 * Gdx.graphics.getDeltaTime());
+//                Main.getClient(null).getPlayer().setPositionX(Main.getClient(null).getPlayer().getPositionX() - 5 * Gdx.graphics.getDeltaTime());
 //            }
-//            currentGame.currentPlayer.setMoving(true);
+//            Main.getClient(null).getPlayer().setMoving(true);
 //            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) ) {
@@ -202,20 +202,20 @@ public class InputGameController {
             body.put("Time" , time);
             Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_FARM, body));
             return;
-//            currentGame.currentPlayer.setDirection(Direction.Right);
+//            Main.getClient(null).getPlayer().setDirection(Direction.Right);
 //            if (checkWalking()) {
-//                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() + 5 * Gdx.graphics.getDeltaTime());
+//                Main.getClient(null).getPlayer().setPositionX(Main.getClient(null).getPlayer().getPositionX() + 5 * Gdx.graphics.getDeltaTime());
 //            }
-//            currentGame.currentPlayer.setMoving(true);
+//            Main.getClient(null).getPlayer().setMoving(true);
 //            moveAnimation();
         }
 
         Main.getClient(null).getPlayer().setTimer(Main.getClient(null).getPlayer().getTimer() - Gdx.graphics.getDeltaTime());
 
 //        else {
-//            currentGame.currentPlayer.setMoving(false);
-//            currentGame.currentPlayer.setTimer(0);
-//            currentGame.currentPlayer.getSprite().setRegion(currentGame.currentPlayer.getAnimation().getKeyFrame(0));
+//            Main.getClient(null).getPlayer().setMoving(false);
+//            Main.getClient(null).getPlayer().setTimer(0);
+//            Main.getClient(null).getPlayer().getSprite().setRegion(Main.getClient(null).getPlayer().getAnimation().getKeyFrame(0));
 //
 //        }
     }
@@ -665,69 +665,136 @@ public class InputGameController {
         camera.update();
     }
 
+
+    public Result showInventory() {
+
+        Inventory inventory= Main.getClient(null).getPlayer().getBackPack().inventory;
+        StringBuilder output = new StringBuilder();
+        output.append(BLUE+"\nItems"+RESET + " :").append("\n");
+
+        for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet()){
+            if (entry.getKey() instanceof Food) {
+                output.append("\t-> ").append(((Food) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof BasicRock){
+                output.append("\t-> ").append("Stone: ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof Wood){
+                output.append("\t-> ").append("Wood: ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof ForagingMinerals){
+                output.append("\t-> ").append(((ForagingMinerals) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof ForagingSeeds){
+                output.append("\t-> ").append(((ForagingSeeds) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof AllCrops){
+                output.append("\t-> ").append(((AllCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof ForagingCrops) {
+                output.append("\t-> ").append(((ForagingCrops) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof TreeSource){
+                output.append("\t-> ").append(((TreeSource) entry.getKey()).getType().getDisplayName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof TreesProdct) {
+                output.append("\t-> ").append(entry.getKey().getName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof Axe ){
+                output.append("\t-> ").append(((Axe) entry.getKey()).getType().getDisplayName()).append('\n');
+            }
+            else if (entry.getKey() instanceof FishingPole){
+                output.append("\t-> ").append(((FishingPole) entry.getKey()).type.name()).append('\n');
+            }
+            else if (entry.getKey() instanceof Hoe){
+                output.append("\t-> ").append(((Hoe) entry.getKey()).getType().getDisplayName()).append('\n');
+            }
+            else if (entry.getKey() instanceof PickAxe){
+                output.append("\t-> ").append(((PickAxe) entry.getKey()).getType().getDisplayName()).append('\n');
+            }
+            else if (entry.getKey() instanceof WateringCan){
+                output.append("\t-> ").append(((WateringCan) entry.getKey()).getType().getDisplayName()).append('\n');
+            }
+            else if (entry.getKey() instanceof TrashCan){
+                output.append("\t-> ").append(((TrashCan) entry.getKey()).type.getDisplayName()).append('\n');
+            }
+            else if (entry.getKey() instanceof Tools){
+                output.append("\t-> ").append(entry.getKey().getName()).append('\n');
+            }
+            else if (entry.getKey() instanceof MarketItem) {
+                output.append("\t-> ").append(((MarketItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof Fish) {
+                output.append("\t-> ").append(((Fish) entry.getKey()).getType().getName()).append(": ") .append(((Fish) entry.getKey()).getQuantity().getName()).append(" ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof Animalproduct) {
+                output.append("\t-> ").append(((Animalproduct) entry.getKey()).getType().getName()).append("(").append(((Animalproduct) entry.getKey()).getQuantity().getName()).append("): ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof CraftingItem) {
+                output.append("\t-> ").append(((CraftingItem) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof ArtisanProduct) {
+                output.append("\t-> ").append(((ArtisanProduct) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof BarsAndOres) {
+                output.append("\t-> ").append(((BarsAndOres) entry.getKey()).getType().getName()).append(": ").append(entry.getValue()).append('\n');
+            }
+            else if (entry.getKey() instanceof MixedSeeds) {
+                output.append("Mixed Seeds : ").append(entry.getValue()).append("\n");
+            }
+        }
+
+        return new Result(true,output.toString());
+    }
     private Result increaseMoney(Integer amount , int price , Items items,String name , Integer reminder) {
         int percent=0;
-//        for (Map.Entry<Items,Integer> entry: currentGame.currentPlayer.getBackPack().inventory.Items.entrySet()) {
-//            if (entry.getKey() instanceof TrashCan){
-//                percent= ((TrashCan) entry.getKey()).type.getPercent();
-//                break;
-//            }
-//        }
-//
-//        if (amount ==null || amount.equals(reminder)) {
-//            int increase=(reminder * percent *price)/100;
-//            TrashCan.removeItem(increase,currentGame.currentPlayer.getBackPack().inventory.Items, items, reminder);
-//            return new Result(true,name + " completely removed from your inventory");
-//        }
-//        if (amount > reminder) {
-//            return new Result(false,"not enough "+name+" "+"in your inventory for remove");
-//        }
-//        int increase = (reminder * percent * price) / 100;
-//        TrashCan.removeItem(increase,currentGame.currentPlayer.getBackPack().inventory.Items, items, reminder);
+        for (Map.Entry<Items,Integer> entry: Main.getClient(null).getPlayer().getBackPack().inventory.Items.entrySet()) {
+            if (entry.getKey() instanceof TrashCan){
+                percent= ((TrashCan) entry.getKey()).type.getPercent();
+                break;
+            }
+        }
+
+        if (amount ==null || amount.equals(reminder)) {
+            int increase=(reminder * percent *price)/100;
+            TrashCan.removeItem(increase,Main.getClient(null).getPlayer().getBackPack().inventory.Items, items, reminder);
+            return new Result(true,name + " completely removed from your inventory");
+        }
+        if (amount > reminder) {
+            return new Result(false,"not enough "+name+" "+"in your inventory for remove");
+        }
+        int increase = (reminder * percent * price) / 100;
+        TrashCan.removeItem(increase,Main.getClient(null).getPlayer().getBackPack().inventory.Items, items, reminder);
         return new Result(true , amount + " "+name+" "+"removed from your inventory");
 
     }
+
     public Result removeItemToTrashcan (String name, String amount){
         Integer number=null;
         if (amount != null) {
             number = Integer.parseInt(amount.trim());
         }
 
-//        Inventory inventory=currentGame.currentPlayer.getBackPack().inventory;
+//        Inventory inventory=Main.getClient(null).getPlayer().getBackPack().inventory;
 //        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet()){
+
+//            if (entry.getKey() instanceof Wood){
+//                if (name.equals(Wood.name)) {
+//                    return increaseMoney(number, Wood.price, (Wood) entry.getKey(), name, entry.getValue());
+//                }
+//            }
+//            if (entry.getKey() instanceof BasicRock){
+//                if (name.equals("Stone")) {
+//                    return increaseMoney(number, BasicRock.price, (BasicRock) entry.getKey(), name, entry.getValue());
+//                }
+//            }
 //
-////            if (entry.getKey() instanceof Wood){
-////                if (name.equals(Wood.name)) {
-////                    return increaseMoney(number, Wood.price, (Wood) entry.getKey(), name, entry.getValue());
-////                }
-////            }
-////            if (entry.getKey() instanceof BasicRock){
-////                if (name.equals("Stone")) {
-////                    return increaseMoney(number, BasicRock.price, (BasicRock) entry.getKey(), name, entry.getValue());
-////                }
-////            }
-////
-////            if (entry.getKey() instanceof ForagingMinerals){
-////                if (((ForagingMinerals) entry.getKey()).getType().getDisplayName().equals(name)){
-////                    return increaseMoney(number,((ForagingMinerals) entry.getKey()).getType().getPrice(),entry.getKey(), name,entry.getValue());
-////                }
-////            }
-////
-////
-////            if (entry.getKey() instanceof AllCrops){
-////                if (((AllCrops) entry.getKey()).getType().getDisplayName().equals(name)){
-////                    return increaseMoney(number, ((AllCrops) entry.getKey()).getType().getPrice(), entry.getKey(), name,entry.getValue());
-////                }
-////            }
-////
-////            if (entry.getKey() instanceof ForagingCrops){
-////                if (((ForagingCrops) entry.getKey()).getType().getDisplayName().equals(name)){
-////                    return increaseMoney(entry.getValue(),((ForagingCrops) entry.getKey()).getType().getPrice(), entry.getKey(), name,entry.getValue());
-////                }
-////            }
-////            if (entry.getKey() instanceof Tools){
-////                return new Result(false,"you can't remove "+name+"because it is a tool");
-////            }
+//            if (entry.getKey() instanceof ForagingMinerals){
+//                if (((ForagingMinerals) entry.getKey()).getType().getDisplayName().equals(name)){
+//                    return increaseMoney(number,((ForagingMinerals) entry.getKey()).getType().getPrice(),entry.getKey(), name,entry.getValue());
+//                }
+//            }
+//
 //
 //            if (entry.getKey().getName().equals(name)) {
 //                if (entry.getKey().getSellPrice() == 0) {
@@ -1876,8 +1943,70 @@ public class InputGameController {
         }
     }
 
+    public void startGamePlayer () {
 
-    public void startNewGame (String input) {
+        int playerNumber = currentGame.getGameState().getPlayers().size();
+
+        User user = Main.getClient(null).getPlayer();
+
+        while (true) {
+
+//                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
+//                String choiceString = scanner.nextLine();
+//                String[] splitChoice = choiceString.trim().split("\\s+");
+//
+//                int choice;
+//                try {
+//                    choice = Integer.parseInt(splitChoice[2]);
+//                } catch (Exception e) {
+//                    System.out.println("Please put a integer between 1 and 2!");
+//                    continue;
+//                }
+//                if (choice != 1 && choice != 2) {
+//                    System.out.println("Choose between 1 and 2!");
+//                    continue;
+//
+            if (playerNumber == 1) {
+                user.setIcon("all image/Crops/Cactus_Stage_6.png");
+                user.topLeftX = 0;
+                user.topLeftY = 0;
+            } else if (playerNumber == 2) {
+                user.setIcon("all image/Special_item/Cursed_Mannequin_%28F%29.png");
+                user.topLeftX = 1;
+                user.topLeftY = 0;
+            } else if (playerNumber == 3) {
+                user.setIcon("all image/Special_item/Deconstructor.png");
+                user.topLeftX = 0;
+                user.topLeftY = 1;
+            } else if (playerNumber == 4) {
+                user.setIcon("all image/Special_item/Wood_Chipper_On.png");
+                user.topLeftX = 1;
+                user.topLeftY = 1;
+            }
+//            createInitialFarm(choice);
+            user.initAnimations();
+            GameMenu.getInstance().initializeNPCs();
+            break;
+        }
+
+
+        for (int i = 0; i < playerNumber; i++)
+            for (int j = i + 1; j < playerNumber; j++) {
+                HumanCommunications f = new HumanCommunications(
+                    currentGame.getGameState().getPlayers().get(i),
+                    currentGame.getGameState().getPlayers().get(j));
+
+                currentGame.friendships.add(f);
+            }
+
+        for (User player: currentGame.getGameState().getPlayers())
+            player.setRecipes(Recipe.createAllRecipes());
+
+        initializePlayer();
+
+
+    }
+    public void startNewGameServer (String input) {
 
 //        currentGame = new Game();
 //        //currentGame.currentMenu = currentMenu;
@@ -2107,80 +2236,18 @@ public class InputGameController {
 //
 //
 //        currentGame.players.add(currentUser);
-//        currentGame.players.add(user1);
-//        if (user2 != null) currentGame.players.add(user2);
-//        if (user3 != null) currentGame.players.add(user2);
-//        currentGame.currentPlayer = currentUser;
-//        setTimeAndWeather();
-//
-//        Scanner scanner = new Scanner(System.in);
-//
-//        int counter = 1;
-//        for (User user: currentGame.players) {
-//
-//            currentGame.currentPlayer = user;
-//            while (true) {
-//
-//                System.out.println(currentGame.currentPlayer.getNickname() + "'s turn to choose map(1 or 2)");
-//                String choiceString = scanner.nextLine();
-//                String[] splitChoice = choiceString.trim().split("\\s+");
-//
-//                int choice;
-//                try {
-//                    choice = Integer.parseInt(splitChoice[2]);
-//                } catch (Exception e) {
-//                    System.out.println("Please Use an Integer between 1 and 2!");
-//                    continue;
-//                }
-//                if (choice != 1 && choice != 2) {
-//                    System.out.println("Choose between 1 and 2!");
-//                    continue;
-//                }
-//
-//
-//                if (counter == 1) {
-//                    user.setIcon(BRIGHT_CYAN + "∆ " + RESET);
-//                    user.topLeftX = 0;
-//                    user.topLeftY = 0;
-//                }
-//                else if (counter == 2) {
-//                    user.setIcon(BRIGHT_PURPLE + "∆ " + RESET);
-//                    user.topLeftX = 1;
-//                    user.topLeftY = 0;
-//                }
-//                else if (counter == 3) {
-//                    user.setIcon(BRIGHT_RED + "∆ " + RESET);
-//                    user.topLeftX = 0;
-//                    user.topLeftY = 1;
-//                }
-//                else if (counter == 4) {
-//                    user.setIcon(BRIGHT_YELLOW + "∆ " + RESET);
-//                    user.topLeftX = 1;
-//                    user.topLeftY = 1;
-//                }
-//                //createInitialFarm(choice);
-//                counter++;
-//                break;
-//            }
-//        }
-//        currentGame.currentPlayer = currentGame.players.getFirst();
-//
-//        // Form Friendships
-//        for (int i = 0; i < currentGame.players.size(); i++) {
-//            for (int j = i + 1; j < currentGame.players.size(); j++) {
-//                HumanCommunications f = new HumanCommunications(currentGame.players.get(i), currentGame.players.get(j));
-//                currentGame.friendships.add(f);
-//            }
-//        }
-//        // set initial Cooking Recipes from beginning
-//        for (User player: currentGame.players) {
-//            player.setRecipes(Recipe.createAllRecipes());
-//        }
-//        //buildHall();
-//        //buildNpcVillage();
-//        sortMap(currentGame.bigMap);
-//        initializePlayer();
-//        fadeToNextDay();
+//        Main.getClient(null).getPlayer() = currentUser;
+//        System.out.println(RED+"player selected"+RESET);
+
+//        currentGame.players.add(findUserByUsername(user1name));
+//        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
+//        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
+
+        setTimeAndWeather();
+        //buildHall();
+        //buildNpcVillage();
+        sortMap(currentGame.bigMap);
+        //fadeToNextDay();
     }
 
 
@@ -2188,208 +2255,116 @@ public class InputGameController {
 
 
                                                                   // input command Date
-//    public Result showTime () {
-//        return new Result(true, BLUE +"Time : "+RESET
-//                + currentGame.currentDate.getHour()+ ":00");
-//    }
-//    public Result showDate () {
-//        return new Result(true, BLUE+"Date : "+RED+currentGame.currentDate.getYear()+RESET+" "+currentGame.currentDate.getNameSeason()+" "+currentGame.currentDate.getDate());
-//    }
-//    public Result showSeason   () {
-//
-//        return new Result(true, currentGame.currentDate.getNameSeason());
-//    }
-//    public Result showWeather  (boolean isToday) {
-//
-//        if (isToday)
-//            return new Result(true, currentGame.currentWeather.getDisplayName());
-//        else
-//            return new Result(true, currentGame.tomorrowWeather.getDisplayName());
-//    }
-//    public Result setWeather   (String type) {
-//
-//        Weather weather;
-//        try {
-//            weather = Weather.valueOf(type);
-//        } catch (Exception e) {
-//            return new Result(false, RED+"Weather type is incorrect!"+RESET);
-//        }
-//        currentGame.tomorrowWeather = weather;
-//        return new Result(true, BLUE+"Tomorrow weather change to "+RESET+currentGame.tomorrowWeather.getDisplayName());
-//    }
-//    public Result setEnergy    (String amount) {
-//
-//        if (currentGame.currentPlayer.isHealthUnlimited())
-//            return new Result(false, BLUE+"You're unstoppable! Energy level: ∞"+RESET);
-//
-//        if (amount.charAt(0) == '-')
-//            return new Result(false, RED+"Energy must be a positive number!"+RESET);
-//        int amount2;
-//        try {
-//            amount2 = Integer.parseInt(amount);
-//        } catch (Exception e) {
-//            return new Result(false, RED+"Number is incorrect!"+RESET);
-//        }
-//
-//        if (currentGame.currentPlayer.getHealth() > amount2) {
-//            currentGame.currentPlayer.setHealth(amount2);
-//            return new Result(true, BLUE+"Your Energy decreased to : " +RESET+amount2);
-//        }
-//        else if (currentGame.currentPlayer.getHealth() < amount2) {
-//            currentGame.currentPlayer.setHealth(amount2);
-//            return new Result(true, BLUE+"Your Energy increased to : " +RESET+amount2);
-//        } else
-//            return new Result(false, "Your energy level at this moment is this amount.");
-//    }
-//    public Result showDateTime () {
-//        return new Result(true, BLUE+"Time : "+RED+ currentGame.currentDate.getHour()+ ":00" +
-//                BLUE+"\nData : "+RED+currentGame.currentDate.getYear()+RESET+" "+currentGame.currentDate.getNameSeason()+" "+currentGame.currentDate.getDate());
-//    }
-//    public Result showDayOfWeek() {
-//        return new Result(true, BLUE+"Day of Week : "+RESET
-//                + currentGame.currentDate.getDayOfTheWeek());
-//    }
-//    public Result increaseHour (String hour) {
-//
-//        if (hour.charAt(0) == '-')
-//            return new Result(false, RED+"The time must be a positive number!"+RESET);
-//        int amount;
-//        try {
-//            amount = Integer.parseInt(hour);
-//        } catch (Exception e) {
-//            return new Result(false, RED+"Time is incorrect!"+RESET);
-//        }
-//        passedOfTime(0, amount);
-//        return new Result(true, BLUE+"Time change to : "+GREEN+ currentGame.currentDate.getHour()+":00"+RESET);
-//    }
-//    public Result increaseDate (String date) {
-//
-//        if (date.charAt(0) == '-')
-//            return new Result(false, RED+"The time must be a positive number!"+RESET);
-//        int amount;
-//        try {
-//            amount = Integer.parseInt(date);
-//        } catch (Exception e) {
-//            return new Result(false, RED+"Time is incorrect!"+RESET);
-//        }
-//        passedOfTime(amount, 0);
-//        return new Result(true, BLUE+"Date change to : "+RED+currentGame.currentDate.getYear()+RESET+" "+currentGame.currentDate.getNameSeason()+" "+currentGame.currentDate.getDate());
-//    }
-//    public Result showEnergy () {
-//
-//        if (currentGame.currentPlayer.isHealthUnlimited())
-//            return new Result(false, BRIGHT_BLUE + "Your energy is unlimited" + RESET);
-//        return new Result(true,BRIGHT_BLUE+"Your energy is : "+currentGame.currentPlayer.getHealth()+RESET);
-//    }
-//    public Result EnergyUnlimited () {
-//
-//        currentGame.currentPlayer.setHealthUnlimited();
-//        return new Result(true, BLUE+"Whoa! Infinite energy mode activated!"+RESET);
-//    }
+
+    public Result EnergyUnlimited () {
+
+        Main.getClient(null).getPlayer().setHealthUnlimited();
+        return new Result(true, BLUE+"Whoa! Infinite energy mode activated!"+RESET);
+    }
 
 
                                                                    // input command plant
 
 
-//    public Result WateringPlant (String direction) {
-//
-//        if (directionIncorrect(direction))
-//            return new Result(false, RED+"Direction is invalid"+RESET);
-//
-//        int dir = Integer.parseInt(direction);
-//
-//        if (!(currentGame.currentPlayer.currentTool instanceof WateringCan))
-//            return new Result(false, RED+"سطل اب رو بردار دوست من"+RESET);
-//
-//        if (!currentGame.currentPlayer.isHealthUnlimited())
-//            currentGame.currentPlayer.increaseHealth(currentGame.currentPlayer.currentTool.healthCost());
-//
-//        Tile tile = getTileByDir(dir);
-//        GameObject object = tile.getGameObject();
-//
-//        if ((!currentGame.currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
-//                !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
-//            return new Result(false, RED+"You must select your tile"+RESET);
-//
-//        if (((WateringCan) currentGame.currentPlayer.currentTool).getReminderCapacity() < 1)
-//            return new Result(false, RED+"ظرفت خالیه مشتی"+RESET);
-//
-//        if (object instanceof ForagingSeeds) {
-//
-//            ((WateringCan) currentGame.currentPlayer.currentTool).decreaseWater(1);
-//            ((ForagingSeeds) object).setLastWater(currentGame.currentDate);
-//            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
-//
-//        }
-//        else if (object instanceof Tree) {
-//
-//            ((WateringCan) currentGame.currentPlayer.currentTool).decreaseWater(1);
-//            ((Tree) object).setLastWater(currentGame.currentDate);
-//            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
-//
-//        }
-//        else if (object instanceof GiantProduct) {
-//
-//            ((WateringCan) currentGame.currentPlayer.currentTool).decreaseWater(1);
-//            ((GiantProduct) object).setLastWater(currentGame.currentDate);
-//            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
-//        }
-//
-//        return new Result(false, RED+"No plant in here!"+RESET);
-//    }
-//    public Result showFruitInfo (String name) {
-//
-//        TreesProductType type;
-//
-//        try {
-//            type = TreesProductType.fromDisplayName(name);
-//            return new Result(true, TreesProductType.getInformation(type));
-//
-//        } catch (Exception e) {
-//
-//            CropsType cropType;
-//            try {
-//                cropType = CropsType.fromDisplayName(name);
-//                return new Result(true, CropsType.getInformation(cropType));
-//
-//            } catch (Exception e1) {
-//                return new Result(false, RED+"sorry, name is invalid!"+RESET);
-//            }
-//        }
-//    }
-//    public Result thor (String x, String y) {
-//
-//        int x1 = Integer.parseInt(x);
-//        int y1 = Integer.parseInt(y);
-//
-//        if ((!currentGame.currentPlayer.getFarm().isInFarm(x1, y1)) && currentGame.currentPlayer.getSpouse() != null
-//                && !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(x1, y1))
-//            return new Result(false, RED+"You must select your tile"+RESET);
-//
-//        if (isInGreenHouse(getTileByCoordinates(x1, y1)))
-//            return new Result(false, RED+"Lightning can’t hit the greenhouse"+RESET);
-//
-//        lightningStrike(getTileByCoordinates(x1, y1));
-//        return new Result(true, BLUE+"A lightning bolt hits!"+RESET);
-//    }
-//    public Result buildGreenHouse () {
-//
-//        if (currentGame.currentPlayer.getFarm().getGreenHouse().isCreated())
-//            return new Result(false, BRIGHT_BLUE+"The greenhouse has been build!"+RESET);
-//
-//        if (!checkAmountProductAvailable(new Wood(), GreenHouse.requiredWood))
-//            return new Result(false, RED+"You don't have enough wood!"+RESET);
-//
-//        if (currentGame.currentPlayer.getMoney() < GreenHouse.requiredCoins )
-//            return new Result(false, RED+"You don't have enough Coin!"+RESET);
-//
-//        currentGame.currentPlayer.increaseMoney(-GreenHouse.requiredCoins);
-//        advanceItem(new Wood(), -GreenHouse.requiredWood);
-//
-//        currentGame.currentPlayer.getFarm().getGreenHouse().setCreated(true);
-//
-//        return new Result(true, RED + "-500 wood  -1000 Coin"+BLUE+"\nThe greenhouse has been built! \uD83C\uDF31"+RESET);
-//    }
+    public Result WateringPlant (String direction) {
+
+        if (directionIncorrect(direction))
+            return new Result(false, RED+"Direction is invalid"+RESET);
+
+        int dir = Integer.parseInt(direction);
+
+        if (!(Main.getClient(null).getPlayer().currentTool instanceof WateringCan))
+            return new Result(false, RED+"سطل اب رو بردار دوست من"+RESET);
+
+        if (!Main.getClient(null).getPlayer().isHealthUnlimited())
+            Main.getClient(null).getPlayer().increaseHealth(Main.getClient(null).getPlayer().currentTool.healthCost());
+
+        Tile tile = getTileByDir(dir);
+        GameObject object = tile.getGameObject();
+
+        if ((!Main.getClient(null).getPlayer().getFarm().isInFarm(tile.getX(), tile.getY())) &&
+                !Main.getClient(null).getPlayer().getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
+            return new Result(false, RED+"You must select your tile"+RESET);
+
+        if (((WateringCan) Main.getClient(null).getPlayer().currentTool).getReminderCapacity() < 1)
+            return new Result(false, RED+"ظرفت خالیه مشتی"+RESET);
+
+        if (object instanceof ForagingSeeds) {
+
+            ((WateringCan) Main.getClient(null).getPlayer().currentTool).decreaseWater(1);
+            ((ForagingSeeds) object).setLastWater(currentGame.getGameState().getCurrentDate());
+            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
+
+        }
+        else if (object instanceof Tree) {
+
+            ((WateringCan) Main.getClient(null).getPlayer().currentTool).decreaseWater(1);
+            ((Tree) object).setLastWater(currentGame.getGameState().getCurrentDate());
+            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
+
+        }
+        else if (object instanceof GiantProduct) {
+
+            ((WateringCan) Main.getClient(null).getPlayer().currentTool).decreaseWater(1);
+            ((GiantProduct) object).setLastWater(currentGame.getGameState().getCurrentDate());
+            return new Result(true, BLUE+"The plant has been watered!\uD83C\uDF31"+RESET);
+        }
+
+        return new Result(false, RED+"No plant in here!"+RESET);
+    }
+    public Result showFruitInfo (String name) {
+
+        TreesProductType type;
+
+        try {
+            type = TreesProductType.fromDisplayName(name);
+            return new Result(true, TreesProductType.getInformation(type));
+
+        } catch (Exception e) {
+
+            CropsType cropType;
+            try {
+                cropType = CropsType.fromDisplayName(name);
+                return new Result(true, CropsType.getInformation(cropType));
+
+            } catch (Exception e1) {
+                return new Result(false, RED+"sorry, name is invalid!"+RESET);
+            }
+        }
+    }
+    public Result thor (String x, String y) {
+
+        int x1 = Integer.parseInt(x);
+        int y1 = Integer.parseInt(y);
+
+        if ((!Main.getClient(null).getPlayer().getFarm().isInFarm(x1, y1)) && Main.getClient(null).getPlayer().getSpouse() != null
+                && !Main.getClient(null).getPlayer().getSpouse().getFarm().isInFarm(x1, y1))
+            return new Result(false, RED+"You must select your tile"+RESET);
+
+        if (isInGreenHouse(getTileByCoordinates(x1, y1)))
+            return new Result(false, RED+"Lightning can’t hit the greenhouse"+RESET);
+
+        lightningStrike(getTileByCoordinates(x1, y1));
+        return new Result(true, BLUE+"A lightning bolt hits!"+RESET);
+    }
+    public Result buildGreenHouse () {
+
+        if (Main.getClient(null).getPlayer().getFarm().getGreenHouse().isCreated())
+            return new Result(false, BRIGHT_BLUE+"The greenhouse has been build!"+RESET);
+
+        if (!checkAmountProductAvailable(new Wood(), GreenHouse.requiredWood))
+            return new Result(false, RED+"You don't have enough wood!"+RESET);
+
+        if (Main.getClient(null).getPlayer().getMoney() < GreenHouse.requiredCoins )
+            return new Result(false, RED+"You don't have enough Coin!"+RESET);
+
+        Main.getClient(null).getPlayer().increaseMoney(-GreenHouse.requiredCoins);
+        advanceItem(new Wood(), -GreenHouse.requiredWood);
+
+        Main.getClient(null).getPlayer().getFarm().getGreenHouse().setCreated(true);
+
+        return new Result(true, RED + "-500 wood  -1000 Coin"+BLUE+"\nThe greenhouse has been built! \uD83C\uDF31"+RESET);
+    }
     public Result info (String name) {
 
         TreeType treeType;
@@ -2408,59 +2383,59 @@ public class InputGameController {
             }
         }
     }
-//    public Result showPlant (String xNumber, String yNumber) {
-//
-//        int x = Integer.parseInt(xNumber);
-//        int y = Integer.parseInt(yNumber);
-//
-//        if (!currentGame.currentPlayer.getFarm().isInFarm(x, y))
-//            return new Result(false, RED+"Pick from your own farm!"+RESET);
-//
-//        Tile tile = getTileByCoordinates(x, y);
-//
-//        if (tile.getGameObject() instanceof Tree)
-//            return new Result(true, showTree((Tree) tile.getGameObject()));
-//        if (tile.getGameObject() instanceof ForagingSeeds)
-//            return new Result(true, showForaging((ForagingSeeds) tile.getGameObject()));
-//        if (tile.getGameObject() instanceof GiantProduct)
-//            return new Result(true, showGiant((GiantProduct) tile.getGameObject()));
-//
-//        if ((!currentGame.currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
-//                !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
-//            return new Result(false, RED+"You must select your tile"+RESET);
-//
-//        return new Result(false, RED+"That tile don't have plant!"+RESET);
-//
-//    }
-//    public Result fertilize (String fertilizeType, String direction) {
-//
-//        if (directionIncorrect(direction))
-//            return new Result(false, RED+"Direction is invalid"+RESET);
-//
-//        int dir = Integer.parseInt(direction);
-//        Tile tile = getTileByDir(dir);
-//
-//        if (!checkTileForPlant(tile))
-//            return new Result(false, RED+"This tile has no plants!"+RESET);
-//
-//        MarketItemType type;
-//
-//        try {
-//            type = MarketItemType.fromDisplayName(fertilizeType);
-//        } catch (Exception e) {
-//            return new Result(false, RED+"Fertilize type is invalid"+RESET);
-//        }
-//        if (!checkAmountProductAvailable(new MarketItem(type), 1))
-//            return new Result(false, RED+"You don't have enough "+type.getName()+RESET);
-//
-//        if ((!currentGame.currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
-//                !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
-//            return new Result(false, RED+"You must select your tile"+RESET);
-//
-//        advanceItem(new MarketItem(type), -1);
-//        fertilizePlant(type, tile);
-//        return new Result(true, BLUE+"The plant has been fertilized! ✨"+RESET);
-//    }
+    public Result showPlant (String xNumber, String yNumber) {
+
+        int x = Integer.parseInt(xNumber);
+        int y = Integer.parseInt(yNumber);
+
+        if (!Main.getClient(null).getPlayer().getFarm().isInFarm(x, y))
+            return new Result(false, RED+"Pick from your own farm!"+RESET);
+
+        Tile tile = getTileByCoordinates(x, y);
+
+        if (tile.getGameObject() instanceof Tree)
+            return new Result(true, showTree((Tree) tile.getGameObject()));
+        if (tile.getGameObject() instanceof ForagingSeeds)
+            return new Result(true, showForaging((ForagingSeeds) tile.getGameObject()));
+        if (tile.getGameObject() instanceof GiantProduct)
+            return new Result(true, showGiant((GiantProduct) tile.getGameObject()));
+
+        if ((!Main.getClient(null).getPlayer().getFarm().isInFarm(tile.getX(), tile.getY())) &&
+                !Main.getClient(null).getPlayer().getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
+            return new Result(false, RED+"You must select your tile"+RESET);
+
+        return new Result(false, RED+"That tile don't have plant!"+RESET);
+
+    }
+    public Result fertilize (String fertilizeType, String direction) {
+
+        if (directionIncorrect(direction))
+            return new Result(false, RED+"Direction is invalid"+RESET);
+
+        int dir = Integer.parseInt(direction);
+        Tile tile = getTileByDir(dir);
+
+        if (!checkTileForPlant(tile))
+            return new Result(false, RED+"This tile has no plants!"+RESET);
+
+        MarketItemType type;
+
+        try {
+            type = MarketItemType.fromDisplayName(fertilizeType);
+        } catch (Exception e) {
+            return new Result(false, RED+"Fertilize type is invalid"+RESET);
+        }
+        if (!checkAmountProductAvailable(new MarketItem(type), 1))
+            return new Result(false, RED+"You don't have enough "+type.getName()+RESET);
+
+        if ((!Main.getClient(null).getPlayer().getFarm().isInFarm(tile.getX(), tile.getY())) &&
+                !Main.getClient(null).getPlayer().getSpouse().getFarm().isInFarm(tile.getX(), tile.getY()))
+            return new Result(false, RED+"You must select your tile"+RESET);
+
+        advanceItem(new MarketItem(type), -1);
+        fertilizePlant(type, tile);
+        return new Result(true, BLUE+"The plant has been fertilized! ✨"+RESET);
+    }
 
                                                                    // input tools command
 
@@ -2468,27 +2443,27 @@ public class InputGameController {
 
         // Diraction diraction =
     }
-//    public Result howMuchWater () {
-//
-//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-//
-//        for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet())
-//            if (entry instanceof WateringCan)
-//                return new Result(true, BLUE+"Water Remaining : "
-//                        +RESET+((WateringCan) entry).getReminderCapacity());
-//
-//        return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
-//    }
-//    public void itemEquip (String name) {
-//
-//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-//
-//        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
-//            if (entry.getKey() != null && entry.getKey().getName().equals(name))
-//                currentGame.currentPlayer.currentItem = entry.getKey();
-//
-//
-//    }
+    public Result howMuchWater () {
+
+        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+
+        for (Map.Entry <Items,Integer> entry: inventory.Items.entrySet())
+            if (entry instanceof WateringCan)
+                return new Result(true, BLUE+"Water Remaining : "
+                        +RESET+((WateringCan) entry).getReminderCapacity());
+
+        return new Result(false, BLUE+"کدوم سطل سلطان"+RESET);
+    }
+    public void itemEquip (String name) {
+
+        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+
+        for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
+            if (entry.getKey() != null && entry.getKey().getName().equals(name))
+                Main.getClient(null).getPlayer().currentItem = entry.getKey();
+
+
+    }
     public HashMap<String, String> availableTools() {
 
         Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
@@ -2501,11 +2476,11 @@ public class InputGameController {
         return availableTools;
     }
     public Result upgradeTool (String name) {
-//         MarketType marketType=MarketType.wallOrDoor(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());
+//         MarketType marketType=MarketType.wallOrDoor(Main.getClient(null).getPlayer().getPositionX() , Main.getClient(null).getPlayer().getPositionY());
 //         if (marketType!=MarketType.Blacksmith) {
 //             return new Result(false , "you are not in BlackSmith Market. please go there");
 //         }
-//         Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+//         Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
 //
 //         if ( name.equals("Axe") ) {
 //             for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
@@ -2516,7 +2491,7 @@ public class InputGameController {
 //                     }
 //                     else if (AxeType.checkIngredient(axeType)) {
 //                         ((Axe) entry.getKey()).setType(axeType);
-//                         currentGame.currentPlayer.increaseMoney( - axeType.getPrice());
+//                         Main.getClient(null).getPlayer().increaseMoney( - axeType.getPrice());
 //                         return new Result(true , name + "updated successfully");
 //                     }
 //                     else {
@@ -2535,7 +2510,7 @@ public class InputGameController {
 //                    }
 //                    else if (HoeType.checkIngredient(hoeType)) {
 //                        ((Hoe) entry.getKey()).setType(hoeType);
-//                        currentGame.currentPlayer.increaseMoney( - hoeType.getPrice());
+//                        Main.getClient(null).getPlayer().increaseMoney( - hoeType.getPrice());
 //                        return new Result(true , name + "updated successfully");
 //                    }
 //                    else {
@@ -2554,7 +2529,7 @@ public class InputGameController {
 //                    }
 //                    else if (PickAxeType.checkIngredient(pickAxeType)) {
 //                        ((PickAxe) entry.getKey()).setType(pickAxeType);
-//                        currentGame.currentPlayer.increaseMoney( - pickAxeType.getPrice());
+//                        Main.getClient(null).getPlayer().increaseMoney( - pickAxeType.getPrice());
 //                        return new Result(true , name + "updated successfully");
 //                    }
 //                    else {
@@ -2573,7 +2548,7 @@ public class InputGameController {
 //                    }
 //                    else if (WateringCanType.checkIngredient(wateringCanType)) {
 //                        ((WateringCan) entry.getKey()).setType(wateringCanType);
-//                        currentGame.currentPlayer.increaseMoney( - wateringCanType.getPrice());
+//                        Main.getClient(null).getPlayer().increaseMoney( - wateringCanType.getPrice());
 //                        return new Result(true , name + "updated successfully");
 //                    }
 //                    else {
@@ -2592,7 +2567,7 @@ public class InputGameController {
 //                    }
 //                    else if (TrashCanType.checkIngredient(trashCanType)) {
 //                        ((TrashCan) entry.getKey()).setType(trashCanType);
-//                        currentGame.currentPlayer.increaseMoney( - trashCanType.getPrice());
+//                        Main.getClient(null).getPlayer().increaseMoney( - trashCanType.getPrice());
 //                        return new Result(true , name + "updated successfully");
 //                    }
 //                    else {
@@ -2605,58 +2580,58 @@ public class InputGameController {
         return null;
     }
     public Result useTools (int dir) {
-//        if (!currentGame.currentPlayer.isHealthUnlimited()) {
-//            if (currentGame.currentPlayer.getHealth() < currentGame.currentPlayer.currentTool.healthCost())
-//                return new Result(false, RED+"you are not in your hand"+RESET);
-//
-//            currentGame.currentPlayer.increaseHealth(currentGame.currentPlayer.currentTool.healthCost());
-//        }
-//
-//        Tools tools = currentGame.currentPlayer.currentTool;
-//
-//        if (currentGame.currentPlayer.currentTool == null)
-//            return new Result(false, RED + "please pick up a tools" + RESET);
-//
-//        switch (tools) {
-//            case Axe axe -> {
-//                return useAxe(dir);
-//            }
-//            case Hoe hoe -> {
-//                if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0)
-//                    currentGame.currentPlayer.increaseHealth(1);
-//                return useHoe(dir);
-//            }
-//            case MilkPail milkPail -> {
-//                if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0)
-//                    currentGame.currentPlayer.increaseHealth(1);
-//                return useMilkPail(dir);
-//            }
-//            case Scythe scythe -> {
-//                if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0)
-//                    currentGame.currentPlayer.increaseHealth(1);
-//                return useScythe(dir);
-//            }
-//            case Shear shear -> {
-//                if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_farming_hoursLeft > 0)
-//                    currentGame.currentPlayer.increaseHealth(1);
-//                return useShear(dir);
-//            }
-//            case WateringCan wateringCan -> {
-//                return useWateringCan(dir);
-//            }
-//            case PickAxe pickAxe -> {
-//                return usePickAxe(dir);
-//            }
-//            default -> {
-//            }
-//        }
+        if (!Main.getClient(null).getPlayer().isHealthUnlimited()) {
+            if (Main.getClient(null).getPlayer().getHealth() < Main.getClient(null).getPlayer().currentTool.healthCost())
+                return new Result(false, RED+"you are not in your hand"+RESET);
+
+            Main.getClient(null).getPlayer().increaseHealth(Main.getClient(null).getPlayer().currentTool.healthCost());
+        }
+
+        Tools tools = Main.getClient(null).getPlayer().currentTool;
+
+        if (Main.getClient(null).getPlayer().currentTool == null)
+            return new Result(false, RED + "please pick up a tools" + RESET);
+
+        switch (tools) {
+            case Axe axe -> {
+                return useAxe(dir);
+            }
+            case Hoe hoe -> {
+                if (Main.getClient(null).getPlayer().currentTool.healthCost() > 0 && Main.getClient(null).getPlayer().Buff_farming_hoursLeft > 0)
+                    Main.getClient(null).getPlayer().increaseHealth(1);
+                return useHoe(dir);
+            }
+            case MilkPail milkPail -> {
+                if (Main.getClient(null).getPlayer().currentTool.healthCost() > 0 && Main.getClient(null).getPlayer().Buff_farming_hoursLeft > 0)
+                    Main.getClient(null).getPlayer().increaseHealth(1);
+                return useMilkPail(dir);
+            }
+            case Scythe scythe -> {
+                if (Main.getClient(null).getPlayer().currentTool.healthCost() > 0 && Main.getClient(null).getPlayer().Buff_farming_hoursLeft > 0)
+                    Main.getClient(null).getPlayer().increaseHealth(1);
+                return useScythe(dir);
+            }
+            case Shear shear -> {
+                if (Main.getClient(null).getPlayer().currentTool.healthCost() > 0 && Main.getClient(null).getPlayer().Buff_farming_hoursLeft > 0)
+                    Main.getClient(null).getPlayer().increaseHealth(1);
+                return useShear(dir);
+            }
+            case WateringCan wateringCan -> {
+                return useWateringCan(dir);
+            }
+            case PickAxe pickAxe -> {
+                return usePickAxe(dir);
+            }
+            default -> {
+            }
+        }
         return new Result(false, RED + "please pick up a tools" + RESET);
     }
 
                                                                       // input NPC command
     public NPC findNPC () {
 
-        User player =null /*currentGame.currentPlayer*/;
+        User player = Main.getClient(null).getPlayer();
         NPC npc = null;
 
         for (NPC npc1 : NPC.values())
@@ -2667,7 +2642,7 @@ public class InputGameController {
     }
     public boolean checkForNPC () {
 
-        User player = null /*currentGame.currentPlayer*/;
+        User player = Main.getClient(null).getPlayer();
         NPC npc = null;
 
         for (NPC npc1 : NPC.values())
@@ -2678,15 +2653,15 @@ public class InputGameController {
     }
     public void meetNPC (Stage stage, NPC npc) {
 
-//        User player =  null /*currentGame.currentPlayer*/;
-//
-//        if (!player.getTodayTalking(npc)) {
-//            player.setTodayTalking(npc,true);
-//            player.increaseFriendshipPoint(npc, 20);
-//        }
-//        int level = player.getFriendshipLevel(npc);
-//        drawNPCDialogue(stage, npc, level, currentGame.currentWeather);
-//        npc.setLastConversation(System.currentTimeMillis());
+        User player = Main.getClient(null).getPlayer();
+
+        if (!player.getTodayTalking(npc)) {
+            player.setTodayTalking(npc,true);
+            player.increaseFriendshipPoint(npc, 20);
+        }
+        int level = player.getFriendshipLevel(npc);
+        drawNPCDialogue(stage, npc, level, currentGame.getGameState().currentWeather);
+        npc.setLastConversation(System.currentTimeMillis());
 
     }
     private void drawNPCDialogue(Stage stage, NPC npc, int friendshipLevel, Weather weather) {
@@ -2741,45 +2716,45 @@ public class InputGameController {
     }
     public void giftNPC (Items item, Stage stage, NPC npc) {
 
-//        User player = currentGame.currentPlayer;
-//
-//        if (npc == null) {return;}
-//
-//        if (item == null) {
-//            createGiftMenu(new Result(false, "You can only gift items from the market, crops and fruit"), stage, npc);
-//            return;
-//        }
-//
-//        Inventory inventory = player.getBackPack().inventory;
-//
-//
-//        if (!inventory.Items.containsKey(item)) {
-//            createGiftMenu(new Result(false, "You don't have this item"), stage, npc);
-//            return;
-//        }
-//
-//        if (item instanceof Tools) {
-//            createGiftMenu(new Result(false, "you can't gift tools"), stage, npc);
-//            return;
-//        }
-//
-//        advanceItem(item, -1);
-//
-//        if (!player.getTodayGifting(npc)) {
-//
-//            if (npc.isItFavorite(item))
-//                player.increaseFriendshipPoint(npc, 200);
-//            else
-//                player.increaseFriendshipPoint(npc, 50);
-//        } else {
-//
-//            if (npc.isItFavorite(item))
-//                player.increaseFriendshipPoint(npc, 50);
-//            else
-//                player.increaseFriendshipPoint(npc, 15);
-//        }
-//        player.setTodayGifting(npc, true);
-//        createGiftMenu (new Result(true, "Your gift successfully sent to " + npc.getName()), stage, npc);
+        User player = Main.getClient(null).getPlayer();
+
+        if (npc == null) {return;}
+
+        if (item == null) {
+            createGiftMenu(new Result(false, "You can only gift items from the market, crops and fruit"), stage, npc);
+            return;
+        }
+
+        Inventory inventory = player.getBackPack().inventory;
+
+
+        if (!inventory.Items.containsKey(item)) {
+            createGiftMenu(new Result(false, "You don't have this item"), stage, npc);
+            return;
+        }
+
+        if (item instanceof Tools) {
+            createGiftMenu(new Result(false, "you can't gift tools"), stage, npc);
+            return;
+        }
+
+        advanceItem(item, -1);
+
+        if (!player.getTodayGifting(npc)) {
+
+            if (npc.isItFavorite(item))
+                player.increaseFriendshipPoint(npc, 200);
+            else
+                player.increaseFriendshipPoint(npc, 50);
+        } else {
+
+            if (npc.isItFavorite(item))
+                player.increaseFriendshipPoint(npc, 50);
+            else
+                player.increaseFriendshipPoint(npc, 15);
+        }
+        player.setTodayGifting(npc, true);
+        createGiftMenu (new Result(true, "Your gift successfully sent to " + npc.getName()), stage, npc);
     }
     private void createGiftMenu (Result message, Stage stage, NPC npc) {
 
@@ -2859,7 +2834,7 @@ public class InputGameController {
         } catch (Exception e) {
             return new Result(false, RED+"You're looking for someone who isn't real"+RESET);
         }
-//        if (!npc.isInHisHome(currentGame.currentPlayer.getPositionX(), currentGame.currentPlayer.getPositionY()))
+//        if (!npc.isInHisHome(Main.getClient(null).getPlayer().getPositionX(), Main.getClient(null).getPlayer().getPositionY()))
 //            return new Result(false, RED+"You should go to their place first"+RESET);
 
         return switch (ID) {
@@ -2885,43 +2860,5 @@ public class InputGameController {
 
         getTileByDir(x).setGameObject(new Walkable());
     }
-    public void plow () {
-//
-//        for (User user : currentGame.players)
-//            for (Tile tile : user.getFarm().Farm)
-//                if (tile.getGameObject() instanceof Walkable ) {
-//                    Walkable walkable = new Walkable();
-//                    walkable.setGrassOrFiber("Plowed");
-//                    tile.setGameObject(walkable);
-//                }
-    }
-    public void clear () {
 
-//        for (User user : currentGame.players)
-//            for (Tile tile : user.getFarm().Farm)
-//                if (tile.getGameObject() instanceof Walkable ||
-//                        tile.getGameObject() instanceof Tree || tile.getGameObject() instanceof BasicRock)
-//                    tile.setGameObject(new Walkable());
-//        Walkable walkable = new Walkable();
-//        walkable.setGrassOrFiber("Plowed");
-//        getTileByCoordinates(7, 10).setGameObject(walkable);
-    }
-    public void plantCreator () {
-
-//        clear();
-//
-//        for (int i = 25; i < 28; i++)
-//            for (int j = 22; j < 25; j++)
-//                getTileByCoordinates(i,j).setGameObject(new Tree(TreeType.OakTree, currentGame.currentDate.clone()));
-//
-//        for (int i = 21; i < 24; i++)
-//            for (int j = 22; j < 25; j++)
-//                getTileByCoordinates(i,j).setGameObject(new ForagingCrops(ForagingCropsType.CrystalFruit));
-//
-//        for (int i = 17; i < 20; i++)
-//            for (int j = 22; j < 25; j++)
-//                getTileByCoordinates(i,j).setGameObject(new ForagingSeeds(ForagingSeedsType.AncientSeeds, currentGame.currentDate.clone()));
-
-
-    }
 }

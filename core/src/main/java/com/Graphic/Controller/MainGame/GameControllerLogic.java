@@ -90,7 +90,7 @@ public class GameControllerLogic {
 
     public static void init() {
         createScreenOverlay(gameMenu.getStage());
-        lastTimeUpdate = currentGame.currentDate.clone();
+        lastTimeUpdate = currentGame.getGameState().currentDate.clone();
     }
 
     public static void update(float delta) {
@@ -108,16 +108,16 @@ public class GameControllerLogic {
             else if ( gameMenu.isFirstLoad() && Main.getClient(null).getPlayer().isInBarnOrCage()) {
                 gameMenu.setFirstLoad(false);
                 camera.setToOrtho(false , 300 , 150);
-                gameMenu.setTiledMap(new TmxMapLoader().load(currentGame.currentPlayer.getBarnOrCagePath()));
+                gameMenu.setTiledMap(new TmxMapLoader().load(Main.getClient(null).getPlayer().getBarnOrCagePath()));
                 gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap() , 1f));
             }
 
         handleLightning(delta);
 
 
-        if (currentGame.currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
+        if (currentGame.getGameState().currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
             AutomaticFunctionAfterAnyAct();
-            lastTimeUpdate = currentGame.currentDate.clone();
+            lastTimeUpdate = currentGame.getGameState().currentDate.clone();
         }
 
     }
@@ -126,7 +126,7 @@ public class GameControllerLogic {
 
         if (cloud == null) {
             if ((TimeUtils.millis() / 1000) % 40 == 0)
-                if (currentGame.currentWeather.equals(Weather.Stormy)) {
+                if (currentGame.getGameState().currentDate.equals(Weather.Stormy)) {
 
                     Random random1 = new Random();
                     if (random1.nextInt(2) == 1)
@@ -152,7 +152,7 @@ public class GameControllerLogic {
     public static void createCloud() {
 
         Random random1 = new Random();
-        User user = currentGame.players.get(random1.nextInt(currentGame.players.size()));
+        User user = currentGame.getGameState().getPlayers().get(random1.nextInt(currentGame.getGameState().getPlayers().size()));
         Tile tile = selectTileForThor(user.getFarm());
 
         if (tile != null)
@@ -180,7 +180,7 @@ public class GameControllerLogic {
     }
     public static boolean isInGreenHouse (Tile tile) {
 
-        for (User user : currentGame.players) {
+        for (User user : currentGame.getGameState().getPlayers()) {
 
             GreenHouse greenHouse = user.getFarm().getGreenHouse();
 
@@ -205,7 +205,7 @@ public class GameControllerLogic {
     }
     public static boolean checkAmountProductAvailable (Items items, int number) {
 
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
 
         if (inventory.Items.containsKey(items)) {
             int amount = inventory.Items.get(items);
@@ -215,7 +215,7 @@ public class GameControllerLogic {
     }
     public static void advanceItem(Items items, int amount) {
 
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
 
         if (inventory.Items.containsKey(items)) {
             inventory.Items.compute(items, (k, x) -> x + amount);
@@ -223,16 +223,16 @@ public class GameControllerLogic {
         else
             inventory.Items.put(items, amount);
 
-        if (currentGame.currentPlayer.getBackPack().inventory.Items.get(items) == 0) {
-            currentGame.currentPlayer.getBackPack().inventory.Items.remove(items);
+        if (Main.getClient(null).getPlayer().getBackPack().inventory.Items.get(items) == 0) {
+            Main.getClient(null).getPlayer().getBackPack().inventory.Items.remove(items);
         }
     }
 
 
     public static Tile getTileByDir (int dir) {
 
-        float x = currentGame.currentPlayer.getPositionX();
-        float y = currentGame.currentPlayer.getPositionY();
+        float x = Main.getClient(null).getPlayer().getPositionX();
+        float y = Main.getClient(null).getPlayer().getPositionY();
 
         if (dir == 1)
             return getTileByCoordinates((int) (x+1), (int) y);
@@ -561,8 +561,8 @@ public class GameControllerLogic {
                 assert mine != null;
                 if (i >= mine.getStartX() && i<mine.getStartX() + mine.getWidth() && j>=mine.getStartY() && j< mine.getStartY() + mine.getHeight() ) {
                     if (! createMine) {
-                        createInitialMine(currentGame.currentPlayer.topLeftX,
-                            currentGame.currentPlayer.topLeftY, mine.getStartX(),
+                        createInitialMine(Main.getClient(null).getPlayer().topLeftX,
+                            Main.getClient(null).getPlayer().topLeftY, mine.getStartX(),
                             mine.getStartY(), mine.getWidth(), mine.getHeight() , Player , gameState);
                         createMine = true;
                     }
@@ -570,8 +570,8 @@ public class GameControllerLogic {
 
                 else if(i >= lake.getTopLeftX() && i< lake.getTopLeftX() + lake.getWidth() && j>=lake.getTopLeftY() && j< lake.getTopLeftY() + lake.getHeight()) {
                     if (! createLake) {
-                        createInitialLake(currentGame.currentPlayer.topLeftX,
-                            currentGame.currentPlayer.topLeftY, lake.getTopLeftX(),
+                        createInitialLake(Main.getClient(null).getPlayer().topLeftX,
+                            Main.getClient(null).getPlayer().topLeftY, lake.getTopLeftX(),
                             lake.getTopLeftY(), lake.getWidth(), lake.getHeight() , Player , gameState);
                         createLake = true;
                     }
@@ -581,7 +581,7 @@ public class GameControllerLogic {
                     && j>=greenHouse.getCoordinateY() && j<greenHouse.getCoordinateY() + greenHouse.getLength() ) {
 
                     if (! createGreenHouse) {
-                        createInitialGreenHouse(currentGame.currentPlayer.topLeftX, currentGame.currentPlayer.topLeftY, greenHouse.getCoordinateX(), greenHouse.getCoordinateY(),
+                        createInitialGreenHouse(Main.getClient(null).getPlayer().topLeftX, Main.getClient(null).getPlayer().topLeftY, greenHouse.getCoordinateX(), greenHouse.getCoordinateY(),
                             greenHouse.getWidth(), greenHouse.getLength() , Player , gameState);
 
                         createGreenHouse = true;
@@ -590,7 +590,7 @@ public class GameControllerLogic {
 
                 else if (i >= home.getTopLeftX() && i<home.getTopLeftX() + home.getWidth() && j >= home.getTopLeftY() && j<home.getTopLeftY() + home.getLength() ) {
                     if (! createHome) {
-                        createInitialHouse(currentGame.currentPlayer.topLeftX, currentGame.currentPlayer.topLeftY,
+                        createInitialHouse(Main.getClient(null).getPlayer().topLeftX, Main.getClient(null).getPlayer().topLeftY,
                             home.getTopLeftX(), home.getTopLeftY(), home.getWidth(), home.getLength() , Player , gameState);
                         createHome = true;
                     }
@@ -701,9 +701,9 @@ public class GameControllerLogic {
 
     public static User getUserByLocation (int j, int i) {
 
-//        for (User user : currentGame.players)
-//            if (j == user.getPositionX() && i == user.getPositionY())
-//                return user;
+        for (User user : currentGame.getGameState().getPlayers())
+            if (j == user.getPositionX() && i == user.getPositionY())
+                return user;
         return null;
     }
     public static boolean checkTile(Tile tile){
@@ -794,7 +794,7 @@ public class GameControllerLogic {
 //        int [] x={1,1,1,0,0,-1,-1,-1};
 //        int [] y={1,0,-1,1,-1,-1,0,1};
 //        for (int i=0;i<8;i++){
-//            if (getTileByCoordinates(currentGame.currentPlayer.getPositionX() +x[i],currentGame.currentPlayer.getPositionY() +y[i]).
+//            if (getTileByCoordinates(Main.getClient(null).getPlayer().getPositionX() +x[i],Main.getClient(null).getPlayer().getPositionY() +y[i]).
 //                getGameObject() instanceof Lake){
 //                return true;
 //            }
@@ -872,48 +872,48 @@ public class GameControllerLogic {
     }
 
     public static void walkInBarnOrCage() {
-        float x = currentGame.currentPlayer.sprite.getX();
-        float y = currentGame.currentPlayer.sprite.getY();
+        float x = Main.getClient(null).getPlayer().sprite.getX();
+        float y = Main.getClient(null).getPlayer().sprite.getY();
 
         if (Gdx.input.isKeyPressed(Input.Keys.U)) {
-            System.out.println(currentGame.currentPlayer.sprite.getX() + ", " + currentGame.currentPlayer.sprite.getY());
+            System.out.println(Main.getClient(null).getPlayer().sprite.getX() + ", " + Main.getClient(null).getPlayer().sprite.getY());
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             //InputGameController.moveAnimation();
-            currentGame.currentPlayer.setDirection(Direction.Up);
+            Main.getClient(null).getPlayer().setDirection(Direction.Up);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             //InputGameController.moveAnimation();
-            currentGame.currentPlayer.setDirection(Direction.Down);
+            Main.getClient(null).getPlayer().setDirection(Direction.Down);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             //InputGameController.moveAnimation();
-            currentGame.currentPlayer.setDirection(Direction.Left);
+            Main.getClient(null).getPlayer().setDirection(Direction.Left);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             //InputGameController.moveAnimation();
-            currentGame.currentPlayer.setDirection(Direction.Right);
+            Main.getClient(null).getPlayer().setDirection(Direction.Right);
         }
 
         else {
-            currentGame.currentPlayer.sprite.draw(Main.getBatch());
+            Main.getClient(null).getPlayer().sprite.draw(Main.getBatch());
             return;
         }
 
-        currentGame.currentPlayer.sprite.setSize(16 , 32);
+        Main.getClient(null).getPlayer().sprite.setSize(16 , 32);
 
 
-        currentGame.currentPlayer.sprite.
-            setPosition(x + currentGame.currentPlayer.getDirection().getX() * 50 * Gdx.graphics.getDeltaTime(),
-                y - currentGame.currentPlayer.getDirection().getY() * 50 * Gdx.graphics.getDeltaTime());
+        Main.getClient(null).getPlayer().sprite.
+            setPosition(x + Main.getClient(null).getPlayer().getDirection().getX() * 50 * Gdx.graphics.getDeltaTime(),
+                y - Main.getClient(null).getPlayer().getDirection().getY() * 50 * Gdx.graphics.getDeltaTime());
 
 //        if (! checkCollisionInBarnOrCage()) {
-//            currentGame.currentPlayer.sprite.setPosition(x , y);
+//            Main.getClient(null).getPlayer().sprite.setPosition(x , y);
 //        }
-        currentGame.currentPlayer.sprite.draw(Main.getBatch());
+        Main.getClient(null).getPlayer().sprite.draw(Main.getBatch());
         try {
-            currentGame.currentPlayer.getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(currentGame.currentPlayer);
+            Main.getClient(null).getPlayer().getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(Main.getClient(null).getPlayer());
         }
         catch (Exception e) {
 
@@ -921,7 +921,7 @@ public class GameControllerLogic {
     }
 
     public static void showAnimalsInBarnOrCage() {
-        for (Animal animal : currentGame.currentPlayer.getCurrentBarnOrCage().animals) {
+        for (Animal animal : Main.getClient(null).getPlayer().getCurrentBarnOrCage().animals) {
             if (! animal.isOut()) {
                 animal.getSprite().draw(Main.getBatch());
                 animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
@@ -933,8 +933,8 @@ public class GameControllerLogic {
                 }
 
                 animal.getSprite().setPosition(
-                    currentGame.currentPlayer.getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x,
-                    currentGame.currentPlayer.getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
+                    Main.getClient(null).getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x,
+                    Main.getClient(null).getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
                 //System.out.println(animal.getSprite().getX()+ ",,"+animal.getSprite().getY());
                 animal.getSprite().setSize(animal.getType().getX() , animal.getType().getY());
 
@@ -962,7 +962,7 @@ public class GameControllerLogic {
             }
         }
         else {
-            for (BarnOrCage barnOrCage : currentGame.currentPlayer.BarnOrCages) {
+            for (BarnOrCage barnOrCage : Main.getClient(null).getPlayer().BarnOrCages) {
                 for (Animal animal : barnOrCage.animals) {
                     if (animal.isOut()) {
                         if (gameMenu.getMousePos().x >= animal.getSprite().getX() &&
@@ -1333,7 +1333,7 @@ public class GameControllerLogic {
 
     public static boolean animalIsOnBarnOrCage(Animal animal) {
         BarnOrCage barnOrCage=null;
-        for (BarnOrCage barnOrCage1 : currentGame.currentPlayer.BarnOrCages) {
+        for (BarnOrCage barnOrCage1 : Main.getClient(null).getPlayer().BarnOrCages) {
             for (Animal animal1 : barnOrCage1.animals) {
                 if (animal1.equals(animal)) {
                     barnOrCage=barnOrCage1;
@@ -1357,47 +1357,47 @@ public class GameControllerLogic {
     }
     public static void calculateAnimalsFriendship() {
 
-            for (BarnOrCage barnOrCage : Main.getClient(null).getPlayer().BarnOrCages) {
-                for (Animal animal : barnOrCage.animals) {
-                    if (! animal.isFeedToday()){
-                        animal.increaseFriendShip(- 20);
-                    }
-                    if (animal.isFeedToday()) {
-                        animal.increaseFriendShip(8);
-                    }
-                    if (! animal.isPetToday()) {
-                        animal.increaseFriendShip(- 10 * (animal.getFriendShip()/200));
-                    }
-                    if ( ! animalIsOnBarnOrCage(animal)) {
-                        animal.increaseFriendShip(- 20);
-                    }
-                    animal.setFeedPreviousDay(animal.isFeedToday());
-                    System.out.println(animal.isFeedPreviousDay() + "قبل");
-                    animal.setFeedToday(false);
-                    System.out.println(animal.isFeedPreviousDay() + "بعد");
-                    if (Main.getClient(null).getLocalGameState().currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod()) {
-                        animal.setLastProduceDay(Main.getClient(null).getLocalGameState().currentDate.clone().getDate());
-                    }
-                    else if (Main.getClient(null).getLocalGameState().currentDate.getDate() - animal.getLastProduceDay() == -28 + animal.getType().getPeriod()) {
-                        animal.setLastProduceDay(Main.getClient(null).getLocalGameState().currentDate.clone().getDate());
-                    }
-                    animal.setRandomProduction(Math.random() + 0.5);
-                    animal.setRandomQuantity(Math.random());
-                    animal.setRandomChance(Math.random());
-                    animal.setProductCollected(false);
-                    HashMap<String , Object> body = new HashMap<>();
-                    body.put("Animal" , animal);
-                    body.put("Number" , animal.getFriendShip());
-                    Main.getClient(null).getRequests().add(new Message(CommandType.CALCULATE_ANIMAL_FRIENDSHIP , body);
+        for (BarnOrCage barnOrCage : Main.getClient(null).getPlayer().BarnOrCages) {
+            for (Animal animal : barnOrCage.animals) {
+                if (! animal.isFeedToday()){
+                    animal.increaseFriendShip(- 20);
                 }
+                if (animal.isFeedToday()) {
+                    animal.increaseFriendShip(8);
+                }
+                if (! animal.isPetToday()) {
+                    animal.increaseFriendShip(- 10 * (animal.getFriendShip()/200));
+                }
+                if ( ! animalIsOnBarnOrCage(animal)) {
+                    animal.increaseFriendShip(- 20);
+                }
+                animal.setFeedPreviousDay(animal.isFeedToday());
+                System.out.println(animal.isFeedPreviousDay() + "قبل");
+                animal.setFeedToday(false);
+                System.out.println(animal.isFeedPreviousDay() + "بعد");
+                if (Main.getClient(null).getLocalGameState().currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod()) {
+                    animal.setLastProduceDay(Main.getClient(null).getLocalGameState().currentDate.clone().getDate());
+                }
+                else if (Main.getClient(null).getLocalGameState().currentDate.getDate() - animal.getLastProduceDay() == -28 + animal.getType().getPeriod()) {
+                    animal.setLastProduceDay(Main.getClient(null).getLocalGameState().currentDate.clone().getDate());
+                }
+                animal.setRandomProduction(Math.random() + 0.5);
+                animal.setRandomQuantity(Math.random());
+                animal.setRandomChance(Math.random());
+                animal.setProductCollected(false);
+                HashMap<String , Object> body = new HashMap<>();
+                body.put("Animal" , animal);
+                body.put("Number" , animal.getFriendShip());
+                Main.getClient(null).getRequests().add(new Message(CommandType.CALCULATE_ANIMAL_FRIENDSHIP , body);
             }
+        }
     }
     public static boolean checkBigProduct(Animal animal) {
         double possibility=( animal.getFriendShip() + (150 * animal.getRandomProduction()) ) / 1500;
         return animal.getRandomChance() < possibility;
     }
     public static void checkAnimalProduct() {
-        for (User player : currentGame.players) {
+        for (User player : currentGame.getGameState().getPlayers()) {
             for (BarnOrCage barnOrCage : player.BarnOrCages) {
                 for (Animal animal : barnOrCage.animals) {
                     if (animal.getType().equals(AnimalType.dino)) {
@@ -1449,7 +1449,7 @@ public class GameControllerLogic {
         }
     }
     public static boolean checkPeriod(Animal animal) {
-        return currentGame.currentDate.getDate() - animal.getLastProduceDay() == 0;
+        return currentGame.getGameState().currentDate.getDate() - animal.getLastProduceDay() == 0;
     }
 
     public static void openArtisanMenu() {
@@ -1492,75 +1492,8 @@ public class GameControllerLogic {
     }
 
 
-    public static void nextTurn () {
-        User old = currentGame.currentPlayer;
-        boolean done = false;
-        boolean temp = false;
-        int wrongAttempts = 0;
-
-        while (wrongAttempts <= 5) {
-            for (User user : currentGame.players) {
-                if (temp) {
-
-                    turnCounter++;
-                    currentGame.currentPlayer = user;
-
-                    AutomaticFunctionAfterOneTurn();
-
-                    if (checkForDeath()) {
-                        nextTurn();
-                        return;
-                    }
-                    System.out.println(currentGame.currentPlayer.getNickname() + "'s turn.");
-
-                    // Display Unseen Messages...
-                    System.out.println("\nDisplaying Unseen Messages...");
-                    for (List<MessageHandling> messages : currentGame.conversations.values()) {
-                        for (MessageHandling m : messages) {
-                            if (m.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !m.isSeen()) {
-                                if (m.getText().contains("Proposal"))
-                                    break;
-                                m.print();
-                                m.setSeen(true);
-
-                                //بخش ریت کردن هدیه ها
-                                if (m.getText().endsWith("Rate it out of 5!")) {
-                                    HumanCommunications f = getFriendship(currentGame.currentPlayer, m.getSender());
-                                    do {
-                                        assert f != null;
-                                    } while (!f.rateGifts().IsSuccess());
-                                }
-                            }
-                        }
-                    }
-                    System.out.println(GREEN+"Unseen Messages Displayed.\n"+RESET);
-
-                    // proposals
-                    for (List<MessageHandling> messages : currentGame.conversations.values()) {
-                        for (MessageHandling m : messages) {
-                            if (m.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !m.isSeen() && m.getText().contains("Proposal")) {
-                                m.print();
-                                m.setSeen(true);
-                                Result result;
-                                do {
-                                    result = Marriage.proposalResponse(m.getSender(), m.getReceiver());
-                                    System.out.println(result.massage());
-                                } while (!result.IsSuccess());
-                            }
-                        }
-                    }
-
-                    return;
-                }
-                if (Objects.equals(user.getUsername(), old.getUsername()))
-                    temp = true;
-                wrongAttempts++;
-            }
-        }
-        System.out.println(RED+"Couldn't find the next Player!"+RESET);
-    }
     public static String DisplayFriendships () {
-        String targetName = currentGame.currentPlayer.getUsername();
+        String targetName = Main.getClient(null).getPlayer().getUsername();
 
         for (HumanCommunications f : currentGame.friendships) {
             if (f.getPlayer1().getUsername().equals(targetName) || f.getPlayer2().getUsername().equals(targetName))
@@ -1573,7 +1506,7 @@ public class GameControllerLogic {
         int xp = Integer.parseInt(GameMenuCommands.addXpCheat.getMatcher(input).group("xp"));
         String otherName = GameMenuCommands.addXpCheat.getMatcher(input).group("other");
         User other = findPlayerInGame(otherName);
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, other);
+        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), other);
         f.addXP(xp);
     }
     public static void showChatDialog(Stage stage, Skin skin, Consumer<String> onMessageSent) {
@@ -1628,7 +1561,7 @@ public class GameControllerLogic {
         User destinationUser = null;
         boolean found = false;
 
-        for (User player : currentGame.players) {
+        for (User player : currentGame.getGameState().getPlayers()) {
             if (player.getUsername().equals(destinationUsername)) {
                 found = true;
                 destinationUser = player;
@@ -1641,12 +1574,12 @@ public class GameControllerLogic {
             return;
         }
 
-        if (destinationUsername.equals(currentGame.currentPlayer.getUsername())) {
+        if (destinationUsername.equals(Main.getClient(null).getPlayer().getUsername())) {
             onResult.accept(new Result(false, "You can't Talk to Yourself!"));
             return;
         }
 
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, destinationUser);
+        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), destinationUser);
         if (f == null) {
             onResult.accept(new Result(false, "No Friendship Among These Users!"));
             return;
@@ -1663,7 +1596,7 @@ public class GameControllerLogic {
         String username = GameMenuCommands.talkHistory.getMatcher(input).group("username");
         User destinationUser = null;
         boolean found = false;
-        for (User player: currentGame.players) {
+        for (User player: currentGame.getGameState().getPlayers()) {
             if (player.getUsername().equals(username)) {
                 found = true;
                 destinationUser = player;
@@ -1674,11 +1607,11 @@ public class GameControllerLogic {
             System.out.println(RED+"Username is Unavailable!"+RESET);
             return;
         }
-        if (username.equals(currentGame.currentPlayer.getUsername())) {
+        if (username.equals(Main.getClient(null).getPlayer().getUsername())) {
             System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
             return;
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, destinationUser);
+        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), destinationUser);
         if (f == null) {
             System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
@@ -1688,13 +1621,13 @@ public class GameControllerLogic {
     }
     public static Result hug (String input) {
         String username = GameMenuCommands.hug.getMatcher(input).group("username");
-        if (!currentGame.players.contains(findPlayerInGame(username))) {
+        if (!currentGame.getGameState().getPlayers().contains(findPlayerInGame(username))) {
             return new Result(false,"Username is Unavailable!");
         }
-        if (username.equals(currentGame.currentPlayer.getUsername())) {
+        if (username.equals(Main.getClient(null).getPlayer().getUsername())) {
             return new Result(false, "You can't Hug Yourself!");
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
+        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), findPlayerInGame(username));
         if (f == null) {
             return new Result(false, "There's no Friendship Among these Users!");
         }
@@ -1709,15 +1642,15 @@ public class GameControllerLogic {
             System.out.println("Invalid Command!");
             return;
         }
-        if (!currentGame.players.contains(findPlayerInGame(username))) {
+        if (!currentGame.getGameState().getPlayers().contains(findPlayerInGame(username))) {
             System.out.println(RED+"Username '" + username + "' is Unavailable!"+RESET);
             return;
         }
-        if (username.equals(currentGame.currentPlayer.getUsername())) {
+        if (username.equals(Main.getClient(null).getPlayer().getUsername())) {
             System.out.println("You can't Send Gifts to " + RED+"Yourself"+RESET + "!");
             return;
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
+        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), findPlayerInGame(username));
         if (f == null) {
             System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
@@ -1727,20 +1660,20 @@ public class GameControllerLogic {
         Result result = f.sendGifts(username, item, amount);
         System.out.println(result);
         if (result.IsSuccess()) {
-            Set<User> key = new HashSet<>(Arrays.asList(currentGame.currentPlayer, findPlayerInGame(username)));
+            Set<User> key = new HashSet<>(Arrays.asList(Main.getClient(null).getPlayer(), findPlayerInGame(username)));
             currentGame.conversations.putIfAbsent(key, new ArrayList<>());
-            currentGame.conversations.get(key).add(new MessageHandling(currentGame.currentPlayer, findPlayerInGame(username), currentGame.currentPlayer.getNickname() + " Sent you a GIFT. Rate it out of 5!"));
+            currentGame.conversations.get(key).add(new MessageHandling(Main.getClient(null).getPlayer(), findPlayerInGame(username), Main.getClient(null).getPlayer().getNickname() + " Sent you a GIFT. Rate it out of 5!"));
         }
     }
     public static Result giveFlowers (String username) {
-        if (!currentGame.players.contains(findPlayerInGame(username))) {
+        if (!currentGame.getGameState().getPlayers().contains(findPlayerInGame(username))) {
 
             return new Result(false, "Username is Unavailable!");
         }
-        if (username.equals(currentGame.currentPlayer.getUsername())) {
+        if (username.equals(Main.getClient(null).getPlayer().getUsername())) {
             return new Result(false, "You can't give Flower to Yourself!");
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
+        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), findPlayerInGame(username));
         if (f == null) {
             return new Result(false, "There's no Friendship Among these Users!");
         }
@@ -1751,10 +1684,10 @@ public class GameControllerLogic {
         if (wife == null) {
             return new Result(false, "Username is Unavailable!");
         }
-        if (username.equals(currentGame.currentPlayer.getUsername())) {
+        if (username.equals(Main.getClient(null).getPlayer().getUsername())) {
             return new Result(false, "You can't Propose to Yourself!");
         }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, wife);
+        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), wife);
         if (f == null) {
             return new Result(false, "There's no Friendship Among these Users");
         }
@@ -1787,7 +1720,7 @@ public class GameControllerLogic {
 
         FoodTypes type = recipe.getType();
 
-        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
+        Inventory myInventory = Main.getClient(null).getPlayer().getBackPack().inventory;
         Items i = new Food(type);
         if (checkAmountProductAvailable(i, 1)) {
             myInventory.Items.put(i, myInventory.Items.get(i) - 1);
@@ -1795,40 +1728,40 @@ public class GameControllerLogic {
         } else {
             return new Result(false, "None of This Item in Inventory!");
         }
-        currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + recipe.getEnergy());
-        recipe.applyEffect(currentGame.currentPlayer);
+        Main.getClient(null).getPlayer().setHealth(Main.getClient(null).getPlayer().getHealth() + recipe.getEnergy());
+        recipe.applyEffect(Main.getClient(null).getPlayer());
         return new Result(true, "Eaten, Successfully.");
     }
     public static void exitGame () {
-//        if (currentGame.currentPlayer != currentUser) {
-//            System.out.println(RED+"Access Denied!"+RESET);
-//            return;
-//        }
-//        //TODO بیشترین امتیاز و... سیو بشه
-//        //TODO currently in game
-//        //TODO سیو کل بازی
+        if (Main.getClient(null).getPlayer() != currentUser) {
+            System.out.println(RED+"Access Denied!"+RESET);
+            return;
+        }
+        //TODO بیشترین امتیاز و... سیو بشه
+        //TODO currently in game
+        //TODO سیو کل بازی
     }
     public static void forceTerminate () {
-//        Scanner scanner = new Scanner(System.in);
-//        User terminator = currentGame.currentPlayer;
-//        for (User user: currentGame.players) {
-//            if (user == terminator)
-//                continue;
-//            currentGame.currentPlayer = user;
-//            System.out.println(currentGame.currentPlayer.getNickname() + ", Do You Agree With the Game Termination?[Y/N]");
-//            String choice = scanner.next();
-//            if (!choice.trim().toLowerCase().equals("y")) {
-//                System.out.println("Vote Failed! The Game won't be Terminated.");
-//                currentGame.currentPlayer = terminator;
-//                return;
-//            }
-//        }
-//
-//        //TODO  کارهای ترمینیت کردن مثل پاک کردن فایل های سیو و ریست کردن همه دیتاهای بازیکنا بجز ماکسیمم امتیاز
-//        for (User user: currentGame.players) {
-//            user.setCurrently_in_game(false);
-//            user.setMax_point(user.getPoint());
-//        }
+        Scanner scanner = new Scanner(System.in);
+        User terminator = Main.getClient(null).getPlayer();
+        for (User user: currentGame.getGameState().getPlayers()) {
+            if (user == terminator)
+                continue;
+            Main.getClient(null).getPlayer() = user;
+            System.out.println(Main.getClient(null).getPlayer().getNickname() + ", Do You Agree With the Game Termination?[Y/N]");
+            String choice = scanner.next();
+            if (!choice.trim().toLowerCase().equals("y")) {
+                System.out.println("Vote Failed! The Game won't be Terminated.");
+                Main.getClient(null).getPlayer() = terminator;
+                return;
+            }
+        }
+
+        //TODO  کارهای ترمینیت کردن مثل پاک کردن فایل های سیو و ریست کردن همه دیتاهای بازیکنا بجز ماکسیمم امتیاز
+        for (User user: currentGame.getGameState().getPlayers()) {
+            user.setCurrently_in_game(false);
+            user.setMax_point(user.getPoint());
+        }
     }
 
 
@@ -1837,7 +1770,7 @@ public class GameControllerLogic {
 
     public static void setPlayerLocation () {
 
-        for (User user: currentGame.players) {
+        for (User user: currentGame.getGameState().getPlayers()) {
             if (user.getHealth() <= 0) {
                 user.setPositionX(user.getSleepTile().getX());
                 user.setPositionY(user.getSleepTile().getY());
@@ -1851,42 +1784,38 @@ public class GameControllerLogic {
     }
     public static void initializePlayer () {
 
-        User user1 = currentGame.currentPlayer;
-        for (User user : currentGame.players) {
-            user.increaseHealth(200);
+        User user = Main.getClient(null).getPlayer();
 
-            currentGame.currentPlayer = user;
-            user.setFriendshipPoint(new HashMap<>(Map.of(
-                NPC.Sebastian, 0,
-                NPC.Leah, 0,
-                NPC.Abigail, 0,
-                NPC.Harvey, 0,
-                NPC.Robin, 0)));
+        user.increaseHealth(200);
 
-            for (NPC npc : NPC.values()) {
-                user.setTodayTalking(npc, false);
-                user.setTodayGifting(npc, false);
-                user.setLevel3Date(npc, currentGame.currentDate);
-            }
-            advanceItem(new Scythe(), 1);
-            advanceItem(new Hoe(HoeType.primaryHoe), 1);
-            advanceItem(new Axe(AxeType.primaryAxe), 1);
-            advanceItem(new PickAxe(PickAxeType.primaryPickAxe), 1);
-            advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
-            advanceItem(new TrashCan(TrashCanType.primaryTrashCan), 1);
+        user.setFriendshipPoint(new HashMap<>(Map.of(
+            NPC.Sebastian, 0,
+            NPC.Leah, 0,
+            NPC.Abigail, 0,
+            NPC.Harvey, 0,
+            NPC.Robin, 0)));
 
-
-
-            Home home = user.getFarm().getHome();
-            user.setPositionX(home.getTopLeftX() + home.getWidth() / 2f);
-            user.setPositionY(home.getTopLeftY() + home.getLength());
-            user.increaseMoney(500 - user.getMoney());
-            advanceItem(new Fish(FishType.Salmon , Quantity.Iridium) , 1);
-            advanceItem(new Fish(FishType.Salmon , Quantity.Golden), 1);
-            advanceItem(new Fish(FishType.Sardine , Quantity.Normal) , 1);
-            advanceItem(new Wood(),400);
+        for (NPC npc : NPC.values()) {
+            user.setTodayTalking(npc, false);
+            user.setTodayGifting(npc, false);
+            user.setLevel3Date(npc, currentGame.getGameState().getCurrentDate());
         }
-        currentGame.currentPlayer = user1;
+        advanceItem(new Scythe(), 1);
+        advanceItem(new Hoe(HoeType.primaryHoe), 1);
+        advanceItem(new Axe(AxeType.primaryAxe), 1);
+        advanceItem(new PickAxe(PickAxeType.primaryPickAxe), 1);
+        advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
+        advanceItem(new TrashCan(TrashCanType.primaryTrashCan), 1);
+
+
+        Home home = user.getFarm().getHome();
+        user.setPositionX(home.getTopLeftX() + home.getWidth() / 2f);
+        user.setPositionY(home.getTopLeftY() + home.getLength());
+        user.increaseMoney(500 - user.getMoney());
+        advanceItem(new Fish(FishType.Salmon, Quantity.Iridium), 1);
+        advanceItem(new Fish(FishType.Salmon, Quantity.Golden), 1);
+        advanceItem(new Fish(FishType.Sardine, Quantity.Normal), 1);
+        advanceItem(new Wood(), 400);
     }
 
     public static void updateDarknessLevel(int hour) {
@@ -1937,83 +1866,83 @@ public class GameControllerLogic {
     public static void passedOfTime (int day, int hour) {
 
         if (day == 0) {
-            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
-                currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft - hour);
-                if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft < 0)
-                    currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
+            if (Main.getClient(null).getPlayer().Buff_maxEnergy_100_hoursLeft > 0) {
+                Main.getClient(null).getPlayer().setBuff_maxEnergy_100_hoursLeft(Main.getClient(null).getPlayer().Buff_maxEnergy_100_hoursLeft - hour);
+                if (Main.getClient(null).getPlayer().Buff_maxEnergy_100_hoursLeft < 0)
+                    Main.getClient(null).getPlayer().setBuff_maxEnergy_100_hoursLeft(0);
             }
-            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
-                currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft - hour);
-                if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft < 0)
-                    currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(0);
+            if (Main.getClient(null).getPlayer().Buff_maxEnergy_50_hoursLeft > 0) {
+                Main.getClient(null).getPlayer().setBuff_maxEnergy_50_hoursLeft(Main.getClient(null).getPlayer().Buff_maxEnergy_50_hoursLeft - hour);
+                if (Main.getClient(null).getPlayer().Buff_maxEnergy_50_hoursLeft < 0)
+                    Main.getClient(null).getPlayer().setBuff_maxEnergy_50_hoursLeft(0);
             }
-            if (currentGame.currentPlayer.Buff_farming_hoursLeft > 0) {
-                currentGame.currentPlayer.setBuff_farming_hoursLeft(currentGame.currentPlayer.Buff_farming_hoursLeft - hour);
-                if (currentGame.currentPlayer.Buff_farming_hoursLeft < 0)
-                    currentGame.currentPlayer.setBuff_farming_hoursLeft(0);
+            if (Main.getClient(null).getPlayer().Buff_farming_hoursLeft > 0) {
+                Main.getClient(null).getPlayer().setBuff_farming_hoursLeft(Main.getClient(null).getPlayer().Buff_farming_hoursLeft - hour);
+                if (Main.getClient(null).getPlayer().Buff_farming_hoursLeft < 0)
+                    Main.getClient(null).getPlayer().setBuff_farming_hoursLeft(0);
             }
-            if (currentGame.currentPlayer.Buff_foraging_hoursLeft > 0) {
-                currentGame.currentPlayer.setBuff_foraging_hoursLeft(currentGame.currentPlayer.Buff_foraging_hoursLeft - hour);
-                if (currentGame.currentPlayer.Buff_foraging_hoursLeft < 0)
-                    currentGame.currentPlayer.setBuff_foraging_hoursLeft(0);
+            if (Main.getClient(null).getPlayer().Buff_foraging_hoursLeft > 0) {
+                Main.getClient(null).getPlayer().setBuff_foraging_hoursLeft(Main.getClient(null).getPlayer().Buff_foraging_hoursLeft - hour);
+                if (Main.getClient(null).getPlayer().Buff_foraging_hoursLeft < 0)
+                    Main.getClient(null).getPlayer().setBuff_foraging_hoursLeft(0);
             }
-            if (currentGame.currentPlayer.Buff_fishing_hoursLeft > 0) {
-                currentGame.currentPlayer.setBuff_fishing_hoursLeft(currentGame.currentPlayer.Buff_fishing_hoursLeft - hour);
-                if (currentGame.currentPlayer.Buff_fishing_hoursLeft < 0)
-                    currentGame.currentPlayer.setBuff_fishing_hoursLeft(0);
+            if (Main.getClient(null).getPlayer().Buff_fishing_hoursLeft > 0) {
+                Main.getClient(null).getPlayer().setBuff_fishing_hoursLeft(Main.getClient(null).getPlayer().Buff_fishing_hoursLeft - hour);
+                if (Main.getClient(null).getPlayer().Buff_fishing_hoursLeft < 0)
+                    Main.getClient(null).getPlayer().setBuff_fishing_hoursLeft(0);
             }
-            if (currentGame.currentPlayer.Buff_mining_hoursLeft > 0) {
-                currentGame.currentPlayer.setBuff_mining_hoursLeft(currentGame.currentPlayer.Buff_mining_hoursLeft - hour);
-                if (currentGame.currentPlayer.Buff_mining_hoursLeft < 0)
-                    currentGame.currentPlayer.setBuff_mining_hoursLeft(0);
+            if (Main.getClient(null).getPlayer().Buff_mining_hoursLeft > 0) {
+                Main.getClient(null).getPlayer()Main.getClient(null).getPlayer().setBuff_mining_hoursLeft(Main.getClient(null).getPlayer().Buff_mining_hoursLeft - hour);
+                if (Main.getClient(null).getPlayer().Buff_mining_hoursLeft < 0)
+                    Main.getClient(null).getPlayer().setBuff_mining_hoursLeft(0);
             }
 
 
 
 
             // Buff implementation
-            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft == 0) currentGame.currentPlayer.setMAX_HEALTH(200);
-            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft == 0) currentGame.currentPlayer.setMAX_HEALTH(200);
-            if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
-                currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 100);
-                currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 100);
-                currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft --);
+            if (Main.getClient(null).getPlayer().Buff_maxEnergy_100_hoursLeft == 0) Main.getClient(null).getPlayer().setMAX_HEALTH(200);
+            if (Main.getClient(null).getPlayer().Buff_maxEnergy_50_hoursLeft == 0) Main.getClient(null).getPlayer().setMAX_HEALTH(200);
+            if (Main.getClient(null).getPlayer().Buff_maxEnergy_100_hoursLeft > 0) {
+                Main.getClient(null).getPlayer().setMAX_HEALTH(Main.getClient(null).getPlayer().getMAX_HEALTH() + 100);
+                Main.getClient(null).getPlayer().setHealth(Main.getClient(null).getPlayer().getHealth() + 100);
+                Main.getClient(null).getPlayer().setBuff_maxEnergy_100_hoursLeft(Main.getClient(null).getPlayer().Buff_maxEnergy_100_hoursLeft --);
             }
-            if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
-                currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 50);
-                currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 50);
-                currentGame.currentPlayer.setBuff_maxEnergy_50_hoursLeft(currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft --);
+            if (Main.getClient(null).getPlayer().Buff_maxEnergy_50_hoursLeft > 0) {
+                Main.getClient(null).getPlayer().setMAX_HEALTH(Main.getClient(null).getPlayer().getMAX_HEALTH() + 50);
+                Main.getClient(null).getPlayer().setHealth(Main.getClient(null).getPlayer().getHealth() + 50);
+                Main.getClient(null).getPlayer().setBuff_maxEnergy_50_hoursLeft(Main.getClient(null).getPlayer().Buff_maxEnergy_50_hoursLeft --);
             }
-            if (currentGame.currentPlayer.Buff_mining_hoursLeft > 0) currentGame.currentPlayer.setBuff_mining_hoursLeft(currentGame.currentPlayer.Buff_mining_hoursLeft --);
-            if (currentGame.currentPlayer.Buff_fishing_hoursLeft > 0) currentGame.currentPlayer.setBuff_fishing_hoursLeft(currentGame.currentPlayer.Buff_fishing_hoursLeft --);
-            if (currentGame.currentPlayer.Buff_farming_hoursLeft > 0) currentGame.currentPlayer.setBuff_farming_hoursLeft(currentGame.currentPlayer.Buff_farming_hoursLeft --);
-            if (currentGame.currentPlayer.Buff_foraging_hoursLeft > 0) currentGame.currentPlayer.setBuff_foraging_hoursLeft(currentGame.currentPlayer.Buff_foraging_hoursLeft --);
+            if (Main.getClient(null).getPlayer().Buff_mining_hoursLeft > 0) Main.getClient(null).getPlayer().setBuff_mining_hoursLeft(Main.getClient(null).getPlayer().Buff_mining_hoursLeft --);
+            if (Main.getClient(null).getPlayer().Buff_fishing_hoursLeft > 0) Main.getClient(null).getPlayer().setBuff_fishing_hoursLeft(Main.getClient(null).getPlayer().Buff_fishing_hoursLeft --);
+            if (Main.getClient(null).getPlayer().Buff_farming_hoursLeft > 0) Main.getClient(null).getPlayer().setBuff_farming_hoursLeft(Main.getClient(null).getPlayer().Buff_farming_hoursLeft --);
+            if (Main.getClient(null).getPlayer().Buff_foraging_hoursLeft > 0) Main.getClient(null).getPlayer().setBuff_foraging_hoursLeft(Main.getClient(null).getPlayer().Buff_foraging_hoursLeft --);
 
         }
         else
-            currentGame.currentPlayer.setBuff_maxEnergy_100_hoursLeft(0);
+            Main.getClient(null).getPlayer().setBuff_maxEnergy_100_hoursLeft(0);
 
-        DateHour dateHour = currentGame.currentDate.clone();
+        DateHour dateHour = currentGame.getGameState().currentDate.clone();
 
         dateHour.increaseHour(hour);
         dateHour.increaseDay(day);
 
         if (dateHour.getHour() > 22) {
-            passedOfTime(getDayDifferent(dateHour, currentGame.currentDate), 24 - dateHour.getHour() + 9 + hour);
+            passedOfTime(getDayDifferent(dateHour, currentGame.getGameState().currentDate), 24 - dateHour.getHour() + 9 + hour);
             return;
         }
         if (dateHour.getHour() < 9) {
-            passedOfTime(getDayDifferent(dateHour, currentGame.currentDate), 9 - dateHour.getHour() + hour);
+            passedOfTime(getDayDifferent(dateHour, currentGame.getGameState().currentDate), 9 - dateHour.getHour() + hour);
             return;
         }
-        int number = getDayDifferent(currentGame.currentDate, dateHour);
+        int number = getDayDifferent(currentGame.getGameState().currentDate, dateHour);
 
         for (int i = 0 ; i < number ; i++) {
-            currentGame.currentDate.increaseDay(1);
+            currentGame.getGameState().currentDate.increaseDay(1);
             fadeToNextDay();
         }
-        currentGame.currentDate.increaseHour(dateHour.getHour() - currentGame.currentDate.getHour());
-        updateDarknessLevel(currentGame.currentDate.getHour());
+        currentGame.getGameState().currentDate.increaseHour(dateHour.getHour() - currentGame.getGameState().currentDate.getHour());
+        updateDarknessLevel(currentGame.getGameState().currentDate.getHour());
     }
 
     public static void startDay () {
@@ -2050,19 +1979,19 @@ public class GameControllerLogic {
         checkForGiant();
         checkForProtect();
 
-        for (User user : currentGame.players) {
+        for (User user : currentGame.getGameState().getPlayers()) {
             user.checkHealth();
 
             for (NPC npc : NPC.values())
-                if (user.getFriendshipLevel(npc) == 3 && user.getLevel3Date(npc) == currentGame.currentDate)
-                    user.setLevel3Date(npc, currentGame.currentDate.clone());
+                if (user.getFriendshipLevel(npc) == 3 && user.getLevel3Date(npc) == currentGame.getGameState().currentDate)
+                    user.setLevel3Date(npc, currentGame.getGameState().currentDate.clone());
         }
 
 
 //        if (checkForDeath()) {
-//            currentGame.currentPlayer.setSleepTile(
-//                getTileByCoordinates(currentGame.currentPlayer.getPositionX(),
-//                    currentGame.currentPlayer.getPositionY()));
+//            Main.getClient(null).getPlayer().setSleepTile(
+//                getTileByCoordinates(Main.getClient(null).getPlayer().getPositionX(),
+//                    Main.getClient(null).getPlayer().getPositionY()));
 //            return new Result(false, BRIGHT_RED + "No energy left! It's the next player's turn" + RESET);
 //        }
 
@@ -2070,7 +1999,7 @@ public class GameControllerLogic {
 
     // energy & Date
     public static void setEnergyInMorning () {
-        for (User user : currentGame.players) {
+        for (User user : currentGame.getGameState().getPlayers()) {
             if (user.getDaysDepressedLeft() == 0) {
                 if (user.getHealth() > 0)
                     user.setHealth(user.getMAX_HEALTH());
@@ -2088,7 +2017,7 @@ public class GameControllerLogic {
     }
     public static void setTimeAndWeather () {
 
-        currentGame.currentDate = new DateHour(Season.Spring, 1, 9, 1980);
+        currentGame.getGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1980);
         currentGame.currentWeather = Weather.Sunny;
         currentGame.tomorrowWeather = Weather.Sunny;
 
@@ -2096,7 +2025,7 @@ public class GameControllerLogic {
     public static void doSeasonAutomaticTask () {
 
         currentGame.currentWeather = Weather.valueOf(currentGame.tomorrowWeather.toString());
-        currentGame.tomorrowWeather = currentGame.currentDate.getSeason().getWeather();
+        currentGame.tomorrowWeather = currentGame.getGameState().currentDate.getSeason().getWeather();
 
     }
     public static void doWeatherTask () {
@@ -2106,11 +2035,11 @@ public class GameControllerLogic {
                 GameObject object = tile.getGameObject();
 
                 if (object instanceof Tree && !isInGreenHouse(tile))
-                    ((Tree) object).setLastWater(currentGame.currentDate);
+                    ((Tree) object).setLastWater(currentGame.getGameState().currentDate);
                 if (object instanceof GiantProduct && !isInGreenHouse(tile))
-                    ((GiantProduct) object).setLastWater(currentGame.currentDate);
+                    ((GiantProduct) object).setLastWater(currentGame.getGameState().currentDate);
                 if (object instanceof ForagingSeeds && !isInGreenHouse(tile))
-                    ((ForagingSeeds) object).setLastWater(currentGame.currentDate);
+                    ((ForagingSeeds) object).setLastWater(currentGame.getGameState().currentDate);
             }
     }
 
@@ -2140,7 +2069,7 @@ public class GameControllerLogic {
                                 continue;
                             }
                             else if (object instanceof Tree && !((Tree) object).isProtected())
-                                ((Tree) object).setLastFruit(currentGame.currentDate);
+                                ((Tree) object).setLastFruit(currentGame.getGameState().currentDate);
 
                             else if (object instanceof ForagingCrops && !((ForagingCrops) object).isProtected())
                                 ((ForagingCrops) object).delete();
@@ -2149,7 +2078,7 @@ public class GameControllerLogic {
                                 if (((ForagingSeeds) object).getType().isOneTimeUse())
                                     ((ForagingSeeds) object).delete();
                                 else
-                                    ((ForagingSeeds) object).setLastProduct(currentGame.currentDate);
+                                    ((ForagingSeeds) object).setLastProduct(currentGame.getGameState().currentDate);
                             } else if (object instanceof GiantProduct && !((GiantProduct) object).isProtected())
                                 ((GiantProduct) object).delete();
                         }
@@ -2248,7 +2177,7 @@ public class GameControllerLogic {
     }
     public static boolean checkForDeath () {
 
-        return (currentGame.currentPlayer.getHealth() <= 0 && !currentGame.currentPlayer.isHealthUnlimited());
+        return (Main.getClient(null).getPlayer().getHealth() <= 0 && !Main.getClient(null).getPlayer().isHealthUnlimited());
     }
 
 
@@ -2280,7 +2209,7 @@ public class GameControllerLogic {
     }
     public static boolean checkInAllFarm (int x, int y) {
 
-        for (User user : currentGame.players)
+        for (User user : currentGame.getGameState().getPlayers())
             if (user.getFarm().isInFarm(x, y))
                 return true;
         return false;
@@ -2293,7 +2222,7 @@ public class GameControllerLogic {
         if (!checkInAllFarm(tile.getX(), tile.getY()))
             return false;
 
-        for (User user : currentGame.players)
+        for (User user : currentGame.getGameState().getPlayers())
             if (user.getFarm().isInHome(x, y) || user.getFarm().isInMine(x, y) || user.getFarm().isInGreenHouse(x, y))
                 return false;
 
@@ -2308,16 +2237,16 @@ public class GameControllerLogic {
                 if (Math.random() <= 0.5) {
 
                     List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
-                        .filter(d -> d.getSeason().contains(currentGame.currentDate.getSeason()))
+                        .filter(d -> d.getSeason().contains(currentGame.getGameState().currentDate.getSeason()))
                         .toList();
 
                     ForagingSeedsType type = types.get(rand.nextInt(types.size()));
 
-                    tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
+                    tile.setGameObject(new ForagingSeeds(type, currentGame.getGameState().currentDate));
                 } else {
 
                     List<ForagingCropsType> types = new ArrayList<>(Arrays.stream(ForagingCropsType.values())
-                        .filter(d -> d.getSeason().contains(currentGame.currentDate.getSeason()))
+                        .filter(d -> d.getSeason().contains(currentGame.getGameState().currentDate.getSeason()))
                         .toList());
 
                     types.remove(ForagingCropsType.Fiber);
@@ -2340,7 +2269,7 @@ public class GameControllerLogic {
         }
     }
     public static void    createRandomMinerals () {
-        for (User user : currentGame.players) {
+        for (User user : currentGame.getGameState().getPlayers()) {
 
             List<Integer> positions = new ArrayList<>();
             for (int i = 0 ; i < 16 ; i++) {
@@ -2408,8 +2337,8 @@ public class GameControllerLogic {
 
 //        Tile tile = getTileByDir(dir);
 //
-//        if ((!currentGame.currentPlayer.getFarm().isInFarm(tile.getX(), tile.getY())) &&
-//            !currentGame.currentPlayer.getSpouse().getFarm().isInFarm(tile.getX(), tile.getY())) {
+//        if ((!Main.getClient(null).getPlayer().getFarm().isInFarm(tile.getX(), tile.getY())) &&
+//            !Main.getClient(null).getPlayer().getSpouse().getFarm().isInFarm(tile.getX(), tile.getY())) {
 //
 //            Dialog dialog = Marketing.getInstance().createDialogError();
 //            final Label tooltipLabel = new Label("You can't planting in this tile", Main.getNewSkin());
@@ -2469,10 +2398,10 @@ public class GameControllerLogic {
 //            Tile tile = getTileByDir(dir);
 //
 //            if (!isInGreenHouse(tile))
-//                if (!type1.getSeason().contains(currentGame.currentDate.getSeason())) {
+//                if (!type1.getSeason().contains(currentGame.getGameState().currentDate.getSeason())) {
 //
 //                    Label tooltipLabel = new Label("You can't plant this tree in "
-//                        + currentGame.currentDate.getSeason(), Main.getNewSkin());
+//                        + currentGame.getGameState().currentDate.getSeason(), Main.getNewSkin());
 //                    tooltipLabel.setColor(Color.LIGHT_GRAY);
 //                    Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
 //                }
@@ -2488,7 +2417,7 @@ public class GameControllerLogic {
 //                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
 //                tile.getGameObject() instanceof GreenHouse) {
 //
-//                Tree tree = new Tree(type1.getTreeType(), currentGame.currentDate);
+//                Tree tree = new Tree(type1.getTreeType(), currentGame.getGameState().currentDate);
 //                tile.setGameObject(tree);
 //                advanceItem(new TreeSource(type1), -1);
 //
@@ -2513,12 +2442,12 @@ public class GameControllerLogic {
     public static void plantMixedSeed (int dir) {
 
 //        if (checkForPlanting(dir)) {
-//            Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+//            Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
 //            MixedSeeds mixedSeeds = new MixedSeeds();
 //
 //            if (inventory.Items.containsKey(mixedSeeds)) {
 //
-//                ForagingSeedsType type = mixedSeeds.getSeeds(currentGame.currentDate.getSeason());
+//                ForagingSeedsType type = mixedSeeds.getSeeds(currentGame.getGameState().currentDate.getSeason());
 //                advanceItem(mixedSeeds, -1);
 //                Tile tile = getTileByDir(dir);
 //
@@ -2536,7 +2465,7 @@ public class GameControllerLogic {
 //                    ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
 //                    tile.getGameObject() instanceof GreenHouse) {
 //
-//                    tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
+//                    tile.setGameObject(new ForagingSeeds(type, currentGame.getGameState().currentDate));
 //
 //                    Label tooltipLabel = new Label("The plant \" + type.getDisplayName() + \" has come to life! \\uD83C\\uDF31✨", Main.getNewSkin());
 //                    tooltipLabel.setColor(Color.LIGHT_GRAY);
@@ -2561,7 +2490,7 @@ public class GameControllerLogic {
 
 //        if (checkForPlanting(dir)) {
 //
-//            Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+//            Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
 //            Dialog dialog = Marketing.getInstance().createDialogError();
 //
 //            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet())
@@ -2572,9 +2501,9 @@ public class GameControllerLogic {
 //                        Tile tile = getTileByDir(dir);
 //
 //                        if (!isInGreenHouse(tile))
-//                            if (!type.getSeason().contains(currentGame.currentDate.getSeason())) {
+//                            if (!type.getSeason().contains(currentGame.getGameState().currentDate.getSeason())) {
 //                                Label tooltipLabel = new Label("You can't plant this seed in "
-//                                    + currentGame.currentDate.getSeason(), Main.getNewSkin());
+//                                    + currentGame.getGameState().currentDate.getSeason(), Main.getNewSkin());
 //                                tooltipLabel.setColor(Color.LIGHT_GRAY);
 //                                Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
 //                            }
@@ -2595,7 +2524,7 @@ public class GameControllerLogic {
 //                            ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
 //                            tile.getGameObject() instanceof GreenHouse) {
 //
-//                            tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
+//                            tile.setGameObject(new ForagingSeeds(type, currentGame.getGameState().currentDate));
 //                            inventory.Items.put(entry.getKey(), entry.getValue() - 1);
 //
 //                            Label tooltipLabel = new Label("The earth welcomes your seed", Main.getNewSkin());
@@ -2641,14 +2570,14 @@ public class GameControllerLogic {
 //
 //
 //        if (object instanceof Lake || object instanceof Well) {
-//            ((WateringCan) currentGame.currentPlayer.currentTool).makeFullWater();
+//            ((WateringCan) Main.getClient(null).getPlayer().currentTool).makeFullWater();
 //            return new Result(true, BLUE+"The Watering can is now full. Time to water" +
 //                " those plants!\uD83D\uDEB0"+RESET);
 //        }
 //        else if (object instanceof WaterTank) {
 //
 //            int amount = ((WaterTank) object).getAmount();
-//            WateringCan wateringCan = (WateringCan) currentGame.currentPlayer.currentTool;
+//            WateringCan wateringCan = (WateringCan) Main.getClient(null).getPlayer().currentTool;
 //
 //            if (amount > wateringCan.getType().getCapacity() - wateringCan.getReminderCapacity()) {
 //
@@ -2670,289 +2599,288 @@ public class GameControllerLogic {
     public static Result useScythe (int dir) {
 
 
-//        Tile tile = getTileByDir(dir);
-//        GameObject object = tile.getGameObject();
-//
-//        if (object instanceof Walkable) {
-//            if (((Walkable) object).getGrassOrFiber().equals("Fiber")) {
-//
-//                ((Walkable) object).setGrassOrFiber("Walk");
-//                advanceItem(new ForagingCrops(ForagingCropsType.Fiber), 1);
-//                return new Result(true, BRIGHT_BLUE + "You got 1 fiber"+RESET);
-//            }
-//            if (((Walkable) object).getGrassOrFiber().equals("Grass")) {
-//                ((Walkable) object).setGrassOrFiber("Walk");
-//                return new Result(true, BRIGHT_BLUE + "You pulled out the grass" + RESET);
-//            }
-//        }
-//        if (object instanceof Tree) {
-//
-//            currentGame.currentPlayer.increaseFarmingAbility(10);
-//            if (((Tree) object).isHaveFruit()) {
-//
-//                TreeType type = ((Tree) object).getType();
-//
-//                if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() <= 0 &&
-//                    (!checkAmountProductAvailable(new TreesProdct(type.getProductType()), 0)))
-//
-//                    return new Result(false, RED+"Inventory is full"+RESET);
-//
-//                advanceItem(new TreesProdct(type.getProductType()), type.getHarvestYield());
-//
-//                currentGame.currentPlayer.increaseFarmingAbility(5);
-//                ((Tree) object).setLastFruit(currentGame.currentDate.clone());
-//                return new Result(true, BLUE + "You got " + type.getHarvestYield()
-//                    + " " + type.getProductType().getDisplayName() + RESET);
-//            } else
-//                return new Result(true, RED + "This tree doesn't have fruit" + RESET);
-//        }
-//        if (object instanceof ForagingCrops) {
-//
-//            currentGame.currentPlayer.increaseFarmingAbility(10);
-//            ForagingCropsType type = ((ForagingCrops) object).getType();
-//
-//            if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() <= 0 &&
-//                (!checkAmountProductAvailable(new ForagingCrops(type), 0)))
-//
-//
-//                return new Result(false, RED+"Inventory is full"+RESET);
-//
-//            advanceItem(new ForagingCrops(((ForagingCrops) object).getType()), 1);
-//            ((ForagingCrops) object).delete();
-//            currentGame.currentPlayer.increaseFarmingAbility(5);
-//
-//            return new Result(true, BLUE+"You got 1 of "+
-//                BRIGHT_PURPLE + type.getDisplayName()+RESET);
-//        }
-//        if (object instanceof ForagingSeeds) {
-//
-//            currentGame.currentPlayer.increaseFarmingAbility(10);
-//            if (((ForagingSeeds) object).isHaveProduct()) {
-//
-//                ForagingSeedsType type = ((ForagingSeeds) object).getType();
-//
-//                if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() <= 0 &&
-//                    (!checkAmountProductAvailable(new AllCrops(type.getProductType()), 0)))
-//
-//                    return new Result(false, RED+"Inventory is full"+RESET);
-//
-//                advanceItem(new AllCrops(type.getProductType()), 1);
-//                ((ForagingSeeds) object).harvest();
-//                currentGame.currentPlayer.increaseFarmingAbility(5);
-//                return new Result(true, BLUE + "You got 1 " + type.getProductType().getDisplayName() + RESET);
-//            } else
-//                return new Result(false, RED + "Still growing..." + RESET);
-//        }
-//        if (object instanceof GiantProduct) {
-//
-//            currentGame.currentPlayer.increaseFarmingAbility(10);
-//            if (((GiantProduct) object).isHaveProduct()) {
-//
-//                ForagingSeedsType type = ((GiantProduct) object).getType();
-//
-//                if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() <= 0 &&
-//                    (!checkAmountProductAvailable(new AllCrops(type.getProductType()), 0)))
-//
-//
-//                    return new Result(false, RED+"Inventory is full"+RESET);
-//
-//                advanceItem(new AllCrops(type.getProductType()), 10);
-//                ((GiantProduct) object).harvest();
-//                currentGame.currentPlayer.increaseFarmingAbility(5);
-//                return new Result(true, BLUE + "You got 10 " + type.getProductType().getDisplayName() + RESET);
-//            } else
-//                return new Result(false, RED + "Still growing..." + RESET);
-//        }
+        Tile tile = getTileByDir(dir);
+        GameObject object = tile.getGameObject();
+
+        if (object instanceof Walkable) {
+            if (((Walkable) object).getGrassOrFiber().equals("Fiber")) {
+
+                ((Walkable) object).setGrassOrFiber("Walk");
+                advanceItem(new ForagingCrops(ForagingCropsType.Fiber), 1);
+                return new Result(true, BRIGHT_BLUE + "You got 1 fiber"+RESET);
+            }
+            if (((Walkable) object).getGrassOrFiber().equals("Grass")) {
+                ((Walkable) object).setGrassOrFiber("Walk");
+                return new Result(true, BRIGHT_BLUE + "You pulled out the grass" + RESET);
+            }
+        }
+        if (object instanceof Tree) {
+
+            Main.getClient(null).getPlayer().increaseFarmingAbility(10);
+            if (((Tree) object).isHaveFruit()) {
+
+                TreeType type = ((Tree) object).getType();
+
+                if (Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() <= 0 &&
+                    (!checkAmountProductAvailable(new TreesProdct(type.getProductType()), 0)))
+
+                    return new Result(false, RED+"Inventory is full"+RESET);
+
+                advanceItem(new TreesProdct(type.getProductType()), type.getHarvestYield());
+
+                Main.getClient(null).getPlayer().increaseFarmingAbility(5);
+                ((Tree) object).setLastFruit(currentGame.getGameState().currentDate.clone());
+                return new Result(true, BLUE + "You got " + type.getHarvestYield()
+                    + " " + type.getProductType().getDisplayName() + RESET);
+            } else
+                return new Result(true, RED + "This tree doesn't have fruit" + RESET);
+        }
+        if (object instanceof ForagingCrops) {
+
+            Main.getClient(null).getPlayer().increaseFarmingAbility(10);
+            ForagingCropsType type = ((ForagingCrops) object).getType();
+
+            if (Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() <= 0 &&
+                (!checkAmountProductAvailable(new ForagingCrops(type), 0)))
+
+
+                return new Result(false, RED+"Inventory is full"+RESET);
+
+            advanceItem(new ForagingCrops(((ForagingCrops) object).getType()), 1);
+            ((ForagingCrops) object).delete();
+            Main.getClient(null).getPlayer().increaseFarmingAbility(5);
+
+            return new Result(true, BLUE+"You got 1 of "+
+                BRIGHT_PURPLE + type.getDisplayName()+RESET);
+        }
+        if (object instanceof ForagingSeeds) {
+
+            Main.getClient(null).getPlayer().increaseFarmingAbility(10);
+            if (((ForagingSeeds) object).isHaveProduct()) {
+
+                ForagingSeedsType type = ((ForagingSeeds) object).getType();
+
+                if (Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() <= 0 &&
+                    (!checkAmountProductAvailable(new AllCrops(type.getProductType()), 0)))
+
+                    return new Result(false, RED+"Inventory is full"+RESET);
+
+                advanceItem(new AllCrops(type.getProductType()), 1);
+                ((ForagingSeeds) object).harvest();
+                Main.getClient(null).getPlayer().increaseFarmingAbility(5);
+                return new Result(true, BLUE + "You got 1 " + type.getProductType().getDisplayName() + RESET);
+            } else
+                return new Result(false, RED + "Still growing..." + RESET);
+        }
+        if (object instanceof GiantProduct) {
+
+            Main.getClient(null).getPlayer().increaseFarmingAbility(10);
+            if (((GiantProduct) object).isHaveProduct()) {
+
+                ForagingSeedsType type = ((GiantProduct) object).getType();
+
+                if (Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() <= 0 &&
+                    (!checkAmountProductAvailable(new AllCrops(type.getProductType()), 0)))
+
+
+                    return new Result(false, RED+"Inventory is full"+RESET);
+
+                advanceItem(new AllCrops(type.getProductType()), 10);
+                ((GiantProduct) object).harvest();
+                Main.getClient(null).getPlayer().increaseFarmingAbility(5);
+                return new Result(true, BLUE + "You got 10 " + type.getProductType().getDisplayName() + RESET);
+            } else
+                return new Result(false, RED + "Still growing..." + RESET);
+        }
 
         return new Result(false, RED+"There are no plant!"+RESET);
     }
     public static Result useAxe (int dir) {
 
-//        Tile tile = getTileByDir(dir);
-//        GameObject object = tile.getGameObject();
-//
-//        if (object instanceof Tree) {
-//
-//            tile.setGameObject(new Walkable());
-//
-//            if (checkAmountProductAvailable(new Wood(), 1) ||
-//                currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//
-//                if (((Tree) object).getType().equals(TreeType.MapleTree) ||
-//                    ((Tree) object).getType().equals(TreeType.MysticTree)) {
-//
-//                    if (checkAmountProductAvailable(
-//                        new TreesProdct(((Tree) object).getType().getProductType()), 1) ||
-//                        currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 1) {
-//
-//                        advanceItem(new Wood(), 5);
-//                        advanceItem(new TreesProdct(((Tree) object).getType().getProductType()), 1);
-//
-//                        TreesSourceType sourceType = TreesSourceType.fromDisplayName(((Tree) object).getType().getSourceName());
-//                        if (checkAmountProductAvailable(new TreeSource(sourceType), 1) ||
-//                            currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 1) {
-//                            advanceItem(new TreeSource(sourceType), 2);
-//                            return new Result(true, BRIGHT_BLUE + "+5 wood  +1 " +
-//                                ((Tree) object).getType().getProductType().getDisplayName() +
-//                                "  +2 " + sourceType.getDisplayName() + RESET);
-//                        }
-//                        return new Result(false, BRIGHT_BLUE + "+5 wood  +1 " +
-//                            ((Tree) object).getType().getProductType().getDisplayName() + RESET);
-//                    }
-//
-//                    advanceItem(new Wood(), 5);
-//                    return new Result(false, BRIGHT_BLUE + "+5 wood (you destroy " +
-//                        ((Tree) object).getType().getProductType().getDisplayName() + "!" + RESET);
-//                }
-//                else {
-//
-//                    advanceItem(new Wood(), 5);
-//
-//                    TreesSourceType sourceType = TreesSourceType.fromDisplayName(((Tree) object).getType().getSourceName());
-//                    if (checkAmountProductAvailable(new TreeSource(sourceType), 1) ||
-//                        currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 1) {
-//                        advanceItem(new TreeSource(sourceType), 2);
-//                        return new Result(true, BRIGHT_BLUE + "+5 wood  +1 " +
-//                            ((Tree) object).getType().getProductType().getDisplayName() +
-//                            "  +2 " + sourceType.getDisplayName() + RESET);
-//                    }
-//                    return new Result(false, BRIGHT_BLUE + "+5 wood  +1 " +
-//                        ((Tree) object).getType().getProductType().getDisplayName() + RESET);
-//                }
-//            }
-//            else {
-//                tile.setGameObject(new Wood());
-//                return new Result(false, RED+"Inventory is full"+RESET);
-//            }
-//        }
+        Tile tile = getTileByDir(dir);
+        GameObject object = tile.getGameObject();
+
+        if (object instanceof Tree) {
+
+            tile.setGameObject(new Walkable());
+
+            if (checkAmountProductAvailable(new Wood(), 1) ||
+                Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+
+                if (((Tree) object).getType().equals(TreeType.MapleTree) ||
+                    ((Tree) object).getType().equals(TreeType.MysticTree)) {
+
+                    if (checkAmountProductAvailable(
+                        new TreesProdct(((Tree) object).getType().getProductType()), 1) ||
+                        Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 1) {
+
+                        advanceItem(new Wood(), 5);
+                        advanceItem(new TreesProdct(((Tree) object).getType().getProductType()), 1);
+
+                        TreesSourceType sourceType = TreesSourceType.fromDisplayName(((Tree) object).getType().getSourceName());
+                        if (checkAmountProductAvailable(new TreeSource(sourceType), 1) ||
+                            Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 1) {
+                            advanceItem(new TreeSource(sourceType), 2);
+                            return new Result(true, BRIGHT_BLUE + "+5 wood  +1 " +
+                                ((Tree) object).getType().getProductType().getDisplayName() +
+                                "  +2 " + sourceType.getDisplayName() + RESET);
+                        }
+                        return new Result(false, BRIGHT_BLUE + "+5 wood  +1 " +
+                            ((Tree) object).getType().getProductType().getDisplayName() + RESET);
+                    }
+
+                    advanceItem(new Wood(), 5);
+                    return new Result(false, BRIGHT_BLUE + "+5 wood (you destroy " +
+                        ((Tree) object).getType().getProductType().getDisplayName() + "!" + RESET);
+                }
+                else {
+
+                    advanceItem(new Wood(), 5);
+
+                    TreesSourceType sourceType = TreesSourceType.fromDisplayName(((Tree) object).getType().getSourceName());
+                    if (checkAmountProductAvailable(new TreeSource(sourceType), 1) ||
+                        Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 1) {
+                        advanceItem(new TreeSource(sourceType), 2);
+                        return new Result(true, BRIGHT_BLUE + "+5 wood  +1 " +
+                            ((Tree) object).getType().getProductType().getDisplayName() +
+                            "  +2 " + sourceType.getDisplayName() + RESET);
+                    }
+                    return new Result(false, BRIGHT_BLUE + "+5 wood  +1 " +
+                        ((Tree) object).getType().getProductType().getDisplayName() + RESET);
+                }
+            }
+            else {
+                tile.setGameObject(new Wood());
+                return new Result(false, RED+"Inventory is full"+RESET);
+            }
+        }
         return new Result(false, RED+"There are no Tree!"+RESET);
     }
     public static Result usePickAxe (int dir) {
 
 
-//        Tile tile = getTileByDir(dir);
-//        GameObject object = tile.getGameObject();
-//
-//        if (object instanceof ForagingMinerals) {
-//
-//            if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_mining_hoursLeft > 0)
-//                currentGame.currentPlayer.increaseHealth(1);
-//
-//            tile.setGameObject(new Walkable());
-//            currentGame.currentPlayer.increaseMiningAbility(10);
-//
-//            if (((ForagingMinerals) object).getType().equals(COPPER)) {
-//
-//                int x = 1;
-//                if (currentGame.currentPlayer.getLevelMining() >= 2)
-//                    x = 2;
-//
-//                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.CopperOre), x) ||
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//
-//                    advanceItem(new BarsAndOres(BarsAndOreType.CopperOre), x);
-//                    return new Result(false, BRIGHT_BLUE + x+" Cooper ore added" + RESET);
-//                }
-//                else
-//                    return new Result(false, RED+"Ops!!! you destroy Cooper ore" + RESET);
-//            }
-//            if (((ForagingMinerals) object).getType().equals(GOLD)) {
-//
-//                int x = 1;
-//                if (currentGame.currentPlayer.getLevelMining() >= 2)
-//                    x = 2;
-//
-//                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.GoldOre), x) ||
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//                    advanceItem(new BarsAndOres(BarsAndOreType.GoldOre), x);
-//                    return new Result(false, BRIGHT_BLUE + x + " Gold ore added" + RESET);
-//                }
-//                else
-//                    return new Result(false, RED+"Ops!!! you destroy Gold ore" + RESET);
-//            }
-//            if (((ForagingMinerals) object).getType().equals(IRIDIUM)) {
-//
-//                int x = 1;
-//                if (currentGame.currentPlayer.getLevelMining() >= 2)
-//                    x = 2;
-//
-//                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.IridiumOre), x) ||
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//                    advanceItem(new BarsAndOres(BarsAndOreType.IridiumOre), x);
-//                    return new Result(false, BRIGHT_BLUE + x + " Iridium ore added" + RESET);
-//                }
-//                else
-//                    return new Result(false, RED+"Ops!!! you destroy Iridium ore" + RESET);
-//            }
-//            if (((ForagingMinerals) object).getType().equals(IRON)) {
-//
-//                int x = 1;
-//                if (currentGame.currentPlayer.getLevelMining() >= 2)
-//                    x = 2;
-//
-//                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.IronOre), x) ||
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//                    advanceItem(new BarsAndOres(BarsAndOreType.IronOre), x);
-//                    return new Result(false, BRIGHT_BLUE + x + " Iron ore added" + RESET);
-//                }
-//                else
-//                    return new Result(false, RED+"Ops!!! you destroy Iron ore" + RESET);
-//            }
-//            else {
-//
-//                int x = 1;
-//                if (currentGame.currentPlayer.getLevelMining() >= 2)
-//                    x = 2;
-//
-//                if (checkAmountProductAvailable(new ForagingMinerals(((ForagingMinerals) object).getType()), x) ||
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//                    advanceItem(new ForagingMinerals(((ForagingMinerals) object).getType()), x);
-//                    return new Result(false, BRIGHT_BLUE + x + " " +
-//                        ((ForagingMinerals) object).getType().getDisplayName() + " added" + RESET);
-//                }
-//                else
-//                    return new Result(false, RED+"Ops!!! you destroy "+
-//                        ((ForagingMinerals) object).getType().getDisplayName()+RESET);
-//            }
-//        }
-//        else if (object instanceof Walkable && ((Walkable) object).getGrassOrFiber().equals("Plowed")) {
-//            tile.setGameObject(new Walkable());
-//            return new Result(true, BRIGHT_BLUE+"Oops! You accidentally removed a plowed tile"+RESET);
-//        }
-//        else if (object instanceof BasicRock) {
-//
-//            if (currentGame.currentPlayer.currentTool.healthCost() > 0 && currentGame.currentPlayer.Buff_foraging_hoursLeft > 0)
-//                currentGame.currentPlayer.increaseHealth(1);
-//
-//            currentGame.currentPlayer.increaseForagingAbility(10);
-//
-//            int x = 1;
-//            if (currentGame.currentPlayer.getLevelForaging() >= 2)
-//                x = 2;
-//            tile.setGameObject(new Walkable());
-//
-//            if (checkAmountProductAvailable(new BasicRock(), x) ||
-//                currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//
-//                advanceItem(new BasicRock(), x);
-//                return new Result(false, BRIGHT_BLUE + x + " Stone added" + RESET);
-//            }
-//            else
-//                return new Result(false, RED + "Ops!!! you destroy Stone" + RESET);
-//        }
-//        else if (object instanceof CraftingItem) {
-//            Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-//            if (inventory.Items.containsKey(object)) {
-//                inventory.Items.compute((Items) object, (k, v) -> v+1);
-//            }
-//            else {
-//                inventory.Items.put((Items) object, 1);
-//            }
-//            tile.setGameObject(new Walkable());
-//            return new Result(true , BLUE+ ((CraftingItem) object).getName() + " add to BackPack Successfully"+RESET);
-//        }
-//        return new Result(false, RED+"There are no minerals!"+RESET);
-        return null;
+        Tile tile = getTileByDir(dir);
+        GameObject object = tile.getGameObject();
+
+        if (object instanceof ForagingMinerals) {
+
+            if (Main.getClient(null).getPlayer().currentTool.healthCost() > 0 && Main.getClient(null).getPlayer().Buff_mining_hoursLeft > 0)
+                Main.getClient(null).getPlayer().increaseHealth(1);
+
+            tile.setGameObject(new Walkable());
+            Main.getClient(null).getPlayer().increaseMiningAbility(10);
+
+            if (((ForagingMinerals) object).getType().equals(COPPER)) {
+
+                int x = 1;
+                if (Main.getClient(null).getPlayer().getLevelMining() >= 2)
+                    x = 2;
+
+                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.CopperOre), x) ||
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+
+                    advanceItem(new BarsAndOres(BarsAndOreType.CopperOre), x);
+                    return new Result(false, BRIGHT_BLUE + x+" Cooper ore added" + RESET);
+                }
+                else
+                    return new Result(false, RED+"Ops!!! you destroy Cooper ore" + RESET);
+            }
+            if (((ForagingMinerals) object).getType().equals(GOLD)) {
+
+                int x = 1;
+                if (Main.getClient(null).getPlayer().getLevelMining() >= 2)
+                    x = 2;
+
+                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.GoldOre), x) ||
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+                    advanceItem(new BarsAndOres(BarsAndOreType.GoldOre), x);
+                    return new Result(false, BRIGHT_BLUE + x + " Gold ore added" + RESET);
+                }
+                else
+                    return new Result(false, RED+"Ops!!! you destroy Gold ore" + RESET);
+            }
+            if (((ForagingMinerals) object).getType().equals(IRIDIUM)) {
+
+                int x = 1;
+                if (Main.getClient(null).getPlayer().getLevelMining() >= 2)
+                    x = 2;
+
+                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.IridiumOre), x) ||
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+                    advanceItem(new BarsAndOres(BarsAndOreType.IridiumOre), x);
+                    return new Result(false, BRIGHT_BLUE + x + " Iridium ore added" + RESET);
+                }
+                else
+                    return new Result(false, RED+"Ops!!! you destroy Iridium ore" + RESET);
+            }
+            if (((ForagingMinerals) object).getType().equals(IRON)) {
+
+                int x = 1;
+                if (Main.getClient(null).getPlayer().getLevelMining() >= 2)
+                    x = 2;
+
+                if (checkAmountProductAvailable(new BarsAndOres(BarsAndOreType.IronOre), x) ||
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+                    advanceItem(new BarsAndOres(BarsAndOreType.IronOre), x);
+                    return new Result(false, BRIGHT_BLUE + x + " Iron ore added" + RESET);
+                }
+                else
+                    return new Result(false, RED+"Ops!!! you destroy Iron ore" + RESET);
+            }
+            else {
+
+                int x = 1;
+                if (Main.getClient(null).getPlayer().getLevelMining() >= 2)
+                    x = 2;
+
+                if (checkAmountProductAvailable(new ForagingMinerals(((ForagingMinerals) object).getType()), x) ||
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+                    advanceItem(new ForagingMinerals(((ForagingMinerals) object).getType()), x);
+                    return new Result(false, BRIGHT_BLUE + x + " " +
+                        ((ForagingMinerals) object).getType().getDisplayName() + " added" + RESET);
+                }
+                else
+                    return new Result(false, RED+"Ops!!! you destroy "+
+                        ((ForagingMinerals) object).getType().getDisplayName()+RESET);
+            }
+        }
+        else if (object instanceof Walkable && ((Walkable) object).getGrassOrFiber().equals("Plowed")) {
+            tile.setGameObject(new Walkable());
+            return new Result(true, BRIGHT_BLUE+"Oops! You accidentally removed a plowed tile"+RESET);
+        }
+        else if (object instanceof BasicRock) {
+
+            if (Main.getClient(null).getPlayer().currentTool.healthCost() > 0 && Main.getClient(null).getPlayer().Buff_foraging_hoursLeft > 0)
+                Main.getClient(null).getPlayer().increaseHealth(1);
+
+            Main.getClient(null).getPlayer().increaseForagingAbility(10);
+
+            int x = 1;
+            if (Main.getClient(null).getPlayer().getLevelForaging() >= 2)
+                x = 2;
+            tile.setGameObject(new Walkable());
+
+            if (checkAmountProductAvailable(new BasicRock(), x) ||
+                Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+
+                advanceItem(new BasicRock(), x);
+                return new Result(false, BRIGHT_BLUE + x + " Stone added" + RESET);
+            }
+            else
+                return new Result(false, RED + "Ops!!! you destroy Stone" + RESET);
+        }
+        else if (object instanceof CraftingItem) {
+            Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+            if (inventory.Items.containsKey(object)) {
+                inventory.Items.compute((Items) object, (k, v) -> v+1);
+            }
+            else {
+                inventory.Items.put((Items) object, 1);
+            }
+            tile.setGameObject(new Walkable());
+            return new Result(true , BLUE+ ((CraftingItem) object).getName() + " add to BackPack Successfully"+RESET);
+        }
+        return new Result(false, RED+"There are no minerals!"+RESET);
     }
     public static Result useShear (int dir) {
 
@@ -2974,22 +2902,22 @@ public class GameControllerLogic {
     // NPC task
     public static void NPAutomateTask() {
 
-//        User saveUser = currentGame.currentPlayer;
-//
-//        for (User user : currentGame.players)
-//            for (NPC npc : NPC.values()) {
-//
-//                currentGame.currentPlayer = user;
-//                user.setTodayTalking(npc, false);
-//                user.setTodayGifting(npc, false);
-//
-//                if (user.getFriendshipLevel(npc) == 3 && Math.random() > 0.5)
-//                    if (user.getBackPack().getType().getRemindCapacity() > 0 ||
-//                        checkAmountProductAvailable(npc.getGiftItem(), 1))
-//
-//                        advanceItem(npc.getGiftItem(), 1);
-//            }
-//        currentGame.currentPlayer = saveUser;
+        User saveUser = Main.getClient(null).getPlayer();
+
+        for (User user : currentGame.getGameState().getPlayers()currentGame.getGameState().getPlayers())
+            for (NPC npc : NPC.values()) {
+
+                Main.getClient(null).getPlayer() = user;
+                user.setTodayTalking(npc, false);
+                user.setTodayGifting(npc, false);
+
+                if (user.getFriendshipLevel(npc) == 3 && Math.random() > 0.5)
+                    if (user.getBackPack().getType().getRemindCapacity() > 0 ||
+                        checkAmountProductAvailable(npc.getGiftItem(), 1))
+
+                        advanceItem(npc.getGiftItem(), 1);
+            }
+        Main.getClient(null).getPlayer() = saveUser;
     }
     public static String OneNPCQuestsList (NPC npc) {
 
@@ -3011,29 +2939,29 @@ public class GameControllerLogic {
         sb.append(numbers.getFirst()).append(" ").append(requests.getFirst())
             .append("  --->  ").append(npc.getReward(1)).append("\n\n");
 
-//        if (currentGame.currentPlayer.getFriendshipLevel(npc) >= 1)
-//            quest2 = "Quest 2:";
-//        else
-//            quest2 = "Quest 2: (unlock at friendship level 1)";
-//
-//        sb.append(quest2).append("\n");
-//        sb.append(numbers.get(1)).append(" ").append(requests.get(1))
-//            .append("  --->  ").append(npc.getReward(2)).append("\n\n");
-//
-//        int dif = getDayDifferent(currentGame.currentPlayer.getLevel3Date(npc), currentGame.currentDate);
-//
-//        if (currentGame.currentPlayer.getFriendshipLevel(npc) >= 3) {
-//            if (dif > npc.getRequest3DayNeeded())
-//                quest3 = "Quest 3:";
-//            else
-//                quest3 = "Quest 3: (unlock in " + (npc.getRequest3DayNeeded() - dif) + " days)";
-//        } else {
-//            quest3 = "Quest 3: (unlock at friendship level 3)";
-//        }
-//
-//        sb.append(quest3).append("\n");
-//        sb.append(numbers.get(2)).append(" ").append(requests.get(2))
-//            .append("  --->  ").append(npc.getReward(3)).append("\n");
+        if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) >= 1)
+            quest2 = "Quest 2:";
+        else
+            quest2 = "Quest 2: (unlock at friendship level 1)";
+
+        sb.append(quest2).append("\n");
+        sb.append(numbers.get(1)).append(" ").append(requests.get(1))
+            .append("  --->  ").append(npc.getReward(2)).append("\n\n");
+
+        int dif = getDayDifferent(Main.getClient(null).getPlayer().getLevel3Date(npc), currentGame.getGameState().currentDate);
+
+        if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) >= 3) {
+            if (dif > npc.getRequest3DayNeeded())
+                quest3 = "Quest 3:";
+            else
+                quest3 = "Quest 3: (unlock in " + (npc.getRequest3DayNeeded() - dif) + " days)";
+        } else {
+            quest3 = "Quest 3: (unlock at friendship level 3)";
+        }
+
+        sb.append(quest3).append("\n");
+        sb.append(numbers.get(2)).append(" ").append(requests.get(2))
+            .append("  --->  ").append(npc.getReward(3)).append("\n");
 
         return sb.toString();
     }
@@ -3064,198 +2992,195 @@ public class GameControllerLogic {
         if (!checkAmountProductAvailable(key, value))
             return new Result(false, RED+"You don't have enough source"+RESET);
 
-//        switch (npc) {
-//
-//            case Sebastian -> {
-//
-//                if (!checkAmountProductAvailable(new ForagingMinerals(DIAMOND), 1) &&
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() <= 0) {
-//
-//                    int number = 2;
-//                    if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                        number *= 2;
-//                    advanceItem(key, -value);
-//                    advanceItem(new ForagingMinerals(DIAMOND), number);
-//                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Diamond"+RESET);
-//                }
-//                return new Result(true, RED+"Inventory is full"+RESET);
-//            }
-//            case Abigail -> {
-//
-//                currentGame.currentPlayer.increaseFriendshipPoint(NPC.Abigail, 200);
-//                return new Result(true, BRIGHT_BLUE+"Your friendship level with Abigail increased"+RESET);
-//            }
-//            case Harvey -> {
-//
-//                int number = 750;
-//                if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                    number *= 2;
-//                currentGame.currentPlayer.increaseMoney(number);
-//                return new Result(true, "Your got +"+number+" money");
-//            }
-//            case Leah -> {
-//                int number = 500;
-//                if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                    number *= 2;
-//                currentGame.currentPlayer.increaseMoney(number);
-//                return new Result(true, "Your got +"+number+" money");
-//            }
-//            case Robin -> {
-//
-//                int number = 2000;
-//                if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                    number *= 2;
-//                currentGame.currentPlayer.increaseMoney(number);
-//                return new Result(true, "Your got +"+number+" money");
-//            }
-//            default -> {
-//                return new Result(true, "");
-//            }
+        switch (npc) {
 
-        return null;
+            case Sebastian -> {
+
+                if (!checkAmountProductAvailable(new ForagingMinerals(DIAMOND), 1) &&
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() <= 0) {
+
+                    int number = 2;
+                    if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                        number *= 2;
+                    advanceItem(key, -value);
+                    advanceItem(new ForagingMinerals(DIAMOND), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Diamond"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Abigail -> {
+
+                Main.getClient(null).getPlayer().increaseFriendshipPoint(NPC.Abigail, 200);
+                return new Result(true, BRIGHT_BLUE+"Your friendship level with Abigail increased"+RESET);
+            }
+            case Harvey -> {
+
+                int number = 750;
+                if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                Main.getClient(null).getPlayer().increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            case Leah -> {
+                int number = 500;
+                if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                Main.getClient(null).getPlayer().increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            case Robin -> {
+
+                int number = 2000;
+                if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                Main.getClient(null).getPlayer().increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            default -> {
+                return new Result(true, "");
+            }
+        }
     }
     public static Result doTask2 (NPC npc) {
 
-//        if (currentGame.currentPlayer.getFriendshipLevel(npc) < 1)
-//            return new Result(false, RED+"Your friendship with "+npc.getName()+" needs to grow"+RESET);
-//
-//        Map.Entry<Items, Integer> entry = new ArrayList<>(npc.getRequests().entrySet()).get(1);
-//        Items key = entry.getKey();
-//        int value = entry.getValue();
-//
-//        if (!checkAmountProductAvailable(key, value))
-//            return new Result(false, RED+"You don't have enough source"+RESET);
-//
-//        switch (npc) {
-//
-//            case Sebastian -> {
-//                int number = 5000;
-//                if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                    number *= 2;
-//                currentGame.currentPlayer.increaseMoney(number);
-//                return new Result(true, "Your got +"+number+" money");
-//            }
-//            case Abigail -> {
-//                int number = 500;
-//                if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                    number *= 2;
-//                // advanceItem(); // TODO ایتما باید کم بشن و تو قسمت نشون دادن اینا همشون داره یه عدد نشون میده
-//                currentGame.currentPlayer.increaseMoney(number);
-//                return new Result(true, "Your got +"+number+" money");
-//            }
-//            case Harvey -> {
-//                currentGame.currentPlayer.increaseFriendshipPoint(NPC.Abigail, 200);
-//                return new Result(true, BRIGHT_BLUE+"Your friendship level with Harvey increased"+RESET);
-//            }
-//            case Leah -> {
-//
-//                if (checkAmountProductAvailable(new MarketItem(MarketItemType.PancakesRecipe), 1) ||
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//
-//                    advanceItem(key, -value);
-//                    advanceItem(new MarketItem(MarketItemType.PancakesRecipe), 1);
-//                    Recipe recipe = HomeController.findRecipeByName("Pancakes");
-//                    assert recipe != null;
-//                    recipe.setUsable(true);
-//                    return new Result(true, BRIGHT_BLUE+"You got 1 Pancakes Recipe"+RESET);
-//                }
-//                return new Result(true, RED+"Inventory is full"+RESET);
-//            }
-//            case Robin -> {
-//                int number = 1000;
-//                if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                    number *= 2;
-//                currentGame.currentPlayer.increaseMoney(number);
-//                return new Result(true, "Your got +"+number+" money");
-//            }
-//            default -> {
-//                return new Result(true, "");
-//            }
-//        }
-        return null;
+        if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) < 1)
+            return new Result(false, RED+"Your friendship with "+npc.getName()+" needs to grow"+RESET);
+
+        Map.Entry<Items, Integer> entry = new ArrayList<>(npc.getRequests().entrySet()).get(1);
+        Items key = entry.getKey();
+        int value = entry.getValue();
+
+        if (!checkAmountProductAvailable(key, value))
+            return new Result(false, RED+"You don't have enough source"+RESET);
+
+        switch (npc) {
+
+            case Sebastian -> {
+                int number = 5000;
+                if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                Main.getClient(null).getPlayer().increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            case Abigail -> {
+                int number = 500;
+                if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                // advanceItem(); // TODO ایتما باید کم بشن و تو قسمت نشون دادن اینا همشون داره یه عدد نشون میده
+                Main.getClient(null).getPlayer().increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            case Harvey -> {
+                Main.getClient(null).getPlayer().increaseFriendshipPoint(NPC.Abigail, 200);
+                return new Result(true, BRIGHT_BLUE+"Your friendship level with Harvey increased"+RESET);
+            }
+            case Leah -> {
+
+                if (checkAmountProductAvailable(new MarketItem(MarketItemType.PancakesRecipe), 1) ||
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+
+                    advanceItem(key, -value);
+                    advanceItem(new MarketItem(MarketItemType.PancakesRecipe), 1);
+                    Recipe recipe = HomeController.findRecipeByName("Pancakes");
+                    assert recipe != null;
+                    recipe.setUsable(true);
+                    return new Result(true, BRIGHT_BLUE+"You got 1 Pancakes Recipe"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Robin -> {
+                int number = 1000;
+                if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                Main.getClient(null).getPlayer().increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            default -> {
+                return new Result(true, "");
+            }
+        }
     }
     public static Result doTask3 (NPC npc) {
 
-//        int dif = getDayDifferent(currentGame.currentPlayer.getLevel3Date(npc), currentGame.currentDate);
-//
-//        if (currentGame.currentPlayer.getFriendshipLevel(npc) >= 3) {
-//            if (dif < npc.getRequest3DayNeeded())
-//                return new Result(false, RED+"Quest is lock\n" +
-//                    "Unlock in " + dif + " days later"+RESET);
-//        } else
-//            return new Result(false, RED+"Your friendship with "+npc.getName()+" needs to grow"+RESET);
-//
-//        Map.Entry<Items, Integer> entry = new ArrayList<>(npc.getRequests().entrySet()).get(2);
-//        Items key = entry.getKey();
-//        int value = entry.getValue();
-//
-//        if (!checkAmountProductAvailable(key, value))
-//            return new Result(false, RED+"You don't have enough source"+RESET);
-//
-//        switch (npc) {
-//
-//            case Sebastian -> {
-//
-//                if (checkAmountProductAvailable(new ForagingMinerals(QUARTZ), 1) ||
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//                    int number = 50;
-//                    if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                        number *= 2;
-//                    advanceItem(key, -value);
-//                    advanceItem(new ForagingMinerals(QUARTZ), number);
-//                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Quartz"+RESET);
-//                }
-//                return new Result(true, RED+"Inventory is full"+RESET);
-//            }
-//            case Abigail -> {
-//                if (checkAmountProductAvailable(new CraftingItem(CraftType.IridiumSprinkler), 1) ||
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//                    int number = 1;
-//                    if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                        number *= 2;
-//                    advanceItem(key, -value);
-//                    advanceItem(new CraftingItem(CraftType.IridiumSprinkler), number);
-//                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Iridium sprinkler"+RESET);
-//                }
-//                return new Result(true, RED+"Inventory is full"+RESET);
-//            }
-//            case Harvey -> {
-//                if (checkAmountProductAvailable(new MarketItem(MarketItemType.Salad), 1) ||
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//                    int number = 5;
-//                    if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                        number *= 2;
-//                    advanceItem(key, -value);
-//                    advanceItem(new MarketItem(MarketItemType.Salad), number);
-//                    return new Result(true, BRIGHT_BLUE+"You got "+number+" salad"+RESET);
-//                }
-//                return new Result(true, RED+"Inventory is full"+RESET);
-//            }
-//            case Leah -> {
-//
-//                if (checkAmountProductAvailable(new CraftingItem(CraftType.DeluxeScarecrow), 1) ||
-//                    currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0) {
-//                    int number = 1;
-//                    if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                        number *= 2;
-//                    advanceItem(key, -value);
-//                    advanceItem(new CraftingItem(CraftType.DeluxeScarecrow), number);
-//                    return new Result(true, BRIGHT_BLUE+"You got "+number+" ⅾeⅼuxe sⅽareⅽrow"+RESET);
-//                }
-//                return new Result(true, RED+"Inventory is full"+RESET);
-//            }
-//            case Robin -> {
-//                int number = 1500;
-//                if (currentGame.currentPlayer.getFriendshipLevel(npc) > 1)
-//                    number *= 2;
-//                currentGame.currentPlayer.increaseMoney(number);
-//                return new Result(true, "Your got +"+number+" money");
-//            }
-//            default -> {
-//                return new Result(true, "");
-//            }
-//        }
-        return null;
+        int dif = getDayDifferent(Main.getClient(null).getPlayer().getLevel3Date(npc), currentGame.getGameState().currentDatecurrentGame.getGameState().currentDate);
+
+        if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) >= 3) {
+            if (dif < npc.getRequest3DayNeeded())
+                return new Result(false, RED+"Quest is lock\n" +
+                    "Unlock in " + dif + " days later"+RESET);
+        } else
+            return new Result(false, RED+"Your friendship with "+npc.getName()+" needs to grow"+RESET);
+
+        Map.Entry<Items, Integer> entry = new ArrayList<>(npc.getRequests().entrySet()).get(2);
+        Items key = entry.getKey();
+        int value = entry.getValue();
+
+        if (!checkAmountProductAvailable(key, value))
+            return new Result(false, RED+"You don't have enough source"+RESET);
+
+        switch (npc) {
+
+            case Sebastian -> {
+
+                if (checkAmountProductAvailable(new ForagingMinerals(QUARTZ), 1) ||
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+                    int number = 50;
+                    if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                        number *= 2;
+                    advanceItem(key, -value);
+                    advanceItem(new ForagingMinerals(QUARTZ), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Quartz"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Abigail -> {
+                if (checkAmountProductAvailable(new CraftingItem(CraftType.IridiumSprinkler), 1) ||
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+                    int number = 1;
+                    if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                        number *= 2;
+                    advanceItem(key, -value);
+                    advanceItem(new CraftingItem(CraftType.IridiumSprinkler), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" Iridium sprinkler"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Harvey -> {
+                if (checkAmountProductAvailable(new MarketItem(MarketItemType.Salad), 1) ||
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+                    int number = 5;
+                    if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                        number *= 2;
+                    advanceItem(key, -value);
+                    advanceItem(new MarketItem(MarketItemType.Salad), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" salad"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Leah -> {
+
+                if (checkAmountProductAvailable(new CraftingItem(CraftType.DeluxeScarecrow), 1) ||
+                    Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0) {
+                    int number = 1;
+                    if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                        number *= 2;
+                    advanceItem(key, -value);
+                    advanceItem(new CraftingItem(CraftType.DeluxeScarecrow), number);
+                    return new Result(true, BRIGHT_BLUE+"You got "+number+" ⅾeⅼuxe sⅽareⅽrow"+RESET);
+                }
+                return new Result(true, RED+"Inventory is full"+RESET);
+            }
+            case Robin -> {
+                int number = 1500;
+                if (Main.getClient(null).getPlayer().getFriendshipLevel(npc) > 1)
+                    number *= 2;
+                Main.getClient(null).getPlayer()Main.getClient(null).getPlayer().increaseMoney(number);
+                return new Result(true, "Your got +"+number+" money");
+            }
+            default -> {
+                return new Result(true, "");
+            }
+        }
     }
 
     public static void plow () {
