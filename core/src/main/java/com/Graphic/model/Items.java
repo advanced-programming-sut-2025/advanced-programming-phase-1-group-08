@@ -101,6 +101,8 @@ public abstract class Items extends GameObject {
         return false;
     }
 
+    private boolean isCollected;
+
 
 
     public abstract int getSellPrice();
@@ -124,6 +126,12 @@ public abstract class Items extends GameObject {
         if (this instanceof ShippingBin) {
             ((ShippingBin) this).setY(y);
         }
+    }
+    public boolean isCollected() {
+        return isCollected;
+    }
+    public void setCollected(boolean collected) {
+        isCollected = collected;
     }
 
     public  int getTakesTime() {

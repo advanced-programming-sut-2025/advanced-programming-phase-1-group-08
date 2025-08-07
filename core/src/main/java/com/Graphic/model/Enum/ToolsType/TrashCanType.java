@@ -77,17 +77,17 @@ public enum TrashCanType {
         };
     }
     public static boolean checkIngredient(TrashCanType trashCanType) {
-        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
-        BarsAndOres barsAndOres= new BarsAndOres(trashCanType.BarsAndOreType);
-        if (inventory.Items.containsKey(barsAndOres)) {
-            Integer value=inventory.Items.get(barsAndOres);
-            if (value >= 5 && App.currentGame.currentPlayer.getMoney() >= trashCanType.getPrice()) {
-                inventory.Items.put(barsAndOres,value-5);
-                inventory.Items.entrySet().removeIf(entry -> entry.getValue().equals(0));
-                return true;
-            }
-            return false;
-        }
+//        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
+//        BarsAndOres barsAndOres= new BarsAndOres(trashCanType.BarsAndOreType);
+//        if (inventory.Items.containsKey(barsAndOres)) {
+//            Integer value=inventory.Items.get(barsAndOres);
+//            if (value >= 5 && App.currentGame.currentPlayer.getMoney() >= trashCanType.getPrice()) {
+//                inventory.Items.put(barsAndOres,value-5);
+//                inventory.Items.entrySet().removeIf(entry -> entry.getValue().equals(0));
+//                return true;
+//            }
+//            return false;
+//        }
         return false;
     }
 }

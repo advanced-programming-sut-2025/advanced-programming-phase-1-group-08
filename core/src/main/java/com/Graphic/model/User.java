@@ -5,17 +5,13 @@ import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
-import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.Farm;
 import com.Graphic.model.ToolsPackage.BackPack;
+import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.Weather.DateHour;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Circle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +20,6 @@ import java.util.Queue;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class User {
 
@@ -63,6 +58,7 @@ public class User {
     private BarnOrCage currentBarnOrCage;
     private MarketType currentMarket;
     private Queue<User> joinMarket;
+    private ArrayList<CraftingItem> OnFarm;
 
 
     // buffs
@@ -152,10 +148,10 @@ public class User {
         Buff_fishing_hoursLeft = 0;
         Buff_mining_hoursLeft = 0;
         // Buff implementation
-        if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
-            currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 100);
-            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 100);
-        }
+//        if (currentGame.currentPlayer.Buff_maxEnergy_100_hoursLeft > 0) {
+//            currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 100);
+//            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 100);
+//        }
     }
     public void setBuff_maxEnergy_50_hoursLeft (int x) {
         Buff_maxEnergy_50_hoursLeft = x;
@@ -165,10 +161,10 @@ public class User {
         Buff_fishing_hoursLeft = 0;
         Buff_mining_hoursLeft = 0;
         // Buff implementation
-        if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
-            currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 50);
-            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 50);
-        }
+//        if (currentGame.currentPlayer.Buff_maxEnergy_50_hoursLeft > 0) {
+//            currentGame.currentPlayer.setMAX_HEALTH(currentGame.currentPlayer.getMAX_HEALTH() + 50);
+//            currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + 50);
+//        }
     }
     public void setBuff_foraging_hoursLeft (int x) {
         Buff_foraging_hoursLeft = x;
@@ -717,5 +713,8 @@ public class User {
     }
     public Queue<User> getJoinMarket() {
         return joinMarket;
+    }
+    public ArrayList<CraftingItem> getOnFarm() {
+        return OnFarm;
     }
 }

@@ -10,6 +10,7 @@ import com.Graphic.model.OtherItem.ArtisanProduct;
 import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -50,7 +51,7 @@ public class ArtisanMenuUI extends Group {
             }
         }
         if (number == 2) {
-            for (Map.Entry<Items, Integer> items : currentGame.currentPlayer.getBackPack().inventory.Items.entrySet()) {
+            for (Map.Entry<Items, Integer> items : Main.getClient(null).getPlayer().getBackPack().inventory.Items.entrySet()) {
                 inventoryItem.add(items.getKey());
             }
         }

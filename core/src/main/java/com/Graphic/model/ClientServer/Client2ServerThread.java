@@ -1,11 +1,17 @@
 package com.Graphic.model.ClientServer;
 
+import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.Controller.MainGame.InputGameController;
+import com.Graphic.Controller.MainGame.Marketing;
 import com.Graphic.Main;
 import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.View.LoginMenu;
 import com.Graphic.View.MainMenu;
 import com.Graphic.View.PlayGameMenu;
 import com.Graphic.View.RegisterMenu;
+import com.Graphic.model.Animall.Animal;
+import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.Enum.ItemType.AnimalType;
 import com.Graphic.model.Enum.ItemType.BackPackType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
@@ -20,6 +26,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 
+import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static com.Graphic.model.Enum.Commands.CommandType.*;
 
 public class Client2ServerThread extends Thread{
@@ -125,10 +132,10 @@ public class Client2ServerThread extends Thread{
             case CHANGE_MONEY -> {
                 User user = message.getFromBody("Player");
                 if (Main.getClient(null).getPlayer().getUsername().trim().equals(user.getUsername().trim())) {
-                    Main.getClient(null).getPlayer().increaseMoney(message.getFromBody("Money"));
+                    Main.getClient(null).getPlayer().increaseMoney(message.getIntFromBody("Money"));
                 }
                 else if (Main.getClient(null).getPlayer().getUsername().trim().equals(user.getSpouse().getUsername().trim())) {
-                    Main.getClient(null).getPlayer().increaseMoney(message.getFromBody("Money"));
+                    Main.getClient(null).getPlayer().increaseMoney(message.getIntFromBody("Money"));
                 }
             }
             case CHANGE_INVENTORY -> {
@@ -156,6 +163,37 @@ public class Client2ServerThread extends Thread{
             case REDUCE_BARN_CAGE -> {
                 BarnORCageType barnORCageType = message.getFromBody("BarnORCageType");
                 barnORCageType.setShopLimit(0);
+            }
+            case PLACE_CRAFT_SHIPPING_BIN -> {
+                Items items = message.getFromBody("Item");
+                int x = message.getIntFromBody("X");
+                int y = message.getIntFromBody("Y");
+                getTileByCoordinates(x , y , Main.getClient(null).getLocalGameState()).setGameObject(items);
+            }
+            case REDUCE_ANIMAL -> {
+                AnimalType animalType = message.getFromBody("AnimalType");
+                animalType.increaseRemindInShop(-1);
+            }
+            case BUY_ANIMAL -> {
+                Marketing.getInstance().receiveRequestBuyAnimal(message);
+            }
+            case SELL_ANIMAL -> {
+                InputGameController.getInstance().receiveRequestForSellAnimal(message);
+            }
+            case FEED_HAY -> {
+                InputGameController.getInstance().receiveFeedHay(message);
+            }
+            case SHEPHERD_ANIMAL -> {
+                Animal animal = message.getFromBody("Animal");
+                animal.setOut(true);
+                Main.getClient(null).getLocalGameState().getAnimals().add(animal);
+            }
+            case PLACE_BARN_CAGE -> {
+                User user = message.getFromBody("Player");
+                BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
+                int x = message.getIntFromBody("X");
+                int y = message.getIntFromBody("Y");
+                InputGameController.getInstance().placeBarnOrCage(x, y, barnOrCage , user);
             }
         }
     }

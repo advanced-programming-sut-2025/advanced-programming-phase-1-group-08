@@ -1,5 +1,6 @@
 package com.Graphic.model.ToolsPackage;
 
+import com.Graphic.Main;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.ToolsType.HoeType;
 
@@ -25,9 +26,9 @@ public class Hoe extends Tools {
 
     public int healthCost() {
 
-        double x = currentGame.currentWeather.getEnergyCostCoefficient();
+        double x = Main.getClient(null).getLocalGameState().currentWeather.getEnergyCostCoefficient();
 
-        if (currentGame.currentPlayer.getLevelFarming() == 4)
+        if (Main.getClient(null).getPlayer().getLevelFarming() == 4)
             return Math.min((int) (this.type.getEnergyCost()*x)+1, 0);
 
         return Math.min((int) (this.type.getEnergyCost()*x), 0);

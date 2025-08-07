@@ -33,7 +33,6 @@ public class CraftingItem extends Items {
     private float Timer;// for showing animation of Bombs And Sprinklers
     private ArrayList<String> Bomb;
     private ArrayList<String> Sprinkler;
-    private ArrayList<ShapeRenderer> shapeRenderers = new ArrayList<>();
     private ArrayList<Rectangle> rectangles = new ArrayList<>();
 
     public static CraftingItem Bombing;

@@ -21,12 +21,12 @@ public class NPCDirectionSet {
         return directionTexturePaths.get(direction);
     }
 
-    public HashMap<Direction, Texture> loadAllTextures() {
-        HashMap<Direction, Texture> textures = new HashMap<>();
-        for (Direction direction : Direction.values()) {
-            textures.put(direction, new Texture(Gdx.files.internal(getPath(direction))));
-        }
-        return textures;
-    }
+//    public HashMap<Direction, Texture> loadAllTextures() {
+//        HashMap<Direction, Texture> textures = new HashMap<>();
+//        for (Direction direction : Direction.values()) {
+//            textures.put(direction, new Texture(Gdx.files.internal(getPath(direction))));
+//        }
+//        return textures;
+//    }
 
 }

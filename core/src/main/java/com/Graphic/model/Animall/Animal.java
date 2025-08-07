@@ -6,6 +6,7 @@ import com.Graphic.model.Enum.ItemType.AnimalType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.GameObject;
+import com.Graphic.model.MapThings.Tile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -42,6 +43,7 @@ public class Animal extends GameObject {
     private boolean isMoving;
     private float x;
     private float y;
+    private ArrayList<Tile> Path;
 
     public Animal(AnimalType type,int friendShip, String name, int day ) {
         this.type = type;
@@ -77,7 +79,7 @@ public class Animal extends GameObject {
         this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_down.png");
         this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_down.png");
         this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_down.png");
-
+        Path = new ArrayList<>();
     }
 
     public String getName() {
@@ -261,5 +263,9 @@ public class Animal extends GameObject {
     }
     public void setMoving(boolean moving) {
         isMoving = moving;
+    }
+
+    public ArrayList<Tile> getPath() {
+        return Path;
     }
 }

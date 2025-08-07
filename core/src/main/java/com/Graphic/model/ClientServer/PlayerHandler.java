@@ -2,6 +2,9 @@ package com.Graphic.model.ClientServer;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.Marketing;
+import com.Graphic.Main;
+import com.Graphic.model.Animall.Animal;
+import com.Graphic.model.Items;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.User;
 
@@ -13,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
+import static com.Graphic.model.Enum.Commands.CommandType.CHANGE_INVENTORY;
 import static com.Graphic.model.Enum.Commands.CommandType.GAME_START;
 
 public class PlayerHandler extends Thread {
@@ -87,6 +91,9 @@ public class PlayerHandler extends Thread {
                 Marketing.getInstance().reduceProductInMarket(message, game);
                 sendMessage(Marketing.getInstance().changeBackPack(message, game));
             }
+            case PLACE_CRAFT_SHIPPING_BIN -> {
+                controller.AnswerPlaceCraft(message, game);
+            }
             case GET_DIFF -> {
                 sendMessage(game.getStateFromPlayer(Player));
                 break;
@@ -97,6 +104,54 @@ public class PlayerHandler extends Thread {
                 }
                 Marketing.getInstance().reduceBarnOrCageInMarket(message , game);
             }
+            case CHANGE_INVENTORY -> {
+                User player = message.getFromBody("Player");
+                for (User user : game.getGameState().getPlayers()) {
+                    if (user.getUsername().trim().equals(player.getUsername().trim())) {
+                        Items items = message.getFromBody("Item");
+                        int amount = message.getIntFromBody("amount");
+                        if (user.getBackPack().inventory.Items.containsKey(items)) {
+                            user.getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
+                            if (user.getBackPack().inventory.Items.get(items) == 0) {
+                                Main.getClient(null).getPlayer().getBackPack().inventory.Items.remove(items);
+                            }
+                        }
+                        else {
+                            user.getBackPack().inventory.Items.put(items,amount);
+                        }
+                        HashMap<String , Object> body = new HashMap<>();
+                        body.put("Item" , message.getIntFromBody("Item"));
+                        body.put("amount" , 1);
+                        sendMessage(new Message(CHANGE_INVENTORY , body));
+                    }
+                }
+            }
+            case BUY_ANIMAL -> {
+                Marketing.getInstance().AnswerRequestForBuyAnimal(message , game);
+            }
+            case SELL_ANIMAL -> {
+                controller.AnswerRequestAnimal(message, game);
+            }
+            case FEED_HAY -> {
+                controller.AnswerFeedHay(message, game);
+            }
+            case SHEPHERD_ANIMAL -> {
+                AnswerShepherding(message, game);
+            }
+            case PET -> {
+                Animal animal = message.getFromBody("Animal");
+                animal.increaseFriendShip(15);
+                animal.setPetToday(true);
+            }
+            case COLLECT_PRODUCT -> {
+                Animal animal = message.getFromBody("Animal");
+                animal.setProductCollected(true);
+                HashMap<String , Object> body = new HashMap<>();
+                body.put("Item" , message.getIntFromBody("Product"));
+                body.put("amount" , 1);
+                sendMessage(new Message(CHANGE_INVENTORY , body));
+            }
+            
         }
     }
 

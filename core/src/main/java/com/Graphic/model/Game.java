@@ -26,8 +26,7 @@ public class Game {
     public Map<Set<User>, List<Trade>> trades = new HashMap<>();
     public ArrayList<HumanCommunications> friendships = new ArrayList<>();
 
-    public ArrayList<Farm> farms  = new ArrayList<>();
-    public ArrayList<Tile> bigMap = new ArrayList<>();
+
 
     public Menu currentMenu;
 
@@ -45,40 +44,40 @@ public class Game {
         return null;
     }
 
-//    public static void AddNewUser(String username, String pass, String nickname, String email, String gender,
-//                                  SecurityQuestions secQ, String secA) throws IOException{
-//
-//        String hashPASS = PasswordHashUtil.hashPassword(pass);
-//
-//        User newUser = new User(
-//                username,
-//                nickname,
-//                email,
-//                gender,
-//                0,
-//                100,
-//                hashPASS,
-//                secQ,
-//                secA
-//        );
-//        System.out.println("hi-1");
-//        App.users.add(newUser);
-//        System.out.println("hi-2");
-//        App.currentUser = newUser;
-//        System.out.println("hi-3");
-//
-//        List<User> users = UserStorage.loadUsers();
-//        System.out.println("hi1");
-//        users.add(newUser);
-//        System.out.println("hi2");
-//        try {
-//            com.Graphic.model.SaveData.UserStorage.saveUsers(users);
-//            System.out.println("hi3");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+    public static void AddNewUser(String username, String pass, String nickname, String email, String gender,
+                                  SecurityQuestions secQ, String secA) throws IOException{
+
+        String hashPASS = PasswordHashUtil.hashPassword(pass);
+
+        User newUser = new User(
+                username,
+                nickname,
+                email,
+                gender,
+                0,
+                100,
+                hashPASS,
+                secQ,
+                secA
+        );
+        System.out.println("hi-1");
+        App.users.add(newUser);
+        System.out.println("hi-2");
+        App.currentUser = newUser;
+        System.out.println("hi-3");
+
+        List<User> users = UserStorage.loadUsers();
+        System.out.println("hi1");
+        users.add(newUser);
+        System.out.println("hi2");
+        try {
+            com.Graphic.model.SaveData.UserStorage.saveUsers(users);
+            System.out.println("hi3");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     // بالایی ها همه باید اصلاح بشن
 
@@ -136,6 +135,7 @@ public class Game {
                     lastSentIndex.put(u.getUsername(), lastSent + 1);
                     return message;
                 }
+                idx ++;
             }
         }
 

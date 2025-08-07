@@ -1,5 +1,6 @@
 package com.Graphic.Controller.MainGame;
 
+import com.Graphic.Main;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Inventory;
@@ -21,7 +22,7 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 public class CraftingController {
 
     public static Items numberOfIngrediants(String name) {
-        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
+        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
 
         for (Map.Entry < Items , Integer> entry : inventory.Items.entrySet()) {
             if (entry.getKey().getName().equals(name)) {
@@ -33,7 +34,6 @@ public class CraftingController {
     }
 
     public Result showCraftingRecipe(CraftType craftType) {
-        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
         StringBuilder output = new StringBuilder();
         output.append(craftType.getName()).append("\n\n");
 
@@ -46,7 +46,7 @@ public class CraftingController {
     }
 
     public Result craftingCraft(String name) {
-        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
+        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
         CraftType type=null;
         HashMap<Items , Integer> ingrediant = new HashMap();
 
@@ -63,7 +63,7 @@ public class CraftingController {
         if (type == null) {
             return new Result(false , "No such Craft type");
         }
-        if (App.currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+        if (Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() == 0) {
             return new Result(false , "Not enough Capacity in your BackPack");
         }
         if (!type.checkLevel()) {
@@ -120,7 +120,7 @@ public class CraftingController {
         inventory.Items.put(newCraft, 1);
 
         inventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
-        App.currentGame.currentPlayer.increaseHealth(-2);
+        //TODO App.currentGame.currentPlayer.increaseHealth(-2);
 
         return new Result(true , "you created " +newCraft.getType().getName() + " successfully");
 

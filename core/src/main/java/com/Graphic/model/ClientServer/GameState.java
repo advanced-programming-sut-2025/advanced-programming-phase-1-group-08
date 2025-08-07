@@ -1,5 +1,7 @@
 package com.Graphic.model.ClientServer;
 
+import com.Graphic.model.Animall.Animal;
+import com.Graphic.model.Animall.AnimalRenderer;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.MapThings.Tile;
@@ -8,7 +10,9 @@ import com.Graphic.model.User;
 import com.Graphic.model.Weather.DateHour;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 public class GameState {
 
@@ -16,6 +20,7 @@ public class GameState {
     private ArrayList<User> players = new ArrayList<>();
     public ArrayList<Tile> bigMap = new ArrayList<>();
     private ArrayList<Farm> farms = new ArrayList<>();
+    private Queue<Animal> animals = new LinkedList<>();
 
     public Weather tomorrowWeather;
     public Weather currentWeather;
@@ -23,7 +28,6 @@ public class GameState {
     public Menu currentMenu;
 
     private int numberOfMaps = 0;
-
 
 
 
@@ -43,6 +47,14 @@ public class GameState {
     public void incrementNumberOfMaps() {
         numberOfMaps++;
     }
+
+    public Queue<Animal> getAnimals() {
+        return animals;
+    }
+
+
+
+
     public static boolean equals(Object a, Object b) {
          if (a instanceof ArrayList<?> && b instanceof ArrayList<?>) {
              ArrayList<?> aList = (ArrayList<?>) a;
