@@ -194,7 +194,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         multiplexer.addProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
-                if (keycode == Input.Keys.E && Food.itemIsEatable(currentGame.currentPlayer.currentItem)) {
+                if (keycode == Input.Keys.E && Food.itemIsEatable(Main.getClient(null).getPlayer().currentItem)) {
                     ePressed = true;
                     return true;
                 }
@@ -260,7 +260,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         stage.draw();
 
 
-        if (!currentGame.currentPlayer.isInFarmExterior()) {
+        if (!Main.getClient(null).getPlayer().isInFarmExterior()) {
             getRenderer().setView(camera);
             getRenderer().render();
         }
@@ -279,10 +279,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         boolean someoneClose = false;
 
         for (User p : currentGame.players) {
-            if (p.getUsername().equalsIgnoreCase(currentGame.currentPlayer.getUsername())) continue;
+            if (p.getUsername().equalsIgnoreCase(Main.getClient(null).getPlayer().getUsername())) continue;
 
-            float deltaX = Math.abs((float) currentGame.currentPlayer.getPositionX() - p.getPositionX());
-            float deltaY = Math.abs((float) currentGame.currentPlayer.getPositionY() - p.getPositionY());
+            float deltaX = Math.abs((float) Main.getClient(null).getPlayer().getPositionX() - p.getPositionX());
+            float deltaY = Math.abs((float) Main.getClient(null).getPlayer().getPositionY() - p.getPositionY());
             if (deltaY < 3f && deltaX < 3f) {
                 someoneClose = true;
 
@@ -317,9 +317,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             if (progress >= 1f && !progressComplete) {
                 progressComplete = true;
-                Result result = eatFood(currentGame.currentPlayer.currentItem.getName());
+                Result result = eatFood(Main.getClient(null).getPlayer().currentItem.getName());
                 showTimedDialog(result.massage(), 2f);
-                currentGame.currentPlayer.currentItem = null;
+                Main.getClient(null).getPlayer().currentItem = null;
             }
 
         } else {
@@ -349,13 +349,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private Dialog makingInteractionDialog() {
         Dialog interactionDialog = new Dialog("", newSkin);
 
-        User me = currentGame.currentPlayer;
+        User me = Main.getClient(null).getPlayer();
         User other = null;
         for (User p : currentGame.players) {
             if (p.getUsername().equalsIgnoreCase(me.getUsername())) continue;
 
-            float deltaX = Math.abs((float) currentGame.currentPlayer.getPositionX() - p.getPositionX());
-            float deltaY = Math.abs((float) currentGame.currentPlayer.getPositionY() - p.getPositionY());
+            float deltaX = Math.abs((float) Main.getClient(null).getPlayer().getPositionX() - p.getPositionX());
+            float deltaY = Math.abs((float) Main.getClient(null).getPlayer().getPositionY() - p.getPositionY());
             if (deltaY < 3f && deltaX < 3f) {
                 other = p;
                 break;
@@ -446,7 +446,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         friendTable.top().left().pad(10);
 
 
-        String targetName = currentGame.currentPlayer.getUsername();
+        String targetName = Main.getClient(null).getPlayer().getUsername();
         User friendUser;
 
         for (HumanCommunications f : currentGame.friendships) {
@@ -661,16 +661,16 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     )
                 );
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-                User temp = currentGame.currentPlayer;
+                User temp = Main.getClient(null).getPlayer();
                 ArrayList<User> list = currentGame.players;
                 if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
-                    currentGame.currentPlayer = list.get(0);
+                    Main.getClient(null).getPlayer() = list.get(0);
                     return;
                 }
                 boolean found = false;
                 for (User user : list) {
                     if (found) {
-                        currentGame.currentPlayer = user;
+                        Main.getClient(null).getPlayer() = user;
                         return;
                     }
                     if (user.getUsername().equals(temp.getUsername())) {
@@ -684,10 +684,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
                 ExitOfMenu();
-            else if (Gdx.input.isKeyJustPressed(Keys.delete) && currentGame.currentPlayer.currentItem != null) {
+            else if (Gdx.input.isKeyJustPressed(Keys.delete) && Main.getClient(null).getPlayer().currentItem != null) {
                 GameControllerLogic.advanceItem(
-                    currentGame.currentPlayer.currentItem,
-                    -currentGame.currentPlayer.getBackPack().inventory.Items.get(currentGame.currentPlayer.currentItem));
+                    Main.getClient(null).getPlayer().currentItem,
+                    -Main.getClient(null).getPlayer().getBackPack().inventory.Items.get(Main.getClient(null).getPlayer().currentItem));
                 ExitOfMenu();
                 createInventory();
             }
@@ -736,8 +736,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         if (waitingForGiftItemSelection && !inventoryIsActivated) {
 
-            if (currentGame.currentPlayer.currentItem != null)
-                controller.giftNPC(currentGame.currentPlayer.currentItem, stage, npc);
+            if (Main.getClient(null).getPlayer().currentItem != null)
+                controller.giftNPC(Main.getClient(null).getPlayer().currentItem, stage, npc);
             else {
                 Dialog dialog = Marketing.getInstance().createDialogError();
                 final Label tooltipLabel = new Label("Firs you must select Item", newSkin);
@@ -893,12 +893,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
 
         TextButton voteKickButton = new TextButton(" Vote to Kick Player", newSkin);
-        voteKickButton.setDisabled(!currentGame.currentPlayer.equals(currentUser));
+        voteKickButton.setDisabled(!Main.getClient(null).getPlayer().equals(currentUser));
 
         voteKickButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!currentGame.currentPlayer.equals(currentUser)) return;
+                if (!Main.getClient(null).getPlayer().equals(currentUser)) return;
 
                 Window kickWindow = new Window("Select Player to Kick", newSkin);
                 kickWindow.setSize(300, 250);
@@ -1182,13 +1182,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private void updateEnergyLabel () {
 
-        int currentHealth = currentGame.currentPlayer.getHealth();
+        int currentHealth = Main.getClient(null).getPlayer().getHealth();
         if (currentHealth != lastHealth) {
 
-            energyLabel.setText("Energy : " + currentGame.currentPlayer.getHealth());
+            energyLabel.setText("Energy : " + Main.getClient(null).getPlayer().getHealth());
             Label.LabelStyle style = energyLabel.getStyle();
 
-            if (currentGame.currentPlayer.getHealth() <= 20)
+            if (Main.getClient(null).getPlayer().getHealth() <= 20)
                 style.fontColor = Color.RED;
             else
                 style.fontColor = Color.GREEN;
@@ -1200,14 +1200,14 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private void handleLeftClick () {
         useCurrentItem();
         Direction direction = Direction.getDirByCord(
-            currentGame.currentPlayer.getSprite().getX(),
-            90 - currentGame.currentPlayer.getSprite().getY(),
+            Main.getClient(null).getPlayer().getPositionX(),
+            90 - Main.getClient(null).getPlayer().getPositionY(),
             getVector().x, 90 - getVector().y
         );
         if (direction != null) {
 
             int dir = 0;
-            Items items = currentGame.currentPlayer.currentItem;
+            Items items = Main.getClient(null).getPlayer().currentItem;
             switch (direction) {
 
                 case Up -> dir = 3;
@@ -1217,7 +1217,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
             if (dir != 0) {
                 if (items instanceof Tools) {
-                    currentGame.currentPlayer.currentTool = (Tools) items;
+                    Main.getClient(null).getPlayer().currentTool = (Tools) items;
                     controller.useTools(dir);
                 }
                 else if (items instanceof TreeSource)
@@ -1254,7 +1254,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     try {
                         int energy = Integer.parseInt(inputText);
 
-                        currentGame.currentPlayer.setHealth(energy);
+                        Main.getClient(null).getPlayer().setHealth(energy);
 
                         setEnergyPopup.remove();
                         setEnergyIsActivated = false;
@@ -1283,7 +1283,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         createGrayBackGround();
 
         HashMap<String, String> availableTools = controller.availableTools();
-        Items currentItem = currentGame.currentPlayer.currentItem;
+        Items currentItem = Main.getClient(null).getPlayer().currentItem;
 
         int colNumber = availableTools.size() / 2 + 1;
 
@@ -1375,7 +1375,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             public void clicked(InputEvent event, float x, float y) {
 
                 if (currentItem != null && currentItem.getName().equals(toolName))
-                    currentGame.currentPlayer.currentItem = null;
+                    Main.getClient(null).getPlayer().currentItem = null;
                 else
                     controller.itemEquip(toolName);
 
@@ -1515,7 +1515,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         dateLabel.setText(currentGame.currentDate.getDate());
         weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
 
-        String moneyStr = String.valueOf(currentGame.currentPlayer.getMoney());
+        String moneyStr = String.valueOf(Main.getClient(null).getPlayer().getMoney());
         String spaced = String.join(" ", moneyStr.split(""));
         moneyLabel.setText(spaced);
 
@@ -1653,10 +1653,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private void drawCurrentItem() {
 
-        Items currentItem = currentGame.currentPlayer.currentItem;
+        Items currentItem = Main.getClient(null).getPlayer().currentItem;
         if (currentItem == null) return;
 
-        Direction direction = currentGame.currentPlayer.getDirection();
+        Direction direction = Main.getClient(null).getPlayer().getDirection();
         float x = getXForHands(direction), y = getYForHands(direction);
 
         if (currentItemSprite == null || !currentItemSprite.getTexture().equals(TextureManager.get(currentItem.getInventoryIconPath()))) {
@@ -1681,7 +1681,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         currentItemSprite.draw(Main.getBatch());
     }
     private void useCurrentItem() {
-        Items currentItem = currentGame.currentPlayer.currentItem;
+        Items currentItem = Main.getClient(null).getPlayer().currentItem;
 
         if (!(currentItem instanceof Tools)) return;
 
@@ -1707,17 +1707,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private float getYForHands(Direction direction) {
 
         if (direction == Direction.Up)
-            return (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 12;
+            return (90 - Main.getClient(null).getPlayer().getPositionY()) * TEXTURE_SIZE + 12;
 
-        return (90 - currentGame.currentPlayer.getPositionY()) * TEXTURE_SIZE + 8;
+        return (90 - Main.getClient(null).getPlayer().getPositionY()) * TEXTURE_SIZE + 8;
     }
     private float getXForHands(Direction direction) {
 
         return switch (direction) {
-            case Right -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 20;
-            case Left -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE - 10;
-            case Up -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 25;
-            case Down -> currentGame.currentPlayer.getPositionX() * TEXTURE_SIZE + 23;
+            case Right -> Main.getClient(null).getPlayer().getPositionX() * TEXTURE_SIZE + 20;
+            case Left -> Main.getClient(null).getPlayer().getPositionX() * TEXTURE_SIZE - 10;
+            case Up -> Main.getClient(null).getPlayer().getPositionX() * TEXTURE_SIZE + 25;
+            case Down -> Main.getClient(null).getPlayer().getPositionX() * TEXTURE_SIZE + 23;
         };
     }
 
@@ -1755,7 +1755,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         content.setPosition(300, 300);
         content.padLeft(50);
 
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
 
         int number = 0;
 
@@ -1769,7 +1769,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
 
-            Items currentItem = currentGame.currentPlayer.currentItem;
+            Items currentItem = Main.getClient(null).getPlayer().currentItem;
             boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
 
             if (isCurrent) {
@@ -1804,7 +1804,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 public void clicked(InputEvent event, float x, float y) {
 
                     if (currentItem != null && currentItem.getName().equals(item.getName()))
-                        currentGame.currentPlayer.currentItem = null;
+                        Main.getClient(null).getPlayer().currentItem = null;
                     else
                         controller.itemEquip(item.getName());
 
@@ -1834,8 +1834,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private void createCurrentItem (Table content) {
 
         Image img;
-        if (currentGame.currentPlayer.currentItem != null)
-            img = new Image(TextureManager.get(currentGame.currentPlayer.currentItem.getInventoryIconPath()));
+        if (Main.getClient(null).getPlayer().currentItem != null)
+            img = new Image(TextureManager.get(Main.getClient(null).getPlayer().currentItem.getInventoryIconPath()));
         else
             img = new Image(TextureManager.get("Erfan/Cancel2.png"));
 
@@ -1878,7 +1878,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             content.add(new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(npc1.getIconPath())))));
 
             Label nameLabel = new Label("Friendship Level with " + npc1.getName() +
-                " : " + currentGame.currentPlayer.getFriendshipLevel(npc1), newSkin);
+                " : " + Main.getClient(null).getPlayer().getFriendshipLevel(npc1), newSkin);
 
             Label.LabelStyle copiedStyle = new Label.LabelStyle(nameLabel.getStyle());
             copiedStyle.fontColor = Color.GRAY;
@@ -1942,7 +1942,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         return animalFont;
     }
     private void moveAnimal() {
-        if (currentGame.currentPlayer.isInMine()) {
+        if (Main.getClient(null).getPlayer().isInMine()) {
             for (Animal animal : shepherdingAnimals) {
                 animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
                 if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
@@ -2425,7 +2425,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 //            controller.remove(Integer.parseInt(matcher.group(1)));
 //
 //        else if (input.matches("(?i)\\s*add\\s*money\\s*"))
-//            currentGame.currentPlayer.increaseMoney(10000);
+//            Main.getClient(null).getPlayer().increaseMoney(10000);
 //
 //        else if (input.matches("\\s*clear\\s*"))
 //            controller.clear();
