@@ -351,7 +351,8 @@ public class Marketing {
         HashMap<String ,Object> body = new HashMap<>();
         body.put("Item" , message.getFromBody("Item"));
         body.put("amount" , message.getFromBody("amount"));
-        return new Message(CommandType.CHANGE_INVENTORY, body);
+        return new Message(CommandType.
+            CHANGE_INVENTORY, body);
     }
 
     public Message changeBackPack(Message message , Game game) {
@@ -379,15 +380,15 @@ public class Marketing {
                     Label content = new Label(MarketType.endLimit(checkBuy(item,marketType).massage()), new Label.LabelStyle(getFont() , Color.BLACK));
                     addDialogToTable(dialog, content , MarketMenu.getInstance());
                 }
-                else if (item instanceof ShippingBin) {
-                    currentGame.currentPlayer.setDroppedItem(new ShippingBin());
-                    currentGame.currentPlayer.setIsPlaceArtisanOrShippingBin(true);
-                    currentGame.currentPlayer.setWithMouse(new Sprite(TextureManager.get("Mohamadreza/Shipping Bin.png")));
-                    currentGame.currentPlayer.getWithMouse().setAlpha(0.5f);
-                    choosePlace = true;
-                    getWindow().remove();
-                    removeImage();
-                }
+//                else if (item instanceof ShippingBin) {
+//                    Main.getClient(null).getPlayer().setDroppedItem(new ShippingBin());
+//                    Main.getClient(null).getPlayer().setIsPlaceArtisanOrShippingBin(true);
+//                    Main.getClient(null).getPlayer().setWithMouse(new Sprite(TextureManager.get("Mohamadreza/Shipping Bin.png")));
+//                    Main.getClient(null).getPlayer().getWithMouse().setAlpha(0.5f);
+//                    choosePlace = true;
+//                    getWindow().remove();
+//                    removeImage();
+//                }
                 else {
                     HashMap<String , Object> body = new HashMap<>();
                     body.put("Player" , Player);
@@ -547,22 +548,85 @@ public class Marketing {
         for (BarnOrCage barnOrCage : Main.getClient(null).getPlayer().BarnOrCages) {
             if (animalType.getBarnorcages().contains(barnOrCage.getBarnORCageType())) {
                 if (barnOrCage.getBarnORCageType().getInitialCapacity() > barnOrCage.animals.size()) {
-                    currentGame.currentPlayer.increaseMoney( - animalType.getPrice());
-                    barnOrCage.animals.add(new Animal(animalType , 0 , field.getText() ,
-                        currentGame.currentDate.clone().getDate()));
-
-                    barnOrCage.animals.getLast().setIndex(barnOrCage.animals.size() - 1);
-                    barnOrCage.animals.getLast().setPositionX(barnOrCage.topLeftX + barnOrCage.getBarnORCageType().getDoorX());
-                    barnOrCage.animals.getLast().setPositionY(barnOrCage.topLeftY + barnOrCage.getBarnORCageType().getDoorY());
-
-                    System.out.println(barnOrCage.animals.getLast().getPositionX() +"<<"+barnOrCage.animals.getLast().getPositionY());
-                    animalType.increaseRemindInShop(-1);
+                    requestForBuyAnimal(animalType , field.getText() , barnOrCage);
+//                    currentGame.currentPlayer.increaseMoney( - animalType.getPrice());
+//                    barnOrCage.animals.add(new Animal(animalType , 0 , field.getText() ,
+//                        currentGame.currentDate.clone().getDate()));
+//
+//                    barnOrCage.animals.getLast().setIndex(barnOrCage.animals.size() - 1);
+//                    barnOrCage.animals.getLast().setPositionX(barnOrCage.topLeftX + barnOrCage.getBarnORCageType().getDoorX());
+//                    barnOrCage.animals.getLast().setPositionY(barnOrCage.topLeftY + barnOrCage.getBarnORCageType().getDoorY());
+//
+//                    System.out.println(barnOrCage.animals.getLast().getPositionX() +"<<"+barnOrCage.animals.getLast().getPositionY());
+//                    animalType.increaseRemindInShop(-1);
 
                     return new Result(true , "0");
                 }
             }
         }
         return new Result(false , "10");
+    }
+
+    public void requestForBuyAnimal(AnimalType animalType , String name , BarnOrCage barnOrCage) {
+        HashMap<String , Object> body = new HashMap<>();
+        Animal animal = new Animal(animalType , 0 , name , gameMenu.gameState.currentDate.clone().getDate());
+        body.put("Animal" , animal);
+        body.put("Player" , Main.getClient(null).getPlayer());
+        body.put("BarnOrCage" , barnOrCage);
+        Main.getClient(null).getRequests().add(new Message(CommandType.BUY_ANIMAL , body));
+    }
+
+    public void AnswerRequestForBuyAnimal(Message message , Game game) {
+        User player = message.getFromBody("Player");
+        Animal animal = message.getFromBody("Animal");
+        BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
+
+        for (User user : game.getGameState().getPlayers()) {
+            if (user.getUsername().trim().equals(player.getUsername().trim())) {
+                for (BarnOrCage barnOrCage1 : user.BarnOrCages) {
+                    if (barnOrCage1.equals(barnOrCage)) {
+                        barnOrCage.animals.add(animal);
+                        barnOrCage.animals.getLast().setIndex(barnOrCage.animals.size() - 1);
+                        barnOrCage.animals.getLast().setPositionX(barnOrCage.topLeftX + barnOrCage.getBarnORCageType().getDoorX());
+                        barnOrCage.animals.getLast().setPositionY(barnOrCage.topLeftY + barnOrCage.getBarnORCageType().getDoorY());
+                        animal.getType().increaseRemindInShop(-1);
+                    }
+                }
+            }
+        }
+        HashMap<String , Object> changeMoney = new HashMap<>();
+        changeMoney.put("Player" , player);
+        changeMoney.put("Money" , animal.getType().getPrice());
+        game.getDiffQueue().add(new Message(CommandType.CHANGE_MONEY , changeMoney));
+
+        HashMap<String , Object> reduceAnimal = new HashMap<>();
+        reduceAnimal.put("AnimalType" , animal.getType());
+        game.getDiffQueue().add(new Message(CommandType.REDUCE_ANIMAL , reduceAnimal));
+
+        HashMap<String , Object> buyAnimal = new HashMap<>();
+        buyAnimal.put("Animal" , animal);
+        buyAnimal.put("BarnOrCage" , barnOrCage);
+        buyAnimal.put("Player" , player);
+        game.getDiffQueue().add(new Message(CommandType.BUY_ANIMAL , buyAnimal));
+
+    }
+
+    public void receiveRequestBuyAnimal(Message message) {
+        User player = message.getFromBody("Player");
+        BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
+        Animal animal = message.getFromBody("Animal");
+        for (User user : Main.getClient(null).getLocalGameState().getPlayers()) {
+            if (user.getUsername().trim().equals(player.getUsername().trim())) {
+                for (BarnOrCage barnOrCage1 : user.BarnOrCages) {
+                    if (barnOrCage1.equals(barnOrCage)) {
+                        barnOrCage.animals.add(animal);
+                        barnOrCage.animals.getLast().setIndex(barnOrCage.animals.size() - 1);
+                        barnOrCage.animals.getLast().setPositionX(barnOrCage.topLeftX + barnOrCage.getBarnORCageType().getDoorX());
+                        barnOrCage.animals.getLast().setPositionY(barnOrCage.topLeftY + barnOrCage.getBarnORCageType().getDoorY());
+                    }
+                }
+            }
+        }
     }
 
     public void moveTextureWithMouse(Sprite sprite) {
@@ -619,7 +683,6 @@ public class Marketing {
                         showWindow = true;
                         setWithMouse(null);
                         requestForCreateBarnOrCage(x , y , barnORCageType);
-                        payForBuilding((BarnOrCage) getTileByCoordinates(x,y).getGameObject());
                     }
                 });
 
@@ -696,9 +759,15 @@ public class Marketing {
         HashMap<String ,Object> body2 = new HashMap<>();
         body2.put("Item" , new BasicRock());
         body2.put("amount" , - barnORCageType.getStoneNeeded());
+        HashMap<String , Object> body3 = new HashMap<>();
+        body3.put("X" , p.getX());
+        body3.put("Y" , p.getY());
+        body.put("BarnOrCage" , getTileByCoordinates(p.x , p.y , game.getGameState()).getGameObject());
+        body3.put("Player" , message.getFromBody("Player"));
         ArrayList<Message> messages = new ArrayList<>();
         messages.add(new Message(CommandType.CHANGE_INVENTORY, body));
         messages.add(new Message(CommandType.CHANGE_INVENTORY, body2));
+        messages.add(new Message(CommandType.PLACE_BARN_CAGE, body3));
 
         return messages;
 
@@ -915,7 +984,7 @@ public class Marketing {
     }
 
     public void showPierreProducts(int id , boolean Filter) {
-        if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && showWindow) || Filter) {
+        if ( showWindow || Filter) {
             showWindow = false;
 
             Table table = createTable(PierreGeneralStore);
@@ -933,7 +1002,7 @@ public class Marketing {
                 if (f.getInitialShopLimit() == 1) {
                     BackPack backPack = new BackPack();
                     backPack.setType(f);
-                    if (id == 1 || backPack.getRemindInShop(marketType) > 0) {
+                    if (id == 1 || backPack.getRemindInShop(null) > 0) {
                         TextButton coinButton = new TextButton("",getSkin());
                         coinButton.clearChildren();
                         buy(coinButton , backPack , PierreGeneralStore);
@@ -953,7 +1022,7 @@ public class Marketing {
     }
 
     public void showStardropProducts(int id , boolean Filter) {
-        if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && showWindow) || Filter) {
+        if ( showWindow || Filter) {
             showWindow = false;
 
             Table table = createTable(StardropSaloon);
@@ -1073,16 +1142,6 @@ public class Marketing {
         return new Message(CommandType.MOVE_IN_MARKET , body);
     }
 
-    public MarketType findEnteredShopType() {
-        for (MarketType market : MarketType.values()) {
-            if (currentGame.currentPlayer.getPositionX() >= market.getTopleftx() && currentGame.currentPlayer.getPositionY() >= market.getToplefty()) {
-                if (currentGame.currentPlayer.getPositionX() < market.getTopleftx() + market.getWidth() && currentGame.currentPlayer.getPositionY() < market.getToplefty() + market.getHeight() ) {
-                    return market;
-                }
-            }
-        }
-        return null;
-    }
 
     public Result BlackSmithProducts() {
         StringBuilder result=new StringBuilder();
@@ -1094,231 +1153,175 @@ public class Marketing {
     }
 
 
-    public Result createWell(int topLeftX , int topLeftY) {
-        InputGameController gameController = InputGameController.getInstance();
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        Marketing marketing = new Marketing();
-
-        if (marketing.findEnteredShopType() != MarketType.MarnieRanch) {
-            return new Result(false , "you can't create makeCoinButton Well because you are not in Marnie's Ranch Market");
-        }
-
-        if (Well.getNeededStone() == 0) {
-            return new Result(false , RED+"The purchase limit for this product has been reached" + RESET);
-        }
-
-        if (!checkTilesForCreateBarnOrCage(topLeftX, topLeftY, Well.getWidth(), Well.getHeight())) {
-            return new Result(false, "you can't create makeCoinButton Well on this coordinate!");
-        }
-
-        int Stone= 0;
-        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
-            if (entry.getKey() instanceof BasicRock) {
-                Stone=entry.getValue();
-            }
-        }
-
-        if (Well.getNeededStone() > Stone) {
-            return new Result(false , "you can't create well because you don't have enough stone!");
-        }
-
-        if (Well.getNeededCoin() > currentGame.currentPlayer.getMoney() ) {
-            return new Result(false , "you can't create well because you don't have enough money!");
-        }
-
-        for (Map.Entry <Items , Integer> entry:inventory.Items.entrySet()) {
-            if (entry.getKey() instanceof BasicRock) {
-                entry.setValue(entry.getValue() - Well.getNeededStone());
-                break;
-            }
-        }
-        currentGame.currentPlayer.increaseMoney(- Well.getNeededCoin());
-
-        Well well = new Well(topLeftX, topLeftY);
-        well.setCharactor('w');
-
-        for (int i = topLeftX; i < topLeftX + Well.getWidth(); i++) {
-            for (int j = topLeftY; j < topLeftY + Well.getHeight(); j++) {
-
-                if (i == topLeftX || i == topLeftX + Well.getWidth() -1 || j == topLeftY || j == topLeftY + Well.getHeight() -1) {
-                    Tile tile = getTileByCoordinates(i , j );
-                    tile.setGameObject(well);
-                }
-            }
-        }
-        Well.setRemindInShop(0);
-        return new Result(true, "Well Created Successfully");
-
-    }
 
 
-    public Result purchaseFromBlackSmith(String name , Integer amount) {
-        if (currentGame.currentDate.getHour() < MarketType.Blacksmith.getStartHour() || currentGame.currentDate.getHour() > MarketType.Blacksmith.getEndHour()) {
-            return new Result(false , RED + "Sorry. Store is close at this time");
-        }
+//    public Result purchaseFromBlackSmith(String name , Integer amount) {
+//        if (currentGame.currentDate.getHour() < MarketType.Blacksmith.getStartHour() || currentGame.currentDate.getHour() > MarketType.Blacksmith.getEndHour()) {
+//            return new Result(false , RED + "Sorry. Store is close at this time");
+//        }
+//
+//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+//        if (amount == null) {
+//            amount = 1;
+//        }
+//        if (name.equals("Coal") ) {
+//            ForagingMinerals Coal = new ForagingMinerals(ForagingMineralsType.COAL);
+//            if (currentGame.currentPlayer.getMoney() < amount * 150) {
+//                return new Result(false , RED + "Not enough money!" + RESET);
+//            }
+//            if (inventory.Items.containsKey(Coal)) {
+//                Integer finalAmount = amount;
+//                inventory.Items.compute(Coal , (key, value) -> value + finalAmount);
+//            }
+//            else {
+//                if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+//                    return new Result(false , RED + "Not enough remind capacity!" + RESET);
+//                }
+//                inventory.Items.put(Coal, amount);
+//            }
+//
+//            currentGame.currentPlayer.increaseMoney(- amount * 150);
+//            return new Result(true , BLUE + "You purchased "+name+ " successfully!");
+//        }
+//        BarsAndOres b = null;
+//
+//        for (BarsAndOreType barsAndOreType : BarsAndOreType.values()) {
+//            if (barsAndOreType.name().equals(name) && barsAndOreType.getMarketType() != null) {
+//                b = new BarsAndOres(barsAndOreType);
+//                break;
+//            }
+//        }
+//        if (b == null) {
+//            return new Result(false , "Products Not found");
+//        }
+//
+//        if (currentGame.currentPlayer.getMoney() < amount * b.getType().getPrice()) {
+//            return new Result(false , RED + "Not enough money!" + RESET);
+//        }
+//        if (inventory.Items.containsKey(b)) {
+//            Integer finalAmount1 = amount;
+//            inventory.Items.compute(b , (k, v) -> v + finalAmount1);
+//        }
+//        else {
+//            if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+//                return new Result(false , RED + "Not enough capacity in your backpack!" + RESET);
+//            }
+//            inventory.Items.put(b, amount);
+//        }
+//
+//        currentGame.currentPlayer.increaseMoney( - amount * b.getType().getPrice());
+//        return new Result(true , BLUE + "You purchased "+name+ " successfully!");
+//
+//    }
 
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-        if (amount == null) {
-            amount = 1;
-        }
-        if (name.equals("Coal") ) {
-            ForagingMinerals Coal = new ForagingMinerals(ForagingMineralsType.COAL);
-            if (currentGame.currentPlayer.getMoney() < amount * 150) {
-                return new Result(false , RED + "Not enough money!" + RESET);
-            }
-            if (inventory.Items.containsKey(Coal)) {
-                Integer finalAmount = amount;
-                inventory.Items.compute(Coal , (key, value) -> value + finalAmount);
-            }
-            else {
-                if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
-                    return new Result(false , RED + "Not enough remind capacity!" + RESET);
-                }
-                inventory.Items.put(Coal, amount);
-            }
 
-            currentGame.currentPlayer.increaseMoney(- amount * 150);
-            return new Result(true , BLUE + "You purchased "+name+ " successfully!");
-        }
-        BarsAndOres b = null;
-
-        for (BarsAndOreType barsAndOreType : BarsAndOreType.values()) {
-            if (barsAndOreType.name().equals(name) && barsAndOreType.getMarketType() != null) {
-                b = new BarsAndOres(barsAndOreType);
-                break;
-            }
-        }
-        if (b == null) {
-            return new Result(false , "Products Not found");
-        }
-
-        if (currentGame.currentPlayer.getMoney() < amount * b.getType().getPrice()) {
-            return new Result(false , RED + "Not enough money!" + RESET);
-        }
-        if (inventory.Items.containsKey(b)) {
-            Integer finalAmount1 = amount;
-            inventory.Items.compute(b , (k, v) -> v + finalAmount1);
-        }
-        else {
-            if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
-                return new Result(false , RED + "Not enough capacity in your backpack!" + RESET);
-            }
-            inventory.Items.put(b, amount);
-        }
-
-        currentGame.currentPlayer.increaseMoney( - amount * b.getType().getPrice());
-        return new Result(true , BLUE + "You purchased "+name+ " successfully!");
-
-    }
-
-
-    public Result upgradeTool (String name) {
-        if (currentGame.currentDate.getHour() < MarketType.FishShop.getStartHour() || currentGame.currentDate.getHour() > MarketType.FishShop.getEndHour()) {
-            return new Result(false , RED + "Sorry. Store is close at this time"+RESET);
-        }
-        MarketType marketType=null;//MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());
-        if (marketType!=MarketType.Blacksmith) {
-            return new Result(false , "you are not in BlackSmith Market. please go there");
-        }
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-
-        if ( name.equals("Axe") ) {
-            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof Axe) {
-                    AxeType axeType = AxeType.getNextType(((Axe) entry.getKey()).getType());
-                    if (axeType == null) {
-                        return new Result(false , name + "is at top level");
-                    }
-                    else if (AxeType.checkIngredient(axeType)) {
-                        ((Axe) entry.getKey()).setType(axeType);
-                        currentGame.currentPlayer.increaseMoney( - axeType.getPrice());
-                        return new Result(true , name + "updated successfully");
-                    }
-                    else {
-                        return new Result(false , "Not enough ingredient or money");
-                    }
-                }
-            }
-        }
-
-        if ( name.equals("Hoe") ) {
-            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof Hoe) {
-                    HoeType hoeType= HoeType.getNextType(((Hoe) entry.getKey()).getType());
-                    if (hoeType == null) {
-                        return new Result(false , name + "is at top level");
-                    }
-                    else if (HoeType.checkIngredient(hoeType)) {
-                        ((Hoe) entry.getKey()).setType(hoeType);
-                        currentGame.currentPlayer.increaseMoney( - hoeType.getPrice());
-                        return new Result(true , name + "updated successfully");
-                    }
-                    else {
-                        return new Result(false , "Not enough ingredient or money");
-                    }
-                }
-            }
-        }
-
-        if ( name.equals("PickAxe") ) {
-            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof PickAxe) {
-                    PickAxeType pickAxeType=PickAxeType.getPickAxeType(((PickAxe) entry.getKey()).getType());
-                    if (pickAxeType == null) {
-                        return new Result(false , name + "is at top level");
-                    }
-                    else if (PickAxeType.checkIngredient(pickAxeType)) {
-                        ((PickAxe) entry.getKey()).setType(pickAxeType);
-                        currentGame.currentPlayer.increaseMoney( - pickAxeType.getPrice());
-                        return new Result(true , name + "updated successfully");
-                    }
-                    else {
-                        return new Result(false , "Not enough ingredient or money");
-                    }
-                }
-            }
-        }
-
-        if ( name.equals("WateringCan") ) {
-            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof WateringCan) {
-                    WateringCanType wateringCanType=WateringCanType.getWateringCanType(((WateringCan) entry.getKey()).getType());
-                    if (wateringCanType == null) {
-                        return new Result(false , name + "is at top level");
-                    }
-                    else if (WateringCanType.checkIngredient(wateringCanType)) {
-                        ((WateringCan) entry.getKey()).setType(wateringCanType);
-                        currentGame.currentPlayer.increaseMoney( - wateringCanType.getPrice());
-                        return new Result(true , name + "updated successfully");
-                    }
-                    else {
-                        return new Result(false , "Not enough ingredient or money");
-                    }
-                }
-            }
-        }
-
-        if ( name.equals("TrashCan") ) {
-            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-                if (entry.getKey() instanceof TrashCan) {
-                    TrashCanType trashCanType = TrashCanType.nextTrashCanType(((TrashCan) entry.getKey()).type);
-                    if (trashCanType == null) {
-                        return new Result(false , name + "is at top level");
-                    }
-                    else if (TrashCanType.checkIngredient(trashCanType)) {
-                        ((TrashCan) entry.getKey()).setType(trashCanType);
-                        currentGame.currentPlayer.increaseMoney( - trashCanType.getPrice());
-                        return new Result(true , name + " updated successfully");
-                    }
-                    else {
-                        return new Result(false , "Not enough ingredient or money");
-                    }
-                }
-            }
-        }
-
-        return new Result(false , name + " not found");
-    }
+//    public Result upgradeTool (String name) {
+//        if (currentGame.currentDate.getHour() < MarketType.FishShop.getStartHour() || currentGame.currentDate.getHour() > MarketType.FishShop.getEndHour()) {
+//            return new Result(false , RED + "Sorry. Store is close at this time"+RESET);
+//        }
+//        MarketType marketType=null;//MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY());
+//        if (marketType!=MarketType.Blacksmith) {
+//            return new Result(false , "you are not in BlackSmith Market. please go there");
+//        }
+//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+//
+//        if ( name.equals("Axe") ) {
+//            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//                if (entry.getKey() instanceof Axe) {
+//                    AxeType axeType = AxeType.getNextType(((Axe) entry.getKey()).getType());
+//                    if (axeType == null) {
+//                        return new Result(false , name + "is at top level");
+//                    }
+//                    else if (AxeType.checkIngredient(axeType)) {
+//                        ((Axe) entry.getKey()).setType(axeType);
+//                        currentGame.currentPlayer.increaseMoney( - axeType.getPrice());
+//                        return new Result(true , name + "updated successfully");
+//                    }
+//                    else {
+//                        return new Result(false , "Not enough ingredient or money");
+//                    }
+//                }
+//            }
+//        }
+//
+//        if ( name.equals("Hoe") ) {
+//            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//                if (entry.getKey() instanceof Hoe) {
+//                    HoeType hoeType= HoeType.getNextType(((Hoe) entry.getKey()).getType());
+//                    if (hoeType == null) {
+//                        return new Result(false , name + "is at top level");
+//                    }
+//                    else if (HoeType.checkIngredient(hoeType)) {
+//                        ((Hoe) entry.getKey()).setType(hoeType);
+//                        currentGame.currentPlayer.increaseMoney( - hoeType.getPrice());
+//                        return new Result(true , name + "updated successfully");
+//                    }
+//                    else {
+//                        return new Result(false , "Not enough ingredient or money");
+//                    }
+//                }
+//            }
+//        }
+//
+//        if ( name.equals("PickAxe") ) {
+//            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//                if (entry.getKey() instanceof PickAxe) {
+//                    PickAxeType pickAxeType=PickAxeType.getPickAxeType(((PickAxe) entry.getKey()).getType());
+//                    if (pickAxeType == null) {
+//                        return new Result(false , name + "is at top level");
+//                    }
+//                    else if (PickAxeType.checkIngredient(pickAxeType)) {
+//                        ((PickAxe) entry.getKey()).setType(pickAxeType);
+//                        currentGame.currentPlayer.increaseMoney( - pickAxeType.getPrice());
+//                        return new Result(true , name + "updated successfully");
+//                    }
+//                    else {
+//                        return new Result(false , "Not enough ingredient or money");
+//                    }
+//                }
+//            }
+//        }
+//
+//        if ( name.equals("WateringCan") ) {
+//            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//                if (entry.getKey() instanceof WateringCan) {
+//                    WateringCanType wateringCanType=WateringCanType.getWateringCanType(((WateringCan) entry.getKey()).getType());
+//                    if (wateringCanType == null) {
+//                        return new Result(false , name + "is at top level");
+//                    }
+//                    else if (WateringCanType.checkIngredient(wateringCanType)) {
+//                        ((WateringCan) entry.getKey()).setType(wateringCanType);
+//                        currentGame.currentPlayer.increaseMoney( - wateringCanType.getPrice());
+//                        return new Result(true , name + "updated successfully");
+//                    }
+//                    else {
+//                        return new Result(false , "Not enough ingredient or money");
+//                    }
+//                }
+//            }
+//        }
+//
+//        if ( name.equals("TrashCan") ) {
+//            for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//                if (entry.getKey() instanceof TrashCan) {
+//                    TrashCanType trashCanType = TrashCanType.nextTrashCanType(((TrashCan) entry.getKey()).type);
+//                    if (trashCanType == null) {
+//                        return new Result(false , name + "is at top level");
+//                    }
+//                    else if (TrashCanType.checkIngredient(trashCanType)) {
+//                        ((TrashCan) entry.getKey()).setType(trashCanType);
+//                        currentGame.currentPlayer.increaseMoney( - trashCanType.getPrice());
+//                        return new Result(true , name + " updated successfully");
+//                    }
+//                    else {
+//                        return new Result(false , "Not enough ingredient or money");
+//                    }
+//                }
+//            }
+//        }
+//
+//        return new Result(false , name + " not found");
+//    }
 
 
 }

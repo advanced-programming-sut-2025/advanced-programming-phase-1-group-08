@@ -365,7 +365,7 @@ public enum NPC {
 
     private long lastConversation;
 
-    private Sprite sprite;
+    //private Sprite sprite;
     private Animation<Texture> Left;
     private Animation<Texture> Up;
     private Animation<Texture> Down;
@@ -429,10 +429,10 @@ public enum NPC {
         this.positionY = (90 - topLeftY);
         this.directionSet = directionSet;
 
-        this.DirectionInWalk = directionSet.loadAllTextures();
+        //this.DirectionInWalk = directionSet.loadAllTextures();
         this.direction = Direction.Down;
-        this.sprite = new Sprite(DirectionInWalk.get(direction));
-        this.sprite.setPosition(TEXTURE_SIZE * topLeftX, TEXTURE_SIZE * (90 - topLeftY));
+        //this.sprite = new Sprite(DirectionInWalk.get(direction));
+        //this.sprite.setPosition(TEXTURE_SIZE * topLeftX, TEXTURE_SIZE * (90 - topLeftY));
     }
 
 
@@ -468,12 +468,12 @@ public enum NPC {
         return giftItem;
     }
 
-    public Sprite getSprite() {
-        return sprite;
-    }
-    public void setSprite(Sprite sprite) {
-        this.sprite = sprite;
-    }
+//    public Sprite getSprite() {
+//        return sprite;
+//    }
+//    public void setSprite(Sprite sprite) {
+//        this.sprite = sprite;
+//    }
     public Animation<Texture> getLeft() {
         return Left;
     }

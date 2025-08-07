@@ -6,6 +6,7 @@ import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
+import com.Graphic.model.Animall.AnimalRenderer;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
@@ -97,14 +98,14 @@ public class GameControllerLogic {
         EnterTheMine();
         EnterTheMarket(Main.getClient(null).getPlayer());
         addPlayerToMarket(Main.getClient(null).getPlayer());
-            if ( gameMenu.isFirstLoad() && currentGame.currentPlayer.isInMine()) {
+            if ( gameMenu.isFirstLoad() && Main.getClient(null).getPlayer().isInMine()) {
                 gameMenu.setFirstLoad(false);
                 camera.setToOrtho(false ,Gdx.graphics.getWidth() / 4 , Gdx.graphics.getHeight() / 4);
                 gameMenu.setTiledMap(new TmxMapLoader().load("Mohamadreza/Maps/Mines/10.tmx"));
                 gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap(),1f));
 
             }
-            else if ( gameMenu.isFirstLoad() && currentGame.currentPlayer.isInBarnOrCage()) {
+            else if ( gameMenu.isFirstLoad() && Main.getClient(null).getPlayer().isInBarnOrCage()) {
                 gameMenu.setFirstLoad(false);
                 camera.setToOrtho(false , 300 , 150);
                 gameMenu.setTiledMap(new TmxMapLoader().load(currentGame.currentPlayer.getBarnOrCagePath()));
@@ -700,9 +701,9 @@ public class GameControllerLogic {
 
     public static User getUserByLocation (int j, int i) {
 
-        for (User user : currentGame.players)
-            if (j == user.getPositionX() && i == user.getPositionY())
-                return user;
+//        for (User user : currentGame.players)
+//            if (j == user.getPositionX() && i == user.getPositionY())
+//                return user;
         return null;
     }
     public static boolean checkTile(Tile tile){
@@ -1093,7 +1094,7 @@ public class GameControllerLogic {
                 for (int i = 0 ; i < 5 ; i++) {
                     gameMenu.getHeartAnimations().add(new HeartAnimation(
                         TextureManager.get("Mohamadreza/heart.png") ,
-                        animal.getSprite().getX() , animal.getSprite().getY()));
+                        animal.getPositionX() , animal.getPositionY()));
                 }
             }
         });
@@ -1180,10 +1181,13 @@ public class GameControllerLogic {
                 }
 
                 else {
-                    animal.setOut(true);
-                    gameMenu.getShepherdingAnimals().add(animal);
-                    animal.setMoving(true);
-                    walkAnimalGradually(Path,animal);
+                    animal.getPath().clear();
+                    animal.getPath().addAll(Path);
+                    requestForShepherdAnimals(Path , animal , Integer.parseInt(x.getText()) , Integer.parseInt(y.getText()));
+//                    animal.setOut(true);
+//                    gameMenu.getShepherdingAnimals().add(animal);
+//                    animal.setMoving(true);
+//                    walkAnimalGradually(Path,animal);
                     window.remove();
                 }
             }
@@ -1191,6 +1195,24 @@ public class GameControllerLogic {
 
         return mid;
 
+    }
+
+    public static void requestForShepherdAnimals(List<Tile> Path , Animal animal , int x , int y) {
+        HashMap<String , Object> shepherdAnimals = new HashMap<>();
+        shepherdAnimals.put("Animal" , animal);
+        shepherdAnimals.put("X" , x);
+        shepherdAnimals.put("Y" , y);
+        Main.getClient(null).getRequests().add(new Message(CommandType.SHEPHERD_ANIMAL , shepherdAnimals));
+    }
+
+    public static void AnswerShepherding(Message message , Game game) {
+        Animal animal = message.getFromBody("Animal");
+        int x = message.getIntFromBody("X");
+        int y = message.getIntFromBody("Y");
+        animal.setOut(true);
+        animal.setPositionX(x * TEXTURE_SIZE);
+        animal.setPositionY((90 - y) * TEXTURE_SIZE);
+        game.getDiffQueue().add(message);
     }
 
     private static void createDialogError(Result result , Table lowerRight) {
@@ -1216,6 +1238,23 @@ public class GameControllerLogic {
             .row();
 
         lowerRight.add(dialog).size(500, 200).center();
+    }
+
+    public static void updateAnimals(Queue<Animal> animalQueue) {
+        boolean exists = false;
+        while (!animalQueue.isEmpty()) {
+            Animal animal = animalQueue.poll();
+            for (AnimalRenderer animalRenderer : gameMenu.getAnimalRenderers()) {
+                if (animalRenderer.getAnimal().equals(animal)) {
+                    exists = true;
+                }
+            }
+            if (!exists) {
+                gameMenu.getAnimalRenderers().add(new AnimalRenderer(animal));
+            }
+
+            walkAnimalGradually(animal.getPath() , animal);
+        }
     }
 
     private static void walkAnimalGradually(List<Tile> Path , Animal animal) {
@@ -1246,7 +1285,7 @@ public class GameControllerLogic {
                         //animal.getSprite().setSize(TEXTURE_SIZE, TEXTURE_SIZE);
 
                         if (finalI == Path.size() - 2) {
-                            gameMenu.getShepherdingAnimals().remove(animal);
+                            //gameMenu.getShepherdingAnimals().remove(animal);
                             animal.setMoving(false);
                         }
                     }
@@ -1260,6 +1299,9 @@ public class GameControllerLogic {
     }
 
     public static void pet(Animal animal) {
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("Animal" , animal);
+        Main.getClient(null).getRequests().add(new Message(CommandType.PET , body));
         animal.increaseFriendShip(15);
         animal.setPetToday(true);
     }
@@ -1312,8 +1354,8 @@ public class GameControllerLogic {
         return false;
     }
     public static void calculateAnimalsFriendship() {
-        for (User player : currentGame.players)
-            for (BarnOrCage barnOrCage : player.BarnOrCages) {
+
+            for (BarnOrCage barnOrCage : Main.getClient(null).getPlayer().BarnOrCages) {
                 for (Animal animal : barnOrCage.animals) {
                     if (! animal.isFeedToday()){
                         animal.increaseFriendShip(- 20);
@@ -1331,16 +1373,20 @@ public class GameControllerLogic {
                     System.out.println(animal.isFeedPreviousDay() + "قبل");
                     animal.setFeedToday(false);
                     System.out.println(animal.isFeedPreviousDay() + "بعد");
-                    if (currentGame.currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod()) {
-                        animal.setLastProduceDay(currentGame.currentDate.clone().getDate());
+                    if (Main.getClient(null).getLocalGameState().currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod()) {
+                        animal.setLastProduceDay(Main.getClient(null).getLocalGameState().currentDate.clone().getDate());
                     }
-                    else if (currentGame.currentDate.getDate() - animal.getLastProduceDay() == -28 + animal.getType().getPeriod()) {
-                        animal.setLastProduceDay(currentGame.currentDate.clone().getDate());
+                    else if (Main.getClient(null).getLocalGameState().currentDate.getDate() - animal.getLastProduceDay() == -28 + animal.getType().getPeriod()) {
+                        animal.setLastProduceDay(Main.getClient(null).getLocalGameState().currentDate.clone().getDate());
                     }
                     animal.setRandomProduction(Math.random() + 0.5);
                     animal.setRandomQuantity(Math.random());
                     animal.setRandomChance(Math.random());
                     animal.setProductCollected(false);
+                    HashMap<String , Object> body = new HashMap<>();
+                    body.put("Animal" , animal);
+                    body.put("Number" , animal.getFriendShip());
+                    Main.getClient(null).getRequests().add(new Message(CommandType.CALCULATE_ANIMAL_FRIENDSHIP , body);
                 }
             }
     }
@@ -1749,35 +1795,35 @@ public class GameControllerLogic {
         return new Result(true, "Eaten, Successfully.");
     }
     public static void exitGame () {
-        if (currentGame.currentPlayer != currentUser) {
-            System.out.println(RED+"Access Denied!"+RESET);
-            return;
-        }
-        //TODO بیشترین امتیاز و... سیو بشه
-        //TODO currently in game
-        //TODO سیو کل بازی
+//        if (currentGame.currentPlayer != currentUser) {
+//            System.out.println(RED+"Access Denied!"+RESET);
+//            return;
+//        }
+//        //TODO بیشترین امتیاز و... سیو بشه
+//        //TODO currently in game
+//        //TODO سیو کل بازی
     }
     public static void forceTerminate () {
-        Scanner scanner = new Scanner(System.in);
-        User terminator = currentGame.currentPlayer;
-        for (User user: currentGame.players) {
-            if (user == terminator)
-                continue;
-            currentGame.currentPlayer = user;
-            System.out.println(currentGame.currentPlayer.getNickname() + ", Do You Agree With the Game Termination?[Y/N]");
-            String choice = scanner.next();
-            if (!choice.trim().toLowerCase().equals("y")) {
-                System.out.println("Vote Failed! The Game won't be Terminated.");
-                currentGame.currentPlayer = terminator;
-                return;
-            }
-        }
-
-        //TODO  کارهای ترمینیت کردن مثل پاک کردن فایل های سیو و ریست کردن همه دیتاهای بازیکنا بجز ماکسیمم امتیاز
-        for (User user: currentGame.players) {
-            user.setCurrently_in_game(false);
-            user.setMax_point(user.getPoint());
-        }
+//        Scanner scanner = new Scanner(System.in);
+//        User terminator = currentGame.currentPlayer;
+//        for (User user: currentGame.players) {
+//            if (user == terminator)
+//                continue;
+//            currentGame.currentPlayer = user;
+//            System.out.println(currentGame.currentPlayer.getNickname() + ", Do You Agree With the Game Termination?[Y/N]");
+//            String choice = scanner.next();
+//            if (!choice.trim().toLowerCase().equals("y")) {
+//                System.out.println("Vote Failed! The Game won't be Terminated.");
+//                currentGame.currentPlayer = terminator;
+//                return;
+//            }
+//        }
+//
+//        //TODO  کارهای ترمینیت کردن مثل پاک کردن فایل های سیو و ریست کردن همه دیتاهای بازیکنا بجز ماکسیمم امتیاز
+//        for (User user: currentGame.players) {
+//            user.setCurrently_in_game(false);
+//            user.setMax_point(user.getPoint());
+//        }
     }
 
 

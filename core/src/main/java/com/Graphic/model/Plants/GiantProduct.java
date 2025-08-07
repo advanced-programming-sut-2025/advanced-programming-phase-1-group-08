@@ -1,5 +1,6 @@
 package com.Graphic.model.Plants;
 
+import com.Graphic.Main;
 import com.Graphic.model.Weather.DateHour;
 import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
@@ -54,13 +55,13 @@ public class GiantProduct extends Items { // TODO ابعاد
         if (item.equals(MarketItemType.QuantityRetainingSoil))
             numFertilize++;
         if (item.equals(MarketItemType.BasicRetainingSoil))
-            lastWater = currentGame.currentDate.clone();
+            lastWater = Main.getClient(null).getLocalGameState().currentDate.clone();
 
     }
     public void setStage  () {
 
         int days = 0;
-        DateHour dateHour = currentGame.currentDate.clone();
+        DateHour dateHour = Main.getClient(null).getLocalGameState().currentDate.clone();
         dateHour.increaseDay(numFertilize);
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
@@ -78,27 +79,27 @@ public class GiantProduct extends Items { // TODO ابعاد
 
     public void checkHaveProduct () {
 
-        DateHour dateHour = currentGame.currentDate.clone();
+        DateHour dateHour = Main.getClient(null).getLocalGameState().currentDate.clone();
         dateHour.increaseDay(numFertilize);
-        this.haveProduct = type.getSeason().contains(currentGame.currentDate.getSeason()) &&
+        this.haveProduct = type.getSeason().contains(Main.getClient(null).getLocalGameState().currentDate.getSeason()) &&
                 getDayDifferent(birthDay, dateHour) > type.getRegrowthTime() &&
                 this.stage == this.type.getGrowthStages();
     }
     public boolean checkForDeath () {
 
-        return getDayDifferent(lastWater, currentGame.currentDate) > 2;
+        return getDayDifferent(lastWater, Main.getClient(null).getLocalGameState().currentDate) > 2;
     }
     public void harvest () {
 
-        for (Tile tile : currentGame.bigMap)
-            if (neighbors.contains(tile))
-                tile.setGameObject(new Walkable());
+//        for (Tile tile : currentGame.bigMap)
+//            if (neighbors.contains(tile))
+//                tile.setGameObject(new Walkable());
     }
     public void delete () {
 
-        for (Tile tile : currentGame.bigMap)
-            if (tile.getGameObject().equals(this))
-                tile.setGameObject(new Walkable());
+//        for (Tile tile : currentGame.bigMap)
+//            if (tile.getGameObject().equals(this))
+//                tile.setGameObject(new Walkable());
     }
 
 

@@ -24,6 +24,7 @@ import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.Plants.*;
+import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
@@ -75,8 +76,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private OrthogonalTiledMapRenderer renderer;
     private InputMultiplexer multiplexer;
     private ArrayList<UserRenderer> userRenderers;
-    private HashMap<Animal , AnimalRenderer> animalRenderers;
     public GameState gameState;
+    private ArrayList<CraftingRenderer> craftingRenderers;
+    private Sprite withMouse;
+    private ArrayList<AnimalRenderer> animalRenderers = new ArrayList<>();
 
     private boolean progressComplete = false;
     private boolean ePressed = false;
@@ -246,7 +249,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Main.getBatch().begin();
         controller.update(camera, v, anyMenuIsActivated());
         drawCurrentItem();
-        moveAnimal();
+        updateAnimals(Main.getClient(null).getLocalGameState().getAnimals());
         NPCManager.NPCWalk(v);
         eatingManagement(v);
         mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -1200,8 +1203,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private void handleLeftClick () {
         useCurrentItem();
         Direction direction = Direction.getDirByCord(
-            currentGame.currentPlayer.getSprite().getX(),
-            90 - currentGame.currentPlayer.getSprite().getY(),
+            Main.getClient(null).getPlayer().getPositionX(),
+            90 - Main.getClient(null).getPlayer().getPositionY(),
             getVector().x, 90 - getVector().y
         );
         if (direction != null) {
@@ -1976,7 +1979,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public ArrayList<UserRenderer> getUserRenderer() {
         return userRenderers;
     }
-    public HashMap<Animal , AnimalRenderer> getAnimalRendererMap() {
+    public ArrayList<AnimalRenderer> getAnimalRenderers() {
         return animalRenderers;
     }
     public void changeMenu() {
@@ -1984,6 +1987,19 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             Main.getMain().setScreen(Main.getClient(null).getCurrentMenu().getScreen());
         }
     }
+    public ArrayList<CraftingRenderer> getCraftingRenderers() {
+        return craftingRenderers;
+    }
+    public Sprite getWithMouse() {
+        if (withMouse == null) {
+            withMouse = new Sprite();
+        }
+        return withMouse;
+    }
+    public void setWithMouse(Sprite withMouse) {
+        this.withMouse = withMouse;
+    }
+
 
     public void resize(int i, int i1) {
 

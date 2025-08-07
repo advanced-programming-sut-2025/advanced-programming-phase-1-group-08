@@ -165,12 +165,15 @@ public enum BarnORCageType {
         return points;
     }
 
-    public void exitBarnOrCage(User user) {
-        if (exit.contains(new Vector2(user.sprite.getX(), user.sprite.getY()))
+    public boolean exitBarnOrCage(User user) {
+
+        if (exit.contains(new Vector2(user.getPositionX(), user.getPositionY()))
                 && user.getDirection().equals(Direction.Down)) {
-            currentGame.currentPlayer.setInFarmExterior(true);
-            camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            return true;
+//            currentGame.currentPlayer.setInFarmExterior(true);
+//            camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
+        return false;
     }
 
 }

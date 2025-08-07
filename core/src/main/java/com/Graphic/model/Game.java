@@ -25,15 +25,15 @@ public class Game {
     public Map<Set<User>, List<Trade>> trades = new HashMap<>();
     public ArrayList<HumanCommunications> friendships = new ArrayList<>();
 
-    public ArrayList<User> players = new ArrayList<>();
-    public ArrayList<Farm> farms  = new ArrayList<>();
-    public ArrayList<Tile> bigMap = new ArrayList<>();
-
-    public Weather tomorrowWeather;
-    public Weather currentWeather;
-    public DateHour currentDate;
-
-    public User currentPlayer;
+//    public ArrayList<User> players = new ArrayList<>();
+//    public ArrayList<Farm> farms  = new ArrayList<>();
+//    public ArrayList<Tile> bigMap = new ArrayList<>();
+//
+//    public Weather tomorrowWeather;
+//    public Weather currentWeather;
+//    public DateHour currentDate;
+//
+//    public User currentPlayer;
     public Menu currentMenu;
 
 
@@ -141,6 +141,7 @@ public class Game {
                     lastSentIndex.put(u.getUsername(), lastSent + 1);
                     return message;
                 }
+                idx ++;
             }
         }
 

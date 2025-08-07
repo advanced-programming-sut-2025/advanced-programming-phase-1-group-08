@@ -11,8 +11,17 @@ import java.util.HashMap;
 
 public class AnimalRenderer {
 
+    private Animal animal;
     private HashMap<Direction, Animation<Texture>> animations;
 
+    public AnimalRenderer(Animal animal) {
+        this.animal = animal;
+        animations = new HashMap<>();
+        addToAnimations(Direction.Up , animal.getUp());
+        addToAnimations(Direction.Down , animal.getDown());
+        addToAnimations(Direction.Left , animal.getLeft());
+        addToAnimations(Direction.Right , animal.getRight());
+    }
     public void addToAnimations(Direction direction , ArrayList<String> frames) {
         Animation<Texture> animation = new Animation<>(0.1f ,
             TextureManager.get(frames.get(0)) ,
@@ -23,8 +32,12 @@ public class AnimalRenderer {
         animations.put(direction , animation);
     }
 
-    public void render(Animal animal) {
+    public void render() {
         Animation<Texture> animation = animations.get(animal.getDirection());
         Main.getBatch().draw(animation.getKeyFrame(animal.getTimer() , true), animal.getX(), animal.getY());
+    }
+
+    public Animal getAnimal() {
+        return animal;
     }
 }
