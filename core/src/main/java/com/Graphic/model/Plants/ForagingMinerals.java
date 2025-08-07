@@ -14,16 +14,13 @@ public class ForagingMinerals extends Items {
 
     private Point position;
 
-    private Sprite sprite;
+
+
 
     public ForagingMinerals(ForagingMineralsType type) {
         this.type = type;
-        sprite = new Sprite(TextureManager.get(type.getTexturePath()));
     }
 
-    public Sprite getSprite() {
-        return sprite;
-    }
 
     public ForagingMineralsType getType() {
         return type;

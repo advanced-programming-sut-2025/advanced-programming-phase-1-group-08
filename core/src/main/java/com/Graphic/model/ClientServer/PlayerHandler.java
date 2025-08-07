@@ -120,8 +120,8 @@ public class PlayerHandler extends Thread {
                             user.getBackPack().inventory.Items.put(items,amount);
                         }
                         HashMap<String , Object> body = new HashMap<>();
-                        body.put("Item" , message.getIntFromBody("Item"));
-                        body.put("amount" , 1);
+                        body.put("Item" , message.getFromBody("Item"));
+                        body.put("amount" , message.getIntFromBody("amount"));
                         sendMessage(new Message(CHANGE_INVENTORY , body));
                     }
                 }
@@ -151,7 +151,7 @@ public class PlayerHandler extends Thread {
                 body.put("amount" , 1);
                 sendMessage(new Message(CHANGE_INVENTORY , body));
             }
-            
+
         }
     }
 
