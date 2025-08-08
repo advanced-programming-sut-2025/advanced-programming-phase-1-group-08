@@ -271,6 +271,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Main.getBatch().setProjectionMatrix(camera.combined);
         gameState = Main.getClient(null).getLocalGameState();
 
+
+        if (!Main.getClient(null).getPlayer().isInFarmExterior()) {
+            getRenderer().setView(camera);
+            getRenderer().render();
+        }
+
         checkFriendDistance();
         if (activeDialog != null && TimeUtils.millis() > dialogExpirationTime) {
             activeDialog.hide();
@@ -314,19 +320,19 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         Sprite s = new Sprite(new Texture(Gdx.files.internal("Ariyo/light.png")));
         s.setRegion(TextureManager.get("Ariyo/light.png"));
-        s.setPosition(currentGame.currentPlayer.sprite.getX() - 70, currentGame.currentPlayer.sprite.getY() - 150);
+        s.setPosition(Main.getClient(null).getPlayer().sprite.getX() - 70, Main.getClient(null).getPlayer().sprite.getY() - 150);
         s.setSize(s.getWidth()*2, s.getHeight()*2);
         s.draw(Main.getBatch());
     }
     private void checkLakeDistance(float v) {
-        Lake lake = currentGame.currentPlayer.getFarm().getLake();
+        Lake lake = Main.getClient(null).getPlayer().getFarm().getLake();
         float lakeY = lake.getTopLeftY();
         float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
         Sprite fisherman = new Sprite(TextureManager.get("Ariyo/fisherman.png"));
 
-        if (currentGame.currentPlayer.doingMinigame) {
+        if (Main.getClient(null).getPlayer().doingMinigame) {
             fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
-            if (currentGame.currentPlayer.getGender().equalsIgnoreCase("woman"))
+            if (Main.getClient(null).getPlayer().getGender().equalsIgnoreCase("woman"))
                 fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
             else
                 fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
@@ -337,11 +343,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         fishingTimer += v;
 
-        if (!currentGame.currentPlayer.isFishing)
+        if (!Main.getClient(null).getPlayer().isFishing)
             fishingTimer = 0;
 
-        if (currentGame.currentPlayer.isFishing && fishingTimer >= 10f) {
-            currentGame.currentPlayer.doingMinigame = true;
+        if (Main.getClient(null).getPlayer().isFishing && fishingTimer >= 10f) {
+            Main.getClient(null).getPlayer().doingMinigame = true;
             shapeRenderer = new ShapeRenderer();
             createGrayBackGround();
             fishingTimer = 0;
@@ -353,7 +359,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             fishToCatchType = FishType.values()[random.nextInt(FishType.values().length)];
             fishToCatch = new Sprite(TextureManager.get(fishToCatchType.getIconPath()));
             fishToCatch.setRegion(TextureManager.get(fishToCatchType.getIconPath()));
-            fishToCatch.setPosition(currentGame.currentPlayer.sprite.getX() + minigame.getWidth() / 2.3f, currentGame.currentPlayer.sprite.getY() + 180);
+            fishToCatch.setPosition(Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth() / 2.3f, Main.getClient(null).getPlayer().sprite.getY() + 180);
             fishToCatch.setSize(fishToCatch.getWidth() * 0.6f, fishToCatch.getHeight() * 0.7f);
             float verticalSpeed = 50f;
             float horizontalWiggle = 10f;
@@ -364,15 +370,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             if (fishToCatchType.isLegendary()) {
             fishCrown = new Sprite(TextureManager.get("Ariyo/star.png"));
             fishCrown.setRegion(TextureManager.get("Ariyo/star.png"));
-            fishCrown.setPosition(currentGame.currentPlayer.sprite.getX() + minigame.getWidth() / 2.3f, currentGame.currentPlayer.sprite.getY() + 190);
+            fishCrown.setPosition(Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth() / 2.3f, Main.getClient(null).getPlayer().sprite.getY() + 190);
             }
             else
                 fishCrown = null;
         }
 
 
-        float myX = currentGame.currentPlayer.getPositionX();
-        float myY = currentGame.currentPlayer.getPositionY();
+        float myX = Main.getClient(null).getPlayer().getPositionX();
+        float myY = Main.getClient(null).getPlayer().getPositionY();
         float deltaX = Math.abs(myX - lakeX);
         float deltaY = Math.abs(myY - lakeY);
         if (!(deltaX < 3f && deltaY < 3f)) {
@@ -381,14 +387,14 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             return;
         }
 
-        if (!currentGame.currentPlayer.isFishing) {
-            tempFishing.setPosition(currentGame.currentPlayer.sprite.getX(), currentGame.currentPlayer.sprite.getY() + 40);
+        if (!Main.getClient(null).getPlayer().isFishing) {
+            tempFishing.setPosition(Main.getClient(null).getPlayer().sprite.getX(), Main.getClient(null).getPlayer().sprite.getY() + 40);
             tempFishing.draw(Main.getBatch(), 1f);
         }
 
-        if (!currentGame.currentPlayer.isFishing && Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+        if (!Main.getClient(null).getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             boolean havePole = false;
-            Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+            Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
             for (Map.Entry<Items, Integer> entry: inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof FishingPole) {
                     havePole = true;
@@ -402,10 +408,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             showFishLight = true;
 
-            currentGame.currentPlayer.isFishing = true;
+            Main.getClient(null).getPlayer().isFishing = true;
         }
-        else if (currentGame.currentPlayer.isFishing && Gdx.input.isKeyJustPressed(Input.Keys.G)) {
-            currentGame.currentPlayer.isFishing = false;
+        else if (Main.getClient(null).getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.G)) {
+            Main.getClient(null).getPlayer().isFishing = false;
         }
 
         Texture iconTexture = new Texture(Gdx.files.internal("all image/Farming/Fishing.png"));
@@ -413,9 +419,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         tempFishing.setVisible(true);
 
-        if (currentGame.currentPlayer.isFishing) {
+        if (Main.getClient(null).getPlayer().isFishing) {
             fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
-            if (currentGame.currentPlayer.getGender().equalsIgnoreCase("woman"))
+            if (Main.getClient(null).getPlayer().getGender().equalsIgnoreCase("woman"))
                 fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
             else
                 fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
@@ -428,17 +434,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private void startFishing(float v) {
         /// THE MINI GAME
 
-        if (!currentGame.currentPlayer.doingMinigame)
+        if (!Main.getClient(null).getPlayer().doingMinigame)
             return;
 
         float delta = Gdx.graphics.getDeltaTime();
 
-        minigame.setPosition(currentGame.currentPlayer.sprite.getX(), currentGame.currentPlayer.sprite.getY() - minigame.getHeight()/2f);
+        minigame.setPosition(Main.getClient(null).getPlayer().sprite.getX(), Main.getClient(null).getPlayer().sprite.getY() - minigame.getHeight()/2f);
         minigame.draw(Main.getBatch());
 
         minigameArea.set(
-            currentGame.currentPlayer.sprite.getX() + minigame.getWidth() / 2.3f,
-            currentGame.currentPlayer.sprite.getY() - 180,
+            Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth() / 2.3f,
+            Main.getClient(null).getPlayer().sprite.getY() - 180,
             30,
             360
         );
@@ -449,23 +455,23 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0, 1, 0, 0.5f);
         if (shapeRendererLevel == 0)
-            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY() - 180, 30, 60);
+            shapeRenderer.rect(Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth()/2.3f, Main.getClient(null).getPlayer().sprite.getY() - 180, 30, 60);
         else if (shapeRendererLevel == 1)
-            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY() - 120, 30, 60);
+            shapeRenderer.rect(Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth()/2.3f, Main.getClient(null).getPlayer().sprite.getY() - 120, 30, 60);
         else if (shapeRendererLevel == 2)
-            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY() - 60, 30, 60);
+            shapeRenderer.rect(Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth()/2.3f, Main.getClient(null).getPlayer().sprite.getY() - 60, 30, 60);
         else if (shapeRendererLevel == 3)
-            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY(), 30, 60);
+            shapeRenderer.rect(Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth()/2.3f, Main.getClient(null).getPlayer().sprite.getY(), 30, 60);
         else if (shapeRendererLevel == 4)
-            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY() + 60, 30, 60);
+            shapeRenderer.rect(Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth()/2.3f, Main.getClient(null).getPlayer().sprite.getY() + 60, 30, 60);
         else if (shapeRendererLevel == 5)
-            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY() + 120, 30, 60);
+            shapeRenderer.rect(Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth()/2.3f, Main.getClient(null).getPlayer().sprite.getY() + 120, 30, 60);
         shapeRenderer.end();
 
 
         Rectangle greenBarBounds = new Rectangle(
-            currentGame.currentPlayer.sprite.getX() + minigame.getWidth() / 2.3f,
-            currentGame.currentPlayer.sprite.getY() - 180 + 60 * shapeRendererLevel,
+            Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth() / 2.3f,
+            Main.getClient(null).getPlayer().sprite.getY() - 180 + 60 * shapeRendererLevel,
             30,
             60
         );
@@ -490,8 +496,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0, 0.6f, 0, 1f);
 
-        float barX = currentGame.currentPlayer.sprite.getX() + minigameArea.width*3.3f;
-        float barY = currentGame.currentPlayer.sprite.getY() - minigameArea.height / 2f;
+        float barX = Main.getClient(null).getPlayer().sprite.getX() + minigameArea.width*3.3f;
+        float barY = Main.getClient(null).getPlayer().sprite.getY() - minigameArea.height / 2f;
 
         float verticalHeight = 365;
         shapeRenderer.rect(barX, barY, 10, verticalHeight * fishingProgress);
@@ -526,7 +532,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             // به فیش ای آی کار ندارم چون یه بار اجرا میشن اینجا مینویسم
             bobble = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Ariyo/QM.png"))));
-            bobble.setPosition(currentGame.currentPlayer.sprite.getX() + minigame.getWidth(), currentGame.currentPlayer.sprite.getY() + minigameArea.height / 2f);
+            bobble.setPosition(Main.getClient(null).getPlayer().sprite.getX() + minigame.getWidth(), Main.getClient(null).getPlayer().sprite.getY() + minigameArea.height / 2f);
             bobble.setSize(bobble.getWidth()*2, bobble.getHeight()*2);
             bobble.addListener(new ClickListener() {
                 @Override
@@ -573,7 +579,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         fishToCatch = null;
         fishingProgress = 0;
         shapeRendererLevel = 1;
-        currentGame.currentPlayer.doingMinigame = false;
+        Main.getClient(null).getPlayer().doingMinigame = false;
         helperBackGround.remove();
         bobble.remove();
 
@@ -599,15 +605,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
         }
 
-        int xp = currentGame.currentPlayer.getFishingAbility();
-        currentGame.currentPlayer.increaseFishingAbility((int) (xp * 1.4));
+        int xp = Main.getClient(null).getPlayer().getFishingAbility();
+        Main.getClient(null).getPlayer().increaseFishingAbility((int) (xp * 1.4));
     }
 
 
     private void checkFriendDistance() {
         boolean someoneClose = false;
 
-        for (User p : currentGame.players) {
+        for (User p : currentGame.getGameState().getPlayers()) {
             if (p.getUsername().equalsIgnoreCase(Main.getClient(null).getPlayer().getUsername())) continue;
 
             float deltaX = Math.abs((float) Main.getClient(null).getPlayer().getPositionX() - p.getPositionX());
@@ -679,7 +685,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         dialogActivated = true;
         User me = Main.getClient(null).getPlayer();
         User other = null;
-        for (User p : currentGame.players) {
+        for (User p : currentGame.getGameState().getPlayers()) {
             if (p.getUsername().equalsIgnoreCase(me.getUsername())) continue;
 
             float deltaX = Math.abs((float) Main.getClient(null).getPlayer().getPositionX() - p.getPositionX());
@@ -821,13 +827,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         if (giftingFriendship == null)
             return;
 
-        if (giftingFriendship.getPlayer1().getUsername().equals(currentGame.currentPlayer.getUsername())) {
+        if (giftingFriendship.getPlayer1().getUsername().equals(Main.getClient(null).getPlayer().getUsername())) {
             sendGifts(giftingFriendship, giftingFriendship.getPlayer1().getUsername());
         }
-        else if (giftingFriendship.getPlayer2().getUsername().equals(currentGame.currentPlayer.getUsername())) {
+        else if (giftingFriendship.getPlayer2().getUsername().equals(Main.getClient(null).getPlayer().getUsername())) {
             sendGifts(giftingFriendship, giftingFriendship.getPlayer2().getUsername());
         }
-        currentGame.currentPlayer.currentItem = null;
+        Main.getClient(null).getPlayer().currentItem = null;
         giftingFriendship = null;
     }
     private Dialog makingFriendDialog() {
@@ -1137,7 +1143,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 );
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
                 User temp = Main.getClient(null).getPlayer();
-                ArrayList<User> list = currentGame.players;
+                ArrayList<User> list = currentGame.getGameState().getPlayers();
                 if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
                     Main.getClient(null).getPlayer() = list.get(0);
                     return;
@@ -1387,7 +1393,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 playersList.pad(10);
                 playersList.top();
 
-                for (User player : currentGame.players) {
+                for (User player : currentGame.getGameState().getPlayers()) {
                     if (player.equals(currentUser)) continue;
 
                     TextButton playerButton = new TextButton(player.getNickname(), newSkin);
@@ -1395,7 +1401,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                         @Override
                         public void clicked(InputEvent event, float x, float y) {
                             // اینجا حذف واقعی رو انجام بده
-                            currentGame.players.remove(player);
+                            currentGame.getGameState().getPlayers().remove(player);
                             kickWindow.remove(); // یا hide()
                         }
                     });
@@ -2388,7 +2394,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             NPCMenuIsActivated || questsIsActivated;
             skillMenuIsActivated || mapIsActivated ||
             dialogActivated ||
-            currentGame.currentPlayer.isFishing || currentGame.currentPlayer.doingMinigame;
+            Main.getClient(null).getPlayer().isFishing || Main.getClient(null).getPlayer().doingMinigame;
     }
 
 

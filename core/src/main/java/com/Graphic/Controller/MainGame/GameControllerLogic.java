@@ -15,6 +15,7 @@ import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
+import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC.NPC;
@@ -257,7 +258,7 @@ public class GameControllerLogic {
         if (x<0 || y<0 || x>=90 || y>=90) {
             return null;
         }
-        Tile tarfetTile = currentGame.bigMap.get(90 * y + x);
+        Tile tarfetTile = currentGame.getGameState().bigMap.get(90 * y + x);
         return tarfetTile;
     }
 
@@ -360,7 +361,7 @@ public class GameControllerLogic {
                 else if (i == topLeftX + 60 * x || i == topLeftX + 60 * x + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
                     Tile tile = new Tile(i, j, GreenWall);
                     farm.Farm.add(tile);
-                    currentGame.bigMap.add(tile);
+                    currentGame.getGameState().bigMap.add(tile);
                 }
 
                 else {
@@ -489,11 +490,11 @@ public class GameControllerLogic {
 
 //                        if (i == npc.getTopLeftX() + npc.getWidth() -1 && j==npc.getTopLeftY() + 2) {
 //                        Tile tile=new Tile(i , j , dor);
-//                        currentGame.bigMap.add(tile);
+//                        currentGame.getGameState().bigMap.add(tile);
 //                    }
 //                    else {
 //                        Tile tile=new Tile(i , j , wall);
-//                        currentGame.bigMap.add(tile);
+//                        currentGame.getGameState().bigMap.add(tile);
 //                    }
                 }
                 else if (isInNpc(i , j) != null) {
@@ -505,7 +506,7 @@ public class GameControllerLogic {
 //                        Walkable walkable = new Walkable();
 //                        walkable.setGrassOrFiber(npc.getName());
 //                        Tile tile = new Tile(i, j, walkable);
-//                        currentGame.bigMap.add(tile);
+//                        currentGame.getGameState().bigMap.add(tile);
 //                    }
                 }
                 else {
@@ -1512,12 +1513,17 @@ public class GameControllerLogic {
     public static void showChatDialog(Stage stage, Skin skin, Consumer<String> onMessageSent) {
 
         // تعریف متغیرهای اولیه
-        TextField messageField = new TextField("", Main.getNewSkin());
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle(skin.get(TextField.TextFieldStyle.class));
+        textFieldStyle.font = getFont();
+        textFieldStyle.fontColor = Color.BLACK;
+        textFieldStyle.cursor = skin.newDrawable("cursor", Color.BLACK);
+        textFieldStyle.background = skin.newDrawable("textfield", Color.WHITE);
+        TextField messageField = new TextField("", textFieldStyle);
         messageField.setMessageText("Type your message...");
         messageField.setMaxLength(200);
 
         // دیالوگ به صورت subclass تا متد result را override کنیم
-        Dialog chatDialog = new Dialog("Send Message", Main.getNewSkin()) {
+        Dialog chatDialog = new Dialog("Send Message", newSkin) {
             @Override
             protected void result(Object obj) {
                 if (obj.equals(true)) {
@@ -1530,23 +1536,23 @@ public class GameControllerLogic {
         };
 
         // ایموجی‌ها
-        Table emojiTable = new Table();
-        String[] emojis = {"😊", "😂", "❤️", "😢", "💔", "👍", "🎉"};
-        for (String emoji : emojis) {
-            TextButton emojiButton = new TextButton(emoji, skin);
-            emojiButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    messageField.setText(messageField.getText() + emoji);
-                }
-            });
-            emojiTable.add(emojiButton).pad(3);
-        }
+//        Table emojiTable = new Table();
+//        String[] emojis = {"😊", "😂", "❤️", "😢", "💔", "👍", "🎉"};
+//        for (String emoji : emojis) {
+//            TextButton emojiButton = new TextButton(emoji, newSkin);
+//            emojiButton.addListener(new ClickListener() {
+//                @Override
+//                public void clicked(InputEvent event, float x, float y) {
+//                    messageField.setText(messageField.getText() + emoji);
+//                }
+//            });
+//            emojiTable.add(emojiButton).pad(3);
+//        }
 
         // اضافه کردن به دیالوگ
         chatDialog.getContentTable().add(messageField).width(300).pad(10);
         chatDialog.getContentTable().row();
-        chatDialog.getContentTable().add(emojiTable).pad(10);
+//        chatDialog.getContentTable().add(emojiTable).pad(10);
 
         // دکمه‌ها + مقدار برگردان
         chatDialog.button("Send", true);   // این مقدار به result داده میشه
@@ -1555,6 +1561,7 @@ public class GameControllerLogic {
 
         chatDialog.show(stage);
     }
+
 
 
     public static void talking(String destinationUsername, Consumer<Result> onResult) {
@@ -1619,8 +1626,7 @@ public class GameControllerLogic {
         Result result = f.talkingHistory();
         System.out.println(result);
     }
-    public static Result hug (String input) {
-        String username = GameMenuCommands.hug.getMatcher(input).group("username");
+    public static Result hug (String username) {
         if (!currentGame.getGameState().getPlayers().contains(findPlayerInGame(username))) {
             return new Result(false,"Username is Unavailable!");
         }
@@ -1634,30 +1640,16 @@ public class GameControllerLogic {
         return f.Hug();
     }
 
-    public static void sendGifts (String input) {
-        String username = GameMenuCommands.sendGift.getMatcher(input).group("username");
-        String item = GameMenuCommands.sendGift.getMatcher(input).group("item");
-        int amount = Integer.parseInt(GameMenuCommands.sendGift.getMatcher(input).group("amount"));
-        if (username == null || item == null) {
-            System.out.println("Invalid Command!");
-            return;
-        }
-        if (!currentGame.getGameState().getPlayers().contains(findPlayerInGame(username))) {
-            System.out.println(RED+"Username '" + username + "' is Unavailable!"+RESET);
-            return;
-        }
-        if (username.equals(Main.getClient(null).getPlayer().getUsername())) {
-            System.out.println("You can't Send Gifts to " + RED+"Yourself"+RESET + "!");
-            return;
-        }
-        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), findPlayerInGame(username));
+
+    public static void sendGifts (HumanCommunications f, String username) {
+
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            System.out.println("There's " + "no Friendship" + " Among these Users");
             return;
         }
 
 
-        Result result = f.sendGifts(username, item, amount);
+        Result result = f.sendGifts(Main.getClient(null).getPlayer().currentItem, 1);
         System.out.println(result);
         if (result.IsSuccess()) {
             Set<User> key = new HashSet<>(Arrays.asList(Main.getClient(null).getPlayer(), findPlayerInGame(username)));
@@ -1665,6 +1657,7 @@ public class GameControllerLogic {
             currentGame.conversations.get(key).add(new MessageHandling(Main.getClient(null).getPlayer(), findPlayerInGame(username), Main.getClient(null).getPlayer().getNickname() + " Sent you a GIFT. Rate it out of 5!"));
         }
     }
+
     public static Result giveFlowers (String username) {
         if (!currentGame.getGameState().getPlayers().contains(findPlayerInGame(username))) {
 
@@ -1718,6 +1711,10 @@ public class GameControllerLogic {
 
         Recipe recipe = Recipe.findRecipeByName(foodName);
 
+        if (recipe == null) {
+            return new Result(false, "Food Unavailable!");
+        }
+
         FoodTypes type = recipe.getType();
 
         Inventory myInventory = Main.getClient(null).getPlayer().getBackPack().inventory;
@@ -1732,6 +1729,7 @@ public class GameControllerLogic {
         recipe.applyEffect(Main.getClient(null).getPlayer());
         return new Result(true, "Eaten, Successfully.");
     }
+
     public static void exitGame () {
         if (Main.getClient(null).getPlayer() != currentUser) {
             System.out.println(RED+"Access Denied!"+RESET);
@@ -1959,7 +1957,7 @@ public class GameControllerLogic {
         calculateAnimalsFriendship();
         checkAnimalProduct();
 
-        for (Tile tile : currentGame.bigMap)
+        for (Tile tile : currentGame.getGameState().bigMap)
             tile.getGameObject().startDayAutomaticTask();
 
         doWeatherTask();
@@ -1971,7 +1969,7 @@ public class GameControllerLogic {
 
     public static void AutomaticFunctionAfterOneTurn () {
 
-        for (Tile tile : currentGame.bigMap)
+        for (Tile tile : currentGame.getGameState().bigMap)
             tile.getGameObject().turnByTurnAutomaticTask();
     }
     public static void AutomaticFunctionAfterAnyAct () {
@@ -2031,7 +2029,7 @@ public class GameControllerLogic {
     public static void doWeatherTask () {
 
         if (currentGame.currentWeather.equals(Weather.Rainy) || currentGame.currentWeather.equals(Weather.Stormy))
-            for (Tile tile : currentGame.bigMap) {
+            for (Tile tile : currentGame.getGameState().bigMap) {
                 GameObject object = tile.getGameObject();
 
                 if (object instanceof Tree && !isInGreenHouse(tile))
@@ -2089,7 +2087,7 @@ public class GameControllerLogic {
     }
     public static void    checkForGiant () {
 
-        for (Tile tile1 : currentGame.bigMap)
+        for (Tile tile1 : currentGame.getGameState().bigMap)
             if (tile1.getGameObject() instanceof ForagingSeeds)
                 if (((ForagingSeeds) tile1.getGameObject()).getType().canGrowGiant() && !isInGreenHouse(tile1)) {
 
@@ -2122,7 +2120,7 @@ public class GameControllerLogic {
     }
     public static void    checkForProtect() {
 
-        for (Tile tile : currentGame.bigMap){
+        for (Tile tile : currentGame.getGameState().bigMap){
 
             GameObject object1 = tile.getGameObject();
             if (object1 instanceof Tree)
@@ -2138,7 +2136,7 @@ public class GameControllerLogic {
                 ((ForagingCrops) object1).setProtected(false);
         }
 
-        for (Tile tile : currentGame.bigMap) {
+        for (Tile tile : currentGame.getGameState().bigMap) {
 
             GameObject object = tile.getGameObject();
 
@@ -2230,7 +2228,7 @@ public class GameControllerLogic {
     }
     public static void    createRandomForaging () {
 
-        for (Tile tile : currentGame.bigMap) {
+        for (Tile tile : currentGame.getGameState().bigMap) {
 
             if (tile.getGameObject() instanceof Walkable &&
                 ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed") && Math.random() <= 0.2) {
@@ -2976,8 +2974,8 @@ public class GameControllerLogic {
 //        };
 //        int width = 60;
 //
-//        String result = str + "Level : " + currentGame.currentPlayer.getFriendshipLevel(npc) +
-//            "       point : " + currentGame.currentPlayer.getFriendshipPoint(npc);
+//        String result = str + "Level : " + Main.getClient(null).getPlayer().getFriendshipLevel(npc) +
+//            "       point : " + Main.getClient(null).getPlayer().getFriendshipPoint(npc);
 
 //        return npc.getName() + " : " + result;
         return null;
