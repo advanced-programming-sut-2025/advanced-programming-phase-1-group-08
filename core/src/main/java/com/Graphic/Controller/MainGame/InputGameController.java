@@ -76,7 +76,6 @@ import static com.badlogic.gdx.Input.Keys.M;
 
 public class InputGameController {
 
-    private static final Logger log = LoggerFactory.getLogger(InputGameController.class);
     public static InputGameController inputGameController;
 
     private InputGameController() {

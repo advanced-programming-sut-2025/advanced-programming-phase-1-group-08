@@ -61,7 +61,6 @@ public class PlayerHandler extends Thread {
         out.writeUTF(JSONUtils.toJson(message));
         out.flush();
     }
-
     public synchronized void handleMessage(Message message) throws IOException {
         switch (message.getCommandType()) {
             case FARM -> {
@@ -154,7 +153,6 @@ public class PlayerHandler extends Thread {
 
         }
     }
-
     public synchronized void gameStart() throws IOException {
         HashMap<String , Object> body = new HashMap<>();
         body.put("Players" , game.getGameState().getPlayers());

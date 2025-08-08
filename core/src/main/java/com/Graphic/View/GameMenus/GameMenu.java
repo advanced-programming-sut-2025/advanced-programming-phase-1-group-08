@@ -71,7 +71,7 @@ import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
-    public static GameMenu gameMenu; // اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
+    public static GameMenu gameMenu;// اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
     // TODO مملی ورودی گرفتن برای حرمت مردن رو هم بیار تو تابع اینپوت کنترلر چون مثلا منو باز میشه من میخوام a بنویسم دوربین حرکت میکنه مثلا و وقتی بیاری اونجا اوکی میشه
     public static OrthographicCamera camera;
     private final int hourSecond = 120000;
@@ -202,9 +202,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private float currentRotation = 0f;
 
 
-    private GameMenu() {
-
-    }
+    private GameMenu() {}
 
     public static GameMenu getInstance() {
         if (gameMenu == null) {
