@@ -112,7 +112,7 @@ public class PlayerHandler extends Thread {
                         if (user.getBackPack().inventory.Items.containsKey(items)) {
                             user.getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
                             if (user.getBackPack().inventory.Items.get(items) == 0) {
-                                Main.getClient(null).getPlayer().getBackPack().inventory.Items.remove(items);
+                                user.getBackPack().inventory.Items.remove(items);
                             }
                         }
                         else {
@@ -149,6 +149,23 @@ public class PlayerHandler extends Thread {
                 body.put("Item" , message.getIntFromBody("Product"));
                 body.put("amount" , 1);
                 sendMessage(new Message(CHANGE_INVENTORY , body));
+            }
+            case CHANGE_ABILITY_LEVEL ->  {
+                int xp = Main.getClient(null).getPlayer().getFishingAbility();
+                Main.getClient(null).getPlayer().increaseFishingAbility((int) (xp * 1.4));
+            }
+            case CHANGE_FRIDGE -> {
+                Items items = message.getFromBody("Item");
+                int amount = message.getIntFromBody("amount");
+                if (Main.getClient(null).getPlayer().getFarm().getHome().getFridge().items.containsKey(items)) {
+                    Main.getClient(null).getPlayer().getFarm().getHome().getFridge().items.compute(items,(k,v) -> v + amount);
+                    if (Main.getClient(null).getPlayer().getFarm().getHome().getFridge().items.get(items) == 0) {
+                        Main.getClient(null).getPlayer().getFarm().getHome().getFridge().items.remove(items);
+                    }
+                }
+                else {
+                    Main.getClient(null).getPlayer().getFarm().getHome().getFridge().items.put(items,amount);
+                }
             }
             case PASSED_TIME -> {
                 // controller.

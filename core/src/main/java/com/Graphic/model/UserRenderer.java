@@ -22,6 +22,8 @@ public class UserRenderer {
     }
 
     public void render(User user) {
+        if (user.isFishing || user.doingMinigame) return;
+
         Animation<Texture> animation = animations.get(user.getDirection());
         Main.getBatch().draw(animation.getKeyFrame(user.getTimer() , true) ,
             user.getPositionX() , user.getPositionY());

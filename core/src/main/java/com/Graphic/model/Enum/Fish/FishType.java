@@ -1,6 +1,7 @@
-package com.Graphic.model.Enum.ItemType;
+package com.Graphic.model.Enum.Fish;
 
 import com.Graphic.model.Enum.WeatherTime.Season;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public enum FishType {
 
@@ -31,6 +32,7 @@ public enum FishType {
     private final Season season;
     private final boolean legendary;
     private final String iconPath;
+
 
 
     FishType(String name, int price, Season season, boolean legendary, String iconPath){
