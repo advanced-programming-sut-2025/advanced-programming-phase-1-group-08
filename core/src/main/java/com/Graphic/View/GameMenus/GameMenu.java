@@ -9,11 +9,13 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.AnimalRenderer;
 import com.Graphic.model.ClientServer.GameState;
+import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.Enum.AllPlants.CropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
 import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.*;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Fish.FishAIController;
 import com.Graphic.model.Enum.Fish.FishMovementType;
 import com.Graphic.model.Enum.Fish.FishType;
@@ -401,10 +403,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     break;
                 }
             }
-//            if (!havePole) {
-//                showTimedDialog("You Don't Have a Fishing Pole!", 2f);
-//                return;
-//            }
+            if (!havePole) {
+                showTimedDialog("You Don't Have a Fishing Pole!", 2f);
+                return;
+            }
 
             showFishLight = true;
 
@@ -590,23 +592,34 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Random random = new Random();
         Quantity quantity = Quantity.values()[random.nextInt(Quantity.values().length)];
         if (!perfect) {
-            advanceItem(new Fish(fishToCatchType, quantity), 1);
+            HashMap<String , Object> body = new HashMap<>();
+            body.put("Item" , new Fish(fishToCatchType, quantity));
+            body.put("amount" , 1);
+            body.put("Player" , Main.getClient(null).getPlayer());
+            Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
             return;
         }
 
         //only if perfect
-        if (quantity.equals(Quantity.Normal))
-            advanceItem(new Fish(fishToCatchType, Quantity.Normal), 1);
+        HashMap<String , Object> body = new HashMap<>();
+        if (quantity.equals(Quantity.Normal)) {
+            body.put("Item" , new Fish(fishToCatchType, Quantity.Normal));
+        }
         else {
             if (quantity == Quantity.Silver) {
-                advanceItem(new Fish(fishToCatchType, Quantity.Golden), 1);
+                body.put("Item" , new Fish(fishToCatchType, Quantity.Silver));
             } else {
-                advanceItem(new Fish(fishToCatchType, Quantity.Iridium), 1);
+                body.put("Item" , new Fish(fishToCatchType, Quantity.Iridium));
             }
         }
+        body.put("amount" , 1);
+        body.put("Player" , Main.getClient(null).getPlayer());
+        Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
 
-        int xp = Main.getClient(null).getPlayer().getFishingAbility();
-        Main.getClient(null).getPlayer().increaseFishingAbility((int) (xp * 1.4));
+        HashMap<String , Object> body2 = new HashMap<>();
+        body2.put("Ability", "Fishing");
+        body2.put("times", 2.4);
+        Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_ABILITY_LEVEL, body));
     }
 
 
