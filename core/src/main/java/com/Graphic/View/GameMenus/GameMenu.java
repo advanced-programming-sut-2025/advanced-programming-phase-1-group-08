@@ -13,6 +13,10 @@ import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
 import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.*;
+import com.Graphic.model.Enum.Fish.FishAIController;
+import com.Graphic.model.Enum.Fish.FishMovementType;
+import com.Graphic.model.Enum.Fish.FishType;
+import com.Graphic.model.Enum.ItemType.Quantity;
 import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.NPC.NPCManager;
 
@@ -23,9 +27,10 @@ import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.MapThings.Tile;
-import com.Graphic.model.MapThings.UnWalkable;
 import com.Graphic.model.MapThings.Walkable;
+import com.Graphic.model.Places.Lake;
 import com.Graphic.model.Plants.*;
+import com.Graphic.model.ToolsPackage.FishingPole;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
@@ -34,6 +39,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -51,6 +58,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.model.App.*;
@@ -64,6 +72,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public static OrthographicCamera camera;
     private final int hourSecond = 120000;
     private Stage stage;
+    public static boolean gameMenuInitialized = false;
 
     private Vector3 mousePos;
     private ArrayList<Animal> shepherdingAnimals;
@@ -81,13 +90,31 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private float holdTime = 0f;
     private final float maxHoldTime = 5f;
     private ShapeRenderer shapeRenderer;
+    int shapeRendererLevel = 1;
+    Sprite fishToCatch;
+    Vector2 fishVelocity;
+    Sprite minigame;
+    private final Rectangle minigameArea = new Rectangle();
+    Sprite fishCrown;
+    FishAIController fishAI;
+    FishType fishToCatchType;
+    private float fishingProgress = 0f;
+    Image bobble;
+    boolean lostPerfectFishing = false;
+    boolean showFishLight = false;
+    float showFishLightTimer = 0;
+    HumanCommunications giftingFriendship = null;
 
 
     Texture friendsListTexture;
     TextureRegionDrawable buttonDrawable;
     ImageButton friendButton;
     Dialog friendsListdialog;
+    Label sixtyPlusLabel;
+    Label onePlusLabel;
     ImageButton tempFriend;
+    ImageButton tempFishing;
+    float fishingTimer;
     private Table contextMenu;
     Image bouquetImage;
     Image hugImage;
@@ -119,6 +146,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private Window EscPopup;
 
     private boolean inventoryIsActivated;
+    private boolean dialogActivated;
     private Window inventoryPopup;
 
     private boolean skillMenuIsActivated;
@@ -242,16 +270,322 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         moveAnimal();
         NPCManager.NPCWalk(v);
         eatingManagement(v);
+        checkLakeDistance(v);
+        lightBeforeFishing(v);
         mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mousePos);
         camera.update();
-        Main.getBatch().end();
+
 
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+        startFishing(v);
+        Main.getBatch().end();
+    }
+
+    private void lightBeforeFishing(float v) {
+        if (!showFishLight)
+            return;
+
+        showFishLightTimer += v;
+        if (showFishLightTimer > 2.5f) {
+            showFishLightTimer = 0;
+            showFishLight = false;
+        }
+
+
+        Sprite s = new Sprite(new Texture(Gdx.files.internal("Ariyo/light.png")));
+        s.setRegion(TextureManager.get("Ariyo/light.png"));
+        s.setPosition(currentGame.currentPlayer.sprite.getX() - 70, currentGame.currentPlayer.sprite.getY() - 150);
+        s.setSize(s.getWidth()*2, s.getHeight()*2);
+        s.draw(Main.getBatch());
+    }
+    private void checkLakeDistance(float v) {
+        Lake lake = currentGame.currentPlayer.getFarm().getLake();
+        float lakeY = lake.getTopLeftY();
+        float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
+        Sprite fisherman = new Sprite(TextureManager.get("Ariyo/fisherman.png"));
+
+        if (currentGame.currentPlayer.doingMinigame) {
+            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
+            if (currentGame.currentPlayer.getGender().equalsIgnoreCase("woman"))
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
+            else
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
+            fisherman.draw(Main.getBatch());
+
+            return;
+        }
+
+        fishingTimer += v;
+
+        if (!currentGame.currentPlayer.isFishing)
+            fishingTimer = 0;
+
+        if (currentGame.currentPlayer.isFishing && fishingTimer >= 10f) {
+            currentGame.currentPlayer.doingMinigame = true;
+            shapeRenderer = new ShapeRenderer();
+            createGrayBackGround();
+            fishingTimer = 0;
+            minigame = new Sprite(new Texture(Gdx.files.internal("Ariyo/minigame.png")));
+            minigame.setSize(minigame.getWidth() * 2.5f, minigame.getHeight() * 2.5f);
+            minigame.setRegion(TextureManager.get("Ariyo/minigame.png"));
+
+            Random random = new Random();
+            fishToCatchType = FishType.values()[random.nextInt(FishType.values().length)];
+            fishToCatch = new Sprite(TextureManager.get(fishToCatchType.getIconPath()));
+            fishToCatch.setRegion(TextureManager.get(fishToCatchType.getIconPath()));
+            fishToCatch.setPosition(currentGame.currentPlayer.sprite.getX() + minigame.getWidth() / 2.3f, currentGame.currentPlayer.sprite.getY() + 180);
+            fishToCatch.setSize(fishToCatch.getWidth() * 0.6f, fishToCatch.getHeight() * 0.7f);
+            float verticalSpeed = 50f;
+            float horizontalWiggle = 10f;
+            float dx = (float) (Math.random() * horizontalWiggle * 2 - horizontalWiggle); // بین -10 تا +10
+            float dy = verticalSpeed;
+            fishVelocity = new Vector2(dx, dy);
+
+            if (fishToCatchType.isLegendary()) {
+            fishCrown = new Sprite(TextureManager.get("Ariyo/star.png"));
+            fishCrown.setRegion(TextureManager.get("Ariyo/star.png"));
+            fishCrown.setPosition(currentGame.currentPlayer.sprite.getX() + minigame.getWidth() / 2.3f, currentGame.currentPlayer.sprite.getY() + 190);
+            }
+            else
+                fishCrown = null;
+        }
+
+
+        float myX = currentGame.currentPlayer.getPositionX();
+        float myY = currentGame.currentPlayer.getPositionY();
+        float deltaX = Math.abs(myX - lakeX);
+        float deltaY = Math.abs(myY - lakeY);
+        if (!(deltaX < 3f && deltaY < 3f)) {
+            fishingTimer = 0;
+            tempFishing.setVisible(false);
+            return;
+        }
+
+        if (!currentGame.currentPlayer.isFishing) {
+            tempFishing.setPosition(currentGame.currentPlayer.sprite.getX(), currentGame.currentPlayer.sprite.getY() + 40);
+            tempFishing.draw(Main.getBatch(), 1f);
+        }
+
+        if (!currentGame.currentPlayer.isFishing && Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            boolean havePole = false;
+            Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+            for (Map.Entry<Items, Integer> entry: inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof FishingPole) {
+                    havePole = true;
+                    break;
+                }
+            }
+//            if (!havePole) {
+//                showTimedDialog("You Don't Have a Fishing Pole!", 2f);
+//                return;
+//            }
+
+            showFishLight = true;
+
+            currentGame.currentPlayer.isFishing = true;
+        }
+        else if (currentGame.currentPlayer.isFishing && Gdx.input.isKeyJustPressed(Input.Keys.G)) {
+            currentGame.currentPlayer.isFishing = false;
+        }
+
+        Texture iconTexture = new Texture(Gdx.files.internal("all image/Farming/Fishing.png"));
+        tempFishing.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
+
+        tempFishing.setVisible(true);
+
+        if (currentGame.currentPlayer.isFishing) {
+            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
+            if (currentGame.currentPlayer.getGender().equalsIgnoreCase("woman"))
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
+            else
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
+            fisherman.draw(Main.getBatch());
+        }
+
 
     }
+
+    private void startFishing(float v) {
+        /// THE MINI GAME
+
+        if (!currentGame.currentPlayer.doingMinigame)
+            return;
+
+        float delta = Gdx.graphics.getDeltaTime();
+
+        minigame.setPosition(currentGame.currentPlayer.sprite.getX(), currentGame.currentPlayer.sprite.getY() - minigame.getHeight()/2f);
+        minigame.draw(Main.getBatch());
+
+        minigameArea.set(
+            currentGame.currentPlayer.sprite.getX() + minigame.getWidth() / 2.3f,
+            currentGame.currentPlayer.sprite.getY() - 180,
+            30,
+            360
+        );
+
+        Main.getBatch().end();
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 1, 0, 0.5f);
+        if (shapeRendererLevel == 0)
+            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY() - 180, 30, 60);
+        else if (shapeRendererLevel == 1)
+            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY() - 120, 30, 60);
+        else if (shapeRendererLevel == 2)
+            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY() - 60, 30, 60);
+        else if (shapeRendererLevel == 3)
+            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY(), 30, 60);
+        else if (shapeRendererLevel == 4)
+            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY() + 60, 30, 60);
+        else if (shapeRendererLevel == 5)
+            shapeRenderer.rect(currentGame.currentPlayer.sprite.getX() + minigame.getWidth()/2.3f, currentGame.currentPlayer.sprite.getY() + 120, 30, 60);
+        shapeRenderer.end();
+
+
+        Rectangle greenBarBounds = new Rectangle(
+            currentGame.currentPlayer.sprite.getX() + minigame.getWidth() / 2.3f,
+            currentGame.currentPlayer.sprite.getY() - 180 + 60 * shapeRendererLevel,
+            30,
+            60
+        );
+
+        Rectangle fishBounds = new Rectangle(
+            fishToCatch.getX(),
+            fishToCatch.getY(),
+            fishToCatch.getWidth(),
+            fishToCatch.getHeight()
+        );
+
+        if (greenBarBounds.overlaps(fishBounds)) {
+            fishingProgress += 0.2f * delta;
+            if (fishingProgress > 1f) fishingProgress = 1f;
+        } else {
+            fishingProgress -= 0.5f * delta * 0.2f;
+            lostPerfectFishing = true;
+            if (fishingProgress < 0f) fishingProgress = 0f;
+        }
+
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0.6f, 0, 1f);
+
+        float barX = currentGame.currentPlayer.sprite.getX() + minigameArea.width*3.3f;
+        float barY = currentGame.currentPlayer.sprite.getY() - minigameArea.height / 2f;
+
+        float verticalHeight = 365;
+        shapeRenderer.rect(barX, barY, 10, verticalHeight * fishingProgress);
+
+        shapeRenderer.end();
+
+        Main.getBatch().begin();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && shapeRendererLevel < 5) {
+            shapeRendererLevel++;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN) && shapeRendererLevel > 0) {
+            shapeRendererLevel--;
+        }
+
+
+        if (fishAI == null) {
+            Random random = new Random();
+            fishAI = new FishAIController(
+                FishMovementType.values()[random.nextInt(FishMovementType.values().length)],
+                new Vector2(
+                    minigameArea.x + minigameArea.width / 2f,
+                    minigameArea.y + minigameArea.height / 2f
+                ),
+                minigameArea.y,
+                minigameArea.y + minigameArea.height - 60
+            );
+
+
+
+
+
+            // به فیش ای آی کار ندارم چون یه بار اجرا میشن اینجا مینویسم
+            bobble = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Ariyo/QM.png"))));
+            bobble.setPosition(currentGame.currentPlayer.sprite.getX() + minigame.getWidth(), currentGame.currentPlayer.sprite.getY() + minigameArea.height / 2f);
+            bobble.setSize(bobble.getWidth()*2, bobble.getHeight()*2);
+            bobble.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    showTimedDialog("Fish Kind: " + fishToCatchType.getName() + "\n" + "Fish Movement Type: " + fishAI.getMovementType().name(), 2f);
+                }
+            });
+            bobble.addListener(new InputListener() {
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    bobble.setColor(1, 1, 1, 0.5f);
+                }
+                public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    bobble.setColor(1, 1, 1, 1f);
+                }
+            });
+            stage.addActor(bobble);
+        }
+
+        fishAI.update(delta);
+
+        fishToCatch.setPosition(fishAI.getPosition().x - 13f, fishAI.getPosition().y);
+        fishToCatch.draw(Main.getBatch());
+
+
+        if (fishCrown != null) {
+            fishCrown.setPosition(fishToCatch.getX() + 8,  fishToCatch.getY() + 35);
+            fishCrown.draw(Main.getBatch());
+        }
+
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
+            endFishing(false, false);
+        if (fishingProgress == 1 && lostPerfectFishing)
+            endFishing(true, false);
+        else if (fishingProgress == 1) // perfect (because of else if)
+            endFishing(true, true);
+
+    }
+
+    private void endFishing(boolean done, boolean perfect) {
+        // for both
+        lostPerfectFishing = false;
+        fishAI = null;
+        fishToCatch = null;
+        fishingProgress = 0;
+        shapeRendererLevel = 1;
+        currentGame.currentPlayer.doingMinigame = false;
+        helperBackGround.remove();
+        bobble.remove();
+
+        if (!done)
+            return;
+
+        //only if you got the fish
+        Random random = new Random();
+        Quantity quantity = Quantity.values()[random.nextInt(Quantity.values().length)];
+        if (!perfect) {
+            advanceItem(new Fish(fishToCatchType, quantity), 1);
+            return;
+        }
+
+        //only if perfect
+        if (quantity.equals(Quantity.Normal))
+            advanceItem(new Fish(fishToCatchType, Quantity.Normal), 1);
+        else {
+            if (quantity == Quantity.Silver) {
+                advanceItem(new Fish(fishToCatchType, Quantity.Golden), 1);
+            } else {
+                advanceItem(new Fish(fishToCatchType, Quantity.Iridium), 1);
+            }
+        }
+
+        int xp = currentGame.currentPlayer.getFishingAbility();
+        currentGame.currentPlayer.increaseFishingAbility((int) (xp * 1.4));
+    }
+
 
     private void checkFriendDistance() {
         boolean someoneClose = false;
@@ -260,11 +594,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             if (p.getUsername().equalsIgnoreCase(currentGame.currentPlayer.getUsername())) continue;
 
             float deltaX = Math.abs((float)currentGame.currentPlayer.getPositionX() - p.getPositionX());
-            float deltaY = Math.abs((float) currentGame.currentPlayer.getPositionY() - p.getPositionY());
+            float deltaY = Math.abs((float)currentGame.currentPlayer.getPositionY() - p.getPositionY());
             if (deltaY < 3f && deltaX < 3f) {
                 someoneClose = true;
 
-                // تغییر عکس دکمه بر اساس جنسیت
                 Texture iconTexture;
                 if (p.getGender().equalsIgnoreCase("man"))
                     iconTexture = new Texture("Ariyo/Shane_Icon.png");
@@ -279,7 +612,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }
 
         if (!someoneClose) {
-            tempFriend.setVisible(true);
+            tempFriend.setVisible(false);
         }
     }
     public void eatingManagement(float delta) {
@@ -325,72 +658,102 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private Dialog makingInteractionDialog() {
         Dialog interactionDialog = new Dialog("", newSkin);
-
+        dialogActivated = true;
         User me = currentGame.currentPlayer;
         User other = null;
         for (User p : currentGame.players) {
             if (p.getUsername().equalsIgnoreCase(me.getUsername())) continue;
 
-            float deltaX = Math.abs((float)currentGame.currentPlayer.getPositionX() - p.getPositionX());
-            float deltaY = Math.abs((float) currentGame.currentPlayer.getPositionY() - p.getPositionY());
+            float deltaX = Math.abs(me.getPositionX() - p.getPositionX());
+            float deltaY = Math.abs(me.getPositionY() - p.getPositionY());
             if (deltaY < 3f && deltaX < 3f) {
                 other = p;
                 break;
             }
         }
 
+        if (other == null) return interactionDialog;
+
+        // ساختن دکمه‌ها دستی
+        TextButton flowerButton = new TextButton("Send Flower", newSkin);
         User finalOther = other;
-        interactionDialog.button("Send Flower").addListener(new ClickListener() {
+        flowerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
                 if (getFriendship(me, finalOther) != null) {
+                    interactionDialog.remove();
+                    dialogActivated = false;
+
                     result = giveFlowers(finalOther.getUsername());
-                    // fade in -> wait 1s -> fade out
-                    if (result.IsSuccess())
+                    if (result.IsSuccess()) {
                         bouquetImage.addAction(Actions.sequence(
-                        Actions.alpha(0f),
-                        Actions.fadeIn(0.3f),
-                        Actions.delay(1f),
-                        Actions.fadeOut(0.5f)
+                            Actions.alpha(0f),
+                            Actions.fadeIn(0.3f),
+                            Actions.delay(1f),
+                            Actions.fadeOut(0.5f)
                         ));
-                    else {
+
+                        if (getFriendship(me, finalOther) != null && getFriendship(me, finalOther).getLevel() < 3)
+                            onePlusLabel.addAction(Actions.sequence(
+                                Actions.alpha(0f),
+                                Actions.fadeIn(0.3f),
+                                Actions.delay(1f),
+                                Actions.fadeOut(0.5f)
+                            ));
+                    } else {
                         showTimedDialog(result.massage(), 2f);
                     }
                 }
             }
         });
+
+        TextButton hugButton = new TextButton("Hug", newSkin);
         User finalOther1 = other;
-        interactionDialog.button("Hug").addListener(new ClickListener() {
+        hugButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
                 if (getFriendship(me, finalOther1) != null) {
+                    interactionDialog.remove();
+                    dialogActivated = false;
+
                     result = hug(finalOther1.getUsername());
-                    if (result.IsSuccess())
+                    if (result.IsSuccess()) {
                         hugImage.addAction(Actions.sequence(
                             Actions.alpha(0f),
                             Actions.fadeIn(0.3f),
                             Actions.delay(1f),
                             Actions.fadeOut(0.5f)
                         ));
-                    else {
+                        sixtyPlusLabel.addAction(Actions.sequence(
+                            Actions.alpha(0f),
+                            Actions.fadeIn(0.3f),
+                            Actions.delay(1f),
+                            Actions.fadeOut(0.5f)
+                        ));
+
+                    } else {
                         showTimedDialog(result.massage(), 2f);
                     }
                 }
             }
         });
+
+        TextButton talkButton = new TextButton("Talk", newSkin);
         User finalOther2 = other;
-        interactionDialog.button("Talk").addListener(new ClickListener() {
+        talkButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 talking(finalOther2.getUsername(), result -> {
-                        showTimedDialog(result.massage(), 2f);
+                    showTimedDialog(result.massage(), 2f);
                 });
             }
         });
+
+        TextButton proposeButton = new TextButton("Propose", newSkin);
         User finalOther3 = other;
-        interactionDialog.button("Propose").addListener(new ClickListener() {
+        proposeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
@@ -403,22 +766,57 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                             Actions.delay(1.3f),
                             Actions.fadeOut(0.5f)
                         ));
-                    }
-                    else {
+                    } else {
                         showTimedDialog(result.massage(), 2f);
                     }
                 }
             }
         });
 
+        TextButton back = new TextButton("Back", newSkin);
+        back.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                interactionDialog.remove();
+                dialogActivated = false;
+            }
+        });
+
+        // اضافه کردن دکمه‌ها به دیالوگ
+        Table buttonTable = interactionDialog.getButtonTable();
+        buttonTable.pad(10);
+        buttonTable.add(flowerButton).pad(5);
+        buttonTable.row();
+        buttonTable.add(hugButton).pad(5);
+        buttonTable.row();
+        buttonTable.add(talkButton).pad(5);
+        buttonTable.row();
+        buttonTable.add(proposeButton).pad(5);
+        buttonTable.row();
+        buttonTable.row();
+        buttonTable.add(back).pad(20);
 
         return interactionDialog;
+    }
+
+    private void giftingInventory() {
+        if (giftingFriendship == null)
+            return;
+
+        if (giftingFriendship.getPlayer1().getUsername().equals(currentGame.currentPlayer.getUsername())) {
+            sendGifts(giftingFriendship, giftingFriendship.getPlayer1().getUsername());
+        }
+        else if (giftingFriendship.getPlayer2().getUsername().equals(currentGame.currentPlayer.getUsername())) {
+            sendGifts(giftingFriendship, giftingFriendship.getPlayer2().getUsername());
+        }
+        currentGame.currentPlayer.currentItem = null;
+        giftingFriendship = null;
     }
     private Dialog makingFriendDialog() {
         friendsListdialog = new Dialog("", newSkin);
         friendsListdialog.setModal(true);
         friendsListdialog.setMovable(true);
-
+        dialogActivated = true;
         Table friendTable = new Table();
         friendTable.top().left().pad(10);
 
@@ -465,9 +863,24 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             giftButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    System.out.println("Sending Gift to " + finalFriendUser.getNickname());
+                    giftingFriendship = f;
+                    createInventory();
+                    dialogActivated = false;
                 }
             });
+            giftButton.addListener(new InputListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    giftButton.setColor(1, 1, 1, 0.5f);
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    giftButton.setColor(1, 1, 1, 1f);
+                }
+            });
+
+            System.out.println(f.printInfo());
 
             // اضافه کردن به ردیف جدول
             friendTable.row().pad(5);
@@ -477,17 +890,26 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             friendTable.add(giftButton).width(80).right();
         }
 
-        ScrollPane scrollPane = new ScrollPane(friendTable, skin); // در صورت زیاد بودن
+        ScrollPane scrollPane = new ScrollPane(friendTable, skin);
         scrollPane.setFadeScrollBars(false);
 
         friendsListdialog.getContentTable().add(scrollPane).width(450).height(250).pad(10);
-        friendsListdialog.button("CLOSE");
+        friendsListdialog.button("CLOSE").addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                dialogActivated = false;
+            }
+        });
 
         return friendsListdialog;
     }
     public void showTimedDialog(String message, float durationSeconds) {
         activeDialog = new Dialog("", newSkin);
-        activeDialog.text(message);
+        Label.LabelStyle whiteStyle = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        whiteStyle.fontColor = Color.WHITE;
+
+        Label label = new Label(message, whiteStyle);
+        activeDialog.getContentTable().add(label).pad(10);
         activeDialog.pack();
         activeDialog.setPosition(
             (Gdx.graphics.getWidth() - activeDialog.getWidth()) / 2,
@@ -501,6 +923,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
                                                                 //  //  //  //   Erfan
     private void initialize () {
+        if (gameMenuInitialized)
+            return;
+        gameMenuInitialized = true;
 
         currentMenu = Menu.GameMenu;
         startTime = TimeUtils.millis();
@@ -519,9 +944,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Texture iconTexture = new Texture("Ariyo/Shane_Icon.png");
         Drawable iconDrawable = new TextureRegionDrawable(new TextureRegion(iconTexture));
         tempFriend = new ImageButton(iconDrawable);
-        tempFriend.setSize(100, 100);
         tempFriend.setVisible(false);
-        tempFriend.setPosition((float) ((float) Gdx.graphics.getWidth() *6.8/9), (float) ((float) Gdx.graphics.getHeight() *6/9));
+        tempFriend.setPosition(70F, (float) ((float) Gdx.graphics.getHeight() *7.5/9));
         stage.addActor(tempFriend);
 
         tempFriend.addListener(new ClickListener() {
@@ -530,6 +954,23 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 makingInteractionDialog().show(stage);
             }
         });
+        tempFriend.addListener(new InputListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                tempFriend.setColor(1, 1, 1, 0.5f);
+            }
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                tempFriend.setColor(1, 1, 1, 1f);
+            }
+        });
+
+
+        Texture iconT = new Texture("all image/Farming/Fishing.png");
+        Drawable iconDrawableT = new TextureRegionDrawable(new TextureRegion(iconT));
+        tempFishing = new ImageButton(iconDrawableT);
+        tempFishing.setVisible(false);
+        tempFishing.setPosition(1100, 500);
 
 
 
@@ -545,6 +986,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         friendsListTexture = new Texture(Gdx.files.internal("Ariyo/Friendship_101.png"));
         buttonDrawable = new TextureRegionDrawable(new TextureRegion(friendsListTexture));
+        if (friendButton != null) {
+            friendButton.remove();
+        }
         friendButton = new ImageButton(buttonDrawable);
         friendButton.addListener(new ClickListener() {
             @Override
@@ -552,8 +996,27 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 makingFriendDialog().show(stage);
             }
         });
-        friendButton.setPosition((float) Gdx.graphics.getWidth() *7/9, (float) ((float) Gdx.graphics.getHeight() *6.7/9));
-//        friendButton.setPosition(100, 100);
+        friendButton.addListener(new InputListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                friendButton.setColor(1, 1, 1, 0.5f);
+            }
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                friendButton.setColor(1, 1, 1, 1f);
+            }
+        });
+        float screenHeight = Gdx.graphics.getHeight();
+        friendButton.setPosition(
+            Gdx.graphics.getWidth() / 2f - friendButton.getWidth() / 2f,
+            Gdx.graphics.getHeight() / 2f - friendButton.getHeight() / 2f
+        );
+        friendButton.setPosition(50,screenHeight * 8f / 9f);
+        friendButton.pack();
+
+
+
+
         stage.addActor(friendButton);
 
         bouquetImage = new Image(new Texture(Gdx.files.internal("Ariyo/Bouquet.png")));
@@ -565,9 +1028,24 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         hugImage = new Image(new Texture(Gdx.files.internal("Ariyo/hug.png")));
         hugImage.setPosition(Gdx.graphics.getWidth() / 2f - hugImage.getWidth(), Gdx.graphics.getHeight() / 2f - hugImage.getHeight() / 2f);
-        hugImage.setSize(hugImage.getWidth()*3, hugImage.getHeight()*3);
+        hugImage.setSize(hugImage.getWidth(), hugImage.getHeight());
         hugImage.getColor().a = 0f;
         stage.addActor(hugImage);
+
+
+        Label.LabelStyle whiteStyle = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        whiteStyle.fontColor = Color.GREEN;
+        sixtyPlusLabel = new Label("+60 XP", whiteStyle);
+        sixtyPlusLabel.setPosition(Gdx.graphics.getWidth() / 2f - hugImage.getWidth()/2, Gdx.graphics.getHeight() / 2f);
+        sixtyPlusLabel.setSize(sixtyPlusLabel.getWidth()*2, sixtyPlusLabel.getHeight()*2);
+        sixtyPlusLabel.getColor().a = 0f;
+        stage.addActor(sixtyPlusLabel);
+
+        onePlusLabel = new Label("+1 Level", whiteStyle);
+        onePlusLabel.setPosition(Gdx.graphics.getWidth()/2f -  onePlusLabel.getWidth()/2, Gdx.graphics.getHeight() / 2f + bouquetImage.getHeight()/2f);
+        onePlusLabel.setSize(onePlusLabel.getWidth()*2, onePlusLabel.getHeight()*2);
+        onePlusLabel.getColor().a = 0f;
+        stage.addActor(onePlusLabel);
 
         ringImage = new Image(new Texture(Gdx.files.internal("Ariyo/Sturdy_Ring.png")));
         ringImage.setPosition(Gdx.graphics.getWidth() / 2f - ringImage.getWidth(),  Gdx.graphics.getHeight() / 2f - ringImage.getHeight() / 2f);
@@ -1661,9 +2139,19 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     else
                         controller.itemEquip(item.getName());
 
+                    if (helperBackGround == null) {
+                        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+                        helperBackGround.setColor(0, 0, 0, 0.5f);
+                        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+                        stage.addActor(helperBackGround);
+                    }
+
                     helperBackGround.remove();
                     inventoryPopup.remove();
                     inventoryIsActivated = false;
+
+
+                    giftingInventory();
                 }
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -1752,7 +2240,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             informationIsActivated || subMenuIsActivated ||
             toolsMenuIsActivated || EscMenuIsActivated ||
             setEnergyIsActivated || settingIsActivated ||
-            skillMenuIsActivated || mapIsActivated;
+            skillMenuIsActivated || mapIsActivated ||
+            dialogActivated ||
+            currentGame.currentPlayer.isFishing || currentGame.currentPlayer.doingMinigame;
     }
 
 

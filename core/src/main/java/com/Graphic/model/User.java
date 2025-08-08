@@ -37,6 +37,8 @@ public class User {
     private int daysDepressedLeft = 0;
     private List<Recipe> recipes;
 
+    public boolean isFishing = false;
+    public boolean doingMinigame = false;
 
     public Sprite sprite;
     private Animation<Texture> Right;

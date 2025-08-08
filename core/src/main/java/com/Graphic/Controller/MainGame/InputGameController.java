@@ -6,8 +6,8 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Enum.AllPlants.*;
 import com.Graphic.model.Enum.Direction;
+import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.Enum.GameTexturePath;
-import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.SecurityQuestions;
@@ -66,7 +66,6 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 import static com.badlogic.gdx.Input.Keys.ENTER;
-import static com.badlogic.gdx.Input.Keys.T;
 
 
 public class InputGameController {
@@ -122,7 +121,7 @@ public class InputGameController {
     }
 
     public void updateMove() {
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) ) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP ) && !currentGame.currentPlayer.doingMinigame) {
             currentGame.currentPlayer.setDirection(Direction.Up);
             if (checkWalking()) {
                 currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() - 5 * Gdx.graphics.getDeltaTime());
@@ -130,7 +129,7 @@ public class InputGameController {
             currentGame.currentPlayer.setMoving(true);
             moveAnimation();
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) ) {
+        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !currentGame.currentPlayer.doingMinigame) {
             currentGame.currentPlayer.setDirection(Direction.Down);
             if (checkWalking()) {
                 currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() + 5 * Gdx.graphics.getDeltaTime());
@@ -138,7 +137,7 @@ public class InputGameController {
             currentGame.currentPlayer.setMoving(true);
             moveAnimation();
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) ) {
+        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !currentGame.currentPlayer.doingMinigame) {
             currentGame.currentPlayer.setDirection(Direction.Left);
             if (checkWalking()) {
                 currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() - 5 * Gdx.graphics.getDeltaTime());
@@ -146,7 +145,7 @@ public class InputGameController {
             currentGame.currentPlayer.setMoving(true);
             moveAnimation();
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) ) {
+        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !currentGame.currentPlayer.doingMinigame) {
             currentGame.currentPlayer.setDirection(Direction.Right);
             if (checkWalking()) {
                 currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() + 5 * Gdx.graphics.getDeltaTime());
@@ -406,7 +405,8 @@ public class InputGameController {
         }
 
         for (User player : currentGame.players) {
-            player.getSprite().draw(Main.getBatch());
+            if (!player.isFishing)
+                player.getSprite().draw(Main.getBatch());
         }
 
         for (User player : currentGame.players) {
@@ -1863,7 +1863,7 @@ public class InputGameController {
                 break;
             }
         }
-        currentGame.currentPlayer = currentGame.players.getFirst();
+        currentGame.currentPlayer = currentGame.players.get(2);
 
 
 

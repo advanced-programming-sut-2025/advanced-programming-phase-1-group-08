@@ -10,6 +10,7 @@ import com.Graphic.model.Enum.AllPlants.*;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
+import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC.NPC;
@@ -1451,7 +1452,12 @@ public class GameControllerLogic {
     public static void showChatDialog(Stage stage, Skin skin, Consumer<String> onMessageSent) {
 
         // تعریف متغیرهای اولیه
-        TextField messageField = new TextField("", newSkin);
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle(skin.get(TextField.TextFieldStyle.class));
+        textFieldStyle.font = getFont();
+        textFieldStyle.fontColor = Color.BLACK;
+        textFieldStyle.cursor = skin.newDrawable("cursor", Color.BLACK);
+        textFieldStyle.background = skin.newDrawable("textfield", Color.WHITE);
+        TextField messageField = new TextField("", textFieldStyle);
         messageField.setMessageText("Type your message...");
         messageField.setMaxLength(200);
 
@@ -1469,23 +1475,23 @@ public class GameControllerLogic {
         };
 
         // ایموجی‌ها
-        Table emojiTable = new Table();
-        String[] emojis = {"😊", "😂", "❤️", "😢", "💔", "👍", "🎉"};
-        for (String emoji : emojis) {
-            TextButton emojiButton = new TextButton(emoji, skin);
-            emojiButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    messageField.setText(messageField.getText() + emoji);
-                }
-            });
-            emojiTable.add(emojiButton).pad(3);
-        }
+//        Table emojiTable = new Table();
+//        String[] emojis = {"😊", "😂", "❤️", "😢", "💔", "👍", "🎉"};
+//        for (String emoji : emojis) {
+//            TextButton emojiButton = new TextButton(emoji, newSkin);
+//            emojiButton.addListener(new ClickListener() {
+//                @Override
+//                public void clicked(InputEvent event, float x, float y) {
+//                    messageField.setText(messageField.getText() + emoji);
+//                }
+//            });
+//            emojiTable.add(emojiButton).pad(3);
+//        }
 
         // اضافه کردن به دیالوگ
         chatDialog.getContentTable().add(messageField).width(300).pad(10);
         chatDialog.getContentTable().row();
-        chatDialog.getContentTable().add(emojiTable).pad(10);
+//        chatDialog.getContentTable().add(emojiTable).pad(10);
 
         // دکمه‌ها + مقدار برگردان
         chatDialog.button("Send", true);   // این مقدار به result داده میشه
@@ -1558,8 +1564,7 @@ public class GameControllerLogic {
         Result result = f.talkingHistory();
         System.out.println(result);
     }
-    public static Result hug (String input) {
-        String username = GameMenuCommands.hug.getMatcher(input).group("username");
+    public static Result hug (String username) {
         if (!currentGame.players.contains(findPlayerInGame(username))) {
             return new Result(false,"Username is Unavailable!");
         }
@@ -1573,30 +1578,15 @@ public class GameControllerLogic {
         return f.Hug();
     }
 
-    public static void sendGifts (String input) {
-        String username = GameMenuCommands.sendGift.getMatcher(input).group("username");
-        String item = GameMenuCommands.sendGift.getMatcher(input).group("item");
-        int amount = Integer.parseInt(GameMenuCommands.sendGift.getMatcher(input).group("amount"));
-        if (username == null || item == null) {
-            System.out.println("Invalid Command!");
-            return;
-        }
-        if (!currentGame.players.contains(findPlayerInGame(username))) {
-            System.out.println(RED+"Username '" + username + "' is Unavailable!"+RESET);
-            return;
-        }
-        if (username.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't Send Gifts to " + RED+"Yourself"+RESET + "!");
-            return;
-        }
-        HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
+    public static void sendGifts (HumanCommunications f, String username) {
+
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+            System.out.println("There's " + "no Friendship" + " Among these Users");
             return;
         }
 
 
-        Result result = f.sendGifts(username, item, amount);
+        Result result = f.sendGifts(currentGame.currentPlayer.currentItem, 1);
         System.out.println(result);
         if (result.IsSuccess()) {
             Set<User> key = new HashSet<>(Arrays.asList(currentGame.currentPlayer, findPlayerInGame(username)));
@@ -1656,6 +1646,10 @@ public class GameControllerLogic {
     public static Result eatFood (String foodName) {
 
         Recipe recipe = Recipe.findRecipeByName(foodName);
+
+        if (recipe == null) {
+            return new Result(false, "Food Unavailable!");
+        }
 
         FoodTypes type = recipe.getType();
 
@@ -1746,6 +1740,7 @@ public class GameControllerLogic {
             advanceItem(new PickAxe(PickAxeType.primaryPickAxe), 1);
             advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
             advanceItem(new TrashCan(TrashCanType.primaryTrashCan), 1);
+            advanceItem(new MarketItem(MarketItemType.Bouquet), 1);
 
 
 

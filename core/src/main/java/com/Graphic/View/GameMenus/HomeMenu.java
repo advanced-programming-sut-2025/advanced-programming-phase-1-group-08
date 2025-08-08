@@ -6,6 +6,7 @@ import com.Graphic.Main;
 import com.Graphic.View.AppMenu;
 import com.Graphic.View.AppView;
 import com.Graphic.model.*;
+import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.HouseModes;
 import com.Graphic.model.Enum.ItemType.*;

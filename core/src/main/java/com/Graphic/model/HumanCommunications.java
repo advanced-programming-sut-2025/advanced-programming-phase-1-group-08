@@ -23,7 +23,7 @@ public class HumanCommunications {
         this.player1 = player1;
         this.player2 = player2;
         XP = 0;
-        FriendshipLevel = 0;
+        FriendshipLevel = 3;
     }
 
     public boolean involves(User p) {
@@ -162,7 +162,7 @@ public class HumanCommunications {
 
         return new Result(true, GREEN+"Rated Successfully."+RESET);
     }
-    public Result sendGifts(String username, String item, int amount) {
+    public Result sendGifts(Items item, int amount) {
         User other;
         if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
             other = player2;
@@ -172,43 +172,30 @@ public class HumanCommunications {
         Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
-//        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-//            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Send Gift to " + other.getNickname() + "!"+RESET);
-//        }
+
         if (getLevel() < 1) {
 
-            return new Result(false, RED+"You can't Send Gifts in your Current Friendship Level."+RESET);
+            return new Result(false, "You can't Send Gifts in your Current Friendship Level.");
         }
 
-        Items items = AllFromDisplayNames(item);
 
-
-
-        if (myInventory.Items.containsKey(items)) {
-            int x = myInventory.Items.get(items);
-            if (x < amount) {
-                return new Result(false , RED + "Not Enough Item!" + RESET);
-            }
-            else
-                myInventory.Items.compute(items, (k,v) -> v - amount);
-        }
-        else
-            return new Result(false, RED+"You Don't Have it to Give!"+RESET);
+        // minus mine
+        myInventory.Items.compute(item, (k,v) -> v - amount);
         myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
 
-        if (otherInventory.Items.containsKey(items)) {
+        if (otherInventory.Items.containsKey(item)) {
 
-            myInventory.Items.compute(items, (k,v) -> v + amount);
+            otherInventory.Items.compute(item, (k,v) -> v + amount);
             if (currentGame.currentPlayer.getSpouse() != null)
                 if (currentGame.currentPlayer.getSpouse().equals(other)) {
                     currentGame.currentPlayer.increaseHealth(50);
                     currentGame.currentPlayer.getSpouse().increaseHealth(50);
                 }
-            return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
+            return new Result(true, "You Sent it to " + other.getNickname());
 
         }
 
-        otherInventory.Items.put(items, amount);
+        otherInventory.Items.put(item, amount);
 
         if (currentGame.currentPlayer.getSpouse() != null)
             if (currentGame.currentPlayer.getSpouse().equals(other)) {
@@ -217,7 +204,7 @@ public class HumanCommunications {
             }
         // اکس پی ها جای دیگه اد شده
 
-        return new Result(true, GREEN+"You Sent it to " + other.getNickname()+RESET);
+        return new Result(true, "You Sent it to " + other.getNickname());
     }
 
     // LEVEL TWO TASKS
@@ -229,9 +216,7 @@ public class HumanCommunications {
         else
             other = player1;
 
-//        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-//            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Hug " + other.getNickname() + "!"+RESET);
-//        }
+
         if (getLevel() < 2) {
             return new Result(false, "You can't Hug in your Current Friendship Level.");
         }
@@ -257,9 +242,8 @@ public class HumanCommunications {
         Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
-        //if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) return new Result(false, RED+"You Should Get Closer in Order to Buy Flower for " + other.getNickname() + "!"+RESET);
         if (getLevel() < 2) return new Result(false, "You can't Buy Flower in your Current " + "Friendship Level" + ".");
-        if (getXP() < 300) return new Result(false, "You Have to Reach 300 XPs to Give Bouquet!");
+        if (getLevel() < 3 && getXP() < 300) return new Result(false, "You Have to Reach 300 XPs to Give Bouquet!");
 
 
         MarketItem marketItem = new MarketItem(MarketItemType.Bouquet);
@@ -308,17 +292,17 @@ public class HumanCommunications {
         Inventory otherInventory = other.getBackPack().inventory;
 
         if (currentGame.currentPlayer.getGender().equalsIgnoreCase("female"))
-            return new Result(false, RED+"Proposal is a Guy job!"+RESET);
+            return new Result(false, "Proposal is a Guy job!");
         if (currentGame.currentPlayer.getGender().equalsIgnoreCase(other.getGender()))
-            return new Result(false, RED+"No Gay Marriage in Islamic Village!"+RESET);
+            return new Result(false, "No Gay Marriage in Islamic Village!");
 //        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
 //            return new Result(false, PURPLE+"Get Closer Honey!"+RESET);
 //        }
 
         if (getLevel() < 3)
-            return new Result(false, RED+"You Can't Propose in your Current Friendship Level."+RESET);
+            return new Result(false, "You Can't Propose in your Current Friendship Level.");
         if (getXP() < 300)
-            return new Result(false, RED+"You Have to Reach 400 XPs to Propose!"+RESET);
+            return new Result(false, "You Have to Reach 400 XPs to Propose!");
 
         MarketItem marketItem = new MarketItem(MarketItemType.WeddingRing);
         if (myInventory.Items.containsKey(marketItem)) {
@@ -326,7 +310,7 @@ public class HumanCommunications {
 //            myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
         }
         else {
-            return new Result(false, RED+"You Don't Have Wedding Ring to Propose!"+RESET);
+            return new Result(false, "You Don't Have Wedding Ring to Propose!");
         }
 
         Marriage.sendProposal(currentGame.currentPlayer, other);
