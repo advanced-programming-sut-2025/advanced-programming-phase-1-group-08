@@ -72,17 +72,17 @@ public enum WateringCanType {
     }
 
     public static boolean checkIngredient(WateringCanType wateringCanType) {
-        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
-        BarsAndOres barsAndOres= new BarsAndOres(wateringCanType.barsAndOreType);
-        if (inventory.Items.containsKey(barsAndOres)) {
-            Integer value=inventory.Items.get(barsAndOres);
-            if (value >= 5 && App.currentGame.currentPlayer.getMoney() >= wateringCanType.getPrice()) {
-                inventory.Items.put(barsAndOres,value-5);
-                inventory.Items.entrySet().removeIf(entry -> entry.getValue().equals(0));
-                return true;
-            }
-            return false;
-        }
+//        Inventory inventory = App.currentGame.currentPlayer.getBackPack().inventory;
+//        BarsAndOres barsAndOres= new BarsAndOres(wateringCanType.barsAndOreType);
+//        if (inventory.Items.containsKey(barsAndOres)) {
+//            Integer value=inventory.Items.get(barsAndOres);
+//            if (value >= 5 && App.currentGame.currentPlayer.getMoney() >= wateringCanType.getPrice()) {
+//                inventory.Items.put(barsAndOres,value-5);
+//                inventory.Items.entrySet().removeIf(entry -> entry.getValue().equals(0));
+//                return true;
+//            }
+//            return false;
+//        }
         return false;
     }
 

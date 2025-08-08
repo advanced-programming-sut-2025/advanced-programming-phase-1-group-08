@@ -1,20 +1,26 @@
 package com.Graphic.lwjgl3;
 
-import com.Graphic.model.ClientServer.ClientWork;
+import com.Graphic.model.ClientServer.Client;
+import com.Graphic.model.ClientServer.MultiGameServer;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.Graphic.Main;
 
+import java.io.IOException;
+import java.util.Arrays;
+
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
         if (StartupHelper.startNewJvmIfRequired()) return;
-        // This handles macOS support and helps on Windows.
-        createApplication();
+//         This handles macOS support and helps on Windows.
+        createApplication(args.length);
     }
 
-    private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new Main(new ClientWork()), getDefaultConfiguration());
+    private static Lwjgl3Application createApplication(int length) throws IOException {
+
+        return new Lwjgl3Application(new Main(null), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {

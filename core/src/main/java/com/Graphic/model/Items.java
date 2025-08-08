@@ -101,12 +101,14 @@ public abstract class Items extends GameObject {
         return false;
     }
 
+    private boolean isCollected;
+
 
 
     public abstract int getSellPrice();
     public abstract int getRemindInShop(MarketType marketType);
     public abstract String getName();
-    public abstract String getInventoryIconPath ();
+    public abstract String getInventoryIconPath();
     public abstract void setRemindInShop(int amount , MarketType marketType);
     public abstract int getMarketPrice(MarketType marketType);
     public void setX(int x) {
@@ -124,6 +126,12 @@ public abstract class Items extends GameObject {
         if (this instanceof ShippingBin) {
             ((ShippingBin) this).setY(y);
         }
+    }
+    public boolean isCollected() {
+        return isCollected;
+    }
+    public void setCollected(boolean collected) {
+        isCollected = collected;
     }
 
     public  int getTakesTime() {

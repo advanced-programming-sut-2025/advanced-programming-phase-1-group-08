@@ -1,5 +1,6 @@
 package com.Graphic.model.Plants;
 
+import com.Graphic.Main;
 import com.Graphic.model.*;
 import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
@@ -86,7 +87,7 @@ public class ForagingSeeds extends Items {
     public void setStage  () {
 
         int days = 0;
-        DateHour dateHour = currentGame.currentDate.clone();
+        DateHour dateHour = Main.getClient(null).getLocalGameState().currentDate.clone();
         dateHour.increaseDay(numFertilize);
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
@@ -107,7 +108,7 @@ public class ForagingSeeds extends Items {
         if (item.equals(MarketItemType.QuantityRetainingSoil))
             numFertilize++;
         if (item.equals(MarketItemType.BasicRetainingSoil))
-            lastWater = currentGame.currentDate.clone();
+            lastWater = Main.getClient(null).getLocalGameState().currentDate.clone();
 
     }
     public void setLastWater (DateHour lastWater) {
@@ -123,7 +124,7 @@ public class ForagingSeeds extends Items {
         if (type.isOneTimeUse())
             delete();
         else
-            lastProduct = currentGame.currentDate.clone();
+            lastProduct = Main.getClient(null).getLocalGameState().currentDate.clone();
     }
     public void setLastProduct(DateHour lastProduct) {
 
@@ -134,27 +135,27 @@ public class ForagingSeeds extends Items {
 
     public boolean checkForDeath () {
 
-        return getDayDifferent( lastWater, currentGame.currentDate) > 2;
+        return getDayDifferent( lastWater, Main.getClient(null).getLocalGameState().currentDate) > 2;
     }
     public void checkHaveProduct () {
 
-        DateHour dateHour = currentGame.currentDate.clone();
+        DateHour dateHour = Main.getClient(null).getLocalGameState().currentDate.clone();
         dateHour.increaseDay(numFertilize);
 
         if (type.isOneTimeUse())
-            this.haveProduct = type.getSeason().contains(currentGame.currentDate.getSeason()) &&
+            this.haveProduct = type.getSeason().contains(Main.getClient(null).getLocalGameState().currentDate.getSeason()) &&
                     stage == type.getGrowthStages();
         else {
-            this.haveProduct = type.getSeason().contains(currentGame.currentDate.getSeason()) &&
+            this.haveProduct = type.getSeason().contains(Main.getClient(null).getLocalGameState().currentDate.getSeason()) &&
                     getDayDifferent(lastProduct, dateHour) > type.getRegrowthTime() &&
                     this.stage == this.type.getGrowthStages();
         }
     }
     public void delete () {
 
-        for (Tile tile : currentGame.bigMap)
-            if (tile.getGameObject() == (this))
-                tile.setGameObject(new Walkable());
+//        for (Tile tile : currentGame.bigMap)
+//            if (tile.getGameObject() == (this))
+//                tile.setGameObject(new Walkable());
     }
 
     @Override

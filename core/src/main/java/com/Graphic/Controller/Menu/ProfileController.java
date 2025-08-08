@@ -1,5 +1,6 @@
 package com.Graphic.Controller.Menu;
 
+import com.Graphic.Main;
 import com.Graphic.model.App;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.SaveData.PasswordHashUtil;
@@ -18,16 +19,16 @@ public class ProfileController {
 
 
     public String getUserInfo() {
-        if (App.currentUser == null) {
+        if (Main.getClient(null).getPlayer() == null) {
             return "No user logged in";
         }
 
         StringBuilder info = new StringBuilder();
-        info.append("Username: ").append(App.currentUser.getUsername()).append("\n");
-        info.append("Nickname: ").append(App.currentUser.getNickname()).append("\n");
-        info.append("Email: ").append(App.currentUser.getEmail()).append("\n");
-        info.append("Most Golds Collected: ").append(App.currentUser.getMax_point()).append("\n");
-        info.append("Total Games Played: ").append(App.currentUser.getGames_played());
+        info.append("Username: ").append(Main.getClient(null).getPlayer().getUsername()).append("\n");
+        info.append("Nickname: ").append(Main.getClient(null).getPlayer().getNickname()).append("\n");
+        info.append("Email: ").append(Main.getClient(null).getPlayer().getEmail()).append("\n");
+        info.append("Most Golds Collected: ").append(Main.getClient(null).getPlayer().getMax_point()).append("\n");
+        info.append("Total Games Played: ").append(Main.getClient(null).getPlayer().getGames_played());
 
         return info.toString();
     }
@@ -159,7 +160,8 @@ public class ProfileController {
 
 
     public String generatePassword() {
-        return generateRandomPass();
+        //TODO return generateRandomPass();
+        return null;
     }
 
     @Deprecated

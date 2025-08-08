@@ -1,5 +1,6 @@
 package com.Graphic.model.ToolsPackage;
 
+import com.Graphic.Main;
 import com.Graphic.model.Enum.ItemType.MarketType;
 
 import static com.Graphic.model.App.currentGame;
@@ -9,11 +10,16 @@ public class Scythe extends Tools {
         super("Scythe");
     }
 
+    @Override
+    public String getIcon() {
+        return "Erfan/Tools/Scythe.png";
+    }
+
 
     @Override
     public int healthCost() {
 
-        return Math.min((int) (-2*currentGame.currentWeather.getEnergyCostCoefficient()), 0);
+        return Math.min((int) (-2 * Main.getClient(null).getLocalGameState().currentWeather.getEnergyCostCoefficient()), 0);
     }
 
     @Override

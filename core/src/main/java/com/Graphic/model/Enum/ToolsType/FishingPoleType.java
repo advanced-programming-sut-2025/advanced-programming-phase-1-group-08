@@ -1,5 +1,7 @@
 package com.Graphic.model.Enum.ToolsType;
 
+import com.Graphic.Main;
+
 import static com.Graphic.model.App.currentGame;
 
 
@@ -15,7 +17,7 @@ public enum FishingPoleType {
 
         @Override
         public int costEnergy(boolean Fishing) {
-            boolean a = currentGame.currentPlayer.Buff_fishing_hoursLeft > 0;
+            boolean a = Main.getClient(null).getPlayer().Buff_fishing_hoursLeft > 0;
             if (Fishing && a) {
                 return 6;
             }
@@ -45,7 +47,7 @@ public enum FishingPoleType {
 
         @Override
         public int costEnergy(boolean Fishing) {
-            if (Fishing && currentGame.currentPlayer.Buff_fishing_hoursLeft > 0)
+            if (Fishing && Main.getClient(null).getPlayer().Buff_fishing_hoursLeft > 0)
                 return 6;
             if (Fishing) {
                 return 7;
@@ -71,7 +73,7 @@ public enum FishingPoleType {
 
         @Override
         public int costEnergy(boolean Fishing) {
-            if (Fishing && currentGame.currentPlayer.Buff_fishing_hoursLeft > 0)
+            if (Fishing && Main.getClient(null).getPlayer().Buff_fishing_hoursLeft > 0)
                 return 4;
             if (Fishing) {
                 return 5;
@@ -97,7 +99,7 @@ public enum FishingPoleType {
 
         @Override
         public int costEnergy(boolean Fishing) {
-            if (Fishing && currentGame.currentPlayer.Buff_fishing_hoursLeft > 0)
+            if (Fishing && Main.getClient(null).getPlayer().Buff_fishing_hoursLeft > 0)
                 return 2;
             if (Fishing) {
                 return 3;
@@ -154,7 +156,7 @@ public enum FishingPoleType {
     }
 
     public boolean checkAbility(int amount){
-        if (currentGame.currentPlayer.getLevelFishing()>=amount){
+        if (Main.getClient(null).getPlayer().getLevelFishing()>=amount){
             return true;
         }
         return false;

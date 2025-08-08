@@ -1,5 +1,6 @@
 package com.Graphic.model.Weather;
 
+import com.Graphic.Main;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Enum.WeatherTime.WeekDay;
@@ -169,7 +170,7 @@ public class DateHour implements Cloneable {
             case Winter -> firstSeason = 4;
         }
         int nowSeason =0;
-        switch (App.currentGame.currentDate.getSeason()) {
+        switch (Main.getClient(null).getLocalGameState().currentDate.getSeason()) {
             case Spring -> {
                 nowSeason =1;
             }
@@ -185,7 +186,9 @@ public class DateHour implements Cloneable {
         }
 
         int firstHour= first.year * 2688 + firstSeason * 672 + (first.getDate() -1)*24 + first.getHour();
-        int secondHour= App.currentGame.currentDate.year * 2688 + nowSeason * 672 + (App.currentGame.currentDate.getDate() -1 ) * 24 + App.currentGame.currentDate.getHour();
+        int secondHour= Main.getClient(null).getLocalGameState().currentDate.year * 2688 +
+            nowSeason * 672 + (Main.getClient(null).getLocalGameState().currentDate.getDate() -1 ) * 24 +
+            Main.getClient(null).getLocalGameState().currentDate.getHour();
 
         return secondHour - firstHour;
     }

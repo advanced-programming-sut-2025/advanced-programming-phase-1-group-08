@@ -2,7 +2,7 @@ package com.Graphic.model;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.Marketing;
-import com.Graphic.View.GameMenus.GameMenu;
+import com.Graphic.Main;
 import com.Graphic.model.Enum.ItemType.CraftType;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.TextureManager;
@@ -10,6 +10,7 @@ import com.Graphic.model.OtherItem.ArtisanProduct;
 import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 import static com.Graphic.View.GameMenus.GameMenu.gameMenu;
 import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.App.skin;
+//import static com.Graphic.model.App.skin;
 
 public class ArtisanMenuUI extends Group {
     private Table table;
@@ -50,7 +51,7 @@ public class ArtisanMenuUI extends Group {
             }
         }
         if (number == 2) {
-            for (Map.Entry<Items, Integer> items : currentGame.currentPlayer.getBackPack().inventory.Items.entrySet()) {
+            for (Map.Entry<Items, Integer> items : Main.getClient(null).getPlayer().getBackPack().inventory.Items.entrySet()) {
                 inventoryItem.add(items.getKey());
             }
         }
@@ -211,11 +212,11 @@ public class ArtisanMenuUI extends Group {
                     if (result.IsSuccess()) {
                         goingToProduce.getType().creatArtesian(null, craftingItem);
                         ArtisanMenuUI.this.remove();
-                        craftingItem.createAnotherShapeRender();
+                        //craftingItem.createAnotherShapeRender();
                     }
 
                     Dialog dialog = Marketing.getInstance().createDialogError();
-                    Label success = new Label(result.toString() , skin);
+                    Label success = new Label(result.toString() , Main.getSkin());
                     Marketing.getInstance().addDialogToTable(dialog,success,gameMenu);
                 }
             });

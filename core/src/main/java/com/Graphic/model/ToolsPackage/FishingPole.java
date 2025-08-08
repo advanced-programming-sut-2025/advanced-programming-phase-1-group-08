@@ -9,6 +9,11 @@ public class FishingPole extends Tools {
         super("FishingPole");
     }
 
+    @Override
+    public String getIcon() {
+        return type.getIconPath();
+    }
+
     public FishingPoleType type = null;
 
     public void use (){}

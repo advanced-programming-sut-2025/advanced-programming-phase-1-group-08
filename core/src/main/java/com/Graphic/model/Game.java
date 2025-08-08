@@ -1,7 +1,9 @@
 package com.Graphic.model;
 
 import com.Graphic.model.ClientServer.GameState;
+import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.ClientServer.PlayerHandler;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.WeatherTime.Weather;
@@ -19,21 +21,13 @@ import java.net.Socket;
 import java.util.*;
 
 public class Game {
+
     public Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
     public Map<Set<User>, List<Trade>> trades = new HashMap<>();
     public ArrayList<HumanCommunications> friendships = new ArrayList<>();
 
-    public ArrayList<User> players = new ArrayList<>();
-    public ArrayList<Farm> farms  = new ArrayList<>();
-    public ArrayList<Tile> bigMap = new ArrayList<>();
-    public ArrayList<Market> markets = new ArrayList<>();
-    public final int mapDimensions = 90;
 
-    public Weather tomorrowWeather;
-    public Weather currentWeather;
-    public DateHour currentDate;
 
-    public User currentPlayer;
     public Menu currentMenu;
 
 
@@ -66,14 +60,19 @@ public class Game {
                 secQ,
                 secA
         );
-
+        System.out.println("hi-1");
         App.users.add(newUser);
+        System.out.println("hi-2");
         App.currentUser = newUser;
+        System.out.println("hi-3");
 
         List<User> users = UserStorage.loadUsers();
+        System.out.println("hi1");
         users.add(newUser);
+        System.out.println("hi2");
         try {
             com.Graphic.model.SaveData.UserStorage.saveUsers(users);
+            System.out.println("hi3");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,13 +82,21 @@ public class Game {
     // بالایی ها همه باید اصلاح بشن
 
     private GameState gameState = new GameState();
-    private final LinkedList<String> stateHistory = new LinkedList<>();
     private final List<PlayerHandler> Players = new ArrayList<>();
     private final Map<String , Integer> lastSentIndex = new HashMap<>();
     private boolean gameStarted = false;
+    private Queue<Message> diffQueue = new LinkedList<>();
+    private Message noDiff;
+
+    public Game() {
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("No Diff", "No Diff");
+        noDiff = new Message(CommandType.NO_DIFF , body);
+
+    }
 
 
-    public synchronized void addPlayer(User u , Socket socket) {
+    public synchronized void addPlayer(User u , Socket socket) throws IOException {
         if (Players.size() >= 4) {
             try {
                 PrintWriter out = new PrintWriter(socket.getOutputStream() , true);
@@ -99,44 +106,48 @@ public class Game {
             }
         }
 
-        PlayerHandler handler = new PlayerHandler(u , socket , this);
+        PlayerHandler handler = new PlayerHandler(u , socket , this , Players.size() + 1);
         Players.add(handler);
         lastSentIndex.put(u.getUsername(), 0);
-
-        new Thread(handler).start();
+        gameState.getPlayers().add(u);
 
         if (Players.size() == 4 && !gameStarted) {
             gameStarted = true;
+            for (int i = 0 ; i < 4 ; i++) {
+                gameState.getPlayers().get(i).topLeftX = i % 2;
+                gameState.getPlayers().get(i).topLeftY = i / 2;
+                new Thread(Players.get(i)).start();
+            }
 
-            new Thread(() -> {
-                while (true) {
-                    try {
-                        synchronized (stateHistory) {
-                            stateHistory.add("hello");
-                        }
-                        Thread.sleep(100);
-                    }
-                    catch (Exception e) {
-                        break;
-                    }
-
-                }
-            }).start();
         }
 
     }
 
 
-    public String getStateFromPlayer(User u) {
-        synchronized (stateHistory) {
-            int idx = lastSentIndex.get(u.getUsername());
+    public  Message getStateFromPlayer(User u) {
 
-            if (lastSentIndex.size() > idx) {
-                String state = stateHistory.get(idx);
-                lastSentIndex.put(u.getUsername(), idx + 1);
-                return state;
+        int lastSent = lastSentIndex.get(u.getUsername());
+
+        if (diffQueue.size() > lastSent) {
+            int idx = 0;
+            for (Message message : diffQueue) {
+                if (idx == lastSent) {
+                    lastSentIndex.put(u.getUsername(), lastSent + 1);
+                    return message;
+                }
+                idx ++;
             }
-            return "NO-DIFF";
         }
+
+        return noDiff;
+
+    }
+
+    public synchronized GameState getGameState() {
+        return gameState;
+    }
+
+    public synchronized Queue<Message> getDiffQueue() {
+        return diffQueue;
     }
 }

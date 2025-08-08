@@ -10,8 +10,8 @@ import java.util.*;
 public class App {
 
 
-    public static Skin skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-    public static Skin newSkin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
+  //  public static Skin skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
+    //public static Skin newSkin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
 
     // TODO موقع سیو دیتا اینارو باید همشو سیو کرد و موقع ترمینیت پاک کرد
 //    public static Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
@@ -22,7 +22,6 @@ public class App {
     public static Game currentGame;
 
 //    public static ArrayList<User> players = new ArrayList<>();
-    public static List<User> users  = new ArrayList<>();
 
 
 //    public static ArrayList<Farm> farms  = new ArrayList<>();
@@ -35,8 +34,6 @@ public class App {
 //    public static Weather currentWeather;
 //    public static DateHour currentDate;
 
-//    public static User currentPlayer; // TODO
-    public static User currentUser; // TODO
     public static Menu currentMenu;
 
 
@@ -135,10 +132,10 @@ public class App {
 
 
     public static User findPlayerInGame (String name) {
-        for (User player: currentGame.players) {
-            if (player.getUsername().equalsIgnoreCase(name))
-                return player;
-        }
+//        for (User player: currentGame.players) {
+//            if (player.getUsername().equalsIgnoreCase(name))
+//                return player;
+//        }
         return null;
     }
 }

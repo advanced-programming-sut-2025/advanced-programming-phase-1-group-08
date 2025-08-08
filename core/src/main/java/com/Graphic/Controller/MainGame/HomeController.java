@@ -36,7 +36,7 @@ public class HomeController {
 
     public static Result fridgePick (Items item) {
 
-        currentGame.currentPlayer.getFarm().getHome().getFridge().items.compute(item, (k, x) -> x - 1);
+        Main.getClient(null).getPlayer().getFarm().getHome().getFridge().items.compute(item, (k, x) -> x - 1);
         if (currentGame.currentPlayer.getFarm().getHome().getFridge().items.get(item) == 0) {
             currentGame.currentPlayer.getFarm().getHome().getFridge().items.remove(item);
         }

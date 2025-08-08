@@ -40,9 +40,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.HomeController.*;
+import static com.Graphic.Main.newSkin;
 import static com.Graphic.View.GameMenus.GameMenu.helperBackGround;
 import static com.Graphic.model.App.*;
-import static com.Graphic.model.Recipe.createAllRecipes;
+//import static com.Graphic.model.Recipe.createAllRecipes;
 
 public class HomeMenu extends AppView implements AppMenu, Screen {
     private static boolean test = false;
@@ -135,7 +136,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         int startX = (screenWidth - areaWidth) / 2;
         int startY = (screenHeight - areaHeight) / 2;
 
-        Label letsCook = new Label("What Are You Cooking?", skin);
+        Label letsCook = new Label("What Are You Cooking?", Main.getSkin());
         letsCook.setPosition((float) (startX + (float) areaWidth*2.2/7), startY + (float) (areaHeight * 11) /10);
         cookingGroup.addActor(letsCook);
 
@@ -144,7 +145,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             FoodTypes f = FoodTypes.values()[i];
             Texture t = new Texture(Gdx.files.internal(f.getAddress()));
             Image image = new Image(t);
-            Label l = new Label(f.getName(), skin);
+            Label l = new Label(f.getName(), Main.getSkin());
 
             boolean usable = Recipe.findRecipeByName(f.getName()).isUsable();
 
@@ -244,7 +245,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         Recipe recipe = null;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(f.getName()).append("\n\n");
-        java.util.List<Recipe> recipeList = createAllRecipes();
+        java.util.List<Recipe> recipeList = null; //createAllRecipes();
 
         for (Recipe r : recipeList) {
             if (r.getName().equals(f.getName())) {
@@ -289,7 +290,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         int startX = (screenWidth - areaWidth) / 2;
         int startY = (screenHeight - areaHeight) / 2;
 
-        Label craftMenu = new Label("Craft Menu", skin);
+        Label craftMenu = new Label("Craft Menu", Main.getSkin());
         craftMenu.setPosition((float) (startX + (float) areaWidth*2.5/7), startY + (float) (areaHeight * 11) /10);
         craftingGroup.addActor(craftMenu);
 
@@ -298,7 +299,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
             CraftType c = CraftType.values()[i];
             Texture t = new Texture(Gdx.files.internal(c.getAddress()));
             Image image = new Image(t);
-            Label l = new Label(c.getName(), skin);
+            Label l = new Label(c.getName(), Main.getSkin());
 
             CraftType type=null;
             for (CraftType craftType : CraftType.values()) {
@@ -560,23 +561,23 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     }
 
     private void createFridge() {
-        if (!test) {
-            test = true;
-            Fridge f = currentGame.currentPlayer.getFarm().getHome().getFridge();
-            f.items.put(new Animalproduct(AnimalProductType.Egg, Quantity.Normal), 1);
-            f.items.put(new Fish(FishType.Salmon, Quantity.Normal), 1);
-            f.items.put(new Fish(FishType.Sardine, Quantity.Normal), 1);
-            f.items.put(new Fish(FishType.Tilapia, Quantity.Normal), 1);
-            f.items.put(new Animalproduct(AnimalProductType.sheeps_Wool, Quantity.Normal), 1);
-            f.items.put(new MarketItem(MarketItemType.Coffee), 1);
-            f.items.put(new MarketItem(MarketItemType.Beer), 1);
-            f.items.put(new MarketItem(MarketItemType.Bread), 1);
-            f.items.put(new MarketItem(MarketItemType.BasicRetainingSoil), 1);
-            f.items.put(new Fish(FishType.Blue_Discus, Quantity.Normal), 1);
-            f.items.put(new Fish(FishType.Legend, Quantity.Normal), 1);
-            f.items.put(new Fish(FishType.Crimsonfish, Quantity.Normal), 1);
-            f.items.put(new Fish(FishType.Herring, Quantity.Normal), 1);
-        }
+//        if (!test) {
+//            test = true;
+//            Fridge f = currentGame.currentPlayer.getFarm().getHome().getFridge();
+//            f.items.put(new Animalproduct(AnimalProductType.Egg, Quantity.Normal), 1);
+//            f.items.put(new Fish(FishType.Salmon, Quantity.Normal), 1);
+//            f.items.put(new Fish(FishType.Sardine, Quantity.Normal), 1);
+//            f.items.put(new Fish(FishType.Tilapia, Quantity.Normal), 1);
+//            f.items.put(new Animalproduct(AnimalProductType.sheeps_Wool, Quantity.Normal), 1);
+//            f.items.put(new MarketItem(MarketItemType.Coffee), 1);
+//            f.items.put(new MarketItem(MarketItemType.Beer), 1);
+//            f.items.put(new MarketItem(MarketItemType.Bread), 1);
+//            f.items.put(new MarketItem(MarketItemType.BasicRetainingSoil), 1);
+//            f.items.put(new Fish(FishType.Blue_Discus, Quantity.Normal), 1);
+//            f.items.put(new Fish(FishType.Legend, Quantity.Normal), 1);
+//            f.items.put(new Fish(FishType.Crimsonfish, Quantity.Normal), 1);
+//            f.items.put(new Fish(FishType.Herring, Quantity.Normal), 1);
+//        }
 
 
 
@@ -670,219 +671,219 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     }
 
     private void createInventoryItems(Table content) {
-        content.defaults().pad(5);
-        content.setFillParent(false);
-        content.sizeBy(350, 600);
-        content.setPosition(300, 300);
-        content.padLeft(50);
-
-        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-
-        int number = 0;
-
-        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
-
-            if (number % 6 == 0)
-                content.row();
-
-            Items item = entry.getKey();
-            int count = entry.getValue();
-
-            Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
-
-            Items currentItem = currentGame.currentPlayer.currentItem;
-            boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
-
-            if (isCurrent) {
-                itemButton.setColor(0.4f, 0.8f, 1f, 1f);
-                itemButton.setScale(1.3f);
-            } else
-                itemButton.setColor(1f, 1f, 1f, 0.8f);
-
-
-            Label countLabel = new Label("", newSkin);
-
-            if (!(item instanceof Tools))
-                countLabel.setText(count);
-
-            countLabel.setFontScale(0.9f);
-            countLabel.setColor(Color.BLACK);
-            countLabel.setAlignment(Align.bottomRight);
-
-            Table labelOverlay = new Table();
-            labelOverlay.setFillParent(false);
-            labelOverlay.add(countLabel).bottom().right().padLeft(35).padTop(50);
-
-            Stack stack = new Stack();
-            stack.add(itemButton);
-            stack.add(labelOverlay);
-
-            content.add(stack).width(60).height(60).padLeft(10);
-
-            itemButton.addListener(new ClickListener() {
-
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-
-                    if (!(item instanceof Food || item instanceof Animalproduct ||
-                        item instanceof Fish || (item instanceof MarketItem && ((MarketItem) item).getType().isEatable()))) {
-
-                        showTimedDialog("Choose an eatable Item!", 2f, stage);
-                        if (helperBackGround == null) {
-                            helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
-                            helperBackGround.setColor(0, 0, 0, 0.5f);
-                            helperBackGround.setSize(stage.getWidth(), stage.getHeight());
-                            stage.addActor(helperBackGround);
-                        }
-                        helperBackGround.remove();
-                        inventoryPopup.remove();
-                        inventoryIsActivated = false;
-                        return;
-                    }
-
-
-                    Result result = fridgePut(item);
-
-                    if (helperBackGround == null) {
-                        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
-                        helperBackGround.setColor(0, 0, 0, 0.5f);
-                        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
-                        stage.addActor(helperBackGround);
-                    }
-                    helperBackGround.remove();
-                    inventoryPopup.remove();
-                    inventoryIsActivated = false;
-
-                    showTimedDialog(result.massage(), 2f, stage);
-                }
-                @Override
-                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    itemButton.setColor(1f, 1f, 1f, 1f);
-                    itemButton.setScale(isCurrent ? 1.4f : 1.2f);
-                }
-                @Override
-                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    if (isCurrent) {
-                        itemButton.setColor(0.4f, 0.8f, 1f, 1f);
-                        itemButton.setScale(1.3f);
-                    } else {
-                        itemButton.setColor(1f, 1f, 1f, 0.8f);
-                        itemButton.setScale(1f);
-                    }
-                }
-            });
-            number++;
-        }
+//        content.defaults().pad(5);
+//        content.setFillParent(false);
+//        content.sizeBy(350, 600);
+//        content.setPosition(300, 300);
+//        content.padLeft(50);
+//
+//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+//
+//        int number = 0;
+//
+//        for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
+//
+//            if (number % 6 == 0)
+//                content.row();
+//
+//            Items item = entry.getKey();
+//            int count = entry.getValue();
+//
+//            Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
+//
+//            Items currentItem = currentGame.currentPlayer.currentItem;
+//            boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
+//
+//            if (isCurrent) {
+//                itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+//                itemButton.setScale(1.3f);
+//            } else
+//                itemButton.setColor(1f, 1f, 1f, 0.8f);
+//
+//
+//            Label countLabel = new Label("", newSkin);
+//
+//            if (!(item instanceof Tools))
+//                countLabel.setText(count);
+//
+//            countLabel.setFontScale(0.9f);
+//            countLabel.setColor(Color.BLACK);
+//            countLabel.setAlignment(Align.bottomRight);
+//
+//            Table labelOverlay = new Table();
+//            labelOverlay.setFillParent(false);
+//            labelOverlay.add(countLabel).bottom().right().padLeft(35).padTop(50);
+//
+//            Stack stack = new Stack();
+//            stack.add(itemButton);
+//            stack.add(labelOverlay);
+//
+//            content.add(stack).width(60).height(60).padLeft(10);
+//
+//            itemButton.addListener(new ClickListener() {
+//
+//                @Override
+//                public void clicked(InputEvent event, float x, float y) {
+//
+//                    if (!(item instanceof Food || item instanceof Animalproduct ||
+//                        item instanceof Fish || (item instanceof MarketItem && ((MarketItem) item).getType().isEatable()))) {
+//
+//                        showTimedDialog("Choose an eatable Item!", 2f, stage);
+//                        if (helperBackGround == null) {
+//                            helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+//                            helperBackGround.setColor(0, 0, 0, 0.5f);
+//                            helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+//                            stage.addActor(helperBackGround);
+//                        }
+//                        helperBackGround.remove();
+//                        inventoryPopup.remove();
+//                        inventoryIsActivated = false;
+//                        return;
+//                    }
+//
+//
+//                    Result result = fridgePut(item);
+//
+//                    if (helperBackGround == null) {
+//                        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+//                        helperBackGround.setColor(0, 0, 0, 0.5f);
+//                        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+//                        stage.addActor(helperBackGround);
+//                    }
+//                    helperBackGround.remove();
+//                    inventoryPopup.remove();
+//                    inventoryIsActivated = false;
+//
+//                    showTimedDialog(result.massage(), 2f, stage);
+//                }
+//                @Override
+//                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+//                    itemButton.setColor(1f, 1f, 1f, 1f);
+//                    itemButton.setScale(isCurrent ? 1.4f : 1.2f);
+//                }
+//                @Override
+//                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+//                    if (isCurrent) {
+//                        itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+//                        itemButton.setScale(1.3f);
+//                    } else {
+//                        itemButton.setColor(1f, 1f, 1f, 0.8f);
+//                        itemButton.setScale(1f);
+//                    }
+//                }
+//            });
+//            number++;
+//        }
     }
 
     private void createCurrentItem (Table content) {
 
-        Image img;
-        if (currentGame.currentPlayer.currentItem != null)
-            img = new Image(TextureManager.get(currentGame.currentPlayer.currentItem.getInventoryIconPath()));
-        else
-            img = new Image(TextureManager.get("Erfan/Cancel2.png"));
-
-        content.add(img).align(Align.topRight).width(150).height(150).right();
-        content.row();
+//        Image img;
+//        if (currentGame.currentPlayer.currentItem != null)
+//            img = new Image(TextureManager.get(currentGame.currentPlayer.currentItem.getInventoryIconPath()));
+//        else
+//            img = new Image(TextureManager.get("Erfan/Cancel2.png"));
+//
+//        content.add(img).align(Align.topRight).width(150).height(150).right();
+//        content.row();
 
     }
 
     private void createItems (Table content) {
 
-        content.defaults().pad(5);
-        content.setFillParent(false);
-        content.sizeBy(350, 600);
-        content.setPosition(300, 300);
-        content.padLeft(50);
-
-        Fridge f = currentGame.currentPlayer.getFarm().getHome().getFridge();
-//        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
-
-        int number = 0;
-
-
-        for (Map.Entry<Items, Integer> entry : f.items.entrySet()) {
-
-            if (number % 6 == 0)
-                content.row();
-
-            Items item = entry.getKey();
-            int count = entry.getValue();
-
-            Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
-
-            Items currentItem = currentGame.currentPlayer.currentItem;
-            boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
-
-            if (isCurrent) {
-                itemButton.setColor(0.4f, 0.8f, 1f, 1f);
-                itemButton.setScale(1.3f);
-            } else
-                itemButton.setColor(1f, 1f, 1f, 0.8f);
-
-
-            Label countLabel = new Label("", newSkin);
-
-            if (!(item instanceof Tools))
-                countLabel.setText(count);
-
-            countLabel.setFontScale(0.9f);
-            countLabel.setColor(Color.BLACK);
-            countLabel.setAlignment(Align.bottomRight);
-
-            Table labelOverlay = new Table();
-            labelOverlay.setFillParent(false);
-            labelOverlay.add(countLabel).bottom().right().padLeft(35).padTop(50);
-
-            Stack stack = new Stack();
-            stack.add(itemButton);
-            stack.add(labelOverlay);
-
-            content.add(stack).width(60).height(60).padLeft(10);
-
-            itemButton.addListener(new ClickListener() {
-
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-
-                    Result result = fridgePick(item);
-                    showTimedDialog(result.massage(), 1f, stage);
-                    if (helperBackGround == null) {
-                        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
-                        helperBackGround.setColor(0, 0, 0, 0.5f);
-                        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
-                        stage.addActor(helperBackGround);
-                    }
-                    helperBackGround.remove();
-                    fridgePopup.addAction(Actions.sequence(
-                        Actions.fadeOut(1f),
-                        Actions.run(() -> {
-                            fridgePopup.remove(); // حذف کامل از stage
-                            fridgePopup = null;
-                        })
-                    ));
-
-                    fridgeIsActivated = false;
-                }
-                @Override
-                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    itemButton.setColor(1f, 1f, 1f, 1f);
-                    itemButton.setScale(isCurrent ? 1.4f : 1.2f);
-                }
-                @Override
-                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    if (isCurrent) {
-                        itemButton.setColor(0.4f, 0.8f, 1f, 1f);
-                        itemButton.setScale(1.3f);
-                    } else {
-                        itemButton.setColor(1f, 1f, 1f, 0.8f);
-                        itemButton.setScale(1f);
-                    }
-                }
-            });
-            number++;
-        }
+//        content.defaults().pad(5);
+//        content.setFillParent(false);
+//        content.sizeBy(350, 600);
+//        content.setPosition(300, 300);
+//        content.padLeft(50);
+//
+//        Fridge f = currentGame.currentPlayer.getFarm().getHome().getFridge();
+////        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
+//
+//        int number = 0;
+//
+//
+//        for (Map.Entry<Items, Integer> entry : f.items.entrySet()) {
+//
+//            if (number % 6 == 0)
+//                content.row();
+//
+//            Items item = entry.getKey();
+//            int count = entry.getValue();
+//
+//            Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
+//
+//            Items currentItem = currentGame.currentPlayer.currentItem;
+//            boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
+//
+//            if (isCurrent) {
+//                itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+//                itemButton.setScale(1.3f);
+//            } else
+//                itemButton.setColor(1f, 1f, 1f, 0.8f);
+//
+//
+//            Label countLabel = new Label("", newSkin);
+//
+//            if (!(item instanceof Tools))
+//                countLabel.setText(count);
+//
+//            countLabel.setFontScale(0.9f);
+//            countLabel.setColor(Color.BLACK);
+//            countLabel.setAlignment(Align.bottomRight);
+//
+//            Table labelOverlay = new Table();
+//            labelOverlay.setFillParent(false);
+//            labelOverlay.add(countLabel).bottom().right().padLeft(35).padTop(50);
+//
+//            Stack stack = new Stack();
+//            stack.add(itemButton);
+//            stack.add(labelOverlay);
+//
+//            content.add(stack).width(60).height(60).padLeft(10);
+//
+//            itemButton.addListener(new ClickListener() {
+//
+//                @Override
+//                public void clicked(InputEvent event, float x, float y) {
+//
+//                    Result result = fridgePick(item);
+//                    showTimedDialog(result.massage(), 1f, stage);
+//                    if (helperBackGround == null) {
+//                        helperBackGround = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Erfan/grayPage.jpg"))));
+//                        helperBackGround.setColor(0, 0, 0, 0.5f);
+//                        helperBackGround.setSize(stage.getWidth(), stage.getHeight());
+//                        stage.addActor(helperBackGround);
+//                    }
+//                    helperBackGround.remove();
+//                    fridgePopup.addAction(Actions.sequence(
+//                        Actions.fadeOut(1f),
+//                        Actions.run(() -> {
+//                            fridgePopup.remove(); // حذف کامل از stage
+//                            fridgePopup = null;
+//                        })
+//                    ));
+//
+//                    fridgeIsActivated = false;
+//                }
+//                @Override
+//                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+//                    itemButton.setColor(1f, 1f, 1f, 1f);
+//                    itemButton.setScale(isCurrent ? 1.4f : 1.2f);
+//                }
+//                @Override
+//                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+//                    if (isCurrent) {
+//                        itemButton.setColor(0.4f, 0.8f, 1f, 1f);
+//                        itemButton.setScale(1.3f);
+//                    } else {
+//                        itemButton.setColor(1f, 1f, 1f, 0.8f);
+//                        itemButton.setScale(1f);
+//                    }
+//                }
+//            });
+//            number++;
+//        }
     }
 
     @Override
@@ -976,8 +977,8 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     }
 
     private void drawPlayer() {
-        Sprite player = currentGame.currentPlayer.getSprite();
-        Main.getBatch().draw(player, startX - areaWidth/22f , startY - areaHeight/7f);
+//        Sprite player = currentGame.currentPlayer.getSprite();
+//        Main.getBatch().draw(player, startX - areaWidth/22f , startY - areaHeight/7f);
 
 
     }

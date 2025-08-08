@@ -1,6 +1,7 @@
 package com.Graphic.model;
 
 import com.Graphic.model.Enum.Fish.FishType;
+import com.Graphic.Main;
 import com.Graphic.model.Plants.Animalproduct;
 import com.Graphic.model.Plants.Fish;
 import com.Graphic.model.Enum.AllPlants.CropsType;
@@ -359,7 +360,7 @@ public class Recipe {
 
     public static Recipe findRecipeByName(String name) {
 
-        for (Recipe recipe: currentGame.currentPlayer.getRecipes()) {
+        for (Recipe recipe: Main.getClient(null).getPlayer().getRecipes()) {
             if (recipe.getName().equals(name) || recipe.getName().replace(" ", "").equals(name.toLowerCase()))
                 return recipe;
         }

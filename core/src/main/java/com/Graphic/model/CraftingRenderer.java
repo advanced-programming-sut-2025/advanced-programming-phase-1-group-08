@@ -1,0 +1,72 @@
+package com.Graphic.model;
+
+import com.Graphic.Controller.MainGame.InputGameController;
+import com.Graphic.Main;
+import com.Graphic.model.Enum.ItemType.ArtisanType;
+import com.Graphic.model.HelpersClass.TextureManager;
+import com.Graphic.model.ToolsPackage.CraftingItem;
+import com.Graphic.model.Weather.DateHour;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
+
+public class CraftingRenderer {
+
+    private ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private CraftingItem craftingItem;
+
+    public static Animation<Texture> bombAnimation = new Animation<>(0.2f,
+            TextureManager.get("Mohamadreza/Bomb1.png") , TextureManager.get("Mohamadreza/Bomb2.png") ,
+            TextureManager.get("Mohamadreza/Bomb3.png") , TextureManager.get("Mohamadreza/Bomb4.png"));
+
+    public static Animation<Texture> sprinklerAnimation = new Animation<>(0.3f ,
+        TextureManager.get("Mohamadreza/Sprinker1.png") , TextureManager.get("Mohamadreza/Sprinker2.png") ,
+        TextureManager.get("Mohamadreza/Sprinker3.png") , TextureManager.get("Mohamadreza/Sprinker4.png") ,
+        TextureManager.get("Mohamadreza/Sprinker5.png") , TextureManager.get("Mohamadreza/Sprinker6.png") ,
+        TextureManager.get("Mohamadreza/Sprinker7.png") , TextureManager.get("Mohamadreza/Sprinker8.png") ,
+        TextureManager.get("Mohamadreza/Sprinker9.png") , TextureManager.get("Mohamadreza/Sprinker10.png"));
+
+    public CraftingRenderer(CraftingItem craftingItem) {
+        this.craftingItem = craftingItem;
+    }
+
+    public void render() {
+        shapeRenderer.setProjectionMatrix(Main.getBatch().getProjectionMatrix());
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 1, 0, 1);
+
+        float x = 0;
+
+        for (int i = 0 ; i < craftingItem.getItems().size(); i++) {
+            for (ArtisanType artisanType : ArtisanType.values()) {
+                if (artisanType.getName().toLowerCase().equals(craftingItem.getItems().get(i).getName().toLowerCase())) {
+                    if (! craftingItem.getItems().get(i).isCollected()) {
+                        x = (float) DateHour.getHourDifferent(craftingItem.getDateHours().get(i)) / artisanType.getTakesTime();
+                        if (x >= 1) {
+                            x = 1;
+                        }
+                        shapeRenderer.rect(TEXTURE_SIZE * craftingItem.getX() + 6,
+                            TEXTURE_SIZE * (90 - craftingItem.getY()) + TEXTURE_SIZE + (TEXTURE_SIZE / 2) * i + 3,
+                            (TEXTURE_SIZE * 2) * x - 10, TEXTURE_SIZE / 2 - 7);
+
+                        shapeRenderer.end();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    public void renderBg() {
+        for (int i = 0 ; i < craftingItem.getItems().size() ; i ++) {
+            if (! craftingItem.getItems().get(i).isCollected()) {
+                Main.getBatch().draw(TextureManager.get("Mohamadreza/bgProgress.png") ,
+                    TEXTURE_SIZE * craftingItem.getX() , TEXTURE_SIZE * (90 - craftingItem.getY()) + TEXTURE_SIZE + (TEXTURE_SIZE / 2) * i ,
+                    TEXTURE_SIZE * 2 , TEXTURE_SIZE / 2);
+            }
+        }
+    }
+
+}

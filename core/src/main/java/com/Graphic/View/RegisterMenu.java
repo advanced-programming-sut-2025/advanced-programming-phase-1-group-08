@@ -3,6 +3,8 @@ package com.Graphic.View;
 import com.Graphic.Controller.Menu.RegisterController;
 import com.Graphic.Main;
 import com.Graphic.model.App;
+import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.HelpersClass.Result;
@@ -22,9 +24,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.Align;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class RegisterMenu implements Screen, AppMenu {
+    private static RegisterMenu instance;
     private Stage stage;
     private Texture backgroundTexture;
     private RegisterController controller;
@@ -50,8 +54,13 @@ public class RegisterMenu implements Screen, AppMenu {
         controller = new RegisterController();
     }
 
+    public static RegisterMenu getInstance() {
+        return instance;
+    }
+
     @Override
     public void show() {
+        instance = this;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         setupBackground();
@@ -195,8 +204,8 @@ public class RegisterMenu implements Screen, AppMenu {
                 String username = usernameField.getText().trim();
                 if (username.length() > 0) {
                     try {
-                        Result result = controller.validateUsername(username);
-                        if (result.IsSuccess()) {
+                        Message result = controller.validateUsername(username);
+                        if (result == null) {
                             usernameStatus.setText("✓");
                             usernameStatus.setColor(0.3f, 1, 0.3f, 1);
                         } else {
@@ -236,8 +245,8 @@ public class RegisterMenu implements Screen, AppMenu {
             public void changed(ChangeEvent event, Actor actor) {
                 String email = emailField.getText().trim();
                 if (email.length() > 0) {
-                    Result result = controller.validateEmail(email);
-                    if (result.IsSuccess()) {
+                    Message result = controller.validateEmail(email);
+                    if (result == null) {
                         emailStatus.setText("✓");
                         emailStatus.setColor(0.3f, 1, 0.3f, 1);
                     } else {
@@ -257,7 +266,7 @@ public class RegisterMenu implements Screen, AppMenu {
         registerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                attemptRegistration();
+                Main.getClient(null).getRequests().add(requestForSignup());
             }
         });
 
@@ -279,96 +288,45 @@ public class RegisterMenu implements Screen, AppMenu {
         randomPassButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String randomPass = RegisterController.generateRandomPass();
-                passwordField.setText(randomPass);
-                confirmPasswordField.setText(randomPass);
-                showMessage("Generated password: " + randomPass + "\nMake sure to save it!", false);
+                  Main.getClient(null).getRequests().add(requestForRandomPass());
+                //String randomPass = RegisterController.generateRandomPass();
+//                passwordField.setText(randomPass);
+//                confirmPasswordField.setText(randomPass);
+//                showMessage("Generated password: " + randomPass + "\nMake sure to save it!", false);
             }
         });
     }
 
-    private void attemptRegistration() {
-        String username = usernameField.getText().trim();
-        String password = passwordField.getText();
-        String confirmPassword = confirmPasswordField.getText();
-        String nickname = nicknameField.getText().trim();
-        String email = emailField.getText().trim();
-        String gender = genderBox.getSelected();
-        int questionIndex = securityQuestionBox.getSelectedIndex();
-        String answer = securityAnswerField.getText().trim();
-        String confirmAnswer = confirmAnswerField.getText().trim();
+    private Message requestForSignup() {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("Username", usernameField.getText());
+        body.put("Password", passwordField.getText());
+        body.put("Email", emailField.getText());
+        body.put("Confirm Password", confirmPasswordField.getText());
+        body.put("Nickname", nicknameField.getText());
+        body.put("Gender",genderBox.getSelected().trim());
+        body.put("Question index" , securityQuestionBox.getSelectedIndex());
+        System.out.println(securityQuestionBox.getSelectedIndex());
+        body.put("Answer" , securityAnswerField.getText().trim());
+        body.put("Confirm Answer", confirmAnswerField.getText().trim());
 
-        try {
-            Result result = controller.validateUsername(username);
-            if (!result.IsSuccess()) {
-                if (result.toString().contains("already taken")) {
-                    showUsernameSuggestion(username);
-                    return;
-                }
-                showMessage(result.toString(), true);
-                return;
-            }
-
-            result = controller.validatePassword(password, confirmPassword);
-            if (!result.IsSuccess()) {
-                showMessage(result.toString(), true);
-                return;
-            }
-
-            result = controller.validateEmail(email);
-            if (!result.IsSuccess()) {
-                showMessage(result.toString(), true);
-                return;
-            }
-
-            result = controller.validateNickname(nickname);
-            if (!result.IsSuccess()) {
-                showMessage(result.toString(), true);
-                return;
-            }
-
-            if (gender.equals("Select Gender")) {
-                showMessage("Please select your gender!", true);
-                return;
-            }
-
-            if (questionIndex == 0) {
-                showMessage("Please select a security question!", true);
-                return;
-            }
-
-            if (!answer.equals(confirmAnswer)) {
-                showMessage("Security answers don't match!", true);
-                return;
-            }
-
-            if (answer.isEmpty()) {
-                showMessage("Please provide a security answer!", true);
-                return;
-            }
-
-            SecurityQuestions secQuestion = SecurityQuestions.values()[questionIndex - 1];
-            result = controller.completeRegistration(username, password, nickname,
-                email, gender.toLowerCase(),
-                secQuestion, answer);
-
-            if (result.IsSuccess()) {
-                showMessage(result.toString(), false);
-                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                    @Override
-                    public void run() {
-                        App.currentMenu = Menu.MainMenu;
-                        Main.getMain().setScreen(new MainMenu());
-                    }
-                }, 2);
-            } else {
-                showMessage(result.toString(), true);
-            }
-
-        } catch (IOException e) {
-            showMessage("Registration error: " + e.getMessage(), true);
-        }
+        return new Message(CommandType.SIGN_UP , body);
     }
+
+    private Message requestForRandomPass() {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("null" , "null");
+        return new Message(CommandType.GENERATE_RANDOM_PASS , body);
+    }
+
+    public void setPasswordField(Message message) {
+        passwordField.setText(message.getFromBody("Password"));
+        confirmPasswordField.setText(message.getFromBody("Password"));
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("Password" ,"Generated password: " + message.getFromBody("Password") + "\nMake sure to save it!" );
+        showMessage(new Message(CommandType.GENERATE_RANDOM_PASS , body));
+    }
+
 
     private void showUsernameSuggestion(String takenUsername) {
         suggestionWindow = new Window("Username Taken", Main.getSkin());
@@ -423,12 +381,24 @@ public class RegisterMenu implements Screen, AppMenu {
         stage.addActor(suggestionWindow);
     }
 
-    private void showMessage(String message, boolean isError) {
-        messageLabel.setText(message);
-        if (isError) {
-            messageLabel.setColor(1, 0.3f, 0.3f, 1);
-        } else {
-            messageLabel.setColor(0.3f, 1, 0.3f, 1);
+    public void showMessage(Message message) {
+        if (message.getCommandType() == CommandType.ERROR) {
+            if (message.getFromBody("Error").equals("Username is already taken!")) {
+                showUsernameSuggestion(message.getFromBody("Username"));
+            }
+            else {
+                messageLabel.setText(message.getFromBody("Error"));
+                messageLabel.setColor(1,0.3f,0.3f,1);
+//                if (isError) {
+//                    messageLabel.setColor(1, 0.3f, 0.3f, 1);
+//                } else {
+//                    messageLabel.setColor(0.3f, 1, 0.3f, 1);
+//                }
+            }
+        }
+        if (message.getCommandType() == CommandType.GENERATE_RANDOM_PASS) {
+            messageLabel.setText(message.getFromBody("Password"));
+            messageLabel.setColor(0.3f,1,0.3f,1);
         }
     }
 

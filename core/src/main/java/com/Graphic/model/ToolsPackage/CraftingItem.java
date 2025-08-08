@@ -31,9 +31,8 @@ public class CraftingItem extends Items {
     private ArrayList<DateHour> dateHours = new ArrayList<>();
     private boolean isWaiting;
     private float Timer;// for showing animation of Bombs And Sprinklers
-    private Animation<Texture> Bomb;
-    private Animation<Texture> Sprinkler;
-    private ArrayList<ShapeRenderer> shapeRenderers = new ArrayList<>();
+    private ArrayList<String> Bomb;
+    private ArrayList<String> Sprinkler;
     private ArrayList<Rectangle> rectangles = new ArrayList<>();
 
     public static CraftingItem Bombing;
@@ -43,16 +42,32 @@ public class CraftingItem extends Items {
         this.type = craftType;
         isWaiting = false;
         Timer = 0f;
-        Bomb = new Animation<>(0.2f ,
-            new Texture("Mohamadreza/Bomb1.png") , new Texture("Mohamadreza/Bomb2.png"),
-            new Texture("Mohamadreza/Bomb3.png") , new Texture("Mohamadreza/Bomb4.png"));
+        Bomb = new ArrayList<>();
+        Sprinkler = new ArrayList<>();
+        Bomb.add("Mohamadreza/Bomb1.png");
+        Bomb.add("Mohamadreza/Bomb2.png");
+        Bomb.add("Mohamadreza/Bomb3.png");
+        Bomb.add("Mohamadreza/Bomb4.png");
+//        Bomb = new Animation<>(0.2f ,
+//            new Texture("Mohamadreza/Bomb1.png") , new Texture("Mohamadreza/Bomb2.png"),
+//            new Texture("Mohamadreza/Bomb3.png") , new Texture("Mohamadreza/Bomb4.png"));
 
-        Sprinkler = new Animation<>(0.3f ,
-            new Texture("Mohamadreza/Sprinkler1.png") , new Texture("Mohamadreza/Sprinkler2.png") ,
-            new Texture("Mohamadreza/Sprinkler3.png") , new Texture("Mohamadreza/Sprinkler4.png"),
-            new Texture("Mohamadreza/Sprinkler5.png") , new Texture("Mohamadreza/Sprinkler6.png") ,
-            new Texture("Mohamadreza/Sprinkler7.png") , new Texture("Mohamadreza/Sprinkler8.png") ,
-            new Texture("Mohamadreza/Sprinkler9.png") , new Texture("Mohamadreza/Sprinkler10.png"));
+        Sprinkler.add("Mohamadreza/Sprinker1.png");
+        Sprinkler.add("Mohamadreza/Sprinker2.png");
+        Sprinkler.add("Mohamadreza/Sprinker3.png");
+        Sprinkler.add("Mohamadreza/Sprinker4.png");
+        Sprinkler.add("Mohamadreza/Sprinker5.png");
+        Sprinkler.add("Mohamadreza/Sprinker6.png");
+        Sprinkler.add("Mohamadreza/Sprinker7.png");
+        Sprinkler.add("Mohamadreza/Sprinker8.png");
+        Sprinkler.add("Mohamadreza/Sprinker9.png");
+        Sprinkler.add("Mohamadreza/Sprinker10.png");
+//        Sprinkler = new Animation<>(0.3f ,
+//            new Texture("Mohamadreza/Sprinkler1.png") , new Texture("Mohamadreza/Sprinkler2.png") ,
+//            new Texture("Mohamadreza/Sprinkler3.png") , new Texture("Mohamadreza/Sprinkler4.png"),
+//            new Texture("Mohamadreza/Sprinkler5.png") , new Texture("Mohamadreza/Sprinkler6.png") ,
+//            new Texture("Mohamadreza/Sprinkler7.png") , new Texture("Mohamadreza/Sprinkler8.png") ,
+//            new Texture("Mohamadreza/Sprinkler9.png") , new Texture("Mohamadreza/Sprinkler10.png"));
     }
 
 
@@ -146,11 +161,11 @@ public class CraftingItem extends Items {
         Timer = timer;
     }
 
-    public Animation<Texture> getBomb() {
+    public ArrayList<String> getBomb() {
         return Bomb;
     }
 
-    public Animation<Texture> getSprinkler() {
+    public ArrayList<String> getSprinkler() {
         return Sprinkler;
     }
 
@@ -159,19 +174,15 @@ public class CraftingItem extends Items {
     public ArrayList<Rectangle> getRectangles() {
         return rectangles;
     }
-    public ArrayList<ShapeRenderer> getShapeRenderers() {
-        return shapeRenderers;
-    }
-
-    public void createAnotherShapeRender() {
-        int width = 47;
-        int height = 12;
-        int cut = 3;
-
-        ShapeRenderer shapeRenderer = new ShapeRenderer();
-        shapeRenderers.add(shapeRenderer);
-
-    }
+//    public ArrayList<ShapeRenderer> getShapeRenderers() {
+//        return shapeRenderers;
+//    }
+//
+//    public void createAnotherShapeRender() {
+//        ShapeRenderer shapeRenderer = new ShapeRenderer();
+//        shapeRenderers.add(shapeRenderer);
+//
+//    }
 
 
 

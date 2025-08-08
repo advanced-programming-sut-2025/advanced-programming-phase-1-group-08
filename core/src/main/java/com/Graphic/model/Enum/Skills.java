@@ -1,5 +1,7 @@
 package com.Graphic.model.Enum;
 
+import com.Graphic.Main;
+
 import static com.Graphic.model.App.currentGame;
 
 public enum Skills {
@@ -21,12 +23,12 @@ public enum Skills {
     public String getDiscription() {
 
         if (this.equals(Foraging)) {
-            return discription + currentGame.currentPlayer.getForagingAbility();
+            return discription + Main.getClient(null).getPlayer().getForagingAbility();
         } else if (this.equals(Farming)) {
-            return discription + currentGame.currentPlayer.getFarmingAbility();
+            return discription + Main.getClient(null).getPlayer().getFarmingAbility();
         } else if (this.equals(Fishing)) {
-            return discription + currentGame.currentPlayer.getFishingAbility();
+            return discription + Main.getClient(null).getPlayer().getFishingAbility();
         } else
-            return discription + currentGame.currentPlayer.getMiningAbility();
+            return discription + Main.getClient(null).getPlayer().getMiningAbility();
     }
 }

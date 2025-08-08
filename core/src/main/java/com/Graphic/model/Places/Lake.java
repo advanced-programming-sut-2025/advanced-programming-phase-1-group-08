@@ -1,6 +1,7 @@
 package com.Graphic.model.Places;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.Main;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.GameObject;
@@ -21,7 +22,7 @@ public class Lake extends GameObject {
     private final int width;
     private final int height;
     private String Path;
-    private Animation<Texture> LakeAnimation;
+    private ArrayList<String> LakeAnimation;
     Sprite first;
     Sprite second;
     private float Timer = 0.0f;
@@ -55,13 +56,11 @@ public class Lake extends GameObject {
 
         for (int i = topLeftX ; i < topLeftX + width ; i++) {
             for (int j = topLeftY; j < topLeftY + height; j++) {
-                if (GameControllerLogic.getTileByCoordinates(i, j).getGameObject().equals(this)) {
+                if (GameControllerLogic.getTileByCoordinates(i, j , Main.getClient(null).getLocalGameState()).getGameObject().equals(this)) {
                     int x = width * (j - topLeftY) + i -topLeftX + 1;
-                    first = new Sprite(TextureManager.get("Places/Lake1,"+x+".png"));
-                    second = new Sprite(TextureManager.get("Places/Lake2,"+x+".png"));
-                    first.setSize(TEXTURE_SIZE , TEXTURE_SIZE);
-                    second.setSize(TEXTURE_SIZE , TEXTURE_SIZE);
-                    LakeAnimation = new Animation<>(0.5f , first.getTexture() , second.getTexture());
+                    LakeAnimation.add("Places/Lake1,"+x+".png");
+                    LakeAnimation.add("Places/Lake2,"+x+".png");
+                    //LakeAnimation = new Animation<>(0.5f , first.getTexture() , second.getTexture());
                     return Path = "Places/Lake1,"+x+".png";
                 }
             }
@@ -70,7 +69,7 @@ public class Lake extends GameObject {
         return Path;
     }
 
-    public Animation<Texture> getLakeAnimation() {
+    public ArrayList<String> getLakeAnimation() {
         return LakeAnimation;
     }
 

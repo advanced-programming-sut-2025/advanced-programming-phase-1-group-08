@@ -30,6 +30,11 @@ public class MarketItem extends Items {
     }
 
     @Override
+    public String getIcon() {
+        return type.getPath();
+    }
+
+    @Override
     public int getRemindInShop(MarketType marketType) {
         if (marketType.equals(MarketType.PierreGeneralStore)) {
             return type.getInitialPierreShopsLimit();

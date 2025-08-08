@@ -24,9 +24,9 @@ public class ForagingCrops extends Items {
 
     public void delete () {
 
-        for (Tile tile : currentGame.bigMap)
+        /*for (Tile tile : currentGame.bigMap)
             if (tile.getGameObject() == this)
-                tile.setGameObject(new Walkable());
+                tile.setGameObject(new Walkable());*/
     }
     public void setProtected(boolean aProtected) {
 
@@ -57,6 +57,11 @@ public class ForagingCrops extends Items {
     public int getSellPrice() {
 
         return type.getPrice();
+    }
+
+    @Override
+    public String getIcon() {
+        return type.getTexturePath();
     }
 
     @Override

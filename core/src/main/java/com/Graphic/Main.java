@@ -6,6 +6,7 @@ import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.View.GameMenus.TransitionScreen;
 import com.Graphic.View.LoginMenu;
 import com.Graphic.View.MainMenu;
+import com.Graphic.View.PlayGameMenu;
 import com.Graphic.View.ProfileMenu;
 import com.Graphic.model.App;
 import com.Graphic.model.ClientServer.Client;
@@ -18,16 +19,24 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+//import static com.Graphic.model.ClientServer.Client.SERVER_IP;
+//import static com.Graphic.model.ClientServer.MultiGameServer.SERVER_PORT;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
 
     private static Main main;
     private static Batch batch;
     private static Skin skin;
+    public static Skin newSkin;
     private static ClientWork client;
 
     public Main(ClientWork client) {
+        System.out.println("Main Constructor");
         Main.client = client;
+        if (client == null) {
+            System.out.println("Client is null");
+        }
     }
     //private static InputGameController x;
 
@@ -36,8 +45,9 @@ public class Main extends Game {
 
         main = this;
         batch = new SpriteBatch();
-        InputGameController x = InputGameController.getInstance();
-        x.startNewGame("a");
+        //InputGameController x = InputGameController.getInstance();
+        //x.startNewGame("a");
+
 
 //        Main.getMain().setScreen(
 //            new TransitionScreen(Main.getMain(),
@@ -46,8 +56,16 @@ public class Main extends Game {
 //                1f
 //            )
 //        );
-        main.setScreen(GameMenu.getInstance());
+        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
+        client.initFromArgs("127.0.0.1" , 8080);
+        try {
+            client.startWorkWithServer();
+        } catch (Exception e) {
 
+        }
+        //client.startListening();
+        main.setScreen(new LoginMenu());
+        //main.setScreen(new PlayGameMenu());
 //        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
 //        main.setScreen(new ProfileMenu());
 
@@ -63,7 +81,9 @@ public class Main extends Game {
     public static Batch getBatch() {
         return batch;
     }
-    public static Skin getSkin() {return skin;}
+    public static Skin getSkin() {
+        return skin;
+    }
     public static Main getMain() {
         return main;
     }
@@ -71,7 +91,13 @@ public class Main extends Game {
         Main.main = main;
     }
 
-    public static ClientWork getClient() {
+    public static synchronized ClientWork getClient(ClientWork c) {
         return client;
+    }
+    public static Skin getNewSkin() {
+        if (newSkin == null) {
+            newSkin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
+        }
+        return newSkin;
     }
 }

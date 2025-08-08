@@ -19,8 +19,15 @@ public class collisionRect {
     }
 
     public boolean checkCollision(User user) {
-        if (user.sprite.getX() >= x && user.sprite.getX() <= x + width
-            && user.sprite.getY() >= y && user.sprite.getY() <= y + height) {
+        if (user.getPositionX() >= x && user.getPositionX() <= x + width
+            && user.getPositionY() >= y && user.getPositionY() <= y + height) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkCollision(float X , float Y) {
+        if (X >= x && X <= x + width && Y >= y && Y <= y + height ) {
             return false;
         }
         return true;

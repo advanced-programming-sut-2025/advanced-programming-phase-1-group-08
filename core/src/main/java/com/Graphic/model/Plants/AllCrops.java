@@ -33,6 +33,11 @@ public class AllCrops extends Items {
     }
 
     @Override
+    public String getIcon() {
+        return type.getIconPath();
+    }
+
+    @Override
     public int getSellPrice() {
         return type.getPrice();
     }

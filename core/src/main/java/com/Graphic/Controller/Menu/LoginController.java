@@ -1,5 +1,7 @@
 package com.Graphic.Controller.Menu;
 
+import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.HelpersClass.Result;
@@ -10,6 +12,7 @@ import com.Graphic.model.User;
 import com.Graphic.model.App;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import static com.Graphic.Controller.Menu.RegisterController.*;
@@ -18,16 +21,33 @@ public class LoginController {
 
     private User forgotPasswordUser;
 
-    public Result LoginRes(String username, String password) throws IOException {
+    public Message LoginRes(Message message) throws IOException {
+        //System.out.println("Login Res...");
+        String Username = message.getFromBody("Username");
+        String Password = message.getFromBody("Password");
+        HashMap<String , Object> body = new HashMap<>();
+
         for (User user : UserStorage.loadUsers()) {
-            if (user.getUsername().equals(username)) {
-                if (user.getHashPass().equals(PasswordHashUtil.hashPassword(password))) {
-                    return new Result(true, "User Logged in Successfully.You are Now in Main Menu!");
+            if (user.getUsername().equals(Username)) {
+                if (user.getHashPass().equals(PasswordHashUtil.hashPassword(Password))) {
+                    body.put("Player" , user);
+                    return new Message(CommandType.LOGIN_SUCCESS, body);
                 }
-                return new Result(false, "Password is Incorrect!");
+                body.put("Error" , "Wrong Password");
+                return new Message(CommandType.ERROR, body);
             }
         }
-        return new Result(false, "Username Doesn't Exist!");
+        body.put("Error" , "Username Doesn't Exist!");
+        return new Message(CommandType.ERROR, body);
+    }
+
+    public Message requestLogin(String Username, String password) throws IOException {
+        System.out.println(1);
+        HashMap<String , Object> info = new HashMap<>();
+        info.put("Username", Username);
+        info.put("Password", password);
+        Message message = new Message(CommandType.LOGIN , info);
+        return message;
     }
 
     public Result checkUsernameAndGetQuestion(String username) throws IOException {
@@ -83,7 +103,8 @@ public class LoginController {
     }
 
     public String generatePasswordSuggestion() {
-        return generateRandomPass();
+        //return generateRandomPass();
+        return null;
     }
 
     public void cancelForgotPassword() {
@@ -107,7 +128,7 @@ public class LoginController {
                     if (choice.equals("random")) {
                         String suggestion = null;
                         while (true) {
-                            suggestion = generateRandomPass();
+                            //TODO suggestion = generateRandomPass();
                             System.out.println("Do You Approve This Password?[Y/N/back] Suggested Pass: " + suggestion);
                             String userResponse = scanner.nextLine();
                             if (userResponse.trim().equalsIgnoreCase("y")) {

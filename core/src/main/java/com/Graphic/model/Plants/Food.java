@@ -1,5 +1,6 @@
 package com.Graphic.model.Plants;
 
+import com.Graphic.Main;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
@@ -22,7 +23,7 @@ public class Food extends Items {
 
     public static boolean checkInventorySpaceForFood(FoodTypes type) {
         return checkAmountProductAvailable(new Food(type), 1) ||
-                currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() > 0;
+                Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0;
     }
     public static boolean itemIsEatable(Items item) {
         return item instanceof Food || item instanceof Animalproduct
@@ -42,6 +43,11 @@ public class Food extends Items {
     @Override
     public int getSellPrice() {
         return type.getSellPrice();
+    }
+
+    @Override
+    public String getIcon() {
+        return type.getAddress();
     }
 
     @Override

@@ -22,9 +22,9 @@ public class TrashCan extends Tools {
 
 
     public static void removeItem (int money , HashMap<Items,Integer> x, Items items, Integer amount){
-        App.currentGame.currentPlayer.increaseMoney(money);
-        x.compute(items, (k, l) -> l - amount);
-        x.entrySet().removeIf(e -> e.getValue() <= 0);
+//        App.currentGame.currentPlayer.increaseMoney(money);
+//        x.compute(items, (k, l) -> l - amount);
+//        x.entrySet().removeIf(e -> e.getValue() <= 0);
     } // اسمش باید عوض یشه هم ورودی منابعی که باید برگردونده بشه رو بگیره و درصد برگشت هم که از تو اینام بدست میاد
 
 
@@ -45,6 +45,10 @@ public class TrashCan extends Tools {
 
     @Override
     public String getInventoryIconPath() {
+        return type.getIconPath();
+    }
+
+    public String getIcon() {
         return type.getIconPath();
     }
 

@@ -1,6 +1,7 @@
 package com.Graphic.model.Enum.NPC;
 
 import com.Graphic.model.*;
+import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.Enum.FoodTypes;
@@ -14,6 +15,7 @@ import com.Graphic.model.Places.MarketItem;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -28,7 +30,7 @@ public enum NPC {
             new Food(FoodTypes.pumpkinPie), 1,
             new BasicRock(), 150 )), 42, 45, 5, 5,
             new MarketItem(MarketItemType.Oil), 10,
-            new NPCDirectionSet("Mohamadreza/NPC/Sebastian")) {
+            new NPCDirectionSet("Mohamadreza/NPC/Sebastian") ) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -97,7 +99,7 @@ public enum NPC {
             new AllCrops(CropsType.Pumpkin), 1,
             new AllCrops(CropsType.Wheat),   50)), 51, 45, 5, 5,
             new MarketItem(MarketItemType.Bouquet), 20,
-            new NPCDirectionSet("Mohamadreza/NPC/Abigail")) {
+            new NPCDirectionSet("Mohamadreza/NPC/Abigail") ) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -161,7 +163,7 @@ public enum NPC {
             new AllCrops(CropsType.Kale), 12,
             new ArtisanProduct(ArtisanType.Wine),   1)), 32, 52, 5, 5,
             new MarketItem(MarketItemType.Bread), 15,
-            new NPCDirectionSet("Mohamadreza/NPC/Harvey")) {
+            new NPCDirectionSet("Mohamadreza/NPC/Harvey") ) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -225,7 +227,7 @@ public enum NPC {
             new Wood(), 200,
             new BasicRock(),   200)), 42, 52, 5, 5,
             new MarketItem(MarketItemType.Salad), 25,
-            new NPCDirectionSet("Mohamadreza/NPC/Leah")) {
+            new NPCDirectionSet("Mohamadreza/NPC/Leah") ) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -289,7 +291,7 @@ public enum NPC {
             new Wood(), 80,
             new MixedSeeds(),   10)), 51, 52, 5, 5,
             new MarketItem(MarketItemType.Coffee), 18,
-            new NPCDirectionSet("Mohamadreza/NPC/Robin")) {
+            new NPCDirectionSet("Mohamadreza/NPC/Robin") ) {
 
         @Override
         public String getDialogue(int friendshipLevel, Weather weather) {
@@ -349,6 +351,7 @@ public enum NPC {
         }
     };
 
+
     private final String name;
     private final int Width;
     private final int Hight;
@@ -358,7 +361,12 @@ public enum NPC {
     private final int request3DayNeeded;
     private final LinkedHashMap<Items, Integer> Request;
 
-    private Sprite sprite;
+    private float positionX;
+    private float positionY;
+
+    private long lastConversation;
+
+    //private Sprite sprite;
     private Animation<Texture> Left;
     private Animation<Texture> Up;
     private Animation<Texture> Down;
@@ -369,8 +377,6 @@ public enum NPC {
     private final NPCDirectionSet directionSet;
     private float Timer = 0.0f;
     private boolean isWaiting = false;
-    private float positionX;
-    private float positionY;
 
     private float elapsedTime = 0f;
     public float getElapsedTime() {
@@ -419,28 +425,30 @@ public enum NPC {
         this.topLeftY = topLeftY;
         this.giftItem = giftItem;
         this.request3DayNeeded = request3DayNeeded;
-        this.directionSet = directionSet;
 
-        this.DirectionInWalk = directionSet.loadAllTextures();
-        this.direction = Direction.Down;
-        this.sprite = new Sprite(DirectionInWalk.get(direction));
-        this.sprite.setPosition(TEXTURE_SIZE * topLeftX, TEXTURE_SIZE * (90 - topLeftY));
         this.positionX = topLeftX;
         this.positionY = (90 - topLeftY);
+        this.directionSet = directionSet;
+
+        //this.DirectionInWalk = directionSet.loadAllTextures();
+        this.direction = Direction.Down;
+        //this.sprite = new Sprite(DirectionInWalk.get(direction));
+        //this.sprite.setPosition(TEXTURE_SIZE * topLeftX, TEXTURE_SIZE * (90 - topLeftY));
+    }
+
+
+    public boolean isTileCloseToNPC (int x, int y) {
+
+        int delX = Math.abs(x - this.getX());
+        int delY = Math.abs(y - this.getY());
+
+        return delX < 4 && delY < 4;
     }
 
     public String getName() {
 
         return name;
     }
-
-
-    public boolean isInHisHome (int x, int y) {
-
-        return x > this.topLeftX && x < this.topLeftX + this.Width &&
-                y > this.topLeftY && y < this.topLeftY + this.Hight;
-    }
-
     public int getWidth() {
         return Width;
     }
@@ -456,16 +464,17 @@ public enum NPC {
     public String getIconPath() {
         return "Erfan/NPC_Avatar/" + this.name + ".png";
     }
+
     public Items getGiftItem() {
         return giftItem;
     }
 
-    public Sprite getSprite() {
-        return sprite;
-    }
-    public void setSprite(Sprite sprite) {
-        this.sprite = sprite;
-    }
+//    public Sprite getSprite() {
+//        return sprite;
+//    }
+//    public void setSprite(Sprite sprite) {
+//        this.sprite = sprite;
+//    }
     public Animation<Texture> getLeft() {
         return Left;
     }
@@ -580,4 +589,27 @@ public enum NPC {
         return Request;
     }
 
+    public int getY() {
+        return (int) (90 - (positionY / TEXTURE_SIZE));
+    }
+    public void setY(int y) {
+        positionY = (90 - y) * TEXTURE_SIZE;
+    }
+    public int getX() {
+        return (int) (positionX / TEXTURE_SIZE);
+    }
+    public void setX(int x) {
+        positionX = x * TEXTURE_SIZE;
+    }
+    public void setPosition(Tile tile) {
+        positionX = tile.getX() * TEXTURE_SIZE;
+        positionY = tile.getY() * TEXTURE_SIZE;
+    }
+
+    public boolean canTalk () {
+        return TimeUtils.millis() - this.lastConversation > 10000;
+    }
+    public void setLastConversation(long lastConversation) {
+        this.lastConversation = lastConversation;
+    }
 }

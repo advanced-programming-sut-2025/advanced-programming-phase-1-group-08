@@ -12,7 +12,8 @@ public abstract class GameObject {
     private char Charactor;
     private float textureWidth;
     private float textureHeight;
-    private Texture texture;
+    //private Texture texture;
+    private String Path;
 
     public GameObject() {
         this.textureHeight = 1;
@@ -27,27 +28,14 @@ public abstract class GameObject {
         this.Charactor = Charactor;
     }
 
-    private Sprite sprite;
 
-    public Sprite getSprite(Texture texture) {
 
-        if (sprite == null) {
-            sprite = new Sprite(texture);
-            this.texture = texture;
-        }
-        sprite.setRegion(texture);
-        return sprite;
-    }
-    public void setSprite(Sprite sprite) {
-        this.sprite = sprite;
-    }
 
     public void startDayAutomaticTask() {}
     public void turnByTurnAutomaticTask() {}
 
-    public String getIcon() {
-        return null;
-    }
+    public abstract String getIcon();
+
 
 
     public float getTextureWidth() {
@@ -67,6 +55,13 @@ public abstract class GameObject {
     }
 
     public abstract int getRemindInShop(MarketType marketType);
+
     public abstract void setRemindInShop(int amount , MarketType marketType);
+
+    //public abstract String getInventoryIconPath();
+
+    public void setPath(String path) {
+        this.Path = path;
+    }
 
 }
