@@ -15,7 +15,7 @@ public class Client extends Game {
     public static void main(String[] args) {
 
         try {
-            ClientWork clientWork = new ClientWork();
+            KryoNetClient clientWork = new KryoNetClient();
             Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
             config.setTitle("StardewValley");
             config.setWindowedMode(1920, 1080);

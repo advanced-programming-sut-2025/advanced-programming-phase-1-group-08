@@ -1,13 +1,10 @@
 package com.Graphic.lwjgl3;
 
-import com.Graphic.model.ClientServer.Client;
-import com.Graphic.model.ClientServer.MultiGameServer;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.Graphic.Main;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {

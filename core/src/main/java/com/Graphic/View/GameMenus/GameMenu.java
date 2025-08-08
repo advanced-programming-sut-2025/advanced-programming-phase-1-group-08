@@ -63,7 +63,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public static GameMenu gameMenu;// اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
     // TODO مملی ورودی گرفتن برای حرمت مردن رو هم بیار تو تابع اینپوت کنترلر چون مثلا منو باز میشه من میخوام a بنویسم دوربین حرکت میکنه مثلا و وقتی بیاری اونجا اوکی میشه
     public static OrthographicCamera camera;
-    private final int hourSecond = 120000;
     private Stage stage;
 
     private Vector3 mousePos;
@@ -104,9 +103,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private long dialogExpirationTime = 0;
 
     public static Image helperBackGround;
-
-    public long startTime;
-    public long lastTime;
 
     private int lastHealth;
     public Label energyLabel;
@@ -231,8 +227,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         inputController();
         initialLake();
-        if (TimeUtils.millis() - lastTime > hourSecond)
-            updateClock(1);
 
         updateEnergyLabel();
         giftNPCMenu();
@@ -531,8 +525,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private void initialize() {
 
         currentMenu = Menu.GameMenu;
-        startTime = TimeUtils.millis();
-        lastTime = TimeUtils.millis();
 
         controller = InputGameController.getInstance();
         stage = new Stage(new ScreenViewport());

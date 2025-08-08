@@ -150,6 +150,9 @@ public class PlayerHandler extends Thread {
                 body.put("amount" , 1);
                 sendMessage(new Message(CHANGE_INVENTORY , body));
             }
+            case PASSED_TIME -> {
+                // controller.
+            }
 
         }
     }

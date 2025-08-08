@@ -39,4 +39,8 @@ public enum CommandType {
     CALCULATE_ANIMAL_FRIENDSHIP,
     PLACE_BARN_CAGE,
 
+
+
+    PASSED_TIME,
+
 }

@@ -2859,5 +2859,8 @@ public class InputGameController {
 
         getTileByDir(x).setGameObject(new Walkable());
     }
+                                                                    // OTHERd
+
+
 
 }
