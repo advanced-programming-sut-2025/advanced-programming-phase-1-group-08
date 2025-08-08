@@ -106,6 +106,7 @@ public class Client2ServerThread extends Thread{
             }
             case BIG_MAP -> {
                 Main.getClient(null).getLocalGameState().bigMap.addAll(message.getFromBody("BigMap"));
+                Main.getClient(null).getLocalGameState().setChooseMap(true);
             }
             case ERROR -> {
                 Gdx.app.postRunnable(() -> {

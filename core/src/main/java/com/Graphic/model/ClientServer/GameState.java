@@ -21,6 +21,7 @@ public class GameState {
     public ArrayList<Tile> bigMap = new ArrayList<>();
     private ArrayList<Farm> farms = new ArrayList<>();
     private Queue<Animal> animals = new LinkedList<>();
+    private boolean chooseMap = false;
 
     public Weather tomorrowWeather;
     public Weather currentWeather;
@@ -82,6 +83,13 @@ public class GameState {
              }
          }
          return true;
+    }
+
+    public boolean getChooseMap() {
+        return chooseMap;
+    }
+    public void setChooseMap(boolean chooseMap) {
+        this.chooseMap = chooseMap;
     }
 
     public Weather getTomorrowWeather() {

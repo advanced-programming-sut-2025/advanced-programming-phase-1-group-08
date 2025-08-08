@@ -544,9 +544,6 @@ public class InputGameController {
                         (TextureManager.get(getTileByCoordinates(i, j, gameMenu.gameState).getGameObject().getIcon())),
                         TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE* gameObject.getTextureWidth(), TEXTURE_SIZE * gameObject.getTextureHeight());
 
-                    if (getTileByCoordinates(i , j , gameMenu.gameState).getGameObject() instanceof Lake) {
-                        LakeAnimation((Lake) getTileByCoordinates(i , j , gameMenu.gameState).getGameObject());
-                    }
 
 
                 }
@@ -570,6 +567,9 @@ public class InputGameController {
             }
         }
 
+        for (LakeRenderer lakeRenderer : gameMenu.getLakeRenderers()) {
+            lakeRenderer.render();
+        }
 //        for (User player : Main.getClient(null).getLocalGameState().getPlayers()) {
 //            for (BarnOrCage barnOrCage : player.BarnOrCages) {
 //                for (Animal animal : barnOrCage.getAnimals()) {
@@ -586,16 +586,7 @@ public class InputGameController {
         return null;
     }
 
-    public void LakeAnimation(Lake lake) {
-        lake.getSprite(null).setRegion(lake.getLakeAnimation().getKeyFrame(lake.getTimer()));
-        if (! lake.getLakeAnimation().isAnimationFinished(lake.getTimer())) {
-            lake.setTimer(lake.getTimer() + Gdx.graphics.getDeltaTime());
-        }
-        else {
-            lake.setTimer(0);
-        }
-        lake.getLakeAnimation().setPlayMode(Animation.PlayMode.LOOP);
-    }
+
     public Result checkConditionsForWalk(int goalX, int goalY){
 //        if (goalX <0 || goalX >=90 || goalY <0 || goalY >=90) {
 //            return new Result(false,"you can't walk out of bounds");
@@ -1246,25 +1237,32 @@ public class InputGameController {
     }
 
     public Result sheepOrGoatOrCow(Animal animal) {
+        HashMap<String , Object> body = new HashMap<>();
         if (animal.getType().equals(AnimalType.sheep) ) {
             if (!(Main.getClient(null).getPlayer().currentTool instanceof Shear)) {
                 return new Result(false , "for collect wool you should use shear");
             }
-            Main.getClient(null).getPlayer().increaseMoney( (int) (4 * currentGame.currentWeather.getEnergyCostCoefficient()));
-            animal.increaseFriendShip(5);
+            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Money" , (int) (4 * Main.getClient(null).getLocalGameState().currentWeather.getEnergyCostCoefficient() ));
+            Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_MONEY , body));
+            //animal.increaseFriendShip(5);
         }
         if (animal.getType().equals(AnimalType.goat)) {
             if (!(Main.getClient(null).getPlayer().currentTool instanceof MilkPail)) {
                 return new Result(false , "for collect milk you should use MilkPail");
             }
-            Main.getClient(null).getPlayer().increaseMoney((int) (4 * currentGame.currentWeather.getEnergyCostCoefficient()));
+            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Money" , (int) (4 * Main.getClient(null).getLocalGameState().currentWeather.getEnergyCostCoefficient() ));
+            Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_MONEY , body));
             animal.increaseFriendShip(5);
         }
         if (animal.getType().equals(AnimalType.cow)) {
             if (!(Main.getClient(null).getPlayer().currentTool instanceof MilkPail)) {
                 return new Result(false , "for collect milk you should use MilkPail");
             }
-            Main.getClient(null).getPlayer().increaseMoney((int) (4 * currentGame.currentWeather.getEnergyCostCoefficient()));
+            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Money" , (int) (4 * Main.getClient(null).getLocalGameState().currentWeather.getEnergyCostCoefficient() ));
+            Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_MONEY , body));
             animal.increaseFriendShip(5);
         }
 
@@ -1458,6 +1456,7 @@ public class InputGameController {
 
     public void placeItem() {
         if (Main.getClient(null).getPlayer().getDroppedItem() != null) {
+            camera.setToOrtho(false , Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
             if (Main.getClient(null).getPlayer().isPlaceArtisanOrShippingBin() &&
                 ! Main.getClient(null).getPlayer().isWaiting()) {
                 gameMenu.getWithMouse().setPosition(
@@ -1903,7 +1902,11 @@ public class InputGameController {
                                 System.out.println("hello");
                                 shippingBin.binContents.put(items, number);
                             }
-                            advanceItem(items , - number);
+                            HashMap<String , Object> body = new HashMap<>();
+                            body.put("Item" , items);
+                            body.put("amount" , -number);
+                            body.put("Player" , Main.getClient(null).getPlayer());
+                            Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_INVENTORY , body));
                             Dialog dialog = Marketing.getInstance().createDialogError();
                             Label label = new Label("you sell "+items.getName()+" successfully. tomorrow your money will increase",getSkin());
                             Marketing.getInstance().addDialogToTable(dialog,label,gameMenu);
@@ -1930,79 +1933,6 @@ public class InputGameController {
     }
     // Ario
 
-    public Result sell(String name , Integer amount) {
-        ShippingBin shippingBin=ShippingBin.isNearShippingBin();
-        if (shippingBin == null ) {
-            return new Result(false , "you are not near shipping bin");
-        }
-
-        Inventory inventory=Main.getClient(null).getPlayer().getBackPack().inventory;
-        ArrayList<Fish> fishes=new ArrayList<>();
-        ArrayList<Animalproduct> animalproducts=new ArrayList<>();
-
-        int cursor=0;
-
-        for (Map.Entry <Items,Integer> entry : inventory.Items.entrySet() ) {
-            if (entry.getKey() instanceof Fish) {
-                if (((Fish) entry.getKey()).getType().getName().equals(name)) {
-                    Fish fish=new Fish(((Fish) entry.getKey()).getType() , ((Fish) entry.getKey()).getQuantity());
-                    fishes.add((Fish) entry.getKey());
-                    if (amount == -1) {
-                        shippingBin.binContents.put(entry.getKey(), entry.getValue());
-                        inventory.Items.compute(fish, (k, v) -> 0);
-                        continue;
-                    }
-                    if (cursor >= amount) {
-                        break;
-                    }
-                    else if (cursor + entry.getValue() <= amount) {
-                        shippingBin.binContents.put(entry.getKey(), entry.getValue());
-                        cursor += entry.getValue();
-                        inventory.Items.compute(fish, (k, v) -> 0);
-                    }
-                    else if (cursor + entry.getValue() > amount) {
-                        shippingBin.binContents.put(entry.getKey(), entry.getValue() + cursor - amount);
-                        int finalCursor = cursor;
-                        inventory.Items.compute(fish, (k, v) -> v - amount + finalCursor);
-                        cursor=amount;
-                    }
-                }
-            }
-            if (entry.getKey() instanceof Animalproduct) {
-                if (((Animalproduct) entry.getKey()).getType().getName().equals(name)) {
-                    animalproducts.add((Animalproduct) entry.getKey());
-                    Animalproduct animalproduct = new Animalproduct(((Animalproduct) entry.getKey()).getType() , ((Animalproduct) entry.getKey()).getQuantity());
-                    if (amount == -1) {
-                        shippingBin.binContents.put(entry.getKey(), entry.getValue());
-                        inventory.Items.compute(animalproduct, (k, v) -> 0);
-                        continue;
-                    }
-                    if (cursor >= amount) {
-                        break;
-                    }
-                    else if (cursor + entry.getValue() <= amount) {
-                        inventory.Items.compute(animalproduct, (k, v) -> 0);
-                        shippingBin.binContents.put(entry.getKey(), entry.getValue());
-                        cursor += entry.getValue();
-                    }
-                    else if (cursor + entry.getValue() > amount) {
-                        shippingBin.binContents.put(entry.getKey(), entry.getValue() + cursor - amount);
-                        int finalCursor1 = cursor;
-                        inventory.Items.compute(animalproduct , (k, v) -> v - amount + finalCursor1);
-                        cursor=amount;
-                    }
-                }
-            }
-        }
-        inventory.Items.entrySet().removeIf(entry -> entry.getValue() == 0);
-
-        if (fishes.isEmpty() && animalproducts.isEmpty()) {
-            return new Result(false , name + " not found!");
-        }
-
-        return new Result(true , BLUE +"your money will increase tomorrow" + RESET);
-
-    }
     public Result backToMainMenu () {
         if (App.currentUser.isCurrently_in_game())
             return new Result(false, RED+"You Are Currently in a Game!"+RESET);
@@ -2077,10 +2007,170 @@ public class InputGameController {
     }
     public void startNewGameServer (String input) {
 
-        currentGame = new Game();
-        //currentGame.currentMenu = currentMenu;
+//        currentGame = new Game();
+//        //currentGame.currentMenu = currentMenu;
+//
+//
+////        String user1name = GameMenuCommands.makeNewGame.getMatcher(input).group("username1");
+////        String user2name = GameMenuCommands.makeNewGame.getMatcher(input).group("username2"); // could be null
+////        String user3name = GameMenuCommands.makeNewGame.getMatcher(input).group("username3");// could be null
+////
+////        User user1 = findUserByUsername(user1name);
+////        User user2 = findUserByUsername(user2name);
+////        User user3 = findUserByUsername(user3name);
+////
+////        if (user1 == null){
+////            System.out.println("User1 Not Found!");
+////            return;
+////        }
+////        if (user2name != null) {
+////            if (user2 == null) {
+////                System.out.println("User2 Not Found! Try Again.");
+////                return;
+////            }
+////        }
+////        if (user3name != null) {
+////            if (user3 == null) {
+////                System.out.println("User3 Not Found! Try Again.");
+////                return;
+////            }
+////        }
+////        if (user1.isCurrently_in_game()){
+////            System.out.println("User1 Currently in Game! Try Again.");
+////            return;
+////        }
+////        else user1.setCurrently_in_game(true);
+////
+////        if (user2name != null) {
+////            if (findUserByUsername(user2name).isCurrently_in_game()) {
+////                System.out.println("User2 Currently in Game! Try Again.");
+////                return;
+////            }
+////            else user2.setCurrently_in_game(true);
+////        }
+////        if (user3name != null) {
+////            if (findUserByUsername(user3name).isCurrently_in_game()) {
+////                System.out.println("User3 Currently in Game! Try Again.");
+////                return;
+////            }
+////            else user3.setCurrently_in_game(true);
+////        }
+////
+////        if (user1.getUsername().equals(currentUser.getUsername())) {
+////            System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
+////            return;
+////        }
+////        if (user2 != null) {
+////            if (user2.getUsername().equals(currentUser.getUsername())) {
+////                System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
+////                return;
+////            }
+////        }
+////        if (user3 != null) {
+////            if (user3.getUsername().equals(currentUser.getUsername())) {
+////                System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
+////                return;
+////            }
+////        }
+////        currentGame.players.add(currentUser);
+////        currentGame.currentPlayer = currentUser;
+////        System.out.println(RED+"player selected"+RESET);
+//
+////        currentGame.players.add(findUserByUsername(user1name));
+////        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
+////        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
+//
+//        currentGame.players.add(new User("Ario", "Ario", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+//        currentGame.players.add(new User("Erfan", "Erfan", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+//        currentGame.players.add(new User("Mamali", "Mamali", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+//        currentGame.players.add(new User("Ilia", "Ilia", "ario.ebr@gmail.com", "man", 0, 200, PasswordHashUtil.hashPassword("Ebrahim84?"), SecurityQuestions.FavoriteAnimal, "dog"));
+//        setTimeAndWeather();
+//        currentGame.currentPlayer = currentGame.players.getFirst();
+//        currentUser = currentGame.players.getFirst();
+//
+//
+//        // done
+//
+//
+//
+//        int counter = 1;
+//        for (User user: currentGame.players) {
+//
+//            currentGame.currentPlayer = user;
+//            while (true) {
+//
+////                System.out.println(currentPlayer.getUsername() + "'s turn to choose map(1 or 2)");
+////                String choiceString = scanner.nextLine();
+////                String[] splitChoice = choiceString.trim().split("\\s+");
+////
+////                int choice;
+////                try {
+////                    choice = Integer.parseInt(splitChoice[2]);
+////                } catch (Exception e) {
+////                    System.out.println("Please put a integer between 1 and 2!");
+////                    continue;
+////                }
+////                if (choice != 1 && choice != 2) {
+////                    System.out.println("Choose between 1 and 2!");
+////                    continue;
+////
+//                int choice = 1; // TODO باید پاک بشه
+//
+//                if (counter == 1) {
+//                    user.setIcon("all image/Crops/Cactus_Stage_6.png");
+//                    user.topLeftX = 0;
+//                    user.topLeftY = 0;
+//                }
+//                else if (counter == 2) {
+//                    user.setIcon("all image/Special_item/Cursed_Mannequin_%28F%29.png");
+//                    user.topLeftX = 1;
+//                    user.topLeftY = 0;
+//                }
+//                else if (counter == 3) {
+//                    user.setIcon("all image/Special_item/Deconstructor.png");
+//                    user.topLeftX = 0;
+//                    user.topLeftY = 1;
+//                }
+//                else if (counter == 4) {
+//                    user.setIcon("all image/Special_item/Wood_Chipper_On.png");
+//                    user.topLeftX = 1;
+//                    user.topLeftY = 1;
+//                }
+//                //createInitialFarm(choice);
+//                user.initAnimations();
+//                GameMenu.getInstance().initializeNPCs();
+//                counter++;
+//                break;
+//            }
+//        }
+//        currentGame.currentPlayer = currentGame.players.getFirst();
+//
+//
+//
+//        // Form Friendships
+//        for (int i = 0; i < currentGame.players.size(); i++) {
+//            for (int j = i + 1; j < currentGame.players.size(); j++) {
+//                HumanCommunications f = new HumanCommunications(currentGame.players.get(i), currentGame.players.get(j));
+//                currentGame.friendships.add(f);
+//            }
+//        }
+//        // set initial Cooking Recipes from beginning
+//        for (User player: currentGame.players) {
+//            player.setRecipes(Recipe.createAllRecipes());
+//        }
+//        //buildHall();
+//        //buildNpcVillage();
+//        sortMap(currentGame.bigMap);
+//        initializePlayer();
+//        //fadeToNextDay();
+    }
+    public void startNewGame1 (String input) throws IOException {
 
-
+//        currentGame = new Game();
+//        currentGame.currentPlayer = currentUser;
+//        currentGame.currentMenu = currentMenu;
+//
+//
 //        String user1name = GameMenuCommands.makeNewGame.getMatcher(input).group("username1");
 //        String user2name = GameMenuCommands.makeNewGame.getMatcher(input).group("username2"); // could be null
 //        String user3name = GameMenuCommands.makeNewGame.getMatcher(input).group("username3");// could be null
@@ -2095,53 +2185,55 @@ public class InputGameController {
 //        }
 //        if (user2name != null) {
 //            if (user2 == null) {
-//                System.out.println("User2 Not Found! Try Again.");
+//                System.out.println("User2 Not Found!");
 //                return;
 //            }
 //        }
 //        if (user3name != null) {
 //            if (user3 == null) {
-//                System.out.println("User3 Not Found! Try Again.");
+//                System.out.println("User3 Not Found!");
 //                return;
 //            }
 //        }
 //        if (user1.isCurrently_in_game()){
-//            System.out.println("User1 Currently in Game! Try Again.");
+//            System.out.println("User1 Currently in Game!");
 //            return;
 //        }
 //        else user1.setCurrently_in_game(true);
 //
 //        if (user2name != null) {
 //            if (findUserByUsername(user2name).isCurrently_in_game()) {
-//                System.out.println("User2 Currently in Game! Try Again.");
+//                System.out.println("User2 Currently in Game!");
 //                return;
 //            }
 //            else user2.setCurrently_in_game(true);
 //        }
 //        if (user3name != null) {
 //            if (findUserByUsername(user3name).isCurrently_in_game()) {
-//                System.out.println("User3 Currently in Game! Try Again.");
+//                System.out.println("User3 Currently in Game!");
 //                return;
 //            }
 //            else user3.setCurrently_in_game(true);
 //        }
 //
 //        if (user1.getUsername().equals(currentUser.getUsername())) {
-//            System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
+//            System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
 //            return;
 //        }
 //        if (user2 != null) {
 //            if (user2.getUsername().equals(currentUser.getUsername())) {
-//                System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
+//                System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
 //                return;
 //            }
 //        }
 //        if (user3 != null) {
 //            if (user3.getUsername().equals(currentUser.getUsername())) {
-//                System.out.println(RED+"Invite Users Other than Yourself! Try Again."+RESET);
+//                System.out.println(RED+"Invite Users Other than Yourself!"+RESET);
 //                return;
 //            }
 //        }
+//
+//
 //        currentGame.players.add(currentUser);
 //        Main.getClient(null).getPlayer() = currentUser;
 //        System.out.println(RED+"player selected"+RESET);
@@ -2156,6 +2248,7 @@ public class InputGameController {
         sortMap(currentGame.bigMap);
         //fadeToNextDay();
     }
+
 
                                                                     // Erfan
 

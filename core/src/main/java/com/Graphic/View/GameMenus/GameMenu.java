@@ -23,6 +23,8 @@ import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.Places.Lake;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.*;
@@ -79,6 +81,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private ArrayList<CraftingRenderer> craftingRenderers;
     private Sprite withMouse;
     private ArrayList<AnimalRenderer> animalRenderers = new ArrayList<>();
+    private ArrayList<LakeRenderer> lakeRenderers = new ArrayList<>();
+    private boolean initialLake = false;
 
     private boolean progressComplete = false;
     private boolean ePressed = false;
@@ -222,16 +226,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     public void render(float v) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         inputController();
+        initialLake();
         if (TimeUtils.millis() - lastTime > hourSecond)
             updateClock(1);
 
         updateEnergyLabel();
         giftNPCMenu();
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Main.getBatch().setProjectionMatrix(camera.combined);
         gameState = Main.getClient(null).getLocalGameState();
 
@@ -241,6 +246,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             activeDialog.remove();
             activeDialog = null;
         }
+
 
 
         Main.getBatch().begin();
@@ -1941,19 +1947,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         generator.dispose();
         return animalFont;
     }
-    private void moveAnimal() {
-        if (Main.getClient(null).getPlayer().isInMine()) {
-            for (Animal animal : shepherdingAnimals) {
-                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
-                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
-                    animal.setTimer(animal.getTimer() + Gdx.graphics.getDeltaTime());
-                }
-                else {
-                    animal.setTimer(0);
-                }
-            }
-        }
-    }
     public ArrayList<Animal> getShepherdingAnimals() {
         return shepherdingAnimals;
     }
@@ -1995,6 +1988,21 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
     public void setWithMouse(Sprite withMouse) {
         this.withMouse = withMouse;
+    }
+    public void initialLake() {
+        if (Main.getClient(null).getLocalGameState().getChooseMap()) {
+            if (! initialLake) {
+                for (Tile tile : Main.getClient(null).getLocalGameState().bigMap) {
+                    if (tile.getGameObject() instanceof Lake) {
+                        lakeRenderers.add(new LakeRenderer((Lake) tile.getGameObject() , tile.getX() , tile.getY()));
+                    }
+                }
+                initialLake = true;
+            }
+        }
+    }
+    public ArrayList<LakeRenderer> getLakeRenderers () {
+        return lakeRenderers;
     }
 
 
