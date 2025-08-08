@@ -8,9 +8,7 @@ public class Message {
     private CommandType commandType;
     private HashMap<String , Object> body;
 
-    public Message() {
-
-    }
+    public Message() {}
 
     public Message(CommandType commandType, HashMap<String , Object> body) {
         this.commandType = commandType;
@@ -20,11 +18,9 @@ public class Message {
     public CommandType getCommandType() {
         return commandType;
     }
-
     public <T> T getFromBody(String fieldName) {
         return (T) body.get(fieldName);
     }
-
     public int getIntFromBody(String fieldName) {
         return (int) ((double) ((Double) body.get(fieldName.trim())));
     }

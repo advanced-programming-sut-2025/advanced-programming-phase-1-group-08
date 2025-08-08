@@ -3,16 +3,12 @@ package com.Graphic.model;
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.ClientServer.PlayerHandler;
+import com.Graphic.model.ClientServer.ServerHandler;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.SecurityQuestions;
-import com.Graphic.model.Enum.WeatherTime.Weather;
-import com.Graphic.model.MapThings.Tile;
-import com.Graphic.model.Places.Farm;
-import com.Graphic.model.Places.Market;
 import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.SaveData.UserStorage;
-import com.Graphic.model.Weather.DateHour;
 
 
 import java.io.IOException;
@@ -25,10 +21,12 @@ public class Game {
     public Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
     public Map<Set<User>, List<Trade>> trades = new HashMap<>();
     public ArrayList<HumanCommunications> friendships = new ArrayList<>();
-
+    public ServerHandler serverHandler;
 
 
     public Menu currentMenu;
+
+
 
 
     public Menu getCurrentMenu() {
@@ -92,11 +90,11 @@ public class Game {
         HashMap<String , Object> body = new HashMap<>();
         body.put("No Diff", "No Diff");
         noDiff = new Message(CommandType.NO_DIFF , body);
-
+        serverHandler = ServerHandler.getInstance();
     }
 
 
-    public synchronized void addPlayer(User u , Socket socket) throws IOException {
+    public synchronized void addPlayer (User u , Socket socket) throws IOException {
         if (Players.size() >= 4) {
             try {
                 PrintWriter out = new PrintWriter(socket.getOutputStream() , true);
@@ -110,6 +108,10 @@ public class Game {
         Players.add(handler);
         lastSentIndex.put(u.getUsername(), 0);
         gameState.getPlayers().add(u);
+
+        // TODO اینو زحمتت کامل کن من نمیدونم چی میخواد
+        serverHandler.Players.add(u);
+        // TODO
 
         if (Players.size() == 4 && !gameStarted) {
             gameStarted = true;
