@@ -30,7 +30,8 @@ public class ClientConnectionThread extends Thread {
     //private Socket clientSocket;
     //private DataInputStream in;
     //private DataOutputStream out;
-    private LoginController controller;
+    private ClientConnectionController controller;
+    private LoginController LoginController;
     private RegisterController registerController;
     private Connection connection;
     private KryoNetServer server;
@@ -43,8 +44,9 @@ public class ClientConnectionThread extends Thread {
 //        in = new DataInputStream(clientSocket.getInputStream());
 //        out = new DataOutputStream(clientSocket.getOutputStream());
         this.connection = connection;
-        controller = new LoginController();
+        LoginController = new LoginController();
         registerController = new RegisterController();
+        controller = ClientConnectionController.getInstance();
     }
 
 
@@ -71,7 +73,7 @@ public class ClientConnectionThread extends Thread {
     public synchronized void handleMessage(Message message) throws IOException {
         switch (message.getCommandType()) {
             case LOGIN -> {
-                sendMessage(controller.LoginRes(message));
+                sendMessage(LoginController.LoginRes(message));
             }
             case SIGN_UP -> {
                 System.out.println("SERVER");
@@ -209,7 +211,11 @@ public class ClientConnectionThread extends Thread {
                 }
             }
             case PASSED_TIME -> {
-                // controller.
+                controller.passedOfTime(
+                    message.getIntFromBody("Day"),
+                    message.getIntFromBody("Hour"),
+                    ServerHandler.getInstance(game).currentDateHour, game
+                );
             }
             case FriendshipsInquiry -> {
                 HashMap<String , Object> body = new HashMap<>();

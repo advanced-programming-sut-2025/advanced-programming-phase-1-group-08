@@ -46,7 +46,11 @@ public enum CommandType {
     A_FRIEND_IS_CLOSE,
 
 
-
+                                // Erfan
     PASSED_TIME,
+    CHANGE_GAME_OBJECT,
+    BUILD_GREENHOUSE,
+    CREATE_LIGHTNING,
+    CURRENT_ITEM,
 
 }
