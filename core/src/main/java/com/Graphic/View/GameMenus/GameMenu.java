@@ -851,7 +851,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         String targetName = Main.getClient().getPlayer().getUsername();
         User friendUser;
 
-        for (HumanCommunications f : currentGame.friendships) {
+        for (HumanCommunications f : Main.getClient().getLocalGameState().friendships) {
             if (f.getPlayer1().getUsername().equals(targetName)) {
                 friendUser = f.getPlayer2();
             }
@@ -2053,7 +2053,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         seasonImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
         Texture newTexture1 = TextureManager.get(Main.getClient().getLocalGameState().currentWeather.getIconPath());
         weatherImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture1)));
-        ServerHandler.lastTime = TimeUtils.millis();
+        lastTime = TimeUtils.millis();
 
     }
 

@@ -1653,8 +1653,8 @@ public class GameControllerLogic {
         System.out.println(result);
         if (result.IsSuccess()) {
             Set<User> key = new HashSet<>(Arrays.asList(Main.getClient().getPlayer(), findPlayerInGame(username)));
-            currentGame.conversations.putIfAbsent(key, new ArrayList<>());
-            currentGame.conversations.get(key).add(new MessageHandling(Main.getClient().getPlayer(), findPlayerInGame(username), Main.getClient().getPlayer().getNickname() + " Sent you a GIFT. Rate it out of 5!"));
+            Main.getClient().getLocalGameState().conversations.putIfAbsent(key, new ArrayList<>());
+            Main.getClient().getLocalGameState().conversations.get(key).add(new MessageHandling(Main.getClient().getPlayer(), findPlayerInGame(username), Main.getClient().getPlayer().getNickname() + " Sent you a GIFT. Rate it out of 5!"));
         }
     }
 

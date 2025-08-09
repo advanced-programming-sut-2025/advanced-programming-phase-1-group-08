@@ -1995,7 +1995,7 @@ public class InputGameController {
                     currentGame.getGameState().getPlayers().get(i),
                     currentGame.getGameState().getPlayers().get(j));
 
-                currentGame.friendships.add(f);
+                Main.getClient().getLocalGameState().friendships.add(f);
             }
 
         for (User player: currentGame.getGameState().getPlayers())
