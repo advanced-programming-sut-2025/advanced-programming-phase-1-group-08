@@ -44,7 +44,7 @@ public class Trade {
 
     public static Trade findTradeByID (int id) {
         Trade foundTrade = null;
-        for (Map.Entry<Set<User>, List<Trade>> entry : currentGame.trades.entrySet()) {
+        for (Map.Entry<Set<User>, List<Trade>> entry : Main.getClient().getLocalGameState().trades.entrySet()) {
             List<Trade> tradeList = entry.getValue();
             for (Trade trade : tradeList) {
                 if (trade.getId() == id) {

@@ -1496,7 +1496,7 @@ public class GameControllerLogic {
     public static String DisplayFriendships () {
         String targetName = Main.getClient().getPlayer().getUsername();
 
-        for (HumanCommunications f : currentGame.friendships) {
+        for (HumanCommunications f : Main.getClient().getLocalGameState().friendships) {
             if (f.getPlayer1().getUsername().equals(targetName) || f.getPlayer2().getUsername().equals(targetName))
                 return f.printInfo();
         }
