@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-
-
 public class DummyGdxApp implements ApplicationListener {
     @Override
     public void create() {

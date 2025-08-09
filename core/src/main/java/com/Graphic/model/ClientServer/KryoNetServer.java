@@ -1,5 +1,6 @@
 package com.Graphic.model.ClientServer;
 
+import com.Graphic.Main;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Items;
 import com.esotericsoftware.kryonet.Server;
@@ -12,6 +13,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
+
+import static com.Graphic.model.Enum.Commands.CommandType.GAME_START;
 
 public class KryoNetServer {
     private Server server;
