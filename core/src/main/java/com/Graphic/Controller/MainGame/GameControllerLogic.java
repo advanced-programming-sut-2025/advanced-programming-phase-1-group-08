@@ -1593,7 +1593,6 @@ public class GameControllerLogic {
             return;
         }
 
-        // گرفتن پیام از کاربر و فراخوانی تابع talk
         showChatDialog(GameMenu.gameMenu.getStage(), Main.getNewSkin(), message -> {
             Result result = f.talk(message);
             onResult.accept(result);

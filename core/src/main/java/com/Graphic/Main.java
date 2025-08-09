@@ -1,5 +1,6 @@
 package com.Graphic;
 
+import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.View.LoginMenu;
 import com.Graphic.model.ClientServer.KryoNetClient;
 import com.badlogic.gdx.Game;
@@ -60,7 +61,7 @@ public class Main extends Game {
         }
 
         // صفحه شروع بازی
-        main.setScreen(new LoginMenu());
+        main.setScreen(GameMenu.getInstance());
     }
 
     @Override

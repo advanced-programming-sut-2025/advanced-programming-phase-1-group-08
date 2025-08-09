@@ -212,6 +212,11 @@ public class ClientConnectionThread extends Thread {
             case PASSED_TIME -> {
                 // controller.
             }
+            case FriendshipsInquiry -> {
+                HashMap<String , Object> body = new HashMap<>();
+                body.put("friendships", game.getGameState().friendships);
+                sendMessage(new Message(CommandType.FriendshipsInqResponse, body));
+            }
         }
     }
 

@@ -85,6 +85,7 @@ public class CraftingController {
 
         for (Map.Entry <Items , Integer> entry : ingrediant.entrySet()) {
             HashMap<String , Object> ingBody = new HashMap();
+            ingBody.put("Player", Main.getClient().getPlayer());
             ingBody.put("Item", entry.getKey());
             ingBody.put("amount", -entry.getValue());
             Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, ingBody));
@@ -93,6 +94,7 @@ public class CraftingController {
         if (name.equals("Grass Starter")) {
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof MarketItem && ((MarketItem) entry.getKey()).getType().equals(MarketItemType.GrassStarter)) {
+                    body.put("Player", Main.getClient().getPlayer());
                     body.put("Item", entry.getKey());
                     body.put("amount", 1);
                     Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
@@ -100,6 +102,7 @@ public class CraftingController {
                 }
             }
             MarketItem grassStarter = new MarketItem(MarketItemType.GrassStarter);
+            body.put("Player", Main.getClient().getPlayer());
             body.put("Item", grassStarter);
             body.put("amount", 1);
             Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
@@ -108,6 +111,7 @@ public class CraftingController {
         if (name.equals("Mystic Tree Seed")) {
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof TreeSource && ((TreeSource) entry.getKey()).getType().equals(TreesSourceType.Mystic_Tree_Seeds)) {
+                    body.put("Player", Main.getClient().getPlayer());
                     body.put("Item", entry.getKey());
                     body.put("amount", 1);
                     Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
@@ -115,6 +119,7 @@ public class CraftingController {
                 }
             }
             TreeSource MysticTreeSeed =new TreeSource(TreesSourceType.Mystic_Tree_Seeds);
+            body.put("Player", Main.getClient().getPlayer());
             body.put("Item", MysticTreeSeed);
             body.put("amount", 1);
             Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
@@ -123,6 +128,7 @@ public class CraftingController {
 
         for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
             if (entry.getKey() instanceof CraftingItem && ((CraftingItem) entry.getKey()).getType().equals(type)) {
+                body.put("Player", Main.getClient().getPlayer());
                 body.put("Item", entry.getKey());
                 body.put("amount", 1);
                 Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
@@ -132,6 +138,7 @@ public class CraftingController {
 
 
         CraftingItem newCraft=new CraftingItem(type);
+        body.put("Player", Main.getClient().getPlayer());
         body.put("Item", newCraft);
         body.put("amount", 1);
         Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));

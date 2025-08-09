@@ -188,6 +188,9 @@ public class ClientWork  {
                 int y = message.getIntFromBody("Y");
                 InputGameController.getInstance().placeBarnOrCage(x, y, barnOrCage , user);
             }
+            case FriendshipsInqResponse -> {
+                Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
+            }
         }
     }
 

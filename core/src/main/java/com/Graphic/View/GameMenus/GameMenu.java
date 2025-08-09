@@ -94,6 +94,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private ArrayList<LakeRenderer> lakeRenderers = new ArrayList<>();
     private boolean initialLake = false;
 
+    public boolean showFriendDialog = false;
+
     private boolean progressComplete = false;
     private boolean ePressed = false;
     private float holdTime = 0f;
@@ -840,7 +842,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Main.getClient().getPlayer().currentItem = null;
         giftingFriendship = null;
     }
-    private Dialog makingFriendDialog() {
+    public Dialog makingFriendDialog() {
         friendsListdialog = new Dialog("", newSkin);
         friendsListdialog.setModal(true);
         friendsListdialog.setMovable(true);
@@ -1019,6 +1021,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         friendButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                HashMap<String, Object> body = new HashMap<>();
+                Main.getClient().getRequests().add(new Message(CommandType.FriendshipsInquiry, body));
                 makingFriendDialog().show(stage);
             }
         });

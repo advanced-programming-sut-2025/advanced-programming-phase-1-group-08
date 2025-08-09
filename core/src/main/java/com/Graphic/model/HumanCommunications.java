@@ -121,9 +121,7 @@ public class HumanCommunications {
         else
             other = player1;
 
-//        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-//            return new Result(false, RED+"You Should " + RED+"Get Closer"+RESET + " in Order to Talk to " + other.getNickname() + "!"+RESET);
-//        }
+
 
         addXP(10);
         if (Main.getClient().getPlayer().getSpouse() != null)
@@ -138,7 +136,7 @@ public class HumanCommunications {
         Main.getClient().getLocalGameState().conversations.putIfAbsent(key, new ArrayList<>());
         Main.getClient().getLocalGameState().conversations.get(key).add(new MessageHandling(me, other, text));
 
-        return new Result(true, GREEN+"You Sent a Message to " + other.getNickname() + "."+RESET);
+        return new Result(true, "You Sent a Message to " + other.getNickname() + ".");
     }
     public Result talkingHistory() {
         Set<User> key = new HashSet<>(Arrays.asList(player1, player2));

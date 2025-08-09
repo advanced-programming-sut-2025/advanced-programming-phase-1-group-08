@@ -40,6 +40,9 @@ public enum CommandType {
     PLACE_BARN_CAGE,
     CHANGE_ABILITY_LEVEL,
     CHANGE_FRIDGE,
+    FriendshipsInquiry,
+    FriendshipsInqResponse,
+    UPDATE_FRIENDSHIPS,
 
 
 

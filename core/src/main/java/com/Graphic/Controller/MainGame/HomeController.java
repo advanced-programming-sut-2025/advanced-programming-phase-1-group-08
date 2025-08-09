@@ -61,8 +61,9 @@ public class HomeController {
 //        else
 //            inventory.Items.put(item, 1);
         HashMap<String, Object> body2 = new HashMap<>();
-        body.put("Item", item);
-        body.put("amount", 1);
+        body2.put("Player", Main.getClient().getPlayer());
+        body2.put("Item", item);
+        body2.put("amount", 1);
         Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body2));
 
 
@@ -77,6 +78,7 @@ public class HomeController {
 //            inventory.Items.remove(item);
 //        }
         HashMap<String, Object> body = new HashMap<>();
+        body.put("Player", Main.getClient().getPlayer());
         body.put("Item", item);
         body.put("amount", 1);
         Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
@@ -90,8 +92,9 @@ public class HomeController {
 //        else
 //            fridge.items.put(item, 1);
         HashMap<String, Object> body2 = new HashMap<>();
-        body.put("Item", item);
-        body.put("amount", 1);
+        body2.put("Player", Main.getClient().getPlayer());
+        body2.put("Item", item);
+        body2.put("amount", 1);
         Main.getClient().getRequests().add(new Message(CommandType.CHANGE_FRIDGE, body2));
 
         return new Result(true, "Added to fridge.");
@@ -150,6 +153,7 @@ public class HomeController {
         // add food to inventory
         Items i = new Food(t);
         HashMap<String, Object> body = new HashMap<>();
+        body.put("Player", Main.getClient().getPlayer());
         body.put("Item", i);
         body.put("amount", 1);
         Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
@@ -158,6 +162,7 @@ public class HomeController {
         // decrease ingredients
         for (Map.Entry<Items, Integer> e: ingredients.entrySet()) {
             HashMap<String, Object> body2 = new HashMap<>();
+            body2.put("Player", Main.getClient().getPlayer());
             body2.put("Item", e.getKey());
             body2.put("amount", -e.getValue());
             Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body2));
