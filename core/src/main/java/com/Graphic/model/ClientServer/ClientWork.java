@@ -34,8 +34,8 @@ import static com.Graphic.model.Enum.Commands.CommandType.*;
 public class ClientWork  {
 
     private GameState localGameState;
-    private volatile boolean running = false;
     private boolean exit = false;
+    private volatile boolean running = false;
     private boolean isWorkingWithOtherClient = false;
     private Client2ServerThread client2ServerThread;
     private BlockingQueue<Message> requests = new LinkedBlockingQueue();
@@ -105,9 +105,7 @@ public class ClientWork  {
                     RegisterMenu.getInstance().showMessage(message);
                 });
             }
-            case CAN_MOVE -> {
-
-            }
+            case CAN_MOVE -> {}
             case ENTER_THE_MARKET -> {
                 for (User player : Main.getClient().getLocalGameState().getPlayers()) {
                     if (message.getFromBody("Player").equals(player)) {
@@ -190,13 +188,11 @@ public class ClientWork  {
             }
         }
     }
-
     public void sendMessage(Message message) {connection.sendTCP(message);}
 
     public boolean isExit() {
         return exit;
     }
-
     public boolean isWorkingWithOtherClient() {
         return isWorkingWithOtherClient;
     }
