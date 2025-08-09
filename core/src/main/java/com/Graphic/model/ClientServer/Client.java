@@ -8,7 +8,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 public class Client extends Game {
 
     private final static String SERVER_IP = "localhost";
-    private final static int SERVER_PORT = 8081;
+    public final static int SERVER_PORT = 8081;
     private GameState localGameState = new GameState();
 
 

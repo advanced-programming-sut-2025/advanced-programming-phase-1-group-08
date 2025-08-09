@@ -24,7 +24,7 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 public class CraftingController {
 
     public static Items numberOfIngrediants(String name) {
-        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
 
         for (Map.Entry < Items , Integer> entry : inventory.Items.entrySet()) {
             if (entry.getKey().getName().equals(name)) {
@@ -48,7 +48,7 @@ public class CraftingController {
     }
 
     public Result craftingCraft(String name) {
-        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
         CraftType type=null;
         HashMap<Items , Integer> ingrediant = new HashMap();
 
@@ -64,7 +64,7 @@ public class CraftingController {
         if (type == null) {
             return new Result(false , "No such Craft type");
         }
-        if (Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() == 0) {
+        if (Main.getClient().getPlayer().getBackPack().getType().getRemindCapacity() == 0) {
             return new Result(false , "Not enough Capacity in your BackPack");
         }
         if (!type.checkLevel()) {
@@ -87,7 +87,7 @@ public class CraftingController {
             HashMap<String , Object> ingBody = new HashMap();
             ingBody.put("Item", entry.getKey());
             ingBody.put("amount", -entry.getValue());
-            Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_INVENTORY, ingBody));
+            Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, ingBody));
         }
 
         if (name.equals("Grass Starter")) {
@@ -95,14 +95,14 @@ public class CraftingController {
                 if (entry.getKey() instanceof MarketItem && ((MarketItem) entry.getKey()).getType().equals(MarketItemType.GrassStarter)) {
                     body.put("Item", entry.getKey());
                     body.put("amount", 1);
-                    Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+                    Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
                     return new Result(true , "you created Grass Starter Successfully!");
                 }
             }
             MarketItem grassStarter = new MarketItem(MarketItemType.GrassStarter);
             body.put("Item", grassStarter);
             body.put("amount", 1);
-            Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+            Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
             return new Result(true , "You created Grass Starter Successfully!");
         }
         if (name.equals("Mystic Tree Seed")) {
@@ -110,14 +110,14 @@ public class CraftingController {
                 if (entry.getKey() instanceof TreeSource && ((TreeSource) entry.getKey()).getType().equals(TreesSourceType.Mystic_Tree_Seeds)) {
                     body.put("Item", entry.getKey());
                     body.put("amount", 1);
-                    Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+                    Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
                     return new Result(true , "you created Grass Starter Successfully!");
                 }
             }
             TreeSource MysticTreeSeed =new TreeSource(TreesSourceType.Mystic_Tree_Seeds);
             body.put("Item", MysticTreeSeed);
             body.put("amount", 1);
-            Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+            Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
             return new Result(true , "You created Mystic Tree Seed Successfully!");
         }
 
@@ -125,7 +125,7 @@ public class CraftingController {
             if (entry.getKey() instanceof CraftingItem && ((CraftingItem) entry.getKey()).getType().equals(type)) {
                 body.put("Item", entry.getKey());
                 body.put("amount", 1);
-                Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+                Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
                 return new Result(true , "You created "+type.getName()+" Successfully!");
             }
         }
@@ -134,7 +134,7 @@ public class CraftingController {
         CraftingItem newCraft=new CraftingItem(type);
         body.put("Item", newCraft);
         body.put("amount", 1);
-        Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
 
 
         //TODO App.currentGame.currentPlayer.increaseHealth(-2);

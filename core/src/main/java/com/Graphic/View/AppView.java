@@ -1,5 +1,6 @@
 package com.Graphic.View;
 
+import com.Graphic.Main;
 import com.Graphic.model.App;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.SaveData.SessionManager;
@@ -21,11 +22,11 @@ public class AppView {
             User user = SessionManager.getLoggedInUser();
             assert user != null;
             System.out.println(BLUE+"Welcome back, " + user.getNickname()+RESET);
-            App.currentUser = user;
-            App.currentMenu = Menu.MainMenu;
+            Main.getClient().setPlayer(user);
+            Main.getClient().setCurrentMenu(Menu.GameMenu);
 
         } else {
-            App.currentMenu = Menu.RegisterMenu;
+            Main.getClient().setCurrentMenu(Menu.RegisterMenu);
             System.out.println(CYAN+"\nWelcome To The SignUp Menu!"+RESET);
             System.out.println("In This Menu You Can Register, Go to LogInPage or Quit The Program\n");
         }

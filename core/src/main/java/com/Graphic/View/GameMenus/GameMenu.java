@@ -2054,7 +2054,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         seasonImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
         Texture newTexture1 = TextureManager.get(Main.getClient().getLocalGameState().currentWeather.getIconPath());
         weatherImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture1)));
-        lastTime = TimeUtils.millis();
+        ServerHandler.lastTime = TimeUtils.millis();
 
     }
 

@@ -19,47 +19,47 @@ public class ProfileController {
 
 
     public String getUserInfo() {
-        if (Main.getClient(null).getPlayer() == null) {
+        if (Main.getClient().getPlayer() == null) {
             return "No user logged in";
         }
 
         StringBuilder info = new StringBuilder();
-        info.append("Username: ").append(Main.getClient(null).getPlayer().getUsername()).append("\n");
-        info.append("Nickname: ").append(Main.getClient(null).getPlayer().getNickname()).append("\n");
-        info.append("Email: ").append(Main.getClient(null).getPlayer().getEmail()).append("\n");
-        info.append("Most Golds Collected: ").append(Main.getClient(null).getPlayer().getMax_point()).append("\n");
-        info.append("Total Games Played: ").append(Main.getClient(null).getPlayer().getGames_played());
+        info.append("Username: ").append(Main.getClient().getPlayer().getUsername()).append("\n");
+        info.append("Nickname: ").append(Main.getClient().getPlayer().getNickname()).append("\n");
+        info.append("Email: ").append(Main.getClient().getPlayer().getEmail()).append("\n");
+        info.append("Most Golds Collected: ").append(Main.getClient().getPlayer().getMax_point()).append("\n");
+        info.append("Total Games Played: ").append(Main.getClient().getPlayer().getGames_played());
 
         return info.toString();
     }
 
 
     public String getCurrentUsername() {
-        return App.currentUser != null ? App.currentUser.getUsername() : "";
+        return Main.getClient().getPlayer() != null ? Main.getClient().getPlayer().getUsername() : "";
     }
 
 
     public String getCurrentNickname() {
-        return App.currentUser != null ? App.currentUser.getNickname() : "";
+        return Main.getClient().getPlayer() != null ? Main.getClient().getPlayer().getNickname() : "";
     }
 
 
     public String getCurrentEmail() {
-        return App.currentUser != null ? App.currentUser.getEmail() : "";
+        return Main.getClient().getPlayer() != null ? Main.getClient().getPlayer().getEmail() : "";
     }
 
 
     public int getMaxPoints() {
-        return App.currentUser != null ? App.currentUser.getMax_point() : 0;
+        return Main.getClient().getPlayer() != null ? Main.getClient().getPlayer().getMax_point() : 0;
     }
 
 
     public int getGamesPlayed() {
-        return App.currentUser != null ? App.currentUser.getGames_played() : 0;
+        return Main.getClient().getPlayer() != null ? Main.getClient().getPlayer().getGames_played() : 0;
     }
 
     public Result changeUsername(String username) throws IOException {
-        if (App.currentUser.getUsername().equals(username))
+        if (Main.getClient().getPlayer().getUsername().equals(username))
             return new Result(false, "You Already Have This Username!");
         if (!usernameCheck(username))
             return new Result(false, "Invalid Username Format!");
@@ -68,11 +68,11 @@ public class ProfileController {
 
         List<User> users = UserStorage.loadUsers();
         for (User user: users) {
-            if (user.getUsername().equals(App.currentUser.getUsername())) {
+            if (user.getUsername().equals(Main.getClient().getPlayer().getUsername())) {
                 user.setUsername(username);
                 UserStorage.saveUsers(users);
                 SessionManager.saveSession(user.getUsername(), SessionManager.isLoggedIn());
-                App.currentUser.setUsername(username);
+                Main.getClient().getPlayer().setUsername(username);
                 return new Result(true, "Username Successfully Changed.");
             }
         }
@@ -81,17 +81,17 @@ public class ProfileController {
     }
 
     public Result changeEmail(String email) throws IOException {
-        if (App.currentUser.getEmail().equals(email))
+        if (Main.getClient().getPlayer().getEmail().equals(email))
             return new Result(false, "You Already Have This Email!");
         if (!emailCheck(email))
             return new Result(false, "Invalid Email Format!");
 
         List<User> users = UserStorage.loadUsers();
         for (User user: users) {
-            if (user.getUsername().equals(App.currentUser.getUsername())) {
+            if (user.getUsername().equals(Main.getClient().getPlayer().getUsername())) {
                 user.setEmail(email);
                 UserStorage.saveUsers(users);
-                App.currentUser.setEmail(email);
+                Main.getClient().getPlayer().setEmail(email);
                 break;
             }
         }
@@ -100,17 +100,17 @@ public class ProfileController {
     }
 
     public Result changeNickname(String nickname) throws IOException {
-        if (App.currentUser.getNickname().equals(nickname))
+        if (Main.getClient().getPlayer().getNickname().equals(nickname))
             return new Result(false, "You Already Have This Nickname!");
         if (!CheckName(nickname))
             return new Result(false, "Invalid Nickname Format!");
 
         List<User> users = UserStorage.loadUsers();
         for (User user: users) {
-            if (user.getUsername().equals(App.currentUser.getUsername())) {
+            if (user.getUsername().equals(Main.getClient().getPlayer().getUsername())) {
                 user.setNickname(nickname);
                 UserStorage.saveUsers(users);
-                App.currentUser.setNickname(nickname);
+                Main.getClient().getPlayer().setNickname(nickname);
                 break;
             }
         }
@@ -120,7 +120,7 @@ public class ProfileController {
 
 
     public Result validateOldPassword(String oldPassword) {
-        if (!App.currentUser.getHashPass().equals(PasswordHashUtil.hashPassword(oldPassword))) {
+        if (!Main.getClient().getPlayer().getHashPass().equals(PasswordHashUtil.hashPassword(oldPassword))) {
             return new Result(false, "Your Old Password is NOT Correct!");
         }
         return new Result(true, "Old password is correct");
@@ -132,7 +132,7 @@ public class ProfileController {
             return oldPassResult;
         }
 
-        if (App.currentUser.getHashPass().equals(PasswordHashUtil.hashPassword(newPassword))) {
+        if (Main.getClient().getPlayer().getHashPass().equals(PasswordHashUtil.hashPassword(newPassword))) {
             return new Result(false, "You Already Have This Password!");
         }
 
@@ -147,10 +147,10 @@ public class ProfileController {
 
         List<User> users = UserStorage.loadUsers();
         for (User user: users) {
-            if (user.getUsername().equals(App.currentUser.getUsername())) {
+            if (user.getUsername().equals(Main.getClient().getPlayer().getUsername())) {
                 user.setHashPass(PasswordHashUtil.hashPassword(newPassword));
                 UserStorage.saveUsers(users);
-                App.currentUser.setHashPass(PasswordHashUtil.hashPassword(newPassword));
+                Main.getClient().getPlayer().setHashPass(PasswordHashUtil.hashPassword(newPassword));
                 break;
             }
         }

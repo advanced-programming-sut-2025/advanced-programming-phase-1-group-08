@@ -24,7 +24,7 @@ public class TorrentClient2ClientThread implements Runnable {
 
     @Override
     public void run() {
-        while (Main.getClient(null).isWorkingWithOtherClient()) {
+        while (Main.getClient().isWorkingWithOtherClient()) {
             try {
 
             }

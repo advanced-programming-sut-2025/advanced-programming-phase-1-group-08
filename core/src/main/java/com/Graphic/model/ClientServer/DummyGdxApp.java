@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import static com.Graphic.model.ClientServer.Client.SERVER_PORT;
+
 public class DummyGdxApp implements ApplicationListener {
     @Override
     public void create() {
@@ -25,7 +27,7 @@ public class DummyGdxApp implements ApplicationListener {
                 break;
             }
 
-            handleNewClient(clientSocket);
+//            handleNewClient(clientSocket);
         }
     }
 

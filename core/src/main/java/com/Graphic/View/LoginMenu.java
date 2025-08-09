@@ -148,7 +148,7 @@ public class LoginMenu implements Screen, AppMenu {
                 try {
                     //Result result = controller.LoginRes(username, password);
                     Message message = controller.requestLogin(username, password);
-                    Main.getClient(null).getRequests().add(message);
+                    Main.getClient().getRequests().add(message);
 
 //                    if (result.IsSuccess()) {
 //                        User user = UserDataBase.findUserByUsername(username);

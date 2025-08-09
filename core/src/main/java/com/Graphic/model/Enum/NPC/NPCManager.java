@@ -27,13 +27,13 @@ public class NPCManager {
 
     private static void updateAutoWalk(NPC npc, float delta) {
 
-        npc.getSprite().draw(Main.getBatch());
+//        npc.getSprite().draw(Main.getBatch());
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             npc.setAutoWalking(!npc.isAutoWalking());
         }
 
-        npc.getSprite().setSize(25, 40);
+//        npc.getSprite().setSize(25, 40);
 
         if (!npc.isAutoWalking()) return;
 
@@ -53,25 +53,25 @@ public class NPCManager {
             }
 
 
-            for (int i = 0; i < npc.getMoveDistance(); i++) {
-                if (checkWalking(npc)) {
-                    float x = npc.getSprite().getX();
-                    float y = npc.getSprite().getY();
-                    float newX = x + npc.getDirection().getX() * 50 * Gdx.graphics.getDeltaTime();
-                    float newY = y - npc.getDirection().getY() * 50 * Gdx.graphics.getDeltaTime();
-                    npc.getSprite().setPosition(newX, newY);
-                    NPCMoveAnimation(npc);
-
-                    npc.setMoving(true);
-                    npc.setPositionX(npc.getPositionX() + newDir.getX() * 5 * Gdx.graphics.getDeltaTime());
-                    npc.setPositionY(npc.getPositionY() + newDir.getY() * 5 * Gdx.graphics.getDeltaTime());
-                } else {
-                    npc.setTimer(0);
-                    npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(0));
-                }
-            }
-            npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(0));
-            npc.getSprite().draw(Main.getBatch());
+//            for (int i = 0; i < npc.getMoveDistance(); i++) {
+//                if (checkWalking(npc)) {
+//                    float x = npc.getSprite().getX();
+//                    float y = npc.getSprite().getY();
+//                    float newX = x + npc.getDirection().getX() * 50 * Gdx.graphics.getDeltaTime();
+//                    float newY = y - npc.getDirection().getY() * 50 * Gdx.graphics.getDeltaTime();
+//                    npc.getSprite().setPosition(newX, newY);
+//                    NPCMoveAnimation(npc);
+//
+//                    npc.setMoving(true);
+//                    npc.setPositionX(npc.getPositionX() + newDir.getX() * 5 * Gdx.graphics.getDeltaTime());
+//                    npc.setPositionY(npc.getPositionY() + newDir.getY() * 5 * Gdx.graphics.getDeltaTime());
+//                } else {
+//                    npc.setTimer(0);
+//                    npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(0));
+//                }
+//            }
+//            npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(0));
+//            npc.getSprite().draw(Main.getBatch());
 
 
 
@@ -85,7 +85,7 @@ public class NPCManager {
 
 
     public static void NPCMoveAnimation (NPC npc) {
-        npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(npc.getTimer()));
+//        npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(npc.getTimer()));
 
         if (! npc.getAnimation().isAnimationFinished(npc.getTimer())) {
             npc.setTimer(npc.getTimer() + Gdx.graphics.getDeltaTime());

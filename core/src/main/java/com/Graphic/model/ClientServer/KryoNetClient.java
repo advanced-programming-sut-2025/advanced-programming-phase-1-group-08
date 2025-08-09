@@ -21,6 +21,26 @@ public class KryoNetClient {
     private int timeoutMs = 5000;
     private volatile boolean connected = false;
 
+    private boolean isWorkingWithOtherClient = false;
+
+    public boolean isWorkingWithOtherClient() {
+        return isWorkingWithOtherClient;
+    }
+
+    public void setWorkingWithOtherClient(boolean workingWithOtherClient) {
+        isWorkingWithOtherClient = workingWithOtherClient;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    private volatile boolean running = false;
+
     public GameState getLocalGameState() {
         return localGameState;
     }
@@ -124,7 +144,7 @@ public class KryoNetClient {
                         }
                     } else {
                         // default handling (موقت) — فقط لاگ
-                        System.out.println("Received message: " + msg.commandType);
+//                        System.out.println("Received message: " + msg.commandType);
                     }
                 }
             }

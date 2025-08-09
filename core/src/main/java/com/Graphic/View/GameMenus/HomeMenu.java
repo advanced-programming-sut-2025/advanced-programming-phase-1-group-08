@@ -563,7 +563,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     private void createFridge() {
 //        if (!test) {
 //            test = true;
-//            Fridge f = Main.getClient(null).getPlayer().getFarm().getHome().getFridge();
+//            Fridge f = Main.getClient().getPlayer().getFarm().getHome().getFridge();
 //            f.items.put(new Animalproduct(AnimalProductType.Egg, Quantity.Normal), 1);
 //            f.items.put(new Fish(FishType.Salmon, Quantity.Normal), 1);
 //            f.items.put(new Fish(FishType.Sardine, Quantity.Normal), 1);
@@ -677,7 +677,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         content.setPosition(300, 300);
         content.padLeft(50);
 
-        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
 
         int number = 0;
 
@@ -691,7 +691,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
             Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
 
-            Items currentItem = Main.getClient(null).getPlayer().currentItem;
+            Items currentItem = Main.getClient().getPlayer().currentItem;
             boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
 
             if (isCurrent) {
@@ -779,8 +779,8 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     private void createCurrentItem (Table content) {
 
         Image img;
-        if (Main.getClient(null).getPlayer().currentItem != null)
-            img = new Image(TextureManager.get(Main.getClient(null).getPlayer().currentItem.getInventoryIconPath()));
+        if (Main.getClient().getPlayer().currentItem != null)
+            img = new Image(TextureManager.get(Main.getClient().getPlayer().currentItem.getInventoryIconPath()));
         else
             img = new Image(TextureManager.get("Erfan/Cancel2.png"));
 
@@ -797,8 +797,8 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
         content.setPosition(300, 300);
         content.padLeft(50);
 
-        Fridge f = Main.getClient(null).getPlayer().getFarm().getHome().getFridge();
-//        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+        Fridge f = Main.getClient().getPlayer().getFarm().getHome().getFridge();
+//        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
 
         int number = 0;
 
@@ -813,7 +813,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
 
             Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
 
-            Items currentItem = Main.getClient(null).getPlayer().currentItem;
+            Items currentItem = Main.getClient().getPlayer().currentItem;
             boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
 
             if (isCurrent) {
@@ -977,7 +977,7 @@ public class HomeMenu extends AppView implements AppMenu, Screen {
     }
 
     private void drawPlayer() {
-//        Sprite player = Main.getClient(null).getPlayer().getSprite();
+//        Sprite player = Main.getClient().getPlayer().getSprite();
 //        Main.getBatch().draw(player, startX - areaWidth/22f , startY - areaHeight/7f);
 
 

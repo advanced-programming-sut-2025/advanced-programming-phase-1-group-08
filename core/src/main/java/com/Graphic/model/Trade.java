@@ -82,7 +82,7 @@ public class Trade {
             return new Result(false, RED+"Respond to THIS Trade, Not Other Trades!");
 
         Trade trade = findTradeByID(id);
-        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), trade.sender);
+        HumanCommunications f = getFriendship(Main.getClient().getPlayer(), trade.sender);
         if (f == null)
             return new Result(false, RED+"Friendship Not Found!"+RESET);
 
@@ -96,7 +96,7 @@ public class Trade {
 
         // if Accepted:
 
-        Inventory receiverInventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+        Inventory receiverInventory = Main.getClient().getPlayer().getBackPack().inventory;
         char receiver_P_or_T = trade.receiverGivesPorT;
 
         Inventory senderInventory = trade.sender.getBackPack().inventory;

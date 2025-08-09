@@ -109,16 +109,16 @@ public class ClientConnectionThread extends Thread {
             case LOADED_GAME -> {}
             case FARM -> {
 
-                sendToAll(createInitialFarm(message.getIntFromBody("Index") , Player , game.getGameState()), game);
-                game.getDiffQueue().add(createInitialFarm(message.getIntFromBody("Index") , Player , game.getGameState()));
-                localGameState.incrementNumberOfMaps();
-                if (localGameState.getNumberOfMaps() == 4) {
+//                sendToAll(createInitialFarm(message.getIntFromBody("Index") , Player , game.getGameState()), game);
+//                game.getDiffQueue().add(createInitialFarm(message.getIntFromBody("Index") , Player , game.getGameState()));
+                Main.getClient().getLocalGameState().incrementNumberOfMaps();
+                if (Main.getClient().getLocalGameState().getNumberOfMaps() == 4) {
                     game.getDiffQueue().add(build(game.getGameState()));
                 }
                 break;
             }
             case MOVE_IN_FARM -> {
-                game.getDiffQueue().add(controller.checkWalking(message , game));
+//                game.getDiffQueue().add(controller.checkWalking(message , game));
             }
             case ENTER_THE_MARKET -> {
                 AnswerEnterTheMarket(message , game);
@@ -137,7 +137,7 @@ public class ClientConnectionThread extends Thread {
                 sendMessage(Marketing.getInstance().changeBackPack(message, game));
             }
             case PLACE_CRAFT_SHIPPING_BIN -> {
-                controller.AnswerPlaceCraft(message, game);
+//                controller.AnswerPlaceCraft(message, game);
             }
             case BUY_BARN_CAGE -> {
                 for (Message message1 : Marketing.getInstance().payForBuilding(message , game)) {
@@ -171,10 +171,10 @@ public class ClientConnectionThread extends Thread {
                 Marketing.getInstance().AnswerRequestForBuyAnimal(message , game);
             }
             case SELL_ANIMAL -> {
-                controller.AnswerRequestAnimal(message, game);
+//                controller.AnswerRequestAnimal(message, game);
             }
             case FEED_HAY -> {
-                controller.AnswerFeedHay(message, game);
+//                controller.AnswerFeedHay(message, game);
             }
             case SHEPHERD_ANIMAL -> {
                 AnswerShepherding(message, game);
