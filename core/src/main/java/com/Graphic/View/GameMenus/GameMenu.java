@@ -1132,8 +1132,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 createToolsMenu();
             else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
                 createEscMenu();
-            else if (Gdx.input.isKeyJustPressed(Keys.increaseTime)) // TODO Handle With Server
-                updateClock(2);
+            else if (Gdx.input.isKeyJustPressed(Keys.increaseTime))
+                controller.sendPassedTimeMessage(0, 1);
             else if (Gdx.input.isKeyJustPressed(Keys.lighting))
                 createCloud();
             else if (Gdx.input.isKeyJustPressed(Keys.energySet))

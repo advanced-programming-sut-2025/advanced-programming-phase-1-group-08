@@ -47,5 +47,9 @@ public enum CommandType {
 
 
     PASSED_TIME,
+    CHANGE_GAME_OBJECT,
+    BUILD_GREENHOUSE,
+    CREATE_LIGHTNING,
+    CURRENT_ITEM,
 
 }

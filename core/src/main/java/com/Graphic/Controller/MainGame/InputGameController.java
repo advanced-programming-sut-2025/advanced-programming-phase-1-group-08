@@ -2861,6 +2861,14 @@ public class InputGameController {
     }
                                                                     // OTHERd
 
+    public void sendPassedTimeMessage (int day, int hour) {
+
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("Hour", hour);
+        PassedTime.put("Day", day);
+        Main.getClient().getRequests().add(new Message(CommandType.PASSED_TIME , PassedTime));
+
+    }
 
 
 }
