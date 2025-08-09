@@ -192,7 +192,7 @@ public class ClientWork  {
                 Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
             }
             case PASSED_TIME -> {
-                controller.PassedTime(message.getFromBody());
+                controller.PassedTime(message.getIntFromBody("Hour"), message.getIntFromBody("Day"));
             }
         }
     }
