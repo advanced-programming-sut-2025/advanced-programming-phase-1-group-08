@@ -2,6 +2,7 @@ package com.Graphic.model;
 
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.ClientServer.ServerHandler;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.SecurityQuestions;
@@ -90,7 +91,7 @@ public class Game {
             for (Map.Entry<User , Connection> entry : connections.entrySet()) {
                 entry.getValue().sendTCP(new Message(CommandType.GAME_START ,  body));
             }
-
+            ServerHandler.getInstance(this).start();
         }
 
     }
