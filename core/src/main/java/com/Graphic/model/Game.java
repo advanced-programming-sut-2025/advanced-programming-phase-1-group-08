@@ -9,6 +9,7 @@ import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.SaveData.UserStorage;
+import com.esotericsoftware.kryonet.Connection;
 
 
 import java.io.IOException;
@@ -21,12 +22,10 @@ public class Game {
     public Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
     public Map<Set<User>, List<Trade>> trades = new HashMap<>();
     public ArrayList<HumanCommunications> friendships = new ArrayList<>();
-    public ServerHandler serverHandler;
+
 
 
     public Menu currentMenu;
-
-
 
 
     public Menu getCurrentMenu() {
@@ -48,20 +47,20 @@ public class Game {
         String hashPASS = PasswordHashUtil.hashPassword(pass);
 
         User newUser = new User(
-                username,
-                nickname,
-                email,
-                gender,
-                0,
-                100,
-                hashPASS,
-                secQ,
-                secA
+            username,
+            nickname,
+            email,
+            gender,
+            0,
+            100,
+            hashPASS,
+            secQ,
+            secA
         );
         System.out.println("hi-1");
-        App.users.add(newUser);
+        //App.users.add(newUser);
         System.out.println("hi-2");
-        App.currentUser = newUser;
+        //App.currentUser = newUser;
         System.out.println("hi-3");
 
         List<User> users = UserStorage.loadUsers();
@@ -80,7 +79,7 @@ public class Game {
     // بالایی ها همه باید اصلاح بشن
 
     private GameState gameState = new GameState();
-    private final List<PlayerHandler> Players = new ArrayList<>();
+    private final HashMap<User , Connection> connections = new HashMap<>();
     private final Map<String , Integer> lastSentIndex = new HashMap<>();
     private boolean gameStarted = false;
     private Queue<Message> diffQueue = new LinkedList<>();
@@ -90,35 +89,20 @@ public class Game {
         HashMap<String , Object> body = new HashMap<>();
         body.put("No Diff", "No Diff");
         noDiff = new Message(CommandType.NO_DIFF , body);
-        serverHandler = ServerHandler.getInstance();
     }
 
 
-    public synchronized void addPlayer (User u , Socket socket) throws IOException {
-        if (Players.size() >= 4) {
-            try {
-                PrintWriter out = new PrintWriter(socket.getOutputStream() , true);
-                out.println("Game is Full");
-            } catch (IOException e) {
+    public synchronized void addPlayer(User u , Connection connection) throws IOException {
 
-            }
-        }
-
-        PlayerHandler handler = new PlayerHandler(u , socket , this , Players.size() + 1);
-        Players.add(handler);
-        lastSentIndex.put(u.getUsername(), 0);
         gameState.getPlayers().add(u);
+        connections.put(u , connection);
 
-        // TODO اینو زحمتت کامل کن من نمیدونم چی میخواد
-        serverHandler.Players.add(u);
-        // TODO
-
-        if (Players.size() == 4 && !gameStarted) {
+        if (gameState.getPlayers().size() == 4 && !gameStarted) {
             gameStarted = true;
-            for (int i = 0 ; i < 4 ; i++) {
-                gameState.getPlayers().get(i).topLeftX = i % 2;
-                gameState.getPlayers().get(i).topLeftY = i / 2;
-                new Thread(Players.get(i)).start();
+            HashMap<String , Object> body = new HashMap<>();
+            body.put("Players" , gameState.getPlayers());
+            for (Map.Entry<User , Connection> entry : connections.entrySet()) {
+                entry.getValue().sendTCP(new Message(CommandType.GAME_START ,  body));
             }
 
         }
@@ -126,30 +110,32 @@ public class Game {
     }
 
 
-    public  Message getStateFromPlayer(User u) {
-
-        int lastSent = lastSentIndex.get(u.getUsername());
-
-        if (diffQueue.size() > lastSent) {
-            int idx = 0;
-            for (Message message : diffQueue) {
-                if (idx == lastSent) {
-                    lastSentIndex.put(u.getUsername(), lastSent + 1);
-                    return message;
-                }
-                idx ++;
-            }
-        }
-
-        return noDiff;
-
-    }
+//    public  Message getStateFromPlayer(User u) {
+//
+//        int lastSent = lastSentIndex.get(u.getUsername());
+//
+//        if (diffQueue.size() > lastSent) {
+//            System.out.println(u.getUsername() + "lastSent: " + lastSent + "Size: " + diffQueue.size());
+//            int idx = 0;
+//            for (Message message : diffQueue) {
+//                if (idx == lastSent) {
+//                    lastSentIndex.put(u.getUsername(), lastSent + 1);
+//                    return message;
+//                }
+//                idx ++;
+//            }
+//        }
+//
+//        return noDiff;
+//
+//    }
 
     public synchronized GameState getGameState() {
         return gameState;
     }
 
     public synchronized Queue<Message> getDiffQueue() {
+        System.out.println("a");
         return diffQueue;
     }
 }

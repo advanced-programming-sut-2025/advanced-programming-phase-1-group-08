@@ -1,5 +1,6 @@
 package com.Graphic.model.ClientServer;
 
+import com.Graphic.model.Enum.Menu;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -7,8 +8,10 @@ import com.Graphic.Main;
 import com.Graphic.model.User;
 
 import java.io.IOException;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 public class KryoNetClient {
@@ -17,6 +20,46 @@ public class KryoNetClient {
     private int port = 8080;
     private int timeoutMs = 5000;
     private volatile boolean connected = false;
+
+    public GameState getLocalGameState() {
+        return localGameState;
+    }
+
+    public void setLocalGameState(GameState localGameState) {
+        this.localGameState = localGameState;
+    }
+
+    private GameState localGameState;
+
+    private Menu currentMenu;
+
+    public Menu getCurrentMenu() {
+        return currentMenu;
+    }
+
+    public void setCurrentMenu(Menu currentMenu) {
+        this.currentMenu = currentMenu;
+    }
+
+    public BlockingQueue<Message> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(BlockingQueue<Message> requests) {
+        this.requests = requests;
+    }
+
+    private BlockingQueue<Message> requests = new LinkedBlockingQueue();
+
+    public User getPlayer() {
+        return Player;
+    }
+
+    public void setPlayer(User player) {
+        Player = player;
+    }
+
+    private User Player;
 
     // optional callback that your UI/game can set to handle incoming Message objects
     private Consumer<Message> messageHandler;
@@ -150,6 +193,10 @@ public class KryoNetClient {
 
     public String getHost() {
         return host;
+    }
+
+    public Client getClient() {
+        return client;
     }
 
     public int getPort() {

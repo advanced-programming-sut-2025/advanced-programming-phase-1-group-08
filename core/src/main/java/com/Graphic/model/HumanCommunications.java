@@ -1,5 +1,8 @@
 package com.Graphic.model;
 
+import com.Graphic.Main;
+import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.ItemType.MarketItemType;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.Places.MarketItem;
@@ -111,9 +114,9 @@ public class HumanCommunications {
     // LEVEL ZERO TASKS
     public Result talk(String text) {
 
-        User me = currentGame.currentPlayer;
+        User me = Main.getClient().getPlayer();
         User other;
-        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
+        if (player1.getUsername().equals(Main.getClient().getPlayer().getUsername()))
             other = player2;
         else
             other = player1;
@@ -123,10 +126,10 @@ public class HumanCommunications {
 //        }
 
         addXP(10);
-        if (currentGame.currentPlayer.getSpouse() != null)
-            if (currentGame.currentPlayer.getSpouse().equals(other)) {
-                currentGame.currentPlayer.increaseHealth(50);
-                currentGame.currentPlayer.getSpouse().increaseHealth(50);
+        if (Main.getClient().getPlayer().getSpouse() != null)
+            if (Main.getClient().getPlayer().getSpouse().equals(other)) {
+                Main.getClient().getPlayer().increaseHealth(50);
+                Main.getClient().getPlayer().getSpouse().increaseHealth(50);
             }
 
         updateLevel();
@@ -164,12 +167,12 @@ public class HumanCommunications {
     }
     public Result sendGifts(Items item, int amount) {
         User other;
-        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
+        if (player1.getUsername().equals(Main.getClient().getPlayer().getUsername()))
             other = player2;
         else
             other = player1;
 
-        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
+        Inventory myInventory = Main.getClient().getPlayer().getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
 
@@ -180,27 +183,37 @@ public class HumanCommunications {
 
 
         // minus mine
-        myInventory.Items.compute(item, (k,v) -> v - amount);
-        myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+        HashMap<String , Object> body = new HashMap();
+        body.put("Player", Main.getClient().getPlayer().getUsername());
+        body.put("Item", item);
+        body.put("amount", -amount);
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+//        myInventory.Items.compute(item, (k,v) -> v - amount);
+//        myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
 
-        if (otherInventory.Items.containsKey(item)) {
+//        if (otherInventory.Items.containsKey(item)) {
+//
+//            otherInventory.Items.compute(item, (k,v) -> v + amount);
+//            if (Main.getClient().getPlayer().getSpouse() != null)
+//                if (Main.getClient().getPlayer().getSpouse().equals(other)) {
+//                    Main.getClient().getPlayer().increaseHealth(50);
+//                    Main.getClient().getPlayer().getSpouse().increaseHealth(50);
+//                }
+//            return new Result(true, "You Sent it to " + other.getNickname());
+//
+//        }
+//
+//        otherInventory.Items.put(item, amount);
+        HashMap<String , Object> body2 = new HashMap();
+        body2.put("Player", other.getUsername());
+        body2.put("Item", item);
+        body2.put("amount", amount);
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body2));
 
-            otherInventory.Items.compute(item, (k,v) -> v + amount);
-            if (currentGame.currentPlayer.getSpouse() != null)
-                if (currentGame.currentPlayer.getSpouse().equals(other)) {
-                    currentGame.currentPlayer.increaseHealth(50);
-                    currentGame.currentPlayer.getSpouse().increaseHealth(50);
-                }
-            return new Result(true, "You Sent it to " + other.getNickname());
-
-        }
-
-        otherInventory.Items.put(item, amount);
-
-        if (currentGame.currentPlayer.getSpouse() != null)
-            if (currentGame.currentPlayer.getSpouse().equals(other)) {
-                currentGame.currentPlayer.increaseHealth(50);
-                currentGame.currentPlayer.getSpouse().increaseHealth(50);
+        if (Main.getClient().getPlayer().getSpouse() != null)
+            if (Main.getClient().getPlayer().getSpouse().equals(other)) {
+                Main.getClient().getPlayer().increaseHealth(50);
+                Main.getClient().getPlayer().getSpouse().increaseHealth(50);
             }
         // اکس پی ها جای دیگه اد شده
 
@@ -211,7 +224,7 @@ public class HumanCommunications {
     public Result Hug() {
 
         User other;
-        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
+        if (player1.getUsername().equals(Main.getClient().getPlayer().getUsername()))
             other = player2;
         else
             other = player1;
@@ -224,22 +237,22 @@ public class HumanCommunications {
 
 
         addXP(60);
-        if (currentGame.currentPlayer.getSpouse() != null)
-            if (currentGame.currentPlayer.getSpouse().equals(other)) {
-                currentGame.currentPlayer.increaseHealth(50);
-                currentGame.currentPlayer.getSpouse().increaseHealth(50);
+        if (Main.getClient().getPlayer().getSpouse() != null)
+            if (Main.getClient().getPlayer().getSpouse().equals(other)) {
+                Main.getClient().getPlayer().increaseHealth(50);
+                Main.getClient().getPlayer().getSpouse().increaseHealth(50);
             }
         updateLevel(); // to get Updated
         return new Result(true, "You Hugged " + other.getNickname() + ".");
     }
     public Result buyFlowers() {
         User other;
-        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
+        if (player1.getUsername().equals(Main.getClient().getPlayer().getUsername()))
             other = player2;
         else
             other = player1;
 
-        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
+        Inventory myInventory = Main.getClient().getPlayer().getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
         if (getLevel() < 2) return new Result(false, "You can't Buy Flower in your Current " + "Friendship Level" + ".");
@@ -248,8 +261,13 @@ public class HumanCommunications {
 
         MarketItem marketItem = new MarketItem(MarketItemType.Bouquet);
         if (myInventory.Items.containsKey(marketItem)) {
-            myInventory.Items.compute(marketItem , (k,v) -> v-1);
-            myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+//            myInventory.Items.compute(marketItem , (k,v) -> v-1);
+//            myInventory.Items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
+            HashMap<String , Object> body = new HashMap();
+            body.put("Player", Main.getClient().getPlayer().getUsername());
+            body.put("Item", marketItem);
+            body.put("amount", -myInventory.Items.get(marketItem));
+            Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
         }
         else {
             return new Result(false, "You Don't Have Bouquet to Give!");
@@ -257,24 +275,29 @@ public class HumanCommunications {
 
 
 
-        for (Map.Entry <Items , Integer> entry : otherInventory.Items.entrySet() ) {
-            if (entry instanceof MarketItem) {
-                if (((MarketItem)entry).getType().equals(MarketItemType.Bouquet)) {
-                    otherInventory.Items.put(entry.getKey(), entry.getValue() + 1);
-                    return new Result(true, "You Gave Bouquet to " + other.getNickname());
-                }
-            }
-        }
-
-        otherInventory.Items.put(new MarketItem(MarketItemType.Bouquet), 1);
+//        for (Map.Entry <Items , Integer> entry : otherInventory.Items.entrySet() ) {
+//            if (entry instanceof MarketItem) {
+//                if (((MarketItem)entry).getType().equals(MarketItemType.Bouquet)) {
+//                    otherInventory.Items.put(entry.getKey(), entry.getValue() + 1);
+//                    return new Result(true, "You Gave Bouquet to " + other.getNickname());
+//                }
+//            }
+//        }
+//
+//        otherInventory.Items.put(new MarketItem(MarketItemType.Bouquet), 1);
+        HashMap<String , Object> body2 = new HashMap();
+        body2.put("Player", other.getUsername());
+        body2.put("Item", marketItem);
+        body2.put("amount", myInventory.Items.get(marketItem));
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body2));
 
         BOUQUETBought = true;
         updateLevel();
 
-        if (currentGame.currentPlayer.getSpouse() != null)
-            if (currentGame.currentPlayer.getSpouse().equals(other)) {
-                currentGame.currentPlayer.increaseHealth(50);
-                currentGame.currentPlayer.getSpouse().increaseHealth(50);
+        if (Main.getClient().getPlayer().getSpouse() != null)
+            if (Main.getClient().getPlayer().getSpouse().equals(other)) {
+                Main.getClient().getPlayer().increaseHealth(50);
+                Main.getClient().getPlayer().getSpouse().increaseHealth(50);
             }
 
         return new Result(true, "You Gave Bouquet to " + other.getNickname());
@@ -283,17 +306,17 @@ public class HumanCommunications {
     // LEVEL THREE TASKS
     public Result propose() {
         User other;
-        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
+        if (player1.getUsername().equals(Main.getClient().getPlayer().getUsername()))
             other = player2;
         else
             other = player1;
 
-        Inventory myInventory = currentGame.currentPlayer.getBackPack().inventory;
+        Inventory myInventory = Main.getClient().getPlayer().getBackPack().inventory;
         Inventory otherInventory = other.getBackPack().inventory;
 
-        if (currentGame.currentPlayer.getGender().equalsIgnoreCase("female"))
+        if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("female"))
             return new Result(false, "Proposal is a Guy job!");
-        if (currentGame.currentPlayer.getGender().equalsIgnoreCase(other.getGender()))
+        if (Main.getClient().getPlayer().getGender().equalsIgnoreCase(other.getGender()))
             return new Result(false, "No Gay Marriage in Islamic Village!");
 //        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
 //            return new Result(false, PURPLE+"Get Closer Honey!"+RESET);
@@ -313,7 +336,7 @@ public class HumanCommunications {
             return new Result(false, "You Don't Have Wedding Ring to Propose!");
         }
 
-        Marriage.sendProposal(currentGame.currentPlayer, other);
+        Marriage.sendProposal(Main.getClient().getPlayer(), other);
         return new Result(true, GREEN+"You Proposed Successfully!"+RESET);
     }
 
@@ -326,13 +349,13 @@ public class HumanCommunications {
         }
 
         User man;
-        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
+        if (player1.getUsername().equals(Main.getClient().getPlayer().getUsername()))
             man = player2;
         else
             man = player1;
 
         Inventory manInventory = man.getBackPack().inventory;
-        Inventory wifeInventory = currentGame.currentPlayer.getBackPack().inventory;
+        Inventory wifeInventory = Main.getClient().getPlayer().getBackPack().inventory;
 
         MarketItem marketItem = new MarketItem(MarketItemType.WeddingRing);
         if (manInventory.Items.containsKey(marketItem)) {
@@ -344,15 +367,15 @@ public class HumanCommunications {
         }
         wifeInventory.Items.put(new MarketItem(MarketItemType.WeddingRing), 1);
 
-        currentGame.currentPlayer.setSpouse(man);
-        man.setSpouse(currentGame.currentPlayer);
+        Main.getClient().getPlayer().setSpouse(man);
+        man.setSpouse(Main.getClient().getPlayer());
 
 
         FriendshipLevel = 4;
         setXP(0);
-        int totalMoney = currentGame.currentPlayer.getMoney() + man.getMoney();
-        currentGame.currentPlayer.setMoney(-currentGame.currentPlayer.getMoney()); // اول صفرش کنم
-        currentGame.currentPlayer.setMoney(totalMoney/2);
+        int totalMoney = Main.getClient().getPlayer().getMoney() + man.getMoney();
+        Main.getClient().getPlayer().setMoney(-Main.getClient().getPlayer().getMoney()); // اول صفرش کنم
+        Main.getClient().getPlayer().setMoney(totalMoney/2);
         man.setMoney(-man.getMoney()); // اول صفرش کنم
         man.setMoney(totalMoney/2);
 

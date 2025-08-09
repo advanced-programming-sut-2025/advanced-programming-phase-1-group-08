@@ -29,7 +29,7 @@ public class ServerHandler extends Thread {
     private final int hourSecond = 120000;
 
     public long startTime;
-    public long lastTime;
+    public static long lastTime;
 
     public DateHour currentDateHour;
 

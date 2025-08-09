@@ -5,22 +5,24 @@ import com.Graphic.model.Enum.Commands.CommandType;
 import java.util.HashMap;
 
 public class Message {
+    private CommandType commandType;
+    private HashMap<String , Object> body;
 
-    public CommandType commandType;
-    public HashMap<String, Object> body = new HashMap<>();
-
-    // empty constructor لازم Kryo
     public Message() {}
 
-    public Message(CommandType commandType) {
+    public Message(CommandType commandType, HashMap<String , Object> body) {
         this.commandType = commandType;
+        this.body = body;
     }
 
-    public void put(String key, Object value) {
-        body.put(key, value);
+    public CommandType getCommandType() {
+        return commandType;
+    }
+    public <T> T getFromBody(String fieldName) {
+        return (T) body.get(fieldName);
+    }
+    public int getIntFromBody(String fieldName) {
+        return (int) ((double) ((Double) body.get(fieldName.trim())));
     }
 
-    public <T> T get(String key) {
-        return (T) body.get(key);
-    }
 }
