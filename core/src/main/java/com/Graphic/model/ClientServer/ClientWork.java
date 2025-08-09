@@ -19,6 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.AnswerShepherding;
+import static com.Graphic.model.ClientServer.ClientConnectionController.sendToAll;
 import static com.Graphic.model.Enum.Commands.CommandType.CHANGE_INVENTORY;
 
 public class ClientWork  {
@@ -63,10 +64,9 @@ public class ClientWork  {
     public void handleMessage(Message message) {
         switch (message.getCommandType()) {
             case FARM -> {
-
                 game.getDiffQueue().add(createInitialFarm(message.getIntFromBody("Index") , Player , game.getGameState()));
                 localGameState.incrementNumberOfMaps();
-                if (game.getGameState().getNumberOfMaps() == 4) {
+                if (localGameState.getNumberOfMaps() == 4) {
                     game.getDiffQueue().add(build(game.getGameState()));
                 }
                 break;
