@@ -21,6 +21,7 @@ public class ClientWorkController {
         return instance;
     }
 
+                                        // Erfan
     public void PassedTime (int hour, int day) {
         GameControllerLogic.passedOfTime(hour, day);
     }

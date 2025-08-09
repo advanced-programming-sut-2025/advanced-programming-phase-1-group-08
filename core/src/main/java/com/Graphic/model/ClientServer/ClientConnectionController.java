@@ -42,7 +42,7 @@ public class ClientConnectionController {
     }
 
 
-
+                                        // Erfan
     public void sendPassedTimeMessage (int hour, int day, Game game) throws IOException {
 
         HashMap<String , Object> PassedTime = new HashMap<>();
