@@ -75,7 +75,7 @@ public class Game {
     // بالایی ها همه باید اصلاح بشن
 
     private GameState gameState = new GameState();
-    private final HashMap<User , Connection> connections = new HashMap<>();
+    public final HashMap<User , Connection> connections = new HashMap<>();
     private final Map<String , Integer> lastSentIndex = new HashMap<>();
     private boolean gameStarted = false;
     private Queue<Message> diffQueue = new LinkedList<>();
