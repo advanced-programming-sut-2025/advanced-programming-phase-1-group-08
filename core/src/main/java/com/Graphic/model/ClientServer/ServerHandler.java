@@ -55,13 +55,17 @@ public class ServerHandler extends Thread {
 
         while (true) {
             try {
-                if (TimeUtils.millis() - lastTime > hourSecond)
-                    passedOfTime(0, 1);
+                ServerRender();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void ServerRender() throws IOException {
+        if (TimeUtils.millis() - lastTime > hourSecond)
+            passedOfTime(0, 1);
     }
 
     private void sendPassedTimeMessage (int hour, int day) throws IOException {
