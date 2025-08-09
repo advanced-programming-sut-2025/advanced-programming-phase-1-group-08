@@ -17,6 +17,10 @@ public class Message {
         this.body = body;
     }
 
+    public HashMap<String , Object> getBody() {
+        return body;
+    }
+
     public CommandType getCommandType() {
         return commandType;
     }

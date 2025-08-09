@@ -3,25 +3,45 @@ package com.Graphic.model.ClientServer;
 import com.Graphic.Controller.Menu.LoginController;
 import com.Graphic.Controller.Menu.RegisterController;
 import com.Graphic.Main;
+import com.Graphic.model.App;
 import com.Graphic.model.Enum.Commands.CommandType;
+import com.Graphic.model.Game;
+import com.Graphic.model.User;
 import com.badlogic.gdx.Gdx;
+import com.esotericsoftware.kryonet.Connection;
+import com.google.gson.Gson;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import com.Graphic.model.ClientServer.ClientConnectionController.*;
+
+import com.esotericsoftware.kryonet.Connection.*;
+
+import static com.Graphic.model.ClientServer.ClientConnectionController.*;
 
 public class ClientConnectionThread extends Thread {
     //این کلاس برای ارتباط بین سرور و کلاینت قبل از شروع بازی است
     //این ترد در طرف سرور هست
-    private Socket clientSocket;
-    private DataInputStream in;
-    private DataOutputStream out;
+    //private Socket clientSocket;
+    //private DataInputStream in;
+    //private DataOutputStream out;
     private LoginController controller;
     private RegisterController registerController;
+    private Connection connection;
+    private kryoNetServer server;
+    private final BlockingQueue<Message> messageQueue = new LinkedBlockingQueue<>();
+    private Game game;
 
-    public ClientConnectionThread(Socket clientSocket) throws IOException {
-        this.clientSocket = clientSocket;
-        in = new DataInputStream(clientSocket.getInputStream());
-        out = new DataOutputStream(clientSocket.getOutputStream());
+
+    public ClientConnectionThread(Connection connection) throws IOException {
+//        this.clientSocket = clientSocket;
+//        in = new DataInputStream(clientSocket.getInputStream());
+//        out = new DataOutputStream(clientSocket.getOutputStream());
+        this.connection = connection;
         controller = new LoginController();
         registerController = new RegisterController();
     }
@@ -32,41 +52,99 @@ public class ClientConnectionThread extends Thread {
         System.out.println("Client connected");
         while (true) {
             try {
-                String line = in.readUTF();
-                handleMessage(JSONUtils.fromJson(line));
-                if (JSONUtils.fromJson(line).getCommandType() == CommandType.GAME_START) {
-                    break;
-                }
+                Message message = messageQueue.take();
+                handleMessage(message);
             }
             catch (Exception e) {
                 e.printStackTrace();
                 break;
             }
         }
+        System.out.println("Client disconnected");
+    }
+
+    public void enqueueMessage(Message message) {
+        messageQueue.offer(message);
     }
 
     public synchronized void handleMessage(Message message) throws IOException {
         switch (message.getCommandType()) {
+            case FARM -> {
+                createFarm(message , game);
+            }
             case LOGIN -> {
                 sendMessage(controller.LoginRes(message));
             }
             case SIGN_UP -> {
-                System.out.println("SERVER");
                 sendMessage(registerController.attemptRegistration(message));
             }
             case GENERATE_RANDOM_PASS -> {
                 sendMessage(RegisterController.generateRandomPass());
             }
-            case NEW_GAME -> {}
-            case JOIN_GAME -> {}
+            case NEW_GAME -> {
+                Game result = newGame(message , connection);
+                if (result != null) {
+                    game = result;
+                }
+            }
+            case JOIN_GAME -> {
+                Game result = joinGame(message , connection);
+                if (result != null) {
+                    game = result;
+                }
+            }
+            case MOVE_IN_FARM -> {
+                moveInFarm(message, game);
+            }
+            case ENTER_THE_MARKET -> {
+                answerEnterTheMarket(message , game);
+            }
+            case MOVE_IN_MARKET -> {
+                moveInMarket(message, game);
+            }
+            case BUY -> {
+                sendMessage(Buy(message , game));
+            }
+            case BUY_BACKPACK -> {
+
+            }
+            case PLACE_CRAFT_SHIPPING_BIN -> {
+                placeCraftOrShippingBin(message , game);
+            }
+            case BUY_BARN_CAGE -> {
+                for (Message message1 : BuyBarnCage(message , game)) {
+                    sendMessage(message1);
+                }
+            }
+            case BUY_ANIMAL -> {
+                buyAnimal(message , game);
+            }
+            case SELL_ANIMAL -> {
+                sellAnimal(message , game);
+            }
+            case FEED_HAY -> {
+                sendMessage(AnswerFeedHay(message , game));
+            }
+            case SHEPHERD_ANIMAL -> {
+                answerShepherding(message , game);
+            }
+            case PET -> {
+                Pet(message);
+            }
+            case COLLECT_PRODUCT -> {
+                sendMessage(collectProduct(message));
+            }
+            case CHANGE_INVENTORY -> {
+                sendMessage(changeInventory(message , game));
+            }
             case LOADED_GAME -> {}
+
 
         }
     }
 
     public synchronized void sendMessage(Message message) throws IOException {
-        out.writeUTF(JSONUtils.toJson(message));
-        out.flush();
+        connection.sendTCP(message);
         System.out.println(JSONUtils.toJson(message));
     }
 }

@@ -58,6 +58,7 @@ import java.util.*;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +79,7 @@ public class InputGameController {
 
     private static final Logger log = LoggerFactory.getLogger(InputGameController.class);
     public static InputGameController inputGameController;
+    Gson gson = new Gson();
 
     private InputGameController() {
 
@@ -136,12 +138,15 @@ public class InputGameController {
     public void updateMove() {
         float x;
         float y;
+        float copy = Main.getClient(null).getPlayer().getTimer();
         float time = Main.getClient(null).getPlayer().getTimer() + Gdx.graphics.getDeltaTime();
+
         if (Gdx.input.isKeyPressed(Input.Keys.UP) ) {
+            System.out.println("Up");
             x = Main.getClient(null).getPlayer().getPositionX();
-            y = Main.getClient(null).getPlayer().getPositionY() - 5 * Gdx.graphics.getDeltaTime();
+            y = Main.getClient(null).getPlayer().getPositionY() - 50 * Gdx.graphics.getDeltaTime();
             HashMap<String , Object> body = new HashMap<>();
-            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Player" , Main.getClient(null).getPlayer().getUsername());
             body.put("Direction" , Direction.Up);
             body.put("X" , x);
             body.put("Y" , y);
@@ -156,10 +161,11 @@ public class InputGameController {
 //            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) ) {
+            System.out.println("Down");
             x = Main.getClient(null).getPlayer().getPositionX();
-            y = Main.getClient(null).getPlayer().getPositionY() + 5 * Gdx.graphics.getDeltaTime();
+            y = Main.getClient(null).getPlayer().getPositionY() + 50 * Gdx.graphics.getDeltaTime();
             HashMap<String , Object> body = new HashMap<>();
-            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Player" , Main.getClient(null).getPlayer().getUsername());
             body.put("Direction" , Direction.Down);
             body.put("X" , x);
             body.put("Y" , y);
@@ -174,10 +180,10 @@ public class InputGameController {
 //            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) ) {
-            x = Main.getClient(null).getPlayer().getPositionX() - 5 * Gdx.graphics.getDeltaTime();
+            x = Main.getClient(null).getPlayer().getPositionX() - 50 * Gdx.graphics.getDeltaTime();
             y = Main.getClient(null).getPlayer().getPositionY();
             HashMap<String , Object> body = new HashMap<>();
-            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Player" , Main.getClient(null).getPlayer().getUsername());
             body.put("Direction" , Direction.Left);
             body.put("X" , x);
             body.put("Y" , y);
@@ -192,10 +198,10 @@ public class InputGameController {
 //            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) ) {
-            x = Main.getClient(null).getPlayer().getPositionX() + 5 * Gdx.graphics.getDeltaTime();
+            x = Main.getClient(null).getPlayer().getPositionX() + 50 * Gdx.graphics.getDeltaTime();
             y = Main.getClient(null).getPlayer().getPositionY();
             HashMap<String , Object> body = new HashMap<>();
-            body.put("Player" , Main.getClient(null).getPlayer());
+            body.put("Player" , Main.getClient(null).getPlayer().getUsername());
             body.put("Direction" , Direction.Right);
             body.put("X" , x);
             body.put("Y" , y);
@@ -210,7 +216,7 @@ public class InputGameController {
 //            moveAnimation();
         }
 
-        Main.getClient(null).getPlayer().setTimer(Main.getClient(null).getPlayer().getTimer() - Gdx.graphics.getDeltaTime());
+        Main.getClient(null).getPlayer().setTimer(copy);
 
 //        else {
 //            Main.getClient(null).getPlayer().setMoving(false);
@@ -218,6 +224,13 @@ public class InputGameController {
 //            Main.getClient(null).getPlayer().getSprite().setRegion(Main.getClient(null).getPlayer().getAnimation().getKeyFrame(0));
 //
 //        }
+    }
+
+    public void setPlayerPosition() {
+        for (User user : Main.getClient(null).getLocalGameState().getPlayers()) {
+            user.setPositionX(TEXTURE_SIZE * (user.getFarm().getHome().getTopLeftX() + user.getFarm().getHome().getWidth() / 2));
+            user.setPositionY(TEXTURE_SIZE * (90 - user.getFarm().getHome().getTopLeftY() - user.getFarm().getHome().getLength()));
+        }
     }
 
     public static void moveAnimation() {
@@ -235,16 +248,16 @@ public class InputGameController {
     }
 
     public Message checkWalking(Message message , Game game) {
-        User Player = message.getFromBody("Player");
-        Direction Direction = message.getFromBody("Direction");
-        float x = message.getFromBody("X");
-        float y = message.getFromBody("Y");
-        float Time = message.getFromBody("Time");
+        String Player = gson.fromJson(gson.toJson(message.getBody().get("Player")) , String.class);
+        Direction Direction = gson.fromJson(gson.toJson(message.getBody().get("Direction")) , com.Graphic.model.Enum.Direction.class);
+        float x = gson.fromJson(gson.toJson(message.getBody().get("X")) , float.class);
+        float y = gson.fromJson(gson.toJson(message.getBody().get("Y")) , float.class);
+        float Time = gson.fromJson(gson.toJson(message.getBody().get("Time")) , float.class);
         HashMap<String , Object> body = new HashMap<>();
 
         try {
 
-            if (getTileByCoordinates((int) x, (int)y , game.getGameState()).getGameObject() instanceof Walkable ||
+            if (getTileByCoordinates((int) (x / TEXTURE_SIZE), 90 - (int)(y / TEXTURE_SIZE) , game.getGameState()).getGameObject() instanceof Walkable ||
                 getTileByCoordinates((int) x, (int)y , game.getGameState()).getGameObject() instanceof door) {
 
                 body.put("Player" , Player);
@@ -272,29 +285,39 @@ public class InputGameController {
 
     public void Move(Message message , GameState gameState) {
         if (message.getCommandType() == CommandType.CAN_MOVE) {
+            System.out.println("walk");
+            String user = gson.fromJson(gson.toJson(message.getBody().get("Player")) , String.class);
+            Direction Direction = gson.fromJson(gson.toJson(message.getBody().get("Direction")) , com.Graphic.model.Enum.Direction.class);
+            float x = gson.fromJson(gson.toJson(message.getBody().get("X")) , float.class);
+            float y = gson.fromJson(gson.toJson(message.getBody().get("Y")) , float.class);
+            float Time = gson.fromJson(gson.toJson(message.getBody().get("Time")) , float.class);
             for (User Player : gameState.getPlayers()) {
-                if (Player.equals(message.getFromBody("Player"))) {
-                    Player.setPositionX(message.getFromBody("X"));
-                    Player.setPositionY(message.getFromBody("Y"));
-                    Player.setDirection(message.getFromBody("Direction"));
-                    if ((float) message.getFromBody("Time") >= 0.1f) {
+                if (user.trim().equals(Player.getUsername().trim())) {
+                    Player.setPositionX(x);
+                    Player.setPositionY(y);
+                    Player.setDirection(Direction);
+                    if (Time >= 0.1f) {
                         Player.setTimer(0.0f);
                     }
                     else {
-                        Player.setTimer(message.getFromBody("Time"));
+                        Player.setTimer(Time);
                     }
                 }
             }
         }
         if (message.getCommandType() == CommandType.CAN_NOT_MOVE) {
+            System.out.println("can't walk");
+            String user = gson.fromJson(gson.toJson(message.getBody().get("Player")) , String.class);
+            Direction Direction = gson.fromJson(gson.toJson(message.getBody().get("Direction")) , com.Graphic.model.Enum.Direction.class);
+            float Time = gson.fromJson(gson.toJson(message.getBody().get("Time")) , float.class);
             for (User Player : gameState.getPlayers()) {
-                if (Player.equals(message.getFromBody("Player"))) {
-                    Player.setDirection(message.getFromBody("Direction"));
-                    if ((float) message.getFromBody("Time") >= 0.1f) {
+                if (Player.getUsername().trim().equals(user.trim())) {
+                    Player.setDirection(Direction);
+                    if (Time >= 0.1f) {
                         Player.setTimer(0.0f);
                     }
                     else {
-                        Player.setTimer(message.getFromBody("Time"));
+                        Player.setTimer(Time);
                     }
                 }
             }
@@ -315,6 +338,7 @@ public class InputGameController {
         TextButton button = new TextButton("",skin);
         Label label = new Label("Submit" , skin);
         button.add(label).center();
+        table.add(button);
         GameMenu.getInstance().getStage().addActor(table);
         button.addListener(new ChangeListener() {
             @Override
@@ -330,6 +354,7 @@ public class InputGameController {
                             Main.getClient(null).getRequests().add(new Message(CommandType.FARM , body));
                             table.remove();
                         }
+                        result = null;
 
                     } catch (Exception e) {
 
@@ -346,98 +371,7 @@ public class InputGameController {
     }
 
 
-//    public Result addDollar(int amount) {
-//        c.increaseMoney(amount);
-//        return new Result(true , "your money cheated successfully");
-//    }
-//    public Result setDollar(int amount) {
-//        currentGame.currentPlayer.increaseMoney(amount - currentGame.currentPlayer.getMoney());
-//        return new Result(true , "your money cheated successfully");
-//    }
-//    public Result goToMarketMenu () {
-//        if (MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY()) == null) {
-//            return new Result(false , "you are not in market");
-//        }
-//        currentMenu = com.Graphic.model.Enum.Menu.MarketMenu;
-//        return new Result(true , "Welcome to market menu");
-//    }
-//    public Result goToHomeMenu() {
-//        if ( !currentGame.currentPlayer.getFarm().isInHome(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY())) {
-//            return new Result(false , RED+"You're Not in Your Home!"+RESET);
-//        }
-//        currentMenu = com.Graphic.model.Enum.Menu.HomeMenu;
-//        return new Result(true , BLUE+"Welcome to home menu"+RESET);
-//    }
 
-//    public Result walk(int goalX, int goalY) {
-//        int startX = currentGame.currentPlayer.getPositionX();
-//        int startY = currentGame.currentPlayer.getPositionY();
-//        Tile endTile = getTileByCoordinates(goalX, goalY);
-//
-//        if (endTile==null) {
-//            return new Result(false,"you can't go to this coordinate");
-//        }
-//
-//        PriorityQueue<State> queue = new PriorityQueue<>(Comparator.comparingInt(s -> s.Energy));
-//        Set<State> visited = new HashSet<>();
-//
-//
-//        if (checkConditionsForWalk(goalX, goalY) !=null) {
-//            return checkConditionsForWalk(goalX, goalY);
-//        }
-//
-//        for (int dir =1 ; dir<9 ; dir++) {
-//            Tile tile = getTileByDir(dir);
-//            if (tile == null ) {
-//                continue;
-//            }
-//            if (checkConditionsForWalk(tile.getX() , tile.getY()) ==null) {
-//                State state=new State(startX , startY , -1, 0);
-//                queue.add(state);
-//            }
-//        }
-//
-//        int [] dirx={0,0,1,1,1,-1,-1,-1};
-//        int [] diry={1,-1,0,1,-1,0,1,-1};
-//
-//        while (!queue.isEmpty()) {
-//            State current = queue.poll();
-//            if (current.x == goalX && current.y == goalY) {
-//                if (currentGame.currentPlayer.isHealthUnlimited()){
-//                    currentGame.currentPlayer.setPositionX(goalX);
-//                    currentGame.currentPlayer.setPositionY(goalY);
-//                    return new Result(true,"now you are in "+goalX+","+goalY);
-//                }
-//                if (currentGame.currentPlayer.getHealth() >= current.Energy ) {
-//                    currentGame.currentPlayer.increaseHealth(- current.Energy);
-//                    currentGame.currentPlayer.setPositionX(goalX);
-//                    currentGame.currentPlayer.setPositionY(goalY);
-//                    return new Result(true, "you are now in " + goalX + "," + goalY);
-//                }
-//                return new Result(false , "your energy is not enough for go to this tile");
-//            }
-//            if (visited.contains(current)) {
-//                continue;
-//            }
-//            visited.add(current);
-//            for (int i=0 ; i<8 ; i++) {
-//                int x=dirx[i];
-//                int y=diry[i];
-//                if (checkConditionsForWalk(x + current.x,y + current.y) !=null) {
-//                    continue;
-//                }
-//                int turnCost= (i + 1 == current.direction || current.direction== - 1) ? 1:10;
-//                int totalEnergy=current.Energy + turnCost;
-//                queue.add(new State(x+current.x , y+current.y , i+1 , totalEnergy));
-//            }
-//        }
-//
-//        return new Result(false , "No way to this coordinate");
-//    }
-//    public Result cheatFishingAbility(int amount) {
-//        currentGame.currentPlayer.increaseFishingAbility(amount);
-//        return new Result(true , "you cheated fishing successfully");
-//    }
     public Result addItem(String name ,int amount) {
 
 //        Inventory inventory = currentGame.currentPlayer.getBackPack().inventory;
@@ -526,31 +460,31 @@ public class InputGameController {
         camera.position.set(Main.getClient(null).getPlayer().getPositionX() , Main.getClient(null).getPlayer().getPositionY() , 0f);
         camera.update();
 
-        for (int i =0 ; i< 90 ; i++)
-            for (int j =0 ; j< 90 ; j++) {
+        for (int i =0 ; i< 90 ; i++) {
+            for (int j = 0; j < 90; j++) {
                 try {
 
-                    Tile tile = getTileByCoordinates(i, j , gameMenu.gameState);
-                    GameObject gameObject = tile.getGameObject();
 
-                    Main.getBatch().draw(TextureManager.get("Places/Walkable.png") ,
-                        TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
+                    Main.getBatch().draw(TextureManager.get("Places/Walkable.png"),
+                        TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE, TEXTURE_SIZE);
 
-                    if (gameObject instanceof UnWalkable) {
+                    if (getTileByCoordinates(i, j, gameMenu.gameState).getGameObject() instanceof UnWalkable) {
                         Main.getBatch().draw(TextureManager.get("Tree/unWalkable6.png"),
-                            TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
+                            TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE, TEXTURE_SIZE);
                     }
 
                     Main.getBatch().draw(
                         (TextureManager.get(getTileByCoordinates(i, j, gameMenu.gameState).getGameObject().getIcon())),
-                        TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE* gameObject.getTextureWidth(), TEXTURE_SIZE * gameObject.getTextureHeight());
+                        TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j),
+                        TEXTURE_SIZE * getTileByCoordinates(i, j, gameMenu.gameState).getGameObject().getTextureWidth(),
+                        TEXTURE_SIZE * getTileByCoordinates(i, j, gameMenu.gameState).getGameObject().getTextureHeight());
 
 
-
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
+                    System.out.println(getTileByCoordinates(i , j , gameMenu.gameState).getGameObject().getIcon());
                 }
             }
+        }
 
         for (User player : gameMenu.gameState.getPlayers()) {
 
@@ -1038,10 +972,11 @@ public class InputGameController {
         Set<Tile> tiles = new HashSet<>();
         for (int i = 0; i < 4; i++) {
             if (checkTileForAnimalWalking(animal.getPositionX() + x[i] , animal.getPositionY() + y[i] )) {
-                queue.add(getTileByCoordinates(animal.getPositionX() + x[i] , animal.getPositionY() + y[i]));
+                queue.add(getTileByCoordinates(animal.getPositionX() + x[i] , animal.getPositionY() + y[i] ,
+                    Main.getClient(null).getLocalGameState()));
             }
         }
-        tiles.add(getTileByCoordinates(animal.getPositionX() , animal.getPositionY() ));
+        tiles.add(getTileByCoordinates(animal.getPositionX() , animal.getPositionY() , Main.getClient(null).getLocalGameState() ));
 
         HashMap<Tile , Tile> cameFrom = new HashMap<>();
 
@@ -1062,13 +997,13 @@ public class InputGameController {
                 if (! checkTileForAnimalWalking(tile.getX() + x[i] , tile.getY() + y[i] ) ) {
                     continue;
                 }
-                if (getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i]) == null) {
+                if (getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient(null).getLocalGameState()) == null) {
                     continue;
                 }
-                if (tiles.contains(getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i]))) {
+                if (tiles.contains(getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient(null).getLocalGameState()))) {
                     continue;
                 }
-                Tile next = getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i]);
+                Tile next = getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient(null).getLocalGameState());
                 cameFrom.put(next, tile);
                 queue.add(next);
             }
@@ -1076,28 +1011,6 @@ public class InputGameController {
         return null;
     }
 
-    public Result eatFiberByAnimal(Animal animal) {
-        int [] x = {1,1,1,0,0,-1,-1,-1};
-        int [] y = {1,0,-1,1,-1,-1,0,1};
-
-        for (int i = 0; i < 8; i++) {
-            Tile tile = getTileByCoordinates(animal.getPositionX() + x[i] , animal.getPositionY() + y[i]);
-            if (tile == null) {
-                continue;
-            }
-            if (tile.getGameObject() instanceof Walkable) {
-                if (((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Fiber") ||
-                    ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Grass")) {
-                    tile.setGameObject(new Walkable());
-                    animal.setFeedToday(true);
-                }
-            }
-        }
-        if (animal.isFeedToday()) {
-            return new Result(true , BLUE+animal.getName() + " is fed successfully"+RESET);
-        }
-        return new Result(true , RED+animal.getName() + " Shepherd successfully"+RESET);
-    }
 
     public Result checkShepherdAnimals(String X, String Y , Animal animal) {
         int goalX = 0;
@@ -1155,22 +1068,7 @@ public class InputGameController {
         return new Result(false ,"You don't have Hay in your inventory!");
     }
 
-    public Message AnswerFeedHay(Message message , Game game) {
-        User Player = message.getFromBody("Player");
-        Animal Animal = message.getFromBody("Animal");
-        MarketItem marketItem = message.getFromBody("Hay");
-        for (User user : game.getGameState().getPlayers()) {
-            if (user.getUsername().trim().equals(Player.getUsername().trim())) {
-                user.getBackPack().inventory.Items.compute(marketItem , (k,v) -> v-1);
-                user.getBackPack().inventory.Items.entrySet().removeIf(entry -> entry.getValue() == 0);
-            }
-        }
-        Animal.setFeedToday(true);
-        HashMap<String , Object> body = new HashMap<>();
-        body.put("Animal", Animal);
-        body.put("Hay" , marketItem);
-        return new Message(CommandType.FEED_HAY , body);
-    }
+
 
     public void receiveFeedHay(Message message) {
         Animal animal = message.getFromBody("Animal");
@@ -1285,38 +1183,6 @@ public class InputGameController {
         Main.getClient(null).getRequests().add(new Message(CommandType.SELL_ANIMAL , sellAnimals));
     }
 
-    public void AnswerRequestAnimal(Message message , Game game) {
-        User player = message.getFromBody("Player");
-        Animal animal = message.getFromBody("Animal");
-        HashMap<String , Object> changeMoney = new HashMap<>();
-        double x = animal.getFriendShip()/1000 + 0.3;
-        changeMoney.put("Money" , (int) (animal.getType().getPrice() * x));
-        game.getDiffQueue().add(new Message(CommandType.CHANGE_MONEY , changeMoney));
-        BarnOrCage current=null;
-
-        for (User user : game.getGameState().getPlayers()) {
-            if (user.getUsername().trim().equals(player.getUsername().trim())) {
-                for (BarnOrCage barnOrCage : user.BarnOrCages) {
-                    for (Animal animal1 : barnOrCage.animals) {
-                        if (animal1.equals(animal)) {
-                            barnOrCage.animals.remove(animal1);
-                            current = barnOrCage;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        int index=0;
-        for (Animal animal1 : current.animals) {
-            animal1.setIndex(index);
-            index++;
-        }
-        HashMap<String , Object> sellAnimals = new HashMap<>();
-        sellAnimals.put("Player" , player);
-        sellAnimals.put("Animal" , animal);
-        game.getDiffQueue().add(new Message(CommandType.SELL_ANIMAL , sellAnimals));
-    }
 
     public void receiveRequestForSellAnimal(Message message) {
         User player = message.getFromBody("Player");
@@ -1561,7 +1427,7 @@ public class InputGameController {
                     user.getFarm().shippingBins.add((ShippingBin) items);
                 }
                 if (items instanceof CraftingItem) {
-                    user.getOnFarm().add((CraftingItem) items);
+                    //gameMenu.getOnFarm().add((CraftingItem) items);
                 }
                 user.getBackPack().inventory.Items.compute(items , (k,v) -> v - 1);
                 if (user.getBackPack().inventory.Items.get(items ) == 0) {
@@ -1935,12 +1801,13 @@ public class InputGameController {
     // Ario
 
     public Result backToMainMenu () {
-        if (App.currentUser.isCurrently_in_game())
-            return new Result(false, RED+"You Are Currently in a Game!"+RESET);
-        else {
-            currentMenu = com.Graphic.model.Enum.Menu.MainMenu;
-            return new Result(true, GREEN+"Returned to Main Menu."+RESET);
-        }
+//        if (App.currentUser.isCurrently_in_game())
+//            return new Result(false, RED+"You Are Currently in a Game!"+RESET);
+//        else {
+//            currentMenu = com.Graphic.model.Enum.Menu.MainMenu;
+//            return new Result(true, GREEN+"Returned to Main Menu."+RESET);
+//        }
+        return null;
     }
 
     public void startGamePlayer () {
@@ -1984,7 +1851,6 @@ public class InputGameController {
                 user.topLeftY = 1;
             }
 //            createInitialFarm(choice);
-            user.initAnimations();
             GameMenu.getInstance().initializeNPCs();
             break;
         }
@@ -2246,7 +2112,7 @@ public class InputGameController {
         setTimeAndWeather();
         //buildHall();
         //buildNpcVillage();
-        sortMap(currentGame.bigMap);
+        //sortMap(currentGame.bigMap);
         //fadeToNextDay();
     }
 
@@ -2341,10 +2207,10 @@ public class InputGameController {
                 && !Main.getClient(null).getPlayer().getSpouse().getFarm().isInFarm(x1, y1))
             return new Result(false, RED+"You must select your tile"+RESET);
 
-        if (isInGreenHouse(getTileByCoordinates(x1, y1)))
+        if (isInGreenHouse(getTileByCoordinates(x1, y1 , Main.getClient(null).getLocalGameState())))
             return new Result(false, RED+"Lightning can’t hit the greenhouse"+RESET);
 
-        lightningStrike(getTileByCoordinates(x1, y1));
+        lightningStrike(getTileByCoordinates(x1, y1 , Main.getClient(null).getLocalGameState()));
         return new Result(true, BLUE+"A lightning bolt hits!"+RESET);
     }
     public Result buildGreenHouse () {
@@ -2391,7 +2257,7 @@ public class InputGameController {
         if (!Main.getClient(null).getPlayer().getFarm().isInFarm(x, y))
             return new Result(false, RED+"Pick from your own farm!"+RESET);
 
-        Tile tile = getTileByCoordinates(x, y);
+        Tile tile = getTileByCoordinates(x, y , Main.getClient(null).getLocalGameState());
 
         if (tile.getGameObject() instanceof Tree)
             return new Result(true, showTree((Tree) tile.getGameObject()));
@@ -2854,7 +2720,8 @@ public class InputGameController {
     }
     public Result getObject2 (String x, String y) {
 
-        return new Result(true, PURPLE + getTileByCoordinates(Integer.parseInt(x), Integer.parseInt(y)).getGameObject().toString() + RESET);
+        return new Result(true, PURPLE + getTileByCoordinates(
+            Integer.parseInt(x), Integer.parseInt(y) , Main.getClient(null).getLocalGameState()).getGameObject().toString() + RESET);
     }
     public void remove (int x) {
 

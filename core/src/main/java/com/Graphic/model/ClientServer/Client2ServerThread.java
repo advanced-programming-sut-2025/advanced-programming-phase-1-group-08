@@ -17,15 +17,24 @@ import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Items;
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.Places.Farm;
 import com.Graphic.model.User;
 import com.badlogic.gdx.Gdx;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+//import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static com.Graphic.model.Enum.Commands.CommandType.*;
 
@@ -35,6 +44,8 @@ public class Client2ServerThread extends Thread{
     private DataOutputStream out;
     private DataInputStream in;
     private String update;
+    Gson gson = new Gson();
+    boolean isSmall = false;
 
     public Client2ServerThread(Socket socket) throws IOException {
         this.socket = socket;
@@ -54,19 +65,14 @@ public class Client2ServerThread extends Thread{
         while (true) {
             try {
                 if (! Main.getClient(null).getRequests().isEmpty()) {
-                    System.out.println(2);
                     message = Main.getClient(null).getRequests().poll();
                     sendMessage(message);
-                    line = in.readUTF();
-                    System.out.println(line);
-                    message = JSONUtils.fromJson(line);
-                    handleMessage(message);
+                    if (! isPublic(message) || message.getCommandType() == NEW_GAME || message.getCommandType() == JOIN_GAME) {
+                        line = Read(line);
+                    }
                 }
                 if (Main.getClient(null).isRunning()) {
-                    sendMessage(diff);
-                    line = in.readUTF();
-                    message = JSONUtils.fromJson(line);
-                    handleMessage(message);
+                    read(diff , line);
                 }
 
                 Thread.sleep(100);
@@ -78,15 +84,33 @@ public class Client2ServerThread extends Thread{
         }
     }
 
+    private String Read(String line) throws Exception {
+        isSmall = in.readBoolean();
+        if (!isSmall) {
+            int length = in.readInt();
+            byte[] data = new byte[length];
+            in.readFully(data);
+            String json = new String(data, StandardCharsets.UTF_8);
+            handleMessage(JSONUtils.fromJson(json));
+        } else {
+            line = in.readUTF();
+            handleMessage(JSONUtils.fromJson(line));
+        }
+        return line;
+    }
+
+    private void read(Message diff , String line) throws Exception {
+        sendMessage(diff);
+        Read(line);
+    }
+
     public void handleMessage(Message message) throws Exception {
         switch (message.getCommandType()) {
             case LOGIN_SUCCESS -> {
                 System.out.println("Login success");
-                HashMap<String,Object> body = new HashMap<>();
-                body.put("null","null");
-                sendMessage(new Message(LOGGED_IN , body));
-                Main.getMain().setScreen(new PlayGameMenu());
-                Main.getClient(null).setPlayer(message.getFromBody("Player"));
+                Main.getClient(null).setCurrentMenu(Menu.PlayGameMenu);
+                User user = gson.fromJson(gson.toJson(message.getBody().get("Player")), User.class);
+                Main.getClient(null).setPlayer(user);
                 break;
             }
             case GENERATE_RANDOM_PASS -> {
@@ -96,17 +120,57 @@ public class Client2ServerThread extends Thread{
                 break;
             }
             case GAME_START -> {
-                Main.getClient(null).getLocalGameState().getPlayers().addAll(message.getFromBody("Players"));
+                Type userListType = new TypeToken<ArrayList<User>>() {}.getType();
+
+                ArrayList<User> players = gson.fromJson(
+                    gson.toJson(message.getBody().get("Players")),
+                    userListType
+                );
+                Main.getClient(null).getLocalGameState().getPlayers().addAll(players);
+                for (User user : players) {
+                    if (user.getUsername().trim().equals(Main.getClient(null).getPlayer().getUsername().trim())) {
+                        Main.getClient(null).setPlayer(user);
+                    }
+                }
                 Main.getClient(null).setRunning(true);
+                Main.getClient(null).setCurrentMenu(Menu.GameMenu);
                 sendMessage(message);
                 break;
             }
             case FARM -> {
-                Main.getClient(null).getLocalGameState().getFarms().add(message.getFromBody("Farm"));
+                System.out.println("1- "+Main.getClient(null).getLocalGameState().getPlayers().size());
+                Farm farm = gson.fromJson(gson.toJson(message.getBody().get("Farm")), Farm.class);
+                Main.getClient(null).getLocalGameState().getFarms().add(farm);
+                User user = gson.fromJson(gson.toJson(message.getBody().get("Player")), User.class);
+                int x = gson.fromJson(gson.toJson(message.getBody().get("X")), int.class);
+                int y = gson.fromJson(gson.toJson(message.getBody().get("Y")), int.class);
+                System.out.println("2- "+Main.getClient(null).getLocalGameState().getPlayers().size());
+                for (User player : Main.getClient(null).getLocalGameState().getPlayers()) {
+                    if (player.getUsername().trim().equals(user.getUsername().trim())) {
+                        System.out.println(player.getUsername());
+                        player.topLeftX = x;
+                        player.topLeftY = y;
+//                        if (user.getFarm() == null) {
+//                            System.out.println("farm is null");
+//                        }
+                        player.setFarm(user.getFarm());
+                        break;
+                    }
+                }
+                System.out.println(Main.getClient(null).getLocalGameState().getPlayers().size());
             }
             case BIG_MAP -> {
-                Main.getClient(null).getLocalGameState().bigMap.addAll(message.getFromBody("BigMap"));
+                System.out.println("bigmap1");
+                Type tileListType = new TypeToken<ArrayList<Tile>>() {}.getType();
+
+                ArrayList<Tile> bigMap = gson.fromJson(
+                    gson.toJson(message.getBody().get("BigMap")),
+                    tileListType
+                );
+                System.out.println("bigmap2");
+                Main.getClient(null).getLocalGameState().bigMap.addAll(bigMap);
                 Main.getClient(null).getLocalGameState().setChooseMap(true);
+                System.out.println("bigmap3");
             }
             case ERROR -> {
                 Gdx.app.postRunnable(() -> {
@@ -114,7 +178,10 @@ public class Client2ServerThread extends Thread{
                 });
             }
             case CAN_MOVE -> {
-
+                InputGameController.getInstance().Move(message , Main.getClient(null).getLocalGameState());
+            }
+            case CAN_NOT_MOVE -> {
+                InputGameController.getInstance().Move(message , Main.getClient(null).getLocalGameState());
             }
             case ENTER_THE_MARKET -> {
                 for (User player : Main.getClient(null).getLocalGameState().getPlayers()) {
@@ -208,5 +275,16 @@ public class Client2ServerThread extends Thread{
             out.writeUTF(JSONUtils.toJson(message));
             out.flush();
         }
+    }
+
+    public boolean isPublic(Message message) {
+        if (message.getCommandType() == FARM || message.getCommandType() == BIG_MAP) {
+            return true;
+        }
+
+        if (message.getCommandType() == MOVE_IN_FARM) {
+            return true;
+        }
+        return false;
     }
 }

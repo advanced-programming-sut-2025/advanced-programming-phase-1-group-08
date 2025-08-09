@@ -9,7 +9,7 @@ import com.Graphic.model.MapThings.Tile;
 
 import java.util.HashMap;
 
-import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
+//import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
 
 

@@ -4,7 +4,7 @@ package com.Graphic.model.ToolsPackage;
 import com.Graphic.model.Items;
 
 
-public abstract class Tools extends Items {
+public class Tools extends Items {
 
     private String name;
 
@@ -31,6 +31,8 @@ public abstract class Tools extends Items {
 
         this.name = name;
     }
-    public abstract int healthCost ();
+    public int healthCost () {
+        return 0;
+    };
 }
 

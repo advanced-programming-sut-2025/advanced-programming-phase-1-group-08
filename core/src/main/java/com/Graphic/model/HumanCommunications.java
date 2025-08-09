@@ -223,7 +223,7 @@ public class HumanCommunications {
     // LEVEL TWO TASKS
 //    public Result Hug() {
 //
-//        User other;
+        User other;
 //        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
 //            other = player2;
 //        else

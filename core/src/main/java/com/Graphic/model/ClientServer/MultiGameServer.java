@@ -8,6 +8,7 @@ import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.User;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.esotericsoftware.kryonet.Server;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -23,14 +24,14 @@ public class MultiGameServer {
     public final static int SERVER_PORT = 8080;
     private final Object gameStateLock = new Object();
 
-    public static void main(String[] args) throws IOException {
-        new Lwjgl3Application(new DummyGdxApp(), new Lwjgl3ApplicationConfiguration());
+    public static void main(String[] args) throws Exception {
+        new kryoNetServer();
+        //new Lwjgl3Application(new DummyGdxApp(), new Lwjgl3ApplicationConfiguration());
     }
 
     public static void handleNewClient(Socket clientSocket) {
         try {
 
-            new ClientConnectionThread(clientSocket).start();
 
         }
         catch (Exception e) {

@@ -45,29 +45,12 @@ public class Main extends Game {
 
         main = this;
         batch = new SpriteBatch();
-        //InputGameController x = InputGameController.getInstance();
-        //x.startNewGame("a");
 
-
-//        Main.getMain().setScreen(
-//            new TransitionScreen(Main.getMain(),
-//                this,
-//                new HomeMenu(),
-//                1f
-//            )
-//        );
         skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-        client.initFromArgs("127.0.0.1" , 8080);
-        try {
-            client.startWorkWithServer();
-        } catch (Exception e) {
-
-        }
+        newSkin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
         //client.startListening();
+        client.setCurrentMenu(Menu.LoginMenu);
         main.setScreen(new LoginMenu());
-        //main.setScreen(new PlayGameMenu());
-//        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-//        main.setScreen(new ProfileMenu());
 
     }
 

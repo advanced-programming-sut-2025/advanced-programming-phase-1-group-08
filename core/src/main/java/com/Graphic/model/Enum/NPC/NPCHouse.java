@@ -1,6 +1,7 @@
 package com.Graphic.model.Enum.NPC;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.Main;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
 
@@ -27,7 +28,7 @@ public class NPCHouse extends GameObject {
         for (int i = npc.getTopLeftX();  i < npc.getTopLeftX() + npc.getWidth() ; i++) {
             for (int j = npc.getTopLeftY();  j < npc.getTopLeftY() + npc.getHeight() ; j++) {
 
-                if (GameControllerLogic.getTileByCoordinates(i, j).getGameObject().equals(this)) {
+                if (GameControllerLogic.getTileByCoordinates(i, j , Main.getClient(null).getLocalGameState()).getGameObject().equals(this)) {
                     int x = npc.getWidth() * (j - npc.getTopLeftY()) + i - npc.getTopLeftX() + 1;
                     return path = "Places/" + npc.name() + x + ".png";
 

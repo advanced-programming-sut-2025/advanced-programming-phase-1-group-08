@@ -20,6 +20,7 @@ public class App {
 //    public static Skin skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
     public static HashMap<String , Game> games = new HashMap<>();
     public static Game currentGame;
+    public static User currentUser;
 
 //    public static ArrayList<User> players = new ArrayList<>();
 

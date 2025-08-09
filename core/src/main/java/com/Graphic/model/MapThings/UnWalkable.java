@@ -8,7 +8,7 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class UnWalkable extends GameObject {
 
-    Random rand = new Random();
+    private transient Random rand = new Random();
     int x;
 
     public UnWalkable() {

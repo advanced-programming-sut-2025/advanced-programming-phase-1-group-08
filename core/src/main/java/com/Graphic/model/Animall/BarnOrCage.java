@@ -1,6 +1,7 @@
 package com.Graphic.model.Animall;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.Main;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
@@ -19,7 +20,6 @@ public class BarnOrCage extends GameObject {
     public ArrayList<Animal> animals = new ArrayList<>();
     public int topLeftX;
     public int topLeftY;
-    private String Path;
     private collisionRect door;
 
 
@@ -54,7 +54,7 @@ public class BarnOrCage extends GameObject {
         }
         for (int i = topLeftX ; i < topLeftX + barnORCageType.getWidth() ; i++) {
             for (int j = topLeftY ; j < topLeftY + barnORCageType.getHeight() ; j++) {
-                if (GameControllerLogic.getTileByCoordinates(i , j).getGameObject().equals(this)) {
+                if (GameControllerLogic.getTileByCoordinates(i , j , Main.getClient(null).getLocalGameState()).getGameObject().equals(this)) {
                     int l = barnORCageType.getWidth() * (j - topLeftY) + i - topLeftX + 1;
                     System.out.println(l);
                     return Path = "Places/"+barnORCageType.getName()+l+".png";

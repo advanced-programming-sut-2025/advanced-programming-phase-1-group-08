@@ -38,5 +38,6 @@ public enum CommandType {
     COLLECT_PRODUCT,
     CALCULATE_ANIMAL_FRIENDSHIP,
     PLACE_BARN_CAGE,
+    PLAYER_HANDLER,
 
 }

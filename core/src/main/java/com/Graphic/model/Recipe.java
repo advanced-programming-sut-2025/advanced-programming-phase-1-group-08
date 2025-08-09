@@ -67,7 +67,7 @@ public class Recipe {
     public void print() {
         System.out.println("Recipe: " + name.toUpperCase());
     }
-//    public static List<Recipe> createAllRecipes() {
+    public static List<Recipe> createAllRecipes() {
 //
 //        HashMap<Items, Integer> FriedEggIngredients = new HashMap<>();
 //        FriedEggIngredients.put(new Animalproduct(AnimalProductType.Egg, Quantity.Normal), 1);
@@ -351,7 +351,8 @@ public class Recipe {
 //        return List.of(FriedEgg, bakedFish, salad, omelet, pumpkinPie, spaghetti, pizza, tortilla, makiRoll
 //                , tripleShotEspresso, cookie, hashBrowns, pancakes, fruitSalad, redPlate, bread
 //                , salmonDinner, vegetableMedley, survivalBurger, seaFormPudding, minersTreat);
-//    }
+        return null;
+    }
 
     public FoodTypes getType() {
         return type;

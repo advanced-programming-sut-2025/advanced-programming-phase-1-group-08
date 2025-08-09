@@ -13,10 +13,7 @@ import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
@@ -55,10 +52,9 @@ public class User {
     private String withMouse;
     private Items droppedItem;
     private String BarnOrCagePath;
-    private BarnOrCage currentBarnOrCage;
+    private BarnOrCage currentBarnOrCage = new BarnOrCage();
     private MarketType currentMarket;
-    private Queue<User> joinMarket;
-    private ArrayList<CraftingItem> OnFarm;
+    private Queue<User> joinMarket = new LinkedList<>();
 
 
     // buffs
@@ -92,7 +88,7 @@ public class User {
 
     public HashMap<Items , DateHour> buffer = new HashMap<>();   //برای برداشت محصولات فرآوری شده استفاده میشود
 
-    private BackPack backPack = new BackPack();
+    private BackPack backPack;
 
     public Items currentItem;
     public Tools currentTool;
@@ -131,6 +127,7 @@ public class User {
         this.MySecurityQuestion = MySecQ;
         this.MySecurityAnswer = MySecA;
 
+        backPack = new BackPack();
 
 
         isMoving = false;
@@ -514,12 +511,12 @@ public class User {
         this.Down = new ArrayList<>();
         this.Right.add("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png");
         this.Right.add("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png");
-        this.Left.add("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png");
-        this.Left.add("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png");
-        this.Up.add("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png");
-        this.Up.add("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png");
-        this.Down.add("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png");
-        this.Down.add("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png");
+        this.Left.add("Mohamadreza/PlayerSpriteIdle/Left" + farm.getIndex() + "," + gender + ".png");
+        this.Left.add("Mohamadreza/PlayerSpriteMove/Left" + farm.getIndex() + "," + gender + ".png");
+        this.Up.add("Mohamadreza/PlayerSpriteIdle/Up" + farm.getIndex() + "," + gender + ".png");
+        this.Up.add("Mohamadreza/PlayerSpriteMove/Up" + farm.getIndex() + "," + gender + ".png");
+        this.Down.add("Mohamadreza/PlayerSpriteIdle/Down" + farm.getIndex() + "," + gender + ".png");
+        this.Down.add("Mohamadreza/PlayerSpriteMove/Down" + farm.getIndex() + "," + gender + ".png");
 
 
 
@@ -566,6 +563,9 @@ public class User {
         this.direction = direction;
     }
     public Direction getDirection() {
+        if (direction == null) {
+            direction = Direction.Down;
+        }
         return direction;
     }
 
@@ -694,6 +694,9 @@ public class User {
         this.farm = farm;
     }
     public ArrayList<String> getUp() {
+        if (Up == null) {
+            initAnimations();
+        }
         return Up;
     }
     public ArrayList<String> getDown() {
@@ -713,8 +716,5 @@ public class User {
     }
     public Queue<User> getJoinMarket() {
         return joinMarket;
-    }
-    public ArrayList<CraftingItem> getOnFarm() {
-        return OnFarm;
     }
 }

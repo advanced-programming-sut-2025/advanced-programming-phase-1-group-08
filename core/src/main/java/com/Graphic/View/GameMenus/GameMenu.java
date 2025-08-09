@@ -84,6 +84,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private ArrayList<AnimalRenderer> animalRenderers = new ArrayList<>();
     private ArrayList<LakeRenderer> lakeRenderers = new ArrayList<>();
     private boolean initialLake = false;
+    private ArrayList<AnimalRenderer> currentBarnOrCageAnimals = new ArrayList<>();
 
     private boolean progressComplete = false;
     private boolean ePressed = false;
@@ -179,7 +180,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public static GameMenu getInstance() {
         if (gameMenu == null) {
             gameMenu = new GameMenu();
-            gameMenu.initialize();
+            //gameMenu.initialize();
         }
 
         return gameMenu;
@@ -187,44 +188,50 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
     public void show() {
-        controller.chooseMap();
-        currentMenu = Menu.GameMenu;
-        initialize();
+        try {
+            controller = InputGameController.getInstance();
+            currentMenu = Menu.GameMenu;
+            initialize();
+            controller.chooseMap();
 
-        controller.init();
-        mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            controller.init();
+            mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        multiplexer = new InputMultiplexer();
+            multiplexer = new InputMultiplexer();
 
-        multiplexer.addProcessor(stage);
-        multiplexer.addProcessor(new InputAdapter() {
-            @Override
-            public boolean keyDown(int keycode) {
-                if (keycode == Input.Keys.E && Food.itemIsEatable(Main.getClient(null).getPlayer().currentItem)) {
-                    ePressed = true;
-                    return true;
+            multiplexer.addProcessor(stage);
+            multiplexer.addProcessor(new InputAdapter() {
+                @Override
+                public boolean keyDown(int keycode) {
+                    if (keycode == Input.Keys.E && Food.itemIsEatable(Main.getClient(null).getPlayer().currentItem)) {
+                        ePressed = true;
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
 
-            @Override
-            public boolean keyUp(int keycode) {
-                if (keycode == Input.Keys.E) {
-                    ePressed = false;
-                    holdTime = 0f;
-                    return true;
+                @Override
+                public boolean keyUp(int keycode) {
+                    if (keycode == Input.Keys.E) {
+                        ePressed = false;
+                        holdTime = 0f;
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
-        Gdx.input.setInputProcessor(multiplexer);
+            Gdx.input.setInputProcessor(multiplexer);
 
-        createClock();
-        firstLoad = true;
-        shepherdingAnimals = new ArrayList<>();
-        heartAnimations = new ArrayList<>();
+            createClock();
+            firstLoad = true;
+            shepherdingAnimals = new ArrayList<>();
+            heartAnimations = new ArrayList<>();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -250,68 +257,67 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             activeDialog = null;
         }
 
+        if (Main.getClient(null).getLocalGameState().getChooseMap()) {
+            createUserRenderes();
+            Main.getBatch().begin();
+            controller.update(camera, v, anyMenuIsActivated());
+            drawCurrentItem();
+            updateAnimals(Main.getClient(null).getLocalGameState().getAnimals());
+            NPCManager.NPCWalk(v);
+            eatingManagement(v);
+            mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(mousePos);
+            camera.update();
+            Main.getBatch().end();
 
+            changeMenu();
 
-        Main.getBatch().begin();
-        controller.update(camera, v, anyMenuIsActivated());
-        drawCurrentItem();
-        updateAnimals(Main.getClient(null).getLocalGameState().getAnimals());
-        NPCManager.NPCWalk(v);
-        eatingManagement(v);
-        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.unproject(mousePos);
-        camera.update();
-        Main.getBatch().end();
+            if (!Main.getClient(null).getPlayer().isInFarmExterior()) {
+                getRenderer().setView(camera);
+                getRenderer().render();
+            }
 
-        changeMenu();
-
+            checkFriendDistance();
+            if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
+                System.out.println("hi");
+                stage.addActor(activeDialog);
+            } else {
+                activeDialog = null;
+            }
+        }
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-
-
-        if (!Main.getClient(null).getPlayer().isInFarmExterior()) {
-            getRenderer().setView(camera);
-            getRenderer().render();
-        }
-
-        checkFriendDistance();
-        if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
-            System.out.println("hi");
-            stage.addActor(activeDialog);
-        } else {
-            activeDialog = null;
-        }
 
     }
 
     private void checkFriendDistance() {
         boolean someoneClose = false;
 
-        for (User p : currentGame.players) {
-            if (p.getUsername().equalsIgnoreCase(Main.getClient(null).getPlayer().getUsername())) continue;
-
-            float deltaX = Math.abs((float) Main.getClient(null).getPlayer().getPositionX() - p.getPositionX());
-            float deltaY = Math.abs((float) Main.getClient(null).getPlayer().getPositionY() - p.getPositionY());
-            if (deltaY < 3f && deltaX < 3f) {
-                someoneClose = true;
-
-                // تغییر عکس دکمه بر اساس جنسیت
-                Texture iconTexture;
-                if (p.getGender().equalsIgnoreCase("man"))
-                    iconTexture = new Texture("Ariyo/Shane_Icon.png");
-                else
-                    iconTexture = new Texture("Ariyo/Sandy_Icon.png");
-
-                tempFriend.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
-
-                tempFriend.setVisible(true);
-                break;
-            }
-        }
-
-        if (!someoneClose) {
-            tempFriend.setVisible(true);
-        }
+//        for (User p : currentGame.players) {
+//            if (p.getUsername().equalsIgnoreCase(Main.getClient(null).getPlayer().getUsername())) continue;
+//
+//            float deltaX = Math.abs((float) Main.getClient(null).getPlayer().getPositionX() - p.getPositionX());
+//            float deltaY = Math.abs((float) Main.getClient(null).getPlayer().getPositionY() - p.getPositionY());
+//            if (deltaY < 3f && deltaX < 3f) {
+//                someoneClose = true;
+//
+//                // تغییر عکس دکمه بر اساس جنسیت
+//                Texture iconTexture;
+//                if (p.getGender().equalsIgnoreCase("man"))
+//                    iconTexture = new Texture("Ariyo/Shane_Icon.png");
+//                else
+//                    iconTexture = new Texture("Ariyo/Sandy_Icon.png");
+//
+//                tempFriend.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
+//
+//                tempFriend.setVisible(true);
+//                break;
+//            }
+//        }
+//
+//        if (!someoneClose) {
+//            tempFriend.setVisible(true);
+//        }
     }
 
     public void eatingManagement(float delta) {
@@ -360,16 +366,16 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         User me = Main.getClient(null).getPlayer();
         User other = null;
-        for (User p : currentGame.players) {
-            if (p.getUsername().equalsIgnoreCase(me.getUsername())) continue;
-
-            float deltaX = Math.abs((float) Main.getClient(null).getPlayer().getPositionX() - p.getPositionX());
-            float deltaY = Math.abs((float) Main.getClient(null).getPlayer().getPositionY() - p.getPositionY());
-            if (deltaY < 3f && deltaX < 3f) {
-                other = p;
-                break;
-            }
-        }
+//        for (User p : currentGame.players) {
+//            if (p.getUsername().equalsIgnoreCase(me.getUsername())) continue;
+//
+//            float deltaX = Math.abs((float) Main.getClient(null).getPlayer().getPositionX() - p.getPositionX());
+//            float deltaY = Math.abs((float) Main.getClient(null).getPlayer().getPositionY() - p.getPositionY());
+//            if (deltaY < 3f && deltaX < 3f) {
+//                other = p;
+//                break;
+//            }
+//        }
 
         User finalOther = other;
         interactionDialog.button("Send Flower").addListener(new ClickListener() {
@@ -624,16 +630,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         startRotation = false;
 
         //Mohamadreza
-        if (userRenderers.isEmpty()) {
-            for (User player : gameMenu.gameState.getPlayers()) {
-                UserRenderer userRenderer = new UserRenderer();
-                userRenderer.addToAnimations(Direction.Up , player.getUp());
-                userRenderer.addToAnimations(Direction.Down , player.getDown());
-                userRenderer.addToAnimations(Direction.Left , player.getLeft());
-                userRenderer.addToAnimations(Direction.Right , player.getRight());
-                userRenderers.add(userRenderer);
-            }
-        }
     }
 
     private void inputController() {
@@ -670,22 +666,22 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     )
                 );
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-                User temp = Main.getClient(null).getPlayer();
-                ArrayList<User> list = currentGame.players;
-                if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
-                    Main.getClient(null).getPlayer() = list.get(0);
-                    return;
-                }
-                boolean found = false;
-                for (User user : list) {
-                    if (found) {
-                        Main.getClient(null).getPlayer() = user;
-                        return;
-                    }
-                    if (user.getUsername().equals(temp.getUsername())) {
-                        found = true;
-                    }
-                }
+//                User temp = Main.getClient(null).getPlayer();
+//                ArrayList<User> list = currentGame.players;
+//                if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
+//                    Main.getClient(null).getPlayer() = list.get(0);
+//                    return;
+//                }
+//                boolean found = false;
+//                for (User user : list) {
+//                    if (found) {
+//                        Main.getClient(null).getPlayer() = user;
+//                        return;
+//                    }
+//                    if (user.getUsername().equals(temp.getUsername())) {
+//                        found = true;
+//                    }
+//                }
             }
 
 
@@ -902,12 +898,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
 
         TextButton voteKickButton = new TextButton(" Vote to Kick Player", newSkin);
-        voteKickButton.setDisabled(!Main.getClient(null).getPlayer().equals(currentUser));
+        //voteKickButton.setDisabled(!Main.getClient(null).getPlayer().equals(currentUser));
 
         voteKickButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!Main.getClient(null).getPlayer().equals(currentUser)) return;
+                if (true/*!Main.getClient(null).getPlayer().equals(currentUser)*/) return;
 
                 Window kickWindow = new Window("Select Player to Kick", newSkin);
                 kickWindow.setSize(300, 250);
@@ -921,20 +917,20 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 playersList.pad(10);
                 playersList.top();
 
-                for (User player : currentGame.players) {
-                    if (player.equals(currentUser)) continue;
-
-                    TextButton playerButton = new TextButton(player.getNickname(), newSkin);
-                    playerButton.addListener(new ClickListener() {
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            // اینجا حذف واقعی رو انجام بده
-                            currentGame.players.remove(player);
-                            kickWindow.remove(); // یا hide()
-                        }
-                    });
-                    playersList.addActor(playerButton);
-                }
+//                for (User player : currentGame.players) {
+//                    if (player.equals(currentUser)) continue;
+//
+//                    TextButton playerButton = new TextButton(player.getNickname(), newSkin);
+//                    playerButton.addListener(new ClickListener() {
+//                        @Override
+//                        public void clicked(InputEvent event, float x, float y) {
+//                            // اینجا حذف واقعی رو انجام بده
+//                            currentGame.players.remove(player);
+//                            kickWindow.remove(); // یا hide()
+//                        }
+//                    });
+//                    playersList.addActor(playerButton);
+//                }
 
                 ScrollPane scrollPane = new ScrollPane(playersList, newSkin);
                 scrollPane.setFadeScrollBars(false);
@@ -1504,82 +1500,82 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private void createClock() {
 
-        Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
-
-        ArrayList<Label> labels = new ArrayList<>();
-        labels.add(timeLabel);
-        labels.add(dateLabel);
-        labels.add(moneyLabel);
-        labels.add(weekDayLabel);
-
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = GameAssetManager.getGameAssetManager().getSmallFont();
-
-        Label.LabelStyle labelStyle2 = new Label.LabelStyle();
-        labelStyle2.font = GameAssetManager.getGameAssetManager().getFont3();
-
-
-
-        timeLabel.setText(currentGame.currentDate.getHour() + ":00");
-        dateLabel.setText(currentGame.currentDate.getDate());
-        weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
-
-        String moneyStr = String.valueOf(Main.getClient(null).getPlayer().getMoney());
-        String spaced = String.join(" ", moneyStr.split(""));
-        moneyLabel.setText(spaced);
-
-
-        for (Label l : labels) {
-            l.setColor(Color.BLACK);
-            l.setStyle(labelStyle2);
-        }
-        moneyLabel.setStyle(labelStyle);
-
-        clockGroup.addActor(image);
-
-        for (Label l : labels)
-            clockGroup.addActor(l);
-
-
-        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 48);
-        weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 80, dateLabel.getY() + 3);
-        setCenteredPosition(timeLabel, weekDayLabel.getX() + 10, weekDayLabel.getY() - 95);
-        moneyLabel.setPosition(timeLabel.getX() + 45 - moneyLabel.getWidth(), timeLabel.getY() - 78);
-
-
-        seasonImage = new Image(TextureManager.get(currentGame.currentDate.getSeason().getIconPath()));
-        seasonImage.setSize(200,220);
-        seasonImage.setPosition(image.getWidth()- seasonImage.getWidth() + 47, image.getHeight() - seasonImage.getHeight() + 30);
-        clockGroup.addActor(seasonImage);
-
-        weatherImage = new Image(TextureManager.get(currentGame.currentWeather.getIconPath()));
-        weatherImage.setSize(200,220);
-        weatherImage.setPosition(image.getWidth()- weatherImage.getWidth() - 47, image.getHeight() - weatherImage.getHeight() + 30);
-        clockGroup.addActor(weatherImage);
-
-
-        float screenWidth = stage.getViewport().getWorldWidth();
-        float screenHeight = stage.getViewport().getWorldHeight();
-
-        clockGroup.setSize(image.getWidth(), image.getHeight());
-
-        clockGroup.setPosition(
-            screenWidth - clockGroup.getWidth() - 10,
-            screenHeight - clockGroup.getHeight() - 10);
-
-        stage.addActor(clockGroup);
+//        Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
+//
+//        ArrayList<Label> labels = new ArrayList<>();
+//        labels.add(timeLabel);
+//        labels.add(dateLabel);
+//        labels.add(moneyLabel);
+//        labels.add(weekDayLabel);
+//
+//        Label.LabelStyle labelStyle = new Label.LabelStyle();
+//        labelStyle.font = GameAssetManager.getGameAssetManager().getSmallFont();
+//
+//        Label.LabelStyle labelStyle2 = new Label.LabelStyle();
+//        labelStyle2.font = GameAssetManager.getGameAssetManager().getFont3();
+//
+//
+//
+//        timeLabel.setText(currentGame.currentDate.getHour() + ":00");
+//        dateLabel.setText(currentGame.currentDate.getDate());
+//        weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
+//
+//        String moneyStr = String.valueOf(Main.getClient(null).getPlayer().getMoney());
+//        String spaced = String.join(" ", moneyStr.split(""));
+//        moneyLabel.setText(spaced);
+//
+//
+//        for (Label l : labels) {
+//            l.setColor(Color.BLACK);
+//            l.setStyle(labelStyle2);
+//        }
+//        moneyLabel.setStyle(labelStyle);
+//
+//        clockGroup.addActor(image);
+//
+//        for (Label l : labels)
+//            clockGroup.addActor(l);
+//
+//
+//        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 48);
+//        weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 80, dateLabel.getY() + 3);
+//        setCenteredPosition(timeLabel, weekDayLabel.getX() + 10, weekDayLabel.getY() - 95);
+//        moneyLabel.setPosition(timeLabel.getX() + 45 - moneyLabel.getWidth(), timeLabel.getY() - 78);
+//
+//
+//        seasonImage = new Image(TextureManager.get(currentGame.currentDate.getSeason().getIconPath()));
+//        seasonImage.setSize(200,220);
+//        seasonImage.setPosition(image.getWidth()- seasonImage.getWidth() + 47, image.getHeight() - seasonImage.getHeight() + 30);
+//        clockGroup.addActor(seasonImage);
+//
+//        weatherImage = new Image(TextureManager.get(currentGame.currentWeather.getIconPath()));
+//        weatherImage.setSize(200,220);
+//        weatherImage.setPosition(image.getWidth()- weatherImage.getWidth() - 47, image.getHeight() - weatherImage.getHeight() + 30);
+//        clockGroup.addActor(weatherImage);
+//
+//
+//        float screenWidth = stage.getViewport().getWorldWidth();
+//        float screenHeight = stage.getViewport().getWorldHeight();
+//
+//        clockGroup.setSize(image.getWidth(), image.getHeight());
+//
+//        clockGroup.setPosition(
+//            screenWidth - clockGroup.getWidth() - 10,
+//            screenHeight - clockGroup.getHeight() - 10);
+//
+//        stage.addActor(clockGroup);
     }
     private void updateClock(int hourPassed) {
 
-        passedOfTime(0, hourPassed);
-        timeLabel.setText(currentGame.currentDate.getHour() + ":00");
-        dateLabel.setText(currentGame.currentDate.getDate());
-        weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
-        Texture newTexture = TextureManager.get(currentGame.currentDate.getSeason().getIconPath());
-        seasonImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
-        Texture newTexture1 = TextureManager.get(currentGame.currentWeather.getIconPath());
-        weatherImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture1)));
-        lastTime = TimeUtils.millis();
+//        passedOfTime(0, hourPassed);
+//        timeLabel.setText(currentGame.currentDate.getHour() + ":00");
+//        dateLabel.setText(currentGame.currentDate.getDate());
+//        weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
+//        Texture newTexture = TextureManager.get(currentGame.currentDate.getSeason().getIconPath());
+//        seasonImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
+//        Texture newTexture1 = TextureManager.get(currentGame.currentWeather.getIconPath());
+//        weatherImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture1)));
+//        lastTime = TimeUtils.millis();
 
     }
 
@@ -1981,6 +1977,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }
     }
     public ArrayList<CraftingRenderer> getCraftingRenderers() {
+        if (craftingRenderers == null) {
+            craftingRenderers = new ArrayList<>();
+        }
         return craftingRenderers;
     }
     public Sprite getWithMouse() {
@@ -2006,6 +2005,24 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
     public ArrayList<LakeRenderer> getLakeRenderers () {
         return lakeRenderers;
+    }
+    public ArrayList<AnimalRenderer> getCurrentBarnOrCageAnimals() {
+        return currentBarnOrCageAnimals;
+    }
+    public void createUserRenderes() {
+        if (userRenderers == null) {
+            userRenderers = new ArrayList<UserRenderer>();
+            for (User player : Main.getClient(null).getLocalGameState().getPlayers()) {
+                UserRenderer userRenderer = new UserRenderer();
+                userRenderer.addToAnimations(Direction.Up , player.getUp());
+                userRenderer.addToAnimations(Direction.Down , player.getDown());
+                userRenderer.addToAnimations(Direction.Left , player.getLeft());
+                userRenderer.addToAnimations(Direction.Right , player.getRight());
+                userRenderers.add(userRenderer);
+            }
+
+            controller.setPlayerPosition();
+        }
     }
 
 
@@ -2060,6 +2077,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     public Stage getStage() {
+
         return stage;
     }
 

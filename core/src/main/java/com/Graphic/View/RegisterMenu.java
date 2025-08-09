@@ -149,7 +149,7 @@ public class RegisterMenu implements Screen, AppMenu {
 
         container.add(new Label("Gender:", Main.getSkin())).width(labelWidth).align(Align.left);
         genderBox = new SelectBox<>(Main.getSkin());
-        genderBox.setItems("Select Gender", "Male", "Female");
+        genderBox.setItems("Select Gender", "man", "woman");
         container.add(genderBox).width(fieldWidth).colspan(2).row();
         container.add().padBottom(20).row();
 
@@ -408,6 +408,9 @@ public class RegisterMenu implements Screen, AppMenu {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
+        if (Main.getClient(null).getCurrentMenu() != Menu.RegisterMenu) {
+            Main.getMain().setScreen(new PlayGameMenu());
+        }
     }
 
     @Override

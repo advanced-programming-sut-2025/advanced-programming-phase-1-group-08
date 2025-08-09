@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class UserRenderer {
 
-    private HashMap<Direction , Animation<Texture> > animations;
+    private HashMap<Direction , Animation<Texture> > animations = new HashMap<>();
 
 
     public void addToAnimations(Direction direction , ArrayList<String> frames) {

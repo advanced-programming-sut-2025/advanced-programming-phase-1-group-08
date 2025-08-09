@@ -1,12 +1,13 @@
 package com.Graphic.model.Places;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.Main;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
 
 public class Market extends GameObject {
     private MarketType marketType;
-    private String Path;
+
 
     public Market(MarketType marketType) {
         this.marketType = marketType;
@@ -23,7 +24,7 @@ public class Market extends GameObject {
         }
         for (int i = marketType.getTopleftx();  i < marketType.getTopleftx() + marketType.getWidth() ; i++) {
             for (int j = marketType.getToplefty();  j < marketType.getToplefty() + marketType.getHeight() ; j++) {
-                if (GameControllerLogic.getTileByCoordinates(i, j).getGameObject().equals(this)) {
+                if (GameControllerLogic.getTileByCoordinates(i, j , Main.getClient(null).getLocalGameState()).getGameObject().equals(this)) {
                     int x = marketType.getWidth() * (j - marketType.getToplefty()) + i - marketType.getTopleftx() + 1;
                     return Path = "Places/"+marketType.getName()+x+".png";
 

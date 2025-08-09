@@ -1,6 +1,7 @@
 package com.Graphic.model.Places;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.Main;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.MapThings.GameObject;
@@ -19,7 +20,6 @@ public class Mine extends GameObject {
     private final int startY;
     private final int width;
     private final int height;
-    private String Path;
     private collisionRect door;
     private ArrayList<ForagingMinerals> foragingMinerals;
     private ArrayList<Point> positions;
@@ -76,7 +76,7 @@ public class Mine extends GameObject {
 
         for (int i = startX; i < startX + width; i++) {
             for (int j = startY; j < startY + height; j++) {
-                if (GameControllerLogic.getTileByCoordinates(i, j).getGameObject().equals(this)) {
+                if (GameControllerLogic.getTileByCoordinates(i, j , Main.getClient(null).getLocalGameState()).getGameObject().equals(this)) {
 
                     if (j == startY + height - 1 && i == startX + (width / 2)) {
                         return Path = "Places/Mine1.png";

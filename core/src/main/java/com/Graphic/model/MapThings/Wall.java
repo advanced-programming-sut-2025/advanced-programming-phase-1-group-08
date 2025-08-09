@@ -7,7 +7,6 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 public class Wall extends GameObject {
     private WallType wallType;
     int index;
-    private String Path;
 
     public Wall(int index){
         this.index=index;

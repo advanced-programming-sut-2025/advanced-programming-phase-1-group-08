@@ -43,7 +43,7 @@ public class Animal extends GameObject {
     private boolean isMoving;
     private float x;
     private float y;
-    private ArrayList<Tile> Path;
+    private ArrayList<Tile> Paths;
 
     public Animal(AnimalType type,int friendShip, String name, int day ) {
         this.type = type;
@@ -79,7 +79,7 @@ public class Animal extends GameObject {
         this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_down.png");
         this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_down.png");
         this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_down.png");
-        Path = new ArrayList<>();
+        Paths = new ArrayList<>();
     }
 
     public String getName() {
@@ -266,6 +266,6 @@ public class Animal extends GameObject {
     }
 
     public ArrayList<Tile> getPath() {
-        return Path;
+        return Paths;
     }
 }

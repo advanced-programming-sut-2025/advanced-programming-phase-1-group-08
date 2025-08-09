@@ -64,7 +64,7 @@ public class Marriage {
         assert f != null;
         if (accepted) {
             f.setSUCCESSFULPropose(true);
-            return f.marry();
+            return null /*f.marry()*/;
         }
         else {
             f.reduceXP(10000);

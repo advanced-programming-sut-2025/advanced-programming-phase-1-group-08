@@ -21,7 +21,6 @@ public class Lake extends GameObject {
     private final int topLeftY;
     private final int width;
     private final int height;
-    private String Path;
     private ArrayList<String> LakeAnimation;
     Sprite first;
     Sprite second;

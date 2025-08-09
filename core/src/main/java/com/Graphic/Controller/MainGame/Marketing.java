@@ -133,12 +133,12 @@ public class Marketing {
 
     public Result checkBuy(Items item , MarketType marketType) {
         User Player = Main.getClient(null).getPlayer();
-        if (item instanceof BackPack) {
-            if (Player.getBackPack().getType().equals(BackPackType.DeluxePack) ||
-                Player.getBackPack().getType().equals( ((BackPack) item).getType()) ) {
-                return new Result(false, "4");
-            }
-        }
+//        if (item instanceof BackPack) {
+//            if (Player.getBackPack().getType().equals(BackPackType.DeluxePack) ||
+//                Player.getBackPack().getType().equals( ((BackPack) item).getType()) ) {
+//                return new Result(false, "4");
+//            }
+//        }
         if (item instanceof FishingPole) {
             if ( ! ((FishingPole) item).type.checkAbility(Player.getLevelFishing())) {
                 return new Result(false , "5");
@@ -160,7 +160,7 @@ public class Marketing {
         if (item.getMarketPrice(marketType) > Player.getMoney() ) {
             return new Result(false,"2");
         }
-        if (! (item instanceof ShippingBin) && ! (item instanceof BackPack) ) {
+        if (! (item instanceof ShippingBin) /*&& ! (item instanceof BackPack)*/ ) {
             if (Player.getBackPack().getType().getRemindCapacity() == 0) {
                 if (!Player.getBackPack().inventory.Items.containsKey(item)) {
                     return new Result(false, "3");
@@ -316,44 +316,8 @@ public class Marketing {
         //currentGame.currentPlayer.sprite.draw(Main.getBatch());
     }
 
-    public void payForBuy(Message message , Game game) {
-        User Player = message.getFromBody("Player");
-        for (User user : game.getGameState().getPlayers()) {
-            if (user.getUsername().trim().equals(Player.getUsername().trim()))  {
-                Items items = message.getFromBody("Item");
-                user.increaseMoney( - items.getMarketPrice(message.getFromBody("Market")));
-                HashMap<String ,Object> body = new HashMap<>();
-                body.put("Player", Player);
-                body.put("Money" , items.getMarketPrice(message.getFromBody("Market")));
-                game.getDiffQueue().add(new Message(CommandType.CHANGE_MONEY, body));
-            }
-        }
-    }
 
-    public void reduceProductInMarket (Message message , Game game) {
-        User Player = message.getFromBody("Player");
-        MarketType market = message.getFromBody("Market");
 
-        for (User user : game.getGameState().getPlayers()) {
-            if (user.getUsername().trim().equals(Player.getUsername().trim()))  {
-                Items items = message.getFromBody("Item");
-                items.setRemindInShop(items.getRemindInShop(market) - 1 , market);
-
-                HashMap<String ,Object> body = new HashMap<>();
-                body.put("Item" , items);
-                game.getDiffQueue().add(new Message(CommandType.REDUCE_PRODUCT, body));
-            }
-        }
-
-    }
-
-    public Message addItemToInventory(Message message) {
-        HashMap<String ,Object> body = new HashMap<>();
-        body.put("Item" , message.getFromBody("Item"));
-        body.put("amount" , message.getFromBody("amount"));
-        return new Message(CommandType.
-            CHANGE_INVENTORY, body);
-    }
 
     public Message changeBackPack(Message message , Game game) {
         User Player = message.getFromBody("Player");
@@ -395,12 +359,12 @@ public class Marketing {
                     body.put("Item" , item);
                     body.put("amount" , 1);
                     body.put("Market" , marketType);
-                    if (item instanceof BackPack) {
-                        Main.getClient(null).getRequests().add(new Message(CommandType.BUY_BACKPACK, body));
-                    }
-                    else {
+//                    if (item instanceof BackPack) {
+//                        Main.getClient(null).getRequests().add(new Message(CommandType.BUY_BACKPACK, body));
+//                    }
+                    //else {
                         Main.getClient(null).getRequests().add(new Message(CommandType.BUY, body));
-                    }
+                    //}
 
                     if (item.getRemindInShop(marketType) == 0) {
                         button.setColor(Color.DARK_GRAY);
@@ -576,40 +540,6 @@ public class Marketing {
         Main.getClient(null).getRequests().add(new Message(CommandType.BUY_ANIMAL , body));
     }
 
-    public void AnswerRequestForBuyAnimal(Message message , Game game) {
-        User player = message.getFromBody("Player");
-        Animal animal = message.getFromBody("Animal");
-        BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
-
-        for (User user : game.getGameState().getPlayers()) {
-            if (user.getUsername().trim().equals(player.getUsername().trim())) {
-                for (BarnOrCage barnOrCage1 : user.BarnOrCages) {
-                    if (barnOrCage1.equals(barnOrCage)) {
-                        barnOrCage.animals.add(animal);
-                        barnOrCage.animals.getLast().setIndex(barnOrCage.animals.size() - 1);
-                        barnOrCage.animals.getLast().setPositionX(barnOrCage.topLeftX + barnOrCage.getBarnORCageType().getDoorX());
-                        barnOrCage.animals.getLast().setPositionY(barnOrCage.topLeftY + barnOrCage.getBarnORCageType().getDoorY());
-                        animal.getType().increaseRemindInShop(-1);
-                    }
-                }
-            }
-        }
-        HashMap<String , Object> changeMoney = new HashMap<>();
-        changeMoney.put("Player" , player);
-        changeMoney.put("Money" , animal.getType().getPrice());
-        game.getDiffQueue().add(new Message(CommandType.CHANGE_MONEY , changeMoney));
-
-        HashMap<String , Object> reduceAnimal = new HashMap<>();
-        reduceAnimal.put("AnimalType" , animal.getType());
-        game.getDiffQueue().add(new Message(CommandType.REDUCE_ANIMAL , reduceAnimal));
-
-        HashMap<String , Object> buyAnimal = new HashMap<>();
-        buyAnimal.put("Animal" , animal);
-        buyAnimal.put("BarnOrCage" , barnOrCage);
-        buyAnimal.put("Player" , player);
-        game.getDiffQueue().add(new Message(CommandType.BUY_ANIMAL , buyAnimal));
-
-    }
 
     public void receiveRequestBuyAnimal(Message message) {
         User player = message.getFromBody("Player");
@@ -731,54 +661,6 @@ public class Marketing {
         TryAgain.setPosition(1200,480);
         TryAgain.setSize(200 , 40);
         return TryAgain;
-    }
-
-    public ArrayList<Message> payForBuilding(Message message , Game game) {
-        BarnORCageType barnORCageType = message.getFromBody("BarnOrCageType");
-        Point p = message.getFromBody("Point");
-        for (int i = p.x ; i < p.x + barnORCageType.getWidth() ; i++) {
-            for (int j = p.y ; j < p.y + barnORCageType.getHeight() ; j++) {
-                BarnOrCage barnOrCage = new BarnOrCage(barnORCageType , i , j);
-                getTileByCoordinates(i , j , game.getGameState()).setGameObject(barnOrCage);
-            }
-        }
-        User Player = message.getFromBody("Player");
-        for (User user : game.getGameState().getPlayers()) {
-            if (user.getUsername().trim().equals(Player.getUsername().trim()))  {
-                user.increaseMoney( - barnORCageType.getPrice());
-                HashMap<String ,Object> body = new HashMap<>();
-                body.put("Player", Player);
-                body.put("Money" , barnORCageType.getPrice());
-                game.getDiffQueue().add(new Message(CommandType.CHANGE_MONEY, body));
-            }
-        }
-
-        HashMap<String ,Object> body = new HashMap<>();
-        body.put("Item" , new Wood());
-        body.put("amount" , - barnORCageType.getWoodNeeded());
-        HashMap<String ,Object> body2 = new HashMap<>();
-        body2.put("Item" , new BasicRock());
-        body2.put("amount" , - barnORCageType.getStoneNeeded());
-        HashMap<String , Object> body3 = new HashMap<>();
-        body3.put("X" , p.getX());
-        body3.put("Y" , p.getY());
-        body.put("BarnOrCage" , getTileByCoordinates(p.x , p.y , game.getGameState()).getGameObject());
-        body3.put("Player" , message.getFromBody("Player"));
-        ArrayList<Message> messages = new ArrayList<>();
-        messages.add(new Message(CommandType.CHANGE_INVENTORY, body));
-        messages.add(new Message(CommandType.CHANGE_INVENTORY, body2));
-        messages.add(new Message(CommandType.PLACE_BARN_CAGE, body3));
-
-        return messages;
-
-    }
-
-    public void reduceBarnOrCageInMarket(Message message , Game game) {
-        BarnOrCage barnOrCage = new BarnOrCage(message.getFromBody("BarnOrCageType") , 0 , 0);
-        barnOrCage.setRemindInShop(0 , null);
-        HashMap<String , Object> body = new HashMap<>();
-        body.put("BarnOrCageType" , message.getFromBody("BarnOrCageType"));
-        game.getDiffQueue().add(new Message(CommandType.REDUCE_BARN_CAGE, body));
     }
 
 
@@ -1005,7 +887,7 @@ public class Marketing {
                     if (id == 1 || backPack.getRemindInShop(null) > 0) {
                         TextButton coinButton = new TextButton("",getSkin());
                         coinButton.clearChildren();
-                        buy(coinButton , backPack , PierreGeneralStore);
+                        //buy(coinButton , backPack , PierreGeneralStore);
 
                         Table innerTable = new Table();
                         innerTable.add(new Image(new Texture(Gdx.files.internal(f.getPath())))).left().padLeft(60).size(24, 24);
@@ -1124,23 +1006,6 @@ public class Marketing {
     }
 
 
-    public Message checkColision(Message message) {
-        HashMap<String , Object> body = new HashMap<>();
-        for (collisionRect rect : MarketMenu.getInstance().marketType.getRects()) {
-            if (! rect.checkCollision(message.getFromBody("X") , message.getFromBody("Y"))) {
-                body.put("Player" , message.getFromBody("Player") );
-                body.put("Timer" , message.getFromBody("Timer"));
-                body.put("Direction" , message.getFromBody("Direction"));
-                return new Message(CommandType.CAN_NOT_MOVE , body);
-            }
-        }
-        body.put("Player" , message.getFromBody("Player") );
-        body.put("Timer" , message.getFromBody("Timer"));
-        body.put("Direction" , message.getFromBody("Direction"));
-        body.put("X" , message.getFromBody("X"));
-        body.put("Y" , message.getFromBody("Y"));
-        return new Message(CommandType.MOVE_IN_MARKET , body);
-    }
 
 
     public Result BlackSmithProducts() {
