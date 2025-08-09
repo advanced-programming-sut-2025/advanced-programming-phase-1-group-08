@@ -67,7 +67,7 @@ public class ServerHandler extends Thread {
         if (TimeUtils.millis() - lastTime > hourSecond)
             passedOfTime(0, 1);
 
-
+        controller.CheckFriendDistance(game);
     }
 
     private void sendPassedTimeMessage (int hour, int day) throws IOException {

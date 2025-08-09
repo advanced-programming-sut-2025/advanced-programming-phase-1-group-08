@@ -8,6 +8,7 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.AnimalRenderer;
 import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.Enum.AllPlants.*;
@@ -1508,7 +1509,7 @@ public class GameControllerLogic {
         int xp = Integer.parseInt(GameMenuCommands.addXpCheat.getMatcher(input).group("xp"));
         String otherName = GameMenuCommands.addXpCheat.getMatcher(input).group("other");
         User other = findPlayerInGame(otherName);
-        HumanCommunications f = getFriendship(Main.getClient().getPlayer(), other);
+        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), other);
         f.addXP(xp);
     }
     public static void showChatDialog(Stage stage, Skin skin, Consumer<String> onMessageSent) {
@@ -1587,7 +1588,7 @@ public class GameControllerLogic {
             return;
         }
 
-        HumanCommunications f = getFriendship(Main.getClient().getPlayer(), destinationUser);
+        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), destinationUser);
         if (f == null) {
             onResult.accept(new Result(false, "No Friendship Among These Users!"));
             return;
@@ -1618,7 +1619,7 @@ public class GameControllerLogic {
             System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
             return;
         }
-        HumanCommunications f = getFriendship(Main.getClient().getPlayer(), destinationUser);
+        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), destinationUser);
         if (f == null) {
             System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
@@ -1633,7 +1634,7 @@ public class GameControllerLogic {
         if (username.equals(Main.getClient().getPlayer().getUsername())) {
             return new Result(false, "You can't Hug Yourself!");
         }
-        HumanCommunications f = getFriendship(Main.getClient().getPlayer(), findPlayerInGame(username));
+        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), findPlayerInGame(username));
         if (f == null) {
             return new Result(false, "There's no Friendship Among these Users!");
         }
@@ -1666,7 +1667,7 @@ public class GameControllerLogic {
         if (username.equals(Main.getClient().getPlayer().getUsername())) {
             return new Result(false, "You can't give Flower to Yourself!");
         }
-        HumanCommunications f = getFriendship(Main.getClient().getPlayer(), findPlayerInGame(username));
+        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), findPlayerInGame(username));
         if (f == null) {
             return new Result(false, "There's no Friendship Among these Users!");
         }
@@ -1680,7 +1681,7 @@ public class GameControllerLogic {
         if (username.equals(Main.getClient().getPlayer().getUsername())) {
             return new Result(false, "You can't Propose to Yourself!");
         }
-        HumanCommunications f = getFriendship(Main.getClient().getPlayer(), wife);
+        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), wife);
         if (f == null) {
             return new Result(false, "There's no Friendship Among these Users");
         }

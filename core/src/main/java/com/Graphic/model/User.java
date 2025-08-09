@@ -37,6 +37,8 @@ public class User {
     public boolean isFishing = false;
     public boolean doingMinigame = false;
 
+    private User FriendCloseToMe = null;
+
     public Sprite sprite;
     private ArrayList<String> Right;
     private ArrayList<String> Left;
@@ -104,7 +106,12 @@ public class User {
     private int fishingAbility  = 0;
     private int money;
 
-
+    public void setFriendCloseToMe(User FriendCloseToMe) {
+        this.FriendCloseToMe = FriendCloseToMe;
+    }
+    public User getFriendCloseToMe() {
+        return FriendCloseToMe;
+    }
 
     private  Farm farm;
     public int topLeftX;

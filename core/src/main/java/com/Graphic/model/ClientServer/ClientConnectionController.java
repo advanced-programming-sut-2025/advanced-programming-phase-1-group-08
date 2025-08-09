@@ -1,10 +1,16 @@
 package com.Graphic.model.ClientServer;
 
+import com.Graphic.Main;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Game;
 import com.Graphic.model.User;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.esotericsoftware.kryonet.Connection;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
     /// Server Side Controller!
@@ -32,8 +38,33 @@ public class ClientConnectionController {
             instance = new ClientConnectionController();
         return instance;
     }
-    public void CheckFriendDistance() {
+    public void CheckFriendDistance(Game game) throws IOException {
 
+
+        for (User p1 : game.getGameState().getPlayers()) {
+            boolean someoneClose = false;
+
+            for (User p2 : game.getGameState().getPlayers()) {
+                if (p1.getUsername().equals(p2.getUsername())) continue;
+
+                float deltaX = Math.abs((float) p1.getPositionX() - p2.getPositionX());
+                float deltaY = Math.abs((float)p1.getPositionY() - p2.getPositionY());
+                if (deltaY < 3f && deltaX < 3f) {
+                    HashMap<String, Object> body = new HashMap<>();
+                    // send to p1
+                    body.put("friend", p2);
+                    if (p1.getFriendCloseToMe() == null)
+                        sendToOnePerson(new Message(CommandType.A_FRIEND_IS_CLOSE, body), game, p1);
+                    someoneClose = true;
+                }
+            }
+
+            if (!someoneClose && p1.getFriendCloseToMe() != null) {
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("friend", null);
+                sendToOnePerson(new Message(CommandType.A_FRIEND_IS_CLOSE, body), game, p1);
+            }
+        }
     }
 
 

@@ -193,6 +193,10 @@ public class ClientWork  {
             case PASSED_TIME -> {
                 controller.PassedTime(message.getIntFromBody("Hour"), message.getIntFromBody("Day"));
             }
+            case A_FRIEND_IS_CLOSE -> {
+                User friend = message.getFromBody("friend");
+                Main.getClient().getPlayer().setFriendCloseToMe(friend);
+            }
         }
     }
     public void sendMessage(Message message) {connection.sendTCP(message);}

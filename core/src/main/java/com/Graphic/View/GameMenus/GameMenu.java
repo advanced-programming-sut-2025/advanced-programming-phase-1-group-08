@@ -8,6 +8,7 @@ import com.Graphic.View.AppMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.AnimalRenderer;
+import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.ClientServer.ServerHandler;
@@ -279,7 +280,14 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             getRenderer().render();
         }
 
-        checkFriendDistance();
+        User x = null;
+        if ((x = Main.getClient().getPlayer().getFriendCloseToMe()) != null) {
+            printTempFriend(x);
+        }
+        else {
+            tempFriend.setVisible(false);
+        }
+
         if (activeDialog != null && TimeUtils.millis() > dialogExpirationTime) {
             activeDialog.hide();
             activeDialog.remove();
@@ -623,33 +631,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
 
-    private void checkFriendDistance() {
-        boolean someoneClose = false;
+    private void printTempFriend(User p) {
 
-        for (User p : currentGame.getGameState().getPlayers()) {
-            if (p.getUsername().equalsIgnoreCase(Main.getClient().getPlayer().getUsername())) continue;
+        Texture iconTexture;
+        if (p.getGender().equalsIgnoreCase("man"))
+            iconTexture = new Texture("Ariyo/Shane_Icon.png");
+        else
+            iconTexture = new Texture("Ariyo/Sandy_Icon.png");
 
-            float deltaX = Math.abs((float) Main.getClient().getPlayer().getPositionX() - p.getPositionX());
-            float deltaY = Math.abs((float)Main.getClient().getPlayer().getPositionY() - p.getPositionY());
-            if (deltaY < 3f && deltaX < 3f) {
-                someoneClose = true;
+        tempFriend.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
 
-                Texture iconTexture;
-                if (p.getGender().equalsIgnoreCase("man"))
-                    iconTexture = new Texture("Ariyo/Shane_Icon.png");
-                else
-                    iconTexture = new Texture("Ariyo/Sandy_Icon.png");
-
-                tempFriend.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
-
-                tempFriend.setVisible(true);
-                break;
-            }
-        }
-
-        if (!someoneClose) {
-            tempFriend.setVisible(false);
-        }
+        tempFriend.setVisible(true);
     }
 
     public void eatingManagement(float delta) {
@@ -697,32 +689,22 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Dialog interactionDialog = new Dialog("", newSkin);
         dialogActivated = true;
         User me = Main.getClient().getPlayer();
-        User other = null;
-        for (User p : currentGame.getGameState().getPlayers()) {
-            if (p.getUsername().equalsIgnoreCase(me.getUsername())) continue;
 
-            float deltaX = Math.abs((float) Main.getClient().getPlayer().getPositionX() - p.getPositionX());
-            float deltaY = Math.abs((float) Main.getClient().getPlayer().getPositionY() - p.getPositionY());
-            if (deltaY < 3f && deltaX < 3f) {
-                other = p;
-                break;
-            }
-        }
+        User p = Main.getClient().getPlayer().getFriendCloseToMe();
+        if (p == null) return interactionDialog;
 
-        if (other == null) return interactionDialog;
 
         // ساختن دکمه‌ها دستی
         TextButton flowerButton = new TextButton("Send Flower", newSkin);
-        User finalOther = other;
         flowerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
-                if (getFriendship(me, finalOther) != null) {
+                if (ClientWorkController.getInstance().getFriendship(me, p) != null) {
                     interactionDialog.remove();
                     dialogActivated = false;
 
-                    result = giveFlowers(finalOther.getUsername());
+                    result = giveFlowers(p.getUsername());
                     if (result.IsSuccess()) {
                         bouquetImage.addAction(Actions.sequence(
                             Actions.alpha(0f),
@@ -731,7 +713,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                             Actions.fadeOut(0.5f)
                         ));
 
-                        if (getFriendship(me, finalOther) != null && getFriendship(me, finalOther).getLevel() < 3)
+                        if (ClientWorkController.getInstance().getFriendship(me, p) != null && ClientWorkController.getInstance().getFriendship(me, p).getLevel() < 3)
                             onePlusLabel.addAction(Actions.sequence(
                                 Actions.alpha(0f),
                                 Actions.fadeIn(0.3f),
@@ -746,16 +728,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
 
         TextButton hugButton = new TextButton("Hug", newSkin);
-        User finalOther1 = other;
         hugButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
-                if (getFriendship(me, finalOther1) != null) {
+                if (ClientWorkController.getInstance().getFriendship(me, p) != null) {
                     interactionDialog.remove();
                     dialogActivated = false;
 
-                    result = hug(finalOther1.getUsername());
+                    result = hug(p.getUsername());
                     if (result.IsSuccess()) {
                         hugImage.addAction(Actions.sequence(
                             Actions.alpha(0f),
@@ -778,24 +759,22 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
 
         TextButton talkButton = new TextButton("Talk", newSkin);
-        User finalOther2 = other;
         talkButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                talking(finalOther2.getUsername(), result -> {
+                talking(p.getUsername(), result -> {
                     showTimedDialog(result.massage(), 2f);
                 });
             }
         });
 
         TextButton proposeButton = new TextButton("Propose", newSkin);
-        User finalOther3 = other;
         proposeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
-                if (getFriendship(me, finalOther3) != null) {
-                    result = propose(finalOther3.getUsername());
+                if (ClientWorkController.getInstance().getFriendship(me, p) != null) {
+                    result = propose(p.getUsername());
                     if (result.IsSuccess()) {
                         ringImage.addAction(Actions.sequence(
                             Actions.alpha(0f),
@@ -1133,7 +1112,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
                 createEscMenu();
             else if (Gdx.input.isKeyJustPressed(Keys.increaseTime)) // TODO Handle With Server
-                updateClock(2);
+                updateClock();
             else if (Gdx.input.isKeyJustPressed(Keys.lighting))
                 createCloud();
             else if (Gdx.input.isKeyJustPressed(Keys.energySet))

@@ -1,6 +1,7 @@
 package com.Graphic.model;
 
 import com.Graphic.Main;
+import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.Enum.Commands.TradeMenuCommands;
 import com.Graphic.model.HelpersClass.Result;
 
@@ -82,7 +83,7 @@ public class Trade {
             return new Result(false, RED+"Respond to THIS Trade, Not Other Trades!");
 
         Trade trade = findTradeByID(id);
-        HumanCommunications f = getFriendship(Main.getClient().getPlayer(), trade.sender);
+        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), trade.sender);
         if (f == null)
             return new Result(false, RED+"Friendship Not Found!"+RESET);
 

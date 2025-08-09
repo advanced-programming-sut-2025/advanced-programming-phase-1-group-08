@@ -1,6 +1,7 @@
 package com.Graphic.model;
 
 import com.Graphic.Main;
+import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.HelpersClass.Result;
 
@@ -60,7 +61,7 @@ public class Marriage {
 
         boolean accepted = response.equalsIgnoreCase("accept");
 
-        HumanCommunications f = getFriendship(man, woman);
+        HumanCommunications f = ClientWorkController.getInstance().getFriendship(man, woman);
 
         assert f != null;
         if (accepted) {

@@ -43,6 +43,7 @@ public enum CommandType {
     FriendshipsInquiry,
     FriendshipsInqResponse,
     UPDATE_FRIENDSHIPS,
+    A_FRIEND_IS_CLOSE,
 
 
 
