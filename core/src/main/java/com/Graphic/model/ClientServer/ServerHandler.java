@@ -66,6 +66,8 @@ public class ServerHandler extends Thread {
     private void ServerRender() throws IOException {
         if (TimeUtils.millis() - lastTime > hourSecond)
             passedOfTime(0, 1);
+
+
     }
 
     private void sendPassedTimeMessage (int hour, int day) throws IOException {

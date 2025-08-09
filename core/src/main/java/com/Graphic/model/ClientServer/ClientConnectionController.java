@@ -7,6 +7,7 @@ import com.esotericsoftware.kryonet.Connection;
 import java.io.IOException;
 import java.util.Map;
 
+    /// Server Side Controller!
 public class ClientConnectionController {
 
 
@@ -21,6 +22,10 @@ public class ClientConnectionController {
                 entry.getValue().sendTCP(message);
             }
         }
+    }
+
+    public void CheckFriendDistance() {
+
     }
 
 
