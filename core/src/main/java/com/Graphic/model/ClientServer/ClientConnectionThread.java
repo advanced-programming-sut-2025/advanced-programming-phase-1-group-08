@@ -22,7 +22,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.AnswerShepherding;
-import static com.Graphic.model.ClientServer.ClientConnectionController.sendToAll;
 import static com.Graphic.model.Enum.Commands.CommandType.CHANGE_INVENTORY;
 
 public class ClientConnectionThread extends Thread {

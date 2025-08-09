@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.Graphic.model.ClientServer.ClientConnectionController.sendToAll;
 import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 
 public class ServerHandler extends Thread {
 
     private static ServerHandler instance;
+    private ClientConnectionController controller;
 
     public Game game;
     public HashMap<String , Object> body = new HashMap<>();
@@ -42,6 +42,7 @@ public class ServerHandler extends Thread {
         startTime = TimeUtils.millis();
         lastTime = TimeUtils.millis();
         this.game = game;
+        controller = ClientConnectionController.getInstance();
 
     }
     public static ServerHandler getInstance(Game game) {
@@ -56,7 +57,6 @@ public class ServerHandler extends Thread {
         while (true) {
             try {
                 ServerRender();
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -75,7 +75,7 @@ public class ServerHandler extends Thread {
         HashMap<String , Object> PassedTime = new HashMap<>();
         PassedTime.put("Hour", hour);
         PassedTime.put("Day", day);
-        sendToAll(new Message(CommandType.PASSED_TIME , PassedTime), game);
+        controller.sendToAll(new Message(CommandType.PASSED_TIME , PassedTime), game);
 
     }
     private void passedOfTime (int day, int hour) throws IOException {

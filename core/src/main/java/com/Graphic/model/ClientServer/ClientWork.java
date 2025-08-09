@@ -28,7 +28,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.AnswerShepherding;
-import static com.Graphic.model.ClientServer.ClientConnectionController.sendToAll;
 import static com.Graphic.model.Enum.Commands.CommandType.*;
 
 public class ClientWork  {
@@ -192,7 +191,7 @@ public class ClientWork  {
                 Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
             }
             case PASSED_TIME -> {
-                controller.PassedTime(message.getFromBody());
+                controller.PassedTime(message.getIntFromBody("Hour"), message.getIntFromBody("Day"));
             }
         }
     }

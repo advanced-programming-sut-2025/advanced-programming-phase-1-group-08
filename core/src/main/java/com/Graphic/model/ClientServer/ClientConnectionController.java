@@ -10,13 +10,14 @@ import java.util.Map;
     /// Server Side Controller!
 public class ClientConnectionController {
 
+    private static ClientConnectionController instance;
 
-    public static void sendToAll(Message message, Game game) throws IOException {
+    public void sendToAll(Message message, Game game) throws IOException {
         for (Map.Entry<User, Connection> entry : game.connections.entrySet()) {
             entry.getValue().sendTCP(message);
         }
     }
-    public static void sendToOnePerson(Message message , Game game , User user) throws IOException {
+    public void sendToOnePerson(Message message , Game game , User user) throws IOException {
         for (Map.Entry<User , Connection> entry : game.connections.entrySet()) {
             if (entry.getKey().getUsername().trim().equals(user.getUsername().trim())) {
                 entry.getValue().sendTCP(message);
@@ -24,6 +25,13 @@ public class ClientConnectionController {
         }
     }
 
+    private ClientConnectionController() {}
+
+    public static ClientConnectionController getInstance() {
+        if (instance == null)
+            instance = new ClientConnectionController();
+        return instance;
+    }
     public void CheckFriendDistance() {
 
     }
