@@ -1,0 +1,16 @@
+    در Launcher دسکتاپ (یا هرجای که new Main(...) می‌سازی) اینطوری بساز:
+KryoNetClient client = new KryoNetClient();
+Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+// ... config setup
+new Lwjgl3Application(new Main(client), config);
+
+
+        اگر می‌خواهی پیام‌ها را به UI منتقل کنی:
+
+client.setMessageHandler(msg -> {
+    // این‌جا باید از thread-safe ops استفاده کنی چون KryoNet listener احتمالاً از thread خودش اجرا می‌کنه
+    // اگر نیاز به آپدیت UI توی thread اصلی LibGDX داری از Gdx.app.postRunnable(...) استفاده کن
+    Gdx.app.postRunnable(() -> {
+        // اعمالی که باید روی UI انجام بشه
+    });
+});

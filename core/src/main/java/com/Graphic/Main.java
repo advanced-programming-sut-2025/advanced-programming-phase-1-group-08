@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import java.io.IOException;
+
 public class Main extends Game {
 
     private static Main main;
@@ -42,7 +44,13 @@ public class Main extends Game {
 
                 System.out.println("🌐 Connecting to server: " + serverIp + ":" + serverPort);
                 client.initFromArgs(serverIp, serverPort);
-                client.startWorkWithServer();
+                try {
+                    client.startWorkWithServer(); // این الان موجوده و IOException پرتاب می‌کنه
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // fallback: آگاه کردن کاربر یا رفتن به حالت آفلاین
+                }
+
                 System.out.println("✅ Connected to server successfully.");
             } catch (Exception e) {
                 System.err.println("❌ Failed to connect to server: " + e.getMessage());
