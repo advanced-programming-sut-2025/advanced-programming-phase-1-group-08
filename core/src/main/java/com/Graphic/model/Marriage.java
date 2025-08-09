@@ -1,5 +1,6 @@
 package com.Graphic.model;
 
+import com.Graphic.Main;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.HelpersClass.Result;
 
@@ -41,8 +42,8 @@ public class Marriage {
 
     public static void sendProposal(User from, User to) {
         Set<User> key = new HashSet<>(Arrays.asList(from, to));
-        currentGame.conversations.putIfAbsent(key, new ArrayList<>());
-        currentGame.conversations.get(key).add(new MessageHandling(from, to, PURPLE+"Proposal: " + from.getNickname() + " Wants to Marry You. Do You Accept to be his Wife?"+RESET));
+        Main.getClient().getLocalGameState().conversations.putIfAbsent(key, new ArrayList<>());
+        Main.getClient().getLocalGameState().conversations.get(key).add(new MessageHandling(from, to, PURPLE+"Proposal: " + from.getNickname() + " Wants to Marry You. Do You Accept to be his Wife?"+RESET));
     }
     public static Result proposalResponse(User man, User woman) { //todo به لیست اضافه کنی
         Scanner scanner = new Scanner(System.in);

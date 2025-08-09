@@ -135,14 +135,14 @@ public class HumanCommunications {
         updateLevel();
 
         Set<User> key = new HashSet<>(Arrays.asList(me, other));
-        currentGame.conversations.putIfAbsent(key, new ArrayList<>());
-        currentGame.conversations.get(key).add(new MessageHandling(me, other, text));
+        Main.getClient().getLocalGameState().conversations.putIfAbsent(key, new ArrayList<>());
+        Main.getClient().getLocalGameState().conversations.get(key).add(new MessageHandling(me, other, text));
 
         return new Result(true, GREEN+"You Sent a Message to " + other.getNickname() + "."+RESET);
     }
     public Result talkingHistory() {
         Set<User> key = new HashSet<>(Arrays.asList(player1, player2));
-        List<MessageHandling> messages = currentGame.conversations.getOrDefault(key, new ArrayList<>());
+        List<MessageHandling> messages = Main.getClient().getLocalGameState().conversations.getOrDefault(key, new ArrayList<>());
         System.out.println("📜 Chat between " + player1.getNickname() + " and " + player2.getNickname() + ":");
         for (MessageHandling m : messages) {
             m.print();

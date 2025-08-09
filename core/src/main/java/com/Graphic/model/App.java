@@ -1,6 +1,7 @@
 package com.Graphic.model;
 
 
+import com.Graphic.Main;
 import com.Graphic.model.Enum.Menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -42,7 +43,7 @@ public class App {
     }
 
     public static HumanCommunications getFriendship(User u1, User u2) {
-        for (HumanCommunications f : currentGame.friendships) {
+        for (HumanCommunications f : Main.getClient().getLocalGameState().friendships) {
             if (f.isBetween(u1, u2)) {
                 return f;
             }
