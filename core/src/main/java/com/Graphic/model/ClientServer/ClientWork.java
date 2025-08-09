@@ -33,6 +33,8 @@ import static com.Graphic.model.Enum.Commands.CommandType.*;
 
 public class ClientWork  {
 
+    private ClientWorkController controller;
+
     private GameState localGameState;
     private boolean exit = false;
     private volatile boolean running = false;
@@ -67,7 +69,7 @@ public class ClientWork  {
         });
 
         client.connect(5000 , serverIp , tcpPort);
-
+        controller = ClientWorkController.getInstance();
     }
 
     public void handleMessage(Message message) {
@@ -186,6 +188,9 @@ public class ClientWork  {
                 int y = message.getIntFromBody("Y");
                 InputGameController.getInstance().placeBarnOrCage(x, y, barnOrCage , user);
             }
+            case PASSED_TIME -> {
+                controller.PassedTime(message.getFromBody());
+            }
         }
     }
     public void sendMessage(Message message) {connection.sendTCP(message);}
@@ -205,15 +210,12 @@ public class ClientWork  {
     public boolean isRunning() {
         return running;
     }
-
     public void setRunning(boolean running) {
         this.running = running;
     }
-
     public User getPlayer() {
         return Player;
     }
-
     public void setPlayer(User player) {
         this.Player = player;
     }
@@ -224,7 +226,6 @@ public class ClientWork  {
         }
         return localGameState;
     }
-
     public Menu getCurrentMenu() {
         return currentMenu;
     }

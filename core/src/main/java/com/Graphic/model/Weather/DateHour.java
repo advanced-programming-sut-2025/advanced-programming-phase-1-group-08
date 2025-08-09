@@ -106,6 +106,18 @@ public class DateHour implements Cloneable {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DateHour dateHour = (DateHour) o;
+
+        if (year != dateHour.year) return false;
+        if (date != dateHour.date) return false;
+        if (!season.equals(dateHour.season)) return false;
+        return hour == dateHour.hour;
+    }
 
     private static int getDayDifferentBySeason (Season season1, Season season2) {
 

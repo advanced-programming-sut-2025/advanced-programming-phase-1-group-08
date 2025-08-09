@@ -1,6 +1,7 @@
 package com.Graphic.model.ClientServer;
 
 import com.Graphic.Controller.MainGame.InputGameController;
+import com.Graphic.Main;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Game;
 import com.Graphic.model.MapThings.Tile;
@@ -10,62 +11,90 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.Graphic.model.ClientServer.ClientConnectionController.sendToAll;
+import static com.Graphic.model.Weather.DateHour.getDayDifferent;
+
 public class ServerHandler extends Thread {
 
-    public static ServerHandler instance;
+    private static ServerHandler instance;
 
-    public ArrayList<User> Players;
-    public ArrayList<Tile> bigMap;
-    public DataOutputStream out;
-    public DataInputStream in;
     public Game game;
-
     public HashMap<String , Object> body = new HashMap<>();
-    public InputGameController controller;
 
     private final int hourSecond = 120000;
 
     public long startTime;
-    public static long lastTime;
+    public long lastTime;
 
     public DateHour currentDateHour;
 
 
 
-    private ServerHandler() {
-        initialize();
+    private ServerHandler(Game game) {
+        initialize(game);
     }
-    public void initialize() {
+    public void initialize(Game game) {
 
         startTime = TimeUtils.millis();
         lastTime = TimeUtils.millis();
-        game = new Game();
-        Players = new ArrayList<>();
-        bigMap = new ArrayList<>();
-        controller = InputGameController.getInstance();
+        this.game = game;
 
     }
-    public static ServerHandler getInstance() {
+    public static ServerHandler getInstance(Game game) {
         if (instance == null)
-            instance = new ServerHandler();
+            instance = new ServerHandler(game);
         return instance;
     }
 
-    public void render () {
+    @Override
+    public void run () {
+
         while (true) {
-            if (TimeUtils.millis() - lastTime > hourSecond)
-                sendPassedTimeMessage(1, 0);
+            try {
+                if (TimeUtils.millis() - lastTime > hourSecond)
+                    passedOfTime(0, 1);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void sendPassedTimeMessage (int hour, int day) {
+    private void sendPassedTimeMessage (int hour, int day) throws IOException {
 
         HashMap<String , Object> PassedTime = new HashMap<>();
         PassedTime.put("Hour", hour);
         PassedTime.put("Day", day);
-        game.getDiffQueue().add(new Message(CommandType.PASSED_TIME , PassedTime));
+        sendToAll(new Message(CommandType.PASSED_TIME , PassedTime), game);
+
     }
+    private void passedOfTime (int day, int hour) throws IOException {
+
+        DateHour dateHour = currentDateHour.clone();
+
+        dateHour.increaseHour(hour);
+        dateHour.increaseDay(day);
+
+        if (dateHour.getHour() > 22) {
+            passedOfTime(getDayDifferent(dateHour, Main.getClient().getLocalGameState().currentDate), 24 - dateHour.getHour() + 9 + hour);
+            return;
+        }
+        if (dateHour.getHour() < 9) {
+            passedOfTime(getDayDifferent(dateHour, Main.getClient().getLocalGameState().currentDate), 9 - dateHour.getHour() + hour);
+            return;
+        }
+
+        int number = getDayDifferent(currentDateHour, dateHour);
+
+        for (int i = 0 ; i < number ; i++)
+            currentDateHour.increaseDay(1);
+
+        currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
+        sendPassedTimeMessage(dateHour.getHour() - currentDateHour.getHour(), number);
+    }
+
 }

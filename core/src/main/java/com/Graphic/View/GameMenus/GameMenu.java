@@ -35,6 +35,7 @@ import com.Graphic.model.Places.Lake;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.ToolsPackage.FishingPole;
 import com.Graphic.model.ToolsPackage.Tools;
+import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -144,6 +145,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private Label timeLabel;
     private Label dateLabel;
     private Label weekDayLabel;
+    private DateHour lastDateHour;
 
     private boolean toolsMenuIsActivated;
     private Window toolsPopup;
@@ -197,7 +199,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private float currentRotation = 0f;
 
 
-    private GameMenu() {}
+    private GameMenu() {
+        initialize();
+        controller.init();
+    }
 
     public static GameMenu getInstance() {
         if (gameMenu == null) {
@@ -212,9 +217,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public void show() {
         controller.chooseMap();
         currentMenu = Menu.GameMenu;
-        initialize();
 
-        controller.init();
         mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -256,6 +259,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         inputController();
+
+        if (!Main.getClient().getLocalGameState().currentDate.equals(lastDateHour))
+            updateClock();
+
         initialLake();
 
         updateEnergyLabel();
@@ -959,6 +966,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         currentMenu = Menu.GameMenu;
 
+        lastDateHour = Main.getClient().getLocalGameState().currentDate.clone();
+
         controller = InputGameController.getInstance();
         stage = new Stage(new ScreenViewport());
         clockGroup = new Group();
@@ -1119,7 +1128,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 createToolsMenu();
             else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
                 createEscMenu();
-            else if (Gdx.input.isKeyJustPressed(Keys.increaseTime))
+            else if (Gdx.input.isKeyJustPressed(Keys.increaseTime)) // TODO Handle With Server
                 updateClock(2);
             else if (Gdx.input.isKeyJustPressed(Keys.lighting))
                 createCloud();
@@ -2044,9 +2053,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         stage.addActor(clockGroup);
     }
-    private void updateClock(int hourPassed) {
+    private void updateClock() {
 
-        passedOfTime(0, hourPassed);
         timeLabel.setText(Main.getClient().getLocalGameState().currentDate.getHour() + ":00");
         dateLabel.setText(Main.getClient().getLocalGameState().currentDate.getDate());
         weekDayLabel.setText(Main.getClient().getLocalGameState().currentDate.getDayOfTheWeek().name());
@@ -2054,8 +2062,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         seasonImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
         Texture newTexture1 = TextureManager.get(Main.getClient().getLocalGameState().currentWeather.getIconPath());
         weatherImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture1)));
-        ServerHandler.lastTime = TimeUtils.millis();
 
+        lastDateHour = Main.getClient().getLocalGameState().currentDate.clone();
     }
 
     private void createEscMenu () {

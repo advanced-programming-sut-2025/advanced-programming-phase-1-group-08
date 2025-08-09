@@ -105,12 +105,7 @@ public class GameState {
         this.chooseMap = chooseMap;
     }
 
-    public Weather getTomorrowWeather() {
-        return tomorrowWeather;
-    }
-    public Weather getCurrentWeather() {
-        return currentWeather;
-    }
+
     public DateHour getCurrentDate() {
         return currentDate;
     }

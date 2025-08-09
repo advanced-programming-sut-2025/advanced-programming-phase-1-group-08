@@ -209,9 +209,7 @@ public class ClientConnectionThread extends Thread {
                     Main.getClient().getPlayer().getFarm().getHome().getFridge().items.put(items,amount);
                 }
             }
-            case PASSED_TIME -> {
-                // controller.
-            }
+
         }
     }
 
