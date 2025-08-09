@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 
+import static com.Graphic.Main.newSkin;
 import static com.Graphic.View.GameMenus.GameMenu.*;
 import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
@@ -922,64 +923,64 @@ public class GameControllerLogic {
     }
 
     public static void showAnimalsInBarnOrCage() {
-        for (Animal animal : Main.getClient().getPlayer().getCurrentBarnOrCage().animals) {
-            if (! animal.isOut()) {
-                animal.getSprite().draw(Main.getBatch());
-                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
-                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
-                    animal.setTimer(animal.getTimer() + (Gdx.graphics.getDeltaTime()/2));
-                }
-                else {
-                    animal.setTimer(0);
-                }
-
-                animal.getSprite().setPosition(
-                    Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x,
-                    Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
-                //System.out.println(animal.getSprite().getX()+ ",,"+animal.getSprite().getY());
-                animal.getSprite().setSize(animal.getType().getX() , animal.getType().getY());
-
-                animal.getSprite().draw(Main.getBatch());
-
-            }
-        }
+//        for (Animal animal : Main.getClient().getPlayer().getCurrentBarnOrCage().animals) {
+//            if (! animal.isOut()) {
+//                animal.getSprite().draw(Main.getBatch());
+//                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
+//                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
+//                    animal.setTimer(animal.getTimer() + (Gdx.graphics.getDeltaTime()/2));
+//                }
+//                else {
+//                    animal.setTimer(0);
+//                }
+//
+//                animal.getSprite().setPosition(
+//                    Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x,
+//                    Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
+//                //System.out.println(animal.getSprite().getX()+ ",,"+animal.getSprite().getY());
+//                animal.getSprite().setSize(animal.getType().getX() , animal.getType().getY());
+//
+//                animal.getSprite().draw(Main.getBatch());
+//
+//            }
+//        }
     }
 
     public static Animal showAnimalInfo() {
-        if (Main.getClient().getPlayer().isInBarnOrCage()) {
-            for (Animal animal : Main.getClient().getPlayer().getCurrentBarnOrCage().animals) {
-                if (!animal.isOut()) {
-                    if (gameMenu.getMousePos().x >= animal.getSprite().getX() &&
-                        gameMenu.getMousePos().x <= animal.getSprite().getX() + animal.getSprite().getWidth() &&
-                        gameMenu.getMousePos().y >= animal.getSprite().getY() &&
-                        gameMenu.getMousePos().y <= animal.getSprite().getY() + animal.getSprite().getHeight()) {
-
-                        Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
-                            animal.getSprite().getX() + animal.getSprite().getWidth() / 2,
-                            animal.getSprite().getY() + animal.getSprite().getHeight() / 2);
-                        return animal;
-                    }
-                }
-            }
-        }
-        else {
-            for (BarnOrCage barnOrCage : Main.getClient().getPlayer().BarnOrCages) {
-                for (Animal animal : barnOrCage.animals) {
-                    if (animal.isOut()) {
-                        if (gameMenu.getMousePos().x >= animal.getSprite().getX() &&
-                            gameMenu.getMousePos().x <= animal.getSprite().getX() + animal.getSprite().getWidth() &&
-                            gameMenu.getMousePos().y >= animal.getSprite().getY() &&
-                            gameMenu.getMousePos().y <= animal.getSprite().getY() + animal.getSprite().getHeight()) {
-
-                            Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
-                                animal.getSprite().getX() + animal.getSprite().getWidth() / 2,
-                                animal.getSprite().getY() + animal.getSprite().getHeight() / 2);
-                            return animal;
-                        }
-                    }
-                }
-            }
-        }
+//        if (Main.getClient().getPlayer().isInBarnOrCage()) {
+//            for (Animal animal : Main.getClient().getPlayer().getCurrentBarnOrCage().animals) {
+//                if (!animal.isOut()) {
+//                    if (gameMenu.getMousePos().x >= animal.getSprite().getX() &&
+//                        gameMenu.getMousePos().x <= animal.getSprite().getX() + animal.getSprite().getWidth() &&
+//                        gameMenu.getMousePos().y >= animal.getSprite().getY() &&
+//                        gameMenu.getMousePos().y <= animal.getSprite().getY() + animal.getSprite().getHeight()) {
+//
+//                        Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
+//                            animal.getSprite().getX() + animal.getSprite().getWidth() / 2,
+//                            animal.getSprite().getY() + animal.getSprite().getHeight() / 2);
+//                        return animal;
+//                    }
+//                }
+//            }
+//        }
+//        else {
+//            for (BarnOrCage barnOrCage : Main.getClient().getPlayer().BarnOrCages) {
+//                for (Animal animal : barnOrCage.animals) {
+//                    if (animal.isOut()) {
+//                        if (gameMenu.getMousePos().x >= animal.getSprite().getX() &&
+//                            gameMenu.getMousePos().x <= animal.getSprite().getX() + animal.getSprite().getWidth() &&
+//                            gameMenu.getMousePos().y >= animal.getSprite().getY() &&
+//                            gameMenu.getMousePos().y <= animal.getSprite().getY() + animal.getSprite().getHeight()) {
+//
+//                            Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
+//                                animal.getSprite().getX() + animal.getSprite().getWidth() / 2,
+//                                animal.getSprite().getY() + animal.getSprite().getHeight() / 2);
+//                            return animal;
+//                        }
+//                    }
+//                }
+//            }
+//        }
         return null;
     }
 
@@ -1389,7 +1390,7 @@ public class GameControllerLogic {
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("Animal" , animal);
                 body.put("Number" , animal.getFriendShip());
-                Main.getClient().getRequests().add(new Message(CommandType.CALCULATE_ANIMAL_FRIENDSHIP , body);
+                Main.getClient().getRequests().add(new Message(CommandType.CALCULATE_ANIMAL_FRIENDSHIP , body));
             }
         }
     }
@@ -1731,7 +1732,7 @@ public class GameControllerLogic {
     }
 
     public static void exitGame () {
-        if (Main.getClient().getPlayer() != currentUser) {
+        if (Main.getClient().getPlayer() != Main.getClient().getPlayer()) {
             System.out.println(RED+"Access Denied!"+RESET);
             return;
         }
@@ -1890,7 +1891,7 @@ public class GameControllerLogic {
                     Main.getClient().getPlayer().setBuff_fishing_hoursLeft(0);
             }
             if (Main.getClient().getPlayer().Buff_mining_hoursLeft > 0) {
-                Main.getClient().getPlayer()Main.getClient().getPlayer().setBuff_mining_hoursLeft(Main.getClient().getPlayer().Buff_mining_hoursLeft - hour);
+                Main.getClient().getPlayer().setBuff_mining_hoursLeft(Main.getClient().getPlayer().Buff_mining_hoursLeft - hour);
                 if (Main.getClient().getPlayer().Buff_mining_hoursLeft < 0)
                     Main.getClient().getPlayer().setBuff_mining_hoursLeft(0);
             }
@@ -1952,7 +1953,7 @@ public class GameControllerLogic {
         setEnergyInMorning();
         createRandomForaging();
         createRandomMinerals();
-        NPAutomateTask();
+        NPCAutomaticTasks();
         unloadAndReward();
         calculateAnimalsFriendship();
         checkAnimalProduct();
@@ -2898,14 +2899,14 @@ public class GameControllerLogic {
     }
 
     // NPC task
-    public static void NPAutomateTask() {
+    public static void NPCAutomaticTasks() {
 
         User saveUser = Main.getClient().getPlayer();
 
-        for (User user : Main.getClient().getLocalGameState().getPlayers()Main.getClient().getLocalGameState().getPlayers())
+        for (User user : Main.getClient().getLocalGameState().getPlayers())
             for (NPC npc : NPC.values()) {
 
-                Main.getClient().getPlayer() = user;
+                Main.getClient().setPlayer(user);
                 user.setTodayTalking(npc, false);
                 user.setTodayGifting(npc, false);
 
@@ -2915,7 +2916,7 @@ public class GameControllerLogic {
 
                         advanceItem(npc.getGiftItem(), 1);
             }
-        Main.getClient().getPlayer() = saveUser;
+        Main.getClient().setPlayer(saveUser);
     }
     public static String OneNPCQuestsList (NPC npc) {
 
@@ -3100,7 +3101,7 @@ public class GameControllerLogic {
     }
     public static Result doTask3 (NPC npc) {
 
-        int dif = getDayDifferent(Main.getClient().getPlayer().getLevel3Date(npc), Main.getClient().getLocalGameState().currentDateMain.getClient().getLocalGameState().currentDate);
+        int dif = getDayDifferent(Main.getClient().getPlayer().getLevel3Date(npc), Main.getClient().getLocalGameState().currentDate);
 
         if (Main.getClient().getPlayer().getFriendshipLevel(npc) >= 3) {
             if (dif < npc.getRequest3DayNeeded())
@@ -3172,7 +3173,7 @@ public class GameControllerLogic {
                 int number = 1500;
                 if (Main.getClient().getPlayer().getFriendshipLevel(npc) > 1)
                     number *= 2;
-                Main.getClient().getPlayer()Main.getClient().getPlayer().increaseMoney(number);
+                Main.getClient().getPlayer().increaseMoney(number);
                 return new Result(true, "Your got +"+number+" money");
             }
             default -> {
