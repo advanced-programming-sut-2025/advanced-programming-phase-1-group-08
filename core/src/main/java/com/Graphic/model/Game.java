@@ -15,9 +15,7 @@ import java.util.*;
 
 public class Game {
 
-    public Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
-    public Map<Set<User>, List<Trade>> trades = new HashMap<>();
-    public ArrayList<HumanCommunications> friendships = new ArrayList<>();
+
 
 
 
@@ -28,14 +26,6 @@ public class Game {
         return this.currentMenu;
     }
 
-    public HumanCommunications getFriendship(User u1, User u2) {
-        for (HumanCommunications f : friendships) {
-            if (f.isBetween(u1, u2)) {
-                return f;
-            }
-        }
-        return null;
-    }
 
     public static void AddNewUser(String username, String pass, String nickname, String email, String gender,
                                   SecurityQuestions secQ, String secA) throws IOException{

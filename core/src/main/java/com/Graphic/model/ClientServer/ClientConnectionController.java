@@ -10,12 +10,12 @@ import java.util.Map;
 public class ClientConnectionController {
 
 
-    static void sendToAll(Message message, Game game) throws IOException {
+    public static void sendToAll(Message message, Game game) throws IOException {
         for (Map.Entry<User, Connection> entry : game.connections.entrySet()) {
             entry.getValue().sendTCP(message);
         }
     }
-    private static void sendToOnePerson(Message message , Game game , User user) throws IOException {
+    public static void sendToOnePerson(Message message , Game game , User user) throws IOException {
         for (Map.Entry<User , Connection> entry : game.connections.entrySet()) {
             if (entry.getKey().getUsername().trim().equals(user.getUsername().trim())) {
                 entry.getValue().sendTCP(message);
