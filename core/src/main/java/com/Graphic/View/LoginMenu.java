@@ -148,7 +148,7 @@ public class LoginMenu implements Screen, AppMenu {
                 try {
                     //Result result = controller.LoginRes(username, password);
                     Message message = controller.requestLogin(username, password);
-                    Main.getClient().getRequests().add(message);
+                    Main.getClient(null).getRequests().add(message);
 
 //                    if (result.IsSuccess()) {
 //                        User user = UserDataBase.findUserByUsername(username);
@@ -178,6 +178,7 @@ public class LoginMenu implements Screen, AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 App.currentMenu = Menu.RegisterMenu;
+                Main.getClient(null).setCurrentMenu(Menu.RegisterMenu);
                 Main.getMain().setScreen(new RegisterMenu());
             }
         });
@@ -431,6 +432,9 @@ public class LoginMenu implements Screen, AppMenu {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
+        if (Main.getClient(null).getCurrentMenu() != Menu.LoginMenu) {
+            Main.getMain().setScreen(Main.getClient(null).getCurrentMenu().getScreen());
+        }
     }
 
     @Override

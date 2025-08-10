@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 
 import java.util.Random;
 
+//import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.sortMap;
 import static com.Graphic.model.App.currentGame;
@@ -25,34 +26,38 @@ public class NPCManager {
             updateAutoWalk(npc, delta);
     }
 
+    public NPCManager() {
+
+    }
+
     private static void updateAutoWalk(NPC npc, float delta) {
 
 //        npc.getSprite().draw(Main.getBatch());
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            npc.setAutoWalking(!npc.isAutoWalking());
-        }
-
+//
+//        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+//            npc.setAutoWalking(!npc.isAutoWalking());
+//        }
+//
 //        npc.getSprite().setSize(25, 40);
-
-        if (!npc.isAutoWalking()) return;
-
-        npc.setElapsedTime(npc.getElapsedTime() + delta);
-
-        if (npc.getElapsedTime() >= npc.getWaitDuration()) {
-            Direction[] directions = Direction.values();
-            Direction newDir = directions[new Random().nextInt(directions.length)];
-            npc.setDirection(newDir);
-
-            // finding a walkable direction
-            int attempts = 0;
-            while (!checkWalking(npc) && attempts < 5) {
-                newDir = directions[new Random().nextInt(directions.length)];
-                npc.setDirection(newDir);
-                attempts++;
-            }
-
-
+//
+//        if (!npc.isAutoWalking()) return;
+//
+//        npc.setElapsedTime(npc.getElapsedTime() + delta);
+//
+//        if (npc.getElapsedTime() >= npc.getWaitDuration()) {
+//            Direction[] directions = Direction.values();
+//            Direction newDir = directions[new Random().nextInt(directions.length)];
+//            npc.setDirection(newDir);
+//
+//            // finding a walkable direction
+//            int attempts = 0;
+//            while (!checkWalking(npc) && attempts < 5) {
+//                newDir = directions[new Random().nextInt(directions.length)];
+//                npc.setDirection(newDir);
+//                attempts++;
+//            }
+//
+//
 //            for (int i = 0; i < npc.getMoveDistance(); i++) {
 //                if (checkWalking(npc)) {
 //                    float x = npc.getSprite().getX();
@@ -72,30 +77,115 @@ public class NPCManager {
 //            }
 //            npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(0));
 //            npc.getSprite().draw(Main.getBatch());
-
-
-
-
-            npc.setElapsedTime(0f);
-            npc.setWaitDuration(10 + new Random().nextFloat() * 3);
-            npc.setMoveDistance(8 + new Random().nextInt(16));
+//
+//
+//
+//
+//            npc.setElapsedTime(0f);
+//            npc.setWaitDuration(10 + new Random().nextFloat() * 3);
+//            npc.setMoveDistance(8 + new Random().nextInt(16));
         }
-    }
+
 
 
 
     public static void NPCMoveAnimation (NPC npc) {
 //        npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(npc.getTimer()));
-
-        if (! npc.getAnimation().isAnimationFinished(npc.getTimer())) {
-            npc.setTimer(npc.getTimer() + Gdx.graphics.getDeltaTime());
-        }
-        else {
-            npc.setTimer(0);
-        }
-
-        npc.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+//
+//        if (! npc.getAnimation().isAnimationFinished(npc.getTimer())) {
+//            npc.setTimer(npc.getTimer() + Gdx.graphics.getDeltaTime());
+//        }
+//        else {
+//            npc.setTimer(0);
+//        }
+//
+//        npc.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
     }
+
+//    public static void updateNPC(NPC npc) {
+//
+//        if (Gdx.input.isKeyPressed(Input.Keys.F) ) {
+//            npc.setDirection(Direction.Up);
+//            if (checkWalking(npc)) {
+//                float x = npc.getSprite().getX();
+//                float y = npc.getSprite().getY();
+//                float newX = x + npc.getDirection().getX() * 50 * Gdx.graphics.getDeltaTime();
+//                float newY = y - npc.getDirection().getY() * 50 * Gdx.graphics.getDeltaTime();
+//                npc.getSprite().setPosition(newX, newY);
+//                NPCMoveAnimation(npc);
+//
+//                npc.setPositionY(npc.getPositionY() - 5 * Gdx.graphics.getDeltaTime());
+//            } else {
+//                npc.setTimer(0);
+//                npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(0));
+//            }
+//            npc.setMoving(true);
+//            NPCMoveAnimation(npc);
+//        }
+//        else if (Gdx.input.isKeyPressed(Input.Keys.V) ) {
+//            npc.setDirection(Direction.Down);
+//            if (checkWalking(npc)) {
+//                float x = npc.getSprite().getX();
+//                float y = npc.getSprite().getY();
+//                float newX = x + npc.getDirection().getX() * 50 * Gdx.graphics.getDeltaTime();
+//                float newY = y - npc.getDirection().getY() * 50 * Gdx.graphics.getDeltaTime();
+//                npc.getSprite().setPosition(newX, newY);
+//                NPCMoveAnimation(npc);
+//
+//                npc.setPositionY(npc.getPositionY() + 5 * Gdx.graphics.getDeltaTime());
+//            } else {
+//                npc.setTimer(0);
+//                npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(0));
+//            }
+//            npc.setMoving(true);
+//            NPCMoveAnimation(npc);
+//        }
+//        else if (Gdx.input.isKeyPressed(Input.Keys.C) ) {
+//            npc.setDirection(Direction.Left);
+//            if (checkWalking(npc)) {
+//                float x = npc.getSprite().getX();
+//                float y = npc.getSprite().getY();
+//                float newX = x + npc.getDirection().getX() * 50 * Gdx.graphics.getDeltaTime();
+//                float newY = y - npc.getDirection().getY() * 50 * Gdx.graphics.getDeltaTime();
+//                npc.getSprite().setPosition(newX, newY);
+//                NPCMoveAnimation(npc);
+//
+//                npc.setPositionX(npc.getPositionX() - 5 * Gdx.graphics.getDeltaTime());
+//            } else {
+//                npc.setTimer(0);
+//                npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(0));
+//            }
+//            npc.setMoving(true);
+//            NPCMoveAnimation(npc);
+//        }
+//        else if (Gdx.input.isKeyPressed(Input.Keys.B) ) {
+//            npc.setDirection(Direction.Right);
+//            if (checkWalking(npc)) {
+//                float x = npc.getSprite().getX();
+//                float y = npc.getSprite().getY();
+//                float newX = x + npc.getDirection().getX() * 50 * Gdx.graphics.getDeltaTime();
+//                float newY = y - npc.getDirection().getY() * 50 * Gdx.graphics.getDeltaTime();
+//                npc.getSprite().setPosition(newX, newY);
+//                NPCMoveAnimation(npc);
+//
+//                npc.setPositionX(npc.getPositionX() + 5 * Gdx.graphics.getDeltaTime());
+//            } else {
+//                npc.setTimer(0);
+//                npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(0));
+//            }
+//            npc.setMoving(true);
+//            NPCMoveAnimation(npc);
+//        }
+//
+//        else {
+//            npc.setMoving(false);
+//            npc.setTimer(0);
+//            npc.getSprite().setRegion(npc.getAnimation().getKeyFrame(0));
+//
+//        }
+//
+//        npc.getSprite().draw(Main.getBatch());
+//    }
 
     private static boolean checkWalking(NPC npc) {
         try {
@@ -106,7 +196,7 @@ public class NPCManager {
                 5 * Gdx.graphics.getDeltaTime());
 
 
-            if ((getTileByCoordinates(x, 90-y).getGameObject() instanceof Walkable)) {
+            if ((getTileByCoordinates(x, 90-y , Main.getClient(null).getLocalGameState()).getGameObject()) instanceof Walkable) {
                 return true;
             }
         }

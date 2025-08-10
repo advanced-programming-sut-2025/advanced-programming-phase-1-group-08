@@ -1,6 +1,7 @@
 package com.Graphic.model.Places;
 
 import com.Graphic.Controller.MainGame.GameControllerLogic;
+import com.Graphic.Main;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.OtherItem.Fridge;
 import com.Graphic.model.MapThings.GameObject;
@@ -11,13 +12,12 @@ import java.util.ArrayList;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class Home extends GameObject {
-    private final int width;
-    private final int length;
+    private int width;
+    private int length;
     private int topLeftX;
     private int topLeftY;
     private Fridge fridge;
     public door houseDoor;
-    private String Path;
 
     public Home(int topLeftX, int topLeftY, int width , int length, Fridge fridge) {
         this.topLeftX = topLeftX;
@@ -25,6 +25,10 @@ public class Home extends GameObject {
         this.width = width;
         this.length = length;
         this.fridge = fridge;
+    }
+
+    public Home() {
+
     }
     ArrayList<String> machines = new ArrayList<>(); // دستگاه هایی که کرفت کردیم و میخواهیم با آنها فراوری یا کارهای دیگر بکنیم
 
@@ -56,7 +60,7 @@ public class Home extends GameObject {
 
         for (int i = topLeftX; i < topLeftX + width; i++) {
             for (int j = topLeftY; j < topLeftY + length; j++) {
-                if (GameControllerLogic.getTileByCoordinates(i , j).getGameObject().equals(this)) {
+                if (GameControllerLogic.getTileByCoordinates(i , j , Main.getClient(null).getLocalGameState()).getGameObject().equals(this)) {
                     int l = 7 * (j - topLeftY) + i - topLeftX + 1;
                     Path = "Places/home" + l + ".png";
                     return Path;

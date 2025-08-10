@@ -2,21 +2,30 @@ package com.Graphic.model;
 
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
-import com.Graphic.model.ClientServer.ServerHandler;
+import com.Graphic.model.ClientServer.PlayerHandler;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.SecurityQuestions;
+import com.Graphic.model.Enum.WeatherTime.Weather;
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.Places.Farm;
+import com.Graphic.model.Places.Market;
 import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.SaveData.UserStorage;
+import com.Graphic.model.Weather.DateHour;
 import com.esotericsoftware.kryonet.Connection;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.*;
 
 public class Game {
 
-
+    public Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
+    public Map<Set<User>, List<Trade>> trades = new HashMap<>();
+    public ArrayList<HumanCommunications> friendships = new ArrayList<>();
 
 
 
@@ -27,6 +36,14 @@ public class Game {
         return this.currentMenu;
     }
 
+    public HumanCommunications getFriendship(User u1, User u2) {
+        for (HumanCommunications f : friendships) {
+            if (f.isBetween(u1, u2)) {
+                return f;
+            }
+        }
+        return null;
+    }
 
     public static void AddNewUser(String username, String pass, String nickname, String email, String gender,
                                   SecurityQuestions secQ, String secA) throws IOException{
@@ -34,15 +51,15 @@ public class Game {
         String hashPASS = PasswordHashUtil.hashPassword(pass);
 
         User newUser = new User(
-            username,
-            nickname,
-            email,
-            gender,
-            0,
-            100,
-            hashPASS,
-            secQ,
-            secA
+                username,
+                nickname,
+                email,
+                gender,
+                0,
+                100,
+                hashPASS,
+                secQ,
+                secA
         );
         System.out.println("hi-1");
         //App.users.add(newUser);
@@ -91,7 +108,7 @@ public class Game {
             for (Map.Entry<User , Connection> entry : connections.entrySet()) {
                 entry.getValue().sendTCP(new Message(CommandType.GAME_START ,  body));
             }
-            ServerHandler.getInstance(this).start();
+
         }
 
     }

@@ -1,6 +1,5 @@
 package com.Graphic.Controller.Menu;
 
-import com.Graphic.Main;
 import com.Graphic.model.App;
 import com.Graphic.model.SaveData.UserStorage;
 import com.Graphic.model.User;
@@ -26,21 +25,21 @@ public class AvatarController {
 
 
     public int getCurrentAvatarIndex() {
-        if (Main.getClient().getPlayer() == null) {
+        if (App.currentUser == null) {
             return 0;
         }
 
-        String key = AVATAR_INDEX_KEY + Main.getClient().getPlayer().getUsername();
+        String key = AVATAR_INDEX_KEY + App.currentUser.getUsername();
         return prefs.getInteger(key, 0);
     }
 
 
     public float[] getCurrentColor() {
-        if (Main.getClient().getPlayer() == null) {
+        if (App.currentUser == null) {
             return new float[]{1, 1, 1};
         }
 
-        String username = Main.getClient().getPlayer().getUsername();
+        String username = App.currentUser.getUsername();
         float r = prefs.getFloat(COLOR_R_KEY + username, 1.0f);
         float g = prefs.getFloat(COLOR_G_KEY + username, 1.0f);
         float b = prefs.getFloat(COLOR_B_KEY + username, 1.0f);
@@ -50,12 +49,12 @@ public class AvatarController {
 
 
     public boolean saveAvatarSettings(int avatarIndex, float r, float g, float b) {
-        if (Main.getClient().getPlayer() == null) {
+        if (App.currentUser == null) {
             return false;
         }
 
         try {
-            String username = Main.getClient().getPlayer().getUsername();
+            String username = App.currentUser.getUsername();
 
             prefs.putInteger(AVATAR_INDEX_KEY + username, avatarIndex);
             prefs.putFloat(COLOR_R_KEY + username, r);
@@ -74,11 +73,11 @@ public class AvatarController {
 
 
     public void resetToDefaults() {
-        if (Main.getClient().getPlayer() == null) {
+        if (App.currentUser == null) {
             return;
         }
 
-        String username = Main.getClient().getPlayer().getUsername();
+        String username = App.currentUser.getUsername();
         prefs.putInteger(AVATAR_INDEX_KEY + username, 0);
         prefs.putFloat(COLOR_R_KEY + username, 1.0f);
         prefs.putFloat(COLOR_G_KEY + username, 1.0f);
@@ -106,7 +105,7 @@ public class AvatarController {
         List<User> users = UserStorage.loadUsers();
 
         for (User user : users) {
-            if (user.getUsername().equals(Main.getClient().getPlayer().getUsername())) {
+            if (user.getUsername().equals(App.currentUser.getUsername())) {
                 // ذخیره اطلاعات آواتار در یوزر
                 // اگر فیلدهای مربوط به آواتار در کلاس User ندارید، می‌تونید اضافه کنید
                 // user.setAvatarIndex(avatarIndex);

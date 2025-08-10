@@ -2,17 +2,29 @@ package com.Graphic.View;
 
 import com.Graphic.Main;
 import com.Graphic.View.GameMenus.GameMenu;
+import com.Graphic.model.App;
+import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.Enum.Commands.CommandType;
+import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+import static com.badlogic.gdx.Input.Keys.ENTER;
 
 public class PlayGameMenu implements Screen, AppMenu {
     private Stage stage;
@@ -67,8 +79,7 @@ public class PlayGameMenu implements Screen, AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 try {
-                    Main.getMain().setScreen(GameMenu.getInstance());
-                    System.out.println("Starting new game...");
+                    newGame();
                 } catch (Exception e) {
                     System.err.println("Error starting new game: " + e.getMessage());
                     e.printStackTrace();
@@ -98,7 +109,11 @@ public class PlayGameMenu implements Screen, AppMenu {
         joinGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                showJoinGameDialog();
+                try {
+                    joinGame();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -230,12 +245,55 @@ public class PlayGameMenu implements Screen, AppMenu {
         stage.addActor(joinWindow);
     }
 
+    private void newGame() {
+        TextField field = new TextField("", Main.getSkin());
+        field.setPosition(100 , 200);
+        TextButton button = new TextButton("", Main.getSkin());
+        button.setPosition(100 , 100);
+        field.setMessageText("Enter ID...");
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("id", field.getText());
+                body.put("Player", Main.getClient(null).getPlayer());
+                Main.getClient(null).getRequests().add(new Message(CommandType.NEW_GAME, body));
+                field.remove();
+            }
+        });
+        stage.addActor(field);
+        stage.addActor(button);
+
+    }
+    private void joinGame()  {
+        TextField field = new TextField("", Main.getSkin());
+        field.setPosition(100 , 200);
+        TextButton button = new TextButton("", Main.getSkin());
+        button.setPosition(100 , 100);
+        field.setMessageText("Enter ID...");
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                HashMap<String ,Object> body = new HashMap<>();
+                body.put("id", field.getText());
+                body.put("Player" , Main.getClient(null).getPlayer());
+                Main.getClient(null).getRequests().add(new Message(CommandType.JOIN_GAME, body));
+                field.remove();
+            }
+        });
+        stage.addActor(field);
+        stage.addActor(button);
+    }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
+        if (Main.getClient(null).getCurrentMenu() != Menu.PlayGameMenu) {
+            Main.getMain().setScreen(GameMenu.getInstance());
+        }
     }
 
     @Override

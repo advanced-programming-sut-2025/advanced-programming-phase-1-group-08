@@ -106,18 +106,6 @@ public class DateHour implements Cloneable {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DateHour dateHour = (DateHour) o;
-
-        if (year != dateHour.year) return false;
-        if (date != dateHour.date) return false;
-        if (!season.equals(dateHour.season)) return false;
-        return hour == dateHour.hour;
-    }
 
     private static int getDayDifferentBySeason (Season season1, Season season2) {
 
@@ -182,7 +170,7 @@ public class DateHour implements Cloneable {
             case Winter -> firstSeason = 4;
         }
         int nowSeason =0;
-        switch (Main.getClient().getLocalGameState().currentDate.getSeason()) {
+        switch (Main.getClient(null).getLocalGameState().currentDate.getSeason()) {
             case Spring -> {
                 nowSeason =1;
             }
@@ -198,9 +186,9 @@ public class DateHour implements Cloneable {
         }
 
         int firstHour= first.year * 2688 + firstSeason * 672 + (first.getDate() -1)*24 + first.getHour();
-        int secondHour= Main.getClient().getLocalGameState().currentDate.year * 2688 +
-            nowSeason * 672 + (Main.getClient().getLocalGameState().currentDate.getDate() -1 ) * 24 +
-            Main.getClient().getLocalGameState().currentDate.getHour();
+        int secondHour= Main.getClient(null).getLocalGameState().currentDate.year * 2688 +
+            nowSeason * 672 + (Main.getClient(null).getLocalGameState().currentDate.getDate() -1 ) * 24 +
+            Main.getClient(null).getLocalGameState().currentDate.getHour();
 
         return secondHour - firstHour;
     }

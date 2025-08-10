@@ -50,5 +50,6 @@ public enum CommandType {
 
 
     PASSED_TIME,
+    PLAYER_HANDLER,
 
 }

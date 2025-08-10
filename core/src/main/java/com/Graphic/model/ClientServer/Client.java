@@ -8,14 +8,15 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 public class Client extends Game {
 
     private final static String SERVER_IP = "localhost";
-    public final static int SERVER_PORT = 8081;
+    private final static int SERVER_PORT = 8080;
     private GameState localGameState = new GameState();
 
 
     public static void main(String[] args) {
 
         try {
-            KryoNetClient clientWork = new KryoNetClient();
+            ClientWork clientWork = new ClientWork("127.0.0.1",Network.TCP_PORT , Network.UDP_PORT);
+            Thread.sleep(1000);
             Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
             config.setTitle("StardewValley");
             config.setWindowedMode(1920, 1080);

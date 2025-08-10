@@ -9,9 +9,11 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
+
 public class UserRenderer {
 
-    private HashMap<Direction , Animation<Texture> > animations;
+    private HashMap<Direction , Animation<Texture> > animations = new HashMap<>();
 
 
     public void addToAnimations(Direction direction , ArrayList<String> frames) {
@@ -22,10 +24,12 @@ public class UserRenderer {
     }
 
     public void render(User user) {
-        if (user.isFishing || user.doingMinigame) return;
-
         Animation<Texture> animation = animations.get(user.getDirection());
         Main.getBatch().draw(animation.getKeyFrame(user.getTimer() , true) ,
-            user.getPositionX() , user.getPositionY());
+            user.getPositionX() , user.getPositionY() , TEXTURE_SIZE , TEXTURE_SIZE * 1.5f);
+
+        if ( animation.isAnimationFinished(user.getTimer())) {
+            user.setTimer(0.0f);
+        }
     }
 }

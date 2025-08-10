@@ -1,9 +1,6 @@
 package com.Graphic.model;
 
 
-import com.Graphic.Main;
-import com.Graphic.model.ClientServer.Message;
-import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -23,6 +20,7 @@ public class App {
 //    public static Skin skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
     public static HashMap<String , Game> games = new HashMap<>();
     public static Game currentGame;
+    public static User currentUser;
 
 //    public static ArrayList<User> players = new ArrayList<>();
 
@@ -42,6 +40,15 @@ public class App {
 
     public static Menu getCurrentMenu() {
         return currentMenu;
+    }
+
+    public static HumanCommunications getFriendship(User u1, User u2) {
+        for (HumanCommunications f : currentGame.friendships) {
+            if (f.isBetween(u1, u2)) {
+                return f;
+            }
+        }
+        return null;
     }
 
 

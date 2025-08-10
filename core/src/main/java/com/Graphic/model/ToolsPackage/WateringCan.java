@@ -22,9 +22,9 @@ public class WateringCan extends Tools {
 
     public int healthCost() {
 
-        double x = Main.getClient().getLocalGameState().currentWeather.getEnergyCostCoefficient();
+        double x = Main.getClient(null).getLocalGameState().currentWeather.getEnergyCostCoefficient();
 
-        if (Main.getClient().getPlayer().getLevelFarming() == 4)
+        if (Main.getClient(null).getPlayer().getLevelFarming() == 4)
             return (int) (this.type.getEnergyCost()*x)+1;
         return (int) (this.type.getEnergyCost()*x);
     }

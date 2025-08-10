@@ -1,6 +1,5 @@
 package com.Graphic.Controller.Menu;
 
-import com.Graphic.Main;
 import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.SecurityQuestions;
@@ -17,6 +16,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import static com.Graphic.model.App.currentUser;
 
 public class RegisterController {
 
@@ -298,8 +298,8 @@ public class RegisterController {
                 System.out.println("Security question and answer set successfully!");
                 MySecQ = SecurityQuestions.values()[questionNumber - 1];
                 Game.AddNewUser(Username, Password, NickName, Email, Gender, MySecQ, answer);
-                Main.getClient().getPlayer().setMySecurityQuestion(SecurityQuestions.values()[questionNumber - 1]);
-                Main.getClient().getPlayer().setMySecurityAnswer(answer);
+                currentUser.setMySecurityQuestion(SecurityQuestions.values()[questionNumber - 1]);
+                currentUser.setMySecurityAnswer(answer);
             }
         } else {
             System.out.println("Invalid Command!");

@@ -3,7 +3,6 @@ package com.Graphic.model.Enum.NPC;
 import com.Graphic.model.*;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Enum.Direction;
-import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Enum.WeatherTime.Weather;

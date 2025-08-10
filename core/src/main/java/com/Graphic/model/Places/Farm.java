@@ -32,12 +32,13 @@ public class Farm {
     public void setLake(Lake lake) {
         this.lake = lake;
     }
-    public Lake getLake() {
-        return lake;
-    }
 
     public GreenHouse getGreenHouse() {
         return greenHouse;
+    }
+
+    public Farm() {
+
     }
 
     public Mine getMine() {

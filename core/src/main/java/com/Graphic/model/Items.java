@@ -8,7 +8,7 @@ import com.Graphic.model.ToolsPackage.CraftingItem;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-public abstract class Items extends GameObject {
+public class Items extends GameObject {
 
     @Override
     public boolean equals(Object obj) {
@@ -105,12 +105,24 @@ public abstract class Items extends GameObject {
 
 
 
-    public abstract int getSellPrice();
-    public abstract int getRemindInShop(MarketType marketType);
-    public abstract String getName();
-    public abstract String getInventoryIconPath();
-    public abstract void setRemindInShop(int amount , MarketType marketType);
-    public abstract int getMarketPrice(MarketType marketType);
+    public int getSellPrice() {
+        return 0;
+    };
+    public int getRemindInShop(MarketType marketType) {
+        return 0;
+    };
+    public String getName() {
+        return "name";
+    };
+    public String getInventoryIconPath() {
+        return "name";
+    };
+    public void setRemindInShop(int amount , MarketType marketType) {
+        return;
+    };
+    public int getMarketPrice(MarketType marketType) {
+        return 0;
+    };
     public void setX(int x) {
         if (this instanceof CraftingItem) {
             ((CraftingItem) this).setX(x);

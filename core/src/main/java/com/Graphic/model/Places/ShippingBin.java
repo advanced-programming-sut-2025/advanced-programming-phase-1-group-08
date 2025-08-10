@@ -9,21 +9,25 @@ import com.Graphic.model.MapThings.Tile;
 
 import java.util.HashMap;
 
-import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
+//import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
 
 
 public  class ShippingBin extends Items {
-    private static final int width=1;
-    private static final int height=1;
-    private static final int coinNeeded=250;
-    private static final int woodNeeded=150;
+    private static int width=1;
+    private static int height=1;
+    private static int coinNeeded=250;
+    private static int woodNeeded=150;
     private static int remindInShop=1;
 
     private int topLeftX;
     private int topLeftY;
 
     public HashMap<Items, Integer> binContents=new HashMap<>();
+
+    public ShippingBin() {
+
+    }
 
 
     public int getTopLeftX() {

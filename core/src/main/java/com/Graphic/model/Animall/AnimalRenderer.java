@@ -37,6 +37,9 @@ public class AnimalRenderer {
         Main.getBatch().draw(animation.getKeyFrame(animal.getTimer() , true), animal.getX(), animal.getY());
     }
 
+    public AnimalRenderer() {
+    }
+
     public Animal getAnimal() {
         return animal;
     }

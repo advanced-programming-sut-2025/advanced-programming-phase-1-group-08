@@ -93,35 +93,37 @@ public class GameControllerLogic {
 
     public static void init() {
         createScreenOverlay(gameMenu.getStage());
-        lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
+        //TODO
+        lastTimeUpdate = new DateHour(); /* currentGame.getGameState().currentDate.clone()*/;
     }
 
     public static void update(float delta) {
         EnterTheBarnOrCage();
         EnterTheMine();
-        EnterTheMarket(Main.getClient().getPlayer());
-        addPlayerToMarket(Main.getClient().getPlayer());
-            if ( gameMenu.isFirstLoad() && Main.getClient().getPlayer().isInMine()) {
+        EnterTheMarket(Main.getClient(null).getPlayer());
+        addPlayerToMarket(Main.getClient(null).getPlayer());
+            if ( gameMenu.isFirstLoad() && Main.getClient(null).getPlayer().isInMine()) {
                 gameMenu.setFirstLoad(false);
                 camera.setToOrtho(false ,Gdx.graphics.getWidth() / 4 , Gdx.graphics.getHeight() / 4);
                 gameMenu.setTiledMap(new TmxMapLoader().load("Mohamadreza/Maps/Mines/10.tmx"));
                 gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap(),1f));
 
             }
-            else if ( gameMenu.isFirstLoad() && Main.getClient().getPlayer().isInBarnOrCage()) {
+            else if ( gameMenu.isFirstLoad() && Main.getClient(null).getPlayer().isInBarnOrCage()) {
                 gameMenu.setFirstLoad(false);
                 camera.setToOrtho(false , 300 , 150);
-                gameMenu.setTiledMap(new TmxMapLoader().load(Main.getClient().getPlayer().getBarnOrCagePath()));
+                gameMenu.setTiledMap(new TmxMapLoader().load(Main.getClient(null).getPlayer().getBarnOrCagePath()));
                 gameMenu.setRenderer(new OrthogonalTiledMapRenderer(gameMenu.getMap() , 1f));
             }
 
-        handleLightning(delta);
+            //TODO
+        //handleLightning(delta);
 
 
-        if (Main.getClient().getLocalGameState().currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
-            AutomaticFunctionAfterAnyAct();
-            lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
-        }
+//        if (currentGame.getGameState().currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
+//            AutomaticFunctionAfterAnyAct();
+//            lastTimeUpdate = currentGame.getGameState().currentDate.clone();
+//        }
 
     }
 
@@ -129,7 +131,7 @@ public class GameControllerLogic {
 
         if (cloud == null) {
             if ((TimeUtils.millis() / 1000) % 40 == 0)
-                if (Main.getClient().getLocalGameState().currentDate.equals(Weather.Stormy)) {
+                if (currentGame.getGameState().currentDate.equals(Weather.Stormy)) {
 
                     Random random1 = new Random();
                     if (random1.nextInt(2) == 1)
@@ -155,7 +157,7 @@ public class GameControllerLogic {
     public static void createCloud() {
 
         Random random1 = new Random();
-        User user = Main.getClient().getLocalGameState().getPlayers().get(random1.nextInt(Main.getClient().getLocalGameState().getPlayers().size()));
+        User user = currentGame.getGameState().getPlayers().get(random1.nextInt(currentGame.getGameState().getPlayers().size()));
         Tile tile = selectTileForThor(user.getFarm());
 
         if (tile != null)
@@ -183,7 +185,7 @@ public class GameControllerLogic {
     }
     public static boolean isInGreenHouse (Tile tile) {
 
-        for (User user : Main.getClient().getLocalGameState().getPlayers()) {
+        for (User user : currentGame.getGameState().getPlayers()) {
 
             GreenHouse greenHouse = user.getFarm().getGreenHouse();
 
@@ -208,7 +210,7 @@ public class GameControllerLogic {
     }
     public static boolean checkAmountProductAvailable (Items items, int number) {
 
-        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
+        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
 
         if (inventory.Items.containsKey(items)) {
             int amount = inventory.Items.get(items);
@@ -218,7 +220,7 @@ public class GameControllerLogic {
     }
     public static void advanceItem(Items items, int amount) {
 
-        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
+        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
 
         if (inventory.Items.containsKey(items)) {
             inventory.Items.compute(items, (k, x) -> x + amount);
@@ -226,8 +228,8 @@ public class GameControllerLogic {
         else
             inventory.Items.put(items, amount);
 
-        if (Main.getClient().getPlayer().getBackPack().inventory.Items.get(items) == 0) {
-            Main.getClient().getPlayer().getBackPack().inventory.Items.remove(items);
+        if (Main.getClient(null).getPlayer().getBackPack().inventory.Items.get(items) == 0) {
+            Main.getClient(null).getPlayer().getBackPack().inventory.Items.remove(items);
         }
     }
 
@@ -238,30 +240,31 @@ public class GameControllerLogic {
         float y = Main.getClient().getPlayer().getPositionY();
 
         if (dir == 1)
-            return getTileByCoordinates((int) (x+1), (int) y);
+            return getTileByCoordinates((int) (x+1), (int) y , Main.getClient(null).getLocalGameState());
         else if (dir == 2)
-            return getTileByCoordinates((int)x+1, (int)y+1);
+            return getTileByCoordinates((int)x+1, (int)y+1 , Main.getClient(null).getLocalGameState());
         else if (dir == 3)
-            return getTileByCoordinates((int)x, (int)y+1);
+            return getTileByCoordinates((int)x, (int)y+1 , Main.getClient(null).getLocalGameState());
         else if (dir == 4)
-            return getTileByCoordinates((int)x-1, (int)y+1);
+            return getTileByCoordinates((int)x-1, (int)y+1 , Main.getClient(null).getLocalGameState());
         else if (dir == 5)
-            return getTileByCoordinates((int)x-1, (int)y);
+            return getTileByCoordinates((int)x-1, (int)y , Main.getClient(null).getLocalGameState());
         else if (dir == 6)
-            return getTileByCoordinates((int)x-1, (int)y-1);
+            return getTileByCoordinates((int)x-1, (int)y-1 , Main.getClient(null).getLocalGameState());
         else if (dir == 7)
-            return getTileByCoordinates((int)x, (int)y-1);
+            return getTileByCoordinates((int)x, (int)y-1 , Main.getClient(null).getLocalGameState());
         else if (dir == 8)
-            return getTileByCoordinates((int)x+1, (int)y-1);
+            return getTileByCoordinates((int)x+1, (int)y-1 , Main.getClient(null).getLocalGameState());
         else
             return null;
     }
     public static Tile getTileByCoordinates(int x , int y) {
-        if (x<0 || y<0 || x>=90 || y>=90) {
-            return null;
-        }
-        Tile tarfetTile = Main.getClient().getLocalGameState().bigMap.get(90 * y + x);
-        return tarfetTile;
+//        if (x<0 || y<0 || x>=90 || y>=90) {
+//            return null;
+//        }
+//        Tile tarfetTile = currentGame.bigMap.get(90 * y + x);
+//        return tarfetTile;
+        return null;
     }
 
     public static Tile getTileByCoordinates(int x, int y , GameState gameState) {
@@ -284,7 +287,6 @@ public class GameControllerLogic {
                 mine = new Mine(topLeftX + 60 *x , topLeftY + 60 * y ,width , height);
                 Tile tile = new Tile(i , j , mine);
                 farm.Farm.add(tile);
-                gameState.bigMap.add(tile);
             }
         }
         farm.setMine(mine);
@@ -298,7 +300,6 @@ public class GameControllerLogic {
                 lake = new Lake(topLeftX + 60 * x, topLeftY + 60 * y, width, height);
                 Tile tile = new Tile(i, j, lake);
                 farm.Farm.add(tile);
-                gameState.bigMap.add(tile);
             }
         }
         farm.setLake(lake);
@@ -322,13 +323,11 @@ public class GameControllerLogic {
                 if (i == topLeftX + 60 * x + width -2 && j == topLeftY + 60 * y + height-2) {
                     Tile tile = new Tile(i, j, fridge);
                     farm.Farm.add(tile);
-                    gameState.bigMap.add(tile);
                 }
                 else {
                     Home home = new Home(topLeftX + 60 * x, topLeftY + 60 * y,width,height, fridge);
                     Tile tile = new Tile(i, j, home);
                     farm.Farm.add(tile);
-                    gameState.bigMap.add(tile);
                 }
             }
         }
@@ -353,23 +352,19 @@ public class GameControllerLogic {
                 if (i==topLeftX + 60 * x + width/2 && j==topLeftY + 60 * y + height-1) {
                     Tile tile = new Tile(i, j, greenHouseDoor);
                     farm.Farm.add(tile);
-                    gameState.bigMap.add(tile);
                 }
                 else if (i== topLeftX + 60*x + width/2 && j==topLeftY + 60*y + 1) {
                     Tile tile = new Tile(i, j, waterTank);
                     farm.Farm.add(tile);
-                    gameState.bigMap.add(tile);
                 }
                 else if (i == topLeftX + 60 * x || i == topLeftX + 60 * x + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
                     Tile tile = new Tile(i, j, GreenWall);
                     farm.Farm.add(tile);
-                    Main.getClient().getLocalGameState().bigMap.add(tile);
                 }
 
                 else {
                     Tile tile = new Tile(i, j, greenHouse);
                     farm.Farm.add(tile);
-                    gameState.bigMap.add(tile);
                 }
             }
         }
@@ -492,11 +487,11 @@ public class GameControllerLogic {
 
 //                        if (i == npc.getTopLeftX() + npc.getWidth() -1 && j==npc.getTopLeftY() + 2) {
 //                        Tile tile=new Tile(i , j , dor);
-//                        Main.getClient().getLocalGameState().bigMap.add(tile);
+//                        currentGame.bigMap.add(tile);
 //                    }
 //                    else {
 //                        Tile tile=new Tile(i , j , wall);
-//                        Main.getClient().getLocalGameState().bigMap.add(tile);
+//                        currentGame.bigMap.add(tile);
 //                    }
                 }
                 else if (isInNpc(i , j) != null) {
@@ -508,7 +503,7 @@ public class GameControllerLogic {
 //                        Walkable walkable = new Walkable();
 //                        walkable.setGrassOrFiber(npc.getName());
 //                        Tile tile = new Tile(i, j, walkable);
-//                        Main.getClient().getLocalGameState().bigMap.add(tile);
+//                        currentGame.bigMap.add(tile);
 //                    }
                 }
                 else {
@@ -564,8 +559,8 @@ public class GameControllerLogic {
                 assert mine != null;
                 if (i >= mine.getStartX() && i<mine.getStartX() + mine.getWidth() && j>=mine.getStartY() && j< mine.getStartY() + mine.getHeight() ) {
                     if (! createMine) {
-                        createInitialMine(Main.getClient().getPlayer().topLeftX,
-                            Main.getClient().getPlayer().topLeftY, mine.getStartX(),
+                        createInitialMine(Player.topLeftX,
+                            Player.topLeftY, mine.getStartX(),
                             mine.getStartY(), mine.getWidth(), mine.getHeight() , Player , gameState);
                         createMine = true;
                     }
@@ -573,8 +568,8 @@ public class GameControllerLogic {
 
                 else if(i >= lake.getTopLeftX() && i< lake.getTopLeftX() + lake.getWidth() && j>=lake.getTopLeftY() && j< lake.getTopLeftY() + lake.getHeight()) {
                     if (! createLake) {
-                        createInitialLake(Main.getClient().getPlayer().topLeftX,
-                            Main.getClient().getPlayer().topLeftY, lake.getTopLeftX(),
+                        createInitialLake(Player.topLeftX,
+                            Player.topLeftY, lake.getTopLeftX(),
                             lake.getTopLeftY(), lake.getWidth(), lake.getHeight() , Player , gameState);
                         createLake = true;
                     }
@@ -584,7 +579,7 @@ public class GameControllerLogic {
                     && j>=greenHouse.getCoordinateY() && j<greenHouse.getCoordinateY() + greenHouse.getLength() ) {
 
                     if (! createGreenHouse) {
-                        createInitialGreenHouse(Main.getClient().getPlayer().topLeftX, Main.getClient().getPlayer().topLeftY, greenHouse.getCoordinateX(), greenHouse.getCoordinateY(),
+                        createInitialGreenHouse(Player.topLeftX, Player.topLeftY, greenHouse.getCoordinateX(), greenHouse.getCoordinateY(),
                             greenHouse.getWidth(), greenHouse.getLength() , Player , gameState);
 
                         createGreenHouse = true;
@@ -593,7 +588,7 @@ public class GameControllerLogic {
 
                 else if (i >= home.getTopLeftX() && i<home.getTopLeftX() + home.getWidth() && j >= home.getTopLeftY() && j<home.getTopLeftY() + home.getLength() ) {
                     if (! createHome) {
-                        createInitialHouse(Main.getClient().getPlayer().topLeftX, Main.getClient().getPlayer().topLeftY,
+                        createInitialHouse(Player.topLeftX, Player.topLeftY,
                             home.getTopLeftX(), home.getTopLeftY(), home.getWidth(), home.getLength() , Player , gameState);
                         createHome = true;
                     }
@@ -613,6 +608,9 @@ public class GameControllerLogic {
 
         HashMap<String , Object> body = new HashMap<>();
         body.put("Farm", farm);
+        body.put("X" , Player.topLeftX);
+        body.put("Y" , Player.topLeftY);
+        body.put("Player" , Player);
         return new Message(CommandType.FARM , body);
     }
 
@@ -661,24 +659,21 @@ public class GameControllerLogic {
             double noise = perlinNoise.noise(i * 0.1, j * 0.1);
             if (-1.2 < noise && noise < -0.9 && treeNumber <30)
             {
-                Tree tree = new Tree(TreeType.OakTree,gameState.currentDate.clone());
+                Tree tree = new Tree(TreeType.OakTree, new DateHour()  /*gameState.currentDate.clone()*/);
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
                 Player.getFarm().Farm.add(tile);
-                gameState.bigMap.add(tile);
                 return 1;
             }
             else if(noise > -0.9 && noise <-0.5 && treeNumber <30){
-                Tree tree = new Tree(TreeType.MapleTree,gameState.currentDate.clone());
+                Tree tree = new Tree(TreeType.MapleTree, new DateHour()  /*gameState.currentDate.clone()*/);
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
                 Player.getFarm().Farm.add(tile);
-                gameState.bigMap.add(tile);
                 return 1;
             }
             else if (noise > -0.5 && noise < - 0.2 && treeNumber <30){
-                Tree tree = new Tree(TreeType.PineTree, gameState.currentDate.clone());
+                Tree tree = new Tree(TreeType.PineTree,  new DateHour()  /*gameState.currentDate.clone()*/);
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
                 Player.getFarm().Farm.add(tile);
-                gameState.bigMap.add(tile);
                 return 1;
             }
             else if (-0.1 < noise && noise < 0.0) {
@@ -686,7 +681,6 @@ public class GameControllerLogic {
                 basicRock.setCharactor('S');
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, basicRock);
                 Player.getFarm().Farm.add(tile);
-                gameState.bigMap.add(tile);
                 return 0;
             }
             else {
@@ -694,7 +688,6 @@ public class GameControllerLogic {
                 walkable.setCharactor('.');
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, walkable);
                 Player.getFarm().Farm.add(tile);
-                gameState.bigMap.add(tile);
                 return 0;
             }
 
@@ -772,7 +765,7 @@ public class GameControllerLogic {
     }
 
     public static void addPlayerToMarket(User Player) {
-        while (Player.getJoinMarket().isEmpty()) {
+        while (! Player.getJoinMarket().isEmpty()) {
             User P  = Player.getJoinMarket().poll();
             MarketMenu.getInstance().users().add(P);
             MarketMenu.getInstance().addUserRenderer(P);
@@ -797,7 +790,7 @@ public class GameControllerLogic {
 //        int [] x={1,1,1,0,0,-1,-1,-1};
 //        int [] y={1,0,-1,1,-1,-1,0,1};
 //        for (int i=0;i<8;i++){
-//            if (getTileByCoordinates(Main.getClient().getPlayer().getPositionX() +x[i],Main.getClient().getPlayer().getPositionY() +y[i]).
+//            if (getTileByCoordinates(Main.getClient(null).getPlayer().getPositionX() +x[i],Main.getClient(null).getPlayer().getPositionY() +y[i]).
 //                getGameObject() instanceof Lake){
 //                return true;
 //            }
@@ -859,14 +852,16 @@ public class GameControllerLogic {
     public static void EnterTheBarnOrCage() {
         if (Main.getClient().getPlayer().getDirection().equals(Direction.Up)) {
             if ( Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) ) {
-                for (BarnOrCage barnOrCage :Main.getClient().getPlayer().BarnOrCages) {
-                    if (barnOrCage.getDoor().checkCollisionMouse(gameMenu.getMousePos()) && barnOrCage.getDoor().checkCollision(Main.getClient().getPlayer())) {
-                        Main.getClient().getPlayer().setBarnOrCagePath(barnOrCage.getBarnORCageType().getEntryIconPath());
-                        Main.getClient().getPlayer().setPositionX(barnOrCage.getBarnORCageType().getInitX());
-                        Main.getClient().getPlayer().setPositionY(barnOrCage.getBarnORCageType().getInitY());
-                        Main.getClient().getPlayer().setCurrentBarnOrCage(barnOrCage);
+                for (BarnOrCage barnOrCage :Main.getClient(null).getPlayer().BarnOrCages) {
+                    if (barnOrCage.getDoor().checkCollisionMouse(gameMenu.getMousePos()) && barnOrCage.getDoor().checkCollision(Main.getClient(null).getPlayer())) {
+                        Main.getClient(null).getPlayer().setBarnOrCagePath(barnOrCage.getBarnORCageType().getEntryIconPath());
+                        Main.getClient(null).getPlayer().setPositionX(barnOrCage.getBarnORCageType().getInitX());
+                        Main.getClient(null).getPlayer().setPositionY(barnOrCage.getBarnORCageType().getInitY());
+                        Main.getClient(null).getPlayer().setCurrentBarnOrCage(barnOrCage);
+                        Main.getClient(null).getPlayer().setIsInBarnOrCage(true);
                         camera.setToOrtho(false , 300,150);
-                        Main.getClient().getPlayer().setInFarmExterior(false);
+                        Main.getClient(null).getPlayer().setInFarmExterior(false);
+                        gameMenu.getCurrentBarnOrCageAnimals().clear();
                         return;
                     }
                 }
@@ -875,48 +870,48 @@ public class GameControllerLogic {
     }
 
     public static void walkInBarnOrCage() {
-        float x = Main.getClient().getPlayer().sprite.getX();
-        float y = Main.getClient().getPlayer().sprite.getY();
+        float x = Main.getClient(null).getPlayer().sprite.getX();
+        float y = Main.getClient(null).getPlayer().sprite.getY();
 
         if (Gdx.input.isKeyPressed(Input.Keys.U)) {
-            System.out.println(Main.getClient().getPlayer().sprite.getX() + ", " + Main.getClient().getPlayer().sprite.getY());
+            System.out.println(Main.getClient(null).getPlayer().sprite.getX() + ", " + Main.getClient(null).getPlayer().sprite.getY());
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             //InputGameController.moveAnimation();
-            Main.getClient().getPlayer().setDirection(Direction.Up);
+            Main.getClient(null).getPlayer().setDirection(Direction.Up);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             //InputGameController.moveAnimation();
-            Main.getClient().getPlayer().setDirection(Direction.Down);
+            Main.getClient(null).getPlayer().setDirection(Direction.Down);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             //InputGameController.moveAnimation();
-            Main.getClient().getPlayer().setDirection(Direction.Left);
+            Main.getClient(null).getPlayer().setDirection(Direction.Left);
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             //InputGameController.moveAnimation();
-            Main.getClient().getPlayer().setDirection(Direction.Right);
+            Main.getClient(null).getPlayer().setDirection(Direction.Right);
         }
 
         else {
-            Main.getClient().getPlayer().sprite.draw(Main.getBatch());
+            Main.getClient(null).getPlayer().sprite.draw(Main.getBatch());
             return;
         }
 
-        Main.getClient().getPlayer().sprite.setSize(16 , 32);
+        Main.getClient(null).getPlayer().sprite.setSize(16 , 32);
 
 
-        Main.getClient().getPlayer().sprite.
-            setPosition(x + Main.getClient().getPlayer().getDirection().getX() * 50 * Gdx.graphics.getDeltaTime(),
-                y - Main.getClient().getPlayer().getDirection().getY() * 50 * Gdx.graphics.getDeltaTime());
+        Main.getClient(null).getPlayer().sprite.
+            setPosition(x + Main.getClient(null).getPlayer().getDirection().getX() * 50 * Gdx.graphics.getDeltaTime(),
+                y - Main.getClient(null).getPlayer().getDirection().getY() * 50 * Gdx.graphics.getDeltaTime());
 
 //        if (! checkCollisionInBarnOrCage()) {
-//            Main.getClient().getPlayer().sprite.setPosition(x , y);
+//            Main.getClient(null).getPlayer().sprite.setPosition(x , y);
 //        }
-        Main.getClient().getPlayer().sprite.draw(Main.getBatch());
+        Main.getClient(null).getPlayer().sprite.draw(Main.getBatch());
         try {
-            Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(Main.getClient().getPlayer());
+            Main.getClient(null).getPlayer().getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(Main.getClient(null).getPlayer());
         }
         catch (Exception e) {
 
@@ -924,8 +919,23 @@ public class GameControllerLogic {
     }
 
     public static void showAnimalsInBarnOrCage() {
-//        for (Animal animal : Main.getClient().getPlayer().getCurrentBarnOrCage().animals) {
+        if (! gameMenu.getCurrentBarnOrCageAnimals().isEmpty()) {
+            for (Animal animal : Main.getClient(null).getPlayer().getCurrentBarnOrCage().animals) {
+                if (! animal.isOut()) {
+                    gameMenu.getCurrentBarnOrCageAnimals().add(new AnimalRenderer(animal));
+                }
+            }
+        }
+        for (AnimalRenderer animalRenderer : gameMenu.getCurrentBarnOrCageAnimals()) {
+            animalRenderer.render();
+            animalRenderer.getAnimal().setTimer(animalRenderer.getAnimal().getTimer() + Gdx.graphics.getDeltaTime());
+            if (animalRenderer.getAnimal().getTimer() >= 0.1f) {
+                animalRenderer.getAnimal().setTimer(0);
+            }
+        }
+//        for (Animal animal : Main.getClient(null).getPlayer().getCurrentBarnOrCage().animals) {
 //            if (! animal.isOut()) {
+//
 //                animal.getSprite().draw(Main.getBatch());
 //                animal.getSprite().setRegion(animal.getAnimation().getKeyFrame(animal.getTimer()));
 //                if (! animal.getAnimation().isAnimationFinished(animal.getTimer())) {
@@ -936,8 +946,8 @@ public class GameControllerLogic {
 //                }
 //
 //                animal.getSprite().setPosition(
-//                    Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x,
-//                    Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
+//                    Main.getClient(null).getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x,
+//                    Main.getClient(null).getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
 //                //System.out.println(animal.getSprite().getX()+ ",,"+animal.getSprite().getY());
 //                animal.getSprite().setSize(animal.getType().getX() , animal.getType().getY());
 //
@@ -948,40 +958,40 @@ public class GameControllerLogic {
     }
 
     public static Animal showAnimalInfo() {
-//        if (Main.getClient().getPlayer().isInBarnOrCage()) {
-//            for (Animal animal : Main.getClient().getPlayer().getCurrentBarnOrCage().animals) {
-//                if (!animal.isOut()) {
-//                    if (gameMenu.getMousePos().x >= animal.getSprite().getX() &&
-//                        gameMenu.getMousePos().x <= animal.getSprite().getX() + animal.getSprite().getWidth() &&
-//                        gameMenu.getMousePos().y >= animal.getSprite().getY() &&
-//                        gameMenu.getMousePos().y <= animal.getSprite().getY() + animal.getSprite().getHeight()) {
-//
-//                        Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
-//                            animal.getSprite().getX() + animal.getSprite().getWidth() / 2,
-//                            animal.getSprite().getY() + animal.getSprite().getHeight() / 2);
-//                        return animal;
-//                    }
-//                }
-//            }
-//        }
-//        else {
-//            for (BarnOrCage barnOrCage : Main.getClient().getPlayer().BarnOrCages) {
-//                for (Animal animal : barnOrCage.animals) {
-//                    if (animal.isOut()) {
-//                        if (gameMenu.getMousePos().x >= animal.getSprite().getX() &&
-//                            gameMenu.getMousePos().x <= animal.getSprite().getX() + animal.getSprite().getWidth() &&
-//                            gameMenu.getMousePos().y >= animal.getSprite().getY() &&
-//                            gameMenu.getMousePos().y <= animal.getSprite().getY() + animal.getSprite().getHeight()) {
-//
-//                            Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
-//                                animal.getSprite().getX() + animal.getSprite().getWidth() / 2,
-//                                animal.getSprite().getY() + animal.getSprite().getHeight() / 2);
-//                            return animal;
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        if (Main.getClient(null).getPlayer().isInBarnOrCage()) {
+            for (Animal animal : Main.getClient(null).getPlayer().getCurrentBarnOrCage().animals) {
+                if (!animal.isOut()) {
+                    if (gameMenu.getMousePos().x >= animal.getPositionX() &&
+                        gameMenu.getMousePos().x <= animal.getPositionX() + TEXTURE_SIZE &&
+                        gameMenu.getMousePos().y >= animal.getPositionY() &&
+                        gameMenu.getMousePos().y <= animal.getPositionY() + TEXTURE_SIZE) {
+
+                        Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
+                            animal.getPositionX() + TEXTURE_SIZE / 2,
+                            animal.getPositionY() + TEXTURE_SIZE / 2);
+                        return animal;
+                    }
+                }
+            }
+        }
+        else {
+            for (BarnOrCage barnOrCage : Main.getClient(null).getPlayer().BarnOrCages) {
+                for (Animal animal : barnOrCage.animals) {
+                    if (animal.isOut()) {
+                        if (gameMenu.getMousePos().x >= animal.getPositionX() &&
+                            gameMenu.getMousePos().x <= animal.getPositionX() + TEXTURE_SIZE &&
+                            gameMenu.getMousePos().y >= animal.getPositionY() &&
+                            gameMenu.getMousePos().y <= animal.getPositionY() + TEXTURE_SIZE) {
+
+                            Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
+                                animal.getPositionX() + TEXTURE_SIZE / 2,
+                                animal.getPositionY() + TEXTURE_SIZE / 2);
+                            return animal;
+                        }
+                    }
+                }
+            }
+        }
         return null;
     }
 
@@ -1207,7 +1217,7 @@ public class GameControllerLogic {
         shepherdAnimals.put("Animal" , animal);
         shepherdAnimals.put("X" , x);
         shepherdAnimals.put("Y" , y);
-        Main.getClient().getRequests().add(new Message(CommandType.SHEPHERD_ANIMAL , shepherdAnimals));
+        Main.getClient(null).getRequests().add(new Message(CommandType.SHEPHERD_ANIMAL , shepherdAnimals));
     }
 
     public static void AnswerShepherding(Message message , Game game) {
@@ -1306,7 +1316,7 @@ public class GameControllerLogic {
     public static void pet(Animal animal) {
         HashMap<String , Object> body = new HashMap<>();
         body.put("Animal" , animal);
-        Main.getClient().getRequests().add(new Message(CommandType.PET , body));
+        Main.getClient(null).getRequests().add(new Message(CommandType.PET , body));
         animal.increaseFriendShip(15);
         animal.setPetToday(true);
     }
@@ -1324,7 +1334,7 @@ public class GameControllerLogic {
     }
 
     public static boolean checkTileForAnimalWalking(int x, int y) {
-        Tile tile = getTileByCoordinates(x , y );
+        Tile tile = getTileByCoordinates(x , y , Main.getClient(null).getLocalGameState() );
         if (tile == null) {
             return false;
         }
@@ -1335,32 +1345,32 @@ public class GameControllerLogic {
     }
 
     public static boolean animalIsOnBarnOrCage(Animal animal) {
-        BarnOrCage barnOrCage=null;
-        for (BarnOrCage barnOrCage1 : Main.getClient().getPlayer().BarnOrCages) {
-            for (Animal animal1 : barnOrCage1.animals) {
-                if (animal1.equals(animal)) {
-                    barnOrCage=barnOrCage1;
-                    break;
-                }
-            }
-        }
-        assert barnOrCage != null;
-        int width=barnOrCage.getBarnORCageType().getWidth();
-        int height=barnOrCage.getBarnORCageType().getHeight();
-
-        for (int i= barnOrCage.topLeftX ; i< barnOrCage.topLeftX + width ; i++) {
-            for (int j=barnOrCage.topLeftY ; j< barnOrCage.topLeftY + height ; j++) {
-                Tile tile=getTileByCoordinates(i,j);
-                if (tile.getGameObject().equals(animal)) {
-                    return true;
-                }
-            }
-        }
+//        BarnOrCage barnOrCage=null;
+//        for (BarnOrCage barnOrCage1 : Main.getClient(null).getPlayer().BarnOrCages) {
+//            for (Animal animal1 : barnOrCage1.animals) {
+//                if (animal1.equals(animal)) {
+//                    barnOrCage=barnOrCage1;
+//                    break;
+//                }
+//            }
+//        }
+//        assert barnOrCage != null;
+//        int width=barnOrCage.getBarnORCageType().getWidth();
+//        int height=barnOrCage.getBarnORCageType().getHeight();
+//
+//        for (int i= barnOrCage.topLeftX ; i< barnOrCage.topLeftX + width ; i++) {
+//            for (int j=barnOrCage.topLeftY ; j< barnOrCage.topLeftY + height ; j++) {
+//                Tile tile=getTileByCoordinates(i,j);
+//                if (tile.getGameObject().equals(animal)) {
+//                    return true;
+//                }
+//            }
+//        }
         return false;
     }
     public static void calculateAnimalsFriendship() {
 
-        for (BarnOrCage barnOrCage : Main.getClient().getPlayer().BarnOrCages) {
+        for (BarnOrCage barnOrCage : Main.getClient(null).getPlayer().BarnOrCages) {
             for (Animal animal : barnOrCage.animals) {
                 if (! animal.isFeedToday()){
                     animal.increaseFriendShip(- 20);
@@ -1371,18 +1381,15 @@ public class GameControllerLogic {
                 if (! animal.isPetToday()) {
                     animal.increaseFriendShip(- 10 * (animal.getFriendShip()/200));
                 }
-                if ( ! animalIsOnBarnOrCage(animal)) {
-                    animal.increaseFriendShip(- 20);
-                }
                 animal.setFeedPreviousDay(animal.isFeedToday());
                 System.out.println(animal.isFeedPreviousDay() + "قبل");
                 animal.setFeedToday(false);
                 System.out.println(animal.isFeedPreviousDay() + "بعد");
-                if (Main.getClient().getLocalGameState().currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod()) {
-                    animal.setLastProduceDay(Main.getClient().getLocalGameState().currentDate.clone().getDate());
+                if (Main.getClient(null).getLocalGameState().currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod()) {
+                    animal.setLastProduceDay(Main.getClient(null).getLocalGameState().currentDate.clone().getDate());
                 }
-                else if (Main.getClient().getLocalGameState().currentDate.getDate() - animal.getLastProduceDay() == -28 + animal.getType().getPeriod()) {
-                    animal.setLastProduceDay(Main.getClient().getLocalGameState().currentDate.clone().getDate());
+                else if (Main.getClient(null).getLocalGameState().currentDate.getDate() - animal.getLastProduceDay() == -28 + animal.getType().getPeriod()) {
+                    animal.setLastProduceDay(Main.getClient(null).getLocalGameState().currentDate.clone().getDate());
                 }
                 animal.setRandomProduction(Math.random() + 0.5);
                 animal.setRandomQuantity(Math.random());
@@ -1391,7 +1398,7 @@ public class GameControllerLogic {
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("Animal" , animal);
                 body.put("Number" , animal.getFriendShip());
-                Main.getClient().getRequests().add(new Message(CommandType.CALCULATE_ANIMAL_FRIENDSHIP , body));
+                Main.getClient(null).getRequests().add(new Message(CommandType.CALCULATE_ANIMAL_FRIENDSHIP , body));
             }
         }
     }
@@ -1472,22 +1479,22 @@ public class GameControllerLogic {
 
 
     public static void unloadAndReward() {
-        for(ShippingBin shippingBin : Main.getClient().getPlayer().getFarm().shippingBins) {
+        for(ShippingBin shippingBin : Main.getClient(null).getPlayer().getFarm().shippingBins) {
             for (Map.Entry<Items, Integer> entry : shippingBin.binContents.entrySet()) {
                 System.out.println(entry.getKey().getName() + " " + entry.getValue());
                 if (entry.getKey() instanceof Fish) {
                     Fish fish = (Fish) entry.getKey();
                     HashMap<String , Object> body = new HashMap<>();
-                    body.put("Player" , Main.getClient().getPlayer());
+                    body.put("Player" , Main.getClient(null).getPlayer());
                     body.put("Money" , fish.getSellPrice() * entry.getValue());
-                    Main.getClient().getRequests().add(new Message(CommandType.CHANGE_MONEY , body));
+                    Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_MONEY , body));
                 }
                 if (entry.getKey() instanceof Animalproduct) {
                     Animalproduct animalproduct = (Animalproduct) entry.getKey();
                     HashMap<String , Object> body = new HashMap<>();
-                    body.put("Player" , Main.getClient().getPlayer());
+                    body.put("Player" , Main.getClient(null).getPlayer());
                     body.put("Money" , animalproduct.getSellPrice() * entry.getValue());
-                    Main.getClient().getRequests().add(new Message(CommandType.CHANGE_MONEY , body));
+                    Main.getClient(null).getRequests().add(new Message(CommandType.CHANGE_MONEY , body));
                 }
             }
             shippingBin.binContents.clear();
@@ -1563,7 +1570,6 @@ public class GameControllerLogic {
 
         chatDialog.show(stage);
     }
-
 
 
     public static void talking(String destinationUsername, Consumer<Result> onResult) {
@@ -1665,6 +1671,37 @@ public class GameControllerLogic {
         }
     }
 
+    public static void sendGifts (String input) {
+//        String username = GameMenuCommands.sendGift.getMatcher(input).group("username");
+//        String item = GameMenuCommands.sendGift.getMatcher(input).group("item");
+//        int amount = Integer.parseInt(GameMenuCommands.sendGift.getMatcher(input).group("amount"));
+//        if (username == null || item == null) {
+//            System.out.println("Invalid Command!");
+//            return;
+//        }
+//        if (!currentGame.getGameState().getPlayers().contains(findPlayerInGame(username))) {
+//            System.out.println(RED+"Username '" + username + "' is Unavailable!"+RESET);
+//            return;
+//        }
+//        if (username.equals(Main.getClient(null).getPlayer().getUsername())) {
+//            System.out.println("You can't Send Gifts to " + RED+"Yourself"+RESET + "!");
+//            return;
+//        }
+//        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), findPlayerInGame(username));
+//        if (f == null) {
+//            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
+//            return;
+//        }
+//
+//
+//        Result result = f.sendGifts(username, item, amount);
+//        System.out.println(result);
+//        if (result.IsSuccess()) {
+//            Set<User> key = new HashSet<>(Arrays.asList(Main.getClient(null).getPlayer(), findPlayerInGame(username)));
+//            currentGame.conversations.putIfAbsent(key, new ArrayList<>());
+//            currentGame.conversations.get(key).add(new MessageHandling(Main.getClient(null).getPlayer(), findPlayerInGame(username), Main.getClient(null).getPlayer().getNickname() + " Sent you a GIFT. Rate it out of 5!"));
+//        }
+    }
     public static Result giveFlowers (String username) {
         if (!Main.getClient().getLocalGameState().getPlayers().contains(findPlayerInGame(username))) {
 
@@ -1738,35 +1775,35 @@ public class GameControllerLogic {
     }
 
     public static void exitGame () {
-        if (Main.getClient().getPlayer() != Main.getClient().getPlayer()) {
-            System.out.println(RED+"Access Denied!"+RESET);
-            return;
-        }
+//        if (Main.getClient(null).getPlayer() != currentUser) {
+//            System.out.println(RED+"Access Denied!"+RESET);
+//            return;
+//        }
         //TODO بیشترین امتیاز و... سیو بشه
         //TODO currently in game
         //TODO سیو کل بازی
     }
     public static void forceTerminate () {
-        Scanner scanner = new Scanner(System.in);
-        User terminator = Main.getClient().getPlayer();
-        for (User user: Main.getClient().getLocalGameState().getPlayers()) {
-            if (user == terminator)
-                continue;
-            Main.getClient().setPlayer(user);
-            System.out.println(Main.getClient().getPlayer().getNickname() + ", Do You Agree With the Game Termination?[Y/N]");
-            String choice = scanner.next();
-            if (!choice.trim().toLowerCase().equals("y")) {
-                System.out.println("Vote Failed! The Game won't be Terminated.");
-                Main.getClient().setPlayer(terminator);
-                return;
-            }
-        }
-
-        //TODO  کارهای ترمینیت کردن مثل پاک کردن فایل های سیو و ریست کردن همه دیتاهای بازیکنا بجز ماکسیمم امتیاز
-        for (User user: Main.getClient().getLocalGameState().getPlayers()) {
-            user.setCurrently_in_game(false);
-            user.setMax_point(user.getPoint());
-        }
+//        Scanner scanner = new Scanner(System.in);
+//        User terminator = Main.getClient(null).getPlayer();
+//        for (User user: currentGame.getGameState().getPlayers()) {
+//            if (user == terminator)
+//                continue;
+//            Main.getClient(null).getPlayer() = user;
+//            System.out.println(Main.getClient(null).getPlayer().getNickname() + ", Do You Agree With the Game Termination?[Y/N]");
+//            String choice = scanner.next();
+//            if (!choice.trim().toLowerCase().equals("y")) {
+//                System.out.println("Vote Failed! The Game won't be Terminated.");
+//                Main.getClient(null).getPlayer() = terminator;
+//                return;
+//            }
+//        }
+//
+//        //TODO  کارهای ترمینیت کردن مثل پاک کردن فایل های سیو و ریست کردن همه دیتاهای بازیکنا بجز ماکسیمم امتیاز
+//        for (User user: currentGame.getGameState().getPlayers()) {
+//            user.setCurrently_in_game(false);
+//            user.setMax_point(user.getPoint());
+//        }
     }
 
 
@@ -1964,8 +2001,8 @@ public class GameControllerLogic {
         calculateAnimalsFriendship();
         checkAnimalProduct();
 
-        for (Tile tile : Main.getClient().getLocalGameState().bigMap)
-            tile.getGameObject().startDayAutomaticTask();
+//        for (Tile tile : Main.getClient().getLocalGameState().bigMap)
+//            tile.getGameObject().startDayAutomaticTask();
 
         doWeatherTask();
         crowAttack(); // قبل محصول دادن درخت باید باشه
@@ -1976,8 +2013,8 @@ public class GameControllerLogic {
 
     public static void AutomaticFunctionAfterOneTurn () {
 
-        for (Tile tile : Main.getClient().getLocalGameState().bigMap)
-            tile.getGameObject().turnByTurnAutomaticTask();
+//        for (Tile tile : Main.getClient().getLocalGameState().bigMap)
+//            tile.getGameObject().turnByTurnAutomaticTask();
     }
     public static void AutomaticFunctionAfterAnyAct () {
 
@@ -2023,8 +2060,8 @@ public class GameControllerLogic {
     public static void setTimeAndWeather () {
 
         Main.getClient().getLocalGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1980);
-        Main.getClient().getLocalGameState().currentWeather = Weather.Sunny;
-        Main.getClient().getLocalGameState().tomorrowWeather = Weather.Sunny;
+//        Main.getClient().getLocalGameState().currentWeather = Weather.Sunny;
+//        Main.getClient().getLocalGameState().tomorrowWeather = Weather.Sunny;
 
     }
     public static void doSeasonAutomaticTask () {
@@ -2035,150 +2072,150 @@ public class GameControllerLogic {
     }
     public static void doWeatherTask () {
 
-        if (Main.getClient().getLocalGameState().currentWeather.equals(Weather.Rainy) || Main.getClient().getLocalGameState().currentWeather.equals(Weather.Stormy))
-            for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
-                GameObject object = tile.getGameObject();
-
-                if (object instanceof Tree && !isInGreenHouse(tile))
-                    ((Tree) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
-                if (object instanceof GiantProduct && !isInGreenHouse(tile))
-                    ((GiantProduct) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
-                if (object instanceof ForagingSeeds && !isInGreenHouse(tile))
-                    ((ForagingSeeds) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
-            }
+//        if (Main.getClient().getLocalGameState().currentWeather.equals(Weather.Rainy) || Main.getClient().getLocalGameState().currentWeather.equals(Weather.Stormy))
+//            for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
+//                GameObject object = tile.getGameObject();
+//
+//                if (object instanceof Tree && !isInGreenHouse(tile))
+//                    ((Tree) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
+//                if (object instanceof GiantProduct && !isInGreenHouse(tile))
+//                    ((GiantProduct) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
+//                if (object instanceof ForagingSeeds && !isInGreenHouse(tile))
+//                    ((ForagingSeeds) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
+//            }
     }
 
     // Automatic Plant task
     public static void    crowAttack () {
-
-        for (Farm farm : Main.getClient().getLocalGameState().getFarms()) {
-
-            int number = 0;
-            for (Tile tile : farm.Farm) {
-
-                GameObject object = tile.getGameObject();
-
-                if (object instanceof Tree ||
-                    object instanceof ForagingSeeds ||
-                    object instanceof GiantProduct ||
-                    object instanceof ForagingCrops) {
-
-                    number++;
-
-                    if (number % 16 == 0) {
-
-                        double x = Math.random();
-                        if (x <= 0.25) {
-
-                            if (isInGreenHouse(tile)) {
-                                continue;
-                            }
-                            else if (object instanceof Tree && !((Tree) object).isProtected())
-                                ((Tree) object).setLastFruit(Main.getClient().getLocalGameState().currentDate);
-
-                            else if (object instanceof ForagingCrops && !((ForagingCrops) object).isProtected())
-                                ((ForagingCrops) object).delete();
-
-                            else if (object instanceof ForagingSeeds && !((ForagingSeeds) object).isProtected()) {
-                                if (((ForagingSeeds) object).getType().isOneTimeUse())
-                                    ((ForagingSeeds) object).delete();
-                                else
-                                    ((ForagingSeeds) object).setLastProduct(Main.getClient().getLocalGameState().currentDate);
-                            } else if (object instanceof GiantProduct && !((GiantProduct) object).isProtected())
-                                ((GiantProduct) object).delete();
-                        }
-                    }
-                }
-            }
-        }
+//
+//        for (Farm farm : Main.getClient().getLocalGameState().getFarms()) {
+//
+//            int number = 0;
+//            for (Tile tile : farm.Farm) {
+//
+//                GameObject object = tile.getGameObject();
+//
+//                if (object instanceof Tree ||
+//                    object instanceof ForagingSeeds ||
+//                    object instanceof GiantProduct ||
+//                    object instanceof ForagingCrops) {
+//
+//                    number++;
+//
+//                    if (number % 16 == 0) {
+//
+//                        double x = Math.random();
+//                        if (x <= 0.25) {
+//
+//                            if (isInGreenHouse(tile)) {
+//                                continue;
+//                            }
+//                            else if (object instanceof Tree && !((Tree) object).isProtected())
+//                                ((Tree) object).setLastFruit(Main.getClient().getLocalGameState().currentDate);
+//
+//                            else if (object instanceof ForagingCrops && !((ForagingCrops) object).isProtected())
+//                                ((ForagingCrops) object).delete();
+//
+//                            else if (object instanceof ForagingSeeds && !((ForagingSeeds) object).isProtected()) {
+//                                if (((ForagingSeeds) object).getType().isOneTimeUse())
+//                                    ((ForagingSeeds) object).delete();
+//                                else
+//                                    ((ForagingSeeds) object).setLastProduct(Main.getClient().getLocalGameState().currentDate);
+//                            } else if (object instanceof GiantProduct && !((GiantProduct) object).isProtected())
+//                                ((GiantProduct) object).delete();
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
     public static void    checkForGiant () {
 
-        for (Tile tile1 : Main.getClient().getLocalGameState().bigMap)
-            if (tile1.getGameObject() instanceof ForagingSeeds)
-                if (((ForagingSeeds) tile1.getGameObject()).getType().canGrowGiant() && !isInGreenHouse(tile1)) {
-
-                    int i = tile1.getX();
-                    int j = tile1.getY();
-
-                    ForagingSeedsType type = ((ForagingSeeds) tile1.getGameObject()).getType();
-                    Tile tile2 = getTileByCoordinates(i+1, j);
-                    Tile tile3 = getTileByCoordinates(i, j+1);
-                    Tile tile4 = getTileByCoordinates(i+1, j+1);
-
-                    if (tile2.getGameObject() instanceof ForagingSeeds &&
-                        tile3.getGameObject() instanceof ForagingSeeds &&
-                        tile4.getGameObject() instanceof ForagingSeeds)
-
-                        if ((((ForagingSeeds) tile2.getGameObject()).getType() == type) &&
-                            (((ForagingSeeds) tile3.getGameObject()).getType() == type) &&
-                            (((ForagingSeeds) tile4.getGameObject()).getType() == type)) {
-
-                            GiantProduct giantProduct = new GiantProduct(
-                                type, ((ForagingSeeds) tile1.getGameObject()).getBirthDay(),
-                                new ArrayList<>(List.of(tile2, tile3, tile4)));
-
-                            tile1.setGameObject(giantProduct);
-                            tile2.setGameObject(giantProduct);
-                            tile3.setGameObject(giantProduct);
-                            tile4.setGameObject(giantProduct);
-                        }
-                }
+//        for (Tile tile1 : Main.getClient().getLocalGameState().bigMap)
+//            if (tile1.getGameObject() instanceof ForagingSeeds)
+//                if (((ForagingSeeds) tile1.getGameObject()).getType().canGrowGiant() && !isInGreenHouse(tile1)) {
+//
+//                    int i = tile1.getX();
+//                    int j = tile1.getY();
+//
+//                    ForagingSeedsType type = ((ForagingSeeds) tile1.getGameObject()).getType();
+//                    Tile tile2 = getTileByCoordinates(i+1, j);
+//                    Tile tile3 = getTileByCoordinates(i, j+1);
+//                    Tile tile4 = getTileByCoordinates(i+1, j+1);
+//
+//                    if (tile2.getGameObject() instanceof ForagingSeeds &&
+//                        tile3.getGameObject() instanceof ForagingSeeds &&
+//                        tile4.getGameObject() instanceof ForagingSeeds)
+//
+//                        if ((((ForagingSeeds) tile2.getGameObject()).getType() == type) &&
+//                            (((ForagingSeeds) tile3.getGameObject()).getType() == type) &&
+//                            (((ForagingSeeds) tile4.getGameObject()).getType() == type)) {
+//
+//                            GiantProduct giantProduct = new GiantProduct(
+//                                type, ((ForagingSeeds) tile1.getGameObject()).getBirthDay(),
+//                                new ArrayList<>(List.of(tile2, tile3, tile4)));
+//
+//                            tile1.setGameObject(giantProduct);
+//                            tile2.setGameObject(giantProduct);
+//                            tile3.setGameObject(giantProduct);
+//                            tile4.setGameObject(giantProduct);
+//                        }
+//                }
     }
     public static void    checkForProtect() {
 
-        for (Tile tile : Main.getClient().getLocalGameState().bigMap){
-
-            GameObject object1 = tile.getGameObject();
-            if (object1 instanceof Tree)
-                ((Tree) object1).setProtected(false);
-
-            if (object1 instanceof ForagingSeeds)
-                ((ForagingSeeds) object1).setProtected(false);
-
-            if (object1 instanceof GiantProduct)
-                ((GiantProduct) object1).setProtected(false);
-
-            if (object1 instanceof ForagingCrops)
-                ((ForagingCrops) object1).setProtected(false);
-        }
-
-        for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
-
-            GameObject object = tile.getGameObject();
-
-            if (object instanceof CraftingItem &&
-                (( ((CraftingItem) object).getType().equals(CraftType.Scarecrow)) ||
-                    ((CraftingItem) object).getType().equals(CraftType.DeluxeScarecrow) )) {
-
-                int r = 12;
-                if (((CraftingItem) object).getType().equals(CraftType.Scarecrow))
-                    r = 8;
-
-                int x = tile.getX();
-                int y = tile.getY();
-
-                for (int i = Math.min(x - (r / 2), 1); i < x + r; i++)
-                    for (int j = Math.min(y - (r / 2), 1); j < y + r; j++)
-                        if ((i - x) * (i - x) + (j - y) * (j - y) <= r * r) {
-
-                            Tile tile2 = getTileByCoordinates(i, j);
-                            GameObject object1 = tile2.getGameObject();
-
-                            if (object1 instanceof Tree)
-                                ((Tree) object1).setProtected(true);
-
-                            if (object1 instanceof ForagingSeeds)
-                                ((ForagingSeeds) object1).setProtected(true);
-
-                            if (object1 instanceof GiantProduct)
-                                ((GiantProduct) object1).setProtected(true);
-
-                            if (object1 instanceof ForagingCrops)
-                                ((ForagingCrops) object1).setProtected(true);
-                        }
-            }
-        }
+//        for (Tile tile : Main.getClient().getLocalGameState().bigMap){
+//
+//            GameObject object1 = tile.getGameObject();
+//            if (object1 instanceof Tree)
+//                ((Tree) object1).setProtected(false);
+//
+//            if (object1 instanceof ForagingSeeds)
+//                ((ForagingSeeds) object1).setProtected(false);
+//
+//            if (object1 instanceof GiantProduct)
+//                ((GiantProduct) object1).setProtected(false);
+//
+//            if (object1 instanceof ForagingCrops)
+//                ((ForagingCrops) object1).setProtected(false);
+//        }
+//
+//        for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
+//
+//            GameObject object = tile.getGameObject();
+//
+//            if (object instanceof CraftingItem &&
+//                (( ((CraftingItem) object).getType().equals(CraftType.Scarecrow)) ||
+//                    ((CraftingItem) object).getType().equals(CraftType.DeluxeScarecrow) )) {
+//
+//                int r = 12;
+//                if (((CraftingItem) object).getType().equals(CraftType.Scarecrow))
+//                    r = 8;
+//
+//                int x = tile.getX();
+//                int y = tile.getY();
+//
+//                for (int i = Math.min(x - (r / 2), 1); i < x + r; i++)
+//                    for (int j = Math.min(y - (r / 2), 1); j < y + r; j++)
+//                        if ((i - x) * (i - x) + (j - y) * (j - y) <= r * r) {
+//
+//                            Tile tile2 = getTileByCoordinates(i, j);
+//                            GameObject object1 = tile2.getGameObject();
+//
+//                            if (object1 instanceof Tree)
+//                                ((Tree) object1).setProtected(true);
+//
+//                            if (object1 instanceof ForagingSeeds)
+//                                ((ForagingSeeds) object1).setProtected(true);
+//
+//                            if (object1 instanceof GiantProduct)
+//                                ((GiantProduct) object1).setProtected(true);
+//
+//                            if (object1 instanceof ForagingCrops)
+//                                ((ForagingCrops) object1).setProtected(true);
+//                        }
+//            }
+//        }
     }
     public static boolean checkForDeath () {
 
@@ -2234,44 +2271,44 @@ public class GameControllerLogic {
         return true;
     }
     public static void    createRandomForaging () {
-
-        for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
-
-            if (tile.getGameObject() instanceof Walkable &&
-                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed") && Math.random() <= 0.2) {
-                if (Math.random() <= 0.5) {
-
-                    List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
-                        .filter(d -> d.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()))
-                        .toList();
-
-                    ForagingSeedsType type = types.get(rand.nextInt(types.size()));
-
-                    tile.setGameObject(new ForagingSeeds(type, Main.getClient().getLocalGameState().currentDate));
-                } else {
-
-                    List<ForagingCropsType> types = new ArrayList<>(Arrays.stream(ForagingCropsType.values())
-                        .filter(d -> d.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()))
-                        .toList());
-
-                    types.remove(ForagingCropsType.Fiber);
-                    ForagingCropsType type = types.get(rand.nextInt(types.size()));
-
-                    ForagingCrops crop = new ForagingCrops(type);
-                    tile.setGameObject(crop);
-                }
-            }
-
-            else if (tile.getGameObject() instanceof Walkable &&
-                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk") &&
-                canGrowGrass(tile) && Math.random() <= 0.1) {
-
-                if (Math.random() <= 0.5)
-                    ((Walkable) tile.getGameObject()).setGrassOrFiber("Fiber");
-                else
-                    ((Walkable) tile.getGameObject()).setGrassOrFiber("Grass");
-            }
-        }
+//
+//        for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
+//
+//            if (tile.getGameObject() instanceof Walkable &&
+//                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed") && Math.random() <= 0.2) {
+//                if (Math.random() <= 0.5) {
+//
+//                    List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
+//                        .filter(d -> d.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()))
+//                        .toList();
+//
+//                    ForagingSeedsType type = types.get(rand.nextInt(types.size()));
+//
+//                    tile.setGameObject(new ForagingSeeds(type, Main.getClient().getLocalGameState().currentDate));
+//                } else {
+//
+//                    List<ForagingCropsType> types = new ArrayList<>(Arrays.stream(ForagingCropsType.values())
+//                        .filter(d -> d.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()))
+//                        .toList());
+//
+//                    types.remove(ForagingCropsType.Fiber);
+//                    ForagingCropsType type = types.get(rand.nextInt(types.size()));
+//
+//                    ForagingCrops crop = new ForagingCrops(type);
+//                    tile.setGameObject(crop);
+//                }
+//            }
+//
+//            else if (tile.getGameObject() instanceof Walkable &&
+//                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk") &&
+//                canGrowGrass(tile) && Math.random() <= 0.1) {
+//
+//                if (Math.random() <= 0.5)
+//                    ((Walkable) tile.getGameObject()).setGrassOrFiber("Fiber");
+//                else
+//                    ((Walkable) tile.getGameObject()).setGrassOrFiber("Grass");
+//            }
+//        }
     }
     public static void    createRandomMinerals () {
         for (User user : Main.getClient().getLocalGameState().getPlayers()) {

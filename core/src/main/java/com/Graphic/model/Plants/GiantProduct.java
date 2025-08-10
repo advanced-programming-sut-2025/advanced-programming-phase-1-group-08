@@ -18,8 +18,8 @@ import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 public class GiantProduct extends Items { // TODO ابعاد
 
     private ArrayList<Tile> neighbors = new ArrayList<>();
-    private final ForagingSeedsType type;
-    private final DateHour birthDay;
+    private ForagingSeedsType type;
+    private DateHour birthDay;
     private boolean todayFertilize;
     private boolean isProtected;
     private DateHour lastWater;
@@ -40,6 +40,10 @@ public class GiantProduct extends Items { // TODO ابعاد
         setStage();
     }
 
+    public GiantProduct() {
+
+    }
+
     public void setProtected(boolean aProtected) {
 
         isProtected = aProtected;
@@ -55,13 +59,13 @@ public class GiantProduct extends Items { // TODO ابعاد
         if (item.equals(MarketItemType.QuantityRetainingSoil))
             numFertilize++;
         if (item.equals(MarketItemType.BasicRetainingSoil))
-            lastWater = Main.getClient().getLocalGameState().currentDate.clone();
+            lastWater = Main.getClient(null).getLocalGameState().currentDate.clone();
 
     }
     public void setStage  () {
 
         int days = 0;
-        DateHour dateHour = Main.getClient().getLocalGameState().currentDate.clone();
+        DateHour dateHour = Main.getClient(null).getLocalGameState().currentDate.clone();
         dateHour.increaseDay(numFertilize);
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
@@ -79,15 +83,15 @@ public class GiantProduct extends Items { // TODO ابعاد
 
     public void checkHaveProduct () {
 
-        DateHour dateHour = Main.getClient().getLocalGameState().currentDate.clone();
+        DateHour dateHour = Main.getClient(null).getLocalGameState().currentDate.clone();
         dateHour.increaseDay(numFertilize);
-        this.haveProduct = type.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()) &&
+        this.haveProduct = type.getSeason().contains(Main.getClient(null).getLocalGameState().currentDate.getSeason()) &&
                 getDayDifferent(birthDay, dateHour) > type.getRegrowthTime() &&
                 this.stage == this.type.getGrowthStages();
     }
     public boolean checkForDeath () {
 
-        return getDayDifferent(lastWater, Main.getClient().getLocalGameState().currentDate) > 2;
+        return getDayDifferent(lastWater, Main.getClient(null).getLocalGameState().currentDate) > 2;
     }
     public void harvest () {
 

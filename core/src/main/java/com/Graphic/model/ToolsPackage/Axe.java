@@ -27,9 +27,9 @@ public class Axe extends Tools {
     @Override
     public int healthCost() {
 
-        double x = Main.getClient().getLocalGameState().currentWeather.getEnergyCostCoefficient();
+        double x = Main.getClient(null).getLocalGameState().currentWeather.getEnergyCostCoefficient();
 
-        if (Main.getClient().getPlayer().getLevelMining() == 4)
+        if (Main.getClient(null).getPlayer().getLevelMining() == 4)
             return Math.min((int) (this.type.getEnergyCost()*x)+1, 0);
 
         return Math.min((int) (this.type.getEnergyCost()*x), 0);

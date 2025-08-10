@@ -18,6 +18,10 @@ public class collisionRect {
         this.height = height;
     }
 
+    public collisionRect() {
+
+    }
+
     public boolean checkCollision(User user) {
         if (user.getPositionX() >= x && user.getPositionX() <= x + width
             && user.getPositionY() >= y && user.getPositionY() <= y + height) {

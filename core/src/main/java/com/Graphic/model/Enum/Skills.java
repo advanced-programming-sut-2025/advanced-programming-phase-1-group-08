@@ -23,12 +23,12 @@ public enum Skills {
     public String getDiscription() {
 
         if (this.equals(Foraging)) {
-            return discription + Main.getClient().getPlayer().getForagingAbility();
+            return discription + Main.getClient(null).getPlayer().getForagingAbility();
         } else if (this.equals(Farming)) {
-            return discription + Main.getClient().getPlayer().getFarmingAbility();
+            return discription + Main.getClient(null).getPlayer().getFarmingAbility();
         } else if (this.equals(Fishing)) {
-            return discription + Main.getClient().getPlayer().getFishingAbility();
+            return discription + Main.getClient(null).getPlayer().getFishingAbility();
         } else
-            return discription + Main.getClient().getPlayer().getMiningAbility();
+            return discription + Main.getClient(null).getPlayer().getMiningAbility();
     }
 }

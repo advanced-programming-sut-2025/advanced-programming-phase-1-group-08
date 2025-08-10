@@ -1,6 +1,5 @@
 package com.Graphic.Controller.Menu;
 
-import com.Graphic.Main;
 import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
@@ -94,8 +93,8 @@ public class LoginController {
         forgotPasswordUser.setHashPass(hashedPassword);
         UserDataBase.updatePassword(forgotPasswordUser.getUsername(), hashedPassword);
 
-        Main.getClient().setPlayer(forgotPasswordUser);
-        Main.getClient().setCurrentMenu(Menu.MainMenu);
+        App.currentUser = forgotPasswordUser;
+        App.currentMenu = Menu.MainMenu;
 
         String username = forgotPasswordUser.getUsername();
         forgotPasswordUser = null;

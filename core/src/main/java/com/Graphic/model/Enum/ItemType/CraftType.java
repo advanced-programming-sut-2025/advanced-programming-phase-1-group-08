@@ -11,49 +11,49 @@ public enum CraftType {
         "Mohamadreza/CraftIcon/Cherry_Bomb.png", "Ariyo/Craftable_item/Cherry_Bomb.png",false) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelMining() >= 1;
+            return Main.getClient(null).getPlayer().getLevelMining() >= 1;
         }
     },
     Bomb("Bomb", 50, Map.of("Iron Ore", 4, "Coal", 1),
         "Mohamadreza/CraftIcon/Bomb.png", "Ariyo/Craftable_item/Bomb.png",false) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelMining() >= 2;
+            return Main.getClient(null).getPlayer().getLevelMining() >= 2;
         }
     },
     MegaBomb("Mega Bomb", 50, Map.of("Gold Ore", 4, "Coal", 1),
         "Mohamadreza/CraftIcon/Mega_Bomb.png", "Ariyo/Craftable_item/Mega_Bomb.png",false) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelMining() >= 3;
+            return Main.getClient(null).getPlayer().getLevelMining() >= 3;
         }
     },
     Sprinkler("Sprinkler", 0, Map.of("Copper Bar", 1, "Iron Bar", 1),
         "Mohamadreza/CraftIcon/Sprinkler.png", "Ariyo/Craftable_item/Sprinkler.png",false) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelFarming() >= 1;
+            return Main.getClient(null).getPlayer().getLevelFarming() >= 1;
         }
     },
     QualitySprinkler("Quality Sprinkler", 0, Map.of("Iron Bar", 1, "Gold Bar", 1),
         "Mohamadreza/CraftIcon/Quality_Sprinkler.png", "Ariyo/Craftable_item/Quality_Sprinkler.png",false) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelFarming() >= 2;
+            return Main.getClient(null).getPlayer().getLevelFarming() >= 2;
         }
     },
     IridiumSprinkler("Iridium Sprinkler", 0, Map.of("Gold Bar", 1, "Iridium Bar", 1),
         "Mohamadreza/CraftIcon/Iridium_Sprinkler.png", "Ariyo/Craftable_item/Iridium_Sprinkler.png",false) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelFarming() >= 3;
+            return Main.getClient(null).getPlayer().getLevelFarming() >= 3;
         }
     },
     CharcoalKlin("Charcoal Klin", 0, Map.of("Wood", 20, "Copper Bar", 2),
         "Mohamadreza/CraftIcon/Charcoal_Kiln.png", "Ariyo/Craftable_item/Charcoal_Kiln.png",true) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelForaging() >= 1;
+            return Main.getClient(null).getPlayer().getLevelForaging() >= 1;
         }
     },
     Furnace("Furnace", 0, Map.of("Copper Ore", 20, "Stone", 25),
@@ -74,35 +74,35 @@ public enum CraftType {
         "Mohamadreza/CraftIcon/Deluxe_Scarecrow.png", "Ariyo/Craftable_item/Deluxe_Scarecrow.png",false) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelFarming() >= 2;
+            return Main.getClient(null).getPlayer().getLevelFarming() >= 2;
         }
     },
     BeeHouse("Bee House", 0, Map.of("Wood", 40, "Coal", 8, "Iron Bar", 1),
         "Mohamadreza/CraftIcon/Bee_House.png", "Ariyo/Craftable_item/Bee_House.png",true) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelFarming() >= 1;
+            return Main.getClient(null).getPlayer().getLevelFarming() >= 1;
         }
     },
     ChessPress("Chess Press", 0, Map.of("Wood", 45, "Stone", 45, "Copper Bar", 1),
         "Mohamadreza/CraftIcon/Cheese_Press.png", "Ariyo/Craftable_item/Cheese_Press.png",true) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelFarming() >= 2;
+            return Main.getClient(null).getPlayer().getLevelFarming() >= 2;
         }
     },
     Keg("Keg", 0, Map.of("Wood", 30, "Copper Bar", 1, "Iron Bar", 1),
         "Mohamadreza/CraftIcon/Keg.png", "Ariyo/Craftable_item/Keg.png",true) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelFarming() >= 3;
+            return Main.getClient(null).getPlayer().getLevelFarming() >= 3;
         }
     },
     Loom("Loom", 0, Map.of("Wood", 60, "Fiber", 30),
         "Mohamadreza/CraftIcon/Loom.png", "Ariyo/Craftable_item/Loom.png",true) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelFarming() >= 3;
+            return Main.getClient(null).getPlayer().getLevelFarming() >= 3;
         }
     },
     MayonnaiseMachine("Mayonnaise Machine", 0, Map.of("Wood", 15, "Stone", 15, "Copper Bar", 1),
@@ -116,28 +116,28 @@ public enum CraftType {
         "Mohamadreza/CraftIcon/Oil_Maker.png", "Ariyo/Craftable_item/Oil_Maker.png",true) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelFarming() >= 3;
+            return Main.getClient(null).getPlayer().getLevelFarming() >= 3;
         }
     },
     PreservesJar("Preserves Jar", 0, Map.of("Wood", 50, "Stone", 40, "Coal", 8),
         "Mohamadreza/CraftIcon/Preserves_Jar.png", "Ariyo/Craftable_item/Preserves_Jar.png",true) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelFarming() >= 2;
+            return Main.getClient(null).getPlayer().getLevelFarming() >= 2;
         }
     },
     MysticTreeSeed("Mystic Tree Seed", 100, Map.of("Acorns", 5, "Maple Seeds", 5, "Pine Cones", 5, "Mahogany Seeds", 5),
         "Mohamadreza/CraftIcon/Mystic_Tree_Seed.png", "Ariyo/Craftable_item/Ancient_Seeds.png",true) {
         @Override
         public boolean checkLevel() {
-            return Main.getClient().getPlayer().getLevelForaging() >= 4;
+            return Main.getClient(null).getPlayer().getLevelForaging() >= 4;
         }
     },
     Dehydrator("Dehydrator", 0, Map.of("Wood", 30, "Stone", 20, "Fiber", 30),
         "Mohamadreza/Dehydrator.png", "Ariyo/Craftable_item/Dehydrator.png",true) {
         @Override
         public boolean checkLevel() {
-            Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
+            Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
             for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof MarketItem) {
                     if (((MarketItem) entry.getKey()).getType().equals(MarketItemType.DehydratorRecipe)) {
@@ -152,7 +152,7 @@ public enum CraftType {
         "Mohamadreza/Grass_Starter.png", "Ariyo/Craftable_item/Spring_Seeds.png",true) {
         @Override
         public boolean checkLevel() {
-            Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
+            Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
             for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof MarketItem) {
                     if (((MarketItem) entry.getKey()).getType().equals(MarketItemType.GrassStarterRecipe)) {
@@ -167,7 +167,7 @@ public enum CraftType {
         "Mohamadreza/Fish_Smoker.png", "Ariyo/Craftable_item/Fish_smoker.png",true) {
         @Override
         public boolean checkLevel() {
-            Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
+            Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
             for (Map.Entry<Items, Integer> entry : inventory.Items.entrySet()) {
                 if (entry.getKey() instanceof MarketItem) {
                     if (((MarketItem) entry.getKey()).getType().equals(MarketItemType.FishSmokerRecipe)) {

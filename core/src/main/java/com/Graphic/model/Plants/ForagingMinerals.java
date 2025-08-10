@@ -10,11 +10,14 @@ import java.awt.*;
 
 public class ForagingMinerals extends Items {
 
-    private final ForagingMineralsType type;
+    private ForagingMineralsType type;
 
     private Point position;
 
 
+    public ForagingMinerals() {
+
+    }
 
 
     public ForagingMinerals(ForagingMineralsType type) {

@@ -1,7 +1,5 @@
 package com.Graphic.model;
 
-import com.Graphic.Main;
-import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.HelpersClass.Result;
 
@@ -43,8 +41,8 @@ public class Marriage {
 
     public static void sendProposal(User from, User to) {
         Set<User> key = new HashSet<>(Arrays.asList(from, to));
-        Main.getClient().getLocalGameState().conversations.putIfAbsent(key, new ArrayList<>());
-        Main.getClient().getLocalGameState().conversations.get(key).add(new MessageHandling(from, to, PURPLE+"Proposal: " + from.getNickname() + " Wants to Marry You. Do You Accept to be his Wife?"+RESET));
+        currentGame.conversations.putIfAbsent(key, new ArrayList<>());
+        currentGame.conversations.get(key).add(new MessageHandling(from, to, PURPLE+"Proposal: " + from.getNickname() + " Wants to Marry You. Do You Accept to be his Wife?"+RESET));
     }
     public static Result proposalResponse(User man, User woman) { //todo به لیست اضافه کنی
         Scanner scanner = new Scanner(System.in);
@@ -61,12 +59,12 @@ public class Marriage {
 
         boolean accepted = response.equalsIgnoreCase("accept");
 
-        HumanCommunications f = ClientWorkController.getInstance().getFriendship(man, woman);
+        HumanCommunications f = getFriendship(man, woman);
 
         assert f != null;
         if (accepted) {
             f.setSUCCESSFULPropose(true);
-            return f.marry();
+            return null /*f.marry()*/;
         }
         else {
             f.reduceXP(10000);

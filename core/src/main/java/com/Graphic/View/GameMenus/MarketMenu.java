@@ -229,7 +229,7 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
     public void show() {
 //        App.currentGame.currentPlayer.sprite.setSize(16 , 32);
         marketing = new Marketing();
-        marketType = Main.getClient().getPlayer().getMarketType();
+        marketType = Main.getClient(null).getPlayer().getMarketType();
         camera = new OrthographicCamera();
         camera.setToOrtho(false , 300 , 150);
         map = new TmxMapLoader().load("Mohamadreza/Maps/" + marketType.getName() + ".tmx");
@@ -239,7 +239,7 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
         skin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
 
         Main.getBatch().begin();
-        marketing.init(Main.getClient().getPlayer());
+        marketing.init(Main.getClient(null).getPlayer());
         Main.getBatch().end();
 
 
@@ -279,8 +279,8 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
         if (! choosePlace) {
             camera.setToOrtho(false , 300 , 150);
             renderer.setView(camera);
-            camera.position.set(Main.getClient().getPlayer().getPositionX() , Main.getClient().getPlayer().getPositionY() , 0f);
-            marketing.move(Main.getClient().getPlayer());
+            camera.position.set(Main.getClient(null).getPlayer().getPositionX() , Main.getClient(null).getPlayer().getPositionY() , 0f);
+            marketing.move(Main.getClient(null).getPlayer());
             marketing.printPlayers();
             renderer.render();
         }

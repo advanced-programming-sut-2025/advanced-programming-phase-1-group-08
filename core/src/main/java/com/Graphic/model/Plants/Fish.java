@@ -1,6 +1,6 @@
 package com.Graphic.model.Plants;
 
-import com.Graphic.model.Enum.Fish.FishType;
+import com.Graphic.model.Enum.ItemType.FishType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.ItemType.Quantity;
 import com.Graphic.model.Items;
@@ -13,6 +13,10 @@ public class Fish extends Items {
     public Fish(FishType fishType, Quantity quantity) {
         this.type = fishType;
         this.quantity = quantity;
+    }
+
+    public Fish() {
+
     }
 
     public FishType getType() {

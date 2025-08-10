@@ -1,7 +1,6 @@
 package com.Graphic.model;
 
 import com.Graphic.Main;
-import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.Enum.Commands.TradeMenuCommands;
 import com.Graphic.model.HelpersClass.Result;
 
@@ -45,7 +44,7 @@ public class Trade {
 
     public static Trade findTradeByID (int id) {
         Trade foundTrade = null;
-        for (Map.Entry<Set<User>, List<Trade>> entry : Main.getClient().getLocalGameState().trades.entrySet()) {
+        for (Map.Entry<Set<User>, List<Trade>> entry : currentGame.trades.entrySet()) {
             List<Trade> tradeList = entry.getValue();
             for (Trade trade : tradeList) {
                 if (trade.getId() == id) {
@@ -83,7 +82,7 @@ public class Trade {
             return new Result(false, RED+"Respond to THIS Trade, Not Other Trades!");
 
         Trade trade = findTradeByID(id);
-        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), trade.sender);
+        HumanCommunications f = getFriendship(Main.getClient(null).getPlayer(), trade.sender);
         if (f == null)
             return new Result(false, RED+"Friendship Not Found!"+RESET);
 
@@ -97,7 +96,7 @@ public class Trade {
 
         // if Accepted:
 
-        Inventory receiverInventory = Main.getClient().getPlayer().getBackPack().inventory;
+        Inventory receiverInventory = Main.getClient(null).getPlayer().getBackPack().inventory;
         char receiver_P_or_T = trade.receiverGivesPorT;
 
         Inventory senderInventory = trade.sender.getBackPack().inventory;

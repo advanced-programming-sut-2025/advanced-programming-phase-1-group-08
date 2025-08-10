@@ -19,7 +19,7 @@ public class Scythe extends Tools {
     @Override
     public int healthCost() {
 
-        return Math.min((int) (-2 * Main.getClient().getLocalGameState().currentWeather.getEnergyCostCoefficient()), 0);
+        return Math.min((int) (-2 * Main.getClient(null).getLocalGameState().currentWeather.getEnergyCostCoefficient()), 0);
     }
 
     @Override

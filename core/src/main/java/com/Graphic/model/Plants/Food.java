@@ -11,10 +11,14 @@ import static com.Graphic.model.App.currentGame;
 
 public class Food extends Items {
 
-    private final FoodTypes type;
+    private FoodTypes type;
 
     public Food(FoodTypes type) {
         this.type = type;
+    }
+
+    public Food() {
+
     }
 
     public FoodTypes getType() {
@@ -23,7 +27,7 @@ public class Food extends Items {
 
     public static boolean checkInventorySpaceForFood(FoodTypes type) {
         return checkAmountProductAvailable(new Food(type), 1) ||
-                Main.getClient().getPlayer().getBackPack().getType().getRemindCapacity() > 0;
+                Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0;
     }
     public static boolean itemIsEatable(Items item) {
         return item instanceof Food || item instanceof Animalproduct
