@@ -277,7 +277,6 @@ public class GameControllerLogic {
                 mine = new Mine(topLeftX + 60 *x , topLeftY + 60 * y ,width , height);
                 Tile tile = new Tile(i , j , mine);
                 farm.Farm.add(tile);
-                gameState.bigMap.add(tile);
             }
         }
         farm.setMine(mine);
@@ -291,7 +290,6 @@ public class GameControllerLogic {
                 lake = new Lake(topLeftX + 60 * x, topLeftY + 60 * y, width, height);
                 Tile tile = new Tile(i, j, lake);
                 farm.Farm.add(tile);
-                gameState.bigMap.add(tile);
             }
         }
         farm.setLake(lake);
@@ -315,13 +313,11 @@ public class GameControllerLogic {
                 if (i == topLeftX + 60 * x + width -2 && j == topLeftY + 60 * y + height-2) {
                     Tile tile = new Tile(i, j, fridge);
                     farm.Farm.add(tile);
-                    gameState.bigMap.add(tile);
                 }
                 else {
                     Home home = new Home(topLeftX + 60 * x, topLeftY + 60 * y,width,height, fridge);
                     Tile tile = new Tile(i, j, home);
                     farm.Farm.add(tile);
-                    gameState.bigMap.add(tile);
                 }
             }
         }
@@ -346,23 +342,19 @@ public class GameControllerLogic {
                 if (i==topLeftX + 60 * x + width/2 && j==topLeftY + 60 * y + height-1) {
                     Tile tile = new Tile(i, j, greenHouseDoor);
                     farm.Farm.add(tile);
-                    gameState.bigMap.add(tile);
                 }
                 else if (i== topLeftX + 60*x + width/2 && j==topLeftY + 60*y + 1) {
                     Tile tile = new Tile(i, j, waterTank);
                     farm.Farm.add(tile);
-                    gameState.bigMap.add(tile);
                 }
                 else if (i == topLeftX + 60 * x || i == topLeftX + 60 * x + width -1 || j==topLeftY+60*y || j==topLeftY+60*y + height-1) {
                     Tile tile = new Tile(i, j, GreenWall);
                     farm.Farm.add(tile);
-                    Main.getClient().getLocalGameState().bigMap.add(tile);
                 }
 
                 else {
                     Tile tile = new Tile(i, j, greenHouse);
                     farm.Farm.add(tile);
-                    gameState.bigMap.add(tile);
                 }
             }
         }
@@ -660,21 +652,18 @@ public class GameControllerLogic {
                 Tree tree = new Tree(TreeType.OakTree,gameState.currentDate.clone());
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
                 Player.getFarm().Farm.add(tile);
-                gameState.bigMap.add(tile);
                 return 1;
             }
             else if(noise > -0.9 && noise <-0.5 && treeNumber <30){
                 Tree tree = new Tree(TreeType.MapleTree,gameState.currentDate.clone());
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
                 Player.getFarm().Farm.add(tile);
-                gameState.bigMap.add(tile);
                 return 1;
             }
             else if (noise > -0.5 && noise < - 0.2 && treeNumber <30){
                 Tree tree = new Tree(TreeType.PineTree, gameState.currentDate.clone());
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
                 Player.getFarm().Farm.add(tile);
-                gameState.bigMap.add(tile);
                 return 1;
             }
             else if (-0.1 < noise && noise < 0.0) {
@@ -682,7 +671,6 @@ public class GameControllerLogic {
                 basicRock.setCharactor('S');
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, basicRock);
                 Player.getFarm().Farm.add(tile);
-                gameState.bigMap.add(tile);
                 return 0;
             }
             else {
@@ -690,7 +678,6 @@ public class GameControllerLogic {
                 walkable.setCharactor('.');
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, walkable);
                 Player.getFarm().Farm.add(tile);
-                gameState.bigMap.add(tile);
                 return 0;
             }
 

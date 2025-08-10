@@ -10,6 +10,10 @@ public class Wood extends Items {
     public static final int price = 10;
     public static final String name = "Wood";
 
+    public Wood() {
+
+    }
+
     @Override
     public String getIcon() {
         return BRIGHT_BROWN + "| ";

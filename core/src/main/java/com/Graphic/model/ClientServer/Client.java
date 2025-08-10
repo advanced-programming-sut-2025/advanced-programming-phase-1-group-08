@@ -15,7 +15,8 @@ public class Client extends Game {
     public static void main(String[] args) {
 
         try {
-            ClientWork clientWork = new ClientWork("localhost", 54555);
+            ClientWork clientWork = new ClientWork("127.0.0.1",Network.TCP_PORT , Network.UDP_PORT);
+            Thread.sleep(1000);
             Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
             config.setTitle("StardewValley");
             config.setWindowedMode(1920, 1080);

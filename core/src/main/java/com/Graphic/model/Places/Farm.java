@@ -37,6 +37,10 @@ public class Farm {
         return greenHouse;
     }
 
+    public Farm() {
+
+    }
+
     public Mine getMine() {
         return mine;
     }

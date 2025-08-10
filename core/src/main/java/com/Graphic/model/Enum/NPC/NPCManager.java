@@ -26,6 +26,10 @@ public class NPCManager {
             updateAutoWalk(npc, delta);
     }
 
+    public NPCManager() {
+
+    }
+
     private static void updateAutoWalk(NPC npc, float delta) {
 
 //        npc.getSprite().draw(Main.getBatch());

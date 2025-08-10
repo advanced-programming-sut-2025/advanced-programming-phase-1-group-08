@@ -5,8 +5,11 @@ import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Items;
 
 public class BarsAndOres extends Items {
-    private final BarsAndOreType type;
+    private BarsAndOreType type;
 
+    public BarsAndOres() {
+
+    }
     public BarsAndOres(BarsAndOreType type) {
         this.type = type;
     }

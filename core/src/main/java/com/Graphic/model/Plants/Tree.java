@@ -14,8 +14,8 @@ import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 
 public class Tree extends GameObject {
 
-    private final DateHour birthDay;
-    private final TreeType type;
+    private DateHour birthDay;
+    private TreeType type;
     private boolean isProtected;
     private DateHour lastWater;
     private DateHour lastFruit;
@@ -24,6 +24,10 @@ public class Tree extends GameObject {
     private int numFertilize;
     private int stage;
 
+
+    public Tree() {
+
+    }
 
     public Tree(TreeType type, DateHour currentDate) {
 

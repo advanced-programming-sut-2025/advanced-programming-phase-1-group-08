@@ -18,8 +18,8 @@ import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 public class GiantProduct extends Items { // TODO ابعاد
 
     private ArrayList<Tile> neighbors = new ArrayList<>();
-    private final ForagingSeedsType type;
-    private final DateHour birthDay;
+    private ForagingSeedsType type;
+    private DateHour birthDay;
     private boolean todayFertilize;
     private boolean isProtected;
     private DateHour lastWater;
@@ -38,6 +38,10 @@ public class GiantProduct extends Items { // TODO ابعاد
         todayFertilize = false;
         checkHaveProduct();
         setStage();
+    }
+
+    public GiantProduct() {
+
     }
 
     public void setProtected(boolean aProtected) {

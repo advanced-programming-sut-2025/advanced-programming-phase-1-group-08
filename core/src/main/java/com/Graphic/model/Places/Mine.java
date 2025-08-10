@@ -16,14 +16,18 @@ import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class Mine extends GameObject {
 
-    private final int startX;
-    private final int startY;
-    private final int width;
-    private final int height;
+    private  int startX;
+    private  int startY;
+    private  int width;
+    private  int height;
     private collisionRect door;
     private ArrayList<ForagingMinerals> foragingMinerals;
     private ArrayList<Point> positions;
     private ArrayList<Point> taken = new ArrayList<>();
+
+    public Mine() {
+
+    }
 
     public Mine(int x, int y , int width, int height) {
         this.startX = x;

@@ -10,6 +10,10 @@ public class ArtisanProduct extends Items {
     public ArtisanProduct(ArtisanType type ) {
         this.type = type;
     }
+
+    public ArtisanProduct() {
+
+    }
     public ArtisanType getType() {
         return type;
     }

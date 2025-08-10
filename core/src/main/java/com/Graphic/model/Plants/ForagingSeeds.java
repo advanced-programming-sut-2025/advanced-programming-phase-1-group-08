@@ -14,7 +14,7 @@ import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 
 public class ForagingSeeds extends Items {
 
-    private final ForagingSeedsType type;
+    private ForagingSeedsType type;
     private DateHour birthDay;
     private boolean todayFertilize;
     private DateHour lastProduct;
@@ -25,6 +25,9 @@ public class ForagingSeeds extends Items {
     private int stage;
 
 
+    public ForagingSeeds() {
+
+    }
     public ForagingSeeds(ForagingSeedsType type) {
         stage = 1;
         numFertilize = 0;
