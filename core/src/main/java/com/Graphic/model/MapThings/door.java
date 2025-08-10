@@ -9,6 +9,9 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 public class door extends GameObject {
     private Door door;
 
+    public door() {
+    }
+
     public void setDoor(Door door) {
         this.door = door;
     }

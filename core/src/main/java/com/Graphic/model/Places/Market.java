@@ -13,6 +13,10 @@ public class Market extends GameObject {
         this.marketType = marketType;
     }
 
+    public Market() {
+
+    }
+
     public MarketType getMarketType() {
         return marketType;
     }

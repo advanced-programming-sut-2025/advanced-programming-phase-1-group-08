@@ -142,9 +142,8 @@ public class InputGameController {
         float time = Main.getClient(null).getPlayer().getTimer() + Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP) ) {
-            System.out.println("Up");
             x = Main.getClient(null).getPlayer().getPositionX();
-            y = Main.getClient(null).getPlayer().getPositionY() - 50 * Gdx.graphics.getDeltaTime();
+            y = Main.getClient(null).getPlayer().getPositionY() + 50 * Gdx.graphics.getDeltaTime();
             HashMap<String , Object> body = new HashMap<>();
             body.put("Player" , Main.getClient(null).getPlayer().getUsername());
             body.put("Direction" , Direction.Up);
@@ -161,9 +160,8 @@ public class InputGameController {
 //            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) ) {
-            System.out.println("Down");
             x = Main.getClient(null).getPlayer().getPositionX();
-            y = Main.getClient(null).getPlayer().getPositionY() + 50 * Gdx.graphics.getDeltaTime();
+            y = Main.getClient(null).getPlayer().getPositionY() - 50 * Gdx.graphics.getDeltaTime();
             HashMap<String , Object> body = new HashMap<>();
             body.put("Player" , Main.getClient(null).getPlayer().getUsername());
             body.put("Direction" , Direction.Down);
@@ -248,17 +246,17 @@ public class InputGameController {
     }
 
     public Message checkWalking(Message message , Game game) {
-        String Player = gson.fromJson(gson.toJson(message.getBody().get("Player")) , String.class);
-        Direction Direction = gson.fromJson(gson.toJson(message.getBody().get("Direction")) , com.Graphic.model.Enum.Direction.class);
-        float x = gson.fromJson(gson.toJson(message.getBody().get("X")) , float.class);
-        float y = gson.fromJson(gson.toJson(message.getBody().get("Y")) , float.class);
-        float Time = gson.fromJson(gson.toJson(message.getBody().get("Time")) , float.class);
+        String Player = message.getFromBody("Player");
+        Direction Direction = message.getFromBody("Direction");
+        float x = message.getFromBody("X");
+        float y = message.getFromBody("Y");
+        float Time = message.getFromBody("Time");
         HashMap<String , Object> body = new HashMap<>();
 
         try {
 
             if (getTileByCoordinates((int) (x / TEXTURE_SIZE), 90 - (int)(y / TEXTURE_SIZE) , game.getGameState()).getGameObject() instanceof Walkable ||
-                getTileByCoordinates((int) x, (int)y , game.getGameState()).getGameObject() instanceof door) {
+                getTileByCoordinates((int) (x / TEXTURE_SIZE), 90 - (int)(y / TEXTURE_SIZE) , game.getGameState()).getGameObject() instanceof door) {
 
                 body.put("Player" , Player);
                 body.put("Direction" , Direction);
@@ -285,28 +283,26 @@ public class InputGameController {
 
     public void Move(Message message , GameState gameState) {
         if (message.getCommandType() == CommandType.CAN_MOVE) {
-            System.out.println("walk");
-            String user = gson.fromJson(gson.toJson(message.getBody().get("Player")) , String.class);
-            Direction Direction = gson.fromJson(gson.toJson(message.getBody().get("Direction")) , com.Graphic.model.Enum.Direction.class);
-            float x = gson.fromJson(gson.toJson(message.getBody().get("X")) , float.class);
-            float y = gson.fromJson(gson.toJson(message.getBody().get("Y")) , float.class);
-            float Time = gson.fromJson(gson.toJson(message.getBody().get("Time")) , float.class);
+            String user = message.getFromBody("Player");
+            Direction Direction = message.getFromBody("Direction");
+            float x = message.getFromBody("X");
+            float y = message.getFromBody("Y");
+            float Time = message.getFromBody("Time");
             for (User Player : gameState.getPlayers()) {
                 if (user.trim().equals(Player.getUsername().trim())) {
                     Player.setPositionX(x);
                     Player.setPositionY(y);
                     Player.setDirection(Direction);
-                    if (Time >= 0.1f) {
-                        Player.setTimer(0.0f);
-                    }
-                    else {
-                        Player.setTimer(Time);
-                    }
+//                    if (Time >= 0.1f) {
+//                        Player.setTimer(0.0f);
+//                    }
+//                    else {
+//                        Player.setTimer(Time);
+//                    }
                 }
             }
         }
         if (message.getCommandType() == CommandType.CAN_NOT_MOVE) {
-            System.out.println("can't walk");
             String user = gson.fromJson(gson.toJson(message.getBody().get("Player")) , String.class);
             Direction Direction = gson.fromJson(gson.toJson(message.getBody().get("Direction")) , com.Graphic.model.Enum.Direction.class);
             float Time = gson.fromJson(gson.toJson(message.getBody().get("Time")) , float.class);
@@ -458,33 +454,42 @@ public class InputGameController {
 
 
         camera.position.set(Main.getClient(null).getPlayer().getPositionX() , Main.getClient(null).getPlayer().getPositionY() , 0f);
-        camera.update();
+        //camera.update();
+        //camera.unproject(camera.position);
+        int x = (int) (camera.position.x - camera.viewportWidth * camera.zoom / 2) / TEXTURE_SIZE;
+        int y = (int) (camera.position.y - camera.viewportHeight * camera.zoom / 2) / TEXTURE_SIZE;
+        //System.out.println("x: " + x + " y: " + y);
+        //System.out.println("x: " + camera.position.x + " y: " + camera.position.y);
 
-        for (int i =0 ; i< 90 ; i++) {
-            for (int j = 0; j < 90; j++) {
+
+        for (int i =x ; i< x + (camera.viewportWidth * camera.zoom )/TEXTURE_SIZE; i++) {
+            for (int j = y; j < y + (camera.viewportHeight * camera.zoom) /TEXTURE_SIZE; j++) {
+                //System.out.println("i: " + i + " j: " + j);
                 try {
 
+                    if (i >= 0 && i <= 90 && j >= 0 && j <= 90) {
+                        Main.getBatch().draw(TextureManager.get("Places/Walkable.png"),
+                            TEXTURE_SIZE * i, TEXTURE_SIZE * j, TEXTURE_SIZE, TEXTURE_SIZE);
+                    }
 
-                    Main.getBatch().draw(TextureManager.get("Places/Walkable.png"),
-                        TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE, TEXTURE_SIZE);
-
-                    if (getTileByCoordinates(i, j, gameMenu.gameState).getGameObject() instanceof UnWalkable) {
+                    if (getTileByCoordinates(i,90 -  j, gameMenu.gameState).getGameObject() instanceof UnWalkable) {
                         Main.getBatch().draw(TextureManager.get("Tree/unWalkable6.png"),
-                            TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE, TEXTURE_SIZE);
+                            TEXTURE_SIZE * i, TEXTURE_SIZE *  j, TEXTURE_SIZE, TEXTURE_SIZE);
                     }
 
                     Main.getBatch().draw(
-                        (TextureManager.get(getTileByCoordinates(i, j, gameMenu.gameState).getGameObject().getIcon())),
-                        TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j),
-                        TEXTURE_SIZE * getTileByCoordinates(i, j, gameMenu.gameState).getGameObject().getTextureWidth(),
-                        TEXTURE_SIZE * getTileByCoordinates(i, j, gameMenu.gameState).getGameObject().getTextureHeight());
+                        (TextureManager.get(getTileByCoordinates(i, 90 - j, gameMenu.gameState).getGameObject().getIcon())),
+                        TEXTURE_SIZE * i, TEXTURE_SIZE *  j,
+                        TEXTURE_SIZE * getTileByCoordinates(i, 90 - j, gameMenu.gameState).getGameObject().getTextureWidth(),
+                        TEXTURE_SIZE * getTileByCoordinates(i, 90 - j, gameMenu.gameState).getGameObject().getTextureHeight());
 
 
                 } catch (Exception e) {
-                    System.out.println(getTileByCoordinates(i , j , gameMenu.gameState).getGameObject().getIcon());
+                    //System.out.println(getTileByCoordinates(i , j , gameMenu.gameState).getGameObject().getIcon());
                 }
             }
         }
+
 
         for (User player : gameMenu.gameState.getPlayers()) {
 
@@ -501,6 +506,7 @@ public class InputGameController {
                 gameMenu.getUserRenderer().get(i).render(gameMenu.gameState.getPlayers().get(i));
             }
         }
+
 
         for (LakeRenderer lakeRenderer : gameMenu.getLakeRenderers()) {
             lakeRenderer.render();

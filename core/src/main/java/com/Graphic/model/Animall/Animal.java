@@ -19,7 +19,7 @@ public class Animal extends GameObject {
     private AnimalType type;
     private AnimalProductType productType;
     private int FriendShip;
-    private final String name;
+    private  String name;
     private int positionX;
     private int positionY;
     private int lastProduceDay;
@@ -80,6 +80,10 @@ public class Animal extends GameObject {
         this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+3+"_down.png");
         this.Down.add("Mohamadreza/animal/"+type.getType().toLowerCase()+4+"_down.png");
         Paths = new ArrayList<>();
+    }
+
+    public Animal() {
+
     }
 
     public String getName() {

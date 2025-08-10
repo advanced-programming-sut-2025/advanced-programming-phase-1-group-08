@@ -15,6 +15,10 @@ public class Fish extends Items {
         this.quantity = quantity;
     }
 
+    public Fish() {
+
+    }
+
     public FishType getType() {
         return type;
     }

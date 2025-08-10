@@ -1,6 +1,7 @@
 package com.Graphic.model.MapThings;
 
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.Places.Lake;
 import com.Graphic.model.collisionRect;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -20,6 +21,7 @@ public class GameObject {
         this.textureWidth = 1;
 
     }
+
 
     public char getCharactor() {
         return Charactor;

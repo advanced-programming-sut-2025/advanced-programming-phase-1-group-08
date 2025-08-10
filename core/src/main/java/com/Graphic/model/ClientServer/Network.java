@@ -1,16 +1,59 @@
 package com.Graphic.model.ClientServer;
 
+import com.Graphic.model.Enum.AllPlants.TreeType;
+import com.Graphic.model.Enum.Commands.CommandType;
+import com.Graphic.model.Enum.Direction;
+import com.Graphic.model.Enum.Door;
+import com.Graphic.model.Enum.ItemType.BackPackType;
+import com.Graphic.model.Enum.ItemType.BarnORCageType;
+import com.Graphic.model.Enum.ItemType.WallType;
+import com.Graphic.model.Enum.NPC.NPC;
+import com.Graphic.model.Enum.NPC.NPCHouse;
+import com.Graphic.model.Enum.SecurityQuestions;
+import com.Graphic.model.Inventory;
+import com.Graphic.model.OtherItem.Fridge;
+import com.Graphic.model.collisionRect;
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy;
+import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.kryonet.Server;
+import org.objenesis.strategy.StdInstantiatorStrategy;
+
+import java.awt.*;
+
+import static com.esotericsoftware.kryonet.rmi.ObjectSpace.registerClasses;
 
 public class Network {
 
     public static final int TCP_PORT = 54555;
     public static final int UDP_PORT = 54777;
 
-    public static void register(EndPoint endPoint) {
-        Kryo kryo = endPoint.getKryo();
+    public static void register(Server server) {
+        Kryo kryo = server.getKryo();
+        // دور زدن نیاز به constructor
+        kryo.setInstantiatorStrategy(
+            new DefaultInstantiatorStrategy(new StdInstantiatorStrategy())
+        );
+
+        registerClasses(kryo);
+    }
+
+    public static void register(Client client) {
+        Kryo kryo = client.getKryo();
+        kryo.setInstantiatorStrategy(
+            new DefaultInstantiatorStrategy(new StdInstantiatorStrategy())
+        );
+
+        registerClasses(kryo);
+    }
+
+    public static void registerClasses(Kryo kryo) {
+        kryo.setRegistrationRequired(true);
+        kryo.setReferences(true);
+
+        kryo.register(CommandType.class);
+        kryo.register(SecurityQuestions.class);
         kryo.register(Message.class);
         kryo.register(java.util.HashMap.class);
         kryo.register(java.util.ArrayList.class);
@@ -21,6 +64,8 @@ public class Network {
 
         // --- ثبت کلاس‌های پروژه‌ات که توی Message.body استفاده می‌شن ---
         kryo.register(com.Graphic.model.User.class);
+        kryo.register(BackPackType.class);
+        kryo.register(Inventory.class);
         kryo.register(com.Graphic.model.Items.class);
         kryo.register(com.Graphic.model.MapThings.Tile.class);
         kryo.register(com.Graphic.model.Animall.Animal.class);
@@ -29,6 +74,17 @@ public class Network {
         kryo.register(com.Graphic.model.Recipe.class);
         kryo.register(com.Graphic.model.Animall.Animal.class);
         kryo.register(com.Graphic.model.Animall.BarnOrCage.class);
+        kryo.register(BarnORCageType.class);
+        kryo.register(NPCHouse.class);
+        kryo.register(NPC.class);
+        kryo.register(com.Graphic.model.Enum.ItemType.MarketType.class);
+        kryo.register(Direction.class);
+        kryo.register(WallType.class);
+        kryo.register(Door.class);
+        kryo.register(TreeType.class);
+        kryo.register(Fridge.class);
+        kryo.register(collisionRect.class);
+        kryo.register(Point.class);
         kryo.register(com.Graphic.model.MapThings.Walkable.class);
         kryo.register(com.Graphic.model.MapThings.GameObject.class);
         kryo.register(com.Graphic.model.MapThings.UnWalkable.class);

@@ -44,19 +44,20 @@ public class ClientWork  {
     private User Player;
     private Menu currentMenu;
     private Client client;
-    private Connection connection;
 
-    public ClientWork(String serverIp , int tcpPort) throws IOException {
-        client = new Client();
-        Network.register(client);
+    public ClientWork(String serverIp , int tcpPort , int udpPort) throws IOException {
+        client = new Client(1024 * 1024 * 10 , 1024 * 1024 * 10);
         client.start();
+        Network.register(client);
+//        client.setKeepAliveTCP(4000);
+//        client.setTimeout(30000);
+        client.connect(5000 , serverIp , tcpPort , udpPort);
 
         client.addListener(new Listener() {
 
             public void connected(Connection connection) {
-                ClientWork.this.connection = connection;
+                System.out.println("Connected");
             }
-
 
             public void received(Connection connection, Object object) {
                 if (object instanceof Message) {
@@ -66,15 +67,14 @@ public class ClientWork  {
 
         });
 
-        client.connect(5000 , serverIp , tcpPort);
-
         new Thread(() -> {
             while (true) {
                 try {
-                    Message msg = requests.take();
-                    sendMessage(msg);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+                        Message msg = requests.take();
+                        sendMessage(msg);
+                    }
+                catch (InterruptedException e) {
+                    //Thread.currentThread().interrupt();
                 }
             }
         }).start();
@@ -82,8 +82,10 @@ public class ClientWork  {
 //        new Thread(() -> {
 //            try {
 //                while (true) {
-//                    connection.sendTCP(2);
-//                    Thread.sleep(4000);
+//                    if (connection != null && connection.isConnected()) {
+//                        connection.sendTCP(2);
+//                        Thread.sleep(4000);
+//                    }
 //                }
 //            }
 //            catch (Exception e) {
@@ -126,8 +128,8 @@ public class ClientWork  {
                 Farm farm = message.getFromBody("Farm");
                 Main.getClient(null).getLocalGameState().getFarms().add(farm);
                 User user = message.getFromBody("Player");
-                int x = message.getIntFromBody("X");
-                int y = message.getIntFromBody("Y");
+                int x = message.getFromBody("X");
+                int y = message.getFromBody("Y");
                 for (User player : Main.getClient(null).getLocalGameState().getPlayers()) {
                     if (player.getUsername().trim().equals(user.getUsername().trim())) {
                         System.out.println(player.getUsername());
@@ -241,7 +243,7 @@ public class ClientWork  {
     }
 
     public void sendMessage(Message message) {
-        connection.sendTCP(message);
+        client.sendTCP(message);
 
     }
 

@@ -9,6 +9,7 @@ import com.Graphic.model.Game;
 import com.Graphic.model.User;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -50,16 +51,28 @@ public class ClientConnectionThread extends Thread {
     @Override
     public void run() {
         System.out.println("Client connected");
-        while (true) {
-            try {
-                Message message = messageQueue.take();
-                handleMessage(message);
+        connection.addListener(new Listener(){
+            public void received(Connection connection, Object object) {
+                if (object instanceof Message) {
+                    try {
+                        handleMessage((Message) object);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            catch (Exception e) {
-                e.printStackTrace();
-                break;
-            }
-        }
+        });
+
+//        while (true) {
+//            try {
+//                Message message = messageQueue.take();
+//                handleMessage(message);
+//            }
+//            catch (Exception e) {
+//                e.printStackTrace();
+//                break;
+//            }
+//        }
         System.out.println("Client disconnected");
     }
 

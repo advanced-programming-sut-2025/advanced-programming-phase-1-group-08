@@ -2018,6 +2018,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 userRenderer.addToAnimations(Direction.Down , player.getDown());
                 userRenderer.addToAnimations(Direction.Left , player.getLeft());
                 userRenderer.addToAnimations(Direction.Right , player.getRight());
+                player.setInFarmExterior(true);
                 userRenderers.add(userRenderer);
             }
 

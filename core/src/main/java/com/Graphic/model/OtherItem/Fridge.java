@@ -14,6 +14,9 @@ public class Fridge extends GameObject {
     private int y;
     public HashMap<Items, Integer> items = new HashMap<>();
 
+    public Fridge() {
+
+    }
     public Fridge(int x, int y) {
         this.x = x;
         this.y = y;

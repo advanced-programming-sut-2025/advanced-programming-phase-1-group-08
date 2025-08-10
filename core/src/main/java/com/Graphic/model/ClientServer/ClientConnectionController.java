@@ -9,6 +9,7 @@ import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Places.ShippingBin;
 import com.Graphic.model.Plants.BasicRock;
@@ -31,7 +32,7 @@ public class ClientConnectionController {
 
 
     public static void createFarm(Message message , Game game) throws IOException {
-        int index = message.getIntFromBody("Index");
+        int index = message.getFromBody("Index");
         User user = message.getFromBody("Player");
         game.getGameState().incrementNumberOfMaps();
         int topLeftX = 0;
@@ -48,6 +49,9 @@ public class ClientConnectionController {
         sendToAll(result , game);
         if (game.getGameState().getNumberOfMaps() == 4) {
             sendToAll(build(game.getGameState()) , game);
+            for (Tile tile : game.getGameState().bigMap) {
+                System.out.println("x: " + tile.getX() + "y: " + tile.getY());
+            }
         }
     }
 

@@ -7,8 +7,12 @@ import com.Graphic.model.Items;
 
 public class Animalproduct extends Items {
 
-    private final AnimalProductType type;
-    private final Quantity quantity;
+    private AnimalProductType type;
+    private Quantity quantity;
+
+    public Animalproduct() {
+
+    }
 
     public Animalproduct(AnimalProductType animalProductType, Quantity quantity) {
         this.type = animalProductType;

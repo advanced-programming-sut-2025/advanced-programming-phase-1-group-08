@@ -17,6 +17,10 @@ public class NPCDirectionSet {
         directionTexturePaths.put(Direction.Down, basePath + ",Down1.png");
     }
 
+    public NPCDirectionSet() {
+
+    }
+
     public String getPath(Direction direction) {
         return directionTexturePaths.get(direction);
     }

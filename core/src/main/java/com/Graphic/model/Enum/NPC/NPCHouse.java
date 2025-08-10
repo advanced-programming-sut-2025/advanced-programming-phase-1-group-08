@@ -14,6 +14,10 @@ public class NPCHouse extends GameObject {
         return npc;
     }
 
+    public NPCHouse() {
+
+    }
+
     public NPCHouse(NPC npc) {
         this.npc = npc;
     }

@@ -14,6 +14,10 @@ public class MarketItem extends Items {
         return type;
     }
 
+    public MarketItem() {
+
+    }
+
     @Override
     public String getName() {
         return type.getName();

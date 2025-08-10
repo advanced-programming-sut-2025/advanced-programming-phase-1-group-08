@@ -8,6 +8,9 @@ public class Wall extends GameObject {
     private WallType wallType;
     int index;
 
+    public Wall() {
+
+    }
     public Wall(int index){
         this.index=index;
     }

@@ -13,6 +13,9 @@ public class UnWalkable extends GameObject {
 
     public UnWalkable() {
         x = rand.nextInt();
+        if (x < 0) {
+            x = -x;
+        }
         x = (x % 6) + 1;
         if (x == 4 || x == 5) {
             super.setTextureHeight(1.5f);

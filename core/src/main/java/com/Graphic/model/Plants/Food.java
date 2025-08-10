@@ -11,10 +11,14 @@ import static com.Graphic.model.App.currentGame;
 
 public class Food extends Items {
 
-    private final FoodTypes type;
+    private FoodTypes type;
 
     public Food(FoodTypes type) {
         this.type = type;
+    }
+
+    public Food() {
+
     }
 
     public FoodTypes getType() {

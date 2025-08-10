@@ -12,12 +12,16 @@ import static com.Graphic.model.App.currentGame;
 
 public class ForagingCrops extends Items {
 
-    private final ForagingCropsType type;
+    private ForagingCropsType type;
     private boolean isProtected;
 
 
     public ForagingCrops(ForagingCropsType type) {
         this.type = type;
+    }
+
+    public ForagingCrops() {
+
     }
 
 

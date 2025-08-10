@@ -17,11 +17,11 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class Lake extends GameObject {
-    private final int topLeftX;
-    private final int topLeftY;
-    private final int width;
-    private final int height;
-    private ArrayList<String> LakeAnimation;
+    private  int topLeftX;
+    private  int topLeftY;
+    private  int width;
+    private  int height;
+    private ArrayList<String> LakeAnimation = new ArrayList<>();
     Sprite first;
     Sprite second;
     private float Timer = 0.0f;
@@ -32,6 +32,9 @@ public class Lake extends GameObject {
         this.topLeftY = y;
         this.width = width;
         this.height = height;
+    }
+    public Lake() {
+
     }
     public int getTopLeftX() {
         return topLeftX;
@@ -88,4 +91,5 @@ public class Lake extends GameObject {
     public void setRemindInShop(int amount, MarketType marketType) {
 
     }
+
 }

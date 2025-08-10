@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class Home extends GameObject {
-    private final int width;
-    private final int length;
+    private int width;
+    private int length;
     private int topLeftX;
     private int topLeftY;
     private Fridge fridge;
@@ -25,6 +25,10 @@ public class Home extends GameObject {
         this.width = width;
         this.length = length;
         this.fridge = fridge;
+    }
+
+    public Home() {
+
     }
     ArrayList<String> machines = new ArrayList<>(); // دستگاه هایی که کرفت کردیم و میخواهیم با آنها فراوری یا کارهای دیگر بکنیم
 

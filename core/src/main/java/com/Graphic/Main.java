@@ -31,6 +31,12 @@ public class Main extends Game {
     public static Skin newSkin;
     private static ClientWork client;
 
+    static {
+        System.setProperty("java.net.preferIPv4Stack", "true");
+        // در هر دو طرف
+        System.setProperty("kryonet.log", "DEBUG");
+    }
+
     public Main(ClientWork client) {
         System.out.println("Main Constructor");
         Main.client = client;
