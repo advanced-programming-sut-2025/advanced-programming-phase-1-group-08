@@ -31,6 +31,12 @@ public class User {
     private int daysDepressedLeft = 0;
     private List<Recipe> recipes;
 
+    public boolean isFishing = false;
+    public boolean doingMinigame = false;
+
+    private User FriendCloseToMe = null;
+    private boolean showUnseenChats = false;
+
 
     public Sprite sprite;
     private ArrayList<String> Right;
@@ -98,7 +104,12 @@ public class User {
     private int fishingAbility  = 0;
     private int money;
 
-
+    public void setFriendCloseToMe(User FriendCloseToMe) {
+        this.FriendCloseToMe = FriendCloseToMe;
+    }
+    public User getFriendCloseToMe() {
+        return FriendCloseToMe;
+    }
 
     private  Farm farm;
     public int topLeftX;
@@ -406,6 +417,16 @@ public class User {
     public int getFishingAbility() {
         return fishingAbility;
     }
+
+
+
+    public boolean isShowUnseenChats() {
+        return showUnseenChats;
+    }
+
+    public void setShowUnseenChats(boolean showUnseenChats) {
+        this.showUnseenChats = showUnseenChats;
+    } //todo تو گیم منو باید بگم اگه ترو بود دیالوگو بیار بالا و اگه بستمش فالس کن
 
 
     public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {

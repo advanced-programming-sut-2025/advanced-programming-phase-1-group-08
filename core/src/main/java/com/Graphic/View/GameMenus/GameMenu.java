@@ -8,6 +8,7 @@ import com.Graphic.View.AppMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.AnimalRenderer;
+import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.ClientServer.ServerHandler;
@@ -33,6 +34,7 @@ import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.Lake;
 import com.Graphic.model.Plants.*;
+import com.Graphic.model.ToolsPackage.FishingPole;
 import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.Graphic.model.ToolsPackage.FishingPole;
 import com.Graphic.model.ToolsPackage.Tools;
@@ -95,7 +97,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private ArrayList<AnimalRenderer> animalRenderers = new ArrayList<>();
     private ArrayList<LakeRenderer> lakeRenderers = new ArrayList<>();
     private boolean initialLake = false;
-
+    private ArrayList<AnimalRenderer> currentBarnOrCageAnimals = new ArrayList<>();
     public boolean showFriendDialog = false;
 
     private boolean progressComplete = false;
@@ -286,12 +288,25 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             getRenderer().render();
         }
 
-        checkFriendDistance();
+        if (!Main.getClient().getPlayer().isInFarmExterior()) {
+            getRenderer().setView(camera);
+            getRenderer().render();
+        }
+
+        User x = null;
+        if ((x = Main.getClient().getPlayer().getFriendCloseToMe()) != null) {
+            printTempFriend(x);
+        }
+        else {
+            tempFriend.setVisible(false);
+        }
+
         if (activeDialog != null && TimeUtils.millis() > dialogExpirationTime) {
             activeDialog.hide();
             activeDialog.remove();
             activeDialog = null;
         }
+
 
         if (Main.getClient().getLocalGameState().getChooseMap()) {
             createUserRenderes();
@@ -307,27 +322,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             camera.unproject(mousePos);
             camera.update();
 
+
             changeMenu();
-
-            if (!Main.getClient().getPlayer().isInFarmExterior()) {
-                getRenderer().setView(camera);
-                getRenderer().render();
-            }
-
-            checkFriendDistance();
-            if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
-                System.out.println("hi");
-                stage.addActor(activeDialog);
-            } else {
-                activeDialog = null;
-            }
         }
+
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         startFishing(v);
         Main.getBatch().end();
     }
-
     private void lightBeforeFishing(float v) {
         if (!showFishLight)
             return;
@@ -389,9 +392,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             fishVelocity = new Vector2(dx, dy);
 
             if (fishToCatchType.isLegendary()) {
-            fishCrown = new Sprite(TextureManager.get("Ariyo/star.png"));
-            fishCrown.setRegion(TextureManager.get("Ariyo/star.png"));
-            fishCrown.setPosition(Main.getClient().getPlayer().sprite.getX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().sprite.getY() + 190);
+                fishCrown = new Sprite(TextureManager.get("Ariyo/star.png"));
+                fishCrown.setRegion(TextureManager.get("Ariyo/star.png"));
+                fishCrown.setPosition(Main.getClient().getPlayer().sprite.getX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().sprite.getY() + 190);
             }
             else
                 fishCrown = null;
@@ -642,33 +645,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
 
-    private void checkFriendDistance() {
-        boolean someoneClose = false;
+    private void printTempFriend(User p) {
 
-        for (User p : currentGame.getGameState().getPlayers()) {
-            if (p.getUsername().equalsIgnoreCase(Main.getClient().getPlayer().getUsername())) continue;
+        Texture iconTexture;
+        if (p.getGender().equalsIgnoreCase("man"))
+            iconTexture = new Texture("Ariyo/Shane_Icon.png");
+        else
+            iconTexture = new Texture("Ariyo/Sandy_Icon.png");
 
-            float deltaX = Math.abs((float) Main.getClient().getPlayer().getPositionX() - p.getPositionX());
-            float deltaY = Math.abs((float)Main.getClient().getPlayer().getPositionY() - p.getPositionY());
-            if (deltaY < 3f && deltaX < 3f) {
-                someoneClose = true;
+        tempFriend.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
 
-                Texture iconTexture;
-                if (p.getGender().equalsIgnoreCase("man"))
-                    iconTexture = new Texture("Ariyo/Shane_Icon.png");
-                else
-                    iconTexture = new Texture("Ariyo/Sandy_Icon.png");
-
-                tempFriend.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
-
-                tempFriend.setVisible(true);
-                break;
-            }
-        }
-
-        if (!someoneClose) {
-            tempFriend.setVisible(false);
-        }
+        tempFriend.setVisible(true);
     }
 
     public void eatingManagement(float delta) {
@@ -716,32 +703,22 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Dialog interactionDialog = new Dialog("", newSkin);
         dialogActivated = true;
         User me = Main.getClient().getPlayer();
-        User other = null;
-        for (User p : currentGame.getGameState().getPlayers()) {
-            if (p.getUsername().equalsIgnoreCase(me.getUsername())) continue;
 
-            float deltaX = Math.abs((float) Main.getClient().getPlayer().getPositionX() - p.getPositionX());
-            float deltaY = Math.abs((float) Main.getClient().getPlayer().getPositionY() - p.getPositionY());
-            if (deltaY < 3f && deltaX < 3f) {
-                other = p;
-                break;
-            }
-        }
+        User p = Main.getClient().getPlayer().getFriendCloseToMe();
+        if (p == null) return interactionDialog;
 
-        if (other == null) return interactionDialog;
 
         // ساختن دکمه‌ها دستی
         TextButton flowerButton = new TextButton("Send Flower", newSkin);
-        User finalOther = other;
         flowerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
-                if (getFriendship(me, finalOther) != null) {
+                if (ClientWorkController.getInstance().getFriendship(me, p) != null) {
                     interactionDialog.remove();
                     dialogActivated = false;
 
-                    result = giveFlowers(finalOther.getUsername());
+                    result = giveFlowers(p.getUsername());
                     if (result.IsSuccess()) {
                         bouquetImage.addAction(Actions.sequence(
                             Actions.alpha(0f),
@@ -750,7 +727,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                             Actions.fadeOut(0.5f)
                         ));
 
-                        if (getFriendship(me, finalOther) != null && getFriendship(me, finalOther).getLevel() < 3)
+                        if (ClientWorkController.getInstance().getFriendship(me, p) != null && ClientWorkController.getInstance().getFriendship(me, p).getLevel() < 3)
                             onePlusLabel.addAction(Actions.sequence(
                                 Actions.alpha(0f),
                                 Actions.fadeIn(0.3f),
@@ -765,16 +742,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
 
         TextButton hugButton = new TextButton("Hug", newSkin);
-        User finalOther1 = other;
         hugButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
-                if (getFriendship(me, finalOther1) != null) {
+                if (ClientWorkController.getInstance().getFriendship(me, p) != null) {
                     interactionDialog.remove();
                     dialogActivated = false;
 
-                    result = hug(finalOther1.getUsername());
+                    result = hug(p.getUsername());
                     if (result.IsSuccess()) {
                         hugImage.addAction(Actions.sequence(
                             Actions.alpha(0f),
@@ -797,24 +773,25 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
 
         TextButton talkButton = new TextButton("Talk", newSkin);
-        User finalOther2 = other;
         talkButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                talking(finalOther2.getUsername(), result -> {
+                HashMap<String, Object> body = new HashMap<>();
+                Main.getClient().getRequests().add(new Message(CommandType.FriendshipsInquiry, body));
+
+                talking(p.getUsername(), result -> {
                     showTimedDialog(result.massage(), 2f);
                 });
             }
         });
 
         TextButton proposeButton = new TextButton("Propose", newSkin);
-        User finalOther3 = other;
         proposeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
-                if (getFriendship(me, finalOther3) != null) {
-                    result = propose(finalOther3.getUsername());
+                if (ClientWorkController.getInstance().getFriendship(me, p) != null) {
+                    result = propose(p.getUsername());
                     if (result.IsSuccess()) {
                         ringImage.addAction(Actions.sequence(
                             Actions.alpha(0f),
@@ -1131,16 +1108,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         startRotation = false;
 
         //Mohamadreza
-        if (userRenderers.isEmpty()) {
-            for (User player : gameMenu.gameState.getPlayers()) {
-                UserRenderer userRenderer = new UserRenderer();
-                userRenderer.addToAnimations(Direction.Up , player.getUp());
-                userRenderer.addToAnimations(Direction.Down , player.getDown());
-                userRenderer.addToAnimations(Direction.Left , player.getLeft());
-                userRenderer.addToAnimations(Direction.Right , player.getRight());
-                userRenderers.add(userRenderer);
-            }
-        }
     }
 
     private void inputController() {
@@ -1177,22 +1144,22 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     )
                 );
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-                User temp = Main.getClient().getPlayer();
-                ArrayList<User> list = currentGame.getGameState().getPlayers();
-                if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
-                    Main.getClient().setPlayer(list.get(0));
-                    return;
-                }
-                boolean found = false;
-                for (User user : list) {
-                    if (found) {
-                        Main.getClient().setPlayer(user);
-                        return;
-                    }
-                    if (user.getUsername().equals(temp.getUsername())) {
-                        found = true;
-                    }
-                }
+//                User temp = Main.getClient().getPlayer();
+//                ArrayList<User> list = currentGame.getGameState().getPlayers();
+//                if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
+//                    Main.getClient().setPlayer(list.get(0));
+//                    return;
+//                }
+//                boolean found = false;
+//                for (User user : list) {
+//                    if (found) {
+//                        Main.getClient().setPlayer(user);
+//                        return;
+//                    }
+//                    if (user.getUsername().equals(temp.getUsername())) {
+//                        found = true;
+//                    }
+//                }
             }
 
 
@@ -1409,12 +1376,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
 
         TextButton voteKickButton = new TextButton(" Vote to Kick Player", newSkin);
-        voteKickButton.setDisabled(!Main.getClient().getPlayer().equals(Main.getClient().getPlayer()));
+//        voteKickButton.setDisabled(!Main.getClient().getPlayer().equals(Main.getClient().getPlayer()));
 
         voteKickButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!Main.getClient().getPlayer().equals(Main.getClient().getPlayer())) return;
+                if (true/*!Main.getClient().getPlayer().equals(currentUser)*/) return;
 
                 Window kickWindow = new Window("Select Player to Kick", newSkin);
                 kickWindow.setSize(300, 250);
@@ -1428,20 +1395,20 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 playersList.pad(10);
                 playersList.top();
 
-                for (User player : currentGame.getGameState().getPlayers()) {
-                    if (player.equals(Main.getClient().getPlayer())) continue;
-
-                    TextButton playerButton = new TextButton(player.getNickname(), newSkin);
-                    playerButton.addListener(new ClickListener() {
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            // اینجا حذف واقعی رو انجام بده
-                            currentGame.getGameState().getPlayers().remove(player);
-                            kickWindow.remove(); // یا hide()
-                        }
-                    });
-                    playersList.addActor(playerButton);
-                }
+//                for (User player : currentGame.getGameState().getPlayers()) {
+//                    if (player.equals(Main.getClient().getPlayer())) continue;
+//
+//                    TextButton playerButton = new TextButton(player.getNickname(), newSkin);
+//                    playerButton.addListener(new ClickListener() {
+//                        @Override
+//                        public void clicked(InputEvent event, float x, float y) {
+//                            // اینجا حذف واقعی رو انجام بده
+//                            currentGame.getGameState().getPlayers().remove(player);
+//                            kickWindow.remove(); // یا hide()
+//                        }
+//                    });
+//                    playersList.addActor(playerButton);
+//                }
 
                 ScrollPane scrollPane = new ScrollPane(playersList, newSkin);
                 scrollPane.setFadeScrollBars(false);
@@ -1698,7 +1665,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private void updateEnergyLabel () {
 
-        int currentHealth = Main.getClient().getPlayer().getHealth();
+        int currentHealth = Main.getClient(null).getPlayer().getHealth();
         if (currentHealth != lastHealth) {
 
             energyLabel.setText("Energy : " + Main.getClient().getPlayer().getHealth());

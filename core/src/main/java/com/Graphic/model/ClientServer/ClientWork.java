@@ -250,6 +250,22 @@ public class ClientWork  {
             case CHANGE_GAME_OBJECT -> {
 
             }
+            case FriendshipsInqResponse, UPDATE_FRIENDSHIPS -> {
+                Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
+            }
+            case PASSED_TIME -> {
+                controller.PassedTime(message.getIntFromBody("Hour"), message.getIntFromBody("Day"));
+            }
+            case A_FRIEND_IS_CLOSE -> {
+                User friend = message.getFromBody("friend");
+                Main.getClient().getPlayer().setFriendCloseToMe(friend);
+            }
+            case  UPDATE_CONVERSATIONS -> {
+                Main.getClient().getLocalGameState().conversations =  message.getFromBody("conversations");
+                // print unseen messages
+                Main.getClient().getPlayer().setShowUnseenChats(true);
+            }
+        }
         }
     }
 

@@ -43,7 +43,9 @@ public enum CommandType {
     FriendshipsInquiry,
     FriendshipsInqResponse,
     UPDATE_FRIENDSHIPS,
-
+    A_FRIEND_IS_CLOSE,
+    TALK_TO_FRIEND,
+    UPDATE_CONVERSATIONS,
 
                                 // Erfan
     PASSED_TIME,
