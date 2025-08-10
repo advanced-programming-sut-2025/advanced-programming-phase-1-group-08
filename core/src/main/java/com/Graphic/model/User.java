@@ -38,6 +38,8 @@ public class User {
     public boolean doingMinigame = false;
 
     private User FriendCloseToMe = null;
+    private boolean showUnseenChats = false;
+
 
     public Sprite sprite;
     private ArrayList<String> Right;
@@ -418,6 +420,16 @@ public class User {
     public int getFishingAbility() {
         return fishingAbility;
     }
+
+
+
+    public boolean isShowUnseenChats() {
+        return showUnseenChats;
+    }
+
+    public void setShowUnseenChats(boolean showUnseenChats) {
+        this.showUnseenChats = showUnseenChats;
+    } //todo تو گیم منو باید بگم اگه ترو بود دیالوگو بیار بالا و اگه بستمش فالس کن
 
 
     public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {

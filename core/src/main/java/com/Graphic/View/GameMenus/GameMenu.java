@@ -762,6 +762,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         talkButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                HashMap<String, Object> body = new HashMap<>();
+                Main.getClient().getRequests().add(new Message(CommandType.FriendshipsInquiry, body));
+
                 talking(p.getUsername(), result -> {
                     showTimedDialog(result.massage(), 2f);
                 });

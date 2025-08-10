@@ -44,6 +44,8 @@ public enum CommandType {
     FriendshipsInqResponse,
     UPDATE_FRIENDSHIPS,
     A_FRIEND_IS_CLOSE,
+    TALK_TO_FRIEND,
+    UPDATE_CONVERSATIONS,
 
 
 

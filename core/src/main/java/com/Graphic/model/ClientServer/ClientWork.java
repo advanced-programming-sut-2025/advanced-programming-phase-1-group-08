@@ -187,7 +187,7 @@ public class ClientWork  {
                 int y = message.getIntFromBody("Y");
                 InputGameController.getInstance().placeBarnOrCage(x, y, barnOrCage , user);
             }
-            case FriendshipsInqResponse -> {
+            case FriendshipsInqResponse, UPDATE_FRIENDSHIPS -> {
                 Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
             }
             case PASSED_TIME -> {
@@ -196,6 +196,11 @@ public class ClientWork  {
             case A_FRIEND_IS_CLOSE -> {
                 User friend = message.getFromBody("friend");
                 Main.getClient().getPlayer().setFriendCloseToMe(friend);
+            }
+            case  UPDATE_CONVERSATIONS -> {
+                Main.getClient().getLocalGameState().conversations =  message.getFromBody("conversations");
+                // print unseen messages
+                Main.getClient().getPlayer().setShowUnseenChats(true);
             }
         }
     }

@@ -4,24 +4,19 @@ import com.Graphic.Controller.MainGame.Marketing;
 import com.Graphic.Controller.Menu.LoginController;
 import com.Graphic.Controller.Menu.RegisterController;
 import com.Graphic.Main;
+import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
-import com.Graphic.model.App;
 import com.Graphic.model.Enum.Commands.CommandType;
-import com.Graphic.model.Game;
-import com.Graphic.model.Items;
-import com.Graphic.model.User;
-import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 
 import java.io.*;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.AnswerShepherding;
+import static com.Graphic.model.App.findPlayerInGame;
 import static com.Graphic.model.Enum.Commands.CommandType.CHANGE_INVENTORY;
 
 public class ClientConnectionThread extends Thread {
@@ -215,6 +210,30 @@ public class ClientConnectionThread extends Thread {
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("friendships", game.getGameState().friendships);
                 sendMessage(new Message(CommandType.FriendshipsInqResponse, body));
+            }
+            case TALK_TO_FRIEND -> {
+                MessageHandling messageHandling = message.getFromBody("MessageHandling");
+
+                // add to server conversations
+                Set<User> key = new HashSet<>(Arrays.asList(messageHandling.getSender(), messageHandling.getReceiver()));
+                game.getGameState().conversations.putIfAbsent(key, new ArrayList<>());
+                game.getGameState().conversations.get(key).add(messageHandling);
+
+                // send to both players to update local conversations
+                HashMap<String , Object> body = new HashMap<>();
+                body.put("conversations", game.getGameState().conversations);
+                ClientConnectionController.getInstance().sendToOnePerson(new Message(CommandType.UPDATE_CONVERSATIONS, body), game, messageHandling.getSender());
+                ClientConnectionController.getInstance().sendToOnePerson(new Message(CommandType.UPDATE_CONVERSATIONS, body), game, messageHandling.getReceiver());
+
+                // add xp
+                for (HumanCommunications f: game.getGameState().friendships) {
+                    if (f.isBetween(messageHandling.getSender(), messageHandling.getReceiver())) {
+                        f.addXP(10);
+                    }
+                }
+                HashMap<String, Object> body2 = new HashMap<>();
+                body2.put("friendships", game.getGameState().friendships);
+                ClientConnectionController.getInstance().sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body2), game);
             }
         }
     }

@@ -1594,10 +1594,16 @@ public class GameControllerLogic {
             return;
         }
 
+
+        User finalDestinationUser = destinationUser;
         showChatDialog(GameMenu.gameMenu.getStage(), Main.getNewSkin(), message -> {
+            HashMap<String , Object> body = new HashMap<>();
+            body.put("MessageHandling", new MessageHandling(Main.getClient().getPlayer(), finalDestinationUser, message));
+            Main.getClient().getRequests().add(new Message(CommandType.TALK_TO_FRIEND, body));
             Result result = f.talk(message);
             onResult.accept(result);
         });
+
     }
 
     public static void DisplayingTalkHistory (String input) {
