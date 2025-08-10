@@ -331,6 +331,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         startFishing(v);
         Main.getBatch().end();
     }
+
+                                                                // Ario
+
     private void lightBeforeFishing(float v) {
         if (!showFishLight)
             return;

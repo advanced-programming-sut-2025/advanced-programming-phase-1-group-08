@@ -94,6 +94,7 @@ public class GameControllerLogic {
 
     public static void init() {
         createScreenOverlay(gameMenu.getStage());
+
         lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
     }
 

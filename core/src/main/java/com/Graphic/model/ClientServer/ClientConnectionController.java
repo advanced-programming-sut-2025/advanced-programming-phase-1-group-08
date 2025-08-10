@@ -14,7 +14,6 @@ import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Places.ShippingBin;
 import com.Graphic.model.Plants.BasicRock;
 import com.Graphic.model.Plants.Wood;
-import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.Graphic.model.Weather.DateHour;
 import com.esotericsoftware.kryonet.Connection;
 
@@ -25,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
-import static com.Graphic.model.Enum.Commands.CommandType.CHANGE_INVENTORY;
 import static com.Graphic.model.Enum.Commands.CommandType.REDUCE_BARN_CAGE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.Weather.DateHour.getDayDifferent;
@@ -407,7 +405,7 @@ public class ClientConnectionController {
         }
     }
 
-    private void sendToOnePerson(Message message , Game game , User user) throws IOException {
+    void sendToOnePerson(Message message, Game game, User user) throws IOException {
         for (Map.Entry<User , Connection> entry : game.connections.entrySet()) {
             if (entry.getKey().getUsername().trim().equals(user.getUsername().trim())) {
                 entry.getValue().sendTCP(message);
@@ -428,12 +426,12 @@ public class ClientConnectionController {
 
 
                                         // Erfan
-    public void sendPassedTimeMessage (int hour, int day, Game game) throws IOException {
+    public void sendSetTimeMessage (int hour, int day, Game game) throws IOException {
 
         HashMap<String , Object> PassedTime = new HashMap<>();
         PassedTime.put("Hour", hour);
         PassedTime.put("Day", day);
-        sendToAll(new Message(CommandType.PASSED_TIME , PassedTime), game);
+        sendToAll(new Message(CommandType.SET_TIME, PassedTime), game);
     }
     public void passedOfTime (int day, int hour, DateHour currentDateHour, Game game) throws IOException {
 
@@ -459,6 +457,6 @@ public class ClientConnectionController {
             currentDateHour.increaseDay(1);
 
         currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
-        sendPassedTimeMessage(dateHour.getHour() - currentDateHour.getHour(), number, game);
+        sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
     }
 }

@@ -4,29 +4,16 @@ import com.Graphic.Controller.Menu.LoginController;
 import com.Graphic.Controller.Menu.RegisterController;
 import com.Graphic.Main;
 import com.Graphic.model.*;
-import com.Graphic.model.Animall.Animal;
-import com.Graphic.model.App;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Game;
 import com.Graphic.model.User;
-import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.google.gson.Gson;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import com.Graphic.model.ClientServer.ClientConnectionController.*;
-
-import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
-import static com.Graphic.Controller.MainGame.GameControllerLogic.AnswerShepherding;
-import static com.Graphic.model.App.findPlayerInGame;
-import static com.Graphic.model.Enum.Commands.CommandType.CHANGE_INVENTORY;
-import com.esotericsoftware.kryonet.Connection.*;
-
-import static com.Graphic.model.ClientServer.ClientConnectionController.*;
 
 public class ClientConnectionThread extends Thread {
     //این کلاس برای ارتباط بین سرور و کلاینت قبل از شروع بازی است
@@ -38,7 +25,6 @@ public class ClientConnectionThread extends Thread {
     private LoginController LoginController;
     private RegisterController registerController;
     private Connection connection;
-    private KryoNetServer server;
     private final BlockingQueue<Message> messageQueue = new LinkedBlockingQueue<>();
     private Game game;
 
@@ -173,8 +159,8 @@ public class ClientConnectionThread extends Thread {
                     Main.getClient().getPlayer().getFarm().getHome().getFridge().items.put(items,amount);
                 }
             }
-            case PASSED_TIME -> {
-                // controller.
+            case SET_TIME -> {
+
             }
             case FriendshipsInquiry -> {
                 HashMap<String , Object> body = new HashMap<>();
@@ -207,7 +193,7 @@ public class ClientConnectionThread extends Thread {
             }
             case LOADED_GAME -> {}
 
-            case PASSED_TIME -> {
+            case SET_TIME -> {
                 controller.passedOfTime(
                     message.getIntFromBody("Day"),
                     message.getIntFromBody("Hour"),

@@ -48,7 +48,7 @@ public enum CommandType {
     UPDATE_CONVERSATIONS,
 
                                 // Erfan
-    PASSED_TIME,
+    SET_TIME,
     CHANGE_GAME_OBJECT,
     BUILD_GREENHOUSE,
     CREATE_LIGHTNING,

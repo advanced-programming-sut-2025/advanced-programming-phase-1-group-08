@@ -6,7 +6,6 @@ import com.Graphic.Main;
 import com.Graphic.View.RegisterMenu;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
-import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.ItemType.AnimalType;
 import com.Graphic.model.Enum.ItemType.BackPackType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
@@ -20,19 +19,13 @@ import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
-import static com.badlogic.gdx.Input.Keys.*;
 
 public class ClientWork  {
 
@@ -156,10 +149,10 @@ public class ClientWork  {
                 });
             }
             case CAN_MOVE -> {
-                InputGameController.getInstance().Move(message , Main.getClient().getLocalGameState());
+                InputGameController.getInstance().Move(message, Main.getClient().getLocalGameState());
             }
             case CAN_NOT_MOVE -> {
-                InputGameController.getInstance().Move(message , Main.getClient().getLocalGameState());
+                InputGameController.getInstance().Move(message, Main.getClient().getLocalGameState());
             }
             case ENTER_THE_MARKET -> {
                 for (User player : Main.getClient().getLocalGameState().getPlayers()) {
@@ -179,8 +172,7 @@ public class ClientWork  {
                 User user = message.getFromBody("Player");
                 if (Main.getClient().getPlayer().getUsername().trim().equals(user.getUsername().trim())) {
                     Main.getClient().getPlayer().increaseMoney(message.getIntFromBody("Money"));
-                }
-                else if (Main.getClient().getPlayer().getUsername().trim().equals(user.getSpouse().getUsername().trim())) {
+                } else if (Main.getClient().getPlayer().getUsername().trim().equals(user.getSpouse().getUsername().trim())) {
                     Main.getClient().getPlayer().increaseMoney(message.getIntFromBody("Money"));
                 }
             }
@@ -188,19 +180,18 @@ public class ClientWork  {
                 Items items = message.getFromBody("Item");
                 int amount = message.getIntFromBody("amount");
                 if (Main.getClient().getPlayer().getBackPack().inventory.Items.containsKey(items)) {
-                    Main.getClient().getPlayer().getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
+                    Main.getClient().getPlayer().getBackPack().inventory.Items.compute(items, (k, v) -> v + amount);
                     if (Main.getClient().getPlayer().getBackPack().inventory.Items.get(items) == 0) {
                         Main.getClient().getPlayer().getBackPack().inventory.Items.remove(items);
                     }
-                }
-                else {
-                    Main.getClient().getPlayer().getBackPack().inventory.Items.put(items,amount);
+                } else {
+                    Main.getClient().getPlayer().getBackPack().inventory.Items.put(items, amount);
                 }
             }
             case REDUCE_PRODUCT -> {
                 Items items = message.getFromBody("Item");
                 MarketType marketType = message.getFromBody("Market");
-                items.setRemindInShop(items.getRemindInShop(marketType) - 1 , marketType);
+                items.setRemindInShop(items.getRemindInShop(marketType) - 1, marketType);
             }
             case BUY_BACKPACK -> {
                 BackPackType backPackType = message.getFromBody("BackPack");
@@ -214,7 +205,7 @@ public class ClientWork  {
                 Items items = message.getFromBody("Item");
                 int x = message.getIntFromBody("X");
                 int y = message.getIntFromBody("Y");
-                getTileByCoordinates(x , y , Main.getClient().getLocalGameState()).setGameObject(items);
+                getTileByCoordinates(x, y, Main.getClient().getLocalGameState()).setGameObject(items);
             }
             case REDUCE_ANIMAL -> {
                 AnimalType animalType = message.getFromBody("AnimalType");
@@ -239,12 +230,12 @@ public class ClientWork  {
                 BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
                 int x = message.getIntFromBody("X");
                 int y = message.getIntFromBody("Y");
-                InputGameController.getInstance().placeBarnOrCage(x, y, barnOrCage , user);
+                InputGameController.getInstance().placeBarnOrCage(x, y, barnOrCage, user);
             }
             case FriendshipsInqResponse -> {
                 Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
             }
-            case PASSED_TIME -> {
+            case SET_TIME -> {
                 controller.PassedTime(message.getIntFromBody("Hour"), message.getIntFromBody("Day"));
             }
             case CHANGE_GAME_OBJECT -> {
@@ -253,19 +244,20 @@ public class ClientWork  {
             case FriendshipsInqResponse, UPDATE_FRIENDSHIPS -> {
                 Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
             }
-            case PASSED_TIME -> {
+            case SET_TIME -> {
                 controller.PassedTime(message.getIntFromBody("Hour"), message.getIntFromBody("Day"));
             }
             case A_FRIEND_IS_CLOSE -> {
                 User friend = message.getFromBody("friend");
                 Main.getClient().getPlayer().setFriendCloseToMe(friend);
             }
-            case  UPDATE_CONVERSATIONS -> {
-                Main.getClient().getLocalGameState().conversations =  message.getFromBody("conversations");
+            case UPDATE_CONVERSATIONS -> {
+                Main.getClient().getLocalGameState().conversations = message.getFromBody("conversations");
                 // print unseen messages
                 Main.getClient().getPlayer().setShowUnseenChats(true);
             }
-        }
+
+
         }
     }
 
