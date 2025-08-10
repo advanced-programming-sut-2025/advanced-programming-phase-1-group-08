@@ -2733,5 +2733,20 @@ public class InputGameController {
 
         getTileByDir(x).setGameObject(new Walkable());
     }
+                                                                    // OTHERd
+
+    public void sendPassedTimeMessage (int day, int hour) {
+
+        DateHour copy = Main.getClient().getLocalGameState().currentDate.clone();
+        copy.increaseHour(hour);
+        copy.increaseDay(day);
+
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("Hour", copy.getHour());
+        PassedTime.put("Day", copy.getDate());
+        Main.getClient().getRequests().add(new Message(CommandType.SET_TIME , PassedTime));
+
+    }
+
 
 }

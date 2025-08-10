@@ -1668,7 +1668,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private void updateEnergyLabel () {
 
-        int currentHealth = Main.getClient(null).getPlayer().getHealth();
+        int currentHealth = Main.getClient().getPlayer().getHealth();
         if (currentHealth != lastHealth) {
 
             energyLabel.setText("Energy : " + Main.getClient().getPlayer().getHealth());

@@ -9,6 +9,7 @@ import com.Graphic.model.Game;
 import com.Graphic.model.User;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
 
 import java.io.*;
 import java.util.*;
@@ -21,6 +22,7 @@ public class ClientConnectionThread extends Thread {
     //private Socket clientSocket;
     //private DataInputStream in;
     //private DataOutputStream out;
+    private ServerHandler server;
     private ClientConnectionController controller;
     private LoginController LoginController;
     private RegisterController registerController;
@@ -37,6 +39,7 @@ public class ClientConnectionThread extends Thread {
         this.connection = connection;
         LoginController = new LoginController();
         registerController = new RegisterController();
+        server = ServerHandler.getInstance(game);
     }
 
 
@@ -110,9 +113,7 @@ public class ClientConnectionThread extends Thread {
             case BUY -> {
                 sendMessage(controller.Buy(message , game));
             }
-            case BUY_BACKPACK -> {
-
-            }
+            case BUY_BACKPACK -> {}
             case PLACE_CRAFT_SHIPPING_BIN -> {
                 controller.placeCraftOrShippingBin(message , game);
             }
@@ -159,14 +160,6 @@ public class ClientConnectionThread extends Thread {
                     Main.getClient().getPlayer().getFarm().getHome().getFridge().items.put(items,amount);
                 }
             }
-            case SET_TIME -> {
-
-            }
-            case FriendshipsInquiry -> {
-                HashMap<String , Object> body = new HashMap<>();
-                body.put("friendships", game.getGameState().friendships);
-                sendMessage(new Message(CommandType.FriendshipsInqResponse, body));
-            }
             case TALK_TO_FRIEND -> {
                 MessageHandling messageHandling = message.getFromBody("MessageHandling");
 
@@ -194,11 +187,13 @@ public class ClientConnectionThread extends Thread {
             case LOADED_GAME -> {}
 
             case SET_TIME -> {
-                controller.passedOfTime(
+                controller.setTime(
                     message.getIntFromBody("Day"),
-                    message.getIntFromBody("Hour"),
-                    ServerHandler.getInstance(game).currentDateHour, game
+                    message.getIntFromBody("Hour"), game
                 );
+            }
+            case GET_TIME -> {
+                controller.sendSetTimeMessage(server.currentDateHour.getHour(), server.currentDateHour.getDate(), game);
             }
             case FriendshipsInquiry -> {
                 HashMap<String , Object> body = new HashMap<>();

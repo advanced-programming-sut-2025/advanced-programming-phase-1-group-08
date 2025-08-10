@@ -232,11 +232,8 @@ public class ClientWork  {
                 int y = message.getIntFromBody("Y");
                 InputGameController.getInstance().placeBarnOrCage(x, y, barnOrCage, user);
             }
-            case FriendshipsInqResponse -> {
-                Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
-            }
             case SET_TIME -> {
-                controller.PassedTime(message.getIntFromBody("Hour"), message.getIntFromBody("Day"));
+                controller.setTime(message.getIntFromBody("Hour"), message.getIntFromBody("Day"));
             }
             case CHANGE_GAME_OBJECT -> {
 
@@ -244,9 +241,7 @@ public class ClientWork  {
             case FriendshipsInqResponse, UPDATE_FRIENDSHIPS -> {
                 Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
             }
-            case SET_TIME -> {
-                controller.PassedTime(message.getIntFromBody("Hour"), message.getIntFromBody("Day"));
-            }
+
             case A_FRIEND_IS_CLOSE -> {
                 User friend = message.getFromBody("friend");
                 Main.getClient().getPlayer().setFriendCloseToMe(friend);

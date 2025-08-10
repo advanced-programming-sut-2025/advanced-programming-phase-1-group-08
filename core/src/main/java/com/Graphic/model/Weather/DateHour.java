@@ -74,6 +74,15 @@ public class DateHour implements Cloneable {
             this.year += (SeasonPassed + 3) / 4;
     }
 
+    public void setDate(int date) {
+
+        this.date = date;
+    }
+    public void setHour(int hour) {
+
+        this.hour = hour;
+    }
+
     public static DateHour decreaseDay (int day, DateHour dateHour) { // بهش عدد بزرگ ندیم
 
         DateHour result = dateHour.clone();

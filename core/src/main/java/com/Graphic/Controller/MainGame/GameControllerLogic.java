@@ -93,8 +93,9 @@ public class GameControllerLogic {
 
 
     public static void init() {
-        createScreenOverlay(gameMenu.getStage());
 
+        setTime();
+        createScreenOverlay(gameMenu.getStage());
         lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
     }
 
@@ -2552,7 +2553,6 @@ public class GameControllerLogic {
 
     // Tools
     public static Result useHoe (int dir) {
-        plow();
 
         Tile tile = getTileByDir(dir);
 
@@ -3187,14 +3187,7 @@ public class GameControllerLogic {
         }
     }
 
-    public static void plow () {
-        for (int i = 0; i < 30 ; i++) {
-            for (int j = 0; j < 30 ; j++) {
-                Tile tile = getTileByCoordinates(i,j);
-                if (tile.getGameObject() instanceof Walkable) {
-                    ((Walkable) tile.getGameObject()).setGrassOrFiber("Plowed");
-                }
-            }
-        }
+    public static void setTime () {
+        Main.getClient().getRequests().add(new Message(CommandType.GET_TIME, new HashMap<>()));
     }
 }

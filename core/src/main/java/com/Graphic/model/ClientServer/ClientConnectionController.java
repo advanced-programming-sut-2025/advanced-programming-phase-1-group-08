@@ -459,4 +459,13 @@ public class ClientConnectionController {
         currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
         sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
     }
+    public void setTime (int day, int hour, Game game) throws IOException {
+
+        DateHour currentDateHour = ServerHandler.getInstance(game).currentDateHour;
+
+        ServerHandler.getInstance(game).currentDateHour.setDate(day);
+        ServerHandler.getInstance(game).currentDateHour.setHour(hour);
+
+        sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
+    }
 }

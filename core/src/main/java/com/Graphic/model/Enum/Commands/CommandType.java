@@ -49,6 +49,7 @@ public enum CommandType {
 
                                 // Erfan
     SET_TIME,
+    GET_TIME,
     CHANGE_GAME_OBJECT,
     BUILD_GREENHOUSE,
     CREATE_LIGHTNING,
