@@ -38,6 +38,18 @@ public enum CommandType {
     COLLECT_PRODUCT,
     CALCULATE_ANIMAL_FRIENDSHIP,
     PLACE_BARN_CAGE,
-    PLAYER_HANDLER,
+    CHANGE_ABILITY_LEVEL,
+    CHANGE_FRIDGE,
+    FriendshipsInquiry,
+    FriendshipsInqResponse,
+    UPDATE_FRIENDSHIPS,
+
+
+                                // Erfan
+    PASSED_TIME,
+    CHANGE_GAME_OBJECT,
+    BUILD_GREENHOUSE,
+    CREATE_LIGHTNING,
+    CURRENT_ITEM,
 
 }

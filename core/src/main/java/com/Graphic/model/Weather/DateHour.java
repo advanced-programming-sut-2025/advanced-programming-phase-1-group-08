@@ -170,7 +170,7 @@ public class DateHour implements Cloneable {
             case Winter -> firstSeason = 4;
         }
         int nowSeason =0;
-        switch (Main.getClient(null).getLocalGameState().currentDate.getSeason()) {
+        switch (Main.getClient().getLocalGameState().currentDate.getSeason()) {
             case Spring -> {
                 nowSeason =1;
             }
@@ -186,9 +186,9 @@ public class DateHour implements Cloneable {
         }
 
         int firstHour= first.year * 2688 + firstSeason * 672 + (first.getDate() -1)*24 + first.getHour();
-        int secondHour= Main.getClient(null).getLocalGameState().currentDate.year * 2688 +
-            nowSeason * 672 + (Main.getClient(null).getLocalGameState().currentDate.getDate() -1 ) * 24 +
-            Main.getClient(null).getLocalGameState().currentDate.getHour();
+        int secondHour= Main.getClient().getLocalGameState().currentDate.year * 2688 +
+            nowSeason * 672 + (Main.getClient().getLocalGameState().currentDate.getDate() -1 ) * 24 +
+            Main.getClient().getLocalGameState().currentDate.getHour();
 
         return secondHour - firstHour;
     }

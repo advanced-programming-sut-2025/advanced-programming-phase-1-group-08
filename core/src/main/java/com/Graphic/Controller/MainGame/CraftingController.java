@@ -22,7 +22,7 @@ import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 public class CraftingController {
 
     public static Items numberOfIngrediants(String name) {
-        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
 
         for (Map.Entry < Items , Integer> entry : inventory.Items.entrySet()) {
             if (entry.getKey().getName().equals(name)) {
@@ -46,7 +46,7 @@ public class CraftingController {
     }
 
     public Result craftingCraft(String name) {
-        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
         CraftType type=null;
         HashMap<Items , Integer> ingrediant = new HashMap();
 
@@ -63,7 +63,7 @@ public class CraftingController {
         if (type == null) {
             return new Result(false , "No such Craft type");
         }
-        if (Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() == 0) {
+        if (Main.getClient().getPlayer().getBackPack().getType().getRemindCapacity() == 0) {
             return new Result(false , "Not enough Capacity in your BackPack");
         }
         if (!type.checkLevel()) {

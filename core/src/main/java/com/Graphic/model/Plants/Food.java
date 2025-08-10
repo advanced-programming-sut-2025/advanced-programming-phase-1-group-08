@@ -23,7 +23,7 @@ public class Food extends Items {
 
     public static boolean checkInventorySpaceForFood(FoodTypes type) {
         return checkAmountProductAvailable(new Food(type), 1) ||
-                Main.getClient(null).getPlayer().getBackPack().getType().getRemindCapacity() > 0;
+                Main.getClient().getPlayer().getBackPack().getType().getRemindCapacity() > 0;
     }
     public static boolean itemIsEatable(Items item) {
         return item instanceof Food || item instanceof Animalproduct

@@ -24,7 +24,7 @@ public class Market extends GameObject {
         }
         for (int i = marketType.getTopleftx();  i < marketType.getTopleftx() + marketType.getWidth() ; i++) {
             for (int j = marketType.getToplefty();  j < marketType.getToplefty() + marketType.getHeight() ; j++) {
-                if (GameControllerLogic.getTileByCoordinates(i, j , Main.getClient(null).getLocalGameState()).getGameObject().equals(this)) {
+                if (GameControllerLogic.getTileByCoordinates(i, j , Main.getClient().getLocalGameState()).getGameObject().equals(this)) {
                     int x = marketType.getWidth() * (j - marketType.getToplefty()) + i - marketType.getTopleftx() + 1;
                     return Path = "Places/"+marketType.getName()+x+".png";
 

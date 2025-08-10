@@ -360,7 +360,7 @@ public class Recipe {
 
     public static Recipe findRecipeByName(String name) {
 
-        for (Recipe recipe: Main.getClient(null).getPlayer().getRecipes()) {
+        for (Recipe recipe: Main.getClient().getPlayer().getRecipes()) {
             if (recipe.getName().equals(name) || recipe.getName().replace(" ", "").equals(name.toLowerCase()))
                 return recipe;
         }

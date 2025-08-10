@@ -192,7 +192,7 @@ public class NPCManager {
                 5 * Gdx.graphics.getDeltaTime());
 
 
-            if ((getTileByCoordinates(x, 90-y , Main.getClient(null).getLocalGameState()).getGameObject()) instanceof Walkable) {
+            if ((getTileByCoordinates(x, 90-y , Main.getClient().getLocalGameState()).getGameObject()) instanceof Walkable) {
                 return true;
             }
         }

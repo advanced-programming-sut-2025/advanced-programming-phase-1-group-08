@@ -74,7 +74,7 @@ public class Main extends Game {
         Main.main = main;
     }
 
-    public static synchronized ClientWork getClient(ClientWork c) {
+    public static synchronized ClientWork getClient() {
         return client;
     }
     public static Skin getNewSkin() {

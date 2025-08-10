@@ -51,7 +51,7 @@ public class ArtisanMenuUI extends Group {
             }
         }
         if (number == 2) {
-            for (Map.Entry<Items, Integer> items : Main.getClient(null).getPlayer().getBackPack().inventory.Items.entrySet()) {
+            for (Map.Entry<Items, Integer> items : Main.getClient().getPlayer().getBackPack().inventory.Items.entrySet()) {
                 inventoryItem.add(items.getKey());
             }
         }

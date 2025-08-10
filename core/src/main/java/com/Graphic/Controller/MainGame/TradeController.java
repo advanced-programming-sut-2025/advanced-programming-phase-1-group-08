@@ -29,7 +29,7 @@ public class TradeController {
 //        System.out.println("\nDisplaying Trade Requests/Offers...");
 //        for (List<Trade> tradeList: currentGame.trades.values()) {
 //            for (Trade t: tradeList) {
-//                if (t.getReceiver().getUsername().equals(Main.getClient(null).getPlayer().getUsername()) && !t.isResponded()) {
+//                if (t.getReceiver().getUsername().equals(Main.getClient().getPlayer().getUsername()) && !t.isResponded()) {
 //                    t.print();
 //
 //                    System.out.println("What's Your Response?");

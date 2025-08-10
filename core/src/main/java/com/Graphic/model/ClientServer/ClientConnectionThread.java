@@ -29,7 +29,8 @@ public class ClientConnectionThread extends Thread {
     //private Socket clientSocket;
     //private DataInputStream in;
     //private DataOutputStream out;
-    private LoginController controller;
+    private ClientConnectionController controller;
+    private LoginController LoginController;
     private RegisterController registerController;
     private Connection connection;
     private kryoNetServer server;
@@ -41,8 +42,9 @@ public class ClientConnectionThread extends Thread {
 //        this.clientSocket = clientSocket;
 //        in = new DataInputStream(clientSocket.getInputStream());
 //        out = new DataOutputStream(clientSocket.getOutputStream());
+        this.controller = ClientConnectionController.getInstance();
         this.connection = connection;
-        controller = new LoginController();
+        LoginController = new LoginController();
         registerController = new RegisterController();
     }
 
@@ -70,10 +72,10 @@ public class ClientConnectionThread extends Thread {
     public synchronized void handleMessage(Message message) throws IOException {
         switch (message.getCommandType()) {
             case FARM -> {
-                createFarm(message , game);
+                controller.createFarm(message , game);
             }
             case LOGIN -> {
-                sendMessage(controller.LoginRes(message));
+                sendMessage(LoginController.LoginRes(message));
             }
             case SIGN_UP -> {
                 sendMessage(registerController.attemptRegistration(message));
@@ -82,62 +84,75 @@ public class ClientConnectionThread extends Thread {
                 sendMessage(RegisterController.generateRandomPass());
             }
             case NEW_GAME -> {
-                Game result = newGame(message , connection);
+                Game result = controller.newGame(message , connection);
                 if (result != null) {
                     game = result;
                 }
             }
             case JOIN_GAME -> {
-                Game result = joinGame(message , connection);
+                Game result = controller.joinGame(message , connection);
                 if (result != null) {
                     game = result;
                 }
             }
             case MOVE_IN_FARM -> {
-                moveInFarm(message, game);
+                controller.moveInFarm(message, game);
             }
             case ENTER_THE_MARKET -> {
-                answerEnterTheMarket(message , game);
+                controller.answerEnterTheMarket(message , game);
             }
             case MOVE_IN_MARKET -> {
-                moveInMarket(message, game);
+                controller.moveInMarket(message, game);
             }
             case BUY -> {
-                sendMessage(Buy(message , game));
+                sendMessage(controller.Buy(message , game));
             }
             case BUY_BACKPACK -> {
 
             }
             case PLACE_CRAFT_SHIPPING_BIN -> {
-                placeCraftOrShippingBin(message , game);
+                controller.placeCraftOrShippingBin(message , game);
             }
             case BUY_BARN_CAGE -> {
-                for (Message message1 : BuyBarnCage(message , game)) {
+                for (Message message1 : controller.BuyBarnCage(message , game)) {
                     sendMessage(message1);
                 }
             }
             case BUY_ANIMAL -> {
-                buyAnimal(message , game);
+                controller.buyAnimal(message , game);
             }
             case SELL_ANIMAL -> {
-                sellAnimal(message , game);
+                controller.sellAnimal(message , game);
             }
             case FEED_HAY -> {
-                sendMessage(AnswerFeedHay(message , game));
+                sendMessage(controller.AnswerFeedHay(message , game));
             }
             case SHEPHERD_ANIMAL -> {
-                answerShepherding(message , game);
+                controller.answerShepherding(message , game);
             }
             case PET -> {
-                Pet(message);
+                controller.Pet(message);
             }
             case COLLECT_PRODUCT -> {
-                sendMessage(collectProduct(message));
+                sendMessage(controller.collectProduct(message));
             }
             case CHANGE_INVENTORY -> {
-                sendMessage(changeInventory(message , game));
+                sendMessage(controller.changeInventory(message , game));
             }
             case LOADED_GAME -> {}
+
+            case PASSED_TIME -> {
+                controller.passedOfTime(
+                    message.getIntFromBody("Day"),
+                    message.getIntFromBody("Hour"),
+                    ServerHandler.getInstance(game).currentDateHour, game
+                );
+            }
+            case FriendshipsInquiry -> {
+                HashMap<String , Object> body = new HashMap<>();
+                body.put("friendships", game.getGameState().friendships);
+                sendMessage(new Message(CommandType.FriendshipsInqResponse, body));
+            }
 
 
         }

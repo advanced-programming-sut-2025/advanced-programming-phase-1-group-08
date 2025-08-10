@@ -132,7 +132,7 @@ public class Marketing {
     }
 
     public Result checkBuy(Items item , MarketType marketType) {
-        User Player = Main.getClient(null).getPlayer();
+        User Player = Main.getClient().getPlayer();
 //        if (item instanceof BackPack) {
 //            if (Player.getBackPack().getType().equals(BackPackType.DeluxePack) ||
 //                Player.getBackPack().getType().equals( ((BackPack) item).getType()) ) {
@@ -172,7 +172,7 @@ public class Marketing {
     }
 
     public Result checkBuyBarnOrCage(BarnORCageType barnORCageType) {
-        User Player = Main.getClient(null).getPlayer();
+        User Player = Main.getClient().getPlayer();
         if (Player.getMoney() < barnORCageType.getPrice()) {
             return new Result(false , "2");
         }
@@ -265,7 +265,7 @@ public class Marketing {
             body.put("X", x);
             body.put("Y", y);
             body.put("Direction", Direction.Up);
-            Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
+            Main.getClient().getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             y = y - 50 * Gdx.graphics.getDeltaTime();
@@ -275,7 +275,7 @@ public class Marketing {
             body.put("X", x);
             body.put("Y", y);
             body.put("Direction", Direction.Down);
-            Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
+            Main.getClient().getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             x = x - 50 * Gdx.graphics.getDeltaTime();
@@ -285,7 +285,7 @@ public class Marketing {
             body.put("X", x);
             body.put("Y", y);
             body.put("Direction", Direction.Left);
-            Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
+            Main.getClient().getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             x = x + 50 * Gdx.graphics.getDeltaTime();
@@ -295,7 +295,7 @@ public class Marketing {
             body.put("X", x);
             body.put("Y", y);
             body.put("Direction", Direction.Right);
-            Main.getClient(null).getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
+            Main.getClient().getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
         }
 
         else {
@@ -335,7 +335,7 @@ public class Marketing {
     }
 
     public void buy(TextButton button , Items item , MarketType marketType) {
-        User Player = Main.getClient(null).getPlayer();
+        User Player = Main.getClient().getPlayer();
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -345,10 +345,10 @@ public class Marketing {
                     addDialogToTable(dialog, content , MarketMenu.getInstance());
                 }
 //                else if (item instanceof ShippingBin) {
-//                    Main.getClient(null).getPlayer().setDroppedItem(new ShippingBin());
-//                    Main.getClient(null).getPlayer().setIsPlaceArtisanOrShippingBin(true);
-//                    Main.getClient(null).getPlayer().setWithMouse(new Sprite(TextureManager.get("Mohamadreza/Shipping Bin.png")));
-//                    Main.getClient(null).getPlayer().getWithMouse().setAlpha(0.5f);
+//                    Main.getClient().getPlayer().setDroppedItem(new ShippingBin());
+//                    Main.getClient().getPlayer().setIsPlaceArtisanOrShippingBin(true);
+//                    Main.getClient().getPlayer().setWithMouse(new Sprite(TextureManager.get("Mohamadreza/Shipping Bin.png")));
+//                    Main.getClient().getPlayer().getWithMouse().setAlpha(0.5f);
 //                    choosePlace = true;
 //                    getWindow().remove();
 //                    removeImage();
@@ -360,10 +360,10 @@ public class Marketing {
                     body.put("amount" , 1);
                     body.put("Market" , marketType);
 //                    if (item instanceof BackPack) {
-//                        Main.getClient(null).getRequests().add(new Message(CommandType.BUY_BACKPACK, body));
+//                        Main.getClient().getRequests().add(new Message(CommandType.BUY_BACKPACK, body));
 //                    }
                     //else {
-                        Main.getClient(null).getRequests().add(new Message(CommandType.BUY, body));
+                        Main.getClient().getRequests().add(new Message(CommandType.BUY, body));
                     //}
 
                     if (item.getRemindInShop(marketType) == 0) {
@@ -494,7 +494,7 @@ public class Marketing {
 
     private Result checkBuyAnimal(TextField field , AnimalType animalType) {
         String name = field.getText();
-        for (BarnOrCage barnOrCage : Main.getClient(null).getPlayer().BarnOrCages) {
+        for (BarnOrCage barnOrCage : Main.getClient().getPlayer().BarnOrCages) {
             for (Animal animal : barnOrCage.getAnimals()) {
                 if (animal.getName().trim().equals(name.trim())) {
                     return new Result(false , "9");
@@ -502,14 +502,14 @@ public class Marketing {
             }
         }
 
-        if (Main.getClient(null).getPlayer().getMoney() < animalType.getPrice()) {
+        if (Main.getClient().getPlayer().getMoney() < animalType.getPrice()) {
             return new Result(false , "2");
         }
         if (animalType.getRemindInShop() == 0) {
             return new Result(false , "1");
         }
 
-        for (BarnOrCage barnOrCage : Main.getClient(null).getPlayer().BarnOrCages) {
+        for (BarnOrCage barnOrCage : Main.getClient().getPlayer().BarnOrCages) {
             if (animalType.getBarnorcages().contains(barnOrCage.getBarnORCageType())) {
                 if (barnOrCage.getBarnORCageType().getInitialCapacity() > barnOrCage.animals.size()) {
                     requestForBuyAnimal(animalType , field.getText() , barnOrCage);
@@ -535,9 +535,9 @@ public class Marketing {
         HashMap<String , Object> body = new HashMap<>();
         Animal animal = new Animal(animalType , 0 , name , gameMenu.gameState.currentDate.clone().getDate());
         body.put("Animal" , animal);
-        body.put("Player" , Main.getClient(null).getPlayer());
+        body.put("Player" , Main.getClient().getPlayer());
         body.put("BarnOrCage" , barnOrCage);
-        Main.getClient(null).getRequests().add(new Message(CommandType.BUY_ANIMAL , body));
+        Main.getClient().getRequests().add(new Message(CommandType.BUY_ANIMAL , body));
     }
 
 
@@ -545,7 +545,7 @@ public class Marketing {
         User player = message.getFromBody("Player");
         BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
         Animal animal = message.getFromBody("Animal");
-        for (User user : Main.getClient(null).getLocalGameState().getPlayers()) {
+        for (User user : Main.getClient().getLocalGameState().getPlayers()) {
             if (user.getUsername().trim().equals(player.getUsername().trim())) {
                 for (BarnOrCage barnOrCage1 : user.BarnOrCages) {
                     if (barnOrCage1.equals(barnOrCage)) {
@@ -578,8 +578,8 @@ public class Marketing {
 
     private boolean isPlaced = false;
     public void setBarnOrCageOnFarm(Sprite sprite ,BarnORCageType barnORCageType) {
-        int x = (int) (sprite.getX() / TEXTURE_SIZE) + 60 * Main.getClient(null).getPlayer().topLeftX;
-        int y =30 -  (int) (sprite.getY() / TEXTURE_SIZE) + 60 * Main.getClient(null).getPlayer().topLeftY;
+        int x = (int) (sprite.getX() / TEXTURE_SIZE) + 60 * Main.getClient().getPlayer().topLeftX;
+        int y =30 -  (int) (sprite.getY() / TEXTURE_SIZE) + 60 * Main.getClient().getPlayer().topLeftY;
 
         if (! checkTilesForCreateBarnOrCage(x , y , barnORCageType.getWidth() , barnORCageType.getHeight()) && ! isPlaced  ) {
 
@@ -592,8 +592,8 @@ public class Marketing {
             isPlaced = true;
             for (int i = x ; i < x + barnORCageType.getWidth() ; i++) {
                 for (int j = y ; j < y + barnORCageType.getHeight() ; j++) {
-                    if (!(getTileByCoordinates(i , j , Main.getClient(null).getLocalGameState()).getGameObject() instanceof BarnOrCage )) {
-                        getTileByCoordinates(i , j , Main.getClient(null).getLocalGameState()).setGameObject(new BarnOrCage(barnORCageType , x , y));
+                    if (!(getTileByCoordinates(i , j , Main.getClient().getLocalGameState()).getGameObject() instanceof BarnOrCage )) {
+                        getTileByCoordinates(i , j , Main.getClient().getLocalGameState()).setGameObject(new BarnOrCage(barnORCageType , x , y));
                     }
                 }
             }
@@ -623,7 +623,7 @@ public class Marketing {
                         isPlaced = false;
                         for (int i = x ; i < x + barnORCageType.getWidth() ; i++) {
                             for (int j = y ; j < y + barnORCageType.getHeight() ; j++) {
-                                getTileByCoordinates(i , j , Main.getClient(null).getLocalGameState()).setGameObject(new Walkable());
+                                getTileByCoordinates(i , j , Main.getClient().getLocalGameState()).setGameObject(new Walkable());
                             }
                         }
                         confirm.remove();
@@ -639,7 +639,7 @@ public class Marketing {
         HashMap<String , Object> body = new HashMap<>();
         body.put("Point" , p);
         body.put("BarnOrCageType" , barnORCageType);
-        body.put("Player" , Main.getClient(null).getPlayer());
+        body.put("Player" , Main.getClient().getPlayer());
         return new Message(CommandType.BUY_BARN_CAGE, body);
     }
 
@@ -675,14 +675,14 @@ public class Marketing {
                         TEXTURE_SIZE  , TEXTURE_SIZE );
 
 //                    Main.getBatch().draw(getTileByCoordinates(i + 60 * currentGame.currentPlayer.topLeftX ,
-//                            j + 60 * currentGame.currentPlayer.topLeftY , Main.getClient(null).getLocalGameState())
+//                            j + 60 * currentGame.currentPlayer.topLeftY , Main.getClient().getLocalGameState())
 //                            .getGameObject()
 //                            .getSprite(TextureManager.get(getTileByCoordinates(i , j).getGameObject().getIcon())) ,
 //                        TEXTURE_SIZE * (i) ,
 //                        TEXTURE_SIZE  * (30 - j) ,
 //                        TEXTURE_SIZE , TEXTURE_SIZE);
-                    gameObject = getTileByCoordinates(i + 60 * Main.getClient(null).getPlayer().topLeftX
-                        , j + 60 * Main.getClient(null).getPlayer().topLeftY , Main.getClient(null).getLocalGameState()).getGameObject();
+                    gameObject = getTileByCoordinates(i + 60 * Main.getClient().getPlayer().topLeftX
+                        , j + 60 * Main.getClient().getPlayer().topLeftY , Main.getClient().getLocalGameState()).getGameObject();
 
                     Main.getBatch().draw(
                         (TextureManager.get(gameObject.getIcon())),
