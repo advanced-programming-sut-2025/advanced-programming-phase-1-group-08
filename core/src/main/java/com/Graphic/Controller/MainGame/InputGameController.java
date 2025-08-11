@@ -438,8 +438,6 @@ public class InputGameController {
         //camera.unproject(camera.position);
         int x = (int) (camera.position.x - camera.viewportWidth * camera.zoom / 2) / TEXTURE_SIZE;
         int y = (int) (camera.position.y - camera.viewportHeight * camera.zoom / 2) / TEXTURE_SIZE;
-        //System.out.println("x: " + x + " y: " + y);
-        //System.out.println("x: " + camera.position.x + " y: " + camera.position.y);
 
 
         for (int i =x ; i< x + (camera.viewportWidth * camera.zoom )/TEXTURE_SIZE; i++) {
