@@ -188,12 +188,19 @@ public class ClientConnectionThread extends Thread {
 
             case SET_TIME -> {
                 controller.setTime(
-                    message.getIntFromBody("Day"),
-                    message.getIntFromBody("Hour"), game
+                    message.getFromBody("Day"),
+                    message.getFromBody("Hour"), game
                 );
             }
             case GET_TIME -> {
                 controller.sendSetTimeMessage(server.currentDateHour.getHour(), server.currentDateHour.getDate(), game);
+            }
+            case CHANGE_GAME_OBJECT -> {
+                controller.sendSetGameObjectMessage(
+                    message.getFromBody("X"),
+                    message.getFromBody("Y"),
+                    message.getFromBody("Object"), game
+                );
             }
             case FriendshipsInquiry -> {
                 HashMap<String , Object> body = new HashMap<>();

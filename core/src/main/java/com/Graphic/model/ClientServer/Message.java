@@ -29,8 +29,8 @@ public class Message {
         return (T) body.get(fieldName);
     }
 
-    public int getIntFromBody(String fieldName) {
-        return (int) ((double) ((Double) body.get(fieldName.trim())));
-    }
+//    public int getIntFromBody(String fieldName) {
+//        return (int) ((double) ((Double) body.get(fieldName.trim())));
+//    }
 
 }

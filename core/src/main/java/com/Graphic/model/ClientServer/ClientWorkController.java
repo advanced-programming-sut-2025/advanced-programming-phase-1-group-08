@@ -3,18 +3,19 @@ package com.Graphic.model.ClientServer;
 import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
+import com.Graphic.model.MapThings.GameObject;
+import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Weather.DateHour;
 
 public class ClientWorkController {
 
     private static ClientWorkController instance;
 
-    private InputGameController inputGameController;
-
+    private InputGameController inputController;
 
     private ClientWorkController() {
 
-        inputGameController = InputGameController.getInstance();
+        inputController = InputGameController.getInstance();
     }
     public static ClientWorkController getInstance() {
 
@@ -40,5 +41,9 @@ public class ClientWorkController {
             dateHour.setDate(day);
             Main.getClient().getLocalGameState().currentDate = dateHour;
         }
+    }
+    public void changeGameObject(int x, int y, GameObject gameObject) {
+        Tile tile = GameControllerLogic.getTileByCoordinates(x, y, Main.getClient().getLocalGameState());
+        tile.setGameObject(gameObject);
     }
 }

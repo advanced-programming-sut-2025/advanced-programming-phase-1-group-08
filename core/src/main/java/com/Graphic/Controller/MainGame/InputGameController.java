@@ -1422,8 +1422,8 @@ public class InputGameController {
 
     public void AnswerPlaceCraft(Message message , Game game) {
         Items items = message.getFromBody("Item");
-        int x = message.getIntFromBody("X");
-        int y = message.getIntFromBody("Y");
+        int x = message.getFromBody("X");
+        int y = message.getFromBody("Y");
         getTileByCoordinates(x , y , game.getGameState()).setGameObject(items);
         User player = message.getFromBody("Player");
 
@@ -2729,11 +2729,7 @@ public class InputGameController {
         return new Result(true, PURPLE + getTileByCoordinates(
             Integer.parseInt(x), Integer.parseInt(y) , Main.getClient().getLocalGameState()).getGameObject().toString() + RESET);
     }
-    public void remove (int x) {
-
-        getTileByDir(x).setGameObject(new Walkable());
-    }
-                                                                    // OTHERd
+                                                                    // other
 
     public void sendPassedTimeMessage (int day, int hour) {
 
@@ -2746,6 +2742,20 @@ public class InputGameController {
         PassedTime.put("Day", copy.getDate());
         Main.getClient().getRequests().add(new Message(CommandType.SET_TIME , PassedTime));
 
+    }
+    public void sendChangeGameObjectMessage (int x, int y, GameObject gameObject) {
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("X", x);
+        PassedTime.put("Y", y);
+        PassedTime.put("Object", gameObject);
+        Main.getClient().getRequests().add(new Message(CommandType.SET_TIME, PassedTime));
+    }
+    public void sendChangeGameObjectMessage (Tile tile, GameObject gameObject) {
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("X", tile.getX());
+        PassedTime.put("Y", tile.getY());
+        PassedTime.put("Object", gameObject);
+        Main.getClient().getRequests().add(new Message(CommandType.SET_TIME, PassedTime));
     }
 
 
