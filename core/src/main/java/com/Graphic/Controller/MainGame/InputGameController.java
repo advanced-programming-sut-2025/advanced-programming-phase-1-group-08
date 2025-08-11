@@ -76,10 +76,7 @@ public class InputGameController {
     public static InputGameController inputGameController;
     Gson gson = new Gson();
 
-    private InputGameController() {
-        setTimeAndWeather();
-        GameControllerLogic.init();
-    }
+    private InputGameController() {}
     public static InputGameController getInstance() {
         if (inputGameController == null)
             inputGameController = new InputGameController();
@@ -88,6 +85,8 @@ public class InputGameController {
 
     public void init () {
         Main.getClient().getPlayer().setInFarmExterior(true);
+        setTimeAndWeather();
+        GameControllerLogic.init();
     }
     public void update(OrthographicCamera camera, float v, Boolean menuActivated) {
 

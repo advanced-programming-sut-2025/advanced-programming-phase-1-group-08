@@ -41,7 +41,6 @@ public class ClientConnectionThread extends Thread {
         this.connection = connection;
         LoginController = new LoginController();
         registerController = new RegisterController();
-        server = ServerHandler.getInstance(game);
     }
 
 

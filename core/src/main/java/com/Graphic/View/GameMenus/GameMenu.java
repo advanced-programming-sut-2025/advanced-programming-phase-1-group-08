@@ -257,10 +257,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
                 Gdx.input.setInputProcessor(multiplexer);
 
-                //createClock();
+                createClock();
                 firstLoad = true;
                 shepherdingAnimals = new ArrayList<>();
                 heartAnimations = new ArrayList<>();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
