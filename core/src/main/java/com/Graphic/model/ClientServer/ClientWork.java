@@ -201,23 +201,16 @@ public class ClientWork  {
                     }
 
                 }
-
                 case CHANGE_MONEY -> {
 
                     User user = message.getFromBody("Player");
 
                     try {
-
                         if (Main.getClient().getPlayer().getUsername().trim().equals(user.getUsername().trim())) {
-
                             Main.getClient().getPlayer().increaseMoney(message.getFromBody("Money"));
-
                         } else if (Main.getClient().getPlayer().getUsername().trim().equals(user.getSpouse().getUsername().trim())) {
-
                             Main.getClient().getPlayer().increaseMoney(message.getFromBody("Money"));
-
                         }
-
                     }
 
                     catch (Exception e) {
