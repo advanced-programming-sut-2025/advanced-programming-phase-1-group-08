@@ -43,7 +43,6 @@ public enum CommandType {
     EXIT_MARKET,
 
 
-
     // Ariyo
     CHANGE_ABILITY_LEVEL,
     CHANGE_FRIDGE,
@@ -59,12 +58,12 @@ public enum CommandType {
     SEND_FLOWER,
     GIVEN_FLOWER,
 
-
-    // Erfan
+                    // Erfan
     SET_TIME,
     GET_TIME,
     CHANGE_GAME_OBJECT,
     BUILD_GREENHOUSE,
     CREATE_LIGHTNING,
     CURRENT_ITEM,
+
 }

@@ -13,6 +13,8 @@ import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC.NPC;
+import com.Graphic.model.Enum.SecurityQuestions;
+import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.*;
@@ -20,9 +22,11 @@ import com.Graphic.model.OtherItem.*;
 import com.Graphic.model.Places.*;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.Plants.Tree;
+import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.ToolsPackage.*;
 import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
@@ -30,8 +34,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -130,7 +136,7 @@ public class InputGameController {
 
         if (Gdx.input.isKeyPressed(Input.Keys.UP) ) {
             x = Main.getClient().getPlayer().getPositionX();
-            y = Main.getClient().getPlayer().getPositionY() + 50 * Gdx.graphics.getDeltaTime();
+            y = Main.getClient().getPlayer().getPositionY() + 100 * Gdx.graphics.getDeltaTime();
             HashMap<String , Object> body = new HashMap<>();
             body.put("Player" , Main.getClient().getPlayer().getUsername());
             body.put("Direction" , Direction.Up);
@@ -148,7 +154,7 @@ public class InputGameController {
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) ) {
             x = Main.getClient().getPlayer().getPositionX();
-            y = Main.getClient().getPlayer().getPositionY() - 50 * Gdx.graphics.getDeltaTime();
+            y = Main.getClient().getPlayer().getPositionY() - 100 * Gdx.graphics.getDeltaTime();
             HashMap<String , Object> body = new HashMap<>();
             body.put("Player" , Main.getClient().getPlayer().getUsername());
             body.put("Direction" , Direction.Down);
@@ -165,7 +171,7 @@ public class InputGameController {
 //            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) ) {
-            x = Main.getClient().getPlayer().getPositionX() - 50 * Gdx.graphics.getDeltaTime();
+            x = Main.getClient().getPlayer().getPositionX() - 100 * Gdx.graphics.getDeltaTime();
             y = Main.getClient().getPlayer().getPositionY();
             HashMap<String , Object> body = new HashMap<>();
             body.put("Player" , Main.getClient().getPlayer().getUsername());
@@ -183,7 +189,7 @@ public class InputGameController {
 //            moveAnimation();
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) ) {
-            x = Main.getClient().getPlayer().getPositionX() + 50 * Gdx.graphics.getDeltaTime();
+            x = Main.getClient().getPlayer().getPositionX() + 100 * Gdx.graphics.getDeltaTime();
             y = Main.getClient().getPlayer().getPositionY();
             HashMap<String , Object> body = new HashMap<>();
             body.put("Player" , Main.getClient().getPlayer().getUsername());
@@ -217,6 +223,7 @@ public class InputGameController {
             user.setPositionY(TEXTURE_SIZE * (90 - user.getFarm().getHome().getTopLeftY() - user.getFarm().getHome().getLength()));
         }
     }
+
 
     public Message checkWalking(Message message , Game game) {
         String Player = message.getFromBody("Player");
@@ -411,7 +418,7 @@ public class InputGameController {
         for (int i = x ; i < x + barnOrCage.getBarnORCageType().getWidth() ; i++) {
             for (int j = y ; j < y + barnOrCage.getBarnORCageType().getHeight() ; j++) {
                 getTileByCoordinates(i , j , Main.getClient().getLocalGameState())
-                    .setGameObject(new BarnOrCage(barnOrCage.getBarnORCageType() , i , j));
+                    .setGameObject(new BarnOrCage(barnOrCage.getBarnORCageType() , x , y));
             }
         }
         for (User player : Main.getClient().getLocalGameState().getPlayers()) {
@@ -500,64 +507,6 @@ public class InputGameController {
         return null;
     }
 
-
-    public Result checkConditionsForWalk(int goalX, int goalY){
-//        if (goalX <0 || goalX >=90 || goalY <0 || goalY >=90) {
-//            return new Result(false,"you can't walk out of bounds");
-//        }
-//
-//        Tile tile = getTileByCoordinates(goalX, goalY);
-//        Farm farm = null;
-//
-//
-//        for (Farm farms : currentGame.farms) {
-//            if (farms.Farm.contains(tile)) {
-//                farm = farms;
-//                break;
-//            }
-//        }
-//        for (User user : currentGame.players) {
-//            if (user.getFarm().equals(farm)){
-//                if (user.getSpouse() != null) {
-//                    if (!user.getSpouse().equals(currentGame.currentPlayer) && !user.equals(currentGame.currentPlayer)) {
-//                        return new Result(false, "you can't go to this farm");
-//                    }
-//                }
-//                else {
-//                    if (! user.equals(currentGame.currentPlayer)) {
-//                        return new Result(false, "you can't go to this farm");
-//                    }
-//                }
-//            }
-//        }
-//
-//        if (tile.getGameObject() instanceof GreenHouse) {
-//            if (!((GreenHouse) tile.getGameObject()).isCreated()){
-//                return new Result(false,"GreenHouse is not created yet");
-//            }
-//        }
-//
-//        for (User user : currentGame.players) {
-//            if (user.getPositionX()==goalX && user.getPositionY()==goalY){
-//                return new Result(true,"you can't go to this coordinate");
-//            }
-//        }
-//        if (!checkTile(tile)){
-//            return new Result(false,"you can't go to this coordinate");
-//        }
-
-//        for (Market market : currentGame.markets) {
-//            if (goalX > market.getTopLeftX() && goalY > market.getTopLeftY()){
-//                if (goalX < market.getTopLeftX() + market.getWidth() && goalY < market.getTopLeftY() + market.getHeight()){
-//                    if (market.getMarketType().getStartHour() > currentGame.currentDate.getHour() || market.getMarketType().getEndHour() < currentGame.currentDate.getHour()){
-//                        return new Result(false , "you can't go to Market because it is not open");
-//                    }
-//                }
-//            }
-//        }
-        return null;
-
-    }
 
     public void moveCamera(OrthographicCamera camera) {
         float cameraSpeed = 200 * Gdx.graphics.getDeltaTime(); // سرعت حرکت بر اساس زمان فریم
@@ -1847,9 +1796,6 @@ public class InputGameController {
         for (User player: currentGame.getGameState().getPlayers())
             player.setRecipes(Recipe.createAllRecipes());
 
-        initializePlayer();
-
-
     }
     public void startNewGameServer (String input) {
 
@@ -2666,7 +2612,7 @@ public class InputGameController {
             default -> new Result(false, RED + "Index is invalid" + RESET);
         };
     }
-                                                                    // other
+                            // OTHERd
 
     public void sendPassedTimeMessage (int day, int hour) {
 

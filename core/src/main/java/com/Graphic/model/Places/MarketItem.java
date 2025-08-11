@@ -53,6 +53,7 @@ public class MarketItem extends Items {
         }
         else {
             type.increaseOtherShopsLimit(amount - type.getOtherShopsLimit());
+            System.out.println(getRemindInShop(marketType));
         }
     }
 

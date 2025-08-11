@@ -6,6 +6,8 @@ import com.Graphic.Main;
 import com.Graphic.View.RegisterMenu;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.Enum.Commands.CommandType;
+import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.ItemType.AnimalType;
 import com.Graphic.model.Enum.ItemType.BackPackType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
@@ -157,26 +159,71 @@ public class ClientWork  {
                     InputGameController.getInstance().Move(message, Main.getClient().getLocalGameState());
                 }
                 case ENTER_THE_MARKET -> {
-                    for (User player : Main.getClient().getLocalGameState().getPlayers()) {
-                        if (message.getFromBody("Player").equals(player)) {
-                            player.setPositionX(message.getFromBody("X"));
-                            player.setPositionY(message.getFromBody("Y"));
-                            player.setInFarmExterior(message.getFromBody("Is in farm"));
-                            player.setIsInMarket(message.getFromBody("Is in market"));
-                            if (Main.getClient().getPlayer().equals(player)) {
-                                Main.getClient().getLocalGameState().currentMenu = Menu.MarketMenu;
-                            }
-                            player.getJoinMarket().add(player);
-                        }
-                    }
-                }
-                case CHANGE_MONEY -> {
+
                     User user = message.getFromBody("Player");
-                    if (Main.getClient().getPlayer().getUsername().trim().equals(user.getUsername().trim())) {
-                        Main.getClient().getPlayer().increaseMoney(message.getFromBody("Money"));
-                    } else if (Main.getClient().getPlayer().getUsername().trim().equals(user.getSpouse().getUsername().trim())) {
-                        Main.getClient().getPlayer().increaseMoney(message.getFromBody("Money"));
+
+                    System.out.println(message);
+
+                    for (User player : Main.getClient().getLocalGameState().getPlayers()) {
+
+                        if (user.getUsername().trim().equals(player.getUsername().trim())) {
+
+                            player.setPositionX((int)message.getFromBody("X") + 0.1f);
+
+                            player.setPositionY((int) message.getFromBody("Y") + 0.1f);
+
+                            System.out.println(player.getPositionX());
+
+                            System.out.println(player.getPositionY());
+
+                            player.setInFarmExterior(message.getFromBody("Is in farm"));
+
+                            player.setIsInMarket(message.getFromBody("Is in market"));
+
+                            if (Main.getClient().getPlayer().getUsername().equals(player.getUsername())) {
+
+                                Main.getClient().getPlayer().setCurrentMarket(message.getFromBody("Market"));
+
+                                Main.getClient().setCurrentMenu(Menu.MarketMenu);
+
+                            }
+
+                            else {
+
+                                player.setCurrentMarket(message.getFromBody("Market"));
+
+                                Main.getClient().getPlayer().getJoinMarket().add(player);
+
+                            }
+
+                        }
+
                     }
+
+                }
+
+                case CHANGE_MONEY -> {
+
+                    User user = message.getFromBody("Player");
+
+                    try {
+
+                        if (Main.getClient().getPlayer().getUsername().trim().equals(user.getUsername().trim())) {
+
+                            Main.getClient().getPlayer().increaseMoney(message.getIntFromBody("Money"));
+
+                        } else if (Main.getClient().getPlayer().getUsername().trim().equals(user.getSpouse().getUsername().trim())) {
+
+                            Main.getClient().getPlayer().increaseMoney(message.getIntFromBody("Money"));
+
+                        }
+
+                    }
+
+                    catch (Exception e) {
+
+                    }
+
                 }
                 case CHANGE_INVENTORY -> {
                     Items items = message.getFromBody("Item");
@@ -257,6 +304,57 @@ public class ClientWork  {
                     // print unseen messages
                     Main.getClient().getPlayer().setShowUnseenChats(true);
                 }
+                case EXIT_MARKET -> {
+
+                    int x = message.getFromBody("X");
+
+                    int y = message.getFromBody("Y");
+
+                    for (User user : Main.getClient().getLocalGameState().getPlayers()) {
+
+                        if (user.getUsername().trim().equals(message.getFromBody("Player"))) {
+
+                            user.setPositionX((float) x);
+
+                            user.setPositionY((float) y);
+
+                            user.setIsInMarket(false);
+
+                            user.setInFarmExterior(true);
+
+                            user.setDirection(Direction.Down);
+
+                            Main.getClient().getPlayer().getExitMarket().add(user);
+
+                        }
+
+                    }
+
+                }
+                case SET_TIME -> {
+                    controller.setTime(message.getFromBody("Hour"), message.getFromBody("Day"));
+                }
+                case CHANGE_GAME_OBJECT -> {
+                    controller.changeGameObject(
+                        message.getFromBody("X"),
+                        message.getFromBody("Y"),
+                        message.getFromBody("Object")
+                    );
+                }
+                case FriendshipsInqResponse, UPDATE_FRIENDSHIPS -> {
+                    Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
+                }
+
+                case A_FRIEND_IS_CLOSE -> {
+                    User friend = message.getFromBody("friend");
+                    Main.getClient().getPlayer().setFriendCloseToMe(friend);
+                }
+                case UPDATE_CONVERSATIONS -> {
+                    Main.getClient().getLocalGameState().conversations = message.getFromBody("conversations");
+                    // print unseen messages
+                    Main.getClient().getPlayer().setShowUnseenChats(true);
+                }
+
 
 
             }

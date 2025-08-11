@@ -5,6 +5,8 @@ import com.Graphic.model.collisionRect;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
+
 public enum MarketType {
     Blacksmith("BlackSmith" , 9 , 16 , 42 , 32 , 6 , 5 ,
                     List.of(new collisionRect(131,56,32,35) , new collisionRect(24,51,75,44) ,
@@ -13,10 +15,12 @@ public enum MarketType {
                             new collisionRect(179,37,94,23) ,new collisionRect(25,25,124,12) ,
                             new collisionRect(2,22,5,189) , new collisionRect(211 , 22 ,7,71) ,
                             new collisionRect(210,22,84,31) , new collisionRect(91 ,119,7,15) ,
-                            new collisionRect(23,47,7,17) ) , new collisionRect(0,0,0,0) , new collisionRect(0,0,0,0) ),
+                            new collisionRect(23,47,7,17) ) , new collisionRect(0,0,0,0) ,
+        new collisionRect(45 * TEXTURE_SIZE,TEXTURE_SIZE ,53 * TEXTURE_SIZE, (TEXTURE_SIZE * 3)/2 )),
 
     MarnieRanch("Marnie's Ranch" , 9 , 16 , 51 , 32 , 6 , 5,List.of(new collisionRect(0,0,0,0)),
-        new collisionRect(0,0,0,0) , new collisionRect(0,0,0,0)),
+        new collisionRect(206,20,1,24) ,
+        new collisionRect(54 * TEXTURE_SIZE,TEXTURE_SIZE,53 * TEXTURE_SIZE, (TEXTURE_SIZE * 3)/2 )),
 
 
     StardropSaloon("The Stardrop Saloon" , 12 , 24 , 32 , 45 , 6 , 5,
@@ -27,10 +31,12 @@ public enum MarketType {
                             new collisionRect(45,27,127,35)   , new collisionRect(317,108,120,65) ,
                             new collisionRect(341,41,107,13)  , new collisionRect(389,35,107,13) ,
                             new collisionRect(229,218,-11,32) , new collisionRect(1,217,4,20) ,
-                            new collisionRect(10,2,45,60)) , new collisionRect(0,0,0,0) , new collisionRect(0,0,0,0)),
+                            new collisionRect(10,2,45,60)) , new collisionRect(0,0,0,0) ,
+        new collisionRect(35 * TEXTURE_SIZE, TEXTURE_SIZE,40 * TEXTURE_SIZE,(TEXTURE_SIZE * 3)/2)),
 
     CarpenterShop("Carpenter's shop" , 9 , 20 , 51, 38 , 6 , 5 ,
-        List.of(new collisionRect(0,0,0,0)) , new collisionRect(0,0,0,0) , new collisionRect(0,0,0,0)),
+        List.of(new collisionRect(0,0,0,0)) , new collisionRect(95,24,8,24) ,
+        new collisionRect(54 * TEXTURE_SIZE, TEXTURE_SIZE,47 * TEXTURE_SIZE,(TEXTURE_SIZE * 3)/2)),
 
     JojaMart("JojaMart" , 9 , 23 , 32 , 38 , 6 , 5 ,
                     List.of(new collisionRect(0 ,45,40,82)    , new collisionRect(70,38,40,72),
@@ -42,7 +48,8 @@ public enum MarketType {
                             new collisionRect(292,104,61,56)  , new collisionRect(436,64,133,367),
                             new collisionRect(420,80,90,43)   , new collisionRect(420,80,0,70),
                             new collisionRect(0,500,390,110)  , new collisionRect(84,91,348,40) ,
-                            new collisionRect(20,16,171,24)   ) , new collisionRect(0,0,0,0) , new collisionRect(0,0,0,0)),
+                            new collisionRect(20,16,171,24)   ) , new collisionRect(191,67,-42,23) ,
+        new collisionRect(35 * TEXTURE_SIZE, TEXTURE_SIZE,47 * TEXTURE_SIZE,(TEXTURE_SIZE * 3)/2)),
 
     PierreGeneralStore("Pierr's General Store" , 9 , 17 , 32 , 32 , 6 , 5 ,
                     List.of(new collisionRect(16,27,48,45)    , new collisionRect(40,40,48,42),
@@ -53,14 +60,16 @@ public enum MarketType {
                             new collisionRect(136,134,237,56) , new collisionRect(260,81,56,55) ,
                             new collisionRect(276,43,47,10)   , new collisionRect(337,41,7,98),
                             new collisionRect(0,134,20,55)    , new collisionRect(139,197,16,3)) ,
-                            new collisionRect(0,0,0,0) , new collisionRect(0,0,0,0)),
+                            new collisionRect(100,100,100,100) ,
+        new collisionRect(35 * TEXTURE_SIZE, TEXTURE_SIZE,53 * TEXTURE_SIZE,(TEXTURE_SIZE * 3)/2)),
 
     FishShop("Fish shop" , 9 , 17 , 42 , 38 , 6 , 5 ,
                     List.of(new collisionRect(36,25,28,61)    , new collisionRect(61,48,62,27),
                             new collisionRect(100,27,26,78)   , new collisionRect(2,172,93,61),
                             new collisionRect(127,100,78,100) , new collisionRect(85,95,-7,29),
                             new collisionRect(0,75,-1,22)     , new collisionRect(-2,25,20,71),
-                            new collisionRect(161,24,22,55))  , new collisionRect(0,0,0,0) , new collisionRect(0,0,0,0)),;
+                            new collisionRect(161,24,22,55))  , new collisionRect(0,0,0,0) ,
+        new collisionRect(45 * TEXTURE_SIZE, TEXTURE_SIZE,47 * TEXTURE_SIZE,(TEXTURE_SIZE * 3)/2)),;
 
     private final String name;
     private final int startHour;

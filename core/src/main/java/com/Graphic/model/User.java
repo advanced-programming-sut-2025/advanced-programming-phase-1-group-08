@@ -32,7 +32,6 @@ public class User {
     private int daysDepressedLeft = 0;
     private List<Recipe> recipes;
 
-
     private ArrayList<String> Right;
     private ArrayList<String> Left;
     private ArrayList<String> Up;
@@ -106,7 +105,12 @@ public class User {
     private int fishingAbility  = 0;
     private int money;
 
-
+    public void setFriendCloseToMe(User FriendCloseToMe) {
+        this.FriendCloseToMe = FriendCloseToMe;
+    }
+    public User getFriendCloseToMe() {
+        return FriendCloseToMe;
+    }
 
     private  Farm farm;
     public int topLeftX;
@@ -414,6 +418,16 @@ public class User {
     }
 
 
+
+    public boolean isShowUnseenChats() {
+        return showUnseenChats;
+    }
+
+    public void setShowUnseenChats(boolean showUnseenChats) {
+        this.showUnseenChats = showUnseenChats;
+    } //todo تو گیم منو باید بگم اگه ترو بود دیالوگو بیار بالا و اگه بستمش فالس کن
+
+
     public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {
 
         this.friendshipPoint = friendshipPoint;
@@ -557,7 +571,7 @@ public class User {
         //sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
     }
 
-    //    public Sprite getSprite() {
+//    public Sprite getSprite() {
 //        sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
 //        sprite.setSize(TEXTURE_SIZE, TEXTURE_SIZE);
 //

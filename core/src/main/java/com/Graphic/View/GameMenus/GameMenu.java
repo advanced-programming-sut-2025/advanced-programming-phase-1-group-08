@@ -1,5 +1,6 @@
 package com.Graphic.View.GameMenus;
 
+
 import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.Marketing;
@@ -11,6 +12,7 @@ import com.Graphic.model.Animall.AnimalRenderer;
 import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.ClientServer.ServerHandler;
 import com.Graphic.model.Enum.AllPlants.CropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
@@ -74,7 +76,7 @@ import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
-    public static GameMenu gameMenu;// اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
+    public static GameMenu gameMenu; // اگه صفحه ای اینجا قراره باز بشه که وقتی باز شد فرایند بازی متوقف بشه یه بولین برای فعال بودنش بزارین و تو تابع anyMenuIsActivated هم اوکیش کنین
     // TODO مملی ورودی گرفتن برای حرمت مردن رو هم بیار تو تابع اینپوت کنترلر چون مثلا منو باز میشه من میخوام a بنویسم دوربین حرکت میکنه مثلا و وقتی بیاری اونجا اوکی میشه
     public static OrthographicCamera camera;
     private Stage stage;
@@ -99,8 +101,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private boolean initialLake = false;
     private ArrayList<AnimalRenderer> currentBarnOrCageAnimals = new ArrayList<>();
 
-
     public boolean showFriendDialog = false;
+
     private boolean progressComplete = false;
     private boolean ePressed = false;
     private float holdTime = 0f;
@@ -1023,7 +1025,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 }
             });
 
-
             System.out.println(f.printInfo());
 
             // اضافه کردن به ردیف جدول
@@ -1219,6 +1220,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         startRotation = false;
 
         //Mohamadreza
+        initializePlayer();
     }
 
     private void inputController() {

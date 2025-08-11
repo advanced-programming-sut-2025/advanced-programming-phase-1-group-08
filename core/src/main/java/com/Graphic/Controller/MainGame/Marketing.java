@@ -2,6 +2,7 @@ package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
 import com.Graphic.View.AppMenu;
+import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
@@ -31,6 +32,7 @@ import com.Graphic.model.Plants.ForagingSeeds;
 import com.Graphic.model.Plants.TreeSource;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.ToolsPackage.*;
+import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -76,6 +78,31 @@ public class Marketing {
         return marketing;
     }
 
+    public void addPlayerToMarket() {
+        while (! Main.getClient().getPlayer().getJoinMarket().isEmpty()) {
+            try {
+                User user = Main.getClient().getPlayer().getJoinMarket().poll();
+                //MarketMenu.getInstance().users().add(user);
+                MarketMenu.getInstance().addUserRenderer(user);
+            }
+            catch (Exception e) {
+
+            }
+        }
+    }
+
+    public void removePlayerFromMarket() {
+        while (! Main.getClient().getPlayer().getExitMarket().isEmpty()) {
+            try {
+                User user = Main.getClient().getPlayer().getExitMarket().poll();
+                MarketMenu.getInstance().removeUserRenderer(user);
+            }
+            catch (Exception e) {
+
+            }
+        }
+    }
+
     public void openProductsMenu(MarketType marketType) {
         switch (marketType) {
             case JojaMart ->{
@@ -115,6 +142,21 @@ public class Marketing {
                 showWindow = true;
             }
         });
+    }
+
+    public void exitTheMarket() {
+        if (! MarketMenu.getInstance().marketType.getInsideDoor().checkCollision(Main.getClient().getPlayer())) {
+            if (Main.getClient().getPlayer().getDirection() == Direction.Down) {
+                HashMap<String, Object> exit = new HashMap<>();
+                exit.put("Player", Main.getClient().getPlayer().getUsername());
+                exit.put("Market", MarketMenu.getInstance().marketType);
+                exit.put("X", MarketMenu.getInstance().marketType.getOutsideDoor().getX());
+                exit.put("Y", MarketMenu.getInstance().marketType.getOutsideDoor().getY() - 10);
+                Main.getClient().getRequests().add(new Message(CommandType.EXIT_MARKET, exit));
+                Main.getMain().setScreen(GameMenu.getInstance());
+                Main.getClient().setCurrentMenu(Menu.GameMenu);
+            }
+        }
     }
 
     public ImageButton createCloseButtonForDialog(Dialog dialog) {
@@ -173,6 +215,9 @@ public class Marketing {
 
     public Result checkBuyBarnOrCage(BarnORCageType barnORCageType) {
         User Player = Main.getClient().getPlayer();
+        if (barnORCageType.getShopLimit() == 0) {
+            return new Result(false , "1" );
+        }
         if (Player.getMoney() < barnORCageType.getPrice()) {
             return new Result(false , "2");
         }
@@ -246,7 +291,14 @@ public class Marketing {
 
     public void printPlayers() {
         for (int i = 0 ; i < MarketMenu.getInstance().users().size() ; i++) {
-            MarketMenu.getInstance().getUserRenderers().get(i).render(MarketMenu.getInstance().users().get(i));
+            try {
+                if (MarketMenu.getInstance().users().get(i).getMarketType() == MarketMenu.getInstance().marketType) {
+                    MarketMenu.getInstance().getUserRenderers().get(i).render(MarketMenu.getInstance().users().get(i));
+                }
+            }
+            catch (Exception e) {
+
+            }
         }
     }
 
@@ -260,41 +312,45 @@ public class Marketing {
             //InputGameController.moveAnimation();
             y = y + 50 * Gdx.graphics.getDeltaTime();
             Timer = Timer + Gdx.graphics.getDeltaTime();
-            body.put("Player", Player);
+            body.put("Player", Player.getUsername());
             body.put("Timer", Timer);
             body.put("X", x);
             body.put("Y", y);
             body.put("Direction", Direction.Up);
+            body.put("Market" , Main.getClient().getPlayer().getMarketType());
             Main.getClient().getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             y = y - 50 * Gdx.graphics.getDeltaTime();
             Timer = Timer + Gdx.graphics.getDeltaTime();
-            body.put("Player", Player);
+            body.put("Player", Player.getUsername());
             body.put("Timer", Timer);
             body.put("X", x);
             body.put("Y", y);
             body.put("Direction", Direction.Down);
+            body.put("Market" , Main.getClient().getPlayer().getMarketType());
             Main.getClient().getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             x = x - 50 * Gdx.graphics.getDeltaTime();
             Timer = Timer + Gdx.graphics.getDeltaTime();
-            body.put("Player", Player);
+            body.put("Player", Player.getUsername());
             body.put("Timer", Timer);
             body.put("X", x);
             body.put("Y", y);
             body.put("Direction", Direction.Left);
+            body.put("Market" , Main.getClient().getPlayer().getMarketType());
             Main.getClient().getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             x = x + 50 * Gdx.graphics.getDeltaTime();
             Timer = Timer + Gdx.graphics.getDeltaTime();
-            body.put("Player", Player);
+            body.put("Player", Player.getUsername());
             body.put("Timer", Timer);
             body.put("X", x);
             body.put("Y", y);
             body.put("Direction", Direction.Right);
+            body.put("Market" , Main.getClient().getPlayer().getMarketType());
             Main.getClient().getRequests().add(new Message(CommandType.MOVE_IN_MARKET , body));
         }
 
@@ -354,6 +410,7 @@ public class Marketing {
 //                    removeImage();
 //                }
                 else {
+                    System.out.println("buy success");
                     HashMap<String , Object> body = new HashMap<>();
                     body.put("Player" , Player);
                     body.put("Item" , item);
@@ -495,10 +552,12 @@ public class Marketing {
     private Result checkBuyAnimal(TextField field , AnimalType animalType) {
         String name = field.getText();
         for (BarnOrCage barnOrCage : Main.getClient().getPlayer().BarnOrCages) {
+            System.out.println(barnOrCage.getBarnORCageType());
             for (Animal animal : barnOrCage.getAnimals()) {
                 if (animal.getName().trim().equals(name.trim())) {
                     return new Result(false , "9");
                 }
+                System.out.println(animal.getName());
             }
         }
 
@@ -533,7 +592,7 @@ public class Marketing {
 
     public void requestForBuyAnimal(AnimalType animalType , String name , BarnOrCage barnOrCage) {
         HashMap<String , Object> body = new HashMap<>();
-        Animal animal = new Animal(animalType , 0 , name , gameMenu.gameState.currentDate.clone().getDate());
+        Animal animal = new Animal(animalType , 0 , name , new DateHour().getDate() /*gameMenu.gameState.currentDate.clone().getDate()*/);
         body.put("Animal" , animal);
         body.put("Player" , Main.getClient().getPlayer());
         body.put("BarnOrCage" , barnOrCage);
@@ -548,11 +607,12 @@ public class Marketing {
         for (User user : Main.getClient().getLocalGameState().getPlayers()) {
             if (user.getUsername().trim().equals(player.getUsername().trim())) {
                 for (BarnOrCage barnOrCage1 : user.BarnOrCages) {
-                    if (barnOrCage1.equals(barnOrCage)) {
-                        barnOrCage.animals.add(animal);
-                        barnOrCage.animals.getLast().setIndex(barnOrCage.animals.size() - 1);
-                        barnOrCage.animals.getLast().setPositionX(barnOrCage.topLeftX + barnOrCage.getBarnORCageType().getDoorX());
-                        barnOrCage.animals.getLast().setPositionY(barnOrCage.topLeftY + barnOrCage.getBarnORCageType().getDoorY());
+                    if (barnOrCage1.topLeftX == barnOrCage.topLeftX && barnOrCage1.topLeftY == barnOrCage.topLeftY) {
+                        System.out.println("pirooooz");
+                        barnOrCage1.animals.add(animal);
+                        barnOrCage1.animals.getLast().setIndex(barnOrCage1.animals.size() - 1);
+                        barnOrCage1.animals.getLast().setPositionX(barnOrCage1.topLeftX + barnOrCage1.getBarnORCageType().getDoorX());
+                        barnOrCage1.animals.getLast().setPositionY(barnOrCage1.topLeftY + barnOrCage1.getBarnORCageType().getDoorY());
                     }
                 }
             }
@@ -605,6 +665,7 @@ public class Marketing {
                 confirm.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent changeEvent, Actor actor) {
+                        camera.setToOrtho(false , 300 , 150);
                         isPlaced = false;
                         choosePlace = false;
                         barnORCageType.setWaiting(false);
@@ -612,7 +673,7 @@ public class Marketing {
                         TryAgain.remove();
                         showWindow = true;
                         setWithMouse(null);
-                        requestForCreateBarnOrCage(x , y , barnORCageType);
+                        Main.getClient().getRequests().add(requestForCreateBarnOrCage(x , y , barnORCageType));
                     }
                 });
 
@@ -686,7 +747,7 @@ public class Marketing {
 
                     Main.getBatch().draw(
                         (TextureManager.get(gameObject.getIcon())),
-                        TEXTURE_SIZE * i, TEXTURE_SIZE * (90 - j), TEXTURE_SIZE* gameObject.getTextureWidth(),
+                        TEXTURE_SIZE * i, TEXTURE_SIZE * (30 - j), TEXTURE_SIZE* gameObject.getTextureWidth(),
                         TEXTURE_SIZE * gameObject.getTextureHeight());
 
                 } catch (Exception e) {
@@ -736,11 +797,11 @@ public class Marketing {
         getWindow().pack();
         getWindow().setPosition(Gdx.graphics.getWidth()/2 - 500, Gdx.graphics.getHeight()/2 - 350);
         getWindow().setVisible(true);
-        if (! currentMenu.getMenu().getStage().getActors().contains(image , true)) {
-            currentMenu.getMenu().getStage().addActor(image);
+        if (! Main.getClient().getCurrentMenu().getMenu().getStage().getActors().contains(image , true)) {
+            Main.getClient().getCurrentMenu().getMenu().getStage().addActor(image);
         }
-        if (! currentMenu.getMenu().getStage().getActors().contains(getWindow() , true)) {
-            currentMenu.getMenu().getStage().addActor(getWindow());
+        if (! Main.getClient().getCurrentMenu().getMenu().getStage().getActors().contains(getWindow() , true)) {
+            Main.getClient().getCurrentMenu().getMenu().getStage().addActor(getWindow());
         }
     }
 
@@ -920,7 +981,7 @@ public class Marketing {
     }
 
     public void showFishProducts(int id , boolean Filter) {
-        if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && showWindow) || Filter) {
+        if ( showWindow || Filter) {
             showWindow = false;
 
             Table table = createTable(FishShop);
@@ -951,7 +1012,7 @@ public class Marketing {
     }
 
     public void showCarpenterProducts(int id , boolean Filter) {
-        if ((Gdx.input.isKeyPressed(Input.Keys.SPACE) && showWindow) || Filter) {
+        if ( showWindow || Filter) {
             showWindow = false;
 
             Table table = createTable(CarpenterShop);
@@ -975,7 +1036,7 @@ public class Marketing {
     }
 
     public void showMarnieProducts(int id , boolean Filter) {
-        if ((Gdx.input.isKeyPressed(Input.Keys.L) && showWindow) || Filter) {
+        if ( showWindow || Filter) {
             showWindow = false;
 
             Table table = createTable(MarnieRanch);

@@ -6,12 +6,14 @@ import com.Graphic.Main;
 import com.Graphic.model.*;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Game;
+import com.Graphic.model.Items;
 import com.Graphic.model.User;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -58,16 +60,6 @@ public class ClientConnectionThread extends Thread {
             }
         });
 
-//        while (true) {
-//            try {
-//                Message message = messageQueue.take();
-//                handleMessage(message);
-//            }
-//            catch (Exception e) {
-//                e.printStackTrace();
-//                break;
-//            }
-//        }
         System.out.println("Client disconnected");
     }
 
@@ -118,7 +110,8 @@ public class ClientConnectionThread extends Thread {
                 controller.placeCraftOrShippingBin(message , game);
             }
             case BUY_BARN_CAGE -> {
-                for (Message message1 : controller.BuyBarnCage(message , game)) {
+                ArrayList<Message> messages = controller.BuyBarnCage(message , game);
+                for (Message message1 : messages) {
                     sendMessage(message1);
                 }
             }
@@ -183,6 +176,10 @@ public class ClientConnectionThread extends Thread {
                 HashMap<String, Object> body2 = new HashMap<>();
                 body2.put("friendships", game.getGameState().friendships);
                 ClientConnectionController.getInstance().sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body2), game);
+            }
+            case EXIT_MARKET -> {
+                System.out.println("Exit");
+                ExitTheMarket(message , game);
             }
             case LOADED_GAME -> {}
 
