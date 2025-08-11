@@ -13,6 +13,10 @@ public class Walkable extends GameObject {
         this.grassOrFiber = "Walk";
     }
 
+    public Walkable(String grassOrFiber) {
+        this.grassOrFiber = grassOrFiber;
+    }
+
     public String getGrassOrFiber() {
 
         return grassOrFiber;

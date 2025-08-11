@@ -1,18 +1,9 @@
 package com.Graphic;
 
-import com.Graphic.Controller.MainGame.InputGameController;
-import com.Graphic.View.GameMenus.GameMenu;
-import com.Graphic.View.GameMenus.MarketMenu;
-import com.Graphic.View.GameMenus.TransitionScreen;
+
 import com.Graphic.View.LoginMenu;
-import com.Graphic.View.MainMenu;
-import com.Graphic.View.PlayGameMenu;
-import com.Graphic.View.ProfileMenu;
-import com.Graphic.model.App;
-import com.Graphic.model.ClientServer.Client;
 import com.Graphic.model.ClientServer.ClientWork;
 import com.Graphic.model.Enum.Menu;
-import com.Graphic.model.HelpersClass.SFXManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -33,18 +24,12 @@ public class Main extends Game {
 
     static {
         System.setProperty("java.net.preferIPv4Stack", "true");
-        // در هر دو طرف
         System.setProperty("kryonet.log", "DEBUG");
     }
 
     public Main(ClientWork client) {
-        System.out.println("Main Constructor");
         Main.client = client;
-        if (client == null) {
-            System.out.println("Client is null");
-        }
     }
-    //private static InputGameController x;
 
     @Override
     public void create() {

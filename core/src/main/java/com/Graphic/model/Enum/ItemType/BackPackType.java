@@ -1,9 +1,9 @@
 package com.Graphic.model.Enum.ItemType;
 
 import com.Graphic.Main;
+import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.Plants.Fish;
 import com.Graphic.model.Plants.Animalproduct;
-import com.Graphic.model.App;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.Items;
 

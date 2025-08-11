@@ -18,6 +18,7 @@ import java.util.*;
 import static com.Graphic.Controller.MainGame.GameControllerLogic.passedOfTime;
 import static com.Graphic.model.App.currentGame;
 
+
 public class User {
 
     private String username;
@@ -31,14 +32,7 @@ public class User {
     private int daysDepressedLeft = 0;
     private List<Recipe> recipes;
 
-    public boolean isFishing = false;
-    public boolean doingMinigame = false;
 
-    private User FriendCloseToMe = null;
-    private boolean showUnseenChats = false;
-
-
-    public Sprite sprite;
     private ArrayList<String> Right;
     private ArrayList<String> Left;
     private ArrayList<String> Up;
@@ -61,7 +55,15 @@ public class User {
     private BarnOrCage currentBarnOrCage = new BarnOrCage();
     private MarketType currentMarket;
     private Queue<User> joinMarket = new LinkedList<>();
+    private Queue<User> exitMarket = new LinkedList<>();
 
+    public boolean isFishing = false;
+    public boolean doingMinigame = false;
+
+    private User FriendCloseToMe = null;
+    private boolean showUnseenChats = false;
+    private boolean showHugged =  false;
+    private boolean showFlowered = false;
 
     // buffs
     public int Buff_maxEnergy_100_hoursLeft = 0;
@@ -104,12 +106,7 @@ public class User {
     private int fishingAbility  = 0;
     private int money;
 
-    public void setFriendCloseToMe(User FriendCloseToMe) {
-        this.FriendCloseToMe = FriendCloseToMe;
-    }
-    public User getFriendCloseToMe() {
-        return FriendCloseToMe;
-    }
+
 
     private  Farm farm;
     public int topLeftX;
@@ -143,9 +140,6 @@ public class User {
 
         isMoving = false;
     }
-
-
-
 
 
     public void setBuff_maxEnergy_100_hoursLeft (int x) {
@@ -262,6 +256,7 @@ public class User {
     }
 
     public void checkHealth() {
+
 
         if (this.health > MAX_HEALTH)
             this.health = MAX_HEALTH;
@@ -419,16 +414,6 @@ public class User {
     }
 
 
-
-    public boolean isShowUnseenChats() {
-        return showUnseenChats;
-    }
-
-    public void setShowUnseenChats(boolean showUnseenChats) {
-        this.showUnseenChats = showUnseenChats;
-    } //todo تو گیم منو باید بگم اگه ترو بود دیالوگو بیار بالا و اگه بستمش فالس کن
-
-
     public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {
 
         this.friendshipPoint = friendshipPoint;
@@ -540,8 +525,6 @@ public class User {
         this.Down.add("Mohamadreza/PlayerSpriteMove/Down" + farm.getIndex() + "," + gender + ".png");
 
 
-
-
 //        this.Right = new Animation<>(0.1f,
 //            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png"),
 //            TextureManager.get("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png"));
@@ -574,7 +557,7 @@ public class User {
         //sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
     }
 
-//    public Sprite getSprite() {
+    //    public Sprite getSprite() {
 //        sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
 //        sprite.setSize(TEXTURE_SIZE, TEXTURE_SIZE);
 //
@@ -646,6 +629,7 @@ public class User {
     public String getWithMouse() {
         return withMouse;
     }
+
 
     public boolean isInBarnOrCage() {
         return isInBarnOrCage;
@@ -737,5 +721,34 @@ public class User {
     }
     public Queue<User> getJoinMarket() {
         return joinMarket;
+    }
+    public Queue<User> getExitMarket() {
+        return exitMarket;
+    }
+    public void setFriendCloseToMe(User FriendCloseToMe) {
+        this.FriendCloseToMe = FriendCloseToMe;
+    }
+    public User getFriendCloseToMe() {
+        return FriendCloseToMe;
+    }
+    public boolean isShowUnseenChats() {
+        return showUnseenChats;
+    }
+    public void setShowUnseenChats(boolean showUnseenChats) {
+        this.showUnseenChats = showUnseenChats;
+    }
+
+    public boolean isShowHugged() {
+        return showHugged;
+    }
+    public void setShowHugged(boolean showHugged) {
+        this.showHugged = showHugged;
+    }
+
+    public boolean isShowFlowered() {
+        return showFlowered;
+    }
+    public void setShowFlowered(boolean showFlowered) {
+        this.showFlowered = showFlowered;
     }
 }

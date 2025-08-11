@@ -13,8 +13,6 @@ import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.GameTexturePath;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC.NPC;
-import com.Graphic.model.Enum.SecurityQuestions;
-import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.*;
@@ -22,11 +20,9 @@ import com.Graphic.model.OtherItem.*;
 import com.Graphic.model.Places.*;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Animall.BarnOrCage;
-import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.Plants.Tree;
-import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.ToolsPackage.*;
 import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
@@ -34,10 +30,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -59,8 +53,6 @@ import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.google.gson.Gson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
@@ -70,20 +62,15 @@ import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
-import static com.Graphic.model.SaveData.UserDataBase.findUserByUsername;
 import static com.badlogic.gdx.Input.Keys.ENTER;
-import static com.badlogic.gdx.Input.Keys.M;
 
 
 public class InputGameController {
 
-    private static final Logger log = LoggerFactory.getLogger(InputGameController.class);
     public static InputGameController inputGameController;
     Gson gson = new Gson();
 
-    private InputGameController() {
-
-    }
+    private InputGameController() {}
     public static InputGameController getInstance() {
         if (inputGameController == null)
             inputGameController = new InputGameController();
@@ -229,20 +216,6 @@ public class InputGameController {
             user.setPositionX(TEXTURE_SIZE * (user.getFarm().getHome().getTopLeftX() + user.getFarm().getHome().getWidth() / 2));
             user.setPositionY(TEXTURE_SIZE * (90 - user.getFarm().getHome().getTopLeftY() - user.getFarm().getHome().getLength()));
         }
-    }
-
-    public static void moveAnimation() {
-//        currentGame.currentPlayer.getSprite().setRegion(currentGame.currentPlayer.getAnimation().getKeyFrame(currentGame.currentPlayer.getTimer()));
-//
-//        if (! currentGame.currentPlayer.getAnimation().isAnimationFinished(currentGame.currentPlayer.getTimer())) {
-//            currentGame.currentPlayer.setTimer(currentGame.currentPlayer.getTimer() + Gdx.graphics.getDeltaTime());
-//        }
-//        else {
-//            currentGame.currentPlayer.setTimer(0);
-//        }
-//
-//        currentGame.currentPlayer.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
-
     }
 
     public Message checkWalking(Message message , Game game) {
@@ -1422,8 +1395,8 @@ public class InputGameController {
 
     public void AnswerPlaceCraft(Message message , Game game) {
         Items items = message.getFromBody("Item");
-        int x = message.getIntFromBody("X");
-        int y = message.getIntFromBody("Y");
+        int x = message.getFromBody("X");
+        int y = message.getFromBody("Y");
         getTileByCoordinates(x , y , game.getGameState()).setGameObject(items);
         User player = message.getFromBody("Player");
 
@@ -2127,14 +2100,6 @@ public class InputGameController {
 
 
                                                                   // input command Date
-
-    public Result EnergyUnlimited () {
-
-        Main.getClient().getPlayer().setHealthUnlimited();
-        return new Result(true, BLUE+"Whoa! Infinite energy mode activated!"+RESET);
-    }
-
-
                                                                    // input command plant
 
 
@@ -2203,21 +2168,6 @@ public class InputGameController {
                 return new Result(false, RED+"sorry, name is invalid!"+RESET);
             }
         }
-    }
-    public Result thor (String x, String y) {
-
-        int x1 = Integer.parseInt(x);
-        int y1 = Integer.parseInt(y);
-
-        if ((!Main.getClient().getPlayer().getFarm().isInFarm(x1, y1)) && Main.getClient().getPlayer().getSpouse() != null
-                && !Main.getClient().getPlayer().getSpouse().getFarm().isInFarm(x1, y1))
-            return new Result(false, RED+"You must select your tile"+RESET);
-
-        if (isInGreenHouse(getTileByCoordinates(x1, y1 , Main.getClient().getLocalGameState())))
-            return new Result(false, RED+"Lightning can’t hit the greenhouse"+RESET);
-
-        lightningStrike(getTileByCoordinates(x1, y1 , Main.getClient().getLocalGameState()));
-        return new Result(true, BLUE+"A lightning bolt hits!"+RESET);
     }
     public Result buildGreenHouse () {
 
@@ -2716,24 +2666,7 @@ public class InputGameController {
             default -> new Result(false, RED + "Index is invalid" + RESET);
         };
     }
-
-
-                                                                    // cheat command
-
-    public Result getObject (String direction) {
-
-        return new Result(true, PURPLE + getTileByDir(Integer.parseInt(direction)).getGameObject().toString() + RESET);
-    }
-    public Result getObject2 (String x, String y) {
-
-        return new Result(true, PURPLE + getTileByCoordinates(
-            Integer.parseInt(x), Integer.parseInt(y) , Main.getClient().getLocalGameState()).getGameObject().toString() + RESET);
-    }
-    public void remove (int x) {
-
-        getTileByDir(x).setGameObject(new Walkable());
-    }
-                                                                    // OTHERd
+                                                                    // other
 
     public void sendPassedTimeMessage (int day, int hour) {
 
@@ -2747,6 +2680,18 @@ public class InputGameController {
         Main.getClient().getRequests().add(new Message(CommandType.SET_TIME , PassedTime));
 
     }
-
-
+    public void sendChangeGameObjectMessage (int x, int y, GameObject gameObject) {
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("X", x);
+        PassedTime.put("Y", y);
+        PassedTime.put("Object", gameObject);
+        Main.getClient().getRequests().add(new Message(CommandType.SET_TIME, PassedTime));
+    }
+    public void sendChangeGameObjectMessage (Tile tile, GameObject gameObject) {
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("X", tile.getX());
+        PassedTime.put("Y", tile.getY());
+        PassedTime.put("Object", gameObject);
+        Main.getClient().getRequests().add(new Message(CommandType.SET_TIME, PassedTime));
+    }
 }

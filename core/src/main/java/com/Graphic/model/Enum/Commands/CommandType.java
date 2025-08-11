@@ -1,6 +1,7 @@
 package com.Graphic.model.Enum.Commands;
 
 public enum CommandType {
+    // MohammadReza
     LOGIN,
     SIGN_UP,
     NEW_GAME,
@@ -38,6 +39,12 @@ public enum CommandType {
     COLLECT_PRODUCT,
     CALCULATE_ANIMAL_FRIENDSHIP,
     PLACE_BARN_CAGE,
+    PLAYER_HANDLER,
+    EXIT_MARKET,
+
+
+
+    // Ariyo
     CHANGE_ABILITY_LEVEL,
     CHANGE_FRIDGE,
     FriendshipsInquiry,
@@ -46,13 +53,18 @@ public enum CommandType {
     A_FRIEND_IS_CLOSE,
     TALK_TO_FRIEND,
     UPDATE_CONVERSATIONS,
+    SET_SEEN_MESSAGE,
+    HUG,
+    HUGGED,
+    SEND_FLOWER,
+    GIVEN_FLOWER,
 
-                                // Erfan
+
+    // Erfan
     SET_TIME,
     GET_TIME,
     CHANGE_GAME_OBJECT,
     BUILD_GREENHOUSE,
     CREATE_LIGHTNING,
     CURRENT_ITEM,
-
 }

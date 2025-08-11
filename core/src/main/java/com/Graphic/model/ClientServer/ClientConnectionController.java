@@ -9,6 +9,7 @@ import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Places.ShippingBin;
@@ -467,5 +468,12 @@ public class ClientConnectionController {
         ServerHandler.getInstance(game).currentDateHour.setHour(hour);
 
         sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
+    }
+    public void sendSetGameObjectMessage (int x, int y, GameObject object, Game game) throws IOException {
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("X", x);
+        PassedTime.put("Y", y);
+        PassedTime.put("Object", object);
+        sendToAll(new Message(CommandType.SET_TIME, PassedTime), game);
     }
 }

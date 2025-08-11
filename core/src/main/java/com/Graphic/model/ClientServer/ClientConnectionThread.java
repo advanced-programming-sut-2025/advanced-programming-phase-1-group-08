@@ -149,7 +149,7 @@ public class ClientConnectionThread extends Thread {
             }
             case CHANGE_FRIDGE -> {
                 Items items = message.getFromBody("Item");
-                int amount = message.getIntFromBody("amount");
+                int amount = message.getFromBody("amount");
                 if (Main.getClient().getPlayer().getFarm().getHome().getFridge().items.containsKey(items)) {
                     Main.getClient().getPlayer().getFarm().getHome().getFridge().items.compute(items,(k,v) -> v + amount);
                     if (Main.getClient().getPlayer().getFarm().getHome().getFridge().items.get(items) == 0) {
@@ -188,12 +188,19 @@ public class ClientConnectionThread extends Thread {
 
             case SET_TIME -> {
                 controller.setTime(
-                    message.getIntFromBody("Day"),
-                    message.getIntFromBody("Hour"), game
+                    message.getFromBody("Day"),
+                    message.getFromBody("Hour"), game
                 );
             }
             case GET_TIME -> {
                 controller.sendSetTimeMessage(server.currentDateHour.getHour(), server.currentDateHour.getDate(), game);
+            }
+            case CHANGE_GAME_OBJECT -> {
+                controller.sendSetGameObjectMessage(
+                    message.getFromBody("X"),
+                    message.getFromBody("Y"),
+                    message.getFromBody("Object"), game
+                );
             }
             case FriendshipsInquiry -> {
                 HashMap<String , Object> body = new HashMap<>();

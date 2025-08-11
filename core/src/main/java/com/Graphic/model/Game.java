@@ -61,19 +61,11 @@ public class Game {
                 secQ,
                 secA
         );
-        System.out.println("hi-1");
-        //App.users.add(newUser);
-        System.out.println("hi-2");
-        //App.currentUser = newUser;
-        System.out.println("hi-3");
 
         List<User> users = UserStorage.loadUsers();
-        System.out.println("hi1");
         users.add(newUser);
-        System.out.println("hi2");
         try {
             com.Graphic.model.SaveData.UserStorage.saveUsers(users);
-            System.out.println("hi3");
         } catch (IOException e) {
             e.printStackTrace();
         }
