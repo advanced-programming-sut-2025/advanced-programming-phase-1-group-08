@@ -190,7 +190,9 @@ public class ClientConnectionThread extends Thread {
                 );
             }
             case GET_TIME -> {
-                controller.sendSetTimeMessage(server.currentDateHour.getHour(), server.currentDateHour.getDate(), game);
+                controller.sendSetTimeMessage(
+                    game.getGameState().currentDate.getHour(),
+                    game.getGameState().currentDate.getDate(), game);
             }
             case CHANGE_GAME_OBJECT -> {
                 controller.sendSetGameObjectMessage(

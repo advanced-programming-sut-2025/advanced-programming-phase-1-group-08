@@ -21,9 +21,6 @@ public class ServerHandler extends Thread {
     public long startTime;
     public long lastTime;
 
-    public DateHour currentDateHour;
-
-
 
     private ServerHandler(Game game) {
         initialize(game);
@@ -34,7 +31,7 @@ public class ServerHandler extends Thread {
         lastTime = TimeUtils.millis();
         this.game = game;
         controller = ClientConnectionController.getInstance();
-        currentDateHour = new DateHour(Season.Spring, 1, 9, 1950);
+        game.getGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1950);
     }
     public static ServerHandler getInstance(Game game) {
         if (instance == null)
@@ -55,7 +52,7 @@ public class ServerHandler extends Thread {
 
     private void ServerRender() throws IOException {
         if (TimeUtils.millis() - lastTime > hourSecond)
-            controller.passedOfTime(0, 1, currentDateHour, game);
+            controller.passedOfTime(0, 1,game.getGameState().currentDate , game);
     }
 
 
