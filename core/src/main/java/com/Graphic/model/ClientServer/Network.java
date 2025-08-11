@@ -4,25 +4,24 @@ import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
-import com.Graphic.model.Enum.ItemType.BackPackType;
-import com.Graphic.model.Enum.ItemType.BarnORCageType;
-import com.Graphic.model.Enum.ItemType.WallType;
+import com.Graphic.model.Enum.Fish.FishType;
+import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.NPC.NPCHouse;
 import com.Graphic.model.Enum.SecurityQuestions;
+import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.OtherItem.Fridge;
+import com.Graphic.model.Plants.Wood;
+import com.Graphic.model.ToolsPackage.MilkPail;
 import com.Graphic.model.collisionRect;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy;
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.kryonet.Server;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.awt.*;
-
-import static com.esotericsoftware.kryonet.rmi.ObjectSpace.registerClasses;
 
 public class Network {
 
@@ -84,6 +83,7 @@ public class Network {
         kryo.register(TreeType.class);
         kryo.register(Fridge.class);
         kryo.register(collisionRect.class);
+        kryo.register(AnimalType.class);
         kryo.register(Point.class);
         kryo.register(com.Graphic.model.MapThings.Walkable.class);
         kryo.register(com.Graphic.model.MapThings.GameObject.class);
@@ -125,6 +125,19 @@ public class Network {
         kryo.register(com.Graphic.model.Plants.Tree.class);
         kryo.register(com.Graphic.model.Plants.AllCrops.class);
         kryo.register(com.Graphic.model.Plants.Animalproduct.class);
+        kryo.register(Quantity.class);
+        kryo.register(AxeType.class);
+        kryo.register(HoeType.class);
+        kryo.register(FishingPoleType.class);
+        kryo.register(MilkPail.class);
+        kryo.register(PickAxeType.class);
+        kryo.register(TrashCanType.class);
+        kryo.register(FishType.class);
+        kryo.register(Wood.class);
+        kryo.register(MarketItemType.class);
+        kryo.register(FishingPoleType.class);
+        kryo.register(AnimalProductType.class);
+        kryo.register(WateringCanType.class);
         kryo.register(com.Graphic.model.Plants.BasicRock.class);
         kryo.register(com.Graphic.model.Plants.Fish.class);
         kryo.register(com.Graphic.model.Plants.Food.class);

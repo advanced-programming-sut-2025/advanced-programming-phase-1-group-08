@@ -256,8 +256,8 @@ public class PlayGameMenu implements Screen, AppMenu {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 HashMap<String, Object> body = new HashMap<>();
                 body.put("id", field.getText());
-                body.put("Player", Main.getClient(null).getPlayer());
-                Main.getClient(null).getRequests().add(new Message(CommandType.NEW_GAME, body));
+                body.put("Player", Main.getClient().getPlayer());
+                Main.getClient().getRequests().add(new Message(CommandType.NEW_GAME, body));
                 field.remove();
             }
         });
@@ -276,8 +276,8 @@ public class PlayGameMenu implements Screen, AppMenu {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 HashMap<String ,Object> body = new HashMap<>();
                 body.put("id", field.getText());
-                body.put("Player" , Main.getClient(null).getPlayer());
-                Main.getClient(null).getRequests().add(new Message(CommandType.JOIN_GAME, body));
+                body.put("Player" , Main.getClient().getPlayer());
+                Main.getClient().getRequests().add(new Message(CommandType.JOIN_GAME, body));
                 field.remove();
             }
         });
@@ -291,7 +291,7 @@ public class PlayGameMenu implements Screen, AppMenu {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
-        if (Main.getClient(null).getCurrentMenu() != Menu.PlayGameMenu) {
+        if (Main.getClient().getCurrentMenu() != Menu.PlayGameMenu) {
             Main.getMain().setScreen(GameMenu.getInstance());
         }
     }

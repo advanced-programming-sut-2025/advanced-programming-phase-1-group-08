@@ -80,7 +80,7 @@ public class Mine extends GameObject {
 
         for (int i = startX; i < startX + width; i++) {
             for (int j = startY; j < startY + height; j++) {
-                if (GameControllerLogic.getTileByCoordinates(i, j , Main.getClient(null).getLocalGameState()).getGameObject().equals(this)) {
+                if (GameControllerLogic.getTileByCoordinates(i, j , Main.getClient().getLocalGameState()).getGameObject().equals(this)) {
 
                     if (j == startY + height - 1 && i == startX + (width / 2)) {
                         return Path = "Places/Mine1.png";

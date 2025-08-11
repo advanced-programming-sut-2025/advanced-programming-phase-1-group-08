@@ -90,7 +90,7 @@ public class ForagingSeeds extends Items {
     public void setStage  () {
 
         int days = 0;
-        DateHour dateHour = Main.getClient(null).getLocalGameState().currentDate.clone();
+        DateHour dateHour = Main.getClient().getLocalGameState().currentDate.clone();
         dateHour.increaseDay(numFertilize);
         int defDays = getDayDifferent(this.birthDay, dateHour);
 
@@ -111,7 +111,7 @@ public class ForagingSeeds extends Items {
         if (item.equals(MarketItemType.QuantityRetainingSoil))
             numFertilize++;
         if (item.equals(MarketItemType.BasicRetainingSoil))
-            lastWater = Main.getClient(null).getLocalGameState().currentDate.clone();
+            lastWater = Main.getClient().getLocalGameState().currentDate.clone();
 
     }
     public void setLastWater (DateHour lastWater) {
@@ -127,7 +127,7 @@ public class ForagingSeeds extends Items {
         if (type.isOneTimeUse())
             delete();
         else
-            lastProduct = Main.getClient(null).getLocalGameState().currentDate.clone();
+            lastProduct = Main.getClient().getLocalGameState().currentDate.clone();
     }
     public void setLastProduct(DateHour lastProduct) {
 
@@ -138,18 +138,18 @@ public class ForagingSeeds extends Items {
 
     public boolean checkForDeath () {
 
-        return getDayDifferent( lastWater, Main.getClient(null).getLocalGameState().currentDate) > 2;
+        return getDayDifferent( lastWater, Main.getClient().getLocalGameState().currentDate) > 2;
     }
     public void checkHaveProduct () {
 
-        DateHour dateHour = Main.getClient(null).getLocalGameState().currentDate.clone();
+        DateHour dateHour = Main.getClient().getLocalGameState().currentDate.clone();
         dateHour.increaseDay(numFertilize);
 
         if (type.isOneTimeUse())
-            this.haveProduct = type.getSeason().contains(Main.getClient(null).getLocalGameState().currentDate.getSeason()) &&
+            this.haveProduct = type.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()) &&
                     stage == type.getGrowthStages();
         else {
-            this.haveProduct = type.getSeason().contains(Main.getClient(null).getLocalGameState().currentDate.getSeason()) &&
+            this.haveProduct = type.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()) &&
                     getDayDifferent(lastProduct, dateHour) > type.getRegrowthTime() &&
                     this.stage == this.type.getGrowthStages();
         }

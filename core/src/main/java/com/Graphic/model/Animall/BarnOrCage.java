@@ -54,7 +54,7 @@ public class BarnOrCage extends GameObject {
         }
         for (int i = topLeftX ; i < topLeftX + barnORCageType.getWidth() ; i++) {
             for (int j = topLeftY ; j < topLeftY + barnORCageType.getHeight() ; j++) {
-                if (GameControllerLogic.getTileByCoordinates(i , j , Main.getClient(null).getLocalGameState()).getGameObject().equals(this)) {
+                if (GameControllerLogic.getTileByCoordinates(i , j , Main.getClient().getLocalGameState()).getGameObject().equals(this)) {
                     int l = barnORCageType.getWidth() * (j - topLeftY) + i - topLeftX + 1;
                     System.out.println(l);
                     return Path = "Places/"+barnORCageType.getName()+l+".png";

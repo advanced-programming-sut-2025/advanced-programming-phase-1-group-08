@@ -1,6 +1,6 @@
 package com.Graphic.model.Plants;
 
-import com.Graphic.model.Enum.ItemType.FishType;
+import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.ItemType.Quantity;
 import com.Graphic.model.Items;

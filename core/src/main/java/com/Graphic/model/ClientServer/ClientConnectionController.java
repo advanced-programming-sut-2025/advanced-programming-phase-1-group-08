@@ -24,8 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
-import static com.Graphic.model.Enum.Commands.CommandType.CHANGE_INVENTORY;
-import static com.Graphic.model.Enum.Commands.CommandType.REDUCE_BARN_CAGE;
+import static com.Graphic.model.Enum.Commands.CommandType.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class ClientConnectionController {
@@ -96,15 +95,14 @@ public class ClientConnectionController {
                 user.setIsInMarket(true);
                 user.setInFarmExterior(false);
                 MarketType market = message.getFromBody("Market");
-                user.setPositionX(market.getInsideDoor().getX());
-                user.setPositionY(market.getInsideDoor().getY());
+                System.out.println(market.getName());
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("Player", user);
                 body.put("Market", market);
                 body.put("X" , market.getInsideDoor().getX());
                 body.put("Y" , market.getInsideDoor().getY());
                 body.put("Is in farm" , false);
-                body.put("Is in Market" , true);
+                body.put("Is in market" , true);
                 sendToAll(new Message(CommandType.ENTER_THE_MARKET , body) , game);
             }
         }
@@ -112,25 +110,26 @@ public class ClientConnectionController {
 
     public static void moveInMarket(Message message , Game game) throws IOException {
         HashMap<String , Object> body = new HashMap<>();
-        for (collisionRect rect : MarketMenu.getInstance().marketType.getRects()) {
+        MarketType marketType = message.getFromBody("Market");
+        for (collisionRect rect : marketType.getRects()) {
             if (! rect.checkCollision(message.getFromBody("X") , message.getFromBody("Y"))) {
                 body.put("Player" , message.getFromBody("Player") );
-                body.put("Timer" , message.getFromBody("Timer"));
+                body.put("Time" , message.getFromBody("Timer"));
                 body.put("Direction" , message.getFromBody("Direction"));
-                sendToAll(message , game);
+                sendToAll(new Message(CAN_NOT_MOVE , body) , game);
                 return;
             }
         }
         body.put("Player" , message.getFromBody("Player") );
-        body.put("Timer" , message.getFromBody("Timer"));
+        body.put("Time" , message.getFromBody("Timer"));
         body.put("Direction" , message.getFromBody("Direction"));
         body.put("X" , message.getFromBody("X"));
         body.put("Y" , message.getFromBody("Y"));
-        sendToAll(message , game);
-        return;
+        sendToAll(new Message(CAN_MOVE , body) , game);
     }
 
     public static Message Buy(Message message , Game game) throws IOException {
+        System.out.println("Buy");
         payForBuy(message , game);
         reduceProductInMarket(message , game);
 
@@ -152,24 +151,20 @@ public class ClientConnectionController {
     }
 
     private static void reduceProductInMarket(Message message , Game game) throws IOException {
-        User Player = message.getFromBody("Player");
         MarketType market = message.getFromBody("Market");
 
-        for (User user : game.getGameState().getPlayers()) {
-            if (user.getUsername().trim().equals(Player.getUsername().trim()))  {
                 Items items = message.getFromBody("Item");
                 items.setRemindInShop(items.getRemindInShop(market) - 1 , market);
 
                 HashMap<String ,Object> body = new HashMap<>();
                 body.put("Item" , items);
-                sendToAll(message , game);
-            }
-        }
+                body.put("Market" , market);
+                sendToAll(new Message(REDUCE_PRODUCT , body) , game);
     }
 
     private static Message addItemToInventory(Message message) throws IOException {
         HashMap<String ,Object> body = new HashMap<>();
-        body.put("Player" , Main.getClient(null).getPlayer());
+        body.put("Player" , message.getFromBody("Player"));
         body.put("Item" , message.getFromBody("Item"));
         body.put("amount" , message.getFromBody("amount"));
         return new Message(CommandType.
@@ -209,12 +204,14 @@ public class ClientConnectionController {
     }
 
     public static ArrayList<Message> BuyBarnCage(Message message , Game game) throws IOException {
+        System.out.println("Buy Barn or cage");
         reduceBarnOrCageInMarket(message , game);
 
         return payForBuilding(message , game);
     }
 
     private static ArrayList<Message> payForBuilding(Message message , Game game) throws IOException {
+        System.out.println("pay for building");
         BarnORCageType barnORCageType = message.getFromBody("BarnOrCageType");
         Point p = message.getFromBody("Point");
         for (int i = p.x ; i < p.x + barnORCageType.getWidth() ; i++) {
@@ -229,7 +226,8 @@ public class ClientConnectionController {
                 user.increaseMoney( - barnORCageType.getPrice());
                 HashMap<String ,Object> body = new HashMap<>();
                 body.put("Player", Player);
-                body.put("Money" , barnORCageType.getPrice());
+                body.put("Money" , - barnORCageType.getPrice());
+                user.BarnOrCages.add((BarnOrCage) getTileByCoordinates(p.x , p.y , game.getGameState()).getGameObject());
                 sendToAll(new Message(CommandType.CHANGE_MONEY , body) , game);
             }
         }
@@ -243,14 +241,15 @@ public class ClientConnectionController {
         body2.put("Item" , new BasicRock());
         body2.put("amount" , - barnORCageType.getStoneNeeded());
         HashMap<String , Object> body3 = new HashMap<>();
-        body3.put("X" , p.getX());
-        body3.put("Y" , p.getY());
-        body.put("BarnOrCage" , getTileByCoordinates(p.x , p.y , game.getGameState()).getGameObject());
+        body3.put("X" , p.x);
+        body3.put("Y" , p.y);
+        body3.put("BarnOrCage" , getTileByCoordinates(p.x , p.y , game.getGameState()).getGameObject());
         body3.put("Player" , message.getFromBody("Player"));
         ArrayList<Message> messages = new ArrayList<>();
         messages.add(new Message(CommandType.CHANGE_INVENTORY, body));
         messages.add(new Message(CommandType.CHANGE_INVENTORY, body2));
-        messages.add(new Message(CommandType.PLACE_BARN_CAGE, body3));
+        sendToAll(new Message(PLACE_BARN_CAGE , body3) , game);
+        //messages.add(new Message(CommandType.PLACE_BARN_CAGE, body3));
 
         return messages;
     }
@@ -260,6 +259,7 @@ public class ClientConnectionController {
         barnOrCage.setRemindInShop(0 , null);
         HashMap<String , Object> body = new HashMap<>();
         body.put("BarnOrCageType" , message.getFromBody("BarnOrCageType"));
+        System.out.println("reduce barn or cage");
         sendToAll(new Message(REDUCE_BARN_CAGE , body) , game);
     }
 
@@ -272,6 +272,7 @@ public class ClientConnectionController {
             if (user.getUsername().trim().equals(player.getUsername().trim())) {
                 for (BarnOrCage barnOrCage1 : user.BarnOrCages) {
                     if (barnOrCage1.equals(barnOrCage)) {
+                        System.out.println("Buy Animal");
                         barnOrCage.animals.add(animal);
                         barnOrCage.animals.getLast().setIndex(barnOrCage.animals.size() - 1);
                         barnOrCage.animals.getLast().setPositionX(barnOrCage.topLeftX + barnOrCage.getBarnORCageType().getDoorX());
@@ -381,7 +382,7 @@ public class ClientConnectionController {
                 if (user.getBackPack().inventory.Items.containsKey(items)) {
                     user.getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
                     if (user.getBackPack().inventory.Items.get(items) == 0) {
-                        Main.getClient(null).getPlayer().getBackPack().inventory.Items.remove(items);
+                        Main.getClient().getPlayer().getBackPack().inventory.Items.remove(items);
                     }
                 }
                 else {
@@ -395,6 +396,21 @@ public class ClientConnectionController {
             }
         }
         return null;
+    }
+
+    public static void ExitTheMarket(Message message , Game game) throws IOException {
+        //MarketType marketType = message.getFromBody("Market");
+        int x = message.getFromBody("X");
+        int y = message.getFromBody("Y");
+        for (User user : game.getGameState().getPlayers()) {
+            if (user.getUsername().trim().equals(message.getFromBody("Player"))) {
+                user.setPositionX((float) x);
+                user.setPositionY((float) y);
+                user.setIsInMarket(false);
+                user.setInFarmExterior(true);
+            }
+        }
+        sendToAll(message , game);
     }
 
     public static void sendToAll(Message message , Game game) throws IOException {

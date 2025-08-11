@@ -1,9 +1,9 @@
 package com.Graphic.model.Enum.ItemType;
 
 import com.Graphic.Main;
+import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.Plants.Fish;
 import com.Graphic.model.Plants.Animalproduct;
-import com.Graphic.model.App;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.Items;
 
@@ -66,7 +66,7 @@ public enum BackPackType {
 
     public int getRemindCapacity() {
         int x=0;
-        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
         Set<FishType> fishTypes=new HashSet<>();
         Set<AnimalProductType> animalProductTypes=new HashSet<>();
         for (Map.Entry < Items , Integer > entry : inventory.Items.entrySet()) {
@@ -81,7 +81,7 @@ public enum BackPackType {
             }
         }
 
-        return Main.getClient(null).getPlayer().getBackPack().getType().getCapacity() - x - fishTypes.size() - animalProductTypes.size() ;
+        return Main.getClient().getPlayer().getBackPack().getType().getCapacity() - x - fishTypes.size() - animalProductTypes.size() ;
     }
 
     public String getPath() {

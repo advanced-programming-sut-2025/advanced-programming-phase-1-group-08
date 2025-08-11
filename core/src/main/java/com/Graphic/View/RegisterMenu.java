@@ -266,7 +266,7 @@ public class RegisterMenu implements Screen, AppMenu {
         registerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Main.getClient(null).getRequests().add(requestForSignup());
+                Main.getClient().getRequests().add(requestForSignup());
             }
         });
 
@@ -288,7 +288,7 @@ public class RegisterMenu implements Screen, AppMenu {
         randomPassButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                  Main.getClient(null).getRequests().add(requestForRandomPass());
+                  Main.getClient().getRequests().add(requestForRandomPass());
                 //String randomPass = RegisterController.generateRandomPass();
 //                passwordField.setText(randomPass);
 //                confirmPasswordField.setText(randomPass);
@@ -408,7 +408,7 @@ public class RegisterMenu implements Screen, AppMenu {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
-        if (Main.getClient(null).getCurrentMenu() != Menu.RegisterMenu) {
+        if (Main.getClient().getCurrentMenu() != Menu.RegisterMenu) {
             Main.getMain().setScreen(new PlayGameMenu());
         }
     }

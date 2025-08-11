@@ -19,16 +19,16 @@ public class ProfileController {
 
 
     public String getUserInfo() {
-        if (Main.getClient(null).getPlayer() == null) {
+        if (Main.getClient().getPlayer() == null) {
             return "No user logged in";
         }
 
         StringBuilder info = new StringBuilder();
-        info.append("Username: ").append(Main.getClient(null).getPlayer().getUsername()).append("\n");
-        info.append("Nickname: ").append(Main.getClient(null).getPlayer().getNickname()).append("\n");
-        info.append("Email: ").append(Main.getClient(null).getPlayer().getEmail()).append("\n");
-        info.append("Most Golds Collected: ").append(Main.getClient(null).getPlayer().getMax_point()).append("\n");
-        info.append("Total Games Played: ").append(Main.getClient(null).getPlayer().getGames_played());
+        info.append("Username: ").append(Main.getClient().getPlayer().getUsername()).append("\n");
+        info.append("Nickname: ").append(Main.getClient().getPlayer().getNickname()).append("\n");
+        info.append("Email: ").append(Main.getClient().getPlayer().getEmail()).append("\n");
+        info.append("Most Golds Collected: ").append(Main.getClient().getPlayer().getMax_point()).append("\n");
+        info.append("Total Games Played: ").append(Main.getClient().getPlayer().getGames_played());
 
         return info.toString();
     }

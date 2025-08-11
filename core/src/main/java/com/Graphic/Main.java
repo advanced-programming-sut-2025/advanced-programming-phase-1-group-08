@@ -38,13 +38,8 @@ public class Main extends Game {
     }
 
     public Main(ClientWork client) {
-        System.out.println("Main Constructor");
         Main.client = client;
-        if (client == null) {
-            System.out.println("Client is null");
-        }
     }
-    //private static InputGameController x;
 
     @Override
     public void create() {
@@ -80,7 +75,7 @@ public class Main extends Game {
         Main.main = main;
     }
 
-    public static synchronized ClientWork getClient(ClientWork c) {
+    public static synchronized ClientWork getClient() {
         return client;
     }
     public static Skin getNewSkin() {

@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -63,16 +64,6 @@ public class ClientConnectionThread extends Thread {
             }
         });
 
-//        while (true) {
-//            try {
-//                Message message = messageQueue.take();
-//                handleMessage(message);
-//            }
-//            catch (Exception e) {
-//                e.printStackTrace();
-//                break;
-//            }
-//        }
         System.out.println("Client disconnected");
     }
 
@@ -116,6 +107,7 @@ public class ClientConnectionThread extends Thread {
                 moveInMarket(message, game);
             }
             case BUY -> {
+                //Buy(message , game);
                 sendMessage(Buy(message , game));
             }
             case BUY_BACKPACK -> {
@@ -125,7 +117,8 @@ public class ClientConnectionThread extends Thread {
                 placeCraftOrShippingBin(message , game);
             }
             case BUY_BARN_CAGE -> {
-                for (Message message1 : BuyBarnCage(message , game)) {
+                ArrayList<Message> messages = BuyBarnCage(message , game);
+                for (Message message1 : messages) {
                     sendMessage(message1);
                 }
             }
@@ -149,6 +142,10 @@ public class ClientConnectionThread extends Thread {
             }
             case CHANGE_INVENTORY -> {
                 sendMessage(changeInventory(message , game));
+            }
+            case EXIT_MARKET -> {
+                System.out.println("Exit");
+                ExitTheMarket(message , game);
             }
             case LOADED_GAME -> {}
 

@@ -58,7 +58,7 @@ public class Lake extends GameObject {
 
         for (int i = topLeftX ; i < topLeftX + width ; i++) {
             for (int j = topLeftY; j < topLeftY + height; j++) {
-                if (GameControllerLogic.getTileByCoordinates(i, j , Main.getClient(null).getLocalGameState()).getGameObject().equals(this)) {
+                if (GameControllerLogic.getTileByCoordinates(i, j , Main.getClient().getLocalGameState()).getGameObject().equals(this)) {
                     int x = width * (j - topLeftY) + i -topLeftX + 1;
                     LakeAnimation.add("Places/Lake1,"+x+".png");
                     LakeAnimation.add("Places/Lake2,"+x+".png");

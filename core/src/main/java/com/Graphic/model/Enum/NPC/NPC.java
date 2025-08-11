@@ -1,6 +1,7 @@
 package com.Graphic.model.Enum.NPC;
 
 import com.Graphic.model.*;
+import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.FoodTypes;
@@ -13,7 +14,6 @@ import com.Graphic.model.OtherItem.BarsAndOres;
 import com.Graphic.model.Places.MarketItem;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.HashMap;

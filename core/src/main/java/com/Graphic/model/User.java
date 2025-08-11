@@ -32,7 +32,6 @@ public class User {
     private List<Recipe> recipes;
 
 
-    public Sprite sprite;
     private ArrayList<String> Right;
     private ArrayList<String> Left;
     private ArrayList<String> Up;
@@ -55,7 +54,15 @@ public class User {
     private BarnOrCage currentBarnOrCage = new BarnOrCage();
     private MarketType currentMarket;
     private Queue<User> joinMarket = new LinkedList<>();
+    private Queue<User> exitMarket = new LinkedList<>();
 
+    public boolean isFishing = false;
+    public boolean doingMinigame = false;
+
+    private User FriendCloseToMe = null;
+    private boolean showUnseenChats = false;
+    private boolean showHugged =  false;
+    private boolean showFlowered = false;
 
     // buffs
     public int Buff_maxEnergy_100_hoursLeft = 0;
@@ -716,5 +723,34 @@ public class User {
     }
     public Queue<User> getJoinMarket() {
         return joinMarket;
+    }
+    public Queue<User> getExitMarket() {
+        return exitMarket;
+    }
+    public void setFriendCloseToMe(User FriendCloseToMe) {
+        this.FriendCloseToMe = FriendCloseToMe;
+    }
+    public User getFriendCloseToMe() {
+        return FriendCloseToMe;
+    }
+    public boolean isShowUnseenChats() {
+        return showUnseenChats;
+    }
+    public void setShowUnseenChats(boolean showUnseenChats) {
+        this.showUnseenChats = showUnseenChats;
+    }
+
+    public boolean isShowHugged() {
+        return showHugged;
+    }
+    public void setShowHugged(boolean showHugged) {
+        this.showHugged = showHugged;
+    }
+
+    public boolean isShowFlowered() {
+        return showFlowered;
+    }
+    public void setShowFlowered(boolean showFlowered) {
+        this.showFlowered = showFlowered;
     }
 }

@@ -1,5 +1,6 @@
 package com.Graphic.View.GameMenus;
 
+
 import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.Marketing;
@@ -8,12 +9,19 @@ import com.Graphic.View.AppMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.AnimalRenderer;
+import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.ClientServer.GameState;
+import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.ClientServer.ServerHandler;
 import com.Graphic.model.Enum.AllPlants.CropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
 import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.*;
+import com.Graphic.model.Enum.Commands.CommandType;
+import com.Graphic.model.Enum.Fish.FishAIController;
+import com.Graphic.model.Enum.Fish.FishType;
+import com.Graphic.model.Enum.ItemType.Quantity;
 import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.NPC.NPCManager;
 
@@ -26,8 +34,9 @@ import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.Lake;
 import com.Graphic.model.Plants.*;
-import com.Graphic.model.ToolsPackage.CraftingItem;
+import com.Graphic.model.ToolsPackage.FishingPole;
 import com.Graphic.model.ToolsPackage.Tools;
+import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -35,6 +44,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -42,22 +52,26 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.Main.newSkin;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
+
 
 public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
@@ -86,18 +100,37 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private boolean initialLake = false;
     private ArrayList<AnimalRenderer> currentBarnOrCageAnimals = new ArrayList<>();
 
+    public boolean showFriendDialog = false;
     private boolean progressComplete = false;
     private boolean ePressed = false;
     private float holdTime = 0f;
     private final float maxHoldTime = 5f;
     private ShapeRenderer shapeRenderer;
+    int shapeRendererLevel = 1;
+    Sprite fishToCatch;
+    Vector2 fishVelocity;
+    Sprite minigame;
+    private final Rectangle minigameArea = new Rectangle();
+    Sprite fishCrown;
+    FishAIController fishAI;
+    FishType fishToCatchType;
+    private float fishingProgress = 0f;
+    Image bobble;
+    boolean lostPerfectFishing = false;
+    boolean showFishLight = false;
+    float showFishLightTimer = 0;
+    HumanCommunications giftingFriendship = null;
 
 
     Texture friendsListTexture;
     TextureRegionDrawable buttonDrawable;
     ImageButton friendButton;
     Dialog friendsListdialog;
+    Label sixtyPlusLabel;
+    Label onePlusLabel;
     ImageButton tempFriend;
+    ImageButton tempFishing;
+    float fishingTimer;
     private Table contextMenu;
     Image bouquetImage;
     Image hugImage;
@@ -106,6 +139,27 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private long dialogExpirationTime = 0;
 
     public static Image helperBackGround;
+
+//    private boolean progressComplete = false;
+//    private boolean ePressed = false;
+//    private float holdTime = 0f;
+//    private final float maxHoldTime = 5f;
+//    private ShapeRenderer shapeRenderer;
+//
+//
+//    Texture friendsListTexture;
+//    TextureRegionDrawable buttonDrawable;
+//    ImageButton friendButton;
+//    Dialog friendsListdialog;
+//    ImageButton tempFriend;
+//    private Table contextMenu;
+//    Image bouquetImage;
+//    Image hugImage;
+//    Image ringImage;
+//    private Dialog activeDialog = null;
+//    private long dialogExpirationTime = 0;
+//
+//    public static Image helperBackGround;
 
     public long startTime;
     public long lastTime;
@@ -121,6 +175,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private Label timeLabel;
     private Label dateLabel;
     private Label weekDayLabel;
+    private DateHour lastDateHour;
 
     private boolean toolsMenuIsActivated;
     private Window toolsPopup;
@@ -129,6 +184,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private Window EscPopup;
 
     private boolean inventoryIsActivated;
+    private boolean dialogActivated;
     private Window inventoryPopup;
 
     private boolean skillMenuIsActivated;
@@ -188,49 +244,50 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
     public void show() {
-        try {
-            controller = InputGameController.getInstance();
-            currentMenu = Menu.GameMenu;
-            initialize();
-            controller.chooseMap();
+        if (! Main.getClient().getLocalGameState().getChooseMap()) {
+            try {
+                controller = InputGameController.getInstance();
+                currentMenu = Menu.GameMenu;
+                initialize();
+                controller.chooseMap();
 
-            controller.init();
-            mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                controller.init();
+                mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+                camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-            multiplexer = new InputMultiplexer();
+                multiplexer = new InputMultiplexer();
 
-            multiplexer.addProcessor(stage);
-            multiplexer.addProcessor(new InputAdapter() {
-                @Override
-                public boolean keyDown(int keycode) {
-                    if (keycode == Input.Keys.E && Food.itemIsEatable(Main.getClient(null).getPlayer().currentItem)) {
-                        ePressed = true;
-                        return true;
+                multiplexer.addProcessor(stage);
+                multiplexer.addProcessor(new InputAdapter() {
+                    @Override
+                    public boolean keyDown(int keycode) {
+                        if (keycode == Input.Keys.E && Food.itemIsEatable(Main.getClient().getPlayer().currentItem)) {
+                            ePressed = true;
+                            return true;
+                        }
+                        return false;
                     }
-                    return false;
-                }
 
-                @Override
-                public boolean keyUp(int keycode) {
-                    if (keycode == Input.Keys.E) {
-                        ePressed = false;
-                        holdTime = 0f;
-                        return true;
+                    @Override
+                    public boolean keyUp(int keycode) {
+                        if (keycode == Input.Keys.E) {
+                            ePressed = false;
+                            holdTime = 0f;
+                            return true;
+                        }
+                        return false;
                     }
-                    return false;
-                }
-            });
+                });
 
-            Gdx.input.setInputProcessor(multiplexer);
+                Gdx.input.setInputProcessor(multiplexer);
 
-            createClock();
-            firstLoad = true;
-            shepherdingAnimals = new ArrayList<>();
-            heartAnimations = new ArrayList<>();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+                createClock();
+                firstLoad = true;
+                shepherdingAnimals = new ArrayList<>();
+                heartAnimations = new ArrayList<>();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -238,46 +295,52 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public void render(float v) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         inputController();
+        if (!Main.getClient().getLocalGameState().currentDate.equals(lastDateHour))
+            updateClock();
         initialLake();
-        if (TimeUtils.millis() - lastTime > hourSecond)
-            updateClock(1);
-
         updateEnergyLabel();
         giftNPCMenu();
-
         Main.getBatch().setProjectionMatrix(camera.combined);
-        gameState = Main.getClient(null).getLocalGameState();
-
-        checkFriendDistance();
+        gameState = Main.getClient().getLocalGameState();
+        if (!Main.getClient().getPlayer().isInFarmExterior()) {
+            getRenderer().setView(camera);
+            getRenderer().render();
+        }
+        User x = null;
+        if ((x = Main.getClient().getPlayer().getFriendCloseToMe()) != null) {
+            printTempFriend(x);
+        }
+        else {
+            tempFriend.setVisible(false);
+        }
         if (activeDialog != null && TimeUtils.millis() > dialogExpirationTime) {
             activeDialog.hide();
             activeDialog.remove();
             activeDialog = null;
         }
-
-        if (Main.getClient(null).getLocalGameState().getChooseMap()) {
+        showUnseenMessages();
+        showHugged();
+        showGivenFlower();
+        if (Main.getClient().getLocalGameState().getChooseMap()) {
             createUserRenderes();
             Main.getBatch().begin();
             controller.update(camera, v, anyMenuIsActivated());
             drawCurrentItem();
-            updateAnimals(Main.getClient(null).getLocalGameState().getAnimals());
+            updateAnimals(Main.getClient().getLocalGameState().getAnimals());
             NPCManager.NPCWalk(v);
             eatingManagement(v);
+            checkLakeDistance(v);
+            lightBeforeFishing(v);
             mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mousePos);
             camera.update();
-            Main.getBatch().end();
-
             changeMenu();
-
-            if (!Main.getClient(null).getPlayer().isInFarmExterior()) {
+            if (Main.getClient().getPlayer().isInMine() || Main.getClient().getPlayer().isInHome()) {
                 getRenderer().setView(camera);
                 getRenderer().render();
             }
 
-            checkFriendDistance();
             if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
                 System.out.println("hi");
                 stage.addActor(activeDialog);
@@ -287,37 +350,229 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+        startFishing(v);
+        Main.getBatch().end();
+    }
+
+    private void lightBeforeFishing(float v) {
+        if (!showFishLight)
+            return;
+
+        showFishLightTimer += v;
+        if (showFishLightTimer > 2.5f) {
+            showFishLightTimer = 0;
+            showFishLight = false;
+        }
+
+
+        Sprite s = new Sprite(new Texture(Gdx.files.internal("Ariyo/light.png")));
+        s.setRegion(TextureManager.get("Ariyo/light.png"));
+        s.setPosition(Main.getClient().getPlayer().getPositionX() - 70, Main.getClient().getPlayer().getPositionY() - 150);
+        s.setSize(s.getWidth()*2, s.getHeight()*2);
+        s.draw(Main.getBatch());
+    }
+    private void checkLakeDistance(float v) {
+        Lake lake = Main.getClient().getPlayer().getFarm().getLake();
+        float lakeY = lake.getTopLeftY();
+        float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
+        Sprite fisherman = new Sprite(TextureManager.get("Ariyo/fisherman.png"));
+
+        if (Main.getClient().getPlayer().doingMinigame) {
+            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
+            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
+            else
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
+            fisherman.draw(Main.getBatch());
+
+            return;
+        }
+
+        fishingTimer += v;
+
+        if (!Main.getClient().getPlayer().isFishing)
+            fishingTimer = 0;
+
+        if (Main.getClient().getPlayer().isFishing && fishingTimer >= 10f) {
+            Main.getClient().getPlayer().doingMinigame = true;
+            shapeRenderer = new ShapeRenderer();
+            createGrayBackGround();
+            fishingTimer = 0;
+            minigame = new Sprite(new Texture(Gdx.files.internal("Ariyo/minigame.png")));
+            minigame.setSize(minigame.getWidth() * 2.5f, minigame.getHeight() * 2.5f);
+            minigame.setRegion(TextureManager.get("Ariyo/minigame.png"));
+
+            Random random = new Random();
+            fishToCatchType = FishType.values()[random.nextInt(FishType.values().length)];
+            fishToCatch = new Sprite(TextureManager.get(fishToCatchType.getIconPath()));
+            fishToCatch.setRegion(TextureManager.get(fishToCatchType.getIconPath()));
+            fishToCatch.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 180);
+            fishToCatch.setSize(fishToCatch.getWidth() * 0.6f, fishToCatch.getHeight() * 0.7f);
+            float verticalSpeed = 50f;
+            float horizontalWiggle = 10f;
+            float dx = (float) (Math.random() * horizontalWiggle * 2 - horizontalWiggle); // بین -10 تا +10
+            float dy = verticalSpeed;
+            fishVelocity = new Vector2(dx, dy);
+
+            if (fishToCatchType.isLegendary()) {
+                fishCrown = new Sprite(TextureManager.get("Ariyo/star.png"));
+                fishCrown.setRegion(TextureManager.get("Ariyo/star.png"));
+                fishCrown.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 190);
+            }
+            else
+                fishCrown = null;
+        }
+
+
+        float myX = Main.getClient().getPlayer().getPositionX();
+        float myY = Main.getClient().getPlayer().getPositionY();
+        float deltaX = Math.abs(myX - lakeX);
+        float deltaY = Math.abs(myY - lakeY);
+        if (!(deltaX < 3f && deltaY < 3f)) {
+            fishingTimer = 0;
+            tempFishing.setVisible(false);
+            return;
+        }
+
+        if (!Main.getClient().getPlayer().isFishing) {
+            tempFishing.setPosition(Main.getClient().getPlayer().getPositionX(), Main.getClient().getPlayer().getPositionY() + 40);
+            tempFishing.draw(Main.getBatch(), 1f);
+        }
+
+
+
+        if (!Main.getClient().getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            boolean havePole = false;
+            Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
+            for (Map.Entry<Items, Integer> entry: inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof FishingPole) {
+                    havePole = true;
+                    break;
+                }
+            }
+            if (!havePole) {
+                showTimedDialog("You Don't Have a Fishing Pole!", 2f);
+                return;
+            }
+
+            showFishLight = true;
+
+            Main.getClient().getPlayer().isFishing = true;
+        }
+        else if (Main.getClient().getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.G)) {
+            Main.getClient().getPlayer().isFishing = false;
+        }
+
+        Texture iconTexture = new Texture(Gdx.files.internal("all image/Farming/Fishing.png"));
+        tempFishing.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
+
+        tempFishing.setVisible(true);
+
+        if (Main.getClient().getPlayer().isFishing) {
+            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
+            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
+            else
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
+            fisherman.draw(Main.getBatch());
+        }
+
 
     }
 
-    private void checkFriendDistance() {
-        boolean someoneClose = false;
+    private void startFishing(float v) {
+        /// THE MINI GAME
 
-//        for (User p : currentGame.players) {
-//            if (p.getUsername().equalsIgnoreCase(Main.getClient(null).getPlayer().getUsername())) continue;
-//
-//            float deltaX = Math.abs((float) Main.getClient(null).getPlayer().getPositionX() - p.getPositionX());
-//            float deltaY = Math.abs((float) Main.getClient(null).getPlayer().getPositionY() - p.getPositionY());
-//            if (deltaY < 3f && deltaX < 3f) {
-//                someoneClose = true;
-//
-//                // تغییر عکس دکمه بر اساس جنسیت
-//                Texture iconTexture;
-//                if (p.getGender().equalsIgnoreCase("man"))
-//                    iconTexture = new Texture("Ariyo/Shane_Icon.png");
-//                else
-//                    iconTexture = new Texture("Ariyo/Sandy_Icon.png");
-//
-//                tempFriend.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
-//
-//                tempFriend.setVisible(true);
-//                break;
-//            }
-//        }
-//
-//        if (!someoneClose) {
-//            tempFriend.setVisible(true);
-//        }
+        if (!Main.getClient().getPlayer().doingMinigame)
+            return;
+
+        float delta = Gdx.graphics.getDeltaTime();
+
+        minigame.setPosition(Main.getClient().getPlayer().getPositionX(), Main.getClient().getPlayer().getPositionY() - minigame.getHeight()/2f);
+        minigame.draw(Main.getBatch());
+
+        minigameArea.set(
+            Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f,
+            Main.getClient().getPlayer().getPositionY() - 180,
+            30,
+            360
+        );
+
+        Main.getBatch().end();
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 1, 0, 0.5f);
+        if (shapeRendererLevel == 0)
+            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY() - 180, 30, 60);
+        else if (shapeRendererLevel == 1)
+            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY() - 120, 30, 60);
+        else if (shapeRendererLevel == 2)
+            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY() - 60, 30, 60);
+        else if (shapeRendererLevel == 3)
+            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY(), 30, 60);
+        else if (shapeRendererLevel == 4)
+            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY() + 60, 30, 60);
+        else if (shapeRendererLevel == 5)
+            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY() + 120, 30, 60);
+        shapeRenderer.end();
+
+
+        Rectangle greenBarBounds = new Rectangle(
+            Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f,
+            Main.getClient().getPlayer().getPositionY() - 180 + 60 * shapeRendererLevel,
+            30,
+            60
+        );
+
+
+
+        //only if you got the fish
+        Random random = new Random();
+        Quantity quantity = Quantity.values()[random.nextInt(Quantity.values().length)];
+        if (!perfect) {
+            HashMap<String , Object> body = new HashMap<>();
+            body.put("Item" , new Fish(fishToCatchType, quantity));
+            body.put("amount" , 1);
+            body.put("Player" , Main.getClient().getPlayer());
+            Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+            return;
+        }
+
+        //only if perfect
+        HashMap<String , Object> body = new HashMap<>();
+        if (quantity.equals(Quantity.Normal)) {
+            body.put("Item" , new Fish(fishToCatchType, Quantity.Normal));
+        }
+        else {
+            if (quantity == Quantity.Silver) {
+                body.put("Item" , new Fish(fishToCatchType, Quantity.Silver));
+            } else {
+                body.put("Item" , new Fish(fishToCatchType, Quantity.Iridium));
+            }
+        }
+        body.put("amount" , 1);
+        body.put("Player" , Main.getClient().getPlayer());
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+
+        HashMap<String , Object> body2 = new HashMap<>();
+        body2.put("Ability", "Fishing");
+        body2.put("times", 2.4);
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_ABILITY_LEVEL, body));
+    }
+
+
+    private void printTempFriend(User p) {
+
+        Texture iconTexture;
+        if (p.getGender().equalsIgnoreCase("man"))
+            iconTexture = new Texture("Ariyo/Shane_Icon.png");
+        else
+            iconTexture = new Texture("Ariyo/Sandy_Icon.png");
+
+        tempFriend.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
+
+        tempFriend.setVisible(true);
     }
 
     public void eatingManagement(float delta) {
@@ -332,9 +587,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             if (progress >= 1f && !progressComplete) {
                 progressComplete = true;
-                Result result = eatFood(Main.getClient(null).getPlayer().currentItem.getName());
+                Result result = eatFood(Main.getClient().getPlayer().currentItem.getName());
                 showTimedDialog(result.massage(), 2f);
-                Main.getClient(null).getPlayer().currentItem = null;
+                Main.getClient().getPlayer().currentItem = null;
             }
 
         } else {
@@ -361,79 +616,206 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         shapeRenderer.end();
     }
 
+    private void showUnseenMessages() {
+        if (!Main.getClient().getPlayer().isShowUnseenChats())
+            return;
+
+        StringBuilder message = new StringBuilder();
+        message.append("YOU HAVE UNSEEN MESSAGES\n\n");
+
+        List<MessageHandling> list = new ArrayList<>();
+
+        for (Map.Entry<Set<User>, List<MessageHandling>> c: Main.getClient().getLocalGameState().conversations.entrySet()) {
+            for (MessageHandling m: c.getValue()) {
+                if (m.contains(Main.getClient().getPlayer()) && !m.isSeen()) {
+                    m.setSeen(true);
+
+                    list.add(m);
+
+                    message.append(m.getSender().getUsername()).append(" -> ").append(m.getReceiver().getUsername()).append(" :\n").append(m.getText()).append("\n\n");
+                }
+            }
+        }
+
+        if (list.isEmpty()) {
+            return;
+        }
+
+        String result = message.toString();
+
+
+
+        final Dialog dialog = new Dialog("", newSkin);
+        dialog.setModal(true);
+        dialog.setMovable(true);
+        Label title = new Label("", newSkin);
+        dialog.getContentTable().add(title).padBottom(8).row();
+        final TextArea textArea = new TextArea(result, newSkin);
+        textArea.setPrefRows(6);
+        dialog.getContentTable().add(textArea).width(400).height(150).padBottom(8).row();
+        TextButton okButton = new TextButton("OK", newSkin);
+        okButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("Player", Main.getClient().getPlayer());
+                body.put("List", list);
+                Main.getClient().getRequests().add(new Message(CommandType.SET_SEEN_MESSAGE, body));
+
+                dialog.remove();
+            }
+        });
+        dialog.key(com.badlogic.gdx.Input.Keys.ESCAPE, true);
+        dialog.show(stage);
+        dialog.pack();
+        dialog.setPosition(
+            (Gdx.graphics.getWidth() - dialog.getWidth()) / 2f,
+            (Gdx.graphics.getHeight() - dialog.getHeight()) / 2f
+        );
+
+
+        Main.getClient().getPlayer().setShowUnseenChats(false);
+    }
+    private void showHugged() {
+        if (!Main.getClient().getPlayer().isShowHugged())
+            return;
+
+        hugImage.addAction(Actions.sequence(
+            Actions.alpha(0f),
+            Actions.fadeIn(0.3f),
+            Actions.delay(1f),
+            Actions.fadeOut(0.5f)
+        ));
+        sixtyPlusLabel.addAction(Actions.sequence(
+            Actions.alpha(0f),
+            Actions.fadeIn(0.3f),
+            Actions.delay(1f),
+            Actions.fadeOut(0.5f)
+        ));
+
+        Main.getClient().getPlayer().setShowHugged(false);
+    }
+
+    private void showGivenFlower() {
+        if (!Main.getClient().getPlayer().isShowFlowered())
+            return;
+
+        bouquetImage.addAction(Actions.sequence(
+            Actions.alpha(0f),
+            Actions.fadeIn(0.3f),
+            Actions.delay(1f),
+            Actions.fadeOut(0.5f)
+        ));
+
+
+        onePlusLabel.addAction(Actions.sequence(
+            Actions.alpha(0f),
+            Actions.fadeIn(0.3f),
+            Actions.delay(1f),
+            Actions.fadeOut(0.5f)
+        ));
+
+        Main.getClient().getPlayer().setShowFlowered(false);
+    }
+
     private Dialog makingInteractionDialog() {
         Dialog interactionDialog = new Dialog("", newSkin);
+        dialogActivated = true;
+        User me = Main.getClient().getPlayer();
 
-        User me = Main.getClient(null).getPlayer();
-        User other = null;
-//        for (User p : currentGame.players) {
-//            if (p.getUsername().equalsIgnoreCase(me.getUsername())) continue;
-//
-//            float deltaX = Math.abs((float) Main.getClient(null).getPlayer().getPositionX() - p.getPositionX());
-//            float deltaY = Math.abs((float) Main.getClient(null).getPlayer().getPositionY() - p.getPositionY());
-//            if (deltaY < 3f && deltaX < 3f) {
-//                other = p;
-//                break;
-//            }
-//        }
+        User p = Main.getClient().getPlayer().getFriendCloseToMe();
+        if (p == null) return interactionDialog;
 
-        User finalOther = other;
-        interactionDialog.button("Send Flower").addListener(new ClickListener() {
+
+        // ساختن دکمه‌ها دستی
+        TextButton flowerButton = new TextButton("Send Flower", newSkin);
+        flowerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
-                if (getFriendship(me, finalOther) != null) {
-                    result = giveFlowers(finalOther.getUsername());
-                    // fade in -> wait 1s -> fade out
-                    if (result.IsSuccess())
+                if (ClientWorkController.getInstance().getFriendship(me, p) != null) {
+                    interactionDialog.remove();
+                    dialogActivated = false;
+
+                    result = giveFlowers(p.getUsername());
+                    if (result.IsSuccess()) {
                         bouquetImage.addAction(Actions.sequence(
                             Actions.alpha(0f),
                             Actions.fadeIn(0.3f),
                             Actions.delay(1f),
                             Actions.fadeOut(0.5f)
                         ));
-                    else {
+
+
+
+                        if (ClientWorkController.getInstance().getFriendship(me, p) != null && ClientWorkController.getInstance().getFriendship(me, p).getLevel() < 3)
+                            onePlusLabel.addAction(Actions.sequence(
+                                Actions.alpha(0f),
+                                Actions.fadeIn(0.3f),
+                                Actions.delay(1f),
+                                Actions.fadeOut(0.5f)
+                            ));
+                    } else {
                         showTimedDialog(result.massage(), 2f);
                     }
                 }
             }
         });
-        User finalOther1 = other;
-        interactionDialog.button("Hug").addListener(new ClickListener() {
+
+        TextButton hugButton = new TextButton("Hug", newSkin);
+        hugButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                HashMap<String, Object> body = new HashMap<>();
+                Main.getClient().getRequests().add(new Message(CommandType.FriendshipsInquiry, body));
+
                 Result result;
-                if (getFriendship(me, finalOther1) != null) {
-                    result = hug(finalOther1.getUsername());
-                    if (result.IsSuccess())
+                if (ClientWorkController.getInstance().getFriendship(me, p) != null) {
+                    interactionDialog.remove();
+                    dialogActivated = false;
+
+                    result = hug(p.getUsername());
+                    if (result.IsSuccess()) {
                         hugImage.addAction(Actions.sequence(
                             Actions.alpha(0f),
                             Actions.fadeIn(0.3f),
                             Actions.delay(1f),
                             Actions.fadeOut(0.5f)
                         ));
-                    else {
+                        sixtyPlusLabel.addAction(Actions.sequence(
+                            Actions.alpha(0f),
+                            Actions.fadeIn(0.3f),
+                            Actions.delay(1f),
+                            Actions.fadeOut(0.5f)
+                        ));
+
+                    } else {
                         showTimedDialog(result.massage(), 2f);
                     }
                 }
             }
         });
-        User finalOther2 = other;
-        interactionDialog.button("Talk").addListener(new ClickListener() {
+
+        TextButton talkButton = new TextButton("Talk", newSkin);
+        talkButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                talking(finalOther2.getUsername(), result -> {
+                HashMap<String, Object> body = new HashMap<>();
+                Main.getClient().getRequests().add(new Message(CommandType.FriendshipsInquiry, body));
+
+                talking(p.getUsername(), result -> {
                     showTimedDialog(result.massage(), 2f);
                 });
             }
         });
-        User finalOther3 = other;
-        interactionDialog.button("Propose").addListener(new ClickListener() {
+
+        TextButton proposeButton = new TextButton("Propose", newSkin);
+        proposeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Result result;
-                if (getFriendship(me, finalOther3) != null) {
-                    result = propose(finalOther3.getUsername());
+                if (ClientWorkController.getInstance().getFriendship(me, p) != null) {
+                    result = propose(p.getUsername());
                     if (result.IsSuccess()) {
                         ringImage.addAction(Actions.sequence(
                             Actions.alpha(0f),
@@ -448,28 +830,67 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
         });
 
+        TextButton back = new TextButton("Back", newSkin);
+        back.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                interactionDialog.remove();
+                dialogActivated = false;
+            }
+        });
+
+
+
+        // اضافه کردن دکمه‌ها به دیالوگ
+        Table buttonTable = interactionDialog.getButtonTable();
+        buttonTable.pad(10);
+        buttonTable.add(flowerButton).pad(5);
+        buttonTable.row();
+        buttonTable.add(hugButton).pad(5);
+        buttonTable.row();
+        buttonTable.add(talkButton).pad(5);
+        buttonTable.row();
+        buttonTable.add(proposeButton).pad(5);
+        buttonTable.row();
+        buttonTable.row();
+        buttonTable.add(back).pad(20);
 
         return interactionDialog;
     }
 
-    private Dialog makingFriendDialog() {
+    private void giftingInventory() {
+        if (giftingFriendship == null)
+            return;
+
+        if (giftingFriendship.getPlayer1().getUsername().equals(Main.getClient().getPlayer().getUsername())) {
+            sendGifts(giftingFriendship, giftingFriendship.getPlayer1().getUsername());
+        }
+        else if (giftingFriendship.getPlayer2().getUsername().equals(Main.getClient().getPlayer().getUsername())) {
+            sendGifts(giftingFriendship, giftingFriendship.getPlayer2().getUsername());
+        }
+        Main.getClient().getPlayer().currentItem = null;
+        giftingFriendship = null;
+    }
+    public Dialog makingFriendDialog() {
         friendsListdialog = new Dialog("", newSkin);
         friendsListdialog.setModal(true);
         friendsListdialog.setMovable(true);
-
+        dialogActivated = true;
         Table friendTable = new Table();
         friendTable.top().left().pad(10);
 
 
-        String targetName = Main.getClient(null).getPlayer().getUsername();
+        String targetName = Main.getClient().getPlayer().getUsername();
         User friendUser;
 
-        for (HumanCommunications f : currentGame.friendships) {
+        for (HumanCommunications f : Main.getClient().getLocalGameState().friendships) {
             if (f.getPlayer1().getUsername().equals(targetName)) {
                 friendUser = f.getPlayer2();
-            } else if (f.getPlayer2().getUsername().equals(targetName)) {
+            }
+            else if (f.getPlayer2().getUsername().equals(targetName)) {
                 friendUser = f.getPlayer1();
-            } else continue;
+            }
+            else continue;
 
             // ستون 1: عکس پروفایل
             Texture avatarTexture;
@@ -501,9 +922,27 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             giftButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    System.out.println("Sending Gift to " + finalFriendUser.getNickname());
+                    giftingFriendship = f;
+                    createInventory();
+                    dialogActivated = false;
+                    giftingInventory();
                 }
             });
+            giftButton.addListener(new InputListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    giftButton.setColor(1, 1, 1, 0.5f);
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    giftButton.setColor(1, 1, 1, 1f);
+                }
+            });
+
+
+
+            System.out.println(f.printInfo());
 
             // اضافه کردن به ردیف جدول
             friendTable.row().pad(5);
@@ -517,14 +956,23 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         scrollPane.setFadeScrollBars(false);
 
         friendsListdialog.getContentTable().add(scrollPane).width(450).height(250).pad(10);
-        friendsListdialog.button("CLOSE");
+        friendsListdialog.button("CLOSE").addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                dialogActivated = false;
+            }
+        });
 
         return friendsListdialog;
     }
 
     public void showTimedDialog(String message, float durationSeconds) {
         activeDialog = new Dialog("", newSkin);
-        activeDialog.text(message);
+        Label.LabelStyle whiteStyle = new Label.LabelStyle(newSkin.get(Label.LabelStyle.class));
+        whiteStyle.fontColor = Color.WHITE;
+
+        Label label = new Label(message, whiteStyle);
+        activeDialog.getContentTable().add(label).pad(10);
         activeDialog.pack();
         activeDialog.setPosition(
             (Gdx.graphics.getWidth() - activeDialog.getWidth()) / 2,
@@ -535,6 +983,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         dialogExpirationTime = TimeUtils.millis() + (long) (durationSeconds * 1000);
     }
+
+
+
 
     //  //  //  //   Erfan
     private void initialize() {
@@ -630,6 +1081,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         startRotation = false;
 
         //Mohamadreza
+        initializePlayer();
     }
 
     private void inputController() {
@@ -666,16 +1118,16 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     )
                 );
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-//                User temp = Main.getClient(null).getPlayer();
+//                User temp = Main.getClient().getPlayer();
 //                ArrayList<User> list = currentGame.players;
 //                if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
-//                    Main.getClient(null).getPlayer() = list.get(0);
+//                    Main.getClient().getPlayer() = list.get(0);
 //                    return;
 //                }
 //                boolean found = false;
 //                for (User user : list) {
 //                    if (found) {
-//                        Main.getClient(null).getPlayer() = user;
+//                        Main.getClient().getPlayer() = user;
 //                        return;
 //                    }
 //                    if (user.getUsername().equals(temp.getUsername())) {
@@ -689,10 +1141,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
                 ExitOfMenu();
-            else if (Gdx.input.isKeyJustPressed(Keys.delete) && Main.getClient(null).getPlayer().currentItem != null) {
+            else if (Gdx.input.isKeyJustPressed(Keys.delete) && Main.getClient().getPlayer().currentItem != null) {
                 GameControllerLogic.advanceItem(
-                    Main.getClient(null).getPlayer().currentItem,
-                    -Main.getClient(null).getPlayer().getBackPack().inventory.Items.get(Main.getClient(null).getPlayer().currentItem));
+                    Main.getClient().getPlayer().currentItem,
+                    -Main.getClient().getPlayer().getBackPack().inventory.Items.get(Main.getClient().getPlayer().currentItem));
                 ExitOfMenu();
                 createInventory();
             }
@@ -741,8 +1193,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         if (waitingForGiftItemSelection && !inventoryIsActivated) {
 
-            if (Main.getClient(null).getPlayer().currentItem != null)
-                controller.giftNPC(Main.getClient(null).getPlayer().currentItem, stage, npc);
+            if (Main.getClient().getPlayer().currentItem != null)
+                controller.giftNPC(Main.getClient().getPlayer().currentItem, stage, npc);
             else {
                 Dialog dialog = Marketing.getInstance().createDialogError();
                 final Label tooltipLabel = new Label("Firs you must select Item", newSkin);
@@ -898,12 +1350,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
 
         TextButton voteKickButton = new TextButton(" Vote to Kick Player", newSkin);
-        //voteKickButton.setDisabled(!Main.getClient(null).getPlayer().equals(currentUser));
+        //voteKickButton.setDisabled(!Main.getClient().getPlayer().equals(currentUser));
 
         voteKickButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (true/*!Main.getClient(null).getPlayer().equals(currentUser)*/) return;
+                if (true/*!Main.getClient().getPlayer().equals(currentUser)*/) return;
 
                 Window kickWindow = new Window("Select Player to Kick", newSkin);
                 kickWindow.setSize(300, 250);
@@ -1187,13 +1639,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private void updateEnergyLabel () {
 
-        int currentHealth = Main.getClient(null).getPlayer().getHealth();
+        int currentHealth = Main.getClient().getPlayer().getHealth();
         if (currentHealth != lastHealth) {
 
-            energyLabel.setText("Energy : " + Main.getClient(null).getPlayer().getHealth());
+            energyLabel.setText("Energy : " + Main.getClient().getPlayer().getHealth());
             Label.LabelStyle style = energyLabel.getStyle();
 
-            if (Main.getClient(null).getPlayer().getHealth() <= 20)
+            if (Main.getClient().getPlayer().getHealth() <= 20)
                 style.fontColor = Color.RED;
             else
                 style.fontColor = Color.GREEN;
@@ -1205,14 +1657,14 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private void handleLeftClick () {
         useCurrentItem();
         Direction direction = Direction.getDirByCord(
-            Main.getClient(null).getPlayer().getPositionX(),
-            90 - Main.getClient(null).getPlayer().getPositionY(),
+            Main.getClient().getPlayer().getPositionX(),
+            90 - Main.getClient().getPlayer().getPositionY(),
             getVector().x, 90 - getVector().y
         );
         if (direction != null) {
 
             int dir = 0;
-            Items items = Main.getClient(null).getPlayer().currentItem;
+            Items items = Main.getClient().getPlayer().currentItem;
             switch (direction) {
 
                 case Up -> dir = 3;
@@ -1222,7 +1674,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
             if (dir != 0) {
                 if (items instanceof Tools) {
-                    Main.getClient(null).getPlayer().currentTool = (Tools) items;
+                    Main.getClient().getPlayer().currentTool = (Tools) items;
                     controller.useTools(dir);
                 }
                 else if (items instanceof TreeSource)
@@ -1259,7 +1711,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     try {
                         int energy = Integer.parseInt(inputText);
 
-                        Main.getClient(null).getPlayer().setHealth(energy);
+                        Main.getClient().getPlayer().setHealth(energy);
 
                         setEnergyPopup.remove();
                         setEnergyIsActivated = false;
@@ -1288,7 +1740,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         createGrayBackGround();
 
         HashMap<String, String> availableTools = controller.availableTools();
-        Items currentItem = Main.getClient(null).getPlayer().currentItem;
+        Items currentItem = Main.getClient().getPlayer().currentItem;
 
         int colNumber = availableTools.size() / 2 + 1;
 
@@ -1380,7 +1832,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             public void clicked(InputEvent event, float x, float y) {
 
                 if (currentItem != null && currentItem.getName().equals(toolName))
-                    Main.getClient(null).getPlayer().currentItem = null;
+                    Main.getClient().getPlayer().currentItem = null;
                 else
                     controller.itemEquip(toolName);
 
@@ -1500,84 +1952,84 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private void createClock() {
 
-//        Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
-//
-//        ArrayList<Label> labels = new ArrayList<>();
-//        labels.add(timeLabel);
-//        labels.add(dateLabel);
-//        labels.add(moneyLabel);
-//        labels.add(weekDayLabel);
-//
-//        Label.LabelStyle labelStyle = new Label.LabelStyle();
-//        labelStyle.font = GameAssetManager.getGameAssetManager().getSmallFont();
-//
-//        Label.LabelStyle labelStyle2 = new Label.LabelStyle();
-//        labelStyle2.font = GameAssetManager.getGameAssetManager().getFont3();
-//
-//
-//
-//        timeLabel.setText(currentGame.currentDate.getHour() + ":00");
-//        dateLabel.setText(currentGame.currentDate.getDate());
-//        weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
-//
-//        String moneyStr = String.valueOf(Main.getClient(null).getPlayer().getMoney());
-//        String spaced = String.join(" ", moneyStr.split(""));
-//        moneyLabel.setText(spaced);
-//
-//
-//        for (Label l : labels) {
-//            l.setColor(Color.BLACK);
-//            l.setStyle(labelStyle2);
-//        }
-//        moneyLabel.setStyle(labelStyle);
-//
-//        clockGroup.addActor(image);
-//
-//        for (Label l : labels)
-//            clockGroup.addActor(l);
-//
-//
-//        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 48);
-//        weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 80, dateLabel.getY() + 3);
-//        setCenteredPosition(timeLabel, weekDayLabel.getX() + 10, weekDayLabel.getY() - 95);
-//        moneyLabel.setPosition(timeLabel.getX() + 45 - moneyLabel.getWidth(), timeLabel.getY() - 78);
-//
-//
-//        seasonImage = new Image(TextureManager.get(currentGame.currentDate.getSeason().getIconPath()));
-//        seasonImage.setSize(200,220);
-//        seasonImage.setPosition(image.getWidth()- seasonImage.getWidth() + 47, image.getHeight() - seasonImage.getHeight() + 30);
-//        clockGroup.addActor(seasonImage);
-//
-//        weatherImage = new Image(TextureManager.get(currentGame.currentWeather.getIconPath()));
-//        weatherImage.setSize(200,220);
-//        weatherImage.setPosition(image.getWidth()- weatherImage.getWidth() - 47, image.getHeight() - weatherImage.getHeight() + 30);
-//        clockGroup.addActor(weatherImage);
-//
-//
-//        float screenWidth = stage.getViewport().getWorldWidth();
-//        float screenHeight = stage.getViewport().getWorldHeight();
-//
-//        clockGroup.setSize(image.getWidth(), image.getHeight());
-//
-//        clockGroup.setPosition(
-//            screenWidth - clockGroup.getWidth() - 10,
-//            screenHeight - clockGroup.getHeight() - 10);
-//
-//        stage.addActor(clockGroup);
-    }
-    private void updateClock(int hourPassed) {
+        Image image = new Image(TextureManager.get(GameTexturePath.Clock.getPath()));
 
-//        passedOfTime(0, hourPassed);
-//        timeLabel.setText(currentGame.currentDate.getHour() + ":00");
-//        dateLabel.setText(currentGame.currentDate.getDate());
-//        weekDayLabel.setText(currentGame.currentDate.getDayOfTheWeek().name());
-//        Texture newTexture = TextureManager.get(currentGame.currentDate.getSeason().getIconPath());
-//        seasonImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
-//        Texture newTexture1 = TextureManager.get(currentGame.currentWeather.getIconPath());
-//        weatherImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture1)));
-//        lastTime = TimeUtils.millis();
+        ArrayList<Label> labels = new ArrayList<>();
+        labels.add(timeLabel);
+        labels.add(dateLabel);
+        labels.add(moneyLabel);
+        labels.add(weekDayLabel);
 
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = GameAssetManager.getGameAssetManager().getSmallFont();
+
+        Label.LabelStyle labelStyle2 = new Label.LabelStyle();
+        labelStyle2.font = GameAssetManager.getGameAssetManager().getFont3();
+
+
+
+        timeLabel.setText(Main.getClient().getLocalGameState().currentDate.getHour() + ":00");
+        dateLabel.setText(Main.getClient().getLocalGameState().currentDate.getDate());
+        weekDayLabel.setText(Main.getClient().getLocalGameState().currentDate.getDayOfTheWeek().name());
+
+        String moneyStr = String.valueOf(Main.getClient().getPlayer().getMoney());
+        String spaced = String.join(" ", moneyStr.split(""));
+        moneyLabel.setText(spaced);
+
+
+        for (Label l : labels) {
+            l.setColor(Color.BLACK);
+            l.setStyle(labelStyle2);
+        }
+        moneyLabel.setStyle(labelStyle);
+
+        clockGroup.addActor(image);
+
+        for (Label l : labels)
+            clockGroup.addActor(l);
+
+
+        dateLabel.setPosition(image.getWidth() - dateLabel.getWidth() - 70, image.getHeight() - dateLabel.getHeight() - 48);
+        weekDayLabel.setPosition(dateLabel.getX() - weekDayLabel.getWidth() - 80, dateLabel.getY() + 3);
+        setCenteredPosition(timeLabel, weekDayLabel.getX() + 10, weekDayLabel.getY() - 95);
+        moneyLabel.setPosition(timeLabel.getX() + 45 - moneyLabel.getWidth(), timeLabel.getY() - 78);
+
+
+        seasonImage = new Image(TextureManager.get(Main.getClient().getLocalGameState().currentDate.getSeason().getIconPath()));
+        seasonImage.setSize(200,220);
+        seasonImage.setPosition(image.getWidth()- seasonImage.getWidth() + 47, image.getHeight() - seasonImage.getHeight() + 30);
+        clockGroup.addActor(seasonImage);
+
+        weatherImage = new Image(TextureManager.get(Main.getClient().getLocalGameState().currentWeather.getIconPath()));
+        weatherImage.setSize(200,220);
+        weatherImage.setPosition(image.getWidth()- weatherImage.getWidth() - 47, image.getHeight() - weatherImage.getHeight() + 30);
+        clockGroup.addActor(weatherImage);
+
+
+        float screenWidth = stage.getViewport().getWorldWidth();
+        float screenHeight = stage.getViewport().getWorldHeight();
+
+        clockGroup.setSize(image.getWidth(), image.getHeight());
+
+        clockGroup.setPosition(
+            screenWidth - clockGroup.getWidth() - 10,
+            screenHeight - clockGroup.getHeight() - 10);
+
+        stage.addActor(clockGroup);
     }
+    private void updateClock() {
+
+        timeLabel.setText(Main.getClient().getLocalGameState().currentDate.getHour() + ":00");
+        dateLabel.setText(Main.getClient().getLocalGameState().currentDate.getDate());
+        weekDayLabel.setText(Main.getClient().getLocalGameState().currentDate.getDayOfTheWeek().name());
+        Texture newTexture = TextureManager.get(Main.getClient().getLocalGameState().currentDate.getSeason().getIconPath());
+        seasonImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture)));
+        Texture newTexture1 = TextureManager.get(Main.getClient().getLocalGameState().currentWeather.getIconPath());
+        weatherImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture1)));
+
+        lastDateHour = Main.getClient().getLocalGameState().currentDate.clone();
+    }
+
 
     private void createEscMenu () {
 
@@ -1658,10 +2110,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private void drawCurrentItem() {
 
-        Items currentItem = Main.getClient(null).getPlayer().currentItem;
+        Items currentItem = Main.getClient().getPlayer().currentItem;
         if (currentItem == null) return;
 
-        Direction direction = Main.getClient(null).getPlayer().getDirection();
+        Direction direction = Main.getClient().getPlayer().getDirection();
         float x = getXForHands(direction), y = getYForHands(direction);
 
         if (currentItemSprite == null || !currentItemSprite.getTexture().equals(TextureManager.get(currentItem.getInventoryIconPath()))) {
@@ -1686,7 +2138,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         currentItemSprite.draw(Main.getBatch());
     }
     private void useCurrentItem() {
-        Items currentItem = Main.getClient(null).getPlayer().currentItem;
+        Items currentItem = Main.getClient().getPlayer().currentItem;
 
         if (!(currentItem instanceof Tools)) return;
 
@@ -1712,17 +2164,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private float getYForHands(Direction direction) {
 
         if (direction == Direction.Up)
-            return (90 - Main.getClient(null).getPlayer().getPositionY()) * TEXTURE_SIZE + 12;
+            return (90 - Main.getClient().getPlayer().getPositionY()) * TEXTURE_SIZE + 12;
 
-        return (90 - Main.getClient(null).getPlayer().getPositionY()) * TEXTURE_SIZE + 8;
+        return (90 - Main.getClient().getPlayer().getPositionY()) * TEXTURE_SIZE + 8;
     }
     private float getXForHands(Direction direction) {
 
         return switch (direction) {
-            case Right -> Main.getClient(null).getPlayer().getPositionX() * TEXTURE_SIZE + 20;
-            case Left -> Main.getClient(null).getPlayer().getPositionX() * TEXTURE_SIZE - 10;
-            case Up -> Main.getClient(null).getPlayer().getPositionX() * TEXTURE_SIZE + 25;
-            case Down -> Main.getClient(null).getPlayer().getPositionX() * TEXTURE_SIZE + 23;
+            case Right -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE + 20;
+            case Left -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE - 10;
+            case Up -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE + 25;
+            case Down -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE + 23;
         };
     }
 
@@ -1760,7 +2212,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         content.setPosition(300, 300);
         content.padLeft(50);
 
-        Inventory inventory = Main.getClient(null).getPlayer().getBackPack().inventory;
+        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
 
         int number = 0;
 
@@ -1774,7 +2226,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
 
-            Items currentItem = Main.getClient(null).getPlayer().currentItem;
+            Items currentItem = Main.getClient().getPlayer().currentItem;
             boolean isCurrent = currentItem != null && item.getName().equals(currentItem.getName());
 
             if (isCurrent) {
@@ -1809,7 +2261,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 public void clicked(InputEvent event, float x, float y) {
 
                     if (currentItem != null && currentItem.getName().equals(item.getName()))
-                        Main.getClient(null).getPlayer().currentItem = null;
+                        Main.getClient().getPlayer().currentItem = null;
                     else
                         controller.itemEquip(item.getName());
 
@@ -1839,8 +2291,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private void createCurrentItem (Table content) {
 
         Image img;
-        if (Main.getClient(null).getPlayer().currentItem != null)
-            img = new Image(TextureManager.get(Main.getClient(null).getPlayer().currentItem.getInventoryIconPath()));
+        if (Main.getClient().getPlayer().currentItem != null)
+            img = new Image(TextureManager.get(Main.getClient().getPlayer().currentItem.getInventoryIconPath()));
         else
             img = new Image(TextureManager.get("Erfan/Cancel2.png"));
 
@@ -1883,7 +2335,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             content.add(new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get(npc1.getIconPath())))));
 
             Label nameLabel = new Label("Friendship Level with " + npc1.getName() +
-                " : " + Main.getClient(null).getPlayer().getFriendshipLevel(npc1), newSkin);
+                " : " + Main.getClient().getPlayer().getFriendshipLevel(npc1), newSkin);
 
             Label.LabelStyle copiedStyle = new Label.LabelStyle(nameLabel.getStyle());
             copiedStyle.fontColor = Color.GRAY;
@@ -1957,10 +2409,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             vector = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         }
         vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
-        if (currentMenu.getMenu().equals(gameMenu)) {
+        if (Main.getClient().getCurrentMenu().getMenu() instanceof GameMenu) {
             camera.unproject(vector);
         }
-        if (currentMenu.getMenu().equals(MarketMenu.getInstance())) {
+        if (Main.getClient().getCurrentMenu().getMenu() instanceof MarketMenu) {
             return MarketMenu.getVector();
         }
         return vector;
@@ -1972,8 +2424,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         return animalRenderers;
     }
     public void changeMenu() {
-        if (Main.getClient(null).getCurrentMenu() != Menu.GameMenu) {
-            Main.getMain().setScreen(Main.getClient(null).getCurrentMenu().getScreen());
+        if (Main.getClient().getCurrentMenu() != Menu.GameMenu) {
+            System.out.println("yes");
+            Main.getMain().setScreen(Main.getClient().getCurrentMenu().getScreen());
         }
     }
     public ArrayList<CraftingRenderer> getCraftingRenderers() {
@@ -1992,9 +2445,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         this.withMouse = withMouse;
     }
     public void initialLake() {
-        if (Main.getClient(null).getLocalGameState().getChooseMap()) {
+        if (Main.getClient().getLocalGameState().getChooseMap()) {
             if (! initialLake) {
-                for (Tile tile : Main.getClient(null).getLocalGameState().bigMap) {
+                for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
                     if (tile.getGameObject() instanceof Lake) {
                         lakeRenderers.add(new LakeRenderer((Lake) tile.getGameObject() , tile.getX() , tile.getY()));
                     }
@@ -2012,7 +2465,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public void createUserRenderes() {
         if (userRenderers == null) {
             userRenderers = new ArrayList<UserRenderer>();
-            for (User player : Main.getClient(null).getLocalGameState().getPlayers()) {
+            for (User player : Main.getClient().getLocalGameState().getPlayers()) {
                 UserRenderer userRenderer = new UserRenderer();
                 userRenderer.addToAnimations(Direction.Up , player.getUp());
                 userRenderer.addToAnimations(Direction.Down , player.getDown());
@@ -2468,7 +2921,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 //            controller.remove(Integer.parseInt(matcher.group(1)));
 //
 //        else if (input.matches("(?i)\\s*add\\s*money\\s*"))
-//            Main.getClient(null).getPlayer().increaseMoney(10000);
+//            Main.getClient().getPlayer().increaseMoney(10000);
 //
 //        else if (input.matches("\\s*clear\\s*"))
 //            controller.clear();

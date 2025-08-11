@@ -64,14 +64,14 @@ public class Client2ServerThread extends Thread{
         update = JSONUtils.toJson(diff);
         while (true) {
             try {
-                if (! Main.getClient(null).getRequests().isEmpty()) {
-                    message = Main.getClient(null).getRequests().poll();
+                if (! Main.getClient().getRequests().isEmpty()) {
+                    message = Main.getClient().getRequests().poll();
                     sendMessage(message);
                     if (! isPublic(message) || message.getCommandType() == NEW_GAME || message.getCommandType() == JOIN_GAME) {
                         line = Read(line);
                     }
                 }
-                if (Main.getClient(null).isRunning()) {
+                if (Main.getClient().isRunning()) {
                     read(diff , line);
                 }
 
@@ -108,9 +108,9 @@ public class Client2ServerThread extends Thread{
         switch (message.getCommandType()) {
             case LOGIN_SUCCESS -> {
                 System.out.println("Login success");
-                Main.getClient(null).setCurrentMenu(Menu.PlayGameMenu);
+                Main.getClient().setCurrentMenu(Menu.PlayGameMenu);
                 User user = gson.fromJson(gson.toJson(message.getBody().get("Player")), User.class);
-                Main.getClient(null).setPlayer(user);
+                Main.getClient().setPlayer(user);
                 break;
             }
             case GENERATE_RANDOM_PASS -> {
@@ -126,26 +126,26 @@ public class Client2ServerThread extends Thread{
                     gson.toJson(message.getBody().get("Players")),
                     userListType
                 );
-                Main.getClient(null).getLocalGameState().getPlayers().addAll(players);
+                Main.getClient().getLocalGameState().getPlayers().addAll(players);
                 for (User user : players) {
-                    if (user.getUsername().trim().equals(Main.getClient(null).getPlayer().getUsername().trim())) {
-                        Main.getClient(null).setPlayer(user);
+                    if (user.getUsername().trim().equals(Main.getClient().getPlayer().getUsername().trim())) {
+                        Main.getClient().setPlayer(user);
                     }
                 }
-                Main.getClient(null).setRunning(true);
-                Main.getClient(null).setCurrentMenu(Menu.GameMenu);
+                Main.getClient().setRunning(true);
+                Main.getClient().setCurrentMenu(Menu.GameMenu);
                 sendMessage(message);
                 break;
             }
             case FARM -> {
-                System.out.println("1- "+Main.getClient(null).getLocalGameState().getPlayers().size());
+                System.out.println("1- "+Main.getClient().getLocalGameState().getPlayers().size());
                 Farm farm = gson.fromJson(gson.toJson(message.getBody().get("Farm")), Farm.class);
-                Main.getClient(null).getLocalGameState().getFarms().add(farm);
+                Main.getClient().getLocalGameState().getFarms().add(farm);
                 User user = gson.fromJson(gson.toJson(message.getBody().get("Player")), User.class);
                 int x = gson.fromJson(gson.toJson(message.getBody().get("X")), int.class);
                 int y = gson.fromJson(gson.toJson(message.getBody().get("Y")), int.class);
-                System.out.println("2- "+Main.getClient(null).getLocalGameState().getPlayers().size());
-                for (User player : Main.getClient(null).getLocalGameState().getPlayers()) {
+                System.out.println("2- "+Main.getClient().getLocalGameState().getPlayers().size());
+                for (User player : Main.getClient().getLocalGameState().getPlayers()) {
                     if (player.getUsername().trim().equals(user.getUsername().trim())) {
                         System.out.println(player.getUsername());
                         player.topLeftX = x;
@@ -157,7 +157,7 @@ public class Client2ServerThread extends Thread{
                         break;
                     }
                 }
-                System.out.println(Main.getClient(null).getLocalGameState().getPlayers().size());
+                System.out.println(Main.getClient().getLocalGameState().getPlayers().size());
             }
             case BIG_MAP -> {
                 System.out.println("bigmap1");
@@ -168,8 +168,8 @@ public class Client2ServerThread extends Thread{
                     tileListType
                 );
                 System.out.println("bigmap2");
-                Main.getClient(null).getLocalGameState().bigMap.addAll(bigMap);
-                Main.getClient(null).getLocalGameState().setChooseMap(true);
+                Main.getClient().getLocalGameState().bigMap.addAll(bigMap);
+                Main.getClient().getLocalGameState().setChooseMap(true);
                 System.out.println("bigmap3");
             }
             case ERROR -> {
@@ -178,20 +178,20 @@ public class Client2ServerThread extends Thread{
                 });
             }
             case CAN_MOVE -> {
-                InputGameController.getInstance().Move(message , Main.getClient(null).getLocalGameState());
+                InputGameController.getInstance().Move(message , Main.getClient().getLocalGameState());
             }
             case CAN_NOT_MOVE -> {
-                InputGameController.getInstance().Move(message , Main.getClient(null).getLocalGameState());
+                InputGameController.getInstance().Move(message , Main.getClient().getLocalGameState());
             }
             case ENTER_THE_MARKET -> {
-                for (User player : Main.getClient(null).getLocalGameState().getPlayers()) {
+                for (User player : Main.getClient().getLocalGameState().getPlayers()) {
                     if (message.getFromBody("Player").equals(player)) {
                         player.setPositionX(message.getFromBody("X"));
                         player.setPositionY(message.getFromBody("Y"));
                         player.setInFarmExterior(message.getFromBody("Is in farm"));
                         player.setIsInMarket(message.getFromBody("Is in market"));
-                        if (Main.getClient(null).getPlayer().equals(player)) {
-                            Main.getClient(null).getLocalGameState().currentMenu = Menu.MarketMenu;
+                        if (Main.getClient().getPlayer().equals(player)) {
+                            Main.getClient().getLocalGameState().currentMenu = Menu.MarketMenu;
                         }
                         player.getJoinMarket().add(player);
                     }
@@ -199,24 +199,24 @@ public class Client2ServerThread extends Thread{
             }
             case CHANGE_MONEY -> {
                 User user = message.getFromBody("Player");
-                if (Main.getClient(null).getPlayer().getUsername().trim().equals(user.getUsername().trim())) {
-                    Main.getClient(null).getPlayer().increaseMoney(message.getIntFromBody("Money"));
+                if (Main.getClient().getPlayer().getUsername().trim().equals(user.getUsername().trim())) {
+                    Main.getClient().getPlayer().increaseMoney(message.getIntFromBody("Money"));
                 }
-                else if (Main.getClient(null).getPlayer().getUsername().trim().equals(user.getSpouse().getUsername().trim())) {
-                    Main.getClient(null).getPlayer().increaseMoney(message.getIntFromBody("Money"));
+                else if (Main.getClient().getPlayer().getUsername().trim().equals(user.getSpouse().getUsername().trim())) {
+                    Main.getClient().getPlayer().increaseMoney(message.getIntFromBody("Money"));
                 }
             }
             case CHANGE_INVENTORY -> {
                 Items items = message.getFromBody("Item");
                 int amount = message.getIntFromBody("amount");
-                if (Main.getClient(null).getPlayer().getBackPack().inventory.Items.containsKey(items)) {
-                    Main.getClient(null).getPlayer().getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
-                    if (Main.getClient(null).getPlayer().getBackPack().inventory.Items.get(items) == 0) {
-                        Main.getClient(null).getPlayer().getBackPack().inventory.Items.remove(items);
+                if (Main.getClient().getPlayer().getBackPack().inventory.Items.containsKey(items)) {
+                    Main.getClient().getPlayer().getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
+                    if (Main.getClient().getPlayer().getBackPack().inventory.Items.get(items) == 0) {
+                        Main.getClient().getPlayer().getBackPack().inventory.Items.remove(items);
                     }
                 }
                 else {
-                    Main.getClient(null).getPlayer().getBackPack().inventory.Items.put(items,amount);
+                    Main.getClient().getPlayer().getBackPack().inventory.Items.put(items,amount);
                 }
             }
             case REDUCE_PRODUCT -> {
@@ -226,7 +226,7 @@ public class Client2ServerThread extends Thread{
             }
             case BUY_BACKPACK -> {
                 BackPackType backPackType = message.getFromBody("BackPack");
-                Main.getClient(null).getPlayer().getBackPack().setType(backPackType);
+                Main.getClient().getPlayer().getBackPack().setType(backPackType);
             }
             case REDUCE_BARN_CAGE -> {
                 BarnORCageType barnORCageType = message.getFromBody("BarnORCageType");
@@ -236,7 +236,7 @@ public class Client2ServerThread extends Thread{
                 Items items = message.getFromBody("Item");
                 int x = message.getIntFromBody("X");
                 int y = message.getIntFromBody("Y");
-                getTileByCoordinates(x , y , Main.getClient(null).getLocalGameState()).setGameObject(items);
+                getTileByCoordinates(x , y , Main.getClient().getLocalGameState()).setGameObject(items);
             }
             case REDUCE_ANIMAL -> {
                 AnimalType animalType = message.getFromBody("AnimalType");
@@ -254,7 +254,7 @@ public class Client2ServerThread extends Thread{
             case SHEPHERD_ANIMAL -> {
                 Animal animal = message.getFromBody("Animal");
                 animal.setOut(true);
-                Main.getClient(null).getLocalGameState().getAnimals().add(animal);
+                Main.getClient().getLocalGameState().getAnimals().add(animal);
             }
             case PLACE_BARN_CAGE -> {
                 User user = message.getFromBody("Player");
