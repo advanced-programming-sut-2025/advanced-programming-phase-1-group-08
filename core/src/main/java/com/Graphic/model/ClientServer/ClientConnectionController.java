@@ -9,12 +9,13 @@ import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Places.ShippingBin;
 import com.Graphic.model.Plants.BasicRock;
 import com.Graphic.model.Plants.Wood;
-import com.Graphic.model.ToolsPackage.CraftingItem;
+import com.Graphic.model.Weather.DateHour;
 import com.esotericsoftware.kryonet.Connection;
 
 import java.awt.*;
@@ -24,13 +25,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
+import static com.Graphic.model.Enum.Commands.CommandType.REDUCE_BARN_CAGE;
 import static com.Graphic.model.Enum.Commands.CommandType.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
+import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 
 public class ClientConnectionController {
 
+    private static ClientConnectionController instance;
 
-    public static void createFarm(Message message , Game game) throws IOException {
+
+    public void createFarm(Message message , Game game) throws IOException {
         int index = message.getFromBody("Index");
         User user = message.getFromBody("Player");
         game.getGameState().incrementNumberOfMaps();
@@ -54,7 +59,7 @@ public class ClientConnectionController {
         }
     }
 
-    public static Game newGame(Message message , Connection connection) throws IOException {
+    public Game newGame(Message message , Connection connection) throws IOException {
         String id = message.getFromBody("id");
         User player = message.getFromBody("Player");
         for (Map.Entry<String , Game> entry : App.games.entrySet()) {
@@ -69,7 +74,7 @@ public class ClientConnectionController {
         return App.games.get(id);
     }
 
-    public static Game joinGame(Message message , Connection connection) throws IOException {
+    public Game joinGame(Message message , Connection connection) throws IOException {
         String id = message.getFromBody("id");
         User player = message.getFromBody("Player");
         for (Map.Entry<String , Game> entry : App.games.entrySet()) {
@@ -83,12 +88,12 @@ public class ClientConnectionController {
         return null;
     }
 
-    public static void moveInFarm(Message message , Game game) throws IOException {
+    public void moveInFarm(Message message , Game game) throws IOException {
         Message body = InputGameController.getInstance().checkWalking(message, game);
         sendToAll(body , game);
     }
 
-    public static void answerEnterTheMarket(Message message , Game game) throws IOException {
+    public void answerEnterTheMarket(Message message , Game game) throws IOException {
         User player = message.getFromBody("Player");
         for (User user : game.getGameState().getPlayers()) {
             if (user.getUsername().trim().equals(player.getUsername().trim())) {
@@ -108,7 +113,7 @@ public class ClientConnectionController {
         }
     }
 
-    public static void moveInMarket(Message message , Game game) throws IOException {
+    public void moveInMarket(Message message , Game game) throws IOException {
         HashMap<String , Object> body = new HashMap<>();
         MarketType marketType = message.getFromBody("Market");
         for (collisionRect rect : marketType.getRects()) {
@@ -128,15 +133,14 @@ public class ClientConnectionController {
         sendToAll(new Message(CAN_MOVE , body) , game);
     }
 
-    public static Message Buy(Message message , Game game) throws IOException {
-        System.out.println("Buy");
+    public Message Buy(Message message , Game game) throws IOException {
         payForBuy(message , game);
         reduceProductInMarket(message , game);
 
         return addItemToInventory(message);
     }
 
-    private static void payForBuy(Message message , Game game) throws IOException {
+    private void payForBuy(Message message , Game game) throws IOException {
         User Player = message.getFromBody("Player");
         for (User user : game.getGameState().getPlayers()) {
             if (user.getUsername().trim().equals(Player.getUsername().trim()))  {
@@ -150,7 +154,7 @@ public class ClientConnectionController {
         }
     }
 
-    private static void reduceProductInMarket(Message message , Game game) throws IOException {
+    private void reduceProductInMarket(Message message , Game game) throws IOException {
         MarketType market = message.getFromBody("Market");
 
                 Items items = message.getFromBody("Item");
@@ -162,7 +166,7 @@ public class ClientConnectionController {
                 sendToAll(new Message(REDUCE_PRODUCT , body) , game);
     }
 
-    private static Message addItemToInventory(Message message) throws IOException {
+    private Message addItemToInventory(Message message) throws IOException {
         HashMap<String ,Object> body = new HashMap<>();
         body.put("Player" , message.getFromBody("Player"));
         body.put("Item" , message.getFromBody("Item"));
@@ -171,13 +175,13 @@ public class ClientConnectionController {
             CHANGE_INVENTORY, body);
     }
 
-    public static void buyBackPack(Message message , Game game) throws IOException {
+    public void buyBackPack(Message message , Game game) throws IOException {
         payForBuy(message , game);
         reduceProductInMarket(message , game);
         //TODO
     }
 
-    public static void placeCraftOrShippingBin(Message message , Game game) throws IOException {
+    public void placeCraftOrShippingBin(Message message , Game game) throws IOException {
         Items items = message.getFromBody("Item");
         int x = message.getIntFromBody("X");
         int y = message.getIntFromBody("Y");
@@ -203,15 +207,13 @@ public class ClientConnectionController {
         sendToAll(message , game);
     }
 
-    public static ArrayList<Message> BuyBarnCage(Message message , Game game) throws IOException {
-        System.out.println("Buy Barn or cage");
+    public ArrayList<Message> BuyBarnCage(Message message , Game game) throws IOException {
         reduceBarnOrCageInMarket(message , game);
 
         return payForBuilding(message , game);
     }
 
-    private static ArrayList<Message> payForBuilding(Message message , Game game) throws IOException {
-        System.out.println("pay for building");
+    private ArrayList<Message> payForBuilding(Message message , Game game) throws IOException {
         BarnORCageType barnORCageType = message.getFromBody("BarnOrCageType");
         Point p = message.getFromBody("Point");
         for (int i = p.x ; i < p.x + barnORCageType.getWidth() ; i++) {
@@ -254,7 +256,7 @@ public class ClientConnectionController {
         return messages;
     }
 
-    public static void reduceBarnOrCageInMarket(Message message , Game game) throws IOException {
+    public void reduceBarnOrCageInMarket(Message message , Game game) throws IOException {
         BarnOrCage barnOrCage = new BarnOrCage(message.getFromBody("BarnOrCageType") , 0 , 0);
         barnOrCage.setRemindInShop(0 , null);
         HashMap<String , Object> body = new HashMap<>();
@@ -263,7 +265,7 @@ public class ClientConnectionController {
         sendToAll(new Message(REDUCE_BARN_CAGE , body) , game);
     }
 
-    public static void buyAnimal(Message message , Game game) throws IOException {
+    public void buyAnimal(Message message , Game game) throws IOException {
         User player = message.getFromBody("Player");
         Animal animal = message.getFromBody("Animal");
         BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
@@ -298,7 +300,7 @@ public class ClientConnectionController {
         sendToAll(new Message(CommandType.BUY_ANIMAL, buyAnimal), game);
     }
 
-    public static void sellAnimal(Message message , Game game) throws IOException {
+    public void sellAnimal(Message message , Game game) throws IOException {
         User player = message.getFromBody("Player");
         Animal animal = message.getFromBody("Animal");
         HashMap<String , Object> changeMoney = new HashMap<>();
@@ -331,7 +333,7 @@ public class ClientConnectionController {
         sendToAll(new Message(CommandType.SELL_ANIMAL , sellAnimals) , game);
     }
 
-    public static Message AnswerFeedHay(Message message , Game game) {
+    public Message AnswerFeedHay(Message message , Game game) {
         User Player = message.getFromBody("Player");
         Animal Animal = message.getFromBody("Animal");
         MarketItem marketItem = message.getFromBody("Hay");
@@ -348,7 +350,7 @@ public class ClientConnectionController {
         return new Message(CommandType.FEED_HAY , body);
     }
 
-    public static void answerShepherding(Message message , Game game) throws IOException {
+    public void answerShepherding(Message message , Game game) throws IOException {
         Animal animal = message.getFromBody("Animal");
         int x = message.getIntFromBody("X");
         int y = message.getIntFromBody("Y");
@@ -358,13 +360,13 @@ public class ClientConnectionController {
         sendToAll(message , game);
     }
 
-    public static void Pet(Message message) {
+    public void Pet(Message message) {
         Animal animal = message.getFromBody("Animal");
         animal.increaseFriendShip(15);
         animal.setPetToday(true);
     }
 
-    public static Message collectProduct(Message message) {
+    public Message collectProduct(Message message) {
         Animal animal = message.getFromBody("Animal");
         animal.setProductCollected(true);
         HashMap<String , Object> body = new HashMap<>();
@@ -373,7 +375,7 @@ public class ClientConnectionController {
         return new Message(CommandType.CHANGE_INVENTORY , body);
     }
 
-    public static Message changeInventory(Message message , Game game) {
+    public Message changeInventory(Message message , Game game) {
         User player = message.getFromBody("Player");
         for (User user : game.getGameState().getPlayers()) {
             if (user.getUsername().trim().equals(player.getUsername().trim())) {
@@ -398,7 +400,7 @@ public class ClientConnectionController {
         return null;
     }
 
-    public static void ExitTheMarket(Message message , Game game) throws IOException {
+    public void ExitTheMarket(Message message , Game game) throws IOException {
         //MarketType marketType = message.getFromBody("Market");
         int x = message.getFromBody("X");
         int y = message.getFromBody("Y");
@@ -413,17 +415,80 @@ public class ClientConnectionController {
         sendToAll(message , game);
     }
 
-    public static void sendToAll(Message message , Game game) throws IOException {
+    public void sendToAll(Message message , Game game) throws IOException {
         for (Map.Entry<User , Connection> entry : game.connections.entrySet()) {
             entry.getValue().sendTCP(message);
         }
     }
 
-    private static void sendToOnePerson(Message message , Game game , User user) throws IOException {
+    void sendToOnePerson(Message message, Game game, User user) throws IOException {
         for (Map.Entry<User , Connection> entry : game.connections.entrySet()) {
             if (entry.getKey().getUsername().trim().equals(user.getUsername().trim())) {
                 entry.getValue().sendTCP(message);
             }
         }
+    }
+
+    private ClientConnectionController() {}
+
+    public static ClientConnectionController getInstance() {
+        if (instance == null)
+            instance = new ClientConnectionController();
+        return instance;
+    }
+    public void CheckFriendDistance() {
+
+    }
+
+
+                                        // Erfan
+    public void sendSetTimeMessage (int hour, int day, Game game) throws IOException {
+
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("Hour", hour);
+        PassedTime.put("Day", day);
+        sendToAll(new Message(CommandType.SET_TIME, PassedTime), game);
+    }
+    public void passedOfTime (int day, int hour, DateHour currentDateHour, Game game) throws IOException {
+
+        DateHour dateHour = currentDateHour.clone();
+
+        dateHour.increaseHour(hour);
+        dateHour.increaseDay(day);
+
+        if (dateHour.getHour() > 22) {
+            passedOfTime(getDayDifferent(dateHour, Main.getClient().getLocalGameState().currentDate),
+                24 - dateHour.getHour() + 9 + hour, currentDateHour, game);
+            return;
+        }
+        if (dateHour.getHour() < 9) {
+            passedOfTime(getDayDifferent(dateHour, Main.getClient().getLocalGameState().currentDate),
+                9 - dateHour.getHour() + hour, currentDateHour, game);
+            return;
+        }
+
+        int number = getDayDifferent(currentDateHour, dateHour);
+
+        for (int i = 0 ; i < number ; i++)
+            currentDateHour.increaseDay(1);
+
+        currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
+        sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
+    }
+    public void setTime (int day, int hour, Game game) throws IOException {
+
+        DateHour currentDateHour = ServerHandler.getInstance(game).currentDateHour;
+
+        ServerHandler.getInstance(game).currentDateHour.setDate(day);
+        ServerHandler.getInstance(game).currentDateHour.setHour(hour);
+
+        sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
+    }
+    public void sendSetGameObjectMessage (int x, int y, GameObject object, Game game) throws IOException {
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("X", x);
+        PassedTime.put("Y", y);
+        PassedTime.put("Object", object);
+        sendToAll(new Message(CommandType.SET_TIME, PassedTime), game);
     }
 }

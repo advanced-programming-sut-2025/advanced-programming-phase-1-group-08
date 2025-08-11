@@ -21,21 +21,18 @@ import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
-import static com.badlogic.gdx.Input.Keys.*;
 
 public class ClientWork  {
+
+    private ClientWorkController controller;
+
     private GameState localGameState;
     private volatile boolean running = false;
     private boolean exit = false;
@@ -67,6 +64,7 @@ public class ClientWork  {
             }
 
         });
+        controller = ClientWorkController.getInstance();
 
         new Thread(() -> {
             while (true) {
@@ -83,10 +81,8 @@ public class ClientWork  {
 //        new Thread(() -> {
 //            try {
 //                while (true) {
-//                    if (connection != null && connection.isConnected()) {
-//                        connection.sendTCP(2);
-//                        Thread.sleep(4000);
-//                    }
+//                    connection.sendTCP(2);
+//                    Thread.sleep(4000);
 //                }
 //            }
 //            catch (Exception e) {
@@ -98,44 +94,46 @@ public class ClientWork  {
     }
 
     public void handleMessage(Message message) {
-        switch (message.getCommandType()) {
-            case LOGIN_SUCCESS -> {
-                System.out.println("Login success");
-                Main.getClient().setCurrentMenu(Menu.PlayGameMenu);
-                User user = message.getFromBody("Player");
-                Main.getClient().setPlayer(user);
-                break;
-            }
-            case GENERATE_RANDOM_PASS -> {
-                Gdx.app.postRunnable(() -> {
-                    RegisterMenu.getInstance().setPasswordField(message);
-                });
-                break;
-            }
-            case GAME_START -> {
-                ArrayList<User> players = message.getFromBody("Players");
-                Main.getClient().getLocalGameState().getPlayers().addAll(players);
-                for (User user : players) {
-                    if (user.getUsername().trim().equals(Main.getClient().getPlayer().getUsername().trim())) {
-                        Main.getClient().setPlayer(user);
-                    }
+
+        try {
+            switch (message.getCommandType()) {
+                case LOGIN_SUCCESS -> {
+                    System.out.println("Login success");
+                    Main.getClient().setCurrentMenu(Menu.PlayGameMenu);
+                    User user = message.getFromBody("Player");
+                    Main.getClient().setPlayer(user);
+                    break;
                 }
-                Main.getClient().setRunning(true);
-                Main.getClient().setCurrentMenu(Menu.GameMenu);
-                sendMessage(message);
-                break;
-            }
-            case FARM -> {
-                Farm farm = message.getFromBody("Farm");
-                Main.getClient().getLocalGameState().getFarms().add(farm);
-                User user = message.getFromBody("Player");
-                int x = message.getFromBody("X");
-                int y = message.getFromBody("Y");
-                for (User player : Main.getClient().getLocalGameState().getPlayers()) {
-                    if (player.getUsername().trim().equals(user.getUsername().trim())) {
-                        System.out.println(player.getUsername());
-                        player.topLeftX = x;
-                        player.topLeftY = y;
+                case GENERATE_RANDOM_PASS -> {
+                    Gdx.app.postRunnable(() -> {
+                        RegisterMenu.getInstance().setPasswordField(message);
+                    });
+                    break;
+                }
+                case GAME_START -> {
+                    ArrayList<User> players = message.getFromBody("Players");
+                    Main.getClient().getLocalGameState().getPlayers().addAll(players);
+                    for (User user : players) {
+                        if (user.getUsername().trim().equals(Main.getClient().getPlayer().getUsername().trim())) {
+                            Main.getClient().setPlayer(user);
+                        }
+                    }
+                    Main.getClient().setRunning(true);
+                    Main.getClient().setCurrentMenu(Menu.GameMenu);
+                    sendMessage(message);
+                    break;
+                }
+                case FARM -> {
+                    Farm farm = message.getFromBody("Farm");
+                    Main.getClient().getLocalGameState().getFarms().add(farm);
+                    User user = message.getFromBody("Player");
+                    int x = message.getFromBody("X");
+                    int y = message.getFromBody("Y");
+                    for (User player : Main.getClient().getLocalGameState().getPlayers()) {
+                        if (player.getUsername().trim().equals(user.getUsername().trim())) {
+                            System.out.println(player.getUsername());
+                            player.topLeftX = x;
+                            player.topLeftY = y;
 //                        if (user.getFarm() == null) {
 //                            System.out.println("farm is null");
 //                        }
@@ -194,22 +192,21 @@ public class ClientWork  {
                 catch (Exception e) {
 
                 }
-            }
-            case CHANGE_INVENTORY -> {
-                Items items = message.getFromBody("Item");
-                int amount = message.getFromBody("amount");
-                if (Main.getClient().getPlayer().getBackPack().inventory.Items.containsKey(items)) {
-                    Main.getClient().getPlayer().getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
-                    if (Main.getClient().getPlayer().getBackPack().inventory.Items.get(items) == 0) {
-                        Main.getClient().getPlayer().getBackPack().inventory.Items.remove(items);
+                }
+                case CHANGE_INVENTORY -> {
+                    Items items = message.getFromBody("Item");
+                    int amount = message.getFromBody("amount");
+                    if (Main.getClient().getPlayer().getBackPack().inventory.Items.containsKey(items)) {
+                        Main.getClient().getPlayer().getBackPack().inventory.Items.compute(items, (k, v) -> v + amount);
+                        if (Main.getClient().getPlayer().getBackPack().inventory.Items.get(items) == 0) {
+                            Main.getClient().getPlayer().getBackPack().inventory.Items.remove(items);
+                        }
+                    } else {
+                        Main.getClient().getPlayer().getBackPack().inventory.Items.put(items, amount);
                     }
                 }
-                else {
-                    Main.getClient().getPlayer().getBackPack().inventory.Items.put(items,amount);
-                }
-            }
-            case REDUCE_PRODUCT -> {
-                System.out.println("kam shod");
+                case REDUCE_PRODUCT -> {
+                    System.out.println("kam shod");
                 Items items = message.getFromBody("Item");
                 MarketType marketType = message.getFromBody("Market");
                 items.setRemindInShop(items.getRemindInShop(marketType) - 1 , marketType);
@@ -217,42 +214,68 @@ public class ClientWork  {
             case BUY_BACKPACK -> {
                 BackPackType backPackType = message.getFromBody("BackPack");
                 Main.getClient().getPlayer().getBackPack().setType(backPackType);
-            }
-            case REDUCE_BARN_CAGE -> {
-                BarnORCageType barnORCageType = message.getFromBody("BarnOrCageType");
-                barnORCageType.setShopLimit(0);
-            }
-            case PLACE_CRAFT_SHIPPING_BIN -> {
-                Items items = message.getFromBody("Item");
-                int x = message.getIntFromBody("X");
-                int y = message.getIntFromBody("Y");
-                getTileByCoordinates(x , y , Main.getClient().getLocalGameState()).setGameObject(items);
-            }
-            case REDUCE_ANIMAL -> {
-                AnimalType animalType = message.getFromBody("AnimalType");
-                animalType.increaseRemindInShop(-1);
-            }
-            case BUY_ANIMAL -> {
-                Marketing.getInstance().receiveRequestBuyAnimal(message);
-            }
-            case SELL_ANIMAL -> {
-                InputGameController.getInstance().receiveRequestForSellAnimal(message);
-            }
-            case FEED_HAY -> {
-                InputGameController.getInstance().receiveFeedHay(message);
-            }
-            case SHEPHERD_ANIMAL -> {
-                Animal animal = message.getFromBody("Animal");
-                animal.setOut(true);
-                Main.getClient().getLocalGameState().getAnimals().add(animal);
+                }
+
+                case REDUCE_BARN_CAGE -> {
+                    BarnORCageType barnORCageType = message.getFromBody("BarnOrCageType");
+                    barnORCageType.setShopLimit(0);
+                }
+                case PLACE_CRAFT_SHIPPING_BIN -> {
+                    Items items = message.getFromBody("Item");
+                    int x = message.getIntFromBody("X");
+                    int y = message.getIntFromBody("Y");
+                    getTileByCoordinates(x, y, Main.getClient().getLocalGameState()).setGameObject(items);
+                }
+                case REDUCE_ANIMAL -> {
+                    AnimalType animalType = message.getFromBody("AnimalType");
+                    animalType.increaseRemindInShop(-1);
+                }
+                case BUY_ANIMAL -> {
+                    Marketing.getInstance().receiveRequestBuyAnimal(message);
+                }
+                case SELL_ANIMAL -> {
+                    InputGameController.getInstance().receiveRequestForSellAnimal(message);
+                }
+                case FEED_HAY -> {
+                    InputGameController.getInstance().receiveFeedHay(message);
+                }
+                case SHEPHERD_ANIMAL -> {
+                    Animal animal = message.getFromBody("Animal");
+                    animal.setOut(true);
+                    Main.getClient().getLocalGameState().getAnimals().add(animal);
             }
             case PLACE_BARN_CAGE -> {
                 System.out.println("place Barn cage");
-                User user = message.getFromBody("Player");
-                BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
-                int x = message.getFromBody("X");
-                int y = message.getFromBody("Y");
-                InputGameController.getInstance().placeBarnOrCage(x, y, barnOrCage , user);
+                    User user = message.getFromBody("Player");
+                    BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
+                    int x = message.getFromBody("X");
+                    int y = message.getFromBody("Y");
+                    InputGameController.getInstance().placeBarnOrCage(x, y, barnOrCage, user);
+                }
+                case SET_TIME -> {
+                    controller.setTime(message.getFromBody("Hour"), message.getFromBody("Day"));
+                }
+                case CHANGE_GAME_OBJECT -> {
+                    controller.changeGameObject(
+                        message.getFromBody("X"),
+                        message.getFromBody("Y"),
+                        message.getFromBody("Object")
+                    );
+                }
+                case FriendshipsInqResponse, UPDATE_FRIENDSHIPS -> {
+                    Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
+                }
+
+                case A_FRIEND_IS_CLOSE -> {
+                    User friend = message.getFromBody("friend");
+                    Main.getClient().getPlayer().setFriendCloseToMe(friend);
+                }
+                case UPDATE_CONVERSATIONS -> {
+                    Main.getClient().getLocalGameState().conversations = message.getFromBody("conversations");
+                    // print unseen messages
+                    Main.getClient().getPlayer().setShowUnseenChats(true);
+                }
+
             }
             case EXIT_MARKET -> {
                 int x = message.getFromBody("X");
@@ -269,6 +292,7 @@ public class ClientWork  {
                 }
             }
         }
+        catch (Exception e) {e.printStackTrace();}
     }
 
     public void sendMessage(Message message) {
@@ -290,19 +314,15 @@ public class ClientWork  {
     public synchronized BlockingQueue<Message> getRequests() {
         return requests;
     }
-
     public boolean isRunning() {
         return running;
     }
-
     public void setRunning(boolean running) {
         this.running = running;
     }
-
     public User getPlayer() {
         return Player;
     }
-
     public void setPlayer(User player) {
         this.Player = player;
     }
@@ -313,7 +333,6 @@ public class ClientWork  {
         }
         return localGameState;
     }
-
     public Menu getCurrentMenu() {
         return currentMenu;
     }

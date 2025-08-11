@@ -283,6 +283,9 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
 
         if (! choosePlace) {
             renderer.setView(camera);
+            camera.position.set(Main.getClient().getPlayer().getPositionX() , Main.getClient().getPlayer().getPositionY() , 0f);
+            marketing.move(Main.getClient().getPlayer());
+            marketing.printPlayers();
             renderer.render();
             camera.position.set(Main.getClient().getPlayer().getPositionX() , Main.getClient().getPlayer().getPositionY() , 0f);
             marketing.move(Main.getClient().getPlayer());
