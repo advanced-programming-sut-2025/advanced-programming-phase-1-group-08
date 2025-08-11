@@ -68,11 +68,11 @@ public class Farm {
     public Home getHome () {
         return home;
     }
+    public Lake getLake() {return lake;}
 
     public void setY(int y) {
         this.y = y;
     }
-
     public void setX(int x) {
         this.x = x;
     }

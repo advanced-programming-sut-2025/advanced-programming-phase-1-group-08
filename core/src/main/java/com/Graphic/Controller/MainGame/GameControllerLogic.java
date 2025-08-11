@@ -9,6 +9,7 @@ import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.AnimalRenderer;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.ClientServer.ClientWorkController;
+import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.Enum.AllPlants.*;
@@ -16,7 +17,6 @@ import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
-import com.Graphic.model.Enum.Fish.;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.ItemType.*;
 import com.Graphic.model.Enum.NPC.NPC;
@@ -43,6 +43,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -53,6 +54,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -66,6 +68,7 @@ import java.util.regex.Matcher;
 
 import static com.Graphic.Main.newSkin;
 import static com.Graphic.View.GameMenus.GameMenu.*;
+import static com.Graphic.View.GameMenus.GameMenu.camera;
 import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
@@ -102,6 +105,7 @@ public class GameControllerLogic {
         EnterTheMine();
         EnterTheMarket(Main.getClient().getPlayer());
         addPlayerToMarket(Main.getClient().getPlayer());
+        removePlayerFromMarket(Main.getClient().getPlayer());
             if ( gameMenu.isFirstLoad() && Main.getClient().getPlayer().isInMine()) {
                 gameMenu.setFirstLoad(false);
                 camera.setToOrtho(false ,Gdx.graphics.getWidth() / 4 , Gdx.graphics.getHeight() / 4);
@@ -551,8 +555,8 @@ public class GameControllerLogic {
                 assert mine != null;
                 if (i >= mine.getStartX() && i<mine.getStartX() + mine.getWidth() && j>=mine.getStartY() && j< mine.getStartY() + mine.getHeight() ) {
                     if (! createMine) {
-                        createInitialMine(Main.getClient().getPlayer().topLeftX,
-                            Main.getClient().getPlayer().topLeftY, mine.getStartX(),
+                        createInitialMine(Player.topLeftX,
+                            Player.topLeftY, mine.getStartX(),
                             mine.getStartY(), mine.getWidth(), mine.getHeight() , Player , gameState);
                         createMine = true;
                     }
@@ -560,8 +564,8 @@ public class GameControllerLogic {
 
                 else if(i >= lake.getTopLeftX() && i< lake.getTopLeftX() + lake.getWidth() && j>=lake.getTopLeftY() && j< lake.getTopLeftY() + lake.getHeight()) {
                     if (! createLake) {
-                        createInitialLake(Main.getClient().getPlayer().topLeftX,
-                            Main.getClient().getPlayer().topLeftY, lake.getTopLeftX(),
+                        createInitialLake(Player.topLeftX,
+                            Player.topLeftY, lake.getTopLeftX(),
                             lake.getTopLeftY(), lake.getWidth(), lake.getHeight() , Player , gameState);
                         createLake = true;
                     }
@@ -571,7 +575,7 @@ public class GameControllerLogic {
                     && j>=greenHouse.getCoordinateY() && j<greenHouse.getCoordinateY() + greenHouse.getLength() ) {
 
                     if (! createGreenHouse) {
-                        createInitialGreenHouse(Main.getClient().getPlayer().topLeftX, Main.getClient().getPlayer().topLeftY, greenHouse.getCoordinateX(), greenHouse.getCoordinateY(),
+                        createInitialGreenHouse(Player.topLeftX, Player.topLeftY, greenHouse.getCoordinateX(), greenHouse.getCoordinateY(),
                             greenHouse.getWidth(), greenHouse.getLength() , Player , gameState);
 
                         createGreenHouse = true;
@@ -580,7 +584,7 @@ public class GameControllerLogic {
 
                 else if (i >= home.getTopLeftX() && i<home.getTopLeftX() + home.getWidth() && j >= home.getTopLeftY() && j<home.getTopLeftY() + home.getLength() ) {
                     if (! createHome) {
-                        createInitialHouse(Main.getClient().getPlayer().topLeftX, Main.getClient().getPlayer().topLeftY,
+                        createInitialHouse(Player.topLeftX, Player.topLeftY,
                             home.getTopLeftX(), home.getTopLeftY(), home.getWidth(), home.getLength() , Player , gameState);
                         createHome = true;
                     }
@@ -720,11 +724,12 @@ public class GameControllerLogic {
 
     public static void EnterTheMarket(User Player) {
         if (Player.getDirection().equals(Direction.Up) && Player.isInFarmExterior()) {
-            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
                 for (MarketType market : MarketType.values()) {
-                    if (market.getOutsideDoor().checkCollisionMouse(gameMenu.getMousePos()) &&
-                        market.getOutsideDoor().checkCollision(Player)) {
+                    if ( market.getOutsideDoor().checkCollisionMouse(gameMenu.getMousePos()) &&
+                        ! market.getOutsideDoor().checkCollision(Player)) {
 
+                        System.out.println("Entered the market");
                         HashMap<String , Object> body = new HashMap<>();
                         body.put("Player", Player);
                         body.put("Market", market);
@@ -732,35 +737,22 @@ public class GameControllerLogic {
                         return;
                     }
                 }
+                System.out.println("x: "+Player.getPositionX() + " y: "+Player.getPositionY());
+                System.out.println("mouseX: "+gameMenu.getMousePos().x + " mouseY: "+gameMenu.getMousePos().y);
             }
         }
     }
 
-    public static void AnswerEnterTheMarket(Message message , Game game) {
-        for (User user : game.getGameState().getPlayers()) {
-            if (message.getFromBody("Player").equals(user)) {
-                user.setIsInMarket(true);
-                user.setInFarmExterior(false);
-                MarketType market = message.getFromBody("Market");
-                user.setPositionX(market.getInsideDoor().getX());
-                user.setPositionY(market.getInsideDoor().getY());
-                HashMap<String , Object> body = new HashMap<>();
-                body.put("Player", user);
-                body.put("Market", market);
-                body.put("X" , market.getInsideDoor().getX());
-                body.put("Y" , market.getInsideDoor().getY());
-                body.put("Is in farm" , false);
-                body.put("Is in Market" , true);
-                game.getDiffQueue().add(new Message(CommandType.ENTER_THE_MARKET , body));
-            }
-        }
-    }
 
     public static void addPlayerToMarket(User Player) {
         while (! Player.getJoinMarket().isEmpty()) {
             User P  = Player.getJoinMarket().poll();
-            MarketMenu.getInstance().users().add(P);
             MarketMenu.getInstance().addUserRenderer(P);
+        }
+    }
+    public static void removePlayerFromMarket(User Player) {
+        while (! Player.getExitMarket().isEmpty()) {
+            MarketMenu.getInstance().removeUserRenderer(Player.getExitMarket().poll());
         }
     }
     public static void showForagingMinerals(Mine mine) {
@@ -833,7 +825,12 @@ public class GameControllerLogic {
         for (int i = x; i < x+width; i++) {
             for (int j = y; j < y+height; j++) {
                 Tile tile = getTileByCoordinates(i , j ,Main.getClient().getLocalGameState());
-                if (!(tile.getGameObject() instanceof Walkable)) {
+                try {
+                    if (!(tile.getGameObject() instanceof Walkable)) {
+                        return false;
+                    }
+                }
+                catch (Exception e) {
                     return false;
                 }
             }
@@ -862,48 +859,52 @@ public class GameControllerLogic {
     }
 
     public static void walkInBarnOrCage() {
-        float x = Main.getClient().getPlayer().sprite.getX();
-        float y = Main.getClient().getPlayer().sprite.getY();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            //InputGameController.moveAnimation();
-            Main.getClient().getPlayer().setDirection(Direction.Up);
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            //InputGameController.moveAnimation();
-            Main.getClient().getPlayer().setDirection(Direction.Down);
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            //InputGameController.moveAnimation();
-            Main.getClient().getPlayer().setDirection(Direction.Left);
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            //InputGameController.moveAnimation();
-            Main.getClient().getPlayer().setDirection(Direction.Right);
-        }
-
-        else {
-            Main.getClient().getPlayer().sprite.draw(Main.getBatch());
-            return;
-        }
-
-        Main.getClient().getPlayer().sprite.setSize(16 , 32);
-
-
-        Main.getClient().getPlayer().sprite.
-            setPosition(x + Main.getClient().getPlayer().getDirection().getX() * 50 * Gdx.graphics.getDeltaTime(),
-                y - Main.getClient().getPlayer().getDirection().getY() * 50 * Gdx.graphics.getDeltaTime());
-
-//        if (! checkCollisionInBarnOrCage()) {
-//            Main.getClient().getPlayer().sprite.setPosition(x , y);
+//        float x = Main.getClient().getPlayer().sprite.getX();
+//        float y = Main.getClient().getPlayer().sprite.getY();
+//
+//        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
+//            System.out.println(Main.getClient().getPlayer().sprite.getX() + ", " + Main.getClient().getPlayer().sprite.getY());
 //        }
-        Main.getClient().getPlayer().sprite.draw(Main.getBatch());
-        try {
-            Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(Main.getClient().getPlayer());
-        }
-        catch (Exception e) {
-
-        }
+//
+//        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+//            //InputGameController.moveAnimation();
+//            Main.getClient().getPlayer().setDirection(Direction.Up);
+//        }
+//        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+//            //InputGameController.moveAnimation();
+//            Main.getClient().getPlayer().setDirection(Direction.Down);
+//        }
+//        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+//            //InputGameController.moveAnimation();
+//            Main.getClient().getPlayer().setDirection(Direction.Left);
+//        }
+//        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+//            //InputGameController.moveAnimation();
+//            Main.getClient().getPlayer().setDirection(Direction.Right);
+//        }
+//
+//        else {
+//            Main.getClient().getPlayer().sprite.draw(Main.getBatch());
+//            return;
+//        }
+//
+//        Main.getClient().getPlayer().sprite.setSize(16 , 32);
+//
+//
+//        Main.getClient().getPlayer().sprite.
+//            setPosition(x + Main.getClient().getPlayer().getDirection().getX() * 50 * Gdx.graphics.getDeltaTime(),
+//                y - Main.getClient().getPlayer().getDirection().getY() * 50 * Gdx.graphics.getDeltaTime());
+//
+////        if (! checkCollisionInBarnOrCage()) {
+////            Main.getClient().getPlayer().sprite.setPosition(x , y);
+////        }
+//        //Main.getClient().getPlayer().sprite.draw(Main.getBatch());
+//        try {
+//            Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(Main.getClient().getPlayer());
+//        }
+//        catch (Exception e) {
+//
+//        }
     }
 
     public static void showAnimalsInBarnOrCage() {
@@ -1208,15 +1209,6 @@ public class GameControllerLogic {
         Main.getClient().getRequests().add(new Message(CommandType.SHEPHERD_ANIMAL , shepherdAnimals));
     }
 
-    public static void AnswerShepherding(Message message , Game game) {
-        Animal animal = message.getFromBody("Animal");
-        int x = message.getIntFromBody("X");
-        int y = message.getIntFromBody("Y");
-        animal.setOut(true);
-        animal.setPositionX(x * TEXTURE_SIZE);
-        animal.setPositionY((90 - y) * TEXTURE_SIZE);
-        game.getDiffQueue().add(message);
-    }
 
     private static void createDialogError(Result result , Table lowerRight) {
         lowerRight.clearChildren();
@@ -1590,6 +1582,7 @@ public class GameControllerLogic {
         }
 
 
+
         User finalDestinationUser = destinationUser;
         showChatDialog(GameMenu.gameMenu.getStage(), Main.getNewSkin(), message -> {
             HashMap<String , Object> body = new HashMap<>();
@@ -1598,7 +1591,6 @@ public class GameControllerLogic {
 //            Result result = f.talk(message);
 //            onResult.accept(result);
         });
-
     }
 
     public static void DisplayingTalkHistory (String input) {
@@ -1646,20 +1638,19 @@ public class GameControllerLogic {
 
 
     public static void sendGifts (HumanCommunications f, String username) {
-
-        if (f == null) {
-            System.out.println("There's " + "no Friendship" + " Among these Users");
-            return;
-        }
-
-
-        Result result = f.sendGifts(Main.getClient().getPlayer().currentItem, 1);
-        System.out.println(result);
-        if (result.IsSuccess()) {
-            Set<User> key = new HashSet<>(Arrays.asList(Main.getClient().getPlayer(), findPlayerInGame(username)));
-            Main.getClient().getLocalGameState().conversations.putIfAbsent(key, new ArrayList<>());
-            Main.getClient().getLocalGameState().conversations.get(key).add(new MessageHandling(Main.getClient().getPlayer(), findPlayerInGame(username), Main.getClient().getPlayer().getNickname() + " Sent you a GIFT. Rate it out of 5!"));
-        }
+//
+//        if (f == null) {
+//            System.out.println("There's " + "no Friendship" + " Among these Users");
+//            return;
+//        }
+//
+//
+//        // Result result = f.sendGifts(Main.getClient().getPlayer().currentItem, 1);
+//        if (result.IsSuccess()) {
+//            Set<User> key = new HashSet<>(Arrays.asList(Main.getClient().getPlayer(), findPlayerInGame(username)));
+//            Main.getClient().getLocalGameState().conversations.putIfAbsent(key, new ArrayList<>());
+//            Main.getClient().getLocalGameState().conversations.get(key).add(new MessageHandling(Main.getClient().getPlayer(), findPlayerInGame(username), Main.getClient().getPlayer().getNickname() + " Sent you a GIFT. Rate it out of 5!"));
+//        }
     }
 
     public static Result giveFlowers (String username) {
@@ -1694,19 +1685,20 @@ public class GameControllerLogic {
         return new Result(true, "");
     }
     public static Result propose(String username) {
-        User wife = findPlayerInGame(username);
-        if (wife == null) {
-            return new Result(false, "Username is Unavailable!");
-        }
-        if (username.equals(Main.getClient().getPlayer().getUsername())) {
-            return new Result(false, "You can't Propose to Yourself!");
-        }
-        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), wife);
-        if (f == null) {
-            return new Result(false, "There's no Friendship Among these Users");
-        }
-
-        return f.propose();
+//        User wife = findPlayerInGame(username);
+//        if (wife == null) {
+//            return new Result(false, "Username is Unavailable!");
+//        }
+//        if (username.equals(Main.getClient().getPlayer().getUsername())) {
+//            return new Result(false, "You can't Propose to Yourself!");
+//        }
+//        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), wife);
+//        if (f == null) {
+//            return new Result(false, "There's no Friendship Among these Users");
+//        }
+//
+//        return f.propose();
+        return null;
     }
     public static void unlockRecipe(String input) {
         Matcher matcher = GameMenuCommands.recipeUnlock.getMatcher(input);
@@ -1825,15 +1817,12 @@ public class GameControllerLogic {
         advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
         advanceItem(new TrashCan(TrashCanType.primaryTrashCan), 1);
 
-
-        Home home = user.getFarm().getHome();
-        user.setPositionX(home.getTopLeftX() + home.getWidth() / 2f);
-        user.setPositionY(home.getTopLeftY() + home.getLength());
-        user.increaseMoney(500 - user.getMoney());
-        advanceItem(new Fish(FishType.Salmon, Quantity.Iridium), 1);
-        advanceItem(new Fish(FishType.Salmon, Quantity.Golden), 1);
-        advanceItem(new Fish(FishType.Sardine, Quantity.Normal), 1);
-        advanceItem(new Wood(), 400);
+        user.increaseMoney(10000 - user.getMoney());
+//        advanceItem(new Fish(FishType.Salmon, Quantity.Iridium), 1);
+//        advanceItem(new Fish(FishType.Salmon, Quantity.Golden), 1);
+//        advanceItem(new Fish(FishType.Sardine, Quantity.Normal), 1);
+        advanceItem(new Wood(), 10000);
+        advanceItem(new BasicRock() , 10000);
     }
 
     public static void updateDarknessLevel(int hour) {
@@ -2036,8 +2025,8 @@ public class GameControllerLogic {
     public static void setTimeAndWeather () {
 
         Main.getClient().getLocalGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1980);
-//        Main.getClient().getLocalGameState().currentWeather = Weather.Sunny;
-//        Main.getClient().getLocalGameState().tomorrowWeather = Weather.Sunny;
+        Main.getClient().getLocalGameState().currentWeather = Weather.Sunny;
+        Main.getClient().getLocalGameState().tomorrowWeather = Weather.Sunny;
 
     }
     public static void doSeasonAutomaticTask () {
@@ -2048,62 +2037,62 @@ public class GameControllerLogic {
     }
     public static void doWeatherTask () {
 
-//        if (Main.getClient().getLocalGameState().currentWeather.equals(Weather.Rainy) || Main.getClient().getLocalGameState().currentWeather.equals(Weather.Stormy))
-//            for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
-//                GameObject object = tile.getGameObject();
-//
-//                if (object instanceof Tree && !isInGreenHouse(tile))
-//                    ((Tree) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
-//                if (object instanceof GiantProduct && !isInGreenHouse(tile))
-//                    ((GiantProduct) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
-//                if (object instanceof ForagingSeeds && !isInGreenHouse(tile))
-//                    ((ForagingSeeds) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
-//            }
+        if (Main.getClient().getLocalGameState().currentWeather.equals(Weather.Rainy) || Main.getClient().getLocalGameState().currentWeather.equals(Weather.Stormy))
+            for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
+                GameObject object = tile.getGameObject();
+
+                if (object instanceof Tree && !isInGreenHouse(tile))
+                    ((Tree) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
+                if (object instanceof GiantProduct && !isInGreenHouse(tile))
+                    ((GiantProduct) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
+                if (object instanceof ForagingSeeds && !isInGreenHouse(tile))
+                    ((ForagingSeeds) object).setLastWater(Main.getClient().getLocalGameState().currentDate);
+            }
     }
 
     // Automatic Plant task
     public static void    crowAttack () {
-//
-//        for (Farm farm : Main.getClient().getLocalGameState().getFarms()) {
-//
-//            int number = 0;
-//            for (Tile tile : farm.Farm) {
-//
-//                GameObject object = tile.getGameObject();
-//
-//                if (object instanceof Tree ||
-//                    object instanceof ForagingSeeds ||
-//                    object instanceof GiantProduct ||
-//                    object instanceof ForagingCrops) {
-//
-//                    number++;
-//
-//                    if (number % 16 == 0) {
-//
-//                        double x = Math.random();
-//                        if (x <= 0.25) {
-//
-//                            if (isInGreenHouse(tile)) {
-//                                continue;
-//                            }
-//                            else if (object instanceof Tree && !((Tree) object).isProtected())
-//                                ((Tree) object).setLastFruit(Main.getClient().getLocalGameState().currentDate);
-//
-//                            else if (object instanceof ForagingCrops && !((ForagingCrops) object).isProtected())
-//                                ((ForagingCrops) object).delete();
-//
-//                            else if (object instanceof ForagingSeeds && !((ForagingSeeds) object).isProtected()) {
-//                                if (((ForagingSeeds) object).getType().isOneTimeUse())
-//                                    ((ForagingSeeds) object).delete();
-//                                else
-//                                    ((ForagingSeeds) object).setLastProduct(Main.getClient().getLocalGameState().currentDate);
-//                            } else if (object instanceof GiantProduct && !((GiantProduct) object).isProtected())
-//                                ((GiantProduct) object).delete();
-//                        }
-//                    }
-//                }
-//            }
-//        }
+
+        for (Farm farm : Main.getClient().getLocalGameState().getFarms()) {
+
+            int number = 0;
+            for (Tile tile : farm.Farm) {
+
+                GameObject object = tile.getGameObject();
+
+                if (object instanceof Tree ||
+                    object instanceof ForagingSeeds ||
+                    object instanceof GiantProduct ||
+                    object instanceof ForagingCrops) {
+
+                    number++;
+
+                    if (number % 16 == 0) {
+
+                        double x = Math.random();
+                        if (x <= 0.25) {
+
+                            if (isInGreenHouse(tile)) {
+                                continue;
+                            }
+                            else if (object instanceof Tree && !((Tree) object).isProtected())
+                                ((Tree) object).setLastFruit(Main.getClient().getLocalGameState().currentDate);
+
+                            else if (object instanceof ForagingCrops && !((ForagingCrops) object).isProtected())
+                                ((ForagingCrops) object).delete();
+
+                            else if (object instanceof ForagingSeeds && !((ForagingSeeds) object).isProtected()) {
+                                if (((ForagingSeeds) object).getType().isOneTimeUse())
+                                    ((ForagingSeeds) object).delete();
+                                else
+                                    ((ForagingSeeds) object).setLastProduct(Main.getClient().getLocalGameState().currentDate);
+                            } else if (object instanceof GiantProduct && !((GiantProduct) object).isProtected())
+                                ((GiantProduct) object).delete();
+                        }
+                    }
+                }
+            }
+        }
     }
     public static void    checkForGiant () {
 
@@ -2142,58 +2131,58 @@ public class GameControllerLogic {
     }
     public static void    checkForProtect() {
 
-//        for (Tile tile : Main.getClient().getLocalGameState().bigMap){
-//
-//            GameObject object1 = tile.getGameObject();
-//            if (object1 instanceof Tree)
-//                ((Tree) object1).setProtected(false);
-//
-//            if (object1 instanceof ForagingSeeds)
-//                ((ForagingSeeds) object1).setProtected(false);
-//
-//            if (object1 instanceof GiantProduct)
-//                ((GiantProduct) object1).setProtected(false);
-//
-//            if (object1 instanceof ForagingCrops)
-//                ((ForagingCrops) object1).setProtected(false);
-//        }
-//
-//        for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
-//
-//            GameObject object = tile.getGameObject();
-//
-//            if (object instanceof CraftingItem &&
-//                (( ((CraftingItem) object).getType().equals(CraftType.Scarecrow)) ||
-//                    ((CraftingItem) object).getType().equals(CraftType.DeluxeScarecrow) )) {
-//
-//                int r = 12;
-//                if (((CraftingItem) object).getType().equals(CraftType.Scarecrow))
-//                    r = 8;
-//
-//                int x = tile.getX();
-//                int y = tile.getY();
-//
-//                for (int i = Math.min(x - (r / 2), 1); i < x + r; i++)
-//                    for (int j = Math.min(y - (r / 2), 1); j < y + r; j++)
-//                        if ((i - x) * (i - x) + (j - y) * (j - y) <= r * r) {
-//
-//                            Tile tile2 = getTileByCoordinates(i, j);
-//                            GameObject object1 = tile2.getGameObject();
-//
-//                            if (object1 instanceof Tree)
-//                                ((Tree) object1).setProtected(true);
-//
-//                            if (object1 instanceof ForagingSeeds)
-//                                ((ForagingSeeds) object1).setProtected(true);
-//
-//                            if (object1 instanceof GiantProduct)
-//                                ((GiantProduct) object1).setProtected(true);
-//
-//                            if (object1 instanceof ForagingCrops)
-//                                ((ForagingCrops) object1).setProtected(true);
-//                        }
-//            }
-//        }
+        for (Tile tile : Main.getClient().getLocalGameState().bigMap){
+
+            GameObject object1 = tile.getGameObject();
+            if (object1 instanceof Tree)
+                ((Tree) object1).setProtected(false);
+
+            if (object1 instanceof ForagingSeeds)
+                ((ForagingSeeds) object1).setProtected(false);
+
+            if (object1 instanceof GiantProduct)
+                ((GiantProduct) object1).setProtected(false);
+
+            if (object1 instanceof ForagingCrops)
+                ((ForagingCrops) object1).setProtected(false);
+        }
+
+        for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
+
+            GameObject object = tile.getGameObject();
+
+            if (object instanceof CraftingItem &&
+                (( ((CraftingItem) object).getType().equals(CraftType.Scarecrow)) ||
+                    ((CraftingItem) object).getType().equals(CraftType.DeluxeScarecrow) )) {
+
+                int r = 12;
+                if (((CraftingItem) object).getType().equals(CraftType.Scarecrow))
+                    r = 8;
+
+                int x = tile.getX();
+                int y = tile.getY();
+
+                for (int i = Math.min(x - (r / 2), 1); i < x + r; i++)
+                    for (int j = Math.min(y - (r / 2), 1); j < y + r; j++)
+                        if ((i - x) * (i - x) + (j - y) * (j - y) <= r * r) {
+
+                            Tile tile2 = getTileByCoordinates(i, j, Main.getClient().getLocalGameState());
+                            GameObject object1 = tile2.getGameObject();
+
+                            if (object1 instanceof Tree)
+                                ((Tree) object1).setProtected(true);
+
+                            if (object1 instanceof ForagingSeeds)
+                                ((ForagingSeeds) object1).setProtected(true);
+
+                            if (object1 instanceof GiantProduct)
+                                ((GiantProduct) object1).setProtected(true);
+
+                            if (object1 instanceof ForagingCrops)
+                                ((ForagingCrops) object1).setProtected(true);
+                        }
+            }
+        }
     }
     public static boolean checkForDeath () {
 
@@ -2353,24 +2342,24 @@ public class GameControllerLogic {
 
     public static boolean checkForPlanting (int dir) {
 
-//        Tile tile = getTileByDir(dir);
-//
-//        if ((!Main.getClient().getPlayer().getFarm().isInFarm(tile.getX(), tile.getY())) &&
-//            !Main.getClient().getPlayer().getSpouse().getFarm().isInFarm(tile.getX(), tile.getY())) {
-//
-//            Dialog dialog = Marketing.getInstance().createDialogError();
-//            final Label tooltipLabel = new Label("You can't planting in this tile", Main.getNewSkin());
-//            tooltipLabel.setColor(Color.LIGHT_GRAY);
-//
-//            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
-//            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-//                @Override
-//                public void run() {
-//                    dialog.remove();
-//                }
-//            }, 3);
-//            return false;
-//        }
+        Tile tile = getTileByDir(dir);
+
+        if ((!Main.getClient().getPlayer().getFarm().isInFarm(tile.getX(), tile.getY())) &&
+            !Main.getClient().getPlayer().getSpouse().getFarm().isInFarm(tile.getX(), tile.getY())) {
+
+            Dialog dialog = Marketing.getInstance().createDialogError();
+            final Label tooltipLabel = new Label("You can't planting in this tile", Main.getNewSkin());
+            tooltipLabel.setColor(Color.LIGHT_GRAY);
+
+            Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                @Override
+                public void run() {
+                    dialog.remove();
+                }
+            }, 3);
+            return false;
+        }
         return true;
     }
     public static String showTree (Tree tree) {
@@ -2913,7 +2902,7 @@ public class GameControllerLogic {
     }
 
     // NPC task
-    public static void NPAutomateTask() {
+    public static void NPCAutomaticTasks() {
 
         User saveUser = Main.getClient().getPlayer();
 

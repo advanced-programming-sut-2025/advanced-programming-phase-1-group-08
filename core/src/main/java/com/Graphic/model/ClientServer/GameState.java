@@ -4,16 +4,16 @@ import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.AnimalRenderer;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.WeatherTime.Weather;
+import com.Graphic.model.HumanCommunications;
 import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MessageHandling;
 import com.Graphic.model.Places.Farm;
 import com.Graphic.model.ToolsPackage.CraftingItem;
+import com.Graphic.model.Trade;
 import com.Graphic.model.User;
 import com.Graphic.model.Weather.DateHour;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 public class GameState {
 
@@ -22,6 +22,9 @@ public class GameState {
     public ArrayList<Tile> bigMap = new ArrayList<>();
     private ArrayList<Farm> farms = new ArrayList<>();
     private Queue<Animal> animals = new LinkedList<>();
+    public Map<Set<User>, List<MessageHandling>> conversations = new HashMap<>();
+    public Map<Set<User>, List<Trade>> trades = new HashMap<>();
+    public ArrayList<HumanCommunications> friendships = new ArrayList<>();
     private ArrayList<CraftingItem> OnFarm = new ArrayList<>();
     private boolean chooseMap = false;
 

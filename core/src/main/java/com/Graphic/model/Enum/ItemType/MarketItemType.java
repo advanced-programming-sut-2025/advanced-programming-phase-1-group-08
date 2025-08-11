@@ -87,7 +87,7 @@ public enum MarketItemType {
     },
 
     Rice("Rice" , List.of(MarketType.JojaMart , MarketType.PierreGeneralStore) ,
-                Integer.MAX_VALUE , Integer.MAX_VALUE , 0,"Mohamadreza/Rice.png" , true) {
+                2 , Integer.MAX_VALUE , 0,"Mohamadreza/Rice.png" , true) {
         @Override
         public int getPrice(int id) {
             if (id == 1) {
@@ -96,7 +96,7 @@ public enum MarketItemType {
             return 250;
         }
         public int getInitialOtherShopsLimit() {
-            return Integer.MAX_VALUE;
+            return 2;
         }
         public int getInitialPierreShopsLimit() {
             return Integer.MAX_VALUE;

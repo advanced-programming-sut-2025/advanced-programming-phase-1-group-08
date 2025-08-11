@@ -33,5 +33,8 @@ public class MessageHandling {
     public boolean isBetween(User u1, User u2) {
         return (sender.equals(u1) && receiver.equals(u2)) || (sender.equals(u2) && receiver.equals(u1));
     }
+    public boolean contains(User u) {
+        return sender.getUsername().equals(u.getUsername()) || receiver.getUsername().equals(u.getUsername());
+    }
 
 }

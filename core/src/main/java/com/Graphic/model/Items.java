@@ -118,6 +118,7 @@ public class Items extends GameObject {
         return "name";
     };
     public void setRemindInShop(int amount , MarketType marketType) {
+        System.out.println("inja amd");
         return;
     };
     public int getMarketPrice(MarketType marketType) {

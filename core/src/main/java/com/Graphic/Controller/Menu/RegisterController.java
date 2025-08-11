@@ -57,8 +57,8 @@ public class RegisterController {
                 body.put("Error","Please select your gender!");
                 return new Message(CommandType.ERROR , body);
             }
-
-            if (message.getIntFromBody("Question index") == 0) {
+            int x = Integer.parseInt(message.getFromBody("X"));
+            if (x == 0) {
                 HashMap<String, Object> body = new HashMap<>();
                 body.put("Error", "Please select a security question!");
                 return new Message(CommandType.ERROR, body);
@@ -76,8 +76,8 @@ public class RegisterController {
                 return new Message(CommandType.ERROR, body);
             }
 
-
-            SecurityQuestions secQuestion = SecurityQuestions.values()[message.getIntFromBody("Question index") - 1];
+            int y = Integer.parseInt(message.getFromBody("Question index"));
+            SecurityQuestions secQuestion = SecurityQuestions.values()[y - 1];
             result = completeRegistration(
                 message.getFromBody("Username"), message.getFromBody("Password"),
                 message.getFromBody("Nickname"), message.getFromBody("Email"),

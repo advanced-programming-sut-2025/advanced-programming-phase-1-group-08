@@ -200,15 +200,15 @@ public class Client2ServerThread extends Thread{
             case CHANGE_MONEY -> {
                 User user = message.getFromBody("Player");
                 if (Main.getClient().getPlayer().getUsername().trim().equals(user.getUsername().trim())) {
-                    Main.getClient().getPlayer().increaseMoney(message.getIntFromBody("Money"));
+                    Main.getClient().getPlayer().increaseMoney(message.getFromBody("Money"));
                 }
                 else if (Main.getClient().getPlayer().getUsername().trim().equals(user.getSpouse().getUsername().trim())) {
-                    Main.getClient().getPlayer().increaseMoney(message.getIntFromBody("Money"));
+                    Main.getClient().getPlayer().increaseMoney(message.getFromBody("Money"));
                 }
             }
             case CHANGE_INVENTORY -> {
                 Items items = message.getFromBody("Item");
-                int amount = message.getIntFromBody("amount");
+                int amount = message.getFromBody("amount");
                 if (Main.getClient().getPlayer().getBackPack().inventory.Items.containsKey(items)) {
                     Main.getClient().getPlayer().getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
                     if (Main.getClient().getPlayer().getBackPack().inventory.Items.get(items) == 0) {
@@ -234,8 +234,8 @@ public class Client2ServerThread extends Thread{
             }
             case PLACE_CRAFT_SHIPPING_BIN -> {
                 Items items = message.getFromBody("Item");
-                int x = message.getIntFromBody("X");
-                int y = message.getIntFromBody("Y");
+                int x = message.getFromBody("X");
+                int y = message.getFromBody("Y");
                 getTileByCoordinates(x , y , Main.getClient().getLocalGameState()).setGameObject(items);
             }
             case REDUCE_ANIMAL -> {
@@ -259,8 +259,8 @@ public class Client2ServerThread extends Thread{
             case PLACE_BARN_CAGE -> {
                 User user = message.getFromBody("Player");
                 BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
-                int x = message.getIntFromBody("X");
-                int y = message.getIntFromBody("Y");
+                int x = message.getFromBody("X");
+                int y = message.getFromBody("Y");
                 InputGameController.getInstance().placeBarnOrCage(x, y, barnOrCage , user);
             }
         }

@@ -32,7 +32,6 @@ public class User {
     private int daysDepressedLeft = 0;
     private List<Recipe> recipes;
 
-
     private ArrayList<String> Right;
     private ArrayList<String> Left;
     private ArrayList<String> Up;
@@ -105,8 +104,6 @@ public class User {
     private int foragingAbility = 0;
     private int fishingAbility  = 0;
     private int money;
-
-
 
     private  Farm farm;
     public int topLeftX;
@@ -413,7 +410,6 @@ public class User {
         return fishingAbility;
     }
 
-
     public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {
 
         this.friendshipPoint = friendshipPoint;
@@ -557,7 +553,7 @@ public class User {
         //sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
     }
 
-    //    public Sprite getSprite() {
+//    public Sprite getSprite() {
 //        sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
 //        sprite.setSize(TEXTURE_SIZE, TEXTURE_SIZE);
 //

@@ -18,13 +18,10 @@ import com.Graphic.model.collisionRect;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy;
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.kryonet.Server;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.awt.*;
-
-import static com.esotericsoftware.kryonet.rmi.ObjectSpace.registerClasses;
 
 public class Network {
 
