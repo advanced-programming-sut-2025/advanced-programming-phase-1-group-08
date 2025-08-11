@@ -76,7 +76,10 @@ public class InputGameController {
     public static InputGameController inputGameController;
     Gson gson = new Gson();
 
-    private InputGameController() {}
+    private InputGameController() {
+        setTimeAndWeather();
+        GameControllerLogic.init();
+    }
     public static InputGameController getInstance() {
         if (inputGameController == null)
             inputGameController = new InputGameController();
@@ -84,9 +87,7 @@ public class InputGameController {
     }
 
     public void init () {
-        GameControllerLogic.init();
         Main.getClient().getPlayer().setInFarmExterior(true);
-
     }
     public void update(OrthographicCamera camera, float v, Boolean menuActivated) {
 
@@ -2034,7 +2035,6 @@ public class InputGameController {
 //        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
 //        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
 
-        setTimeAndWeather();
         //buildHall();
         //buildNpcVillage();
         //sortMap(currentGame.bigMap);
