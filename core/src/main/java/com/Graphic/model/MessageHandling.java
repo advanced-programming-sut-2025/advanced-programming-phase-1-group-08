@@ -37,4 +37,5 @@ public class MessageHandling {
         return sender.getUsername().equals(u.getUsername()) || receiver.getUsername().equals(u.getUsername());
     }
 
+
 }

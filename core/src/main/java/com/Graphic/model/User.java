@@ -139,6 +139,7 @@ public class User {
     }
 
 
+
     public void setBuff_maxEnergy_100_hoursLeft (int x) {
         Buff_maxEnergy_100_hoursLeft = x;
         Buff_maxEnergy_50_hoursLeft = 0;
@@ -410,6 +411,8 @@ public class User {
         return fishingAbility;
     }
 
+
+
     public void setFriendshipPoint(HashMap<NPC, Integer> friendshipPoint) {
 
         this.friendshipPoint = friendshipPoint;
@@ -521,6 +524,7 @@ public class User {
         this.Down.add("Mohamadreza/PlayerSpriteMove/Down" + farm.getIndex() + "," + gender + ".png");
 
 
+
 //        this.Right = new Animation<>(0.1f,
 //            TextureManager.get("Mohamadreza/PlayerSpriteIdle/Right" + farm.getIndex() + "," + gender + ".png"),
 //            TextureManager.get("Mohamadreza/PlayerSpriteMove/Right" + farm.getIndex() + "," + gender + ".png"));
@@ -553,7 +557,7 @@ public class User {
         //sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
     }
 
-//    public Sprite getSprite() {
+    //    public Sprite getSprite() {
 //        sprite.setPosition(TEXTURE_SIZE * (positionX), TEXTURE_SIZE * (90 - positionY));
 //        sprite.setSize(TEXTURE_SIZE, TEXTURE_SIZE);
 //
@@ -625,6 +629,7 @@ public class User {
     public String getWithMouse() {
         return withMouse;
     }
+
 
 
     public boolean isInBarnOrCage() {
@@ -748,3 +753,4 @@ public class User {
         this.showFlowered = showFlowered;
     }
 }
+
