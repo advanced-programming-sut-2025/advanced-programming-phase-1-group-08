@@ -95,9 +95,8 @@ public class GameControllerLogic {
 
     public static void init() {
         inputGameController = InputGameController.getInstance();
-        setTime();
         createScreenOverlay(gameMenu.getStage());
-        //lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
+        lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
     }
 
     public static void update(float delta) {
@@ -123,10 +122,10 @@ public class GameControllerLogic {
         handleLightning(delta);
 
 
-//        if (Main.getClient().getLocalGameState().currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
-//            AutomaticFunctionAfterAnyAct();
-//            lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
-//        }
+        if (Main.getClient().getLocalGameState().currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
+            AutomaticFunctionAfterAnyAct();
+            lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
+        }
 
     }
 
@@ -239,8 +238,8 @@ public class GameControllerLogic {
 
     public static Tile getTileByDir (int dir) {
 
-        float x = Main.getClient().getPlayer().getPositionX();
-        float y = Main.getClient().getPlayer().getPositionY();
+        float x = Main.getClient().getPlayer().getPositionX() / TEXTURE_SIZE;
+        float y = Main.getClient().getPlayer().getPositionY() / TEXTURE_SIZE;
 
         if (dir == 1)
             return getTileByCoordinates((int) (x+1), (int) y , Main.getClient().getLocalGameState());
@@ -1987,23 +1986,24 @@ public class GameControllerLogic {
         checkForGiant();
         checkForProtect();
 
-        for (User user : Main.getClient().getLocalGameState().getPlayers()) {
-            user.checkHealth();
+        for (NPC npc : NPC.values())
+            if (Main.getClient().getPlayer().getFriendshipLevel(npc) == 3 &&
+                Main.getClient().getPlayer().getLevel3Date(npc) == Main.getClient().getLocalGameState().currentDate)
 
-            for (NPC npc : NPC.values())
-                if (user.getFriendshipLevel(npc) == 3 && user.getLevel3Date(npc) == Main.getClient().getLocalGameState().currentDate)
-                    user.setLevel3Date(npc, Main.getClient().getLocalGameState().currentDate.clone());
+                Main.getClient().getPlayer().setLevel3Date(npc, Main.getClient().getLocalGameState().currentDate.clone());
+
+        if (checkForDeath()) {
+            Main.getClient().getPlayer().setSleepTile(
+                getTileByCoordinates(
+                    (int) (Main.getClient().getPlayer().getPositionX() / TEXTURE_SIZE),
+                    (int) (Main.getClient().getPlayer().getPositionY() / TEXTURE_SIZE),
+                    Main.getClient().getLocalGameState()));
         }
-
-
-//        if (checkForDeath()) {
-//            Main.getClient().getPlayer().setSleepTile(
-//                getTileByCoordinates(Main.getClient().getPlayer().getPositionX(),
-//                    Main.getClient().getPlayer().getPositionY()));
-//            return new Result(false, BRIGHT_RED + "No energy left! It's the next player's turn" + RESET);
-//        }
-
     }
+
+
+
+
 
     // energy & Date
     public static void setEnergyInMorning () {

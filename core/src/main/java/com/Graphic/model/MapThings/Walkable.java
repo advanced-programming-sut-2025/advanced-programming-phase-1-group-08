@@ -2,8 +2,6 @@ package com.Graphic.model.MapThings;
 
 import com.Graphic.model.Enum.ItemType.MarketType;
 
-import static com.Graphic.model.HelpersClass.Color_Eraser.*;
-
 public class Walkable extends GameObject {
 
     private String grassOrFiber;

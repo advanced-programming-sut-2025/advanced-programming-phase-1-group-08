@@ -33,8 +33,6 @@ import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 public class ClientConnectionController {
 
     private static ClientConnectionController instance;
-    private static Game game;
-
 
     public void createFarm(Message message , Game game) throws IOException {
         int index = message.getFromBody("Index");
@@ -480,8 +478,8 @@ public class ClientConnectionController {
 
         DateHour currentDateHour = game.getGameState().currentDate;
 
-        game.getGameState().currentDate.setDate(day);
-        game.getGameState().currentDate.setHour(hour);
+        currentDateHour.setDate(day);
+        currentDateHour.increaseHour(hour - currentDateHour.getHour());
 
         sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
     }
