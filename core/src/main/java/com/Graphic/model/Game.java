@@ -2,24 +2,17 @@ package com.Graphic.model;
 
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
-import com.Graphic.model.ClientServer.PlayerHandler;
+//import com.Graphic.model.ClientServer.PlayerHandler;
 import com.Graphic.model.ClientServer.ServerHandler;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.SecurityQuestions;
-import com.Graphic.model.Enum.WeatherTime.Weather;
-import com.Graphic.model.MapThings.Tile;
-import com.Graphic.model.Places.Farm;
-import com.Graphic.model.Places.Market;
 import com.Graphic.model.SaveData.PasswordHashUtil;
 import com.Graphic.model.SaveData.UserStorage;
-import com.Graphic.model.Weather.DateHour;
 import com.esotericsoftware.kryonet.Connection;
 
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.*;
 
 public class Game {

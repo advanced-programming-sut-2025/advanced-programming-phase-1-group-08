@@ -97,7 +97,7 @@ public class GameControllerLogic {
         inputGameController = InputGameController.getInstance();
         setTime();
         createScreenOverlay(gameMenu.getStage());
-        lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
+        //lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
     }
 
     public static void update(float delta) {
@@ -123,10 +123,10 @@ public class GameControllerLogic {
         handleLightning(delta);
 
 
-        if (Main.getClient().getLocalGameState().currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
-            AutomaticFunctionAfterAnyAct();
-            lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
-        }
+//        if (Main.getClient().getLocalGameState().currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
+//            AutomaticFunctionAfterAnyAct();
+//            lastTimeUpdate = Main.getClient().getLocalGameState().currentDate.clone();
+//        }
 
     }
 
@@ -655,19 +655,19 @@ public class GameControllerLogic {
             double noise = perlinNoise.noise(i * 0.1, j * 0.1);
             if (-1.2 < noise && noise < -0.9 && treeNumber <30)
             {
-                Tree tree = new Tree(TreeType.OakTree,gameState.currentDate.clone());
+                Tree tree = new Tree(TreeType.OakTree,new DateHour(Season.Spring, 1, 9, 1950));
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
                 Player.getFarm().Farm.add(tile);
                 return 1;
             }
             else if(noise > -0.9 && noise <-0.5 && treeNumber <30){
-                Tree tree = new Tree(TreeType.MapleTree,gameState.currentDate.clone());
+                Tree tree = new Tree(TreeType.MapleTree,new DateHour(Season.Spring, 1, 9, 1950));
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
                 Player.getFarm().Farm.add(tile);
                 return 1;
             }
             else if (noise > -0.5 && noise < - 0.2 && treeNumber <30){
-                Tree tree = new Tree(TreeType.PineTree, gameState.currentDate.clone());
+                Tree tree = new Tree(TreeType.PineTree, new DateHour(Season.Spring, 1, 9, 1950));
                 Tile tile = new Tile(i + 60 * Player.topLeftX, j + 60 * Player.topLeftY, tree);
                 Player.getFarm().Farm.add(tile);
                 return 1;
@@ -1792,7 +1792,8 @@ public class GameControllerLogic {
             }
         }
     }
-    public static void initializePlayer () {
+    public static void
+    initializePlayer () {
 
         User user = Main.getClient().getPlayer();
 

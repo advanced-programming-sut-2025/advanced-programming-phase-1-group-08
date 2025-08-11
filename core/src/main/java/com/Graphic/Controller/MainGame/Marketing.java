@@ -8,8 +8,6 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.ClientServer.Message;
-import com.Graphic.model.ClientServer.PlayerHandler;
-import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
 import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.AllPlants.TreesSourceType;
 import com.Graphic.model.Enum.Commands.CommandType;
@@ -20,14 +18,10 @@ import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.Plants.BasicRock;
-import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Plants.Wood;
-import com.Graphic.model.OtherItem.BarsAndOres;
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Places.ShippingBin;
-import com.Graphic.model.Places.Well;
-import com.Graphic.model.Plants.ForagingMinerals;
 import com.Graphic.model.Plants.ForagingSeeds;
 import com.Graphic.model.Plants.TreeSource;
 import com.Graphic.model.HelpersClass.Result;
@@ -54,17 +48,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.View.GameMenus.MarketMenu.*;
 //import static com.Graphic.View.GameMenus.MarketMenu.marketType;
-import static com.Graphic.model.App.currentGame;
-import static com.Graphic.model.App.currentMenu;
 import static com.Graphic.model.Enum.ItemType.MarketType.*;
-import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public class Marketing {

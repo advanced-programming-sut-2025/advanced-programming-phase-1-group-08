@@ -10,6 +10,7 @@ import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.NPC.NPCHouse;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.ToolsType.*;
+import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.OtherItem.Fridge;
 import com.Graphic.model.Plants.Wood;
@@ -144,6 +145,7 @@ public class Network {
         kryo.register(com.Graphic.model.Plants.Food.class);
         kryo.register(com.Graphic.model.Plants.TreesProdct.class);
         kryo.register(com.Graphic.model.Plants.GiantProduct.class);
+        kryo.register(Season.class);
 
     }
 }

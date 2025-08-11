@@ -31,8 +31,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.getTileByCoordinates;
+import static com.Graphic.model.Enum.Commands.CommandType.EXIT_MARKET;
 
-public class ClientWork  {
+public class ClientWork {
 
     private ClientWorkController controller;
 
@@ -46,13 +47,13 @@ public class ClientWork  {
     private Menu currentMenu;
     private Client client;
 
-    public ClientWork(String serverIp , int tcpPort , int udpPort) throws IOException {
-        client = new Client(1024 * 1024 * 10 , 1024 * 1024 * 10);
+    public ClientWork(String serverIp, int tcpPort, int udpPort) throws IOException {
+        client = new Client(1024 * 1024 * 10, 1024 * 1024 * 10);
         client.start();
         Network.register(client);
 //        client.setKeepAliveTCP(4000);
 //        client.setTimeout(30000);
-        client.connect(5000 , serverIp , tcpPort , udpPort);
+        client.connect(5000, serverIp, tcpPort, udpPort);
 
         client.addListener(new Listener() {
 
@@ -72,10 +73,9 @@ public class ClientWork  {
         new Thread(() -> {
             while (true) {
                 try {
-                        Message msg = requests.take();
-                        sendMessage(msg);
-                    }
-                catch (InterruptedException e) {
+                    Message msg = requests.take();
+                    sendMessage(msg);
+                } catch (InterruptedException e) {
                     //Thread.currentThread().interrupt();
                 }
             }
@@ -222,7 +222,6 @@ public class ClientWork  {
                     catch (Exception e) {
 
                     }
-
                 }
                 case CHANGE_INVENTORY -> {
                     Items items = message.getFromBody("Item");
@@ -237,6 +236,7 @@ public class ClientWork  {
                     }
                 }
                 case REDUCE_PRODUCT -> {
+
                     Items items = message.getFromBody("Item");
                     MarketType marketType = message.getFromBody("Market");
                     items.setRemindInShop(items.getRemindInShop(marketType) - 1, marketType);
@@ -274,6 +274,7 @@ public class ClientWork  {
                     Main.getClient().getLocalGameState().getAnimals().add(animal);
                 }
                 case PLACE_BARN_CAGE -> {
+
                     User user = message.getFromBody("Player");
                     BarnOrCage barnOrCage = message.getFromBody("BarnOrCage");
                     int x = message.getFromBody("X");
@@ -293,30 +294,20 @@ public class ClientWork  {
                     // print unseen messages
                     Main.getClient().getPlayer().setShowUnseenChats(true);
                 }
+
+
                 case EXIT_MARKET -> {
-
                     int x = message.getFromBody("X");
-
                     int y = message.getFromBody("Y");
-
                     for (User user : Main.getClient().getLocalGameState().getPlayers()) {
-
                         if (user.getUsername().trim().equals(message.getFromBody("Player"))) {
-
                             user.setPositionX((float) x);
-
                             user.setPositionY((float) y);
-
                             user.setIsInMarket(false);
-
                             user.setInFarmExterior(true);
-
                             user.setDirection(Direction.Down);
-
                             Main.getClient().getPlayer().getExitMarket().add(user);
-
                         }
-
                     }
 
                 }
@@ -331,15 +322,15 @@ public class ClientWork  {
                     );
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch (Exception e) {e.printStackTrace();}
     }
 
     public void sendMessage(Message message) {
         client.sendTCP(message);
 
     }
-
 
 
     public boolean isExit() {
@@ -354,15 +345,19 @@ public class ClientWork  {
     public synchronized BlockingQueue<Message> getRequests() {
         return requests;
     }
+
     public boolean isRunning() {
         return running;
     }
+
     public void setRunning(boolean running) {
         this.running = running;
     }
+
     public User getPlayer() {
         return Player;
     }
+
     public void setPlayer(User player) {
         this.Player = player;
     }
@@ -373,9 +368,11 @@ public class ClientWork  {
         }
         return localGameState;
     }
+
     public Menu getCurrentMenu() {
         return currentMenu;
     }
+
     public void setCurrentMenu(Menu currentMenu) {
         this.currentMenu = currentMenu;
     }
