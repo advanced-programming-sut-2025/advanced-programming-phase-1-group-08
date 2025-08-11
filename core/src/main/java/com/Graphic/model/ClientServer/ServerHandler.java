@@ -2,6 +2,7 @@ package com.Graphic.model.ClientServer;
 
 import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Game;
+import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -10,32 +11,26 @@ import java.util.HashMap;
 
 public class ServerHandler extends Thread {
 
-    private static ServerHandler instance;
     private ClientConnectionController controller;
-
+    private static ServerHandler instance;
     public Game game;
-    public HashMap<String , Object> body = new HashMap<>();
-
-    private final int hourSecond = 120000;
 
     public long startTime;
     public long lastTime;
 
 
-    private ServerHandler(Game game) {
-        initialize(game);
+    private ServerHandler() {
+        initialize();
     }
-    public void initialize(Game game) {
+    public void initialize() {
 
         startTime = TimeUtils.millis();
         lastTime = TimeUtils.millis();
-        this.game = game;
         controller = ClientConnectionController.getInstance();
-        game.getGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1950);
     }
-    public static ServerHandler getInstance(Game game) {
+    public static ServerHandler getInstance() {
         if (instance == null)
-            instance = new ServerHandler(game);
+            instance = new ServerHandler();
         return instance;
     }
 
@@ -43,17 +38,28 @@ public class ServerHandler extends Thread {
     public void run () {
 
         try {
-            // controller.sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
-            while (true)
+            while (true) {
                 ServerRender();
+                Thread.sleep(10);
+            }
         }
         catch (Exception e) {e.printStackTrace();}
     }
-
     private void ServerRender() throws IOException {
-        if (TimeUtils.millis() - lastTime > hourSecond)
-            controller.passedOfTime(0, 1,game.getGameState().currentDate , game);
+
+        if (TimeUtils.millis() - lastTime > 120000) {
+            controller.passedOfTime(0, 1, game.getGameState().currentDate, game);
+            lastTime = TimeUtils.millis();
+        }
     }
 
+    public DateHour getCurrentDate() {
+
+        return game.getGameState().currentDate;
+    }
+    public void setGame (Game game) {
+        this.game = game;
+        game.getGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1950);
+    }
 
 }

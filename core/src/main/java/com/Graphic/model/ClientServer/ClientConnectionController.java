@@ -33,8 +33,6 @@ import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 public class ClientConnectionController {
 
     private static ClientConnectionController instance;
-    private static Game game;
-
 
     public void createFarm(Message message , Game game) throws IOException {
         int index = message.getFromBody("Index");
@@ -470,26 +468,36 @@ public class ClientConnectionController {
 
         int number = getDayDifferent(currentDateHour, dateHour);
 
-        for (int i = 0 ; i < number ; i++)
+        for (int i = 0 ; i < number ; i++) {
             currentDateHour.increaseDay(1);
+            startDay();
+        }
 
         currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
         sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
+    }
+    public void startDayTask (Game game) throws IOException {
+        for (Tile tile : game.getGameState().bigMap )
+            tile.getGameObject().startDayAutomaticTask();
     }
     public void setTime (int day, int hour, Game game) throws IOException {
 
         DateHour currentDateHour = game.getGameState().currentDate;
 
-        game.getGameState().currentDate.setDate(day);
-        game.getGameState().currentDate.setHour(hour);
+        currentDateHour.setDate(day);
+        currentDateHour.increaseHour(hour - currentDateHour.getHour());
 
         sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
     }
     public void sendSetGameObjectMessage (int x, int y, GameObject object, Game game) throws IOException {
-        HashMap<String , Object> PassedTime = new HashMap<>();
-        PassedTime.put("X", x);
-        PassedTime.put("Y", y);
-        PassedTime.put("Object", object);
-        sendToAll(new Message(CommandType.SET_TIME, PassedTime), game);
+
+        Tile tile = getTileByCoordinates(x, y, game.getGameState());
+        tile.setGameObject(object);
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("X", x);
+        body.put("Y", y);
+        body.put("Object", object);
+        sendToAll(new Message(CommandType.SET_TIME, body), game);
     }
 }

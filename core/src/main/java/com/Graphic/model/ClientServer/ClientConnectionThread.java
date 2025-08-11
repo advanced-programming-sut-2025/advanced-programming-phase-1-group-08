@@ -183,9 +183,10 @@ public class ClientConnectionThread extends Thread {
             case LOADED_GAME -> {}
 
             case SET_TIME -> {
-                controller.setTime(
+                controller.passedOfTime(
                     message.getFromBody("Day"),
-                    message.getFromBody("Hour"), game
+                    message.getFromBody("Hour"),
+                    game.getGameState().currentDate, game
                 );
             }
             case GET_TIME -> {

@@ -2613,13 +2613,9 @@ public class InputGameController {
 
     public void sendPassedTimeMessage (int day, int hour) {
 
-        DateHour copy = Main.getClient().getLocalGameState().currentDate.clone();
-        copy.increaseHour(hour);
-        copy.increaseDay(day);
-
         HashMap<String , Object> PassedTime = new HashMap<>();
-        PassedTime.put("Hour", copy.getHour());
-        PassedTime.put("Day", copy.getDate());
+        PassedTime.put("Hour", hour);
+        PassedTime.put("Day", day);
         Main.getClient().getRequests().add(new Message(CommandType.SET_TIME , PassedTime));
 
     }
@@ -2628,13 +2624,13 @@ public class InputGameController {
         PassedTime.put("X", x);
         PassedTime.put("Y", y);
         PassedTime.put("Object", gameObject);
-        Main.getClient().getRequests().add(new Message(CommandType.SET_TIME, PassedTime));
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_GAME_OBJECT, PassedTime));
     }
     public void sendChangeGameObjectMessage (Tile tile, GameObject gameObject) {
         HashMap<String , Object> PassedTime = new HashMap<>();
         PassedTime.put("X", tile.getX());
         PassedTime.put("Y", tile.getY());
         PassedTime.put("Object", gameObject);
-        Main.getClient().getRequests().add(new Message(CommandType.SET_TIME, PassedTime));
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_GAME_OBJECT, PassedTime));
     }
 }
