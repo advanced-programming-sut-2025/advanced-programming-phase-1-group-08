@@ -15,7 +15,7 @@ public enum Menu {
     RegisterMenu(new RegisterMenu() , new RegisterMenu()),
     ProfileMenu(new ProfileMenu() , new ProfileMenu()),
     AvatarMenu(new AvatarMenu() , new AvatarMenu()),
-    LoginMenu(new LoginMenu() , new LoginMenu()),
+    LoginMenu(new LoginMenu("", "") , new LoginMenu("", "")), // TODO   اینا باید درست بشع
     ExitMenu(new ExitMenu() , new ExitMenu()),
     MainMenu(new MainMenu() , new MainMenu()),
     HomeMenu(new HomeMenu() , new HomeMenu()),

@@ -3187,6 +3187,7 @@ public class GameControllerLogic {
     }
 
     public static void setTime () {
+
         Main.getClient().getRequests().add(new Message(CommandType.GET_TIME, new HashMap<>()));
     }
 

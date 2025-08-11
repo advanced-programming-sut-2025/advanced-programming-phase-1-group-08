@@ -38,7 +38,14 @@ public class LoginMenu implements Screen, AppMenu {
     private Window forgotPasswordWindow;
     private TextField forgotUsernameField;
 
-    public LoginMenu() {
+
+    private String username;
+    private String password;
+
+    public LoginMenu(String username, String password) {
+
+        this.username = username;
+        this.password = password;
         controller = new LoginController();
     }
 
@@ -136,8 +143,9 @@ public class LoginMenu implements Screen, AppMenu {
         loginButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String username = usernameField.getText().trim();
-                String password = passwordField.getText().trim();
+//                String username = usernameField.getText().trim();
+//                String password = passwordField.getText().trim();
+
                 boolean stayLoggedIn = stayLoggedInCheckbox.isChecked();
 
                 if (username.isEmpty() /*|| password.isEmpty()*/) {

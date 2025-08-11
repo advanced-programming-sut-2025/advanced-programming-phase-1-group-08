@@ -22,18 +22,6 @@ dependencies {
   implementation 'com.esotericsoftware:kryo:5.6.2'
 }
 
-task runClient(type: JavaExec) {
-
-  group = "application"
-  description = "Run the client class"
-
-
-  classpath = sourceSets.main.runtimeClasspath
-  mainClass = 'com.Graphic.model.ClientServer.Client'
-  workingDir = rootProject.file("assets")
-  // اگه آرگومان می‌خوای اضافه کن:
-  args = []
-}
 task runServer(type: JavaExec) {
   group = "application"
   description = "Run the MultiGameServer class"
@@ -46,5 +34,18 @@ task runServer(type: JavaExec) {
   // آرگومان‌ها رو اینجا بنویس اگر نیازه
   args = []
 }
+task runClient(type: JavaExec) {
+  group = "application"
+  description = "Run the client class"
+
+  classpath = sourceSets.main.runtimeClasspath
+  mainClass = 'com.Graphic.model.ClientServer.Client'
+  workingDir = rootProject.file("assets")
+
+  jvmArgs = ["-XstartOnFirstThread"]  // ⬅ این خط رو اضافه کن
+
+  args = []
+}
+
 
 

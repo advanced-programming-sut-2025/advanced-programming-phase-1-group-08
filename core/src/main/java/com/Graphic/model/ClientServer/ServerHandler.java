@@ -1,5 +1,6 @@
 package com.Graphic.model.ClientServer;
 
+import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Game;
 import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -33,7 +34,7 @@ public class ServerHandler extends Thread {
         lastTime = TimeUtils.millis();
         this.game = game;
         controller = ClientConnectionController.getInstance();
-
+        currentDateHour = new DateHour(Season.Spring, 1, 9, 1950);
     }
     public static ServerHandler getInstance(Game game) {
         if (instance == null)
@@ -44,13 +45,12 @@ public class ServerHandler extends Thread {
     @Override
     public void run () {
 
-        while (true) {
-            try {
+        try {
+            // controller.sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
+            while (true)
                 ServerRender();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
+        catch (Exception e) {e.printStackTrace();}
     }
 
     private void ServerRender() throws IOException {

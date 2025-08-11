@@ -22,7 +22,7 @@ public class Client extends Game {
             config.setWindowedMode(1920, 1080);
             config.useVsync(true);
             config.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate + 1);
-            new Lwjgl3Application(new Main(clientWork), config);
+            new Lwjgl3Application(new Main(clientWork, args[0], args[1]), config);
 
         }
 

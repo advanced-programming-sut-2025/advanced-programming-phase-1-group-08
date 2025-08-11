@@ -1,7 +1,9 @@
 package com.Graphic;
 
 
+import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.View.LoginMenu;
+import com.Graphic.View.PlayGameMenu;
 import com.Graphic.model.ClientServer.ClientWork;
 import com.Graphic.model.Enum.Menu;
 import com.badlogic.gdx.Game;
@@ -22,12 +24,18 @@ public class Main extends Game {
     public static Skin newSkin;
     private static ClientWork client;
 
+    private static String name1;
+    private static String password;
+
+
     static {
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("kryonet.log", "DEBUG");
     }
 
-    public Main(ClientWork client) {
+    public Main(ClientWork client, String name, String pass) {
+        name1 = name;
+        password = pass;
         Main.client = client;
     }
 
@@ -41,7 +49,7 @@ public class Main extends Game {
         newSkin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
         //client.startListening();
         client.setCurrentMenu(Menu.LoginMenu);
-        main.setScreen(new LoginMenu());
+        main.setScreen(new LoginMenu(name1, password));
 
     }
 

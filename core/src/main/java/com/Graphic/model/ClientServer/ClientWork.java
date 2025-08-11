@@ -13,10 +13,13 @@ import com.Graphic.model.Enum.ItemType.BackPackType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.Menu;
+import com.Graphic.model.Enum.WeatherTime.Season;
+import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.Items;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.Farm;
 import com.Graphic.model.User;
+import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -116,6 +119,9 @@ public class ClientWork  {
                     for (User user : players) {
                         if (user.getUsername().trim().equals(Main.getClient().getPlayer().getUsername().trim())) {
                             Main.getClient().setPlayer(user);
+                            Main.getClient().getLocalGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1950);
+                            Main.getClient().getLocalGameState().currentWeather = Weather.Rainy;
+                            Main.getClient().getLocalGameState().tomorrowWeather = Weather.Rainy;
                         }
                     }
                     Main.getClient().setRunning(true);

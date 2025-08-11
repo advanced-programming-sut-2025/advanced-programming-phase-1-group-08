@@ -223,8 +223,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             try {
                 controller = InputGameController.getInstance();
                 currentMenu = Menu.GameMenu;
-                initialize();
                 controller.chooseMap();
+                initialize();
 
                 controller.init();
                 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -264,7 +264,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 e.printStackTrace();
             }
         }
-
+        else if (lastDateHour == null)
+            setTime();
     }
 
 
@@ -324,11 +325,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             } else {
                 activeDialog = null;
             }
+
+            startFishing(v);
+            Main.getBatch().end();
         }
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-        startFishing(v);
-        Main.getBatch().end();
     }
 
                                                                 // Ario
@@ -479,6 +481,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Main.getBatch().end();
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0, 1, 0, 0.5f);
         if (shapeRendererLevel == 0)
@@ -1074,8 +1077,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         gameMenuInitialized = true;
 
         currentMenu = Menu.GameMenu;
-
-        lastDateHour = Main.getClient().getLocalGameState().currentDate.clone();
 
         controller = InputGameController.getInstance();
         stage = new Stage(new ScreenViewport());
@@ -2680,6 +2681,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     public Stage getStage() {
+        if (stage == null) {
+            stage = new Stage(new ScreenViewport());
+        }
         return stage;
     }
 

@@ -14,9 +14,9 @@ public class DateHour implements Cloneable {
 
     public DateHour(){}
 
-    public DateHour(Season season, int seasonDay, int hour, int year) {
+    public DateHour(Season season, int date, int hour, int year) {
         this.season = season;
-        this.date = seasonDay;
+        this.date = date;
         this.hour = hour;
         this.year = year;
     }

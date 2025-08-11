@@ -3,6 +3,7 @@ package com.Graphic.model;
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.ClientServer.PlayerHandler;
+import com.Graphic.model.ClientServer.ServerHandler;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.SecurityQuestions;
@@ -95,14 +96,13 @@ public class Game {
 
         if (gameState.getPlayers().size() == 4 && !gameStarted) {
             gameStarted = true;
+            ServerHandler serverHandler = ServerHandler.getInstance(this);
             HashMap<String , Object> body = new HashMap<>();
             body.put("Players" , gameState.getPlayers());
             for (Map.Entry<User , Connection> entry : connections.entrySet()) {
                 entry.getValue().sendTCP(new Message(CommandType.GAME_START ,  body));
             }
-
         }
-
     }
 
 
