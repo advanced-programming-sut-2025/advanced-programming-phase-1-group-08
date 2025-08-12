@@ -148,20 +148,20 @@ public class HumanCommunications {
     }
 
     // LEVEL ONE TASKS
-    public Result rateGifts(){
-        Scanner scanner = new Scanner(System.in);
-        int rate = scanner.nextInt();
-        if (!(rate >= 1 && rate <= 5)) {
-            System.out.println(RED + "Just Enter a Digit! (1 to 5)" + RESET);
-            return new Result(false, RED + "Just Enter a Digit! (1 to 5)" + RESET);
-        }
-
-        int x = ((rate - 3) * 30) + 15;
-        setXP(getXP() + x);
-        updateLevel();
-
-        return new Result(true, GREEN+"Rated Successfully."+RESET);
-    }
+//    public Result rateGifts(){
+//        Scanner scanner = new Scanner(System.in);
+//        int rate = scanner.nextInt();
+//        if (!(rate >= 1 && rate <= 5)) {
+//            System.out.println(RED + "Just Enter a Digit! (1 to 5)" + RESET);
+//            return new Result(false, RED + "Just Enter a Digit! (1 to 5)" + RESET);
+//        }
+//
+//        int x = ((rate - 3) * 30) + 15;
+//        setXP(getXP() + x);
+//        updateLevel();
+//
+//        return new Result(true, GREEN+"Rated Successfully."+RESET);
+//    }
 //    public Result sendGifts(String username, String item, int amount) {
 //        User other;
 //        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
@@ -223,7 +223,7 @@ public class HumanCommunications {
     // LEVEL TWO TASKS
 //    public Result Hug() {
 //
-        User other;
+//        User other;
 //        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
 //            other = player2;
 //        else
@@ -295,8 +295,8 @@ public class HumanCommunications {
 //
 //        return new Result(true, "You Gave Bouquet to " + other.getNickname());
 //    }
-//
-//    // LEVEL THREE TASKS
+
+    // LEVEL THREE TASKS
 //    public Result propose() {
 //        User other;
 //        if (player1.getUsername().equals(currentGame.currentPlayer.getUsername()))
@@ -332,7 +332,7 @@ public class HumanCommunications {
 //        Marriage.sendProposal(currentGame.currentPlayer, other);
 //        return new Result(true, GREEN+"You Proposed Successfully!"+RESET);
 //    }
-//
+
 //    // LEVEL FOUR
 //    public Result marry() {
 //        //current player -> wife

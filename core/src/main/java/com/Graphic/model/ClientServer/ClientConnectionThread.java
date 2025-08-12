@@ -219,6 +219,43 @@ public class ClientConnectionThread extends Thread {
                 body2.put("friendships", game.getGameState().friendships);
                 ClientConnectionController.getInstance().sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body2), game);
             }
+            case SEND_GIFT -> {
+                User player1 = message.getFromBody("Giver");
+                User player2 = message.getFromBody("Given");
+                User giver = null;
+                User given = null;
+                for (User user: game.getGameState().getPlayers()) {
+                    if (user.getUsername().equals(player1.getUsername())) {
+                        giver = user;
+                    }
+                    if (user.getUsername().equals(player2.getUsername())) {
+                        given = user;
+                    }
+                }
+                if (giver == null && given == null) {
+                    return;
+                }
+
+                Items item =  message.getFromBody("Item");
+
+                if (giver.getBackPack().inventory.Items.containsKey(item)) {
+                    giver.getBackPack().inventory.Items.compute(item,(k,v) -> v - 1);
+                }
+                else return;
+                if (given.getBackPack().inventory.Items.containsKey(item)) {
+                    given.getBackPack().inventory.Items.compute(item,(k,v) -> v + 1);
+                }
+                else {
+                    given.getBackPack().inventory.Items.put(item,1);
+                }
+
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("Giver", giver);
+                body.put("Given", given);
+                body.put("Item", item);
+                controller.sendToOnePerson(new Message(CommandType.SEND_GIFT, body), game, given);
+
+            }
             case EXIT_MARKET -> {
                 System.out.println("Exit");
                 controller.ExitTheMarket(message , game);
@@ -248,6 +285,11 @@ public class ClientConnectionThread extends Thread {
                     message.getFromBody("Object"), game
                 );
             }
+            case CURRENT_ITEM -> {
+                User player = message.getFromBody("Player");
+                Items items = message.getFromBody("Item");
+                sendMessage(controller.changeCurrentItem(player, items, game));
+            }
 
                                         // Ario
             case FriendshipsInquiry -> {
@@ -266,6 +308,35 @@ public class ClientConnectionThread extends Thread {
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("friendships", game.getGameState().friendships);
                 sendMessage(new Message(CommandType.FriendshipsInqResponse, body));
+            }
+            case ADD_XP_TO_FRIENDSHIP -> {
+                User player = message.getFromBody("Player");
+                User friend =  message.getFromBody("Friend");
+                User p1 = null;
+                User p2 = null;
+                for (User user: game.getGameState().getPlayers()) {
+                    if (user.getUsername().equals(player.getUsername())) {
+                        p1 = user;
+                    }
+                    if (user.getUsername().equals(friend.getUsername())) {
+                        p2 = user;
+                    }
+                }
+                if (p1 == null || p2 == null) {
+                    return;
+                }
+
+                int xp = message.getFromBody("XP");
+
+                for (HumanCommunications f : game.getGameState().friendships) {
+                    if (f.isBetween(p1, p2)) {
+                        f.addXP(xp);
+                    }
+                }
+
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("friendships", game.getGameState().friendships);
+                controller.sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body), game);
             }
 
 

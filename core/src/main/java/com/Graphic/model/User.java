@@ -63,6 +63,7 @@ public class User {
     private boolean showUnseenChats = false;
     private boolean showHugged =  false;
     private boolean showFlowered = false;
+    private List<String> giftIGot = new ArrayList<>();
 
     // buffs
     public int Buff_maxEnergy_100_hoursLeft = 0;
@@ -751,6 +752,20 @@ public class User {
     }
     public void setShowFlowered(boolean showFlowered) {
         this.showFlowered = showFlowered;
+    }
+    public void setGiftIGot(User sender, Items gift, boolean makeItNull) {
+        if (makeItNull) {
+            for (var g: giftIGot) {
+                giftIGot.remove(g);
+            }
+            giftIGot = null;
+            return;
+        }
+        giftIGot.addFirst(sender.getUsername());
+        giftIGot.addLast(gift.getName());
+    }
+    public List<String> getGiftIGot() {
+        return giftIGot;
     }
 }
 
