@@ -283,6 +283,10 @@ public class ClientWork {
                 }
                 case FriendshipsInqResponse, UPDATE_FRIENDSHIPS -> {
                     Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
+                    if (Main.getClient().getLocalGameState().friendships.isEmpty()) {
+                        for (int i = 0; i < 500; i++)
+                            System.out.println("client bega raft");
+                    }
                 }
 
                 case A_FRIEND_IS_CLOSE -> {
@@ -297,7 +301,7 @@ public class ClientWork {
                 case SEND_GIFT -> {
                     User sender = message.getFromBody("Giver");
                     Items items = message.getFromBody("Item");
-                    Main.getClient().getPlayer().setGiftIGot(sender, items, false);
+                    Main.getClient().getPlayer().setGiftIGot(sender.getUsername(), items.getName(), false);
                 }
                 case CHANGE_ABILITY_LEVEL -> {
                     int fishing =  message.getFromBody("Fishing");

@@ -16,6 +16,7 @@ import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
+import com.Graphic.model.Places.Lake;
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Places.ShippingBin;
 import com.Graphic.model.Plants.*;
@@ -385,6 +386,9 @@ public class ClientConnectionController {
             if (user.getUsername().trim().equals(player.getUsername().trim())) {
                 Items items = message.getFromBody("Item");
                 int amount = message.getFromBody("amount");
+                for (int i = 0; i < 400; i++)
+                    System.out.println("printing amount");
+                System.out.println(amount);
                 if (user.getBackPack().inventory.Items.containsKey(items)) {
                     user.getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
 //                    if (user.getBackPack().inventory.Items.get(items) == 0) {
@@ -442,6 +446,32 @@ public class ClientConnectionController {
     }
     public void CheckFriendDistance() {
 
+    }
+    public void checkLakeDistance(Game game) throws IOException {
+//        for (User player: game.getGameState().getPlayers()) {
+//            Lake lake = player.getFarm().getLake();
+//            if (lake == null) return;
+//            float myX = player.getPositionX();
+//            float myY = player.getPositionY();
+//            float lakeY = lake.getTopLeftY();
+//            float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
+//            float deltaX = Math.abs(myX - lakeX);
+//            float deltaY = Math.abs(myY - lakeY);
+//            if (deltaX < 3f && deltaY < 3f) {
+//                player.setCloseToLake(true);
+//                HashMap<String , Object> body = new HashMap<>();
+//                body.put("Player", player);
+//                body.put("isClose", true);
+//                sendToOnePerson(new Message(CLOSE_TO_LAKE, body), game, player);
+//            }
+//            else {
+//                player.setCloseToLake(false);
+//                HashMap<String , Object> body = new HashMap<>();
+//                body.put("Player", player);
+//                body.put("isClose", false);
+//                sendToOnePerson(new Message(CLOSE_TO_LAKE, body), game, player);
+//            }
+//        }
     }
 
 

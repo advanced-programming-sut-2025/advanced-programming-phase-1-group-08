@@ -52,6 +52,9 @@ public class ServerHandler extends Thread {
             controller.passedOfTime(0, 1, game.getGameState().currentDate, game);
             lastTime = TimeUtils.millis();
         }
+
+//        controller.CheckFriendDistance();
+        controller.checkLakeDistance(game);
     }
 
     public DateHour getCurrentDate() {
