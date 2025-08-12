@@ -8,10 +8,8 @@ import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.AnimalRenderer;
 import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.ClientServer.*;
 import com.Graphic.model.ClientServer.ClientWorkController;
-import com.Graphic.model.ClientServer.ClientWorkController;
-import com.Graphic.model.ClientServer.GameState;
-import com.Graphic.model.ClientServer.Message;
 import com.Graphic.model.Enum.AllPlants.*;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Commands.GameMenuCommands;
@@ -1832,7 +1830,7 @@ public class GameControllerLogic {
         float darkness = getDarknessLevel(hour);
         Color color = helperBackGround.getColor();
         helperBackGround.setColor(color.r, color.g, color.b, darkness);
-        System.out.println("TEST");
+        System.out.println("*************  -->  " + hour);
     }
     public static float getDarknessLevel(int hour) {
         if (hour <= 18)
@@ -2219,7 +2217,7 @@ public class GameControllerLogic {
     }
     public static boolean checkInAllFarm (int x, int y) {
 
-        for (User user : Main.getClient().getLocalGameState().getPlayers())
+        for (User user : ServerHandler.getInstance().game.getGameState().getPlayers())
             if (user.getFarm().isInFarm(x, y))
                 return true;
         return false;
@@ -2229,12 +2227,12 @@ public class GameControllerLogic {
         int x = tile.getX();
         int y = tile.getY();
 
-        if (!checkInAllFarm(tile.getX(), tile.getY()))
-            return false;
-
-        for (User user : Main.getClient().getLocalGameState().getPlayers())
-            if (user.getFarm().isInHome(x, y) || user.getFarm().isInMine(x, y) || user.getFarm().isInGreenHouse(x, y))
-                return false;
+//        if (!checkInAllFarm(tile.getX(), tile.getY()))
+//            return false;
+//
+//        for (User user : ServerHandler.getInstance().game.getGameState().getPlayers())
+//            if (user.getFarm().isInHome(x, y) || user.getFarm().isInMine(x, y) || user.getFarm().isInGreenHouse(x, y))
+//                return false;
 
         return true;
     }

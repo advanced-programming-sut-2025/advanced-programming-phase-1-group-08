@@ -1,7 +1,6 @@
 package com.Graphic.model.ClientServer;
 
 import com.Graphic.Controller.MainGame.InputGameController;
-import com.Graphic.Main;
 import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
@@ -462,12 +461,12 @@ public class ClientConnectionController {
         dateHour.increaseDay(day);
 
         if (dateHour.getHour() > 22) {
-            passedOfTime(getDayDifferent(dateHour, Main.getClient().getLocalGameState().currentDate),
+            passedOfTime(getDayDifferent(dateHour, currentDateHour),
                 24 - dateHour.getHour() + 9 + hour, currentDateHour, game);
             return;
         }
         if (dateHour.getHour() < 9) {
-            passedOfTime(getDayDifferent(dateHour, Main.getClient().getLocalGameState().currentDate),
+            passedOfTime(getDayDifferent(dateHour, currentDateHour),
                 9 - dateHour.getHour() + hour, currentDateHour, game);
             return;
         }
@@ -547,15 +546,15 @@ public class ClientConnectionController {
                 if (Math.random() <= 0.5) {
 
                     java.util.List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
-                        .filter(d -> d.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()))
+                        .filter(d -> d.getSeason().contains(game.getGameState().currentDate.getSeason()))
                         .toList();
 
                     ForagingSeedsType type = types.get(rand.nextInt(types.size()));
-                    this.sendSetGameObjectMessage(tile, new ForagingSeeds(type, Main.getClient().getLocalGameState().currentDate), game);
+                    this.sendSetGameObjectMessage(tile, new ForagingSeeds(type, game.getGameState().currentDate), game);
                 } else {
 
                     List<ForagingCropsType> types = new ArrayList<>(Arrays.stream(ForagingCropsType.values())
-                        .filter(d -> d.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()))
+                        .filter(d -> d.getSeason().contains(game.getGameState().currentDate.getSeason()))
                         .toList());
 
                     types.remove(ForagingCropsType.Fiber);
@@ -583,41 +582,41 @@ public class ClientConnectionController {
     }
     public void createRandomMinerals (Game game) throws IOException {
 
-        for (User user : game.getGameState().getPlayers()) {
-
-            List<Integer> positions = new ArrayList<>();
-            for (int i = 0 ; i < 16 ; i++)
-                positions.add(i);
-
-            Collections.shuffle(positions);
-
-            List<ForagingMineralsType> minerals = Arrays.asList(
-                RUBY, COAL, IRON, TOPAZ, GOLD, JADE, IRIDIUM,
-                QUARTZ, EMERALD, COPPER, DIAMOND, AMETHYST,
-                AQUAMARINE, FROZEN_TEAR, FIRE_QUARTZ,
-                PRISMATIC_SHARD, EARTH_CRYSTAL
-            );
-
-            int posIndex = 0;
-            for (ForagingMineralsType mineral : minerals) {
-                while (posIndex < positions.size()) {
-                    Point point = new Point(
-                        user.getFarm().getMine().getPositions().get(positions.get(posIndex)));
-
-                    if (user.getFarm().getMine().checkPositionForMineral(point)) {
-                        if (Math.random() <= mineral.getProbability()) {
-                            ForagingMinerals f = new ForagingMinerals(mineral);
-                            f.setPosition(point);
-                            user.getFarm().getMine().getForagingMinerals().add(f);
-                            user.getFarm().getMine().getTaken().add(point);
-                            sendAddMineralMessage(user, f, point, game);
-                            break;
-                        }
-                    }
-                    posIndex ++;
-                }
-            }
-        }
+//        for (User user : game.getGameState().getPlayers()) {
+//
+//            List<Integer> positions = new ArrayList<>();
+//            for (int i = 0 ; i < 16 ; i++)
+//                positions.add(i);
+//
+//            Collections.shuffle(positions);
+//
+//            List<ForagingMineralsType> minerals = Arrays.asList(
+//                RUBY, COAL, IRON, TOPAZ, GOLD, JADE, IRIDIUM,
+//                QUARTZ, EMERALD, COPPER, DIAMOND, AMETHYST,
+//                AQUAMARINE, FROZEN_TEAR, FIRE_QUARTZ,
+//                PRISMATIC_SHARD, EARTH_CRYSTAL
+//            );
+//
+//            int posIndex = 0;
+//            for (ForagingMineralsType mineral : minerals) {
+//                while (posIndex < positions.size()) {
+//                    Point point = new Point(
+//                        user.getFarm().getMine().getPositions().get(positions.get(posIndex)));
+//
+//                    if (user.getFarm().getMine().checkPositionForMineral(point)) {
+//                        if (Math.random() <= mineral.getProbability()) {
+//                            ForagingMinerals f = new ForagingMinerals(mineral);
+//                            f.setPosition(point);
+//                            user.getFarm().getMine().getForagingMinerals().add(f);
+//                            user.getFarm().getMine().getTaken().add(point);
+//                            sendAddMineralMessage(user, f, point, game);
+//                            break;
+//                        }
+//                    }
+//                    posIndex ++;
+//                }
+//            }
+//        }
     }
 
     public Message changeCurrentItem(User player, Items item, Game game) throws IOException {

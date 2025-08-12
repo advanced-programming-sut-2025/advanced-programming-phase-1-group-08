@@ -60,11 +60,11 @@ public class Tree extends GameObject {
         if (item.equals(MarketItemType.QuantityRetainingSoil))
             numFertilize++;
         if (item.equals(MarketItemType.BasicRetainingSoil))
-            lastWater = Main.getClient().getLocalGameState().currentDate.clone();
+            lastWater = ServerHandler.getInstance().getCurrentDate().clone();
     }
     private void setStage () {
 
-        DateHour dateHour = Main.getClient().getLocalGameState().currentDate.clone();
+        DateHour dateHour = ServerHandler.getInstance().getCurrentDate().clone();
         dateHour.increaseDay(numFertilize);
 
         int defDays = getDayDifferent(this.birthDay, dateHour);

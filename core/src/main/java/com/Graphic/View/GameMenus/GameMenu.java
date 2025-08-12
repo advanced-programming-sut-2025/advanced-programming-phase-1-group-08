@@ -34,8 +34,10 @@ import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Places.Lake;
 import com.Graphic.model.Plants.*;
+import com.Graphic.model.Plants.Tree;
 import com.Graphic.model.ToolsPackage.FishingPole;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.Weather.DateHour;
@@ -1341,6 +1343,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 showSettingMenu();
             else if (Gdx.input.isKeyJustPressed(Keys.NPCMenu))
                 showNPCMenu();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.C))
+                test();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.X))
+                test2();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.V))
+                test3();
 
 
             else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
@@ -1386,7 +1394,34 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         } else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
             ExitOfMenu();
     }
-
+    private void test () {
+        System.out.println("kir");
+        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                Tree tree = new Tree(TreeType.AppleTree, Main.getClient().getLocalGameState().currentDate.clone());
+                tile.setGameObject(tree);
+                controller.sendChangeGameObjectMessage(tile, tree);
+                System.out.println("$");
+            }
+        }
+    }
+    private void test2 () {
+        System.out.println("kos");
+        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm)
+            if (tile.getGameObject() instanceof Tree) {
+                System.out.println("#");
+                Tree tree = (Tree) tile.getGameObject();
+                tree.setLastWater(Main.getClient().getLocalGameState().currentDate.clone());
+            }
+    }
+    private void test3 () {
+        System.out.println("kos mikh");
+        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm)
+            if (tile.getGameObject() instanceof Tree) {
+                Tree tree = (Tree) tile.getGameObject();
+                System.out.println("Stage -> " + tree.getStage() + " Last Water " + tree.getLastWater().getDate() + "  hour " + Main.getClient().getLocalGameState().currentDate.getHour() + " day " + Main.getClient().getLocalGameState().currentDate.getDate());
+            }
+    }
     private void ExitOfMenu() {
 
         if (toolsMenuIsActivated) {
