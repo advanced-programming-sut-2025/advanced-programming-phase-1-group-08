@@ -202,7 +202,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private boolean waitingForGiftItemSelection = false;
     private NPC npc;
 
-
     private Sprite currentItemSprite;
     private boolean startRotation;
     private float currentRotation = 0f;
@@ -302,13 +301,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         showUnseenMessages();
         showHugged();
         showGivenFlower();
-
         if (Main.getClient().getLocalGameState().getChooseMap()) {
             createUserRenderes();
             Main.getBatch().begin();
             controller.update(camera, v, anyMenuIsActivated());
-            drawCurrentItem();
             updateAnimals(Main.getClient().getLocalGameState().getAnimals());
+            drawCurrentItem();
             NPCManager.NPCWalk(v);
             eatingManagement(v);
             checkLakeDistance(v);
@@ -1811,12 +1809,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private void handleLeftClick () {
         useCurrentItem();
         Direction direction = Direction.getDirByCord(
-            Main.getClient().getPlayer().getPositionX(),
-            90 - Main.getClient().getPlayer().getPositionY(),
-            getVector().x, 90 - getVector().y
+            stage.getWidth()/2,
+            stage.getHeight()/2,
+            getVector().x, 935 - getVector().y
         );
-        if (direction != null) {
+        System.out.println("Main x = " + stage.getWidth()/2);
+        System.out.println("Main y = " + stage.getHeight()/2);
+        System.out.println("second x = " + getVector().x);
+        System.out.println("second y = " + (935 - getVector().y));
 
+        if (direction != null) {
+            System.out.println(direction.name());
             int dir = 0;
             Items items = Main.getClient().getPlayer().currentItem;
             switch (direction) {
@@ -2269,19 +2272,16 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Direction direction = Main.getClient().getPlayer().getDirection();
         float x = getXForHands(direction), y = getYForHands(direction);
 
-        if (currentItemSprite == null || !currentItemSprite.getTexture().equals(TextureManager.get(currentItem.getInventoryIconPath()))) {
+        if (currentItemSprite == null || !currentItemSprite.getTexture().equals(TextureManager.get(currentItem.getInventoryIconPath())))
             currentItemSprite = new Sprite(TextureManager.get(currentItem.getInventoryIconPath()));
-        }
-
 
         currentItemSprite.flip(Direction.lastDir != null && Direction.lastDir != direction &&
             (direction == Direction.Left || Direction.lastDir == Direction.Left), false);
 
-        if (direction == Direction.Left) {
+        if (direction == Direction.Left)
             currentItemSprite.setOrigin(currentItemSprite.getWidth(), 0);
-        } else {
+        else
             currentItemSprite.setOrigin(0, 0);
-        }
 
         currentItemSprite.setRotation(currentRotation);
 
@@ -2315,17 +2315,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private float getYForHands(Direction direction) {
 
         if (direction == Direction.Up)
-            return (90 - Main.getClient().getPlayer().getPositionY()) * TEXTURE_SIZE + 12;
+            return  stage.getHeight()/2 + 12;
 
-        return (90 - Main.getClient().getPlayer().getPositionY()) * TEXTURE_SIZE + 8;
+        return (stage.getHeight()/2) + 8;
     }
     private float getXForHands(Direction direction) {
 
         return switch (direction) {
-            case Right -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE + 20;
-            case Left -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE - 10;
-            case Up -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE + 25;
-            case Down -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE + 23;
+            case Right -> stage.getWidth()/2 + 20;
+            case Left -> stage.getWidth()/2 - 10;
+            case Up -> stage.getWidth()/2 + 25;
+            case Down -> stage.getWidth()/2 + 23;
         };
     }
 
@@ -2825,6 +2825,22 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
 
+    }
+    public void setCurrentItemSprite(Sprite currentItemSprite) {
+
+        this.currentItemSprite = currentItemSprite;
+    }
+    public Sprite getCurrentItemSprite() {
+
+        return currentItemSprite;
+    }
+    public boolean isStartRotation() {
+
+        return startRotation;
+    }
+    public float getCurrentRotation() {
+
+        return currentRotation;
     }
 
 

@@ -82,9 +82,7 @@ public class GameControllerLogic {
     public static GameMenu gameMenu = GameMenu.getInstance();
     public static InputGameController inputGameController;
 
-    static int turnCounter = 0;
     static Image helperBackGround;
-    static Random rand = new Random();
     static DateHour lastTimeUpdate;
 
 
@@ -241,7 +239,7 @@ public class GameControllerLogic {
 
         float x = Main.getClient().getPlayer().getPositionX() / TEXTURE_SIZE;
         float y = Main.getClient().getPlayer().getPositionY() / TEXTURE_SIZE;
-
+        y = 90 - y;
         if (dir == 1)
             return getTileByCoordinates((int) (x+1), (int) y , Main.getClient().getLocalGameState());
         else if (dir == 2)
