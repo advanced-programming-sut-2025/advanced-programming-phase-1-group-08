@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 public class ServerHandler extends Thread {
 
+    private static ServerHandler instance;
     private ClientConnectionController controller;
     private static ServerHandler instance;
     public Game game;
