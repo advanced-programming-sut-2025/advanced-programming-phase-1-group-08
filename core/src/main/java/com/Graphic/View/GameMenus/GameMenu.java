@@ -358,110 +358,110 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         s.draw(Main.getBatch());
     }
     private void checkLakeDistance(float v) {
-//        Lake lake = Main.getClient().getPlayer().getFarm().getLake();
-//        float lakeY = lake.getTopLeftY();
-//        float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
-//        Sprite fisherman = new Sprite(TextureManager.get("Ariyo/fisherman.png"));
-//
-//        if (Main.getClient().getPlayer().doingMinigame) {
-//            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
-//            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
-//                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
-//            else
-//                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
-//            fisherman.draw(Main.getBatch());
-//
-//            return;
-//        }
-//
-//        fishingTimer += v;
-//
-//        if (!Main.getClient().getPlayer().isFishing)
-//            fishingTimer = 0;
-//
-//        if (Main.getClient().getPlayer().isFishing && fishingTimer >= 10f) {
-//            Main.getClient().getPlayer().doingMinigame = true;
-//            shapeRenderer = new ShapeRenderer();
-//            createGrayBackGround();
-//            fishingTimer = 0;
-//            minigame = new Sprite(new Texture(Gdx.files.internal("Ariyo/minigame.png")));
-//            minigame.setSize(minigame.getWidth() * 2.5f, minigame.getHeight() * 2.5f);
-//            minigame.setRegion(TextureManager.get("Ariyo/minigame.png"));
-//
-//            Random random = new Random();
-//            fishToCatchType = FishType.values()[random.nextInt(FishType.values().length)];
-//            fishToCatch = new Sprite(TextureManager.get(fishToCatchType.getIconPath()));
-//            fishToCatch.setRegion(TextureManager.get(fishToCatchType.getIconPath()));
-//            fishToCatch.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 180);
-//            fishToCatch.setSize(fishToCatch.getWidth() * 0.6f, fishToCatch.getHeight() * 0.7f);
-//            float verticalSpeed = 50f;
-//            float horizontalWiggle = 10f;
-//            float dx = (float) (Math.random() * horizontalWiggle * 2 - horizontalWiggle); // بین -10 تا +10
-//            float dy = verticalSpeed;
-//            fishVelocity = new Vector2(dx, dy);
-//
-//            if (fishToCatchType.isLegendary()) {
-//                fishCrown = new Sprite(TextureManager.get("Ariyo/star.png"));
-//                fishCrown.setRegion(TextureManager.get("Ariyo/star.png"));
-//                fishCrown.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 190);
-//            }
-//            else
-//                fishCrown = null;
-//        }
-//
-//
-//        float myX = Main.getClient().getPlayer().getPositionX();
-//        float myY = Main.getClient().getPlayer().getPositionY();
-//        float deltaX = Math.abs(myX - lakeX);
-//        float deltaY = Math.abs(myY - lakeY);
-//        if (!(deltaX < 3f && deltaY < 3f)) {
-//            fishingTimer = 0;
-//            tempFishing.setVisible(false);
-//            return;
-//        }
-//
-//        if (!Main.getClient().getPlayer().isFishing) {
-//            tempFishing.setPosition(Main.getClient().getPlayer().getPositionX(), Main.getClient().getPlayer().getPositionY() + 40);
-//            tempFishing.draw(Main.getBatch(), 1f);
-//        }
-//
-//
-//        if (!Main.getClient().getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-//            boolean havePole = false;
-//            Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
-//            for (Map.Entry<Items, Integer> entry: inventory.Items.entrySet()) {
-//                if (entry.getKey() instanceof FishingPole) {
-//                    havePole = true;
-//                    break;
-//                }
-//            }
-//            if (!havePole) {
-//                showTimedDialog("You Don't Have a Fishing Pole!", 2f);
-//                return;
-//            }
-//
-//            showFishLight = true;
-//
-//            Main.getClient().getPlayer().isFishing = true;
-//        }
-//        else if (Main.getClient().getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.G)) {
-//            Main.getClient().getPlayer().isFishing = false;
-//        }
-//
-//        Texture iconTexture = new Texture(Gdx.files.internal("all image/Farming/Fishing.png"));
-//        tempFishing.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
-//
-//        tempFishing.setVisible(true);
-//
-//        if (Main.getClient().getPlayer().isFishing) {
-//            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
-//            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
-//                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
-//            else
-//                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
-//            fisherman.draw(Main.getBatch());
-//        }
-//
+        Lake lake = Main.getClient().getPlayer().getFarm().getLake();
+        float lakeY = lake.getTopLeftY();
+        float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
+        Sprite fisherman = new Sprite(TextureManager.get("Ariyo/fisherman.png"));
+
+        if (Main.getClient().getPlayer().doingMinigame) {
+            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
+            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
+            else
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
+            fisherman.draw(Main.getBatch());
+
+            return;
+        }
+
+        fishingTimer += v;
+
+        if (!Main.getClient().getPlayer().isFishing)
+            fishingTimer = 0;
+
+        if (Main.getClient().getPlayer().isFishing && fishingTimer >= 10f) {
+            Main.getClient().getPlayer().doingMinigame = true;
+            shapeRenderer = new ShapeRenderer();
+            createGrayBackGround();
+            fishingTimer = 0;
+            minigame = new Sprite(new Texture(Gdx.files.internal("Ariyo/minigame.png")));
+            minigame.setSize(minigame.getWidth() * 2.5f, minigame.getHeight() * 2.5f);
+            minigame.setRegion(TextureManager.get("Ariyo/minigame.png"));
+
+            Random random = new Random();
+            fishToCatchType = FishType.values()[random.nextInt(FishType.values().length)];
+            fishToCatch = new Sprite(TextureManager.get(fishToCatchType.getIconPath()));
+            fishToCatch.setRegion(TextureManager.get(fishToCatchType.getIconPath()));
+            fishToCatch.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 180);
+            fishToCatch.setSize(fishToCatch.getWidth() * 0.6f, fishToCatch.getHeight() * 0.7f);
+            float verticalSpeed = 50f;
+            float horizontalWiggle = 10f;
+            float dx = (float) (Math.random() * horizontalWiggle * 2 - horizontalWiggle); // بین -10 تا +10
+            float dy = verticalSpeed;
+            fishVelocity = new Vector2(dx, dy);
+
+            if (fishToCatchType.isLegendary()) {
+                fishCrown = new Sprite(TextureManager.get("Ariyo/star.png"));
+                fishCrown.setRegion(TextureManager.get("Ariyo/star.png"));
+                fishCrown.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 190);
+            }
+            else
+                fishCrown = null;
+        }
+
+
+        float myX = Main.getClient().getPlayer().getPositionX();
+        float myY = Main.getClient().getPlayer().getPositionY();
+        float deltaX = Math.abs(myX - lakeX);
+        float deltaY = Math.abs(myY - lakeY);
+        if (!(deltaX < 3f && deltaY < 3f)) {
+            fishingTimer = 0;
+            tempFishing.setVisible(false);
+            return;
+        }
+
+        if (!Main.getClient().getPlayer().isFishing) {
+            tempFishing.setPosition(Main.getClient().getPlayer().getPositionX(), Main.getClient().getPlayer().getPositionY() + 40);
+            tempFishing.draw(Main.getBatch(), 1f);
+        }
+
+
+        if (!Main.getClient().getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            boolean havePole = false;
+            Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
+            for (Map.Entry<Items, Integer> entry: inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof FishingPole) {
+                    havePole = true;
+                    break;
+                }
+            }
+            if (!havePole) {
+                showTimedDialog("You Don't Have a Fishing Pole!", 2f);
+                return;
+            }
+
+            showFishLight = true;
+
+            Main.getClient().getPlayer().isFishing = true;
+        }
+        else if (Main.getClient().getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.G)) {
+            Main.getClient().getPlayer().isFishing = false;
+        }
+
+        Texture iconTexture = new Texture(Gdx.files.internal("all image/Farming/Fishing.png"));
+        tempFishing.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
+
+        tempFishing.setVisible(true);
+
+        if (Main.getClient().getPlayer().isFishing) {
+            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
+            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
+            else
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
+            fisherman.draw(Main.getBatch());
+        }
+
 
     }
 
@@ -566,7 +566,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
 
-            // به فیش ای آی کار ندارم چون یه بار اجرا میشن اینجا مینویسم
             bobble = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Ariyo/QM.png"))));
             bobble.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth(), Main.getClient().getPlayer().getPositionY() + minigameArea.height / 2f);
             bobble.setSize(bobble.getWidth()*2, bobble.getHeight()*2);
@@ -625,6 +624,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         //only if you got the fish
         Random random = new Random();
         Quantity quantity = Quantity.values()[random.nextInt(Quantity.values().length)];
+
         if (!perfect) {
             HashMap<String , Object> body = new HashMap<>();
             body.put("Item" , new Fish(fishToCatchType, quantity));

@@ -58,6 +58,7 @@ public class User {
 
     public boolean isFishing = false;
     public boolean doingMinigame = false;
+    private boolean closeToLake = false;
 
     private User FriendCloseToMe = null;
     private boolean showUnseenChats = false;
@@ -766,6 +767,13 @@ public class User {
     }
     public List<String> getGiftIGot() {
         return giftIGot;
+    }
+
+    public boolean isCloseToLake() {
+        return closeToLake;
+    }
+    public void setCloseToLake(boolean closeToLake) {
+        this.closeToLake = closeToLake;
     }
 }
 
