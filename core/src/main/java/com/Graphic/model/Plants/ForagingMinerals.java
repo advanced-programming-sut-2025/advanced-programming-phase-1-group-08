@@ -15,9 +15,7 @@ public class ForagingMinerals extends Items {
     private Point position;
 
 
-    public ForagingMinerals() {
-
-    }
+    public ForagingMinerals() {}
 
 
     public ForagingMinerals(ForagingMineralsType type) {

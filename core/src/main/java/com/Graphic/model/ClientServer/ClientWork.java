@@ -314,6 +314,13 @@ public class ClientWork {
                 case SET_TIME -> {
                     controller.setTime(message.getFromBody("Hour"), message.getFromBody("Day"));
                 }
+                case ADD_MINERAL -> {
+                    controller.addMineral(
+                        message.getFromBody("Mineral"),
+                        message.getFromBody("Point"),
+                        message.getFromBody("User")
+                    );
+                }
                 case CHANGE_GAME_OBJECT -> {
                     controller.changeGameObject(
                         message.getFromBody("X"),
@@ -324,6 +331,7 @@ public class ClientWork {
                 case GET_TOMORROW_WEATHER -> {
                     controller.setTomorrowWeather(message.getFromBody("Weather"));
                 }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
