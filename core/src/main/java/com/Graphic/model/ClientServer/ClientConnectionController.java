@@ -485,10 +485,6 @@ public class ClientConnectionController {
         currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
         sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
     }
-    public void startDayTask (Game game) throws IOException {
-        for (Tile tile : game.getGameState().bigMap )
-            tile.getGameObject().startDayAutomaticTask();
-    }
     public void setTime (int day, int hour, Game game) throws IOException {
 
         DateHour currentDateHour = game.getGameState().currentDate;
@@ -507,7 +503,7 @@ public class ClientConnectionController {
         body.put("X", x);
         body.put("Y", y);
         body.put("Object", object);
-        sendToAll(new Message(CommandType.SET_TIME, body), game);
+        sendToAll(new Message(CHANGE_GAME_OBJECT, body), game);
     }
     public void sendSetGameObjectMessage (Tile tile,  GameObject object, Game game) throws IOException {
 
@@ -517,7 +513,7 @@ public class ClientConnectionController {
         body.put("X", tile.getX());
         body.put("Y", tile.getY());
         body.put("Object", object);
-        sendToAll(new Message(CommandType.SET_TIME, body), game);
+        sendToAll(new Message(CHANGE_GAME_OBJECT, body), game);
     }
     public void sentWeather(Game game) throws IOException {
 
@@ -542,6 +538,8 @@ public class ClientConnectionController {
     public void startDay (Game game) throws IOException {
         createRandomForaging(game);
         createRandomMinerals(game);
+        for (Tile tile : game.getGameState().bigMap)
+            tile.getGameObject().startDayAutomaticTask();
     }
     public void createRandomForaging (Game game) throws IOException {
 
