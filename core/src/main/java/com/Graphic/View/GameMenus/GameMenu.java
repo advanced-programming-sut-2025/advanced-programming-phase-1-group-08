@@ -257,17 +257,14 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
                 Gdx.input.setInputProcessor(multiplexer);
 
-                //createClock();
+                createClock();
                 firstLoad = true;
                 shepherdingAnimals = new ArrayList<>();
                 heartAnimations = new ArrayList<>();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        else if (lastDateHour == null) {
-            setTime();
         }
     }
 
@@ -277,9 +274,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         inputController();
-        if (!Main.getClient().getLocalGameState().currentDate.equals(lastDateHour)) {
-            //updateClock();
-        }
+
+        if (lastDateHour == null || !Main.getClient().getLocalGameState().currentDate.equals(lastDateHour))
+            updateClock();
+
         initialLake();
         updateEnergyLabel();
         giftNPCMenu();
@@ -1176,9 +1174,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         friendButton.setPosition(50,screenHeight * 8f / 9f);
         friendButton.pack();
 
-
-
-
         stage.addActor(friendButton);
 
         bouquetImage = new Image(new Texture(Gdx.files.internal("Ariyo/Bouquet.png")));
@@ -1239,6 +1234,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         //Mohamadreza
         initializePlayer();
         gameState = Main.getClient().getLocalGameState();
+
+        lastDateHour = new DateHour(Season.Spring, 1, 9, 1950);
         gameState.currentDate = new DateHour(Season.Spring, 1, 9, 1950);
         initRecipes();
     }

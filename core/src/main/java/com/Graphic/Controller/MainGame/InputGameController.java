@@ -84,9 +84,9 @@ public class InputGameController {
     }
 
     public void init () {
-        GameControllerLogic.init();
         Main.getClient().getPlayer().setInFarmExterior(true);
-
+        setTimeAndWeather();
+        GameControllerLogic.init();
     }
     public void update(OrthographicCamera camera, float v, Boolean menuActivated) {
 
@@ -438,8 +438,6 @@ public class InputGameController {
         //camera.unproject(camera.position);
         int x = (int) (camera.position.x - camera.viewportWidth * camera.zoom / 2) / TEXTURE_SIZE;
         int y = (int) (camera.position.y - camera.viewportHeight * camera.zoom / 2) / TEXTURE_SIZE;
-        //System.out.println("x: " + x + " y: " + y);
-        //System.out.println("x: " + camera.position.x + " y: " + camera.position.y);
 
 
         for (int i =x ; i< x + (camera.viewportWidth * camera.zoom )/TEXTURE_SIZE; i++) {
@@ -2021,7 +2019,6 @@ public class InputGameController {
 //        if (user2name != null) currentGame.players.add(findUserByUsername(user2name));
 //        if (user3name != null) currentGame.players.add(findUserByUsername(user3name));
 
-        setTimeAndWeather();
         //buildHall();
         //buildNpcVillage();
         //sortMap(currentGame.bigMap);
@@ -2603,13 +2600,9 @@ public class InputGameController {
 
     public void sendPassedTimeMessage (int day, int hour) {
 
-        DateHour copy = Main.getClient().getLocalGameState().currentDate.clone();
-        copy.increaseHour(hour);
-        copy.increaseDay(day);
-
         HashMap<String , Object> PassedTime = new HashMap<>();
-        PassedTime.put("Hour", copy.getHour());
-        PassedTime.put("Day", copy.getDate());
+        PassedTime.put("Hour", hour);
+        PassedTime.put("Day", day);
         Main.getClient().getRequests().add(new Message(CommandType.SET_TIME , PassedTime));
 
     }
@@ -2618,13 +2611,13 @@ public class InputGameController {
         PassedTime.put("X", x);
         PassedTime.put("Y", y);
         PassedTime.put("Object", gameObject);
-        Main.getClient().getRequests().add(new Message(CommandType.SET_TIME, PassedTime));
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_GAME_OBJECT, PassedTime));
     }
     public void sendChangeGameObjectMessage (Tile tile, GameObject gameObject) {
         HashMap<String , Object> PassedTime = new HashMap<>();
         PassedTime.put("X", tile.getX());
         PassedTime.put("Y", tile.getY());
         PassedTime.put("Object", gameObject);
-        Main.getClient().getRequests().add(new Message(CommandType.SET_TIME, PassedTime));
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_GAME_OBJECT, PassedTime));
     }
 }

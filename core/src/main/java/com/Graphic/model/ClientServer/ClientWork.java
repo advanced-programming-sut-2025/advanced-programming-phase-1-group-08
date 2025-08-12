@@ -294,8 +294,16 @@ public class ClientWork {
                     // print unseen messages
                     Main.getClient().getPlayer().setShowUnseenChats(true);
                 }
-
-
+                case CHANGE_ABILITY_LEVEL -> {
+                    int fishing =  message.getFromBody("Fishing");
+                    int mining =  message.getFromBody("Mining");
+                    int foraging =  message.getFromBody("Foraging");
+                    int farming =  message.getFromBody("Farming");
+                    Main.getClient().getPlayer().increaseFishingAbility(fishing);
+                    Main.getClient().getPlayer().increaseMiningAbility(mining);
+                    Main.getClient().getPlayer().increaseForagingAbility(foraging);
+                    Main.getClient().getPlayer().increaseFarmingAbility(farming);
+                }
                 case EXIT_MARKET -> {
                     int x = message.getFromBody("X");
                     int y = message.getFromBody("Y");
@@ -311,6 +319,8 @@ public class ClientWork {
                     }
 
                 }
+
+                                    // Erfan
                 case SET_TIME -> {
                     controller.setTime(message.getFromBody("Hour"), message.getFromBody("Day"));
                 }
@@ -321,15 +331,8 @@ public class ClientWork {
                         message.getFromBody("Object")
                     );
                 }
-                case CHANGE_ABILITY_LEVEL -> {
-                    int fishing =  message.getFromBody("Fishing");
-                    int mining =  message.getFromBody("Mining");
-                    int foraging =  message.getFromBody("Foraging");
-                    int farming =  message.getFromBody("Farming");
-                    Main.getClient().getPlayer().increaseFishingAbility(fishing);
-                    Main.getClient().getPlayer().increaseMiningAbility(mining);
-                    Main.getClient().getPlayer().increaseForagingAbility(foraging);
-                    Main.getClient().getPlayer().increaseFarmingAbility(farming);
+                case GET_TOMORROW_WEATHER -> {
+                    controller.setTomorrowWeather(message.getFromBody("Weather"));
                 }
             }
         } catch (Exception e) {

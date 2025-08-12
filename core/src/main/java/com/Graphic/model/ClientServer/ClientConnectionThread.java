@@ -43,7 +43,6 @@ public class ClientConnectionThread extends Thread {
         this.connection = connection;
         LoginController = new LoginController();
         registerController = new RegisterController();
-        server = ServerHandler.getInstance(game);
     }
 
 
@@ -71,6 +70,7 @@ public class ClientConnectionThread extends Thread {
 
     public synchronized void handleMessage(Message message) throws IOException {
         switch (message.getCommandType()) {
+                                        // Mamal
             case FARM -> {
                 controller.createFarm(message , game);
             }
@@ -225,14 +225,21 @@ public class ClientConnectionThread extends Thread {
             }
             case LOADED_GAME -> {}
 
+                                        // Erfan
+            case GET_TOMORROW_WEATHER -> {
+                controller.sentWeather(game);
+            }
             case SET_TIME -> {
-                controller.setTime(
+                controller.passedOfTime(
                     message.getFromBody("Day"),
-                    message.getFromBody("Hour"), game
+                    message.getFromBody("Hour"),
+                    game.getGameState().currentDate, game
                 );
             }
             case GET_TIME -> {
-                controller.sendSetTimeMessage(server.currentDateHour.getHour(), server.currentDateHour.getDate(), game);
+                controller.sendSetTimeMessage(
+                    game.getGameState().currentDate.getHour(),
+                    game.getGameState().currentDate.getDate(), game);
             }
             case CHANGE_GAME_OBJECT -> {
                 controller.sendSetGameObjectMessage(
@@ -241,6 +248,8 @@ public class ClientConnectionThread extends Thread {
                     message.getFromBody("Object"), game
                 );
             }
+
+                                        // Ario
             case FriendshipsInquiry -> {
 
                 if (game.getGameState().friendships.isEmpty()) {
@@ -258,6 +267,7 @@ public class ClientConnectionThread extends Thread {
                 body.put("friendships", game.getGameState().friendships);
                 sendMessage(new Message(CommandType.FriendshipsInqResponse, body));
             }
+
 
 
         }

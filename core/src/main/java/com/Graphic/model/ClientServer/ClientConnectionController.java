@@ -9,6 +9,8 @@ import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.Enum.WeatherTime.Season;
+import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.MarketItem;
@@ -33,7 +35,6 @@ import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 public class ClientConnectionController {
 
     private static ClientConnectionController instance;
-
 
     public void createFarm(Message message , Game game) throws IOException {
         int index = message.getFromBody("Index");
@@ -469,26 +470,48 @@ public class ClientConnectionController {
 
         int number = getDayDifferent(currentDateHour, dateHour);
 
-        for (int i = 0 ; i < number ; i++)
+        for (int i = 0 ; i < number ; i++) {
             currentDateHour.increaseDay(1);
+            startDay();
+        }
 
         currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
         sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
     }
+    public void startDayTask (Game game) throws IOException {
+        for (Tile tile : game.getGameState().bigMap )
+            tile.getGameObject().startDayAutomaticTask();
+    }
     public void setTime (int day, int hour, Game game) throws IOException {
 
-        DateHour currentDateHour = ServerHandler.getInstance(game).currentDateHour;
+        DateHour currentDateHour = game.getGameState().currentDate;
 
-        ServerHandler.getInstance(game).currentDateHour.setDate(day);
-        ServerHandler.getInstance(game).currentDateHour.setHour(hour);
+        currentDateHour.setDate(day);
+        currentDateHour.increaseHour(hour - currentDateHour.getHour());
 
         sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
     }
     public void sendSetGameObjectMessage (int x, int y, GameObject object, Game game) throws IOException {
-        HashMap<String , Object> PassedTime = new HashMap<>();
-        PassedTime.put("X", x);
-        PassedTime.put("Y", y);
-        PassedTime.put("Object", object);
-        sendToAll(new Message(CommandType.SET_TIME, PassedTime), game);
+
+        Tile tile = getTileByCoordinates(x, y, game.getGameState());
+        tile.setGameObject(object);
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("X", x);
+        body.put("Y", y);
+        body.put("Object", object);
+        sendToAll(new Message(CommandType.SET_TIME, body), game);
+    }
+    public void sentWeather(Game game) throws IOException {
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("Weather", game.getGameState().tomorrowWeather);
+        sendToAll(new Message(GET_TOMORROW_WEATHER, body), game);
+    }
+    public void setTimeAndWeather (Game game) throws IOException {
+
+        game.getGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1980);
+        game.getGameState().currentWeather = Weather.Sunny;
+        game.getGameState().tomorrowWeather = Weather.Sunny;
     }
 }

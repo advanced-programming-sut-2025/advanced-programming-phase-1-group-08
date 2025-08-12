@@ -19,7 +19,6 @@ public class GameObject {
     public GameObject() {
         this.textureHeight = 1;
         this.textureWidth = 1;
-
     }
 
 

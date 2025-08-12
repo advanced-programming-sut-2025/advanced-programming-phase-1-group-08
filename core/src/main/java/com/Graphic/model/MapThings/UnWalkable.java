@@ -21,7 +21,6 @@ public class UnWalkable extends GameObject {
             super.setTextureHeight(1.5f);
             super.setTextureWidth(1.2f);
         }
-
     }
     @Override
     public String getIcon() {
