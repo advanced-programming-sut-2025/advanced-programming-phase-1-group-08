@@ -68,6 +68,7 @@ public class ClientConnectionThread extends Thread {
 
     public synchronized void handleMessage(Message message) throws IOException {
         switch (message.getCommandType()) {
+                                        // Mamal
             case FARM -> {
                 controller.createFarm(message , game);
             }
@@ -182,6 +183,10 @@ public class ClientConnectionThread extends Thread {
             }
             case LOADED_GAME -> {}
 
+                                        // Erfan
+            case GET_TOMORROW_WEATHER -> {
+                controller.sentWeather(game);
+            }
             case SET_TIME -> {
                 controller.passedOfTime(
                     message.getFromBody("Day"),
@@ -201,11 +206,14 @@ public class ClientConnectionThread extends Thread {
                     message.getFromBody("Object"), game
                 );
             }
+
+                                        // Ario
             case FriendshipsInquiry -> {
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("friendships", game.getGameState().friendships);
                 sendMessage(new Message(CommandType.FriendshipsInqResponse, body));
             }
+
 
 
         }

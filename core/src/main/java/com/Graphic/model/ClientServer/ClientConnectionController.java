@@ -9,6 +9,8 @@ import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.Enum.WeatherTime.Season;
+import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.MarketItem;
@@ -499,5 +501,17 @@ public class ClientConnectionController {
         body.put("Y", y);
         body.put("Object", object);
         sendToAll(new Message(CommandType.SET_TIME, body), game);
+    }
+    public void sentWeather(Game game) throws IOException {
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("Weather", game.getGameState().tomorrowWeather);
+        sendToAll(new Message(GET_TOMORROW_WEATHER, body), game);
+    }
+    public void setTimeAndWeather (Game game) throws IOException {
+
+        game.getGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1980);
+        game.getGameState().currentWeather = Weather.Sunny;
+        game.getGameState().tomorrowWeather = Weather.Sunny;
     }
 }

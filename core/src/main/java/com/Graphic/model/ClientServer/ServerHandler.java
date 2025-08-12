@@ -13,7 +13,6 @@ public class ServerHandler extends Thread {
 
     private static ServerHandler instance;
     private ClientConnectionController controller;
-    private static ServerHandler instance;
     public Game game;
 
     public long startTime;
@@ -39,6 +38,7 @@ public class ServerHandler extends Thread {
     public void run () {
 
         try {
+            controller.setTimeAndWeather(game);
             while (true) {
                 ServerRender();
                 Thread.sleep(10);

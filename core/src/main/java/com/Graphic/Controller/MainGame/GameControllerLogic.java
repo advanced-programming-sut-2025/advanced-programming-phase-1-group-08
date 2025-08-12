@@ -71,6 +71,7 @@ import static com.Graphic.View.GameMenus.GameMenu.*;
 import static com.Graphic.View.GameMenus.GameMenu.camera;
 import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
+import static com.Graphic.model.Enum.Commands.CommandType.GET_TOMORROW_WEATHER;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.Weather.DateHour.getDayDifferent;
@@ -2028,13 +2029,15 @@ public class GameControllerLogic {
         Main.getClient().getLocalGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1980);
         Main.getClient().getLocalGameState().currentWeather = Weather.Sunny;
         Main.getClient().getLocalGameState().tomorrowWeather = Weather.Sunny;
-
     }
     public static void doSeasonAutomaticTask () {
 
         Main.getClient().getLocalGameState().currentWeather = Weather.valueOf(Main.getClient().getLocalGameState().tomorrowWeather.toString());
-        Main.getClient().getLocalGameState().tomorrowWeather = Main.getClient().getLocalGameState().currentDate.getSeason().getWeather();
-
+        getTomorrowWeather();
+    }
+    private static void getTomorrowWeather () {
+        HashMap<String , Object> body = new HashMap<>();
+        Main.getClient().getRequests().add(new Message(GET_TOMORROW_WEATHER, body));
     }
     public static void doWeatherTask () {
 

@@ -294,8 +294,6 @@ public class ClientWork {
                     // print unseen messages
                     Main.getClient().getPlayer().setShowUnseenChats(true);
                 }
-
-
                 case EXIT_MARKET -> {
                     int x = message.getFromBody("X");
                     int y = message.getFromBody("Y");
@@ -311,6 +309,8 @@ public class ClientWork {
                     }
 
                 }
+
+                                    // Erfan
                 case SET_TIME -> {
                     controller.setTime(message.getFromBody("Hour"), message.getFromBody("Day"));
                 }
