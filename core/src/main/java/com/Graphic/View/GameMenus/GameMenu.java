@@ -329,15 +329,24 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             } else {
                 activeDialog = null;
             }
+        }
 
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+
+        if (Main.getClient().getLocalGameState().getChooseMap()) {
             startFishing(v);
             Main.getBatch().end();
         }
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
     }
 
                                                                 // Ario
+
+    private void initRecipes() {
+
+        for (User player: Main.getClient().getLocalGameState().getPlayers())
+            player.setRecipes(Recipe.createAllRecipes());
+    }
 
     private void lightBeforeFishing(float v) {
         if (!showFishLight)
@@ -650,9 +659,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
 
         HashMap<String , Object> body2 = new HashMap<>();
+        body2.put("Player" , Main.getClient().getPlayer());
         body2.put("Ability", "Fishing");
-        body2.put("times", 2.4);
-        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_ABILITY_LEVEL, body));
+        body2.put("amount", 1.4*(Main.getClient().getPlayer().getFishingAbility()));
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_ABILITY_LEVEL, body2));
     }
 
 
@@ -1082,6 +1092,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         currentMenu = Menu.GameMenu;
 
+
         controller = InputGameController.getInstance();
         stage = new Stage(new ScreenViewport());
         clockGroup = new Group();
@@ -1229,6 +1240,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         initializePlayer();
         gameState = Main.getClient().getLocalGameState();
         gameState.currentDate = new DateHour(Season.Spring, 1, 9, 1950);
+        initRecipes();
     }
 
     private void inputController() {

@@ -1783,19 +1783,6 @@ public class InputGameController {
             break;
         }
 
-
-        for (int i = 0; i < playerNumber; i++)
-            for (int j = i + 1; j < playerNumber; j++) {
-                HumanCommunications f = new HumanCommunications(
-                    currentGame.getGameState().getPlayers().get(i),
-                    currentGame.getGameState().getPlayers().get(j));
-
-                currentGame.friendships.add(f);
-            }
-
-        for (User player: currentGame.getGameState().getPlayers())
-            player.setRecipes(Recipe.createAllRecipes());
-
     }
     public void startNewGameServer (String input) {
 

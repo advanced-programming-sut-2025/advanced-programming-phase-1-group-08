@@ -146,6 +146,13 @@ public class Network {
         kryo.register(com.Graphic.model.Plants.TreesProdct.class);
         kryo.register(com.Graphic.model.Plants.GiantProduct.class);
         kryo.register(Season.class);
+        kryo.register(com.Graphic.model.Enum.FoodTypes.class);
+        kryo.register(com.Graphic.model.Enum.AllPlants.ForagingCropsType.class);
+        kryo.register(com.Graphic.model.Enum.AllPlants.CropsType.class);
+        kryo.register(com.Graphic.model.Enum.ItemType.ArtisanType.class);
+        kryo.register(com.Graphic.model.Enum.AllPlants.TreesProductType.class);
+        kryo.register(com.Graphic.model.HumanCommunications.class);
+        kryo.register(com.Graphic.model.Enum.ItemType.BarsAndOreType.class);
 
     }
 }

@@ -321,6 +321,16 @@ public class ClientWork {
                         message.getFromBody("Object")
                     );
                 }
+                case CHANGE_ABILITY_LEVEL -> {
+                    int fishing =  message.getFromBody("Fishing");
+                    int mining =  message.getFromBody("Mining");
+                    int foraging =  message.getFromBody("Foraging");
+                    int farming =  message.getFromBody("Farming");
+                    Main.getClient().getPlayer().increaseFishingAbility(fishing);
+                    Main.getClient().getPlayer().increaseMiningAbility(mining);
+                    Main.getClient().getPlayer().increaseForagingAbility(foraging);
+                    Main.getClient().getPlayer().increaseFarmingAbility(farming);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
