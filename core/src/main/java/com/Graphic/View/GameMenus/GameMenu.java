@@ -321,12 +321,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 getRenderer().setView(camera);
                 getRenderer().render();
             }
-            if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
-                System.out.println("hi");
-                stage.addActor(activeDialog);
-            } else {
-                activeDialog = null;
-            }
         }
 
         stage.act(Gdx.graphics.getDeltaTime());
@@ -334,6 +328,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         if (Main.getClient().getLocalGameState().getChooseMap()) {
             startFishing(v);
+            ratingGifts();
             Main.getBatch().end();
         }
     }
@@ -961,15 +956,101 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         if (giftingFriendship == null)
             return;
 
+        Result result = null;
         if (giftingFriendship.getPlayer1().getUsername().equals(Main.getClient().getPlayer().getUsername())) {
-            sendGifts(giftingFriendship, giftingFriendship.getPlayer1().getUsername());
+            result = sendGifts(giftingFriendship, giftingFriendship.getPlayer1().getUsername(), Main.getClient().getPlayer().currentItem);
         }
         else if (giftingFriendship.getPlayer2().getUsername().equals(Main.getClient().getPlayer().getUsername())) {
-            sendGifts(giftingFriendship, giftingFriendship.getPlayer2().getUsername());
+            result = sendGifts(giftingFriendship, giftingFriendship.getPlayer2().getUsername(),  Main.getClient().getPlayer().currentItem);
         }
-        Main.getClient().getPlayer().currentItem = null;
+
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("Player", Main.getClient().getPlayer());
+        body.put("Item", null);
+        Main.getClient().getRequests().add(new Message(CommandType.CURRENT_ITEM, body));
         giftingFriendship = null;
+
+
+        if (result != null)
+            showTimedDialog(result.massage(), 2f);
     }
+    public void ratingGifts() {
+        if (Main.getClient().getPlayer().getGiftIGot() == null)
+            return;
+        if (Main.getClient().getPlayer().getGiftIGot().isEmpty())
+            return;
+
+
+        String sender = Main.getClient().getPlayer().getGiftIGot().getFirst();
+        String giftName = Main.getClient().getPlayer().getGiftIGot().getLast();
+
+
+        int popupWidth = 300;
+        int popupHeight = 150;
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+        int popupX = (screenWidth - popupWidth) / 2;
+        int popupY = (screenHeight - popupHeight) / 2;
+
+        Main.getBatch().end();
+
+
+
+        ShapeRenderer shapeRenderer = new ShapeRenderer();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, 0.8f);
+        shapeRenderer.rect(popupX, popupY, popupWidth, popupHeight);
+        shapeRenderer.end();
+
+
+        BitmapFont font = new BitmapFont();
+        Main.getBatch().begin();
+        font.draw(Main.getBatch(), "Rate the gift from " + sender + " (" + giftName + "):",
+            popupX + 20, popupY + popupHeight - 20);
+
+
+        Texture emptyStar = new Texture("star_empty.png");
+        Texture fullStar = new Texture("star_full.png");
+
+        int starSize = 32;
+        int spacing = 10;
+        int starsX = popupX + 20;
+        int starsY = popupY + 50;
+
+
+        int mouseX = Gdx.input.getX();
+        int mouseY = screenHeight - Gdx.input.getY();
+
+        int selectedStars = 0;
+
+        for (int i = 0; i < 5; i++) {
+            int starX = starsX + i * (starSize + spacing);
+            boolean hover = mouseX >= starX && mouseX <= starX + starSize &&
+                mouseY >= starsY && mouseY <= starsY + starSize;
+
+            if (hover && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                selectedStars = i + 1;
+                System.out.println("Selected rating: " + selectedStars);
+
+
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("Player", Main.getClient().getPlayer());
+                body.put("Friend", findPlayerInGame(sender));
+                body.put("XP", ((selectedStars - 3) * 30) + 15);
+                Main.getClient().getRequests().add(new Message(CommandType.ADD_XP_TO_FRIENDSHIP, body));
+
+                Main.getClient().getPlayer().setGiftIGot(null, null, true);
+            }
+
+            if (hover) {
+                Main.getBatch().draw(fullStar, starX, starsY, starSize, starSize);
+            } else {
+                Main.getBatch().draw(emptyStar, starX, starsY, starSize, starSize);
+            }
+        }
+
+    }
+
     public Dialog makingFriendDialog() {
         friendsListdialog = new Dialog("", newSkin);
         friendsListdialog.setModal(true);
@@ -981,8 +1062,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         String targetName = Main.getClient().getPlayer().getUsername();
         User friendUser;
-
         for (HumanCommunications f : Main.getClient().getLocalGameState().friendships) {
+            System.out.println("friendship is among " + f.getPlayer1().getUsername() + " " + f.getPlayer2().getUsername());
             if (f.getPlayer1().getUsername().equals(targetName)) {
                 friendUser = f.getPlayer2();
             }
@@ -1001,7 +1082,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             avatar.setScaling(Scaling.fit);
 
             // ستون 2: نام
-            Label nameLabel = new Label(friendUser.getNickname(), Main.getSkin());
+            Label nameLabel = new Label(friendUser.getUsername(), Main.getSkin());
             nameLabel.setColor(Color.CYAN);
 
             // ستون 3: XP و Level
@@ -1024,7 +1105,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     giftingFriendship = f;
                     createInventory();
                     dialogActivated = false;
-                    giftingInventory();
+//                    giftingInventory();
                 }
             });
             giftButton.addListener(new InputListener() {
@@ -2411,8 +2492,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
 
-                    if (currentItem != null && currentItem.getName().equals(item.getName()))
-                        Main.getClient().getPlayer().currentItem = null;
+                    if (currentItem != null && currentItem.getName().equals(item.getName())) {
+                        HashMap<String, Object> body = new HashMap<>();
+                        body.put("Player", Main.getClient().getPlayer());
+                        body.put("Item", null);
+                        Main.getClient().getRequests().add(new Message(CommandType.CURRENT_ITEM, body));
+                    }
                     else
                         controller.itemEquip(item.getName());
 

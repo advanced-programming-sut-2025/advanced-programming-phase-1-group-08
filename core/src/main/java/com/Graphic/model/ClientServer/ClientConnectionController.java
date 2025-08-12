@@ -514,4 +514,17 @@ public class ClientConnectionController {
         game.getGameState().currentWeather = Weather.Sunny;
         game.getGameState().tomorrowWeather = Weather.Sunny;
     }
+
+    public Message changeCurrentItem(User player, Items item, Game game) throws IOException {
+        for (User p: game.getGameState().getPlayers()) {
+            if (p.getUsername().equals(player.getUsername())) {
+                p.currentItem = item;
+            }
+        }
+
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("Player", player);
+        body.put("Item", item);
+        return new Message(CURRENT_ITEM, body);
+    }
 }

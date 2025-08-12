@@ -294,6 +294,11 @@ public class ClientWork {
                     // print unseen messages
                     Main.getClient().getPlayer().setShowUnseenChats(true);
                 }
+                case SEND_GIFT -> {
+                    User sender = message.getFromBody("Giver");
+                    Items items = message.getFromBody("Item");
+                    Main.getClient().getPlayer().setGiftIGot(sender, items, false);
+                }
                 case CHANGE_ABILITY_LEVEL -> {
                     int fishing =  message.getFromBody("Fishing");
                     int mining =  message.getFromBody("Mining");
@@ -333,6 +338,9 @@ public class ClientWork {
                 }
                 case GET_TOMORROW_WEATHER -> {
                     controller.setTomorrowWeather(message.getFromBody("Weather"));
+                }
+                case CURRENT_ITEM -> {
+                    Main.getClient().getPlayer().currentItem = message.getFromBody("Item");
                 }
             }
         } catch (Exception e) {

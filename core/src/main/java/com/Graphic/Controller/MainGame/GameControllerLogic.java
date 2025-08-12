@@ -72,6 +72,7 @@ import static com.Graphic.View.GameMenus.GameMenu.camera;
 import static com.Graphic.View.GameMenus.MarketMenu.*;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.Enum.Commands.CommandType.GET_TOMORROW_WEATHER;
+import static com.Graphic.model.Enum.Commands.CommandType.SEND_GIFT;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 import static com.Graphic.model.Weather.DateHour.getDayDifferent;
@@ -1637,20 +1638,25 @@ public class GameControllerLogic {
     }
 
 
-    public static void sendGifts (HumanCommunications f, String username) {
-//
-//        if (f == null) {
-//            System.out.println("There's " + "no Friendship" + " Among these Users");
-//            return;
-//        }
-//
-//
-//        // Result result = f.sendGifts(Main.getClient().getPlayer().currentItem, 1);
-//        if (result.IsSuccess()) {
-//            Set<User> key = new HashSet<>(Arrays.asList(Main.getClient().getPlayer(), findPlayerInGame(username)));
-//            Main.getClient().getLocalGameState().conversations.putIfAbsent(key, new ArrayList<>());
-//            Main.getClient().getLocalGameState().conversations.get(key).add(new MessageHandling(Main.getClient().getPlayer(), findPlayerInGame(username), Main.getClient().getPlayer().getNickname() + " Sent you a GIFT. Rate it out of 5!"));
-//        }
+    public static Result sendGifts (HumanCommunications f, String username, Items currentItem) {
+
+        if (f == null) {
+            return new Result(false, "There's no Friendship" + " Among these Users");
+        }
+
+        if (f.getLevel() < 1) {
+            return new Result(false, "You need at least Friendship Level 1!");
+        }
+
+
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("Giver", Main.getClient().getPlayer());
+        body.put("Given", findPlayerInGame(username));
+        body.put("Item", currentItem);
+        Main.getClient().getRequests().add(new Message(SEND_GIFT, body));
+
+        return new Result(true, "Sent Successfully.");
     }
 
     public static Result giveFlowers (String username) {
