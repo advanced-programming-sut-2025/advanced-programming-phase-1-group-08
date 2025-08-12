@@ -4,6 +4,7 @@ import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
 import com.Graphic.model.Enum.Commands.CommandType;
+import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.HumanCommunications;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
@@ -51,6 +52,10 @@ public class ClientWorkController {
         Tile tile = GameControllerLogic.getTileByCoordinates(x, y, Main.getClient().getLocalGameState());
         tile.setGameObject(gameObject);
     }
+    public void setTomorrowWeather (Weather weather) {
+
+        Main.getClient().getLocalGameState().tomorrowWeather = weather;
+    }
 
                                     // Ario
 
@@ -66,6 +71,4 @@ public class ClientWorkController {
         }
         return null;
     }
-
-
 }

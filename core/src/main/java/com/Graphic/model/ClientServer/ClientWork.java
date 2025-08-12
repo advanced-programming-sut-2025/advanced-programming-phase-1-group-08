@@ -321,6 +321,9 @@ public class ClientWork {
                         message.getFromBody("Object")
                     );
                 }
+                case GET_TOMORROW_WEATHER -> {
+                    controller.setTomorrowWeather(message.getFromBody("Weather"));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
