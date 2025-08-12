@@ -386,6 +386,9 @@ public class ClientConnectionController {
             if (user.getUsername().trim().equals(player.getUsername().trim())) {
                 Items items = message.getFromBody("Item");
                 int amount = message.getFromBody("amount");
+                for (int i = 0; i < 400; i++)
+                    System.out.println("printing amount");
+                System.out.println(amount);
                 if (user.getBackPack().inventory.Items.containsKey(items)) {
                     user.getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
 //                    if (user.getBackPack().inventory.Items.get(items) == 0) {

@@ -299,9 +299,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             activeDialog.remove();
             activeDialog = null;
         }
-        showUnseenMessages();
-        showHugged();
-        showGivenFlower();
 
         if (Main.getClient().getLocalGameState().getChooseMap()) {
             createUserRenderes();
@@ -327,8 +324,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         stage.draw();
 
         if (Main.getClient().getLocalGameState().getChooseMap()) {
-            startFishing(v);
+            showUnseenMessages();
+            showHugged();
+            showGivenFlower();
             ratingGifts();
+            startFishing(v);
             Main.getBatch().end();
         }
     }
@@ -953,103 +953,100 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     private void giftingInventory() {
+
         if (giftingFriendship == null)
             return;
-
         Result result = null;
         if (giftingFriendship.getPlayer1().getUsername().equals(Main.getClient().getPlayer().getUsername())) {
-            result = sendGifts(giftingFriendship, giftingFriendship.getPlayer1().getUsername(), Main.getClient().getPlayer().currentItem);
+            result = sendGifts(giftingFriendship, giftingFriendship.getPlayer2().getUsername(), Main.getClient().getPlayer().currentItem);
         }
         else if (giftingFriendship.getPlayer2().getUsername().equals(Main.getClient().getPlayer().getUsername())) {
-            result = sendGifts(giftingFriendship, giftingFriendship.getPlayer2().getUsername(),  Main.getClient().getPlayer().currentItem);
+            result = sendGifts(giftingFriendship, giftingFriendship.getPlayer1().getUsername(),  Main.getClient().getPlayer().currentItem);
         }
 
-        HashMap<String, Object> body = new HashMap<>();
-        body.put("Player", Main.getClient().getPlayer());
-        body.put("Item", null);
-        Main.getClient().getRequests().add(new Message(CommandType.CURRENT_ITEM, body));
         giftingFriendship = null;
-
 
         if (result != null)
             showTimedDialog(result.massage(), 2f);
     }
     public void ratingGifts() {
-        if (Main.getClient().getPlayer().getGiftIGot() == null)
-            return;
         if (Main.getClient().getPlayer().getGiftIGot().isEmpty())
             return;
-
 
         String sender = Main.getClient().getPlayer().getGiftIGot().getFirst();
         String giftName = Main.getClient().getPlayer().getGiftIGot().getLast();
 
-
-        int popupWidth = 300;
-        int popupHeight = 150;
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
-        int popupX = (screenWidth - popupWidth) / 2;
-        int popupY = (screenHeight - popupHeight) / 2;
+        int popupWidth = 300;
+        int popupHeight = 150;
+        int popupX = (screenWidth)/2 - popupWidth;
+        int popupY = (screenHeight)/2 - popupHeight;
+
 
         Main.getBatch().end();
-
-
-
         ShapeRenderer shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(Main.getBatch().getProjectionMatrix());
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0, 0, 0, 0.8f);
         shapeRenderer.rect(popupX, popupY, popupWidth, popupHeight);
         shapeRenderer.end();
+        Gdx.gl.glLineWidth(3);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(popupX, popupY, popupWidth, popupHeight);
+        shapeRenderer.end();
 
-
-        BitmapFont font = new BitmapFont();
         Main.getBatch().begin();
-        font.draw(Main.getBatch(), "Rate the gift from " + sender + " (" + giftName + "):",
-            popupX + 20, popupY + popupHeight - 20);
+        BitmapFont font = new BitmapFont();
+        font.draw(Main.getBatch(),
+            "Rate the gift from " + sender.toUpperCase() + " (" + giftName + "):",
+            popupX + 20,
+            popupY + popupHeight - 20);
 
 
-        Texture emptyStar = new Texture("star_empty.png");
-        Texture fullStar = new Texture("star_full.png");
+
+        Texture emptyStar = TextureManager.get("Ariyo/empty_star.png");
+        Texture fullStar = TextureManager.get("Ariyo/full_star.png");
+
 
         int starSize = 32;
         int spacing = 10;
         int starsX = popupX + 20;
         int starsY = popupY + 50;
 
-
         int mouseX = Gdx.input.getX();
         int mouseY = screenHeight - Gdx.input.getY();
+        int selectedStars;
 
-        int selectedStars = 0;
 
         for (int i = 0; i < 5; i++) {
             int starX = starsX + i * (starSize + spacing);
-            boolean hover = mouseX >= starX && mouseX <= starX + starSize &&
-                mouseY >= starsY && mouseY <= starsY + starSize;
+            boolean hover = mouseX >= starX + 279 && mouseX <= starX + 279 + starSize &&
+                mouseY >= starsY + 112 && mouseY <= starsY + starSize + 112;
 
             if (hover && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
                 selectedStars = i + 1;
                 System.out.println("Selected rating: " + selectedStars);
 
-
                 HashMap<String, Object> body = new HashMap<>();
-                body.put("Player", Main.getClient().getPlayer());
-                body.put("Friend", findPlayerInGame(sender));
+                body.put("Player", Main.getClient().getPlayer().getUsername());
+                body.put("Friend", sender);
                 body.put("XP", ((selectedStars - 3) * 30) + 15);
                 Main.getClient().getRequests().add(new Message(CommandType.ADD_XP_TO_FRIENDSHIP, body));
 
                 Main.getClient().getPlayer().setGiftIGot(null, null, true);
             }
 
-            if (hover) {
-                Main.getBatch().draw(fullStar, starX, starsY, starSize, starSize);
-            } else {
-                Main.getBatch().draw(emptyStar, starX, starsY, starSize, starSize);
-            }
+            Main.getBatch().draw(
+                hover ? fullStar : emptyStar,
+                starX, starsY, starSize, starSize
+            );
         }
-
     }
+
+
 
     public Dialog makingFriendDialog() {
         friendsListdialog = new Dialog("", newSkin);
@@ -1059,6 +1056,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Table friendTable = new Table();
         friendTable.top().left().pad(10);
 
+
+        for (int i = 0; i < 500; i++) {
+            System.out.println("DEBUGGINGGG");
+        }
 
         String targetName = Main.getClient().getPlayer().getUsername();
         User friendUser;
@@ -1105,7 +1106,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     giftingFriendship = f;
                     createInventory();
                     dialogActivated = false;
-//                    giftingInventory();
                 }
             });
             giftButton.addListener(new InputListener() {
@@ -1315,6 +1315,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         //Mohamadreza
         initializePlayer();
         gameState = Main.getClient().getLocalGameState();
+
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("Player", Main.getClient().getPlayer());
+        body.put("Item", new Fish(FishType.Salmon, Quantity.Normal));
+        body.put("amount", 10);
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+
+
 
         lastDateHour = new DateHour(Season.Spring, 1, 9, 1950);
         gameState.currentDate = new DateHour(Season.Spring, 1, 9, 1950);

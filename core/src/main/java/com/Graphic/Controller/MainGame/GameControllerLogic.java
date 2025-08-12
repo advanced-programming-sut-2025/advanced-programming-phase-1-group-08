@@ -1493,13 +1493,6 @@ public class GameControllerLogic {
 
         return null;
     }
-    public static void cheatAddXp (String input) {
-        int xp = Integer.parseInt(GameMenuCommands.addXpCheat.getMatcher(input).group("xp"));
-        String otherName = GameMenuCommands.addXpCheat.getMatcher(input).group("other");
-        User other = findPlayerInGame(otherName);
-        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), other);
-        f.addXP(xp);
-    }
     public static void showChatDialog(Stage stage, Skin skin, Consumer<String> onMessageSent) {
 
         // تعریف متغیرهای اولیه
@@ -1649,12 +1642,16 @@ public class GameControllerLogic {
         }
 
 
-
         HashMap<String , Object> body = new HashMap<>();
-        body.put("Giver", Main.getClient().getPlayer());
-        body.put("Given", findPlayerInGame(username));
+        body.put("Giver", Main.getClient().getPlayer().getUsername());
+        body.put("Given", username);
         body.put("Item", currentItem);
         Main.getClient().getRequests().add(new Message(SEND_GIFT, body));
+
+        HashMap<String, Object> body2 = new HashMap<>();
+        body2.put("Player", Main.getClient().getPlayer());
+        body2.put("Item", null);
+        Main.getClient().getRequests().add(new Message(CommandType.CURRENT_ITEM, body2));
 
         return new Result(true, "Sent Successfully.");
     }

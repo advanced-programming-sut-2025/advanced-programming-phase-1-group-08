@@ -753,16 +753,16 @@ public class User {
     public void setShowFlowered(boolean showFlowered) {
         this.showFlowered = showFlowered;
     }
-    public void setGiftIGot(User sender, Items gift, boolean makeItNull) {
+    public void setGiftIGot(String sender, String gift, boolean makeItNull) {
+        while (!giftIGot.isEmpty()) {
+        giftIGot.removeLast();
+        }
         if (makeItNull) {
-            for (var g: giftIGot) {
-                giftIGot.remove(g);
-            }
-            giftIGot = null;
             return;
         }
-        giftIGot.addFirst(sender.getUsername());
-        giftIGot.addLast(gift.getName());
+        giftIGot.addFirst(sender);
+        giftIGot.add(1, gift);
+
     }
     public List<String> getGiftIGot() {
         return giftIGot;

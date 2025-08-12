@@ -173,7 +173,9 @@ public class ClientConnectionThread extends Thread {
                 controller.sendToOnePerson(new Message(CommandType.CHANGE_ABILITY_LEVEL, body), game, player);
             }
             case CHANGE_INVENTORY -> {
-                sendMessage(controller.changeInventory(message , game));
+                Message message1 = controller.changeInventory(message, game);
+                User user = message1.getFromBody("Player");
+                controller.sendToOnePerson(message1, game, user);
             }
             case CHANGE_FRIDGE -> {
                 User player = message.getFromBody("Player");
@@ -220,23 +222,24 @@ public class ClientConnectionThread extends Thread {
                 ClientConnectionController.getInstance().sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body2), game);
             }
             case SEND_GIFT -> {
-                User player1 = message.getFromBody("Giver");
-                User player2 = message.getFromBody("Given");
+                String player1 = message.getFromBody("Giver");
+                String player2 = message.getFromBody("Given");
                 User giver = null;
                 User given = null;
                 for (User user: game.getGameState().getPlayers()) {
-                    if (user.getUsername().equals(player1.getUsername())) {
+                    if (user.getUsername().equals(player1)) {
                         giver = user;
                     }
-                    if (user.getUsername().equals(player2.getUsername())) {
+                    if (user.getUsername().equals(player2)) {
                         given = user;
                     }
                 }
-                if (giver == null && given == null) {
+                if (giver == null || given == null) {
                     return;
                 }
 
                 Items item =  message.getFromBody("Item");
+
 
                 if (giver.getBackPack().inventory.Items.containsKey(item)) {
                     giver.getBackPack().inventory.Items.compute(item,(k,v) -> v - 1);
@@ -255,6 +258,18 @@ public class ClientConnectionThread extends Thread {
                 body.put("Item", item);
                 controller.sendToOnePerson(new Message(CommandType.SEND_GIFT, body), game, given);
 
+
+                HashMap<String, Object> body3 = new HashMap<>();
+                body3.put("Player", giver);
+                body3.put("Item", item);
+                body3.put("amount", -1);
+                controller.sendToOnePerson(new Message(CommandType.CHANGE_INVENTORY, body3), game, giver);
+
+                HashMap<String, Object> body4 = new HashMap<>();
+                body4.put("Player", given);
+                body4.put("Item", item);
+                body4.put("amount", 1);
+                controller.sendToOnePerson(new Message(CommandType.CHANGE_INVENTORY, body4), game, given);
             }
             case EXIT_MARKET -> {
                 System.out.println("Exit");
@@ -288,7 +303,7 @@ public class ClientConnectionThread extends Thread {
             case CURRENT_ITEM -> {
                 User player = message.getFromBody("Player");
                 Items items = message.getFromBody("Item");
-                sendMessage(controller.changeCurrentItem(player, items, game));
+                controller.sendToOnePerson(controller.changeCurrentItem(player, items, game), game, player);
             }
 
                                         // Ario
@@ -304,21 +319,26 @@ public class ClientConnectionThread extends Thread {
                             game.getGameState().friendships.add(f);
                         }
                 }
-
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("friendships", game.getGameState().friendships);
-                sendMessage(new Message(CommandType.FriendshipsInqResponse, body));
+
+                if (game.getGameState().friendships.isEmpty()) {
+                    for (int i = 0; i < 500; i++)
+                        System.out.println("server bega raft");
+                }
+
+                controller.sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body), game);
             }
             case ADD_XP_TO_FRIENDSHIP -> {
-                User player = message.getFromBody("Player");
-                User friend =  message.getFromBody("Friend");
+                String player = message.getFromBody("Player");
+                String friend =  message.getFromBody("Friend");
                 User p1 = null;
                 User p2 = null;
                 for (User user: game.getGameState().getPlayers()) {
-                    if (user.getUsername().equals(player.getUsername())) {
+                    if (user.getUsername().equals(player)) {
                         p1 = user;
                     }
-                    if (user.getUsername().equals(friend.getUsername())) {
+                    if (user.getUsername().equals(friend)) {
                         p2 = user;
                     }
                 }

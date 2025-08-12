@@ -2212,6 +2212,7 @@ public class InputGameController {
 
         for (Map.Entry<Items,Integer> entry: inventory.Items.entrySet())
             if (entry.getKey() != null && entry.getKey().getName().equals(name)) {
+                Main.getClient().getPlayer().currentItem = entry.getKey();
                 HashMap<String, Object> body = new HashMap<>();
                 body.put("Player", Main.getClient().getPlayer());
                 body.put("Item", entry.getKey());

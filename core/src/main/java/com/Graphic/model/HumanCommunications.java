@@ -23,7 +23,7 @@ public class HumanCommunications {
         this.player1 = player1;
         this.player2 = player2;
         XP = 0;
-        FriendshipLevel = 0;
+        FriendshipLevel = 1;
     }
 
     public boolean involves(User p) {
