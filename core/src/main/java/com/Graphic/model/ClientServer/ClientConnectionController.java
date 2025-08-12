@@ -388,17 +388,17 @@ public class ClientConnectionController {
                 int amount = message.getFromBody("amount");
                 if (user.getBackPack().inventory.Items.containsKey(items)) {
                     user.getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
-                    if (user.getBackPack().inventory.Items.get(items) == 0) {
-                        Main.getClient().getPlayer().getBackPack().inventory.Items.remove(items);
-                    }
+//                    if (user.getBackPack().inventory.Items.get(items) == 0) {
+//                        Main.getClient().getPlayer().getBackPack().inventory.Items.remove(items);
+//                    }
                 }
                 else {
                     user.getBackPack().inventory.Items.put(items,amount);
                 }
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("Player", player);
-                body.put("Item" , message.getFromBody("Item"));
-                body.put("amount" , message.getFromBody("amount"));
+                body.put("Item" , items);
+                body.put("amount" , amount);
                 return new Message(CommandType.CHANGE_INVENTORY , body);
             }
         }

@@ -2,6 +2,8 @@ package com.Graphic.Controller.MainGame;
 
 import com.Graphic.Main;
 import com.Graphic.model.App;
+import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.Items;
@@ -56,9 +58,6 @@ public class CraftingController {
             }
         }
 
-//        if (!App.currentGame.currentPlayer.getFarm().isInHome(App.currentGame.currentPlayer.getPositionX(), App.currentGame.currentPlayer.getPositionY())) {
-//            return new Result(false, "You are not in Home");
-//        }
 
         if (type == null) {
             return new Result(false , "No such Craft type");
@@ -83,7 +82,11 @@ public class CraftingController {
 
 
         for (Map.Entry <Items , Integer> entry : ingrediant.entrySet()) {
-            inventory.Items.compute(entry.getKey(), (k, x) -> x - entry.getValue());
+            HashMap<String, Object> body = new HashMap<>();
+            body.put("Player", Main.getClient().getPlayer());
+            body.put("Item", entry.getKey());
+            body.put("amount", -entry.getValue());
+            Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
         }
         if (name.equals("Grass Starter")) {
             for (Map.Entry <Items , Integer> entry : inventory.Items.entrySet()) {
