@@ -1786,20 +1786,18 @@ public class GameControllerLogic {
 
     public static void setPlayerLocation () {
 
-        for (User user: Main.getClient().getLocalGameState().getPlayers()) {
-            if (user.getHealth() <= 0) {
-                user.setPositionX(user.getSleepTile().getX());
-                user.setPositionY(user.getSleepTile().getY());
-            }
-            else {
-                Home home = user.getFarm().getHome();
-                user.setPositionX(home.getTopLeftX() + home.getWidth() / 2);
-                user.setPositionY(home.getTopLeftY() + home.getLength());
-            }
+        User user = Main.getClient().getPlayer();
+        if (user.getHealth() <= 0) {
+            user.setPositionX(user.getSleepTile().getX());
+            user.setPositionY(user.getSleepTile().getY());
+        }
+        else {
+            Home home = user.getFarm().getHome();
+            user.setPositionX(home.getTopLeftX() + home.getWidth() / 2);
+            user.setPositionY(home.getTopLeftY() + home.getLength());
         }
     }
-    public static void
-    initializePlayer () {
+    public static void initializePlayer () {
 
         User user = Main.getClient().getPlayer();
 
@@ -1966,27 +1964,17 @@ public class GameControllerLogic {
         doSeasonAutomaticTask();
         setPlayerLocation();
         setEnergyInMorning();
-        createRandomForaging();
-        createRandomMinerals();
-        NPCAutomaticTasks();
+
         unloadAndReward();
         calculateAnimalsFriendship();
         checkAnimalProduct();
+        NPCAutomaticTasks();
 
         for (Tile tile : Main.getClient().getLocalGameState().bigMap)
             tile.getGameObject().startDayAutomaticTask();
 
         doWeatherTask();
-        crowAttack(); // قبل محصول دادن درخت باید باشه
-
-
-
-    }
-
-    public static void AutomaticFunctionAfterOneTurn () {
-
-//        for (Tile tile : Main.getClient().getLocalGameState().bigMap)
-//            tile.getGameObject().turnByTurnAutomaticTask();
+        crowAttack();
     }
     public static void AutomaticFunctionAfterAnyAct () {
 
@@ -2014,20 +2002,20 @@ public class GameControllerLogic {
 
     // energy & Date
     public static void setEnergyInMorning () {
-        for (User user : Main.getClient().getLocalGameState().getPlayers()) {
-            if (user.getDaysDepressedLeft() == 0) {
-                if (user.getHealth() > 0)
-                    user.setHealth(user.getMAX_HEALTH());
-                else
-                    user.setHealth((user.getMAX_HEALTH() * 3) / 4);
-            }
-            else {
-                user.setDaysDepressedLeft(user.getDaysDepressedLeft() - 1);
-                if (user.getHealth() > 0)
-                    user.setHealth((user.getMAX_HEALTH()) / 2);
-                else
-                    user.setHealth((user.getMAX_HEALTH() * 3) / 8);
-            }
+
+        User user = Main.getClient().getPlayer();
+        if (user.getDaysDepressedLeft() == 0) {
+            if (user.getHealth() > 0)
+                user.setHealth(user.getMAX_HEALTH());
+            else
+                user.setHealth((user.getMAX_HEALTH() * 3) / 4);
+        }
+        else {
+            user.setDaysDepressedLeft(user.getDaysDepressedLeft() - 1);
+            if (user.getHealth() > 0)
+                user.setHealth((user.getMAX_HEALTH()) / 2);
+            else
+                user.setHealth((user.getMAX_HEALTH() * 3) / 8);
         }
     }
     public static void setTimeAndWeather () {
@@ -2088,16 +2076,22 @@ public class GameControllerLogic {
                             else if (object instanceof Tree && !((Tree) object).isProtected())
                                 ((Tree) object).setLastFruit(Main.getClient().getLocalGameState().currentDate);
 
-                            else if (object instanceof ForagingCrops && !((ForagingCrops) object).isProtected())
+                            else if (object instanceof ForagingCrops && !((ForagingCrops) object).isProtected()) {
                                 ((ForagingCrops) object).delete();
+                                inputGameController.sendChangeGameObjectMessage(tile, new Walkable());
+                            }
 
                             else if (object instanceof ForagingSeeds && !((ForagingSeeds) object).isProtected()) {
-                                if (((ForagingSeeds) object).getType().isOneTimeUse())
+                                if (((ForagingSeeds) object).getType().isOneTimeUse()) {
                                     ((ForagingSeeds) object).delete();
+                                    inputGameController.sendChangeGameObjectMessage(tile, new Walkable());
+                                }
                                 else
                                     ((ForagingSeeds) object).setLastProduct(Main.getClient().getLocalGameState().currentDate);
-                            } else if (object instanceof GiantProduct && !((GiantProduct) object).isProtected())
+                            } else if (object instanceof GiantProduct && !((GiantProduct) object).isProtected()) {
                                 ((GiantProduct) object).delete();
+                                inputGameController.sendChangeGameObjectMessage(tile, new Walkable());
+                            }
                         }
                     }
                 }
@@ -2245,84 +2239,6 @@ public class GameControllerLogic {
                 return false;
 
         return true;
-    }
-    public static void    createRandomForaging () {
-
-        for (Tile tile : Main.getClient().getLocalGameState().bigMap) {
-
-            if (tile.getGameObject() instanceof Walkable &&
-                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed") && Math.random() <= 0.2) {
-                if (Math.random() <= 0.5) {
-
-                    List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
-                        .filter(d -> d.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()))
-                        .toList();
-
-                    ForagingSeedsType type = types.get(rand.nextInt(types.size()));
-                    inputGameController.sendChangeGameObjectMessage(tile, new ForagingSeeds(type, Main.getClient().getLocalGameState().currentDate));
-                } else {
-
-                    List<ForagingCropsType> types = new ArrayList<>(Arrays.stream(ForagingCropsType.values())
-                        .filter(d -> d.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()))
-                        .toList());
-
-                    types.remove(ForagingCropsType.Fiber);
-                    ForagingCropsType type = types.get(rand.nextInt(types.size()));
-
-                    ForagingCrops crop = new ForagingCrops(type);
-                    inputGameController.sendChangeGameObjectMessage(tile, crop);
-                }
-            }
-
-            else if (tile.getGameObject() instanceof Walkable &&
-                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk") &&
-                canGrowGrass(tile) && Math.random() <= 0.1) {
-
-                if (Math.random() <= 0.5)
-                    ((Walkable) tile.getGameObject()).setGrassOrFiber("Fiber");
-                else
-                    ((Walkable) tile.getGameObject()).setGrassOrFiber("Grass");
-            }
-        }
-    }
-    public static void    createRandomMinerals () {
-        for (User user : Main.getClient().getLocalGameState().getPlayers()) {
-
-            List<Integer> positions = new ArrayList<>();
-            for (int i = 0 ; i < 16 ; i++) {
-                positions.add(i);
-            }
-
-            Collections.shuffle(positions);
-
-            List<ForagingMineralsType> minerals = Arrays.asList(
-                RUBY, COAL, IRON, TOPAZ, GOLD, JADE, IRIDIUM,
-                QUARTZ, EMERALD, COPPER, DIAMOND, AMETHYST,
-                AQUAMARINE, FROZEN_TEAR, FIRE_QUARTZ,
-                PRISMATIC_SHARD, EARTH_CRYSTAL
-            );
-
-            int posIndex = 0;
-            for (ForagingMineralsType mineral : minerals) {
-                while (posIndex < positions.size()) {
-                    Point point = new Point(
-                        user.getFarm().getMine().getPositions().get(positions.get(posIndex)));
-
-                    if (user.getFarm().getMine().checkPositionForMineral(point)) {
-                        if (Math.random() <= mineral.getProbability()) {
-                            ForagingMinerals f = new ForagingMinerals(mineral);
-                            f.setPosition(point);
-                            user.getFarm().getMine().getForagingMinerals().add(f);
-                            user.getFarm().getMine().getTaken().add(point);
-                            break;
-                        }
-                    }
-
-                    posIndex ++;
-
-                }
-            }
-        }
     }
     public static boolean checkTileForPlant (Tile tile) {
 

@@ -6,6 +6,9 @@ import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
+import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
+import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
@@ -13,20 +16,20 @@ import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Places.ShippingBin;
-import com.Graphic.model.Plants.BasicRock;
-import com.Graphic.model.Plants.Wood;
+import com.Graphic.model.Plants.*;
 import com.Graphic.model.Weather.DateHour;
 import com.esotericsoftware.kryonet.Connection;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
+import static com.Graphic.model.Enum.AllPlants.ForagingMineralsType.*;
 import static com.Graphic.model.Enum.Commands.CommandType.REDUCE_BARN_CAGE;
 import static com.Graphic.model.Enum.Commands.CommandType.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
@@ -35,6 +38,7 @@ import static com.Graphic.model.Weather.DateHour.getDayDifferent;
 public class ClientConnectionController {
 
     private static ClientConnectionController instance;
+    private Random rand = new Random();
 
     public void createFarm(Message message , Game game) throws IOException {
         int index = message.getFromBody("Index");
@@ -472,7 +476,7 @@ public class ClientConnectionController {
 
         for (int i = 0 ; i < number ; i++) {
             currentDateHour.increaseDay(1);
-            startDay();
+            this.startDay(game);
         }
 
         currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
@@ -502,6 +506,16 @@ public class ClientConnectionController {
         body.put("Object", object);
         sendToAll(new Message(CommandType.SET_TIME, body), game);
     }
+    public void sendSetGameObjectMessage (Tile tile,  GameObject object, Game game) throws IOException {
+
+        tile.setGameObject(object);
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("X", tile.getX());
+        body.put("Y", tile.getY());
+        body.put("Object", object);
+        sendToAll(new Message(CommandType.SET_TIME, body), game);
+    }
     public void sentWeather(Game game) throws IOException {
 
         HashMap<String , Object> body = new HashMap<>();
@@ -513,6 +527,99 @@ public class ClientConnectionController {
         game.getGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1980);
         game.getGameState().currentWeather = Weather.Sunny;
         game.getGameState().tomorrowWeather = Weather.Sunny;
+    }
+    public void sendAddMineralMessage (User user, ForagingMinerals minerals, Point point, Game game) throws IOException {
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("User", user);
+        body.put("Point", point);
+        body.put("Mineral", minerals);
+        sendToAll(new Message(ADD_MINERAL, body), game);
+    }
+    public void startDay (Game game) throws IOException {
+        createRandomForaging(game);
+        createRandomMinerals(game);
+    }
+    public void createRandomForaging (Game game) throws IOException {
+
+        for (Tile tile : game.getGameState().bigMap) {
+
+            if (tile.getGameObject() instanceof Walkable &&
+                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed") && Math.random() <= 0.2) {
+                if (Math.random() <= 0.5) {
+
+                    java.util.List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
+                        .filter(d -> d.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()))
+                        .toList();
+
+                    ForagingSeedsType type = types.get(rand.nextInt(types.size()));
+                    this.sendSetGameObjectMessage(tile, new ForagingSeeds(type, Main.getClient().getLocalGameState().currentDate), game);
+                } else {
+
+                    List<ForagingCropsType> types = new ArrayList<>(Arrays.stream(ForagingCropsType.values())
+                        .filter(d -> d.getSeason().contains(Main.getClient().getLocalGameState().currentDate.getSeason()))
+                        .toList());
+
+                    types.remove(ForagingCropsType.Fiber);
+                    ForagingCropsType type = types.get(rand.nextInt(types.size()));
+
+                    ForagingCrops crop = new ForagingCrops(type);
+                    this.sendSetGameObjectMessage(tile, crop, game);
+                }
+            }
+
+            else if (tile.getGameObject() instanceof Walkable &&
+                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk") &&
+                canGrowGrass(tile) && Math.random() <= 0.1) {
+
+                Walkable walkable = (Walkable) tile.getGameObject();
+
+                if (Math.random() <= 0.5)
+                    walkable.setGrassOrFiber("Fiber");
+                else
+                    walkable.setGrassOrFiber("Grass");
+
+                sendSetGameObjectMessage(tile, walkable, game);
+            }
+        }
+    }
+    public void createRandomMinerals (Game game) throws IOException {
+
+        for (User user : game.getGameState().getPlayers()) {
+
+            List<Integer> positions = new ArrayList<>();
+            for (int i = 0 ; i < 16 ; i++)
+                positions.add(i);
+
+            Collections.shuffle(positions);
+
+            List<ForagingMineralsType> minerals = Arrays.asList(
+                RUBY, COAL, IRON, TOPAZ, GOLD, JADE, IRIDIUM,
+                QUARTZ, EMERALD, COPPER, DIAMOND, AMETHYST,
+                AQUAMARINE, FROZEN_TEAR, FIRE_QUARTZ,
+                PRISMATIC_SHARD, EARTH_CRYSTAL
+            );
+
+            int posIndex = 0;
+            for (ForagingMineralsType mineral : minerals) {
+                while (posIndex < positions.size()) {
+                    Point point = new Point(
+                        user.getFarm().getMine().getPositions().get(positions.get(posIndex)));
+
+                    if (user.getFarm().getMine().checkPositionForMineral(point)) {
+                        if (Math.random() <= mineral.getProbability()) {
+                            ForagingMinerals f = new ForagingMinerals(mineral);
+                            f.setPosition(point);
+                            user.getFarm().getMine().getForagingMinerals().add(f);
+                            user.getFarm().getMine().getTaken().add(point);
+                            sendAddMineralMessage(user, f, point, game);
+                            break;
+                        }
+                    }
+                    posIndex ++;
+                }
+            }
+        }
     }
 
     public Message changeCurrentItem(User player, Items item, Game game) throws IOException {
