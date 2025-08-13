@@ -221,6 +221,7 @@ public class ClientConnectionController {
         sendToAllExceptOnePerson(new Message(START_LOBBY , startGame) , game , Player);
 
         ServerHandler serverHandler = ServerHandler.getInstance();
+        serverHandler.setGame(game);
         serverHandler.start();
 
         return new Message(START_LOBBY , startGame);
@@ -658,36 +659,30 @@ public class ClientConnectionController {
             instance = new ClientConnectionController();
         return instance;
     }
-    public void CheckFriendDistance() {
 
+                            // Ario
+    private boolean isClose(User user1, User user2) {
+        float firstX = user1.getPositionX();
+        float firstY = user1.getPositionY();
+        float secondX = user2.getPositionX();
+        float secondY = user2.getPositionY();
+        return Math.abs(firstX - secondX) < 5f && Math.abs(firstY - secondY) < 5f;
     }
-    public void checkLakeDistance(Game game) throws IOException {
-//        for (User player: game.getGameState().getPlayers()) {
-//            Lake lake = player.getFarm().getLake();
-//            if (lake == null) return;
-//            float myX = player.getPositionX();
-//            float myY = player.getPositionY();
-//            float lakeY = lake.getTopLeftY();
-//            float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
-//            float deltaX = Math.abs(myX - lakeX);
-//            float deltaY = Math.abs(myY - lakeY);
-//            if (deltaX < 3f && deltaY < 3f) {
-//                player.setCloseToLake(true);
-//                HashMap<String , Object> body = new HashMap<>();
-//                body.put("Player", player);
-//                body.put("isClose", true);
-//                sendToOnePerson(new Message(CLOSE_TO_LAKE, body), game, player);
-//            }
-//            else {
-//                player.setCloseToLake(false);
-//                HashMap<String , Object> body = new HashMap<>();
-//                body.put("Player", player);
-//                body.put("isClose", false);
-//                sendToOnePerson(new Message(CLOSE_TO_LAKE, body), game, player);
-//            }
-//        }
-    }
+    public void CheckFriendDistance(Game game) throws IOException {
+        for (int i = 0; i < game.getGameState().getPlayers().size(); i++) {
+            for (int j = i + 1; j < game.getGameState().getPlayers().size(); j++) {
+                if (isClose(game.getGameState().getPlayers().get(i), game.getGameState().getPlayers().get(j))) {
+                    HashMap<String , Object> body = new HashMap<>();
+                    body.put("Player", game.getGameState().getPlayers().get(j));
+                    sendToOnePerson(new Message(A_FRIEND_IS_CLOSE, body), game, game.getGameState().getPlayers().get(i));
 
+                    HashMap<String , Object> body2 = new HashMap<>();
+                    body2.put("Player", game.getGameState().getPlayers().get(i));
+                    sendToOnePerson(new Message(A_FRIEND_IS_CLOSE, body2), game, game.getGameState().getPlayers().get(j));
+                }
+            }
+        }
+    }
 
                                         // Erfan
     public void sendSetTimeMessage (int hour, int day, Game game) throws IOException {
