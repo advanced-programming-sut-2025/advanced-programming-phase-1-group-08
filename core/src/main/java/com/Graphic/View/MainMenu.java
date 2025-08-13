@@ -2,6 +2,10 @@ package com.Graphic.View;
 
 import com.Graphic.Main;
 import com.Graphic.View.GameMenus.GameMenu;
+import com.Graphic.model.App;
+import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.Enum.Commands.CommandType;
+import com.Graphic.model.Enum.Menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,19 +20,37 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.Align;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class MainMenu implements Screen, AppMenu {
+    private static MainMenu instance;
     private Stage stage;
     private Texture backgroundTexture;
     private Table mainTable;
 
+    // Windows for dialogs
+    private Window craftingWindow;
+    private Window marketWindow;
+    private Label messageLabel;
+
+    public static MainMenu getInstance() {
+        if (instance == null) {
+            instance = new MainMenu();
+        }
+        return instance;
+    }
+
     @Override
     public void show() {
+        instance = this;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         setupBackground();
         setupUI();
+
+        // Request user data when menu loads
+        requestUserData();
     }
 
     private void setupBackground() {
@@ -62,51 +84,83 @@ public class MainMenu implements Screen, AppMenu {
         TextButton marketButton = new TextButton("Market", Main.getSkin());
         TextButton profileButton = new TextButton("Profile", Main.getSkin());
         TextButton avatarButton = new TextButton("Avatar", Main.getSkin());
+        TextButton logoutButton = new TextButton("Logout", Main.getSkin());
         TextButton exitButton = new TextButton("Exit", Main.getSkin());
 
         float buttonWidth = 300;
         float buttonHeight = 60;
         float buttonPadding = 15;
 
-        profileButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Main.getMain().setScreen(new ProfileMenu());
-            }
-        });
-
+        // Play Game Button
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                App.currentMenu = Menu.PlayGameMenu;
+                Main.getClient().setCurrentMenu(Menu.PlayGameMenu);
                 Main.getMain().setScreen(new PlayGameMenu());
             }
         });
 
+        // Profile Button
+        profileButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                App.currentMenu = Menu.ProfileMenu;
+                Main.getClient().setCurrentMenu(Menu.ProfileMenu);
+                Main.getMain().setScreen(ProfileMenu.getInstance());
+            }
+        });
+
+        // Crafting Button - Request from server
         craftingButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                showCraftingGuide();
+                requestCraftingData();
             }
         });
 
+        // Market Button - Request from server
         marketButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Opening market...");
+                requestMarketData();
             }
         });
 
+        // Avatar Button
         avatarButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Main.getMain().setScreen(new AvatarMenu());
+                App.currentMenu = Menu.AvatarMenu;
+                Main.getClient().setCurrentMenu(Menu.AvatarMenu);
+                Main.getMain().setScreen(AvatarMenu.getInstance());
             }
         });
 
+        // Logout Button
+        logoutButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                performLogout();
+            }
+        });
+
+        // Exit Button
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
+                // Send disconnect message before exit
+                HashMap<String, Object> body = new HashMap<>();
+                Message message = new Message(CommandType.DISCONNECT, body);
+                Main.getClient().getRequests().add(message);
+
+                // Small delay then exit
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        Gdx.app.exit();
+                    }
+                }, 0.5f);
             }
         });
 
@@ -115,14 +169,59 @@ public class MainMenu implements Screen, AppMenu {
         menuContainer.add(marketButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
         menuContainer.add(profileButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
         menuContainer.add(avatarButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
+        menuContainer.add(logoutButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
         menuContainer.add(exitButton).width(buttonWidth).height(buttonHeight).row();
 
-        mainTable.add(menuContainer);
+        mainTable.add(menuContainer).row();
+
+        // Message label for notifications
+        messageLabel = new Label("", Main.getSkin());
+        messageLabel.setAlignment(Align.center);
+        mainTable.add(messageLabel).padTop(20);
+
         stage.addActor(mainTable);
     }
 
-    private void showCraftingGuide() {
-        Window craftingWindow = new Window("Crafting Guide", Main.getSkin());
+    private void requestUserData() {
+        HashMap<String, Object> body = new HashMap<>();
+        Message message = new Message(CommandType.GET_USER_DATA, body);
+        Main.getClient().getRequests().add(message);
+    }
+
+    private void requestCraftingData() {
+        HashMap<String, Object> body = new HashMap<>();
+        Message message = new Message(CommandType.GET_CRAFTING_DATA, body);
+        Main.getClient().getRequests().add(message);
+        showMessage("Loading crafting data...", false);
+    }
+
+    private void requestMarketData() {
+        HashMap<String, Object> body = new HashMap<>();
+        Message message = new Message(CommandType.GET_MARKET_DATA, body);
+        Main.getClient().getRequests().add(message);
+        showMessage("Loading market data...", false);
+    }
+
+    private void performLogout() {
+        HashMap<String, Object> body = new HashMap<>();
+        Message message = new Message(CommandType.LOGOUT, body);
+        Main.getClient().getRequests().add(message);
+
+        // Clear local session
+        App.currentUser = null;
+        App.currentMenu = Menu.LoginMenu;
+        Main.getClient().setCurrentMenu(Menu.LoginMenu);
+
+        // Go to login screen
+        Main.getMain().setScreen(new LoginMenu("", ""));
+    }
+
+    public void showCraftingGuide(Message message) {
+        if (craftingWindow != null) {
+            craftingWindow.remove();
+        }
+
+        craftingWindow = new Window("Crafting Guide", Main.getSkin());
         craftingWindow.setMovable(true);
         craftingWindow.setModal(true);
 
@@ -137,7 +236,18 @@ public class MainMenu implements Screen, AppMenu {
 
         ScrollPane scrollPane = new ScrollPane(null, Main.getSkin());
         Table contentTable = new Table();
-        contentTable.add(new Label("Crafting recipes will be shown here", Main.getSkin())).pad(20);
+
+        // Parse crafting data from message
+        String craftingData = message.getFromBody("craftingData");
+        if (craftingData != null && !craftingData.isEmpty()) {
+            String[] recipes = craftingData.split(";");
+            for (String recipe : recipes) {
+                contentTable.add(new Label(recipe, Main.getSkin())).pad(10).align(Align.left).row();
+            }
+        } else {
+            contentTable.add(new Label("No crafting recipes available", Main.getSkin())).pad(20);
+        }
+
         scrollPane.setWidget(contentTable);
 
         craftingWindow.add(scrollPane).width(600).height(400).pad(20);
@@ -150,35 +260,131 @@ public class MainMenu implements Screen, AppMenu {
         stage.addActor(craftingWindow);
     }
 
-    private void showProfileWindow() {
-        Window profileWindow = new Window("Profile", Main.getSkin());
-        profileWindow.setMovable(true);
-        profileWindow.setModal(true);
+    public void showMarket(Message message) {
+        if (marketWindow != null) {
+            marketWindow.remove();
+        }
+
+        marketWindow = new Window("Market", Main.getSkin());
+        marketWindow.setMovable(true);
+        marketWindow.setModal(true);
 
         TextButton closeButton = new TextButton("X", Main.getSkin());
         closeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                profileWindow.remove();
+                marketWindow.remove();
             }
         });
-        profileWindow.getTitleTable().add(closeButton).padRight(0);
+        marketWindow.getTitleTable().add(closeButton).padRight(0);
 
         Table contentTable = new Table();
         contentTable.pad(20);
-        contentTable.add(new Label("Username: Player", Main.getSkin())).align(Align.left).row();
-        contentTable.add(new Label("Level: 1", Main.getSkin())).align(Align.left).padTop(10).row();
-        contentTable.add(new Label("Gold: 500", Main.getSkin())).align(Align.left).padTop(10).row();
-        contentTable.add(new Label("Games Played: 0", Main.getSkin())).align(Align.left).padTop(10).row();
 
-        profileWindow.add(contentTable).expand().fill();
-        profileWindow.setSize(400, 300);
-        profileWindow.setPosition(
-            (stage.getWidth() - profileWindow.getWidth()) / 2,
-            (stage.getHeight() - profileWindow.getHeight()) / 2
+        // Parse market data from message
+        String marketData = message.getFromBody("marketData");
+        if (marketData != null && !marketData.isEmpty()) {
+            // Parse and display market items
+            String[] items = marketData.split(";");
+            for (String item : items) {
+                String[] parts = item.split(",");
+                if (parts.length >= 3) {
+                    Table itemRow = new Table();
+                    itemRow.add(new Label(parts[0], Main.getSkin())).width(200).align(Align.left);
+                    itemRow.add(new Label("Price: " + parts[1], Main.getSkin())).width(100);
+
+                    TextButton buyButton = new TextButton("Buy", Main.getSkin());
+                    final String itemId = parts[2];
+                    buyButton.addListener(new ClickListener() {
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            purchaseItem(itemId);
+                        }
+                    });
+                    itemRow.add(buyButton).width(80);
+
+                    contentTable.add(itemRow).padBottom(10).row();
+                }
+            }
+        } else {
+            contentTable.add(new Label("Market is currently closed", Main.getSkin()));
+        }
+
+        ScrollPane scrollPane = new ScrollPane(contentTable, Main.getSkin());
+        marketWindow.add(scrollPane).width(500).height(400).pad(20);
+        marketWindow.setSize(550, 500);
+        marketWindow.setPosition(
+            (stage.getWidth() - marketWindow.getWidth()) / 2,
+            (stage.getHeight() - marketWindow.getHeight()) / 2
         );
 
-        stage.addActor(profileWindow);
+        stage.addActor(marketWindow);
+    }
+
+    private void purchaseItem(String itemId) {
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("itemId", itemId);
+        Message message = new Message(CommandType.PURCHASE_ITEM, body);
+        Main.getClient().getRequests().add(message);
+        showMessage("Processing purchase...", false);
+    }
+
+    public void handleResponse(Message message) {
+        switch (message.getCommandType()) {
+            case CRAFTING_DATA:
+                showCraftingGuide(message);
+                break;
+
+            case MARKET_DATA:
+                showMarket(message);
+                break;
+
+            case PURCHASE_SUCCESS:
+                showMessage("Purchase successful!", false);
+                if (marketWindow != null) {
+                    marketWindow.remove();
+                }
+                requestMarketData(); // Refresh market data
+                break;
+
+            case PURCHASE_FAILED:
+                showMessage("Purchase failed: " + message.getFromBody("reason"), true);
+                break;
+
+            case USER_DATA:
+                // Update any UI elements with user data if needed
+                String username = message.getFromBody("username");
+                String gold = message.getFromBody("gold");
+                if (username != null) {
+                    showMessage("Welcome back, " + username + "!", false);
+                }
+                break;
+
+            case ERROR:
+                showMessage(message.getFromBody("error"), true);
+                break;
+
+            case SUCCESS:
+                showMessage(message.getFromBody("message"), false);
+                break;
+        }
+    }
+
+    private void showMessage(String message, boolean isError) {
+        messageLabel.setText(message);
+        if (isError) {
+            messageLabel.setColor(1, 0.3f, 0.3f, 1);
+        } else {
+            messageLabel.setColor(0.3f, 1, 0.3f, 1);
+        }
+
+        // Auto-hide message after 3 seconds
+        com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+            @Override
+            public void run() {
+                messageLabel.setText("");
+            }
+        }, 3);
     }
 
     @Override
@@ -187,6 +393,11 @@ public class MainMenu implements Screen, AppMenu {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
+
+        // Check for menu changes
+        if (Main.getClient().getCurrentMenu() != Menu.MainMenu) {
+            Main.getMain().setScreen(Main.getClient().getCurrentMenu().getScreen());
+        }
     }
 
     @Override
@@ -195,16 +406,13 @@ public class MainMenu implements Screen, AppMenu {
     }
 
     @Override
-    public void pause() {
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {
@@ -214,11 +422,8 @@ public class MainMenu implements Screen, AppMenu {
         }
     }
 
-//    @Override
-//    public void check(Scanner scanner) throws IOException {
-//
-//    }
-
     @Override
-    public Stage getStage() {return stage;}
+    public Stage getStage() {
+        return stage;
+    }
 }
