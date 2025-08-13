@@ -1448,14 +1448,23 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         TextButton tree = new TextButton("tree", newSkin);
         TextButton watering = new TextButton("watering", newSkin);
 
+        TextButton stone = new TextButton("stone", newSkin);
+        TextButton plant = new TextButton("plant", newSkin);
+
+        TextButton remove = new TextButton("remove", newSkin);
+        TextButton plow = new TextButton("plow", newSkin);
+
         TextButton backButton = new TextButton("back", newSkin);
 
 
         table.add(tree).width(250).center();
         table.add(watering).width(250).center();
-
-        // table.row().pad(15, 0, 10, 0);
-
+        table.row().pad(15, 0, 10, 0);
+        table.add(stone).width(250).center();
+        table.add(plant).width(250).center();
+        table.row().pad(15, 0, 10, 0);
+        table.add(remove).width(250).center();
+        table.add(plow).width(250).center();
 
         table.row().pad(30, 0, 10, 0);
         table.add(backButton).width(150).colspan(2).center();
@@ -1475,6 +1484,30 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 test();
             }
         });
+        plow.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                plow();
+            }
+        });
+        remove.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                remove();
+            }
+        });
+        stone.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Stone();
+            }
+        });
+        plant.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                plant();
+            }
+        });
         watering.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -1487,6 +1520,42 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         for (Tile tile : Main.getClient().getPlayer().getFarm().Farm) {
             if (tile.getGameObject() instanceof Walkable) {
                 Tree tree = new Tree(TreeType.AppleTree, Main.getClient().getLocalGameState().currentDate.clone());
+                tile.setGameObject(tree);
+                controller.sendChangeGameObjectMessage(tile, tree);
+            }
+        }
+    }
+    private void Stone () {
+        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                BasicRock tree = new BasicRock();
+                tile.setGameObject(tree);
+                controller.sendChangeGameObjectMessage(tile, tree);
+            }
+        }
+    }
+    private void plant () {
+        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                AllCrops tree = new AllCrops(CropsType.Amaranth);
+                tile.setGameObject(tree);
+                controller.sendChangeGameObjectMessage(tile, tree);
+            }
+        }
+    }
+    private void remove () {
+        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                Walkable tree = new Walkable();
+                tile.setGameObject(tree);
+                controller.sendChangeGameObjectMessage(tile, tree);
+            }
+        }
+    }
+    private void plow () {
+        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                Walkable tree = new Walkable("Plow");
                 tile.setGameObject(tree);
                 controller.sendChangeGameObjectMessage(tile, tree);
             }
