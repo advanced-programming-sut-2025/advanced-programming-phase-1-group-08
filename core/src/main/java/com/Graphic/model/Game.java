@@ -99,10 +99,10 @@ public class Game {
         gameState.getPlayers().add(Creator);
 
         scheduler.schedule(() -> {
-            if (this.getPlayers().isEmpty() || (this.getPlayers().get(0).getUsername().equals(creator.getUsername()) && this.getPlayers().size() == 1)) {
+            if (this.getPlayers().isEmpty() || (this.getPlayers().getFirst().getUsername().equals(creator.getUsername()) && this.getPlayers().size() == 1)) {
                 App.gamesActive.remove(this);
             }
-        } , 5 , TimeUnit.SECONDS);
+        } , 5 , TimeUnit.MINUTES);
     }
 
 

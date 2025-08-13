@@ -311,9 +311,6 @@ public class HumanCommunications {
 //            return new Result(false, RED+"Proposal is a Guy job!"+RESET);
 //        if (currentGame.currentPlayer.getGender().equalsIgnoreCase(other.getGender()))
 //            return new Result(false, RED+"No Gay Marriage in Islamic Village!"+RESET);
-////        if (!isNeighbor(player1.getPositionX(), player1.getPositionY(), player2.getPositionX(), player2.getPositionY())) {
-////            return new Result(false, PURPLE+"Get Closer Honey!"+RESET);
-////        }
 //
 //        if (getLevel() < 3)
 //            return new Result(false, RED+"You Can't Propose in your Current Friendship Level."+RESET);

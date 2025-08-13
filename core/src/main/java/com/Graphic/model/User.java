@@ -63,6 +63,7 @@ public class User {
     private boolean closeToLake = false;
 
     private User FriendCloseToMe = null;
+    private User myProposer =  null;
     private boolean showUnseenChats = false;
     private boolean showHugged =  false;
     private boolean showFlowered = false;
@@ -87,7 +88,7 @@ public class User {
     private int health;
     private int MAX_HEALTH;
     private Tile SleepTile;
-    private User Spouse;  // شخصی که باهاش ازدواج کرده
+    private User Spouse;
     private String icon;
     private boolean healthUnlimited;
 
@@ -735,6 +736,12 @@ public class User {
     }
     public User getFriendCloseToMe() {
         return FriendCloseToMe;
+    }
+    public void setMyProposer(User MyProposer) {
+        this.myProposer = MyProposer;
+    }
+    public User getMyProposer() {
+        return myProposer;
     }
     public boolean isShowUnseenChats() {
         return showUnseenChats;

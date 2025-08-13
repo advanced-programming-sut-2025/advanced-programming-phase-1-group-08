@@ -324,6 +324,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
 
             checkLakeDistance(v);
+            showProposal();
             showUnseenMessages();
             showHugged();
             showGivenFlower();
@@ -740,6 +741,48 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         shapeRenderer.end();
     }
 
+    private void showProposal() {
+        if (Main.getClient().getPlayer().getMyProposer() == null) return;
+
+        Dialog dialog = new Dialog("", newSkin);
+
+        Label label = new Label(Main.getClient().getPlayer().getMyProposer().getUsername() + " Has Proposed To You, Are You Accepting it?", newSkin);
+        dialog.text(label);
+
+        TextButton yesButton = new TextButton("YES", newSkin);
+        yesButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                HashMap<String , Object> body = new HashMap<>();
+                body.put("Proposer",  Main.getClient().getPlayer().getMyProposer());
+                body.put("Proposed", Main.getClient().getPlayer());
+                body.put("Response", true);
+                Main.getClient().getRequests().add(new Message(CommandType.RESPOND_PROPOSAL, body));
+
+                Main.getClient().getPlayer().setMyProposer(null);
+                dialog.hide();
+                dialog.remove();
+            }
+        });
+
+        TextButton noButton = new TextButton("NO", newSkin);
+        noButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Main.getClient().getPlayer().setMyProposer(null);
+                dialog.hide();
+                dialog.remove();
+            }
+        });
+
+        dialog.button(yesButton);
+        dialog.button(noButton);
+
+        dialog.show(stage);
+
+
+        Main.getClient().getPlayer().setMyProposer(null);
+    }
     private void showUnseenMessages() {
         if (!Main.getClient().getPlayer().isShowUnseenChats())
             return;
@@ -935,20 +978,21 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         proposeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Result result;
-                if (ClientWorkController.getInstance().getFriendship(me, p) != null) {
-                    result = propose(p.getUsername());
-                    if (result.IsSuccess()) {
-                        ringImage.addAction(Actions.sequence(
-                            Actions.alpha(0f),
-                            Actions.fadeIn(0.3f),
-                            Actions.delay(1.3f),
-                            Actions.fadeOut(0.5f)
-                        ));
-                    } else {
-                        showTimedDialog(result.massage(), 2f);
-                    }
+                HashMap<String, Object> body = new HashMap<>();
+                Main.getClient().getRequests().add(new Message(CommandType.FriendshipsInquiry, body));
+
+                Result result = propose(p.getUsername());
+                if (result.IsSuccess()) {
+                    ringImage.addAction(Actions.sequence(
+                        Actions.alpha(0f),
+                        Actions.fadeIn(0.3f),
+                        Actions.delay(1.3f),
+                        Actions.fadeOut(0.5f)
+                    ));
                 }
+                showTimedDialog(result.massage(), 2f);
+
+
             }
         });
 
@@ -1347,6 +1391,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         lastDateHour = new DateHour(Season.Spring, 1, 9, 1950);
         gameState.currentDate = new DateHour(Season.Spring, 1, 9, 1950);
         initRecipes();
+
+
+
+
+
+        for (NPC npc: NPC.values()) {
+            npc.setSprite(new Sprite(TextureManager.get(npc.getDirectionSet().loadAllTextures().get(npc.getDirection()))));
+            npc.getSprite().setPosition(TEXTURE_SIZE * npc.getTopLeftX(), TEXTURE_SIZE * (90 - npc.getTopLeftY()));
+        }
     }
 
     private void inputController() {
@@ -1388,24 +1441,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                         1f
                     )
                 );
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-//                User temp = Main.getClient().getPlayer();
-//                ArrayList<User> list = currentGame.getGameState().getPlayers();
-//                if (temp.getUsername().equals(list.get(list.size() - 1).getUsername())) {
-//                    Main.getClient().setPlayer(list.get(0));
-//                    return;
-//                }
-//                boolean found = false;
-//                for (User user : list) {
-//                    if (found) {
-//                        Main.getClient().setPlayer(user);
-//                        return;
-//                    }
-//                    if (user.getUsername().equals(temp.getUsername())) {
-//                        found = true;
-//                    }
-//                }
             }
+
 
 
         } else if (inventoryIsActivated) {

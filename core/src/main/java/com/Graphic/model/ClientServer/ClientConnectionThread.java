@@ -5,8 +5,10 @@ import com.Graphic.Controller.Menu.RegisterController;
 import com.Graphic.Main;
 import com.Graphic.model.*;
 import com.Graphic.model.Enum.Commands.CommandType;
+import com.Graphic.model.Enum.ItemType.MarketItemType;
 import com.Graphic.model.Game;
 import com.Graphic.model.Items;
+import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.User;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -346,6 +348,79 @@ public class ClientConnectionThread extends Thread {
                 }
 
                 controller.sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body), game);
+            }
+            case SEND_PROPOSAL -> {
+                String name = message.getFromBody("ProposedName");
+                String proposerName = message.getFromBody("ProposerName");
+                User proposed = null;
+                User proposer = null;
+                for (User user: game.getGameState().getPlayers()) {
+                    if (user.getUsername().equals(name)) {
+                        proposed = user;
+                    }
+                    if (user.getUsername().equals(proposerName)) {
+                        proposer = user;
+                    }
+                }
+                if (proposed == null || proposer == null) {
+                    return;
+                }
+
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("Player", proposer);
+                controller.sendToOnePerson(new Message(CommandType.SEND_PROPOSAL, body), game, proposed);
+            }
+            case RESPOND_PROPOSAL -> {
+                User proposer0 = message.getFromBody("Proposer");
+                User proposed0 =  message.getFromBody("Proposed");
+                boolean response = message.getFromBody("Response").equals("true");
+
+                User proposer = null;
+                User proposed = null;
+                for (User user: game.getGameState().getPlayers()) {
+                    if (user.getUsername().equals(proposer0.getUsername())) {
+                        proposer = user;
+                    }
+                    if (user.getUsername().equals(proposed0.getUsername())) {
+                        proposed = user;
+                    }
+                }
+                if (proposed == null || proposer == null) {
+                    return;
+                }
+
+                if (!response) return;
+
+                Items item = new MarketItem(MarketItemType.WeddingRing);
+                if (proposer.getBackPack().inventory.Items.containsKey(item)) {
+                    proposer.getBackPack().inventory.Items.compute(item,(k,v) -> v - 1);
+                }
+                else return;
+                if (proposed.getBackPack().inventory.Items.containsKey(item)) {
+                    proposed.getBackPack().inventory.Items.compute(item,(k,v) -> v + 1);
+                }
+                else {
+                    proposed.getBackPack().inventory.Items.put(item,1);
+                }
+
+                HashMap<String, Object> body3 = new HashMap<>();
+                body3.put("Player", proposer);
+                body3.put("Item", item);
+                body3.put("amount", -1);
+                controller.sendToOnePerson(new Message(CommandType.CHANGE_INVENTORY, body3), game, proposer);
+                HashMap<String, Object> body4 = new HashMap<>();
+                body4.put("Player", proposed);
+                body4.put("Item", item);
+                body4.put("amount", 1);
+                controller.sendToOnePerson(new Message(CommandType.CHANGE_INVENTORY, body4), game, proposed);
+
+                HashMap<String, Object> body5 = new HashMap<>();
+                body5.put("Spouse", proposer);
+                controller.sendToOnePerson(new Message(CommandType.ADJUST_SPOUSE, body5), game, proposed);
+
+                HashMap<String, Object> body6 = new HashMap<>();
+                body6.put("Spouse", proposed);
+                controller.sendToOnePerson(new Message(CommandType.ADJUST_SPOUSE, body6), game, proposer);
             }
             case ADD_XP_TO_FRIENDSHIP -> {
                 String player = message.getFromBody("Player");

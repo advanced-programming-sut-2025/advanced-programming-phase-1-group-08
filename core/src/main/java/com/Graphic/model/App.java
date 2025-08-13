@@ -1,6 +1,7 @@
 package com.Graphic.model;
 
 
+import com.Graphic.Main;
 import com.Graphic.model.Enum.Menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -134,10 +135,10 @@ public class App {
 
 
     public static User findPlayerInGame (String name) {
-//        for (User player: currentGame.players) {
-//            if (player.getUsername().equalsIgnoreCase(name))
-//                return player;
-//        }
+        for (User player: Main.getClient().getLocalGameState().getPlayers()) {
+            if (player.getUsername().equalsIgnoreCase(name))
+                return player;
+        }
         return null;
     }
 }

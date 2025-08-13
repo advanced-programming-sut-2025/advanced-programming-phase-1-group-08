@@ -341,7 +341,14 @@ public class ClientWork {
                             System.out.println("client bega raft");
                     }
                 }
-
+                case SEND_PROPOSAL -> {
+                    User proposer = message.getFromBody("Player");
+                    Main.getClient().getPlayer().setMyProposer(proposer);
+                }
+                case ADJUST_SPOUSE -> {
+                    Main.getClient().getPlayer().setMyProposer(null);
+                    Main.getClient().getPlayer().setSpouse(message.getFromBody("Spouse"));
+                }
                 case A_FRIEND_IS_CLOSE -> {
                     User friend = message.getFromBody("PlayerName");
                     Main.getClient().getPlayer().setFriendCloseToMe(friend);

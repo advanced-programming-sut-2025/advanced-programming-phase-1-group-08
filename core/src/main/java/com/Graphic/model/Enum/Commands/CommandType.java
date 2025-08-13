@@ -66,6 +66,9 @@ public enum CommandType {
     HUGGED,
     SEND_FLOWER,
     GIVEN_FLOWER,
+    SEND_PROPOSAL,
+    RESPOND_PROPOSAL,
+    ADJUST_SPOUSE,
 
                     // Erfan
     SET_TIME,

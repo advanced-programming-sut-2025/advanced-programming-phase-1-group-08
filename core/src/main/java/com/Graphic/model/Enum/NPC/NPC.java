@@ -14,6 +14,7 @@ import com.Graphic.model.OtherItem.BarsAndOres;
 import com.Graphic.model.Places.MarketItem;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.HashMap;
@@ -365,12 +366,12 @@ public enum NPC {
 
     private long lastConversation;
 
-    //private Sprite sprite;
+    private Sprite sprite;
     private Animation<Texture> Left;
     private Animation<Texture> Up;
     private Animation<Texture> Down;
     private Animation<Texture> Right;
-    private HashMap<Direction, Texture> DirectionInWalk;
+    private HashMap<Direction, String> DirectionInWalk;
     private boolean isMoving;
     private Direction direction;
     private final NPCDirectionSet directionSet;
@@ -398,13 +399,7 @@ public enum NPC {
     public void setMoveDistance(int moveDistance) {
         this.moveDistance = moveDistance;
     }
-    private boolean isAutoWalking = true;
-    public boolean isAutoWalking() {
-        return isAutoWalking;
-    }
-    public void setAutoWalking(boolean autoWalking) {
-        isAutoWalking = autoWalking;
-    }
+
 
 
 
@@ -429,12 +424,13 @@ public enum NPC {
         this.positionY = (90 - topLeftY);
         this.directionSet = directionSet;
 
-        //this.DirectionInWalk = directionSet.loadAllTextures();
+//        this.DirectionInWalk = directionSet.loadAllTextures();
         this.direction = Direction.Down;
-        //this.sprite = new Sprite(DirectionInWalk.get(direction));
-        //this.sprite.setPosition(TEXTURE_SIZE * topLeftX, TEXTURE_SIZE * (90 - topLeftY));
-    }
 
+    }
+    public  HashMap<Direction, String>  getDirectionInWalk() {
+        return DirectionInWalk;
+    }
 
     public boolean isTileCloseToNPC (int x, int y) {
 
@@ -468,12 +464,12 @@ public enum NPC {
         return giftItem;
     }
 
-//    public Sprite getSprite() {
-//        return sprite;
-//    }
-//    public void setSprite(Sprite sprite) {
-//        this.sprite = sprite;
-//    }
+    public Sprite getSprite() {
+        return sprite;
+    }
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+    }
     public Animation<Texture> getLeft() {
         return Left;
     }

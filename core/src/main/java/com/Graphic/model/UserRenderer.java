@@ -3,6 +3,7 @@ package com.Graphic.model;
 import com.Graphic.Main;
 import com.Graphic.View.GameMenus.GameMenu;
 import com.Graphic.model.Enum.Direction;
+import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -38,13 +39,19 @@ public class UserRenderer {
             y = TEXTURE_SIZE * 1.5f;
         }
         if (user.isInMarket() || user.isInBarnOrCage()) {
-            x = TEXTURE_SIZE/2;
+            x = TEXTURE_SIZE/2f;
             y = TEXTURE_SIZE * 0.75f;
         }
 
         Animation<Texture> animation = animations.get(user.getDirection());
         Main.getBatch().draw(animation.getKeyFrame(user.getTimer() , true) ,
             user.getPositionX() , user.getPositionY() , x , y);
+
+        for (NPC npc: NPC.values()) {
+            Animation<Texture> animation2 = animations.get(npc.getDirection());
+            Main.getBatch().draw(animation2.getKeyFrame(npc.getTimer() , true) ,
+                npc.getPositionX() , npc.getPositionY() , x , y);
+        }
 
         if ( animation.isAnimationFinished(user.getTimer()))
             user.setTimer(0.0f);
