@@ -7,6 +7,7 @@ public class FishingPole extends Tools {
 
     public FishingPole() {
         super("FishingPole");
+        this.type = FishingPoleType.BambooPole;
     }
 
     @Override
