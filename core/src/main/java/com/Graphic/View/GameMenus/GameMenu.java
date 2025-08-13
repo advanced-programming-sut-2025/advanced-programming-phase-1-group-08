@@ -250,7 +250,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
         Gdx.input.setInputProcessor(multiplexer);
 
-                createClock();
         if (! Main.getClient().getLocalGameState().getChooseMap()) {
             try {
                 controller = InputGameController.getInstance();
@@ -262,7 +261,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-                //createClock();
+                createClock();
                 firstLoad = true;
                 shepherdingAnimals = new ArrayList<>();
                 heartAnimations = new ArrayList<>();
@@ -335,19 +334,23 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             camera.unproject(mousePos);
             camera.update();
 
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-
-        if (Main.getClient().getLocalGameState().getChooseMap()) {
             showUnseenMessages();
             showHugged();
             showGivenFlower();
-            startFishing(v);
             ratingGifts();
+
+            //Main.getBatch().end();
+
+        }
+
+        if (Main.getClient().getLocalGameState().getChooseMap()) {
+            startFishing(v);
             Main.getBatch().end();
         }
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+
     }
-}
 
 
     // Ario
@@ -2785,6 +2788,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
 
             controller.setPlayerPosition();
+        }
+    }
+    public void addToCraftingRenderers() {
+        while (! Main.getClient().getPlayer().getCraftingItems().isEmpty()) {
+            craftingRenderers.add(new CraftingRenderer(Main.getClient().getPlayer().getCraftingItems().poll()));
         }
     }
 

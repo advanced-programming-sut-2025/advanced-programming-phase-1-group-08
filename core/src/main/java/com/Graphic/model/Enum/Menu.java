@@ -19,7 +19,7 @@ public enum Menu {
     ExitMenu(new ExitMenu() , new ExitMenu()),
     MainMenu(new MainMenu() , new MainMenu()),
     HomeMenu(new HomeMenu() , new HomeMenu()),
-    GameMenu(com.Graphic.View.GameMenus.GameMenu.gameMenu , com.Graphic.View.GameMenus.GameMenu.gameMenu),
+    GameMenu(com.Graphic.View.GameMenus.GameMenu.getInstance(), com.Graphic.View.GameMenus.GameMenu.getInstance()),
     MarketMenu(com.Graphic.View.GameMenus.MarketMenu.getInstance() , com.Graphic.View.GameMenus.MarketMenu.getInstance() ),
     CraftMenu(new CraftMenu() , new CraftMenu()),
     PlayGameMenu(new PlayGameMenu() , new PlayGameMenu()),

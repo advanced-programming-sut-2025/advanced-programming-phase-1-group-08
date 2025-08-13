@@ -1827,8 +1827,8 @@ public class GameControllerLogic {
         advanceItem(new PickAxe(PickAxeType.primaryPickAxe), 1);
         advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
         advanceItem(new TrashCan(TrashCanType.primaryTrashCan), 1);
-        advanceItem(new MarketItem(MarketItemType.Hay) , 4);
-        advanceItem(new CraftingItem(CraftType.Loom) , 1);
+        advanceItem(new MarketItem(MarketItemType.Rice) , 4);
+        advanceItem(new CraftingItem(CraftType.Keg) , 1);
 
         user.increaseMoney(10000 - user.getMoney());
 //        advanceItem(new Fish(FishType.Salmon, Quantity.Iridium), 1);

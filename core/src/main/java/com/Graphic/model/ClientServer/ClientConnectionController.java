@@ -220,7 +220,8 @@ public class ClientConnectionController {
         startGame.put("Players" , game.getPlayers());
         sendToAllExceptOnePerson(new Message(START_LOBBY , startGame) , game , Player);
 
-        ServerHandler serverHandler = ServerHandler.getInstance(game);
+        ServerHandler serverHandler = ServerHandler.getInstance();
+        serverHandler.setGame(game);
         serverHandler.start();
 
         return new Message(START_LOBBY , startGame);
