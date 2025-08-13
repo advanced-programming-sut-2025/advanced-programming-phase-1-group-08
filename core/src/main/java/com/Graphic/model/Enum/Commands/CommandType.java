@@ -48,6 +48,9 @@ public enum CommandType {
     START_LOBBY,
     PLAYER_NOT_IN_LOBBY,
     FIND_INVISIBLE_LOBBY,
+    REQUEST_FOR_GET_CHAT,
+    PUBLIC_CHAT,
+    TAG,
 
 
     // Ariyo

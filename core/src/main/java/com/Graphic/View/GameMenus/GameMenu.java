@@ -1189,7 +1189,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         currentMenu = Menu.GameMenu;
 
 
-        stage = new Stage(new ScreenViewport());
+        controller = InputGameController.getInstance();
+        //stage = new Stage(new ScreenViewport());
         clockGroup = new Group();
         camera = new OrthographicCamera();
 
@@ -2882,10 +2883,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     public Stage getStage() {
-        if (stage == null) {
-            stage = new Stage(new ScreenViewport());
-            System.out.println("stage created");
-        }
         return stage;
     }
 

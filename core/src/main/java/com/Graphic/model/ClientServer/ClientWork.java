@@ -3,6 +3,7 @@ package com.Graphic.model.ClientServer;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.Marketing;
 import com.Graphic.Main;
+import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.View.LobbyMenu;
 import com.Graphic.View.RegisterMenu;
 import com.Graphic.model.Animall.Animal;
@@ -25,10 +26,13 @@ import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.Graphic.model.User;
 import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
@@ -156,7 +160,19 @@ public class ClientWork {
                         Main.getClient().getPlayer().getMessages().add(message.getFromBody("Message"));
                     }
                 }
-
+                case REQUEST_FOR_GET_CHAT -> {
+                    controller.addToChatHistory(message.getFromBody("sender") , message.getFromBody("message"));
+                }
+                case PUBLIC_CHAT -> {
+                    Main.getClient().getPlayer().getPublicChats().add(message.getFromBody("message"));
+                }
+                case TAG -> {
+//                    Main.getClient().getPlayer().getPublicChats().add(message.getFromBody("message"));
+//                    Gdx.app.postRunnable(() -> {
+//                        Dialog dialog = Marketing.getInstance().createDialogError();
+//                        Label label = new Label()
+//                    })
+                }
                 case FARM -> {
                     Farm farm = message.getFromBody("Farm");
                     Main.getClient().getLocalGameState().getFarms().add(farm);

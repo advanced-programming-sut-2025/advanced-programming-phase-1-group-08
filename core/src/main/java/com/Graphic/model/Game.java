@@ -102,7 +102,7 @@ public class Game {
             if (this.getPlayers().isEmpty() || (this.getPlayers().get(0).getUsername().equals(creator.getUsername()) && this.getPlayers().size() == 1)) {
                 App.gamesActive.remove(this);
             }
-        } , 5 , TimeUnit.SECONDS);
+        } , 2 , TimeUnit.MINUTES);
     }
 
 

@@ -84,22 +84,38 @@ public class ClientConnectionThread extends Thread {
                 sendMessage(RegisterController.generateRandomPass());
             }
             case CREATE_LOBBY -> {
-                controller.createLobby(message);
+                game = getGameById(controller.createLobby(message));
             }
             case LIST_GAMES -> {
                 sendMessage(controller.AnswerListGames());
             }
             case LEAVE_LOBBY -> {
-                sendMessage(controller.AnswerLeaveLobby(message));
+                Message result = controller.AnswerLeaveLobby(message);
+                if (result.getFromBody("Message").equals("You Successfully Leaved the Game")) {
+                    game = null;
+                }
+
+                sendMessage(result);
             }
             case JOIN_LOBBY -> {
-                sendMessage(controller.AnswerJoinLobby(message , connection));
+                Message result = controller.AnswerJoinLobby(message , connection);
+                if (result.getFromBody("Message").equals("You Successfully Joined the Game")) {
+                    game = getGameById(message.getFromBody("Game"));
+                }
+                sendMessage(result);
+
             }
             case FIND_INVISIBLE_LOBBY -> {
                 sendMessage(controller.AnswerInvisibleLobby(message));
             }
             case START_LOBBY -> {
                 sendMessage(controller.AnswerStartLobby(message));
+            }
+            case REQUEST_FOR_GET_CHAT -> {
+                controller.AnswerSendChat(message , game);
+            }
+            case PUBLIC_CHAT , TAG -> {
+                controller.AnswerPublicChat(message , game);
             }
             case NEW_GAME -> {
                 Game result = controller.newGame(message , connection);
@@ -386,4 +402,15 @@ public class ClientConnectionThread extends Thread {
         connection.sendTCP(message);
         //System.out.println(JSONUtils.toJson(message));
     }
+
+    public Game getGameById(String id) {
+        for (Game game : App.gamesActive) {
+            if (game.getId().equals(id)) {
+                return game;
+            }
+        }
+        return null;
+    }
+
+
 }

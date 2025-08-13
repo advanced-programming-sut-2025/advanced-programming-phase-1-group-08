@@ -57,6 +57,8 @@ public class User {
     private Queue<User> exitMarket = new LinkedList<>();
     private ArrayList<String> messages = new ArrayList<>();
     private Queue<CraftingItem> craftingItems = new LinkedList<>();
+    private HashMap<String , ArrayList<String> > privateChats;
+    private ArrayList<String> publicChat;
 
     public boolean isFishing = false;
     public boolean doingMinigame = false;
@@ -784,6 +786,13 @@ public class User {
     }
     public Queue<CraftingItem> getCraftingItems() {
         return craftingItems;
+    }
+
+    public HashMap<String , ArrayList<String> > getPrivateChats() {
+        return privateChats;
+    }
+    public ArrayList<String> getPublicChats() {
+        return publicChat;
     }
 }
 

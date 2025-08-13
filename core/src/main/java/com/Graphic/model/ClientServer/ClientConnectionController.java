@@ -41,19 +41,21 @@ public class ClientConnectionController {
     private static ClientConnectionController instance;
     private Random rand = new Random();
 
-    public void createLobby(Message message) {
+    public String createLobby(Message message) {
         String name = message.getFromBody("name");
         String password = message.getFromBody("password");
         boolean visible = message.getFromBody("visible");
         User Creator = message.getFromBody("Creator");
         String Id = createId();
-        boolean isPrivate = password != null;
+        boolean isPrivate = password.equals(" ");
+        System.out.println(password);
 
         Game game = new Game(name , Id , password , isPrivate , visible , Creator);
         App.gamesActive.add(game);
         for (int i = App.gamesActive.size() - 1 ; i >= 0 ; i --) {
             System.out.println(App.gamesActive.get(i).getId());
         }
+        return Id;
     }
 
     public String createId() {
@@ -204,15 +206,18 @@ public class ClientConnectionController {
             }
         }
         if (game == null) {
+            System.out.println("game is no longer exist");
             startGame.put("Message" , "game is no longer exist. please refresh");
             return new Message(PLAYER_NOT_IN_LOBBY , startGame);
         }
 
         if (! exists) {
+            System.out.println("You Already lived this game");
             startGame.put("Message" , "You Already lived this game");
             return new Message(PLAYER_NOT_IN_LOBBY , startGame);
         }
         if (game.getPlayers().size() != 4) {
+            System.out.println("Game needs more player");
             startGame.put("Message" , "Game needs more player");
             return new Message(PLAYER_NOT_IN_LOBBY , startGame);
         }
@@ -267,6 +272,20 @@ public class ClientConnectionController {
 
         if (game.getGameState().getNumberOfMaps() == 4)
             sendToAll(build(game.getGameState()) , game);
+    }
+
+    public void AnswerSendChat(Message message , Game game) throws IOException {
+        String name = message.getFromBody("receiver");
+        for (User user : game.getPlayers()) {
+            if (user.getUsername().equals(name)) {
+                sendToOnePerson(message , game , user);
+            }
+        }
+
+    }
+
+    public void AnswerPublicChat(Message message , Game game) throws IOException {
+        sendToAll(message, game);
     }
 
     public Game newGame(Message message , Connection connection) throws IOException {
