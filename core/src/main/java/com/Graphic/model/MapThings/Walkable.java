@@ -8,8 +8,10 @@ public class Walkable extends GameObject {
 
     private String grassOrFiber;
 
-    public Walkable() {
-        this.grassOrFiber = "Walk";
+    public Walkable() {this.grassOrFiber = "Walk";}
+
+    public Walkable(String grassOrFiber) {
+        this.grassOrFiber = grassOrFiber;
     }
 
     public String getGrassOrFiber() {

@@ -2,16 +2,7 @@ package com.Graphic;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.View.GameMenus.GameMenu;
-import com.Graphic.View.GameMenus.MarketMenu;
-import com.Graphic.View.GameMenus.TransitionScreen;
-import com.Graphic.View.LoginMenu;
-import com.Graphic.View.MainMenu;
-import com.Graphic.View.ProfileMenu;
-import com.Graphic.model.App;
-import com.Graphic.model.Enum.Menu;
-import com.Graphic.model.HelpersClass.SFXManager;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;

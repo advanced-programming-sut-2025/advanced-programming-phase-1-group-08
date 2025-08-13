@@ -20,7 +20,10 @@ import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
+import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Plants.*;
+import com.Graphic.model.Plants.Tree;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
@@ -131,6 +134,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private boolean subMenuIsActivated;
     private Window subMenuGroup;
+
+    private boolean cheatMenuIsActivated;
+    private Window cheatPopup;
 
     private boolean questsIsActivated;
     private Window questsMenuGroup;
@@ -431,6 +437,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         stage = new Stage(new ScreenViewport());
         clockGroup = new Group();
         camera = new OrthographicCamera();
+        camera.zoom = 0.5f;
 
         BitmapFont font = new BitmapFont();
         energyStyle = new Label.LabelStyle();
@@ -503,6 +510,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         showInformationIsActivated = false;
         informationIsActivated = false;
         socialMenuIsActivated = false;
+        cheatMenuIsActivated = false;
         toolsMenuIsActivated = false;
         inventoryIsActivated = false;
         skillMenuIsActivated = false;
@@ -535,6 +543,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 showSettingMenu();
             else if (Gdx.input.isKeyJustPressed(Keys.NPCMenu))
                 showNPCMenu();
+            else if (Gdx.input.isKeyJustPressed(Keys.cheatMenu))
+                createCheatMenu();
 
 
             else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
@@ -604,6 +614,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }
         else if (mapIsActivated) {
             mapGroup.remove();
+            camera.zoom = 0.5f;
             mapIsActivated = false;
         }
         else if (setEnergyIsActivated) {
@@ -625,7 +636,165 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             helperBackGround.remove();
             NPCMenuIsActivated = false;
         }
+        else if (cheatMenuIsActivated) {
+            helperBackGround.remove();
+            cheatPopup.remove();
+            cheatMenuIsActivated = false;
+        }
+    }
 
+    private void createCheatMenu() {
+
+        createGrayBackGround();
+        cheatPopup = new Window("", newSkin);
+        cheatPopup.setSize(650, 650);
+        cheatPopup.setPosition(
+            (stage.getWidth() - cheatPopup.getWidth()) / 2,
+            (stage.getHeight() - cheatPopup.getHeight()) / 2);
+
+
+        Table content = new Table();
+        createCheatButtons(content);
+
+        cheatPopup.add(content).expand().fill();
+
+        stage.addActor(cheatPopup);
+        cheatMenuIsActivated = true;
+    }
+    private void createCheatButtons (Table table) {
+
+        table.setFillParent(true);
+        table.defaults().align(Align.center).pad(10);
+        table.center();
+
+
+        TextButton tree = new TextButton("tree", newSkin);
+        TextButton watering = new TextButton("watering", newSkin);
+
+        TextButton stone = new TextButton("stone", newSkin);
+        TextButton plant = new TextButton("plant", newSkin);
+
+        TextButton remove = new TextButton("remove", newSkin);
+        TextButton plow = new TextButton("plow", newSkin);
+
+        TextButton money = new TextButton("money", newSkin);
+
+        TextButton backButton = new TextButton("back", newSkin);
+
+
+        table.add(tree).width(250).center();
+        table.add(watering).width(250).center();
+        table.row().pad(15, 0, 10, 0);
+        table.add(stone).width(250).center();
+        table.add(plant).width(250).center();
+        table.row().pad(15, 0, 10, 0);
+        table.add(remove).width(250).center();
+        table.add(plow).width(250).center();
+        table.row().pad(15, 0, 10, 0);
+        table.add(money).width(250).center();
+
+        table.row().pad(30, 0, 10, 0);
+        table.add(backButton).width(150).colspan(2).center();
+
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                helperBackGround.remove();
+                cheatPopup.remove();
+                cheatMenuIsActivated = false;
+            }
+        });
+        tree.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                currentGame.currentPlayer.increaseMoney(500);
+            }
+        });
+        tree.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                test();
+            }
+        });
+        plow.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                plow();
+            }
+        });
+        remove.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                remove();
+            }
+        });
+        stone.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Stone();
+            }
+        });
+        plant.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                plant();
+            }
+        });
+        watering.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                test2();
+            }
+        });
+        stage.addActor(table);
+    }
+    private void test () {
+        for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                Tree tree = new Tree(TreeType.AppleTree, currentGame.currentDate.clone());
+                tile.setGameObject(tree);
+            }
+        }
+    }
+    private void Stone () {
+        for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                BasicRock tree = new BasicRock();
+                tile.setGameObject(tree);
+            }
+        }
+    }
+    private void plant () {
+        for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                AllCrops tree = new AllCrops(CropsType.Amaranth);
+                tile.setGameObject(tree);
+            }
+        }
+    }
+    private void remove () {
+        for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                Walkable tree = new Walkable();
+                tile.setGameObject(tree);
+            }
+        }
+    }
+    private void plow () {
+        for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                Walkable tree = new Walkable("Plow");
+                tile.setGameObject(tree);
+            }
+        }
+    }
+    private void test2 () {
+        for (Tile tile : currentGame.currentPlayer.getFarm().Farm)
+            if (tile.getGameObject() instanceof Tree) {
+                Tree tree = (Tree) tile.getGameObject();
+                tree.setLastWater(currentGame.currentDate.clone());
+            }
     }
 
     private void giftNPCMenu () {
@@ -1036,38 +1205,27 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     public void createMap () {
 
+        camera.position.set(45 * TEXTURE_SIZE, 45 * TEXTURE_SIZE, 0);
+        camera.zoom = 5f;
         mapGroup = new Group();
 
-        Texture texture = new Texture(Gdx.files.internal(GameTexturePath.map.getPath()));
-        Image image = new Image(new TextureRegionDrawable(new TextureRegion(texture)));
-
-        image.setHeight(image.getHeight() * 3);
-        image.setWidth(image.getWidth() * 3);
-
-
-        image.setPosition(
-            stage.getWidth() / 2f - image.getWidth() / 2f,
-            stage.getHeight() / 2f - image.getHeight() / 2f + 50
-        );
 
         TextButton backButton = new TextButton("Back", App.newSkin);
         backButton.setSize(100, 40);
         backButton.setPosition(
             stage.getWidth() / 2f - backButton.getWidth() / 2f,
-            image.getY() - 60
-        );
+            stage.getHeight() / 8f);
 
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 mapGroup.remove();
-                texture.dispose();
+                camera.zoom = 0.5f;
+                mapIsActivated = false;
             }
         });
 
         mapIsActivated = true;
-
-        mapGroup.addActor(image);
         mapGroup.addActor(backButton);
 
         stage.addActor(mapGroup);
@@ -1538,6 +1696,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         mapButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                EscMenuIsActivated = false;
+                EscPopup.remove();
+                helperBackGround.remove();
                 createMap();
             }
         });
@@ -1793,7 +1954,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             toolsMenuIsActivated || EscMenuIsActivated ||
             setEnergyIsActivated || settingIsActivated ||
             skillMenuIsActivated || mapIsActivated ||
-            NPCMenuIsActivated || questsIsActivated;
+            NPCMenuIsActivated || questsIsActivated ||
+            cheatMenuIsActivated;
     }
 
 

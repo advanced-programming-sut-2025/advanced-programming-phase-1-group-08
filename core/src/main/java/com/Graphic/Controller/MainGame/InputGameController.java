@@ -92,12 +92,10 @@ public class InputGameController {
         Abigail.setY((int) currentGame.currentPlayer.getPositionY() / TEXTURE_SIZE - 3); // TODO
     }
     public void update(OrthographicCamera camera, float v, Boolean menuActivated) {
-
         if (!menuActivated) {
             if (currentGame.currentPlayer.isInFarmExterior()) {
                 updateMove();
                 print();
-                moveCamera(camera);
                 GameControllerLogic.update(v);
                 showSelectBoxOnCrafting();
             }
@@ -108,6 +106,11 @@ public class InputGameController {
             if (currentGame.currentPlayer.isInMine()) {
                 walkInBarnOrCage();
             }
+            System.out.println("now");
+            camera.position.set(
+                currentGame.currentPlayer.getPositionX()*TEXTURE_SIZE,
+                (90 - currentGame.currentPlayer.getPositionY() )*TEXTURE_SIZE,
+                0f);
             createAnimalInformationWindow(showAnimalInfo());
             effectAfterPetAnimal();
             openArtisanMenu();
@@ -125,6 +128,7 @@ public class InputGameController {
                 }
             }
         } else {
+            System.out.println("chi?");
             if (currentGame.currentPlayer.isInFarmExterior())
                 print();
         }
@@ -134,7 +138,7 @@ public class InputGameController {
         if (Gdx.input.isKeyPressed(Input.Keys.UP) ) {
             currentGame.currentPlayer.setDirection(Direction.Up);
             if (checkWalking()) {
-                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() - 5 * Gdx.graphics.getDeltaTime());
+                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() - 2 * Gdx.graphics.getDeltaTime());
             }
             currentGame.currentPlayer.setMoving(true);
             moveAnimation();
@@ -142,7 +146,7 @@ public class InputGameController {
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) ) {
             currentGame.currentPlayer.setDirection(Direction.Down);
             if (checkWalking()) {
-                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() + 5 * Gdx.graphics.getDeltaTime());
+                currentGame.currentPlayer.setPositionY(currentGame.currentPlayer.getPositionY() + 2 * Gdx.graphics.getDeltaTime());
             }
             currentGame.currentPlayer.setMoving(true);
             moveAnimation();
@@ -150,7 +154,7 @@ public class InputGameController {
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) ) {
             currentGame.currentPlayer.setDirection(Direction.Left);
             if (checkWalking()) {
-                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() - 5 * Gdx.graphics.getDeltaTime());
+                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() - 2 * Gdx.graphics.getDeltaTime());
             }
             currentGame.currentPlayer.setMoving(true);
             moveAnimation();
@@ -158,7 +162,7 @@ public class InputGameController {
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) ) {
             currentGame.currentPlayer.setDirection(Direction.Right);
             if (checkWalking()) {
-                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() + 5 * Gdx.graphics.getDeltaTime());
+                currentGame.currentPlayer.setPositionX(currentGame.currentPlayer.getPositionX() + 2 * Gdx.graphics.getDeltaTime());
             }
             currentGame.currentPlayer.setMoving(true);
             moveAnimation();
@@ -220,86 +224,7 @@ public class InputGameController {
         currentGame.currentPlayer.increaseMoney(amount - currentGame.currentPlayer.getMoney());
         return new Result(true , "your money cheated successfully");
     }
-//    public Result goToMarketMenu () {
-//        if (MarketType.isInMarket(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY()) == null) {
-//            return new Result(false , "you are not in market");
-//        }
-//        currentMenu = com.Graphic.model.Enum.Menu.MarketMenu;
-//        return new Result(true , "Welcome to market menu");
-//    }
-//    public Result goToHomeMenu() {
-//        if ( !currentGame.currentPlayer.getFarm().isInHome(currentGame.currentPlayer.getPositionX() , currentGame.currentPlayer.getPositionY())) {
-//            return new Result(false , RED+"You're Not in Your Home!"+RESET);
-//        }
-//        currentMenu = com.Graphic.model.Enum.Menu.HomeMenu;
-//        return new Result(true , BLUE+"Welcome to home menu"+RESET);
-//    }
 
-//    public Result walk(int goalX, int goalY) {
-//        int startX = currentGame.currentPlayer.getPositionX();
-//        int startY = currentGame.currentPlayer.getPositionY();
-//        Tile endTile = getTileByCoordinates(goalX, goalY);
-//
-//        if (endTile==null) {
-//            return new Result(false,"you can't go to this coordinate");
-//        }
-//
-//        PriorityQueue<State> queue = new PriorityQueue<>(Comparator.comparingInt(s -> s.Energy));
-//        Set<State> visited = new HashSet<>();
-//
-//
-//        if (checkConditionsForWalk(goalX, goalY) !=null) {
-//            return checkConditionsForWalk(goalX, goalY);
-//        }
-//
-//        for (int dir =1 ; dir<9 ; dir++) {
-//            Tile tile = getTileByDir(dir);
-//            if (tile == null ) {
-//                continue;
-//            }
-//            if (checkConditionsForWalk(tile.getX() , tile.getY()) ==null) {
-//                State state=new State(startX , startY , -1, 0);
-//                queue.add(state);
-//            }
-//        }
-//
-//        int [] dirx={0,0,1,1,1,-1,-1,-1};
-//        int [] diry={1,-1,0,1,-1,0,1,-1};
-//
-//        while (!queue.isEmpty()) {
-//            State current = queue.poll();
-//            if (current.x == goalX && current.y == goalY) {
-//                if (currentGame.currentPlayer.isHealthUnlimited()){
-//                    currentGame.currentPlayer.setPositionX(goalX);
-//                    currentGame.currentPlayer.setPositionY(goalY);
-//                    return new Result(true,"now you are in "+goalX+","+goalY);
-//                }
-//                if (currentGame.currentPlayer.getHealth() >= current.Energy ) {
-//                    currentGame.currentPlayer.increaseHealth(- current.Energy);
-//                    currentGame.currentPlayer.setPositionX(goalX);
-//                    currentGame.currentPlayer.setPositionY(goalY);
-//                    return new Result(true, "you are now in " + goalX + "," + goalY);
-//                }
-//                return new Result(false , "your energy is not enough for go to this tile");
-//            }
-//            if (visited.contains(current)) {
-//                continue;
-//            }
-//            visited.add(current);
-//            for (int i=0 ; i<8 ; i++) {
-//                int x=dirx[i];
-//                int y=diry[i];
-//                if (checkConditionsForWalk(x + current.x,y + current.y) !=null) {
-//                    continue;
-//                }
-//                int turnCost= (i + 1 == current.direction || current.direction== - 1) ? 1:10;
-//                int totalEnergy=current.Energy + turnCost;
-//                queue.add(new State(x+current.x , y+current.y , i+1 , totalEnergy));
-//            }
-//        }
-//
-//        return new Result(false , "No way to this coordinate");
-//    }
     public Result cheatFishingAbility(int amount) {
         currentGame.currentPlayer.increaseFishingAbility(amount);
         return new Result(true , "you cheated fishing successfully");
@@ -373,7 +298,6 @@ public class InputGameController {
 
 
     public Result print(){
-
 
         for (int i =0 ; i< 90 ; i++)
             for (int j =0 ; j< 90 ; j++) {
@@ -498,25 +422,6 @@ public class InputGameController {
 //        }
         return null;
 
-    }
-
-    public void moveCamera(OrthographicCamera camera) {
-        float cameraSpeed = 200 * Gdx.graphics.getDeltaTime(); // سرعت حرکت بر اساس زمان فریم
-
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            camera.translate(0, cameraSpeed);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            camera.translate(0, -cameraSpeed);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            camera.translate(-cameraSpeed, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            camera.translate(cameraSpeed, 0);
-        }
-
-        camera.update();
     }
 
 
