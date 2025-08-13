@@ -1,30 +1,35 @@
 package com.Graphic.model.ClientServer;
 
 import com.Graphic.Controller.MainGame.InputGameController;
-import com.Graphic.Main;
 import com.Graphic.View.GameMenus.MarketMenu;
 import com.Graphic.model.*;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
+import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
+import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
+import com.Graphic.model.Enum.AllPlants.ForagingSeedsType;
 import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.ItemType.BarnORCageType;
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.Enum.WeatherTime.Season;
+import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.Walkable;
+import com.Graphic.model.Places.Lake;
 import com.Graphic.model.Places.MarketItem;
 import com.Graphic.model.Places.ShippingBin;
-import com.Graphic.model.Plants.BasicRock;
-import com.Graphic.model.Plants.Wood;
+import com.Graphic.model.Plants.*;
 import com.Graphic.model.Weather.DateHour;
 import com.esotericsoftware.kryonet.Connection;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
+import static com.Graphic.model.Enum.AllPlants.ForagingMineralsType.*;
 import static com.Graphic.model.Enum.Commands.CommandType.REDUCE_BARN_CAGE;
 import static com.Graphic.model.Enum.Commands.CommandType.*;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
@@ -34,6 +39,7 @@ import static com.badlogic.gdx.math.MathUtils.random;
 public class ClientConnectionController {
 
     private static ClientConnectionController instance;
+    private Random rand = new Random();
 
     public void createLobby(Message message) {
         String name = message.getFromBody("name");
@@ -590,19 +596,22 @@ public class ClientConnectionController {
             if (user.getUsername().trim().equals(player.getUsername().trim())) {
                 Items items = message.getFromBody("Item");
                 int amount = message.getFromBody("amount");
+                for (int i = 0; i < 400; i++)
+                    System.out.println("printing amount");
+                System.out.println(amount);
                 if (user.getBackPack().inventory.Items.containsKey(items)) {
                     user.getBackPack().inventory.Items.compute(items,(k,v) -> v + amount);
-                    if (user.getBackPack().inventory.Items.get(items) == 0) {
-                        Main.getClient().getPlayer().getBackPack().inventory.Items.remove(items);
-                    }
+//                    if (user.getBackPack().inventory.Items.get(items) == 0) {
+//                        Main.getClient().getPlayer().getBackPack().inventory.Items.remove(items);
+//                    }
                 }
                 else {
                     user.getBackPack().inventory.Items.put(items,amount);
                 }
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("Player", player);
-                body.put("Item" , message.getFromBody("Item"));
-                body.put("amount" , message.getFromBody("amount"));
+                body.put("Item" , items);
+                body.put("amount" , amount);
                 return new Message(CommandType.CHANGE_INVENTORY , body);
             }
         }
@@ -613,7 +622,6 @@ public class ClientConnectionController {
         //MarketType marketType = message.getFromBody("Market");
         int x = message.getFromBody("X");
         int y = message.getFromBody("Y");
-        System.out.println(x + " " + y);
         for (User user : game.getGameState().getPlayers()) {
             if (user.getUsername().trim().equals(message.getFromBody("Player"))) {
                 user.setPositionX((float) x);
@@ -657,6 +665,32 @@ public class ClientConnectionController {
     public void CheckFriendDistance() {
 
     }
+    public void checkLakeDistance(Game game) throws IOException {
+//        for (User player: game.getGameState().getPlayers()) {
+//            Lake lake = player.getFarm().getLake();
+//            if (lake == null) return;
+//            float myX = player.getPositionX();
+//            float myY = player.getPositionY();
+//            float lakeY = lake.getTopLeftY();
+//            float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
+//            float deltaX = Math.abs(myX - lakeX);
+//            float deltaY = Math.abs(myY - lakeY);
+//            if (deltaX < 3f && deltaY < 3f) {
+//                player.setCloseToLake(true);
+//                HashMap<String , Object> body = new HashMap<>();
+//                body.put("Player", player);
+//                body.put("isClose", true);
+//                sendToOnePerson(new Message(CLOSE_TO_LAKE, body), game, player);
+//            }
+//            else {
+//                player.setCloseToLake(false);
+//                HashMap<String , Object> body = new HashMap<>();
+//                body.put("Player", player);
+//                body.put("isClose", false);
+//                sendToOnePerson(new Message(CLOSE_TO_LAKE, body), game, player);
+//            }
+//        }
+    }
 
 
                                         // Erfan
@@ -675,38 +709,174 @@ public class ClientConnectionController {
         dateHour.increaseDay(day);
 
         if (dateHour.getHour() > 22) {
-            passedOfTime(getDayDifferent(dateHour, Main.getClient().getLocalGameState().currentDate),
+            passedOfTime(getDayDifferent(dateHour, currentDateHour),
                 24 - dateHour.getHour() + 9 + hour, currentDateHour, game);
             return;
         }
         if (dateHour.getHour() < 9) {
-            passedOfTime(getDayDifferent(dateHour, Main.getClient().getLocalGameState().currentDate),
+            passedOfTime(getDayDifferent(dateHour, currentDateHour),
                 9 - dateHour.getHour() + hour, currentDateHour, game);
             return;
         }
 
         int number = getDayDifferent(currentDateHour, dateHour);
 
-        for (int i = 0 ; i < number ; i++)
+        for (int i = 0 ; i < number ; i++) {
             currentDateHour.increaseDay(1);
+            this.startDay(game);
+        }
 
         currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
         sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
     }
     public void setTime (int day, int hour, Game game) throws IOException {
 
-        DateHour currentDateHour = ServerHandler.getInstance(game).currentDateHour;
+        DateHour currentDateHour = game.getGameState().currentDate;
 
-        ServerHandler.getInstance(game).currentDateHour.setDate(day);
-        ServerHandler.getInstance(game).currentDateHour.setHour(hour);
+        currentDateHour.setDate(day);
+        currentDateHour.increaseHour(hour - currentDateHour.getHour());
 
         sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
     }
     public void sendSetGameObjectMessage (int x, int y, GameObject object, Game game) throws IOException {
-        HashMap<String , Object> PassedTime = new HashMap<>();
-        PassedTime.put("X", x);
-        PassedTime.put("Y", y);
-        PassedTime.put("Object", object);
-        sendToAll(new Message(CommandType.SET_TIME, PassedTime), game);
+
+        Tile tile = getTileByCoordinates(x, y, game.getGameState());
+        tile.setGameObject(object);
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("X", x);
+        body.put("Y", y);
+        body.put("Object", object);
+        sendToAll(new Message(CHANGE_GAME_OBJECT, body), game);
+    }
+    public void sendSetGameObjectMessage (Tile tile,  GameObject object, Game game) throws IOException {
+
+        tile.setGameObject(object);
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("X", tile.getX());
+        body.put("Y", tile.getY());
+        body.put("Object", object);
+        sendToAll(new Message(CHANGE_GAME_OBJECT, body), game);
+    }
+    public void sentWeather(Game game) throws IOException {
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("Weather", game.getGameState().tomorrowWeather);
+        sendToAll(new Message(GET_TOMORROW_WEATHER, body), game);
+    }
+    public void setTimeAndWeather (Game game) throws IOException {
+
+        game.getGameState().currentDate = new DateHour(Season.Spring, 1, 9, 1980);
+        game.getGameState().currentWeather = Weather.Sunny;
+        game.getGameState().tomorrowWeather = Weather.Sunny;
+    }
+    public void sendAddMineralMessage (User user, ForagingMinerals minerals, Point point, Game game) throws IOException {
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("User", user);
+        body.put("Point", point);
+        body.put("Mineral", minerals);
+        sendToAll(new Message(ADD_MINERAL, body), game);
+    }
+    public void startDay (Game game) throws IOException {
+        createRandomForaging(game);
+        createRandomMinerals(game);
+        for (Tile tile : game.getGameState().bigMap)
+            tile.getGameObject().startDayAutomaticTask();
+    }
+    public void createRandomForaging (Game game) throws IOException {
+
+        for (Tile tile : game.getGameState().bigMap) {
+
+            if (tile.getGameObject() instanceof Walkable &&
+                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed") && Math.random() <= 0.2) {
+                if (Math.random() <= 0.5) {
+
+                    java.util.List<ForagingSeedsType> types = Arrays.stream(ForagingSeedsType.values())
+                        .filter(d -> d.getSeason().contains(game.getGameState().currentDate.getSeason()))
+                        .toList();
+
+                    ForagingSeedsType type = types.get(rand.nextInt(types.size()));
+                    this.sendSetGameObjectMessage(tile, new ForagingSeeds(type, game.getGameState().currentDate), game);
+                } else {
+
+                    List<ForagingCropsType> types = new ArrayList<>(Arrays.stream(ForagingCropsType.values())
+                        .filter(d -> d.getSeason().contains(game.getGameState().currentDate.getSeason()))
+                        .toList());
+
+                    types.remove(ForagingCropsType.Fiber);
+                    ForagingCropsType type = types.get(rand.nextInt(types.size()));
+
+                    ForagingCrops crop = new ForagingCrops(type);
+                    this.sendSetGameObjectMessage(tile, crop, game);
+                }
+            }
+
+            else if (tile.getGameObject() instanceof Walkable &&
+                ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Walk") &&
+                canGrowGrass(tile) && Math.random() <= 0.1) {
+
+                Walkable walkable = (Walkable) tile.getGameObject();
+
+                if (Math.random() <= 0.5)
+                    walkable.setGrassOrFiber("Fiber");
+                else
+                    walkable.setGrassOrFiber("Grass");
+
+                sendSetGameObjectMessage(tile, walkable, game);
+            }
+        }
+    }
+    public void createRandomMinerals (Game game) throws IOException {
+
+//        for (User user : game.getGameState().getPlayers()) {
+//
+//            List<Integer> positions = new ArrayList<>();
+//            for (int i = 0 ; i < 16 ; i++)
+//                positions.add(i);
+//
+//            Collections.shuffle(positions);
+//
+//            List<ForagingMineralsType> minerals = Arrays.asList(
+//                RUBY, COAL, IRON, TOPAZ, GOLD, JADE, IRIDIUM,
+//                QUARTZ, EMERALD, COPPER, DIAMOND, AMETHYST,
+//                AQUAMARINE, FROZEN_TEAR, FIRE_QUARTZ,
+//                PRISMATIC_SHARD, EARTH_CRYSTAL
+//            );
+//
+//            int posIndex = 0;
+//            for (ForagingMineralsType mineral : minerals) {
+//                while (posIndex < positions.size()) {
+//                    Point point = new Point(
+//                        user.getFarm().getMine().getPositions().get(positions.get(posIndex)));
+//
+//                    if (user.getFarm().getMine().checkPositionForMineral(point)) {
+//                        if (Math.random() <= mineral.getProbability()) {
+//                            ForagingMinerals f = new ForagingMinerals(mineral);
+//                            f.setPosition(point);
+//                            user.getFarm().getMine().getForagingMinerals().add(f);
+//                            user.getFarm().getMine().getTaken().add(point);
+//                            sendAddMineralMessage(user, f, point, game);
+//                            break;
+//                        }
+//                    }
+//                    posIndex ++;
+//                }
+//            }
+//        }
+    }
+
+    public Message changeCurrentItem(User player, Items item, Game game) throws IOException {
+        for (User p: game.getGameState().getPlayers()) {
+            if (p.getUsername().equals(player.getUsername())) {
+                p.currentItem = item;
+            }
+        }
+
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("Player", player);
+        body.put("Item", item);
+        return new Message(CURRENT_ITEM, body);
     }
 }

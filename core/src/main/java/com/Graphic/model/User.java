@@ -55,17 +55,18 @@ public class User {
     private MarketType currentMarket;
     private Queue<User> joinMarket = new LinkedList<>();
     private Queue<User> exitMarket = new LinkedList<>();
-    //private ArrayList<Game> gamesActiveInLobby = new ArrayList<>();
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
 
     public boolean isFishing = false;
     public boolean doingMinigame = false;
+    private boolean closeToLake = false;
 
     private User FriendCloseToMe = null;
     private boolean showUnseenChats = false;
     private boolean showHugged =  false;
     private boolean showFlowered = false;
+    private List<String> giftIGot = new ArrayList<>();
 
     // buffs
     public int Buff_maxEnergy_100_hoursLeft = 0;
@@ -754,6 +755,27 @@ public class User {
     }
     public void setShowFlowered(boolean showFlowered) {
         this.showFlowered = showFlowered;
+    }
+    public void setGiftIGot(String sender, String gift, boolean makeItNull) {
+        while (!giftIGot.isEmpty()) {
+        giftIGot.removeLast();
+        }
+        if (makeItNull) {
+            return;
+        }
+        giftIGot.addFirst(sender);
+        giftIGot.add(1, gift);
+
+    }
+    public List<String> getGiftIGot() {
+        return giftIGot;
+    }
+
+    public boolean isCloseToLake() {
+        return closeToLake;
+    }
+    public void setCloseToLake(boolean closeToLake) {
+        this.closeToLake = closeToLake;
     }
 
 //

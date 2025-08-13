@@ -18,6 +18,8 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static com.Graphic.model.App.currentGame;
+
 public class ClientConnectionThread extends Thread {
     //این کلاس برای ارتباط بین سرور و کلاینت قبل از شروع بازی است
     //این ترد در طرف سرور هست
@@ -41,7 +43,6 @@ public class ClientConnectionThread extends Thread {
         this.connection = connection;
         LoginController = new LoginController();
         registerController = new RegisterController();
-        server = ServerHandler.getInstance(game);
     }
 
 
@@ -69,6 +70,7 @@ public class ClientConnectionThread extends Thread {
 
     public synchronized void handleMessage(Message message) throws IOException {
         switch (message.getCommandType()) {
+                                        // Mamal
             case FARM -> {
                 controller.createFarm(message , game);
             }
@@ -152,24 +154,66 @@ public class ClientConnectionThread extends Thread {
                 sendMessage(controller.collectProduct(message));
             }
             case CHANGE_ABILITY_LEVEL ->  {
-                int xp = Main.getClient().getPlayer().getFishingAbility();
-                Main.getClient().getPlayer().increaseFishingAbility((int) (xp * 1.4));
-            }
-            case CHANGE_INVENTORY -> {
-                sendMessage(controller.changeInventory(message , game));
-            }
-            case CHANGE_FRIDGE -> {
-                Items items = message.getFromBody("Item");
-                int amount = message.getFromBody("amount");
-                if (Main.getClient().getPlayer().getFarm().getHome().getFridge().items.containsKey(items)) {
-                    Main.getClient().getPlayer().getFarm().getHome().getFridge().items.compute(items,(k,v) -> v + amount);
-                    if (Main.getClient().getPlayer().getFarm().getHome().getFridge().items.get(items) == 0) {
-                        Main.getClient().getPlayer().getFarm().getHome().getFridge().items.remove(items);
+                User player1 = message.getFromBody("Player");
+
+                User player = null;
+                for (User user: game.getGameState().getPlayers()) {
+                    if (user.getUsername().equals(player1.getUsername())) {
+                        player = user;
                     }
                 }
-                else {
-                    Main.getClient().getPlayer().getFarm().getHome().getFridge().items.put(items,amount);
+                if (player == null) {
+                    return;
                 }
+
+                String ability = message.getFromBody("Ability");
+                int amount = message.getFromBody("amount");
+
+
+                if (ability.equals("Fishing")) {
+                    player.increaseFishingAbility(amount);
+                }
+                if (ability.equals("Foraging")) {
+                    player.increaseForagingAbility(amount);
+                }
+                if (ability.equals("Farming")) {
+                    player.increaseFarmingAbility(amount);
+                }
+                if (ability.equals("Mining")) {
+                    player.increaseMiningAbility(amount);
+                }
+
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("Fishing", player.getFishingAbility());
+                body.put("Foraging", player.getForagingAbility());
+                body.put("Mining", player.getMiningAbility());
+                body.put("Farming", player.getFarmingAbility());
+                controller.sendToOnePerson(new Message(CommandType.CHANGE_ABILITY_LEVEL, body), game, player);
+            }
+            case CHANGE_INVENTORY -> {
+                Message message1 = controller.changeInventory(message, game);
+                User user = message1.getFromBody("Player");
+                controller.sendToOnePerson(message1, game, user);
+            }
+            case CHANGE_FRIDGE -> {
+                User player = message.getFromBody("Player");
+                Items items = message.getFromBody("Item");
+                int amount = message.getFromBody("amount");
+                for (User p: game.getGameState().getPlayers()) {
+                    if (p.getUsername().equals(player.getUsername())) {
+                        if (p.getFarm().getHome().getFridge().items.containsKey(items)) {
+                            p.getFarm().getHome().getFridge().items.compute(items,(k,v) -> v + amount);
+                            if (p.getFarm().getHome().getFridge().items.get(items) == 0) {
+                                p.getFarm().getHome().getFridge().items.remove(items);
+                            }
+                        }
+                        else {
+                            p.getFarm().getHome().getFridge().items.put(items,amount);
+                        }
+                    }
+                }
+
+
             }
             case TALK_TO_FRIEND -> {
                 MessageHandling messageHandling = message.getFromBody("MessageHandling");
@@ -195,20 +239,77 @@ public class ClientConnectionThread extends Thread {
                 body2.put("friendships", game.getGameState().friendships);
                 ClientConnectionController.getInstance().sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body2), game);
             }
+            case SEND_GIFT -> {
+                String player1 = message.getFromBody("Giver");
+                String player2 = message.getFromBody("Given");
+                User giver = null;
+                User given = null;
+                for (User user: game.getGameState().getPlayers()) {
+                    if (user.getUsername().equals(player1)) {
+                        giver = user;
+                    }
+                    if (user.getUsername().equals(player2)) {
+                        given = user;
+                    }
+                }
+                if (giver == null || given == null) {
+                    return;
+                }
+
+                Items item =  message.getFromBody("Item");
+
+
+                if (giver.getBackPack().inventory.Items.containsKey(item)) {
+                    giver.getBackPack().inventory.Items.compute(item,(k,v) -> v - 1);
+                }
+                else return;
+                if (given.getBackPack().inventory.Items.containsKey(item)) {
+                    given.getBackPack().inventory.Items.compute(item,(k,v) -> v + 1);
+                }
+                else {
+                    given.getBackPack().inventory.Items.put(item,1);
+                }
+
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("Giver", giver);
+                body.put("Given", given);
+                body.put("Item", item);
+                controller.sendToOnePerson(new Message(CommandType.SEND_GIFT, body), game, given);
+
+
+                HashMap<String, Object> body3 = new HashMap<>();
+                body3.put("Player", giver);
+                body3.put("Item", item);
+                body3.put("amount", -1);
+                controller.sendToOnePerson(new Message(CommandType.CHANGE_INVENTORY, body3), game, giver);
+
+                HashMap<String, Object> body4 = new HashMap<>();
+                body4.put("Player", given);
+                body4.put("Item", item);
+                body4.put("amount", 1);
+                controller.sendToOnePerson(new Message(CommandType.CHANGE_INVENTORY, body4), game, given);
+            }
             case EXIT_MARKET -> {
                 System.out.println("Exit");
                 controller.ExitTheMarket(message , game);
             }
             case LOADED_GAME -> {}
 
+                                        // Erfan
+            case GET_TOMORROW_WEATHER -> {
+                controller.sentWeather(game);
+            }
             case SET_TIME -> {
-                controller.setTime(
+                controller.passedOfTime(
                     message.getFromBody("Day"),
-                    message.getFromBody("Hour"), game
+                    message.getFromBody("Hour"),
+                    game.getGameState().currentDate, game
                 );
             }
             case GET_TIME -> {
-                controller.sendSetTimeMessage(server.currentDateHour.getHour(), server.currentDateHour.getDate(), game);
+                controller.sendSetTimeMessage(
+                    game.getGameState().currentDate.getHour(),
+                    game.getGameState().currentDate.getDate(), game);
             }
             case CHANGE_GAME_OBJECT -> {
                 controller.sendSetGameObjectMessage(
@@ -217,11 +318,65 @@ public class ClientConnectionThread extends Thread {
                     message.getFromBody("Object"), game
                 );
             }
+            case CURRENT_ITEM -> {
+                User player = message.getFromBody("Player");
+                Items items = message.getFromBody("Item");
+                controller.sendToOnePerson(controller.changeCurrentItem(player, items, game), game, player);
+            }
+
+                                        // Ario
             case FriendshipsInquiry -> {
+
+                if (game.getGameState().friendships.isEmpty()) {
+                    for (int i = 0; i < game.getGameState().getPlayers().size(); i++)
+                        for (int j = i + 1; j < game.getGameState().getPlayers().size(); j++) {
+                            HumanCommunications f = new HumanCommunications(
+                                game.getGameState().getPlayers().get(i),
+                                game.getGameState().getPlayers().get(j));
+
+                            game.getGameState().friendships.add(f);
+                        }
+                }
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("friendships", game.getGameState().friendships);
-                sendMessage(new Message(CommandType.FriendshipsInqResponse, body));
+
+                if (game.getGameState().friendships.isEmpty()) {
+                    for (int i = 0; i < 500; i++)
+                        System.out.println("server bega raft");
+                }
+
+                controller.sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body), game);
             }
+            case ADD_XP_TO_FRIENDSHIP -> {
+                String player = message.getFromBody("Player");
+                String friend =  message.getFromBody("Friend");
+                User p1 = null;
+                User p2 = null;
+                for (User user: game.getGameState().getPlayers()) {
+                    if (user.getUsername().equals(player)) {
+                        p1 = user;
+                    }
+                    if (user.getUsername().equals(friend)) {
+                        p2 = user;
+                    }
+                }
+                if (p1 == null || p2 == null) {
+                    return;
+                }
+
+                int xp = message.getFromBody("XP");
+
+                for (HumanCommunications f : game.getGameState().friendships) {
+                    if (f.isBetween(p1, p2)) {
+                        f.addXP(xp);
+                    }
+                }
+
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("friendships", game.getGameState().friendships);
+                controller.sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body), game);
+            }
+
 
 
         }

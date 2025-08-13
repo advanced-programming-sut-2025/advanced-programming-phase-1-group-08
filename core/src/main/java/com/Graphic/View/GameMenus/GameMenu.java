@@ -34,8 +34,10 @@ import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
 import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Places.Lake;
 import com.Graphic.model.Plants.*;
+import com.Graphic.model.Plants.Tree;
 import com.Graphic.model.ToolsPackage.FishingPole;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.Weather.DateHour;
@@ -203,7 +205,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private boolean waitingForGiftItemSelection = false;
     private NPC npc;
 
-
     private Sprite currentItemSprite;
     private boolean startRotation;
     private float currentRotation = 0f;
@@ -249,6 +250,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
         Gdx.input.setInputProcessor(multiplexer);
 
+                createClock();
         if (! Main.getClient().getLocalGameState().getChooseMap()) {
             try {
                 controller = InputGameController.getInstance();
@@ -264,15 +266,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 firstLoad = true;
                 shepherdingAnimals = new ArrayList<>();
                 heartAnimations = new ArrayList<>();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-        else if (lastDateHour == null) {
-            setTime();
-        }
-        System.out.println(Main.getClient().getPlayer().getPositionX() + " g "+Main.getClient().getPlayer().getPositionY());
     }
 
 
@@ -282,18 +280,13 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         inputController();
 
-        if (!Main.getClient().getLocalGameState().currentDate.equals(lastDateHour)) {
-            // updateClock();
-        }
+        if (lastDateHour == null || !Main.getClient().getLocalGameState().currentDate.equals(lastDateHour))
+            updateClock();
 
         initialLake();
         updateEnergyLabel();
         giftNPCMenu();
-
-        // آپدیت دوربین و تنظیم projection برای batch world
-        //camera.update();
         Main.getBatch().setProjectionMatrix(camera.combined);
-
         gameState = Main.getClient().getLocalGameState();
 
         User x = null;
@@ -309,10 +302,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             activeDialog = null;
         }
 
-        showUnseenMessages();
-        showHugged();
-        showGivenFlower();
-
         if (Main.getClient().getLocalGameState().getChooseMap()) {
             changeMenu();
             createUserRenderes();
@@ -326,8 +315,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             Main.getBatch().begin();
 
             controller.update(camera, v, anyMenuIsActivated());
-            drawCurrentItem();
             updateAnimals(Main.getClient().getLocalGameState().getAnimals());
+            drawCurrentItem();
             NPCManager.NPCWalk(v);
             eatingManagement(v);
             checkLakeDistance(v);
@@ -342,24 +331,32 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             } else {
                 activeDialog = null;
             }
-
-            startFishing(v);
-
             mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mousePos);
             camera.update();
 
-            Main.getBatch().end();
-        }
-
-
-        // رندر UI خارج از batch و بعد از رندر world
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
+
+        if (Main.getClient().getLocalGameState().getChooseMap()) {
+            showUnseenMessages();
+            showHugged();
+            showGivenFlower();
+            startFishing(v);
+            ratingGifts();
+            Main.getBatch().end();
+        }
     }
+}
 
 
     // Ario
+
+    private void initRecipes() {
+
+        for (User player: Main.getClient().getLocalGameState().getPlayers())
+            player.setRecipes(Recipe.createAllRecipes());
+    }
 
     private void lightBeforeFishing(float v) {
         if (!showFishLight)
@@ -379,110 +376,110 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         s.draw(Main.getBatch());
     }
     private void checkLakeDistance(float v) {
-//        Lake lake = Main.getClient().getPlayer().getFarm().getLake();
-//        float lakeY = lake.getTopLeftY();
-//        float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
-//        Sprite fisherman = new Sprite(TextureManager.get("Ariyo/fisherman.png"));
-//
-//        if (Main.getClient().getPlayer().doingMinigame) {
-//            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
-//            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
-//                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
-//            else
-//                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
-//            fisherman.draw(Main.getBatch());
-//
-//            return;
-//        }
-//
-//        fishingTimer += v;
-//
-//        if (!Main.getClient().getPlayer().isFishing)
-//            fishingTimer = 0;
-//
-//        if (Main.getClient().getPlayer().isFishing && fishingTimer >= 10f) {
-//            Main.getClient().getPlayer().doingMinigame = true;
-//            shapeRenderer = new ShapeRenderer();
-//            createGrayBackGround();
-//            fishingTimer = 0;
-//            minigame = new Sprite(new Texture(Gdx.files.internal("Ariyo/minigame.png")));
-//            minigame.setSize(minigame.getWidth() * 2.5f, minigame.getHeight() * 2.5f);
-//            minigame.setRegion(TextureManager.get("Ariyo/minigame.png"));
-//
-//            Random random = new Random();
-//            fishToCatchType = FishType.values()[random.nextInt(FishType.values().length)];
-//            fishToCatch = new Sprite(TextureManager.get(fishToCatchType.getIconPath()));
-//            fishToCatch.setRegion(TextureManager.get(fishToCatchType.getIconPath()));
-//            fishToCatch.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 180);
-//            fishToCatch.setSize(fishToCatch.getWidth() * 0.6f, fishToCatch.getHeight() * 0.7f);
-//            float verticalSpeed = 50f;
-//            float horizontalWiggle = 10f;
-//            float dx = (float) (Math.random() * horizontalWiggle * 2 - horizontalWiggle); // بین -10 تا +10
-//            float dy = verticalSpeed;
-//            fishVelocity = new Vector2(dx, dy);
-//
-//            if (fishToCatchType.isLegendary()) {
-//                fishCrown = new Sprite(TextureManager.get("Ariyo/star.png"));
-//                fishCrown.setRegion(TextureManager.get("Ariyo/star.png"));
-//                fishCrown.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 190);
-//            }
-//            else
-//                fishCrown = null;
-//        }
-//
-//
-//        float myX = Main.getClient().getPlayer().getPositionX();
-//        float myY = Main.getClient().getPlayer().getPositionY();
-//        float deltaX = Math.abs(myX - lakeX);
-//        float deltaY = Math.abs(myY - lakeY);
-//        if (!(deltaX < 3f && deltaY < 3f)) {
-//            fishingTimer = 0;
-//            tempFishing.setVisible(false);
-//            return;
-//        }
-//
-//        if (!Main.getClient().getPlayer().isFishing) {
-//            tempFishing.setPosition(Main.getClient().getPlayer().getPositionX(), Main.getClient().getPlayer().getPositionY() + 40);
-//            tempFishing.draw(Main.getBatch(), 1f);
-//        }
-//
-//
-//        if (!Main.getClient().getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-//            boolean havePole = false;
-//            Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
-//            for (Map.Entry<Items, Integer> entry: inventory.Items.entrySet()) {
-//                if (entry.getKey() instanceof FishingPole) {
-//                    havePole = true;
-//                    break;
-//                }
-//            }
-//            if (!havePole) {
-//                showTimedDialog("You Don't Have a Fishing Pole!", 2f);
-//                return;
-//            }
-//
-//            showFishLight = true;
-//
-//            Main.getClient().getPlayer().isFishing = true;
-//        }
-//        else if (Main.getClient().getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.G)) {
-//            Main.getClient().getPlayer().isFishing = false;
-//        }
-//
-//        Texture iconTexture = new Texture(Gdx.files.internal("all image/Farming/Fishing.png"));
-//        tempFishing.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
-//
-//        tempFishing.setVisible(true);
-//
-//        if (Main.getClient().getPlayer().isFishing) {
-//            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
-//            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
-//                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
-//            else
-//                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
-//            fisherman.draw(Main.getBatch());
-//        }
-//
+        Lake lake = Main.getClient().getPlayer().getFarm().getLake();
+        float lakeY = lake.getTopLeftY();
+        float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
+        Sprite fisherman = new Sprite(TextureManager.get("Ariyo/fisherman.png"));
+
+        if (Main.getClient().getPlayer().doingMinigame) {
+            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
+            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
+            else
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
+            fisherman.draw(Main.getBatch());
+
+            return;
+        }
+
+        fishingTimer += v;
+
+        if (!Main.getClient().getPlayer().isFishing)
+            fishingTimer = 0;
+
+        if (Main.getClient().getPlayer().isFishing && fishingTimer >= 10f) {
+            Main.getClient().getPlayer().doingMinigame = true;
+            shapeRenderer = new ShapeRenderer();
+            createGrayBackGround();
+            fishingTimer = 0;
+            minigame = new Sprite(new Texture(Gdx.files.internal("Ariyo/minigame.png")));
+            minigame.setSize(minigame.getWidth() * 2.5f, minigame.getHeight() * 2.5f);
+            minigame.setRegion(TextureManager.get("Ariyo/minigame.png"));
+
+            Random random = new Random();
+            fishToCatchType = FishType.values()[random.nextInt(FishType.values().length)];
+            fishToCatch = new Sprite(TextureManager.get(fishToCatchType.getIconPath()));
+            fishToCatch.setRegion(TextureManager.get(fishToCatchType.getIconPath()));
+            fishToCatch.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 180);
+            fishToCatch.setSize(fishToCatch.getWidth() * 0.6f, fishToCatch.getHeight() * 0.7f);
+            float verticalSpeed = 50f;
+            float horizontalWiggle = 10f;
+            float dx = (float) (Math.random() * horizontalWiggle * 2 - horizontalWiggle); // بین -10 تا +10
+            float dy = verticalSpeed;
+            fishVelocity = new Vector2(dx, dy);
+
+            if (fishToCatchType.isLegendary()) {
+                fishCrown = new Sprite(TextureManager.get("Ariyo/star.png"));
+                fishCrown.setRegion(TextureManager.get("Ariyo/star.png"));
+                fishCrown.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 190);
+            }
+            else
+                fishCrown = null;
+        }
+
+
+        float myX = Main.getClient().getPlayer().getPositionX();
+        float myY = Main.getClient().getPlayer().getPositionY();
+        float deltaX = Math.abs(myX - lakeX);
+        float deltaY = Math.abs(myY - lakeY);
+        if (!(deltaX < 3f && deltaY < 3f)) {
+            fishingTimer = 0;
+            tempFishing.setVisible(false);
+            return;
+        }
+
+        if (!Main.getClient().getPlayer().isFishing) {
+            tempFishing.setPosition(Main.getClient().getPlayer().getPositionX(), Main.getClient().getPlayer().getPositionY() + 40);
+            tempFishing.draw(Main.getBatch(), 1f);
+        }
+
+
+        if (!Main.getClient().getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            boolean havePole = false;
+            Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
+            for (Map.Entry<Items, Integer> entry: inventory.Items.entrySet()) {
+                if (entry.getKey() instanceof FishingPole) {
+                    havePole = true;
+                    break;
+                }
+            }
+            if (!havePole) {
+                showTimedDialog("You Don't Have a Fishing Pole!", 2f);
+                return;
+            }
+
+            showFishLight = true;
+
+            Main.getClient().getPlayer().isFishing = true;
+        }
+        else if (Main.getClient().getPlayer().isFishing && Gdx.input.isKeyJustPressed(Input.Keys.G)) {
+            Main.getClient().getPlayer().isFishing = false;
+        }
+
+        Texture iconTexture = new Texture(Gdx.files.internal("all image/Farming/Fishing.png"));
+        tempFishing.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(iconTexture));
+
+        tempFishing.setVisible(true);
+
+        if (Main.getClient().getPlayer().isFishing) {
+            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
+            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
+            else
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
+            fisherman.draw(Main.getBatch());
+        }
+
 
     }
 
@@ -587,7 +584,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
 
-            // به فیش ای آی کار ندارم چون یه بار اجرا میشن اینجا مینویسم
             bobble = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Ariyo/QM.png"))));
             bobble.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth(), Main.getClient().getPlayer().getPositionY() + minigameArea.height / 2f);
             bobble.setSize(bobble.getWidth()*2, bobble.getHeight()*2);
@@ -646,6 +642,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         //only if you got the fish
         Random random = new Random();
         Quantity quantity = Quantity.values()[random.nextInt(Quantity.values().length)];
+
         if (!perfect) {
             HashMap<String , Object> body = new HashMap<>();
             body.put("Item" , new Fish(fishToCatchType, quantity));
@@ -672,9 +669,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
 
         HashMap<String , Object> body2 = new HashMap<>();
+        body2.put("Player" , Main.getClient().getPlayer());
         body2.put("Ability", "Fishing");
-        body2.put("times", 2.4);
-        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_ABILITY_LEVEL, body));
+        body2.put("amount", 1.4*(Main.getClient().getPlayer().getFishingAbility()));
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_ABILITY_LEVEL, body2));
     }
 
 
@@ -972,18 +970,101 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     private void giftingInventory() {
+
         if (giftingFriendship == null)
             return;
-
+        Result result = null;
         if (giftingFriendship.getPlayer1().getUsername().equals(Main.getClient().getPlayer().getUsername())) {
-            sendGifts(giftingFriendship, giftingFriendship.getPlayer1().getUsername());
+            result = sendGifts(giftingFriendship, giftingFriendship.getPlayer2().getUsername(), Main.getClient().getPlayer().currentItem);
         }
         else if (giftingFriendship.getPlayer2().getUsername().equals(Main.getClient().getPlayer().getUsername())) {
-            sendGifts(giftingFriendship, giftingFriendship.getPlayer2().getUsername());
+            result = sendGifts(giftingFriendship, giftingFriendship.getPlayer1().getUsername(),  Main.getClient().getPlayer().currentItem);
         }
-        Main.getClient().getPlayer().currentItem = null;
+
         giftingFriendship = null;
+
+        if (result != null)
+            showTimedDialog(result.massage(), 2f);
     }
+    public void ratingGifts() {
+        if (Main.getClient().getPlayer().getGiftIGot().isEmpty())
+            return;
+
+        String sender = Main.getClient().getPlayer().getGiftIGot().getFirst();
+        String giftName = Main.getClient().getPlayer().getGiftIGot().getLast();
+
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+        int popupWidth = 300;
+        int popupHeight = 150;
+        int popupX = (screenWidth)/2 - popupWidth;
+        int popupY = (screenHeight)/2 - popupHeight;
+
+
+        Main.getBatch().end();
+        ShapeRenderer shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(Main.getBatch().getProjectionMatrix());
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, 0.8f);
+        shapeRenderer.rect(popupX, popupY, popupWidth, popupHeight);
+        shapeRenderer.end();
+        Gdx.gl.glLineWidth(3);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(popupX, popupY, popupWidth, popupHeight);
+        shapeRenderer.end();
+
+        Main.getBatch().begin();
+        BitmapFont font = new BitmapFont();
+        font.draw(Main.getBatch(),
+            "Rate the gift from " + sender.toUpperCase() + " (" + giftName + "):",
+            popupX + 20,
+            popupY + popupHeight - 20);
+
+
+
+        Texture emptyStar = TextureManager.get("Ariyo/empty_star.png");
+        Texture fullStar = TextureManager.get("Ariyo/full_star.png");
+
+
+        int starSize = 32;
+        int spacing = 10;
+        int starsX = popupX + 20;
+        int starsY = popupY + 50;
+
+        int mouseX = Gdx.input.getX();
+        int mouseY = screenHeight - Gdx.input.getY();
+        int selectedStars;
+
+
+        for (int i = 0; i < 5; i++) {
+            int starX = starsX + i * (starSize + spacing);
+            boolean hover = mouseX >= starX + 279 && mouseX <= starX + 279 + starSize &&
+                mouseY >= starsY + 112 && mouseY <= starsY + starSize + 112;
+
+            if (hover && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                selectedStars = i + 1;
+                System.out.println("Selected rating: " + selectedStars);
+
+                HashMap<String, Object> body = new HashMap<>();
+                body.put("Player", Main.getClient().getPlayer().getUsername());
+                body.put("Friend", sender);
+                body.put("XP", ((selectedStars - 3) * 30) + 15);
+                Main.getClient().getRequests().add(new Message(CommandType.ADD_XP_TO_FRIENDSHIP, body));
+
+                Main.getClient().getPlayer().setGiftIGot(null, null, true);
+            }
+
+            Main.getBatch().draw(
+                hover ? fullStar : emptyStar,
+                starX, starsY, starSize, starSize
+            );
+        }
+    }
+
+
+
     public Dialog makingFriendDialog() {
         friendsListdialog = new Dialog("", newSkin);
         friendsListdialog.setModal(true);
@@ -995,8 +1076,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         String targetName = Main.getClient().getPlayer().getUsername();
         User friendUser;
-
         for (HumanCommunications f : Main.getClient().getLocalGameState().friendships) {
+            System.out.println("friendship is among " + f.getPlayer1().getUsername() + " " + f.getPlayer2().getUsername());
             if (f.getPlayer1().getUsername().equals(targetName)) {
                 friendUser = f.getPlayer2();
             }
@@ -1015,7 +1096,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             avatar.setScaling(Scaling.fit);
 
             // ستون 2: نام
-            Label nameLabel = new Label(friendUser.getNickname(), Main.getSkin());
+            Label nameLabel = new Label(friendUser.getUsername(), Main.getSkin());
             nameLabel.setColor(Color.CYAN);
 
             // ستون 3: XP و Level
@@ -1038,7 +1119,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                     giftingFriendship = f;
                     createInventory();
                     dialogActivated = false;
-                    giftingInventory();
                 }
             });
             giftButton.addListener(new InputListener() {
@@ -1103,6 +1183,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         gameMenuInitialized = true;
 
         currentMenu = Menu.GameMenu;
+
 
         controller = InputGameController.getInstance();
         //stage = new Stage(new ScreenViewport());
@@ -1187,9 +1268,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         friendButton.setPosition(50,screenHeight * 8f / 9f);
         friendButton.pack();
 
-
-
-
         stage.addActor(friendButton);
 
         bouquetImage = new Image(new Texture(Gdx.files.internal("Ariyo/Bouquet.png")));
@@ -1250,7 +1328,19 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         //Mohamadreza
         initializePlayer();
         gameState = Main.getClient().getLocalGameState();
+
+
+        HashMap<String , Object> body = new HashMap<>();
+        body.put("Player", Main.getClient().getPlayer());
+        body.put("Item", new Fish(FishType.Salmon, Quantity.Normal));
+        body.put("amount", 10);
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
+
+
+
+        lastDateHour = new DateHour(Season.Spring, 1, 9, 1950);
         gameState.currentDate = new DateHour(Season.Spring, 1, 9, 1950);
+        initRecipes();
     }
 
     private void inputController() {
@@ -1275,6 +1365,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 showSettingMenu();
             else if (Gdx.input.isKeyJustPressed(Keys.NPCMenu))
                 showNPCMenu();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.C))
+                test();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.X))
+                test2();
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.V))
+                test3();
 
 
             else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
@@ -1320,7 +1416,34 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         } else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
             ExitOfMenu();
     }
-
+    private void test () {
+        System.out.println("kir");
+        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                Tree tree = new Tree(TreeType.AppleTree, Main.getClient().getLocalGameState().currentDate.clone());
+                tile.setGameObject(tree);
+                controller.sendChangeGameObjectMessage(tile, tree);
+                System.out.println("$");
+            }
+        }
+    }
+    private void test2 () {
+        System.out.println("kos");
+        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm)
+            if (tile.getGameObject() instanceof Tree) {
+                System.out.println("#");
+                Tree tree = (Tree) tile.getGameObject();
+                tree.setLastWater(Main.getClient().getLocalGameState().currentDate.clone());
+            }
+    }
+    private void test3 () {
+        System.out.println("kos mikh");
+        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm)
+            if (tile.getGameObject() instanceof Tree) {
+                Tree tree = (Tree) tile.getGameObject();
+                System.out.println("Stage -> " + tree.getStage() + " Last Water " + tree.getLastWater().getDate() + "  hour " + Main.getClient().getLocalGameState().currentDate.getHour() + " day " + Main.getClient().getLocalGameState().currentDate.getDate());
+            }
+    }
     private void ExitOfMenu() {
 
         if (toolsMenuIsActivated) {
@@ -1824,12 +1947,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private void handleLeftClick () {
         useCurrentItem();
         Direction direction = Direction.getDirByCord(
-            Main.getClient().getPlayer().getPositionX(),
-            90 - Main.getClient().getPlayer().getPositionY(),
-            getVector().x, 90 - getVector().y
+            stage.getWidth()/2,
+            stage.getHeight()/2,
+            getVector().x, 935 - getVector().y
         );
-        if (direction != null) {
+        System.out.println("Main x = " + stage.getWidth()/2);
+        System.out.println("Main y = " + stage.getHeight()/2);
+        System.out.println("second x = " + getVector().x);
+        System.out.println("second y = " + (935 - getVector().y));
 
+        if (direction != null) {
+            System.out.println(direction.name());
             int dir = 0;
             Items items = Main.getClient().getPlayer().currentItem;
             switch (direction) {
@@ -2282,19 +2410,16 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Direction direction = Main.getClient().getPlayer().getDirection();
         float x = getXForHands(direction), y = getYForHands(direction);
 
-        if (currentItemSprite == null || !currentItemSprite.getTexture().equals(TextureManager.get(currentItem.getInventoryIconPath()))) {
+        if (currentItemSprite == null || !currentItemSprite.getTexture().equals(TextureManager.get(currentItem.getInventoryIconPath())))
             currentItemSprite = new Sprite(TextureManager.get(currentItem.getInventoryIconPath()));
-        }
-
 
         currentItemSprite.flip(Direction.lastDir != null && Direction.lastDir != direction &&
             (direction == Direction.Left || Direction.lastDir == Direction.Left), false);
 
-        if (direction == Direction.Left) {
+        if (direction == Direction.Left)
             currentItemSprite.setOrigin(currentItemSprite.getWidth(), 0);
-        } else {
+        else
             currentItemSprite.setOrigin(0, 0);
-        }
 
         currentItemSprite.setRotation(currentRotation);
 
@@ -2328,17 +2453,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private float getYForHands(Direction direction) {
 
         if (direction == Direction.Up)
-            return (90 - Main.getClient().getPlayer().getPositionY()) * TEXTURE_SIZE + 12;
+            return  stage.getHeight()/2 + 12;
 
-        return (90 - Main.getClient().getPlayer().getPositionY()) * TEXTURE_SIZE + 8;
+        return (stage.getHeight()/2) + 8;
     }
     private float getXForHands(Direction direction) {
 
         return switch (direction) {
-            case Right -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE + 20;
-            case Left -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE - 10;
-            case Up -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE + 25;
-            case Down -> Main.getClient().getPlayer().getPositionX() * TEXTURE_SIZE + 23;
+            case Right -> stage.getWidth()/2 + 20;
+            case Left -> stage.getWidth()/2 - 10;
+            case Up -> stage.getWidth()/2 + 25;
+            case Down -> stage.getWidth()/2 + 23;
         };
     }
 
@@ -2424,8 +2549,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
 
-                    if (currentItem != null && currentItem.getName().equals(item.getName()))
-                        Main.getClient().getPlayer().currentItem = null;
+                    if (currentItem != null && currentItem.getName().equals(item.getName())) {
+                        HashMap<String, Object> body = new HashMap<>();
+                        body.put("Player", Main.getClient().getPlayer());
+                        body.put("Item", null);
+                        Main.getClient().getRequests().add(new Message(CommandType.CURRENT_ITEM, body));
+                    }
                     else
                         controller.itemEquip(item.getName());
 
@@ -2836,6 +2965,22 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
 
+    }
+    public void setCurrentItemSprite(Sprite currentItemSprite) {
+
+        this.currentItemSprite = currentItemSprite;
+    }
+    public Sprite getCurrentItemSprite() {
+
+        return currentItemSprite;
+    }
+    public boolean isStartRotation() {
+
+        return startRotation;
+    }
+    public float getCurrentRotation() {
+
+        return currentRotation;
     }
 
 

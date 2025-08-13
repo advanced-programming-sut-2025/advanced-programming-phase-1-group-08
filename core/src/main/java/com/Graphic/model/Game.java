@@ -114,7 +114,9 @@ public class Game {
 
         if (gameState.getPlayers().size() == 4 && !gameStarted) {
             gameStarted = true;
-            ServerHandler serverHandler = ServerHandler.getInstance(this);
+            ServerHandler serverHandler = ServerHandler.getInstance();
+            serverHandler.setGame(this);
+            serverHandler.start();
             HashMap<String , Object> body = new HashMap<>();
             body.put("Players" , gameState.getPlayers());
             for (Map.Entry<User , Connection> entry : connections.entrySet()) {

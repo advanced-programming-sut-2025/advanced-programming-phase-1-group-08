@@ -329,6 +329,10 @@ public class ClientWork {
                 }
                 case FriendshipsInqResponse, UPDATE_FRIENDSHIPS -> {
                     Main.getClient().getLocalGameState().friendships = message.getFromBody("friendships");
+                    if (Main.getClient().getLocalGameState().friendships.isEmpty()) {
+                        for (int i = 0; i < 500; i++)
+                            System.out.println("client bega raft");
+                    }
                 }
 
                 case A_FRIEND_IS_CLOSE -> {
@@ -340,8 +344,21 @@ public class ClientWork {
                     // print unseen messages
                     Main.getClient().getPlayer().setShowUnseenChats(true);
                 }
-
-
+                case SEND_GIFT -> {
+                    User sender = message.getFromBody("Giver");
+                    Items items = message.getFromBody("Item");
+                    Main.getClient().getPlayer().setGiftIGot(sender.getUsername(), items.getName(), false);
+                }
+                case CHANGE_ABILITY_LEVEL -> {
+                    int fishing =  message.getFromBody("Fishing");
+                    int mining =  message.getFromBody("Mining");
+                    int foraging =  message.getFromBody("Foraging");
+                    int farming =  message.getFromBody("Farming");
+                    Main.getClient().getPlayer().increaseFishingAbility(fishing);
+                    Main.getClient().getPlayer().increaseMiningAbility(mining);
+                    Main.getClient().getPlayer().increaseForagingAbility(foraging);
+                    Main.getClient().getPlayer().increaseFarmingAbility(farming);
+                }
                 case EXIT_MARKET -> {
                     int x = message.getFromBody("X");
                     int y = message.getFromBody("Y");
@@ -361,8 +378,17 @@ public class ClientWork {
                     }
 
                 }
+
+                                    // Erfan
                 case SET_TIME -> {
                     controller.setTime(message.getFromBody("Hour"), message.getFromBody("Day"));
+                }
+                case ADD_MINERAL -> {
+                    controller.addMineral(
+                        message.getFromBody("Mineral"),
+                        message.getFromBody("Point"),
+                        message.getFromBody("User")
+                    );
                 }
                 case CHANGE_GAME_OBJECT -> {
                     controller.changeGameObject(
@@ -370,6 +396,12 @@ public class ClientWork {
                         message.getFromBody("Y"),
                         message.getFromBody("Object")
                     );
+                }
+                case GET_TOMORROW_WEATHER -> {
+                    controller.setTomorrowWeather(message.getFromBody("Weather"));
+                }
+                case CURRENT_ITEM -> {
+                    Main.getClient().getPlayer().currentItem = message.getFromBody("Item");
                 }
             }
         } catch (Exception e) {

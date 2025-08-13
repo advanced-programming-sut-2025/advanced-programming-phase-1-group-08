@@ -58,6 +58,8 @@ public enum CommandType {
     UPDATE_FRIENDSHIPS,
     A_FRIEND_IS_CLOSE,
     TALK_TO_FRIEND,
+    ADD_XP_TO_FRIENDSHIP,
+    SEND_GIFT,
     UPDATE_CONVERSATIONS,
     SET_SEEN_MESSAGE,
     HUG,
@@ -68,7 +70,9 @@ public enum CommandType {
                     // Erfan
     SET_TIME,
     GET_TIME,
+    ADD_MINERAL,
     CHANGE_GAME_OBJECT,
+    GET_TOMORROW_WEATHER,
     BUILD_GREENHOUSE,
     CREATE_LIGHTNING,
     CURRENT_ITEM,

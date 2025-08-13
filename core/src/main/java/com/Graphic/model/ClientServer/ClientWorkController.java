@@ -4,12 +4,15 @@ import com.Graphic.Controller.MainGame.GameControllerLogic;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Main;
 import com.Graphic.model.Enum.Commands.CommandType;
+import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.HumanCommunications;
 import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
+import com.Graphic.model.Plants.ForagingMinerals;
 import com.Graphic.model.User;
 import com.Graphic.model.Weather.DateHour;
 
+import java.awt.*;
 import java.util.HashMap;
 
 public class ClientWorkController {
@@ -51,6 +54,16 @@ public class ClientWorkController {
         Tile tile = GameControllerLogic.getTileByCoordinates(x, y, Main.getClient().getLocalGameState());
         tile.setGameObject(gameObject);
     }
+    public void setTomorrowWeather (Weather weather) {
+
+        Main.getClient().getLocalGameState().tomorrowWeather = weather;
+    }
+    public void addMineral (ForagingMinerals mineral, Point point, User user) {
+
+        mineral.setPosition(point);
+        user.getFarm().getMine().getForagingMinerals().add(mineral);
+        user.getFarm().getMine().getTaken().add(point);
+    }
 
                                     // Ario
 
@@ -66,6 +79,4 @@ public class ClientWorkController {
         }
         return null;
     }
-
-
 }
