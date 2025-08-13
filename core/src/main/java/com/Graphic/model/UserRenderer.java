@@ -20,6 +20,7 @@ public class UserRenderer {
     private HashMap<Direction , Animation<Texture> > animations = new HashMap<>();
 
 
+
     public void addToAnimations(Direction direction , ArrayList<String> frames) {
         Animation<Texture> animation = new Animation<>(0.1f ,
             TextureManager.get(frames.get(0)) , TextureManager.get(frames.get(1)));
@@ -47,11 +48,6 @@ public class UserRenderer {
         Main.getBatch().draw(animation.getKeyFrame(user.getTimer() , true) ,
             user.getPositionX() , user.getPositionY() , x , y);
 
-        for (NPC npc: NPC.values()) {
-            Animation<Texture> animation2 = animations.get(npc.getDirection());
-            Main.getBatch().draw(animation2.getKeyFrame(npc.getTimer() , true) ,
-                npc.getPositionX() , npc.getPositionY() , x , y);
-        }
 
         if ( animation.isAnimationFinished(user.getTimer()))
             user.setTimer(0.0f);

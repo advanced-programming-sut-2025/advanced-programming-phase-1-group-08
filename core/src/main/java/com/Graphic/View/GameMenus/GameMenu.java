@@ -1397,7 +1397,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         initRecipes();
 
 
-
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("Player", Main.getClient().getPlayer());
+        body.put("Item", new FishingPole());
+        body.put("amount", 1);
+        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
 
 
         for (NPC npc: NPC.values()) {

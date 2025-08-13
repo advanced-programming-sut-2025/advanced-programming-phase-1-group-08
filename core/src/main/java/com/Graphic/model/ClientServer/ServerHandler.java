@@ -59,6 +59,7 @@ public class ServerHandler extends Thread {
         for (int i = 0; i < game.getGameState().getPlayers().size(); i++) {
             for (int j = i + 1; j < game.getGameState().getPlayers().size(); j++) {
                 if (isClose(game.getGameState().getPlayers().get(i), game.getGameState().getPlayers().get(j))) {
+                    System.out.println("close(SERVER)");
                     HashMap<String , Object> body = new HashMap<>();
                     body.put("Player", game.getGameState().getPlayers().get(j));
                     controller.sendToOnePerson(new Message(A_FRIEND_IS_CLOSE, body), game, game.getGameState().getPlayers().get(i));

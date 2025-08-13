@@ -366,6 +366,7 @@ public class ClientWork {
                     Main.getClient().getPlayer().setSpouse(message.getFromBody("Spouse"));
                 }
                 case A_FRIEND_IS_CLOSE -> {
+                    System.out.println("close(CLiENT)");
                     User friend = message.getFromBody("PlayerName");
                     Main.getClient().getPlayer().setFriendCloseToMe(friend);
                 }
