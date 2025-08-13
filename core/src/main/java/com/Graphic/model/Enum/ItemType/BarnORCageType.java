@@ -1,5 +1,6 @@
 package com.Graphic.model.Enum.ItemType;
 
+import com.Graphic.Main;
 import com.Graphic.model.Animall.BarnOrCage;
 import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.User;
@@ -17,6 +18,7 @@ import java.util.Map;
 import static com.Graphic.View.GameMenus.GameMenu.camera;
 import static com.Graphic.View.GameMenus.GameMenu.gameMenu;
 import static com.Graphic.model.App.currentGame;
+import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 public enum BarnORCageType {
 
@@ -169,9 +171,10 @@ public enum BarnORCageType {
 
         if (exit.contains(new Vector2(user.getPositionX(), user.getPositionY()))
                 && user.getDirection().equals(Direction.Down)) {
+            Main.getClient().getPlayer().setInFarmExterior(true);
+            Main.getClient().getPlayer().setIsInBarnOrCage(false);
+            camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             return true;
-//            currentGame.currentPlayer.setInFarmExterior(true);
-//            camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
         return false;
     }

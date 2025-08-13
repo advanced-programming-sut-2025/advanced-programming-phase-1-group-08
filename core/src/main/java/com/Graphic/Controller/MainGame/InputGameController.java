@@ -91,7 +91,8 @@ public class InputGameController {
     public void update(OrthographicCamera camera, float v, Boolean menuActivated) {
 
         if (!menuActivated) {
-            if (Main.getClient().getPlayer().isInFarmExterior()) {
+
+            if (Main.getClient().getPlayer().isInFarmExterior() && Main.getClient().getPlayer().getDroppedItem() == null) {
                 updateMove();
                 print();
                 moveCamera(camera);
@@ -114,6 +115,7 @@ public class InputGameController {
             showForagingMinerals(Main.getClient().getPlayer().getFarm().getMine());
             showSellMenu();
             showProgressOnArtisans();
+            gameMenu.addToCraftingRenderers();
 
 //            for (int i = 0; i < 90; i++) {
 //                for (int j = 0; j < 90; j++) {
@@ -432,7 +434,6 @@ public class InputGameController {
 
     public Result print(){
 
-
         camera.position.set(Main.getClient().getPlayer().getPositionX() , Main.getClient().getPlayer().getPositionY() , 0f);
         //camera.update();
         //camera.unproject(camera.position);
@@ -472,6 +473,9 @@ public class InputGameController {
         for (User player : gameMenu.gameState.getPlayers()) {
 
             GreenHouse greenHouse = player.getFarm().getGreenHouse();
+
+            if (!greenHouse.isCreated())
+                continue;
 
             Main.getBatch().draw(TextureManager.get(GameTexturePath.GreenHouse.getPath()),
                 (greenHouse.getCoordinateX() + 1) * TEXTURE_SIZE, TEXTURE_SIZE * (92 - greenHouse.getCoordinateY() - greenHouse.getLength()),
@@ -888,7 +892,20 @@ public class InputGameController {
 
 
     public List<Tile> shepherdAnimals(String x1, String y1, Animal animal) {
+        int X = animal.getPositionX();
+        int Y = animal.getPositionY();
 
+        if (! animal.isOut()) {
+            for (BarnOrCage barnOrCage : Main.getClient().getPlayer().BarnOrCages) {
+                for (Animal animal1 : barnOrCage.getAnimals()) {
+                    if (animal1.getName().equals(animal.getName())) {
+                        animal.setPositionX(barnOrCage.topLeftX + barnOrCage.getBarnORCageType().getDoorX());
+                        animal.setPositionY(barnOrCage.topLeftY + barnOrCage.getBarnORCageType().getDoorY() + 1);
+                        System.out.println(animal.getPositionX() + " aa " + animal.getPositionY());
+                    }
+                }
+            }
+        }
         int goalX=Integer.parseInt(x1);
         int goalY=Integer.parseInt(y1);
 
@@ -897,43 +914,77 @@ public class InputGameController {
         Queue<Tile> queue = new LinkedList<>();
         Set<Tile> tiles = new HashSet<>();
         for (int i = 0; i < 4; i++) {
-            if (checkTileForAnimalWalking(animal.getPositionX() + x[i] , animal.getPositionY() + y[i] )) {
-                queue.add(getTileByCoordinates(animal.getPositionX() + x[i] , animal.getPositionY() + y[i] ,
-                    Main.getClient().getLocalGameState()));
+            try {
+                if (checkTileForAnimalWalking(animal.getPositionX() + x[i], animal.getPositionY() + y[i])) {
+                    queue.add(getTileByCoordinates(animal.getPositionX() + x[i], animal.getPositionY() + y[i],
+                        Main.getClient().getLocalGameState()));
+                    tiles.add(getTileByCoordinates(animal.getPositionX() + x[i], animal.getPositionY() + y[i],
+                        Main.getClient().getLocalGameState()));
+                } else {
+//                    System.out.println("Name: " + getTileByCoordinates(animal.getPositionX() + x[i], animal.getPositionY() + y[i],
+//                        Main.getClient().getLocalGameState()).getGameObject().getIcon());
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        tiles.add(getTileByCoordinates(animal.getPositionX() , animal.getPositionY() , Main.getClient().getLocalGameState() ));
+        try {
+            tiles.add(getTileByCoordinates(animal.getPositionX(), animal.getPositionY(), Main.getClient().getLocalGameState()));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         HashMap<Tile , Tile> cameFrom = new HashMap<>();
 
-        while (!queue.isEmpty()) {
-            Tile tile=queue.poll();
-            tiles.add(tile);
-            if (tile.getX() == goalX && tile.getY() == goalY) {
-                List<Tile> Path= new ArrayList<>();
-                while (tile != null) {
-                    Path.add(tile);
-                    tile = cameFrom.get(tile);
+        try {
+            while (!queue.isEmpty()) {
+                Tile tile = queue.poll();
+                if (tile.getX() == goalX && tile.getY() == goalY) {
+                    List<Tile> Path = new ArrayList<>();
+                    while (tile != null) {
+                        Path.add(tile);
+                        tile = cameFrom.get(tile);
+                    }
+                    animal.setPositionX(X);
+                    animal.setPositionY(Y);
+
+                    return Path;
                 }
 
-                return Path;
-            }
-
-            for (int i = 0; i < 4; i++) {
-                if (! checkTileForAnimalWalking(tile.getX() + x[i] , tile.getY() + y[i] ) ) {
-                    continue;
+                for (int i = 0; i < 4; i++) {
+                    if (!checkTileForAnimalWalking(tile.getX() + x[i], tile.getY() + y[i])) {
+                        continue;
+                    }
+                    if (getTileByCoordinates(tile.getX() + x[i], tile.getY() + y[i], Main.getClient().getLocalGameState()) == null) {
+                        continue;
+                    }
+//                if (tiles.contains(getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient().getLocalGameState()))) {
+//                    continue;
+//                }
+                    int l = 0;
+                    for (Tile tile1 : tiles) {
+                        if (tile1.getX() == tile.getX() + x[i] &&
+                            tile1.getY() == tile.getY() + y[i]) {
+                            l = 1;
+                        }
+                    }
+                    if (l == 1) {
+                        continue;
+                    }
+                    Tile next = getTileByCoordinates(tile.getX() + x[i], tile.getY() + y[i], Main.getClient().getLocalGameState());
+                    cameFrom.put(next, tile);
+                    queue.add(next);
+                    tiles.add(next);
                 }
-                if (getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient().getLocalGameState()) == null) {
-                    continue;
-                }
-                if (tiles.contains(getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient().getLocalGameState()))) {
-                    continue;
-                }
-                Tile next = getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient().getLocalGameState());
-                cameFrom.put(next, tile);
-                queue.add(next);
             }
         }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        animal.setPositionX(X);
+        animal.setPositionY(Y);
         return null;
     }
 
@@ -956,19 +1007,19 @@ public class InputGameController {
         if (!(tile.getGameObject() instanceof Walkable)) {
             return new Result(false , "yot can't shepherd animals on this coordinate!");
         }
-        if (Main.getClient().getLocalGameState().currentWeather.equals(Weather.Snowy) ||
-            Main.getClient().getLocalGameState().currentWeather.equals(Weather.Rainy) ||
-            Main.getClient().getLocalGameState().currentWeather.equals(Weather.Stormy) ) {
-            return new Result(false , "The weather conditions isn't suitable");
-        }
-        if (animal.getType().equals(AnimalType.pig) && Main.getClient().getLocalGameState().currentDate.getSeason().equals(Season.Winter)) {
-            return new Result(false , "Pigs can't go out because we are in winter");
-        }
+//        if (Main.getClient().getLocalGameState().currentWeather.equals(Weather.Snowy) ||
+//            Main.getClient().getLocalGameState().currentWeather.equals(Weather.Rainy) ||
+//            Main.getClient().getLocalGameState().currentWeather.equals(Weather.Stormy) ) {
+//            return new Result(false , "The weather conditions isn't suitable");
+//        }
+//        if (animal.getType().equals(AnimalType.pig) && Main.getClient().getLocalGameState().currentDate.getSeason().equals(Season.Winter)) {
+//            return new Result(false , "Pigs can't go out because we are in winter");
+//        }
         Point start = new Point(animal.getPositionX() , animal.getPositionY());
         Point end = new Point(goalX , goalY);
-        if (start.distance(end) > 5) {
+        if (start.distance(end) > 100) {
             return new Result(false , "The distance is long and animal can't" +
-                " go to this coordinate.\nyou should a place with distance less than 5");
+                " go to this coordinate.\nyou should a place with distance less than 100");
         }
 
         if (animal == null) {
@@ -1119,8 +1170,9 @@ public class InputGameController {
             if (user.getUsername().trim().equals(player.getUsername().trim())) {
                 for (BarnOrCage barnOrCage : user.BarnOrCages) {
                     for (Animal animal1 : barnOrCage.animals) {
-                        if (animal1.equals(animal)) {
+                        if (animal1.getName().equals(animal.getName())) {
                             barnOrCage.animals.remove(animal1);
+                            animal1.setIsSold(true);
                             current = barnOrCage;
                             break;
                         }
@@ -1249,7 +1301,7 @@ public class InputGameController {
 
     public void placeItem() {
         if (Main.getClient().getPlayer().getDroppedItem() != null) {
-            camera.setToOrtho(false , Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+            camera.setToOrtho(false , Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
             if (Main.getClient().getPlayer().isPlaceArtisanOrShippingBin() &&
                 ! Main.getClient().getPlayer().isWaiting()) {
                 gameMenu.getWithMouse().setPosition(
@@ -1284,8 +1336,8 @@ public class InputGameController {
                 getTileByCoordinates(x, y , Main.getClient().getLocalGameState()).setGameObject(items);
 
                 if (Gdx.input.isKeyJustPressed(ENTER)) {
-                    TextButton Confirm = Marketing.getInstance().makeConfirmButton(currentMenu.getMenu());
-                    TextButton TryAgain = Marketing.getInstance().makeTryAgainButton(currentMenu.getMenu());
+                    TextButton Confirm = Marketing.getInstance().makeConfirmButton(Main.getClient().getCurrentMenu().getMenu());
+                    TextButton TryAgain = Marketing.getInstance().makeTryAgainButton(Main.getClient().getCurrentMenu().getMenu());
 
                     Confirm.addListener(new ChangeListener() {
                         @Override
@@ -1301,14 +1353,6 @@ public class InputGameController {
                             items.setY(y);
                             camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
                             choosePlace = false;
-                            try {
-                                System.out.println("buy");
-                                Main.getClient().getPlayer().getFarm().shippingBins.add((ShippingBin) items);
-                            }
-                            catch (Exception e) {
-                                gameMenu.getCraftingRenderers().add(new CraftingRenderer((CraftingItem) items));
-                                System.out.println("don't worry");
-                            }
                         }
                     });
 
@@ -1340,51 +1384,28 @@ public class InputGameController {
         Main.getClient().getRequests().add(new Message(CommandType.PLACE_CRAFT_SHIPPING_BIN , body));
     }
 
-    public void AnswerPlaceCraft(Message message , Game game) {
-        Items items = message.getFromBody("Item");
-        int x = message.getFromBody("X");
-        int y = message.getFromBody("Y");
-        getTileByCoordinates(x , y , game.getGameState()).setGameObject(items);
-        User player = message.getFromBody("Player");
 
-        for (User user : game.getGameState().getPlayers()) {
-            if (user.getUsername().trim().equals(player.getUsername().trim())) {
-                if (items instanceof ShippingBin) {
-                    user.getFarm().shippingBins.add((ShippingBin) items);
-                }
-                if (items instanceof CraftingItem) {
-                    //gameMenu.getOnFarm().add((CraftingItem) items);
-                }
-                user.getBackPack().inventory.Items.compute(items , (k,v) -> v - 1);
-                if (user.getBackPack().inventory.Items.get(items ) == 0) {
-                    user.getBackPack().inventory.Items.remove(items);
-                }
-            }
-        }
-        // در خط پایین برای همه ارسال میکنم که در اون مختصات این آیتم را ست کنن
-        HashMap<String , Object> body = new HashMap<>();
-        body.put("X", x);
-        body.put("Y", y);
-        body.put("Item" , items);
-        game.getDiffQueue().add(new Message(CommandType.PLACE_CRAFT_SHIPPING_BIN , body));
-    }
 
     public void showSelectBoxOnCrafting() {
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        try {
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && Main.getClient().getPlayer().getDroppedItem() == null) {
+                int x = (int) (gameMenu.getVector().x / TEXTURE_SIZE);
+                int y = (int) (gameMenu.getVector().y / TEXTURE_SIZE);
 
-        int x = (int) (gameMenu.getVector().x/TEXTURE_SIZE);
-        int y = (int) (gameMenu.getVector().y/TEXTURE_SIZE);
+                if (getTileByCoordinates(x, 90 - y, Main.getClient().getLocalGameState())
+                    .getGameObject() instanceof CraftingItem) {
 
-            if (getTileByCoordinates(x , 90 - y , Main.getClient().getLocalGameState())
-                .getGameObject() instanceof CraftingItem ) {
+                    System.out.println("yes");
 
-                System.out.println("yes");
+                    SelectBox selectBox = craftBox((CraftingItem) getTileByCoordinates(x, 90 - y, Main.getClient().getLocalGameState())
+                        .getGameObject());
+                }
 
-                SelectBox selectBox = craftBox((CraftingItem) getTileByCoordinates(x, 90 - y , Main.getClient().getLocalGameState())
-                   .getGameObject());
-           }
+            }
+        }
+        catch (Exception e) {
 
-       }
+        }
        //System.out.println(gameMenu.getVector().x/TEXTURE_SIZE + "<<" + gameMenu.getVector().y/TEXTURE_SIZE);
     }
 
@@ -1429,7 +1450,12 @@ public class InputGameController {
                         break;
                     }
                     case "cheat" : {
+                        cheatArtisan(craftingItem);
                         selectBox.remove();
+                        break;
+                    }
+                    case "remove" : {
+                        stopProgress(craftingItem);
                         break;
                     }
                 }
@@ -1476,51 +1502,51 @@ public class InputGameController {
     }
 
     public void showProgressOnArtisans() {
-//        for (int i = 0 ; i < craftingItem.getItems().size() ; i++) {
-//            Main.getBatch().draw(TextureManager.get("Mohamadreza/bgProgress.png") ,
-//                TEXTURE_SIZE * craftingItem.getX() , TEXTURE_SIZE * (90 - craftingItem.getY()) + TEXTURE_SIZE + (TEXTURE_SIZE / 2) * i ,
-//                TEXTURE_SIZE * 2 , TEXTURE_SIZE / 2);
-//        }
+
         for (CraftingRenderer craftingRenderer : gameMenu.getCraftingRenderers()) {
             craftingRenderer.renderBg();
         }
-
-
         Main.getBatch().end();
 
         for (CraftingRenderer craftingRenderer : gameMenu.getCraftingRenderers()) {
             craftingRenderer.render();
         }
 
-//        for (int i = 0 ; i < gameMenu.getCraftingItems().size() ; i++) {
-//            for (int j = 0 ; j < gameMenu.getCraftingItems().get(i).getItems().size() ; j++) {
-//                int size = gameMenu.getCraftingItems().get(i).getItems().size();
-//                gameMenu.getShapeRenderers().get(i * size + j).setProjectionMatrix(Main.getBatch().getProjectionMatrix());
-//                gameMenu.getShapeRenderers().get(i * size + j).begin(ShapeRenderer.ShapeType.Line);
-//                gameMenu.getShapeRenderers().get(i * size + j).setColor(0,1,0,1);
-//                float x = getX(gameMenu.getCraftingItems().get(i) , j);
-//                gameMenu.getShapeRenderers().get(i * size + j).rect(
-//                    TEXTURE_SIZE * gameMenu.getCraftingItems().get(i).getX() + 6 ,
-//                       TEXTURE_SIZE * (90 - gameMenu.getCraftingItems().get(i).getY()) +
-//                           TEXTURE_SIZE + (TEXTURE_SIZE/2) * i + 3 ,
-//                    (TEXTURE_SIZE * 2) * x - 10 , TEXTURE_SIZE / 2 - 7);
-//
-//                gameMenu.getShapeRenderers().get(i * size + j).end();
-//            }
-//        }
-//        for (int i = 0 ; i < craftingItem.getItems().size() ; i++) {
-//            craftingItem.getShapeRenderers().get(i).setProjectionMatrix(Main.getBatch().getProjectionMatrix());
-//            craftingItem.getShapeRenderers().get(i).begin(ShapeRenderer.ShapeType.Filled);
-//            craftingItem.getShapeRenderers().get(i).setColor(0,1,0,1);
-//            float x = getX(craftingItem, i);
-//            craftingItem.getShapeRenderers().get(i).rect(TEXTURE_SIZE * craftingItem.getX() + 6 ,
-//                TEXTURE_SIZE * (90 - craftingItem.getY()) + TEXTURE_SIZE + (TEXTURE_SIZE/2) * i + 3 ,
-//                (TEXTURE_SIZE * 2) * x - 10 , TEXTURE_SIZE/2 - 7);
-//
-//            craftingItem.getShapeRenderers().get(i).end();
-//        }
         Main.getBatch().begin();
 
+    }
+
+    public void cheatArtisan(CraftingItem craftingItem) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = craftingItem.getItems().size() - 1; i >= 0; i-- ) {
+            if (Main.getClient().getPlayer().getBackPack().inventory.Items.containsKey(craftingItem)) {
+                Main.getClient().getPlayer().getBackPack().inventory.Items.compute(craftingItem.getItems().get(i) , (k , v) -> v+1);
+            }
+            else {
+                Main.getClient().getPlayer().getBackPack().inventory.Items.put(craftingItem.getItems().get(i) , 1);
+            }
+            craftingItem.getDateHours().remove(i);
+            craftingItem.getItems().remove(i);
+            sb.append(craftingItem.getItems().get(i).getName()).append(" ,");
+        }
+        Label label;
+        Dialog dialog = Marketing.getInstance().createDialogError();
+
+        if (!sb.isEmpty()) {
+            label = new Label(sb.toString() + " was add to your inventory" , getSkin());
+        }
+        else {
+            label = new Label("No Item for get" , getSkin());
+        }
+        Marketing.getInstance().addDialogToTable(dialog , label , gameMenu);
+    }
+
+    public void stopProgress(CraftingItem craftingItem) {
+        for (int i = craftingItem.getItems().size() - 1; i >= 0; i-- ) {
+            craftingItem.getItems().remove(i);
+            craftingItem.getDateHours().remove(i);
+        }
     }
 
     public static float getX(CraftingItem craftingItem, int i) {
@@ -1692,7 +1718,6 @@ public class InputGameController {
                                 shippingBin.binContents.compute(items , (k,v) -> v + number);
                             }
                             else {
-                                System.out.println("hello");
                                 shippingBin.binContents.put(items, number);
                             }
                             HashMap<String , Object> body = new HashMap<>();
@@ -2029,7 +2054,6 @@ public class InputGameController {
                                                                     // Erfan
 
 
-                                                                  // input command Date
                                                                    // input command plant
 
 
@@ -2102,20 +2126,20 @@ public class InputGameController {
     public Result buildGreenHouse () {
 
         if (Main.getClient().getPlayer().getFarm().getGreenHouse().isCreated())
-            return new Result(false, BRIGHT_BLUE+"The greenhouse has been build!"+RESET);
+            return new Result(false, "The greenhouse has been build!");
 
         if (!checkAmountProductAvailable(new Wood(), GreenHouse.requiredWood))
-            return new Result(false, RED+"You don't have enough wood!"+RESET);
+            return new Result(false, "You don't have enough wood!");
 
         if (Main.getClient().getPlayer().getMoney() < GreenHouse.requiredCoins )
-            return new Result(false, RED+"You don't have enough Coin!"+RESET);
+            return new Result(false, "You don't have enough Coin!");
 
         Main.getClient().getPlayer().increaseMoney(-GreenHouse.requiredCoins);
         advanceItem(new Wood(), -GreenHouse.requiredWood);
 
         Main.getClient().getPlayer().getFarm().getGreenHouse().setCreated(true);
 
-        return new Result(true, RED + "-500 wood  -1000 Coin"+BLUE+"\nThe greenhouse has been built! \uD83C\uDF31"+RESET);
+        return new Result(true, "-500 wood  -1000 Coin\nThe greenhouse has been built! \uD83C\uDF31");
     }
     public Result info (String name) {
 
@@ -2608,8 +2632,8 @@ public class InputGameController {
         HashMap<String , Object> PassedTime = new HashMap<>();
         PassedTime.put("Hour", hour);
         PassedTime.put("Day", day);
+        System.out.println("Player req day : " + day + " hour : " + hour );
         Main.getClient().getRequests().add(new Message(CommandType.SET_TIME , PassedTime));
-
     }
     public void sendChangeGameObjectMessage (int x, int y, GameObject gameObject) {
         HashMap<String , Object> PassedTime = new HashMap<>();

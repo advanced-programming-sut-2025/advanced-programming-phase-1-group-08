@@ -55,6 +55,8 @@ public class User {
     private MarketType currentMarket;
     private Queue<User> joinMarket = new LinkedList<>();
     private Queue<User> exitMarket = new LinkedList<>();
+    private ArrayList<String> messages = new ArrayList<>();
+    private Queue<CraftingItem> craftingItems = new LinkedList<>();
 
     public boolean isFishing = false;
     public boolean doingMinigame = false;
@@ -774,6 +776,14 @@ public class User {
     }
     public void setCloseToLake(boolean closeToLake) {
         this.closeToLake = closeToLake;
+    }
+
+//
+    public ArrayList<String> getMessages() {
+        return messages;
+    }
+    public Queue<CraftingItem> getCraftingItems() {
+        return craftingItems;
     }
 }
 

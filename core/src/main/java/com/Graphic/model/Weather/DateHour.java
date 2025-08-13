@@ -169,7 +169,15 @@ public class DateHour implements Cloneable {
 
         return day;
     }
+    public static int getHourDifferent (DateHour first, DateHour older) {
 
+        int hour = 0;
+
+        hour += getDayDifferent(first, older) * 24;
+        hour += older.getHour() - first.getHour();
+
+        return hour;
+    }
     public static int getHourDifferent(DateHour first) {
         int firstSeason=0;
         switch (first.getSeason()) {

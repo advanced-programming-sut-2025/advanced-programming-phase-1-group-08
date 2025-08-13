@@ -69,6 +69,7 @@ public class PlayGameMenu implements Screen, AppMenu {
         TextButton newGameButton = new TextButton("New Game", Main.getSkin());
         TextButton loadGameButton = new TextButton("Load Game", Main.getSkin());
         TextButton joinGameButton = new TextButton("Join Game", Main.getSkin());
+        TextButton lobbyButton = new TextButton("Lobby Menu", Main.getSkin());
         TextButton backButton = new TextButton("Back", Main.getSkin());
 
         float buttonWidth = 300;
@@ -117,6 +118,15 @@ public class PlayGameMenu implements Screen, AppMenu {
             }
         });
 
+        lobbyButton.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                Main.getClient().setCurrentMenu(Menu.LabbyMenu);
+                Main.getMain().setScreen(LobbyMenu.getInstance());
+            }
+        });
+
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -128,6 +138,7 @@ public class PlayGameMenu implements Screen, AppMenu {
         menuContainer.add(newGameButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
         menuContainer.add(loadGameButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
         menuContainer.add(joinGameButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
+        menuContainer.add(lobbyButton).width(buttonWidth).height(buttonHeight).padBottom(buttonPadding).row();
         menuContainer.add(backButton).width(buttonWidth).height(buttonHeight).row();
 
         mainTable.add(menuContainer);

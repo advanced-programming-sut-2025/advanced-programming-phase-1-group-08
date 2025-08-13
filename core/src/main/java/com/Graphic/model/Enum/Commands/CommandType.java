@@ -41,6 +41,13 @@ public enum CommandType {
     PLACE_BARN_CAGE,
     PLAYER_HANDLER,
     EXIT_MARKET,
+    CREATE_LOBBY,
+    JOIN_LOBBY,
+    LEAVE_LOBBY,
+    LIST_GAMES,
+    START_LOBBY,
+    PLAYER_NOT_IN_LOBBY,
+    FIND_INVISIBLE_LOBBY,
 
 
     // Ariyo
@@ -63,6 +70,7 @@ public enum CommandType {
                     // Erfan
     SET_TIME,
     GET_TIME,
+    PASS_TIME,
     ADD_MINERAL,
     CHANGE_GAME_OBJECT,
     GET_TOMORROW_WEATHER,

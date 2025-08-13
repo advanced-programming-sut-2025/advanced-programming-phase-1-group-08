@@ -59,6 +59,7 @@ public class HeartAnimation {
             rotation,
             0, 0, texture.getWidth(), texture.getHeight(),
             false, false);
+
         batch.setColor(oldColor);
     }
 }

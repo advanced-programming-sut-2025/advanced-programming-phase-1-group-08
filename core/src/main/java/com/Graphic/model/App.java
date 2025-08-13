@@ -21,6 +21,7 @@ public class App {
     public static HashMap<String , Game> games = new HashMap<>();
     public static Game currentGame;
     public static User currentUser;
+    public static ArrayList<Game> gamesActive = new ArrayList<>();
 
 //    public static ArrayList<User> players = new ArrayList<>();
 

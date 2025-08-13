@@ -47,7 +47,7 @@ import static com.Graphic.model.App.currentMenu;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RED;
 import static com.Graphic.model.HelpersClass.Color_Eraser.RESET;
 
-public class MarketMenu implements Screen , InputProcessor , AppMenu{
+public class MarketMenu implements Screen , InputProcessor , AppMenu {
 
     private static MarketMenu marketMenu;
 
@@ -238,6 +238,12 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
         }
     }
 
+    public void changeMenu() {
+        if (Main.getClient().getCurrentMenu() != Menu.MarketMenu) {
+            Main.getMain().setScreen(Main.getClient().getCurrentMenu().getScreen());
+        }
+    }
+
     public ArrayList<UserRenderer> getUserRenderers() {
         return userRenderers;
     }
@@ -254,6 +260,9 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("Mohamadreza/newSkin.json"));
         addUserRenderer(Main.getClient().getPlayer());
+        Main.getClient().getPlayer().setPositionX(marketType.getInsideDoor().getX());
+        Main.getClient().getPlayer().setPositionY(marketType.getInsideDoor().getY());
+        Main.getClient().setCurrentMenu(Menu.MarketMenu);
         Main.getBatch().begin();
         marketing.init(Main.getClient().getPlayer());
         Main.getBatch().end();
@@ -267,29 +276,30 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
     }
     @Override
     public void render(float v) {
+        System.out.println("a1");
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
         marketing.addPlayerToMarket();
         marketing.removePlayerFromMarket();
+        System.out.println("a2");
         //removeUserRenderer(Main.getClient().getPlayer());
         marketing.exitTheMarket();
         Main.getBatch().setProjectionMatrix( camera.combined);
 
+        System.out.println("a3");
         Main.getBatch().begin();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Marketing.getInstance().openProductsMenu(marketType);
         }
 
+        System.out.println("a4");
         if (! choosePlace) {
             renderer.setView(camera);
             camera.position.set(Main.getClient().getPlayer().getPositionX() , Main.getClient().getPlayer().getPositionY() , 0f);
             marketing.move(Main.getClient().getPlayer());
             marketing.printPlayers();
             renderer.render();
-            camera.position.set(Main.getClient().getPlayer().getPositionX() , Main.getClient().getPlayer().getPositionY() , 0f);
-            marketing.move(Main.getClient().getPlayer());
-            marketing.printPlayers();
         }
         else {
             try {
@@ -301,6 +311,7 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
             camera.setToOrtho(false, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
             camera.zoom = 2f;
         }
+        System.out.println("a5");
         if (Gdx.input.isKeyPressed(Input.Keys.U)) {
             System.out.println(getVector().x + " " + getVector().y);
         }
@@ -311,6 +322,7 @@ public class MarketMenu implements Screen , InputProcessor , AppMenu{
 //        }
         camera.update();
         Main.getBatch().end();
+
 
         stage.act(v);
         stage.draw();

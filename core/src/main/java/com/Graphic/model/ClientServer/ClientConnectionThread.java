@@ -83,6 +83,24 @@ public class ClientConnectionThread extends Thread {
             case GENERATE_RANDOM_PASS -> {
                 sendMessage(RegisterController.generateRandomPass());
             }
+            case CREATE_LOBBY -> {
+                controller.createLobby(message);
+            }
+            case LIST_GAMES -> {
+                sendMessage(controller.AnswerListGames());
+            }
+            case LEAVE_LOBBY -> {
+                sendMessage(controller.AnswerLeaveLobby(message));
+            }
+            case JOIN_LOBBY -> {
+                sendMessage(controller.AnswerJoinLobby(message , connection));
+            }
+            case FIND_INVISIBLE_LOBBY -> {
+                sendMessage(controller.AnswerInvisibleLobby(message));
+            }
+            case START_LOBBY -> {
+                sendMessage(controller.AnswerStartLobby(message));
+            }
             case NEW_GAME -> {
                 Game result = controller.newGame(message , connection);
                 if (result != null) {
@@ -366,6 +384,6 @@ public class ClientConnectionThread extends Thread {
 
     public synchronized void sendMessage(Message message) throws IOException {
         connection.sendTCP(message);
-        System.out.println(JSONUtils.toJson(message));
+        //System.out.println(JSONUtils.toJson(message));
     }
 }

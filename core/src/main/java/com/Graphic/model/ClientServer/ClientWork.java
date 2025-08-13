@@ -3,6 +3,7 @@ package com.Graphic.model.ClientServer;
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.Controller.MainGame.Marketing;
 import com.Graphic.Main;
+import com.Graphic.View.LobbyMenu;
 import com.Graphic.View.RegisterMenu;
 import com.Graphic.model.Animall.Animal;
 import com.Graphic.model.Animall.BarnOrCage;
@@ -15,9 +16,12 @@ import com.Graphic.model.Enum.ItemType.MarketType;
 import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.WeatherTime.Season;
 import com.Graphic.model.Enum.WeatherTime.Weather;
+import com.Graphic.model.Game;
 import com.Graphic.model.Items;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.Farm;
+import com.Graphic.model.Places.ShippingBin;
+import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.Graphic.model.User;
 import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
@@ -113,7 +117,20 @@ public class ClientWork {
                     });
                     break;
                 }
-                case GAME_START -> {
+                case LIST_GAMES -> {
+                    ArrayList<Game> games = message.getFromBody("games");
+                    if (games != null) {
+                        //Main.getClient().getPlayer().getGamesActiveInLobby().clear();
+                        //Main.getClient().getPlayer().getGamesActiveInLobby().addAll(games);
+                        Gdx.app.postRunnable(() -> {
+                            LobbyMenu.getInstance().showActiveGames(games);
+                        });
+                    }
+                }
+                case LEAVE_LOBBY, JOIN_LOBBY , PLAYER_NOT_IN_LOBBY -> {
+                    Main.getClient().getPlayer().getMessages().add(message.getFromBody("Message"));
+                }
+                case START_LOBBY , GAME_START -> {
                     ArrayList<User> players = message.getFromBody("Players");
                     Main.getClient().getLocalGameState().getPlayers().addAll(players);
                     for (User user : players) {
@@ -127,8 +144,19 @@ public class ClientWork {
                     Main.getClient().setRunning(true);
                     Main.getClient().setCurrentMenu(Menu.GameMenu);
                     sendMessage(message);
-                    break;
                 }
+                case FIND_INVISIBLE_LOBBY -> {
+                    Game game = message.getFromBody("Game");
+                    if (game != null) {
+                        Gdx.app.postRunnable(() -> {
+                            LobbyMenu.getInstance().showGameInfo(game);
+                        });
+                    }
+                    else {
+                        Main.getClient().getPlayer().getMessages().add(message.getFromBody("Message"));
+                    }
+                }
+
                 case FARM -> {
                     Farm farm = message.getFromBody("Farm");
                     Main.getClient().getLocalGameState().getFarms().add(farm);
@@ -246,14 +274,28 @@ public class ClientWork {
                     Main.getClient().getPlayer().getBackPack().setType(backPackType);
                 }
                 case REDUCE_BARN_CAGE -> {
-                    BarnORCageType barnORCageType = message.getFromBody("BarnORCageType");
+                    BarnORCageType barnORCageType = message.getFromBody("BarnOrCageType");
                     barnORCageType.setShopLimit(0);
                 }
                 case PLACE_CRAFT_SHIPPING_BIN -> {
                     Items items = message.getFromBody("Item");
                     int x = message.getFromBody("X");
                     int y = message.getFromBody("Y");
-                    getTileByCoordinates(x, y, Main.getClient().getLocalGameState()).setGameObject(items);
+                    try {
+                        getTileByCoordinates(x, y, Main.getClient().getLocalGameState()).setGameObject(items);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (items instanceof CraftingItem) {
+                        Main.getClient().getPlayer().getCraftingItems().add((CraftingItem) items);
+                    }
+                    if (items instanceof ShippingBin) {
+                        items.setRemindInShop(items.getRemindInShop(null) - 1 , null);
+                        Main.getClient().getPlayer().getFarm().shippingBins.add((ShippingBin) items);
+                    }
+                    items.setX(x);
+                    items.setY(y);
                 }
                 case REDUCE_ANIMAL -> {
                     AnimalType animalType = message.getFromBody("AnimalType");
@@ -270,8 +312,19 @@ public class ClientWork {
                 }
                 case SHEPHERD_ANIMAL -> {
                     Animal animal = message.getFromBody("Animal");
-                    animal.setOut(true);
-                    Main.getClient().getLocalGameState().getAnimals().add(animal);
+                    for (User user : Main.getClient().getLocalGameState().getPlayers()) {
+                        for (BarnOrCage barnOrCage : user.BarnOrCages) {
+                            for (Animal animal1 : barnOrCage.animals) {
+                                if (animal1.getName().equals(animal.getName())) {
+                                    animal1.setOut(true);
+                                    Main.getClient().getLocalGameState().getAnimals().add(animal1);
+                                    animal1.getPath().clear();
+                                    animal1.getPath().addAll(animal.getPath());
+                                }
+                            }
+                        }
+                    }
+
                 }
                 case PLACE_BARN_CAGE -> {
 
@@ -316,10 +369,14 @@ public class ClientWork {
                 case EXIT_MARKET -> {
                     int x = message.getFromBody("X");
                     int y = message.getFromBody("Y");
+                    System.out.println(x + ", " + y);
                     for (User user : Main.getClient().getLocalGameState().getPlayers()) {
                         if (user.getUsername().trim().equals(message.getFromBody("Player"))) {
                             user.setPositionX((float) x);
                             user.setPositionY((float) y);
+                            if (Main.getClient().getPlayer().getUsername().equals(user.getUsername())) {
+                                System.out.println(Main.getClient().getPlayer().getPositionX() + " pos " + Main.getClient().getPlayer().getPositionY());
+                            }
                             user.setIsInMarket(false);
                             user.setInFarmExterior(true);
                             user.setDirection(Direction.Down);
@@ -332,6 +389,9 @@ public class ClientWork {
                                     // Erfan
                 case SET_TIME -> {
                     controller.setTime(message.getFromBody("Hour"), message.getFromBody("Day"));
+                }
+                case PASS_TIME -> {
+                    controller.PassedTime(message.getFromBody("Hour"), message.getFromBody("Day"));
                 }
                 case ADD_MINERAL -> {
                     controller.addMineral(
