@@ -359,7 +359,7 @@ public class ClientWork {
                 }
 
                 case A_FRIEND_IS_CLOSE -> {
-                    User friend = message.getFromBody("friend");
+                    User friend = message.getFromBody("PlayerName");
                     Main.getClient().getPlayer().setFriendCloseToMe(friend);
                 }
                 case UPDATE_CONVERSATIONS -> {

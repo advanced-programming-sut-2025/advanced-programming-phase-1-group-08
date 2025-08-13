@@ -69,7 +69,7 @@ public class UserStorage {
                 System.err.println("JSON parsed to null — check JSON structure.");
                 return new ArrayList<>();
             }
-            System.out.println("kieer");
+
             for (int i = 0; i < users.size(); i++) {
                 User user = users.get(i);
                 if (user == null) {
@@ -79,10 +79,7 @@ public class UserStorage {
                 } else if (user.getPassword() == null) {
                     System.err.println("Null 'password' at index: " + i);
                 }
-                // ادامه بررسی سایر فیلدها...
-                System.out.println("kirasdasd");
             }
-            System.out.println("ki1111");
             return users;
 
         } catch (JsonSyntaxException | JsonIOException e) {

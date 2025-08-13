@@ -115,7 +115,7 @@ public class InputGameController {
             showForagingMinerals(Main.getClient().getPlayer().getFarm().getMine());
             showSellMenu();
             showProgressOnArtisans();
-            gameMenu.addToCraftingRenderers();
+            // gameMenu.addToCraftingRenderers();
 
 //            for (int i = 0; i < 90; i++) {
 //                for (int j = 0; j < 90; j++) {

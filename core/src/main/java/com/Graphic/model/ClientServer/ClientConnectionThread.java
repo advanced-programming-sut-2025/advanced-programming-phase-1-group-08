@@ -21,30 +21,24 @@ import java.util.concurrent.LinkedBlockingQueue;
 import static com.Graphic.model.App.currentGame;
 
 public class ClientConnectionThread extends Thread {
-    //این کلاس برای ارتباط بین سرور و کلاینت قبل از شروع بازی است
-    //این ترد در طرف سرور هست
-    //private Socket clientSocket;
-    //private DataInputStream in;
-    //private DataOutputStream out;
     private ServerHandler server;
     private ClientConnectionController controller;
     private LoginController LoginController;
     private RegisterController registerController;
+    private MenuMessageHandler menuHandler;  // NEW: Menu handler
+    private ConnectionManager connectionManager;  // NEW: Connection manager
     private Connection connection;
     private final BlockingQueue<Message> messageQueue = new LinkedBlockingQueue<>();
     private Game game;
 
-
     public ClientConnectionThread(Connection connection) throws IOException {
-//        this.clientSocket = clientSocket;
-//        in = new DataInputStream(clientSocket.getInputStream());
-//        out = new DataOutputStream(clientSocket.getOutputStream());
         this.controller = ClientConnectionController.getInstance();
         this.connection = connection;
         LoginController = new LoginController();
         registerController = new RegisterController();
+        menuHandler = MenuMessageHandler.getInstance();  // NEW: Initialize menu handler
+        connectionManager = ConnectionManager.getInstance();  // NEW: Initialize connection manager
     }
-
 
     @Override
     public void run() {
@@ -59,9 +53,13 @@ public class ClientConnectionThread extends Thread {
                     }
                 }
             }
-        });
 
-        System.out.println("Client disconnected");
+            public void disconnected(Connection connection) {
+                // Clean up when client disconnects
+                connectionManager.removeConnection(connection);
+                System.out.println("Client disconnected");
+            }
+        });
     }
 
     public void enqueueMessage(Message message) {
@@ -70,15 +68,22 @@ public class ClientConnectionThread extends Thread {
 
     public synchronized void handleMessage(Message message) throws IOException {
         switch (message.getCommandType()) {
-                                        // Mamal
-            case FARM -> {
-                controller.createFarm(message , game);
-            }
+            // ====== AUTHENTICATION ======
             case LOGIN -> {
-                sendMessage(LoginController.LoginRes(message));
+                Message response = LoginController.LoginRes(message);
+                if (response.getCommandType() == CommandType.LOGIN_SUCCESS) {
+                    User user = response.getFromBody("Player");
+                    connectionManager.addConnection(connection, user);
+                }
+                sendMessage(response);
             }
             case SIGN_UP -> {
-                sendMessage(registerController.attemptRegistration(message));
+                Message response = registerController.attemptRegistration(message);
+                if (response.getCommandType() == CommandType.LOGIN_SUCCESS) {
+                    User user = response.getFromBody("Player");
+                    connectionManager.addConnection(connection, user);
+                }
+                sendMessage(response);
             }
             case GENERATE_RANDOM_PASS -> {
                 sendMessage(RegisterController.generateRandomPass());
@@ -111,6 +116,61 @@ public class ClientConnectionThread extends Thread {
             case START_LOBBY -> {
                 sendMessage(controller.AnswerStartLobby(message));
             }
+
+            // ====== MENU HANDLERS (NEW) ======
+            // Profile Menu
+            case GET_USER_INFO -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case CHANGE_USERNAME -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case CHANGE_NICKNAME -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case CHANGE_EMAIL -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case CHANGE_PASSWORD -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+
+            // Avatar Menu
+            case GET_AVATAR_SETTINGS -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case SAVE_AVATAR_SETTINGS -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case RESET_AVATAR_SETTINGS -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+
+            // Main Menu
+            case GET_USER_DATA -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case GET_CRAFTING_DATA -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case GET_MARKET_DATA -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case PURCHASE_ITEM -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case LOGOUT -> {
+                menuHandler.handleMenuMessage(connection, message);
+            }
+            case DISCONNECT -> {
+                menuHandler.handleMenuMessage(connection, message);
+                connection.close();
+            }
+
+            // ====== GAME HANDLERS (Original) ======
+            case FARM -> {
+                controller.createFarm(message, game);
+            }
             case REQUEST_FOR_GET_CHAT -> {
                 controller.AnswerSendChat(message , game);
             }
@@ -118,13 +178,13 @@ public class ClientConnectionThread extends Thread {
                 controller.AnswerPublicChat(message , game);
             }
             case NEW_GAME -> {
-                Game result = controller.newGame(message , connection);
+                Game result = controller.newGame(message, connection);
                 if (result != null) {
                     game = result;
                 }
             }
             case JOIN_GAME -> {
-                Game result = controller.joinGame(message , connection);
+                Game result = controller.joinGame(message, connection);
                 if (result != null) {
                     game = result;
                 }
@@ -133,35 +193,35 @@ public class ClientConnectionThread extends Thread {
                 controller.moveInFarm(message, game);
             }
             case ENTER_THE_MARKET -> {
-                controller.answerEnterTheMarket(message , game);
+                controller.answerEnterTheMarket(message, game);
             }
             case MOVE_IN_MARKET -> {
                 controller.moveInMarket(message, game);
             }
             case BUY -> {
-                sendMessage(controller.Buy(message , game));
+                sendMessage(controller.Buy(message, game));
             }
             case BUY_BACKPACK -> {}
             case PLACE_CRAFT_SHIPPING_BIN -> {
-                controller.placeCraftOrShippingBin(message , game);
+                controller.placeCraftOrShippingBin(message, game);
             }
             case BUY_BARN_CAGE -> {
-                ArrayList<Message> messages = controller.BuyBarnCage(message , game);
+                ArrayList<Message> messages = controller.BuyBarnCage(message, game);
                 for (Message message1 : messages) {
                     sendMessage(message1);
                 }
             }
             case BUY_ANIMAL -> {
-                controller.buyAnimal(message , game);
+                controller.buyAnimal(message, game);
             }
             case SELL_ANIMAL -> {
-                controller.sellAnimal(message , game);
+                controller.sellAnimal(message, game);
             }
             case FEED_HAY -> {
-                sendMessage(controller.AnswerFeedHay(message , game));
+                sendMessage(controller.AnswerFeedHay(message, game));
             }
             case SHEPHERD_ANIMAL -> {
-                controller.answerShepherding(message , game);
+                controller.answerShepherding(message, game);
             }
             case PET -> {
                 controller.Pet(message);
@@ -169,9 +229,8 @@ public class ClientConnectionThread extends Thread {
             case COLLECT_PRODUCT -> {
                 sendMessage(controller.collectProduct(message));
             }
-            case CHANGE_ABILITY_LEVEL ->  {
+            case CHANGE_ABILITY_LEVEL -> {
                 User player1 = message.getFromBody("Player");
-
                 User player = null;
                 for (User user: game.getGameState().getPlayers()) {
                     if (user.getUsername().equals(player1.getUsername())) {
@@ -184,7 +243,6 @@ public class ClientConnectionThread extends Thread {
 
                 String ability = message.getFromBody("Ability");
                 int amount = message.getFromBody("amount");
-
 
                 if (ability.equals("Fishing")) {
                     player.increaseFishingAbility(amount);
@@ -207,9 +265,7 @@ public class ClientConnectionThread extends Thread {
                 controller.sendToOnePerson(new Message(CommandType.CHANGE_ABILITY_LEVEL, body), game, player);
             }
             case CHANGE_INVENTORY -> {
-                Message message1 = controller.changeInventory(message, game);
-                User user = message1.getFromBody("Player");
-                controller.sendToOnePerson(message1, game, user);
+                sendMessage(controller.changeInventory(message, game));
             }
             case CHANGE_FRIDGE -> {
                 User player = message.getFromBody("Player");
@@ -228,8 +284,6 @@ public class ClientConnectionThread extends Thread {
                         }
                     }
                 }
-
-
             }
             case TALK_TO_FRIEND -> {
                 MessageHandling messageHandling = message.getFromBody("MessageHandling");
@@ -256,24 +310,23 @@ public class ClientConnectionThread extends Thread {
                 ClientConnectionController.getInstance().sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body2), game);
             }
             case SEND_GIFT -> {
-                String player1 = message.getFromBody("Giver");
-                String player2 = message.getFromBody("Given");
+                User player1 = message.getFromBody("Giver");
+                User player2 = message.getFromBody("Given");
                 User giver = null;
                 User given = null;
                 for (User user: game.getGameState().getPlayers()) {
-                    if (user.getUsername().equals(player1)) {
+                    if (user.getUsername().equals(player1.getUsername())) {
                         giver = user;
                     }
-                    if (user.getUsername().equals(player2)) {
+                    if (user.getUsername().equals(player2.getUsername())) {
                         given = user;
                     }
                 }
-                if (giver == null || given == null) {
+                if (giver == null && given == null) {
                     return;
                 }
 
-                Items item =  message.getFromBody("Item");
-
+                Items item = message.getFromBody("Item");
 
                 if (giver.getBackPack().inventory.Items.containsKey(item)) {
                     giver.getBackPack().inventory.Items.compute(item,(k,v) -> v - 1);
@@ -291,27 +344,14 @@ public class ClientConnectionThread extends Thread {
                 body.put("Given", given);
                 body.put("Item", item);
                 controller.sendToOnePerson(new Message(CommandType.SEND_GIFT, body), game, given);
-
-
-                HashMap<String, Object> body3 = new HashMap<>();
-                body3.put("Player", giver);
-                body3.put("Item", item);
-                body3.put("amount", -1);
-                controller.sendToOnePerson(new Message(CommandType.CHANGE_INVENTORY, body3), game, giver);
-
-                HashMap<String, Object> body4 = new HashMap<>();
-                body4.put("Player", given);
-                body4.put("Item", item);
-                body4.put("amount", 1);
-                controller.sendToOnePerson(new Message(CommandType.CHANGE_INVENTORY, body4), game, given);
             }
             case EXIT_MARKET -> {
                 System.out.println("Exit");
-                controller.ExitTheMarket(message , game);
+                controller.ExitTheMarket(message, game);
             }
             case LOADED_GAME -> {}
 
-                                        // Erfan
+            // Erfan
             case GET_TOMORROW_WEATHER -> {
                 controller.sentWeather(game);
             }
@@ -337,12 +377,11 @@ public class ClientConnectionThread extends Thread {
             case CURRENT_ITEM -> {
                 User player = message.getFromBody("Player");
                 Items items = message.getFromBody("Item");
-                controller.sendToOnePerson(controller.changeCurrentItem(player, items, game), game, player);
+                sendMessage(controller.changeCurrentItem(player, items, game));
             }
 
-                                        // Ario
+            // Ario
             case FriendshipsInquiry -> {
-
                 if (game.getGameState().friendships.isEmpty()) {
                     for (int i = 0; i < game.getGameState().getPlayers().size(); i++)
                         for (int j = i + 1; j < game.getGameState().getPlayers().size(); j++) {
@@ -353,26 +392,21 @@ public class ClientConnectionThread extends Thread {
                             game.getGameState().friendships.add(f);
                         }
                 }
+
                 HashMap<String , Object> body = new HashMap<>();
                 body.put("friendships", game.getGameState().friendships);
-
-                if (game.getGameState().friendships.isEmpty()) {
-                    for (int i = 0; i < 500; i++)
-                        System.out.println("server bega raft");
-                }
-
-                controller.sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body), game);
+                sendMessage(new Message(CommandType.FriendshipsInqResponse, body));
             }
             case ADD_XP_TO_FRIENDSHIP -> {
-                String player = message.getFromBody("Player");
-                String friend =  message.getFromBody("Friend");
+                User player = message.getFromBody("Player");
+                User friend = message.getFromBody("Friend");
                 User p1 = null;
                 User p2 = null;
                 for (User user: game.getGameState().getPlayers()) {
-                    if (user.getUsername().equals(player)) {
+                    if (user.getUsername().equals(player.getUsername())) {
                         p1 = user;
                     }
-                    if (user.getUsername().equals(friend)) {
+                    if (user.getUsername().equals(friend.getUsername())) {
                         p2 = user;
                     }
                 }
@@ -392,9 +426,6 @@ public class ClientConnectionThread extends Thread {
                 body.put("friendships", game.getGameState().friendships);
                 controller.sendToAll(new Message(CommandType.UPDATE_FRIENDSHIPS, body), game);
             }
-
-
-
         }
     }
 
