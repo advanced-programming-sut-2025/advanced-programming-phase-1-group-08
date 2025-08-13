@@ -121,7 +121,7 @@ public enum ArtisanType {
             return new Result(false , "you didn't choose suitable ingredients for Wheat");
         }
     },
-    Vinegar     ("Vinegar" , CraftType.Keg , 100 , 10) {
+    Vinegar     ("Vinegar" , CraftType.Keg , 100 , 4) {
         @Override
         public int getEnergy(String name) {
             return 13;

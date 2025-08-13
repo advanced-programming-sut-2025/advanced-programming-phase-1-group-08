@@ -75,7 +75,6 @@ import static com.Graphic.Main.newSkin;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
-import static com.badlogic.gdx.Input.Keys.U;
 
 
 public class GameMenu implements  Screen, InputProcessor , AppMenu {
@@ -120,7 +119,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     Sprite fishCrown;
     FishAIController fishAI;
     FishType fishToCatchType;
-    private float fishingProgress = 0f;
+    private float fishingProgress = 0.2f;
     Image bobble;
     boolean lostPerfectFishing = false;
     boolean showFishLight = false;
@@ -250,7 +249,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
         Gdx.input.setInputProcessor(multiplexer);
 
-                createClock();
         if (! Main.getClient().getLocalGameState().getChooseMap()) {
             try {
                 controller = InputGameController.getInstance();
@@ -262,7 +260,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-                //createClock();
+                createClock();
                 firstLoad = true;
                 shepherdingAnimals = new ArrayList<>();
                 heartAnimations = new ArrayList<>();
@@ -272,8 +270,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
         }
     }
-
-
     public void render(float v) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -317,37 +313,32 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             controller.update(camera, v, anyMenuIsActivated());
             updateAnimals(Main.getClient().getLocalGameState().getAnimals());
             drawCurrentItem();
-            NPCManager.NPCWalk(v);
-            eatingManagement(v);
-            checkLakeDistance(v);
-            lightBeforeFishing(v);
 
-            // تبدیل مختصات موس به مختصات world
-
-
-            if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
-                System.out.println("hi");
-                stage.addActor(activeDialog);
-            } else {
-                activeDialog = null;
-            }
             mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(mousePos);
             camera.update();
+            changeMenu();
+            if (Main.getClient().getPlayer().isInMine() || Main.getClient().getPlayer().isInHome()) {
+                getRenderer().setView(camera);
+                getRenderer().render();
+            }
 
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-
-        if (Main.getClient().getLocalGameState().getChooseMap()) {
+            checkLakeDistance(v);
             showUnseenMessages();
             showHugged();
             showGivenFlower();
             startFishing(v);
+            NPCManager.NPCWalk(v);
+            eatingManagement(v);
+            lightBeforeFishing(v);
             ratingGifts();
             Main.getBatch().end();
         }
+
+
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
     }
-}
 
 
     // Ario
@@ -369,8 +360,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }
 
 
-        Sprite s = new Sprite(new Texture(Gdx.files.internal("Ariyo/light.png")));
-        s.setRegion(TextureManager.get("Ariyo/light.png"));
+        Sprite s = new Sprite(TextureManager.get("Ariyo/Light.png"));
+        s.setRegion(TextureManager.get("Ariyo/Light.png"));
         s.setPosition(Main.getClient().getPlayer().getPositionX() - 70, Main.getClient().getPlayer().getPositionY() - 150);
         s.setSize(s.getWidth()*2, s.getHeight()*2);
         s.draw(Main.getBatch());
@@ -397,14 +388,21 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         if (!Main.getClient().getPlayer().isFishing)
             fishingTimer = 0;
 
+        if (Main.getClient().getPlayer().isFishing) {
+            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
+            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
+            else
+                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
+            fisherman.draw(Main.getBatch());
+        }
+
         if (Main.getClient().getPlayer().isFishing && fishingTimer >= 10f) {
             Main.getClient().getPlayer().doingMinigame = true;
             shapeRenderer = new ShapeRenderer();
-            createGrayBackGround();
+//            createGrayBackGround();
             fishingTimer = 0;
-            minigame = new Sprite(new Texture(Gdx.files.internal("Ariyo/minigame.png")));
-            minigame.setSize(minigame.getWidth() * 2.5f, minigame.getHeight() * 2.5f);
-            minigame.setRegion(TextureManager.get("Ariyo/minigame.png"));
+
 
             Random random = new Random();
             fishToCatchType = FishType.values()[random.nextInt(FishType.values().length)];
@@ -419,8 +417,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             fishVelocity = new Vector2(dx, dy);
 
             if (fishToCatchType.isLegendary()) {
-                fishCrown = new Sprite(TextureManager.get("Ariyo/star.png"));
-                fishCrown.setRegion(TextureManager.get("Ariyo/star.png"));
+                fishCrown = new Sprite(TextureManager.get("Ariyo/full_star.png"));
+                fishCrown.setRegion(TextureManager.get("Ariyo/full_star.png"));
                 fishCrown.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f, Main.getClient().getPlayer().getPositionY() + 190);
             }
             else
@@ -428,8 +426,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }
 
 
-        float myX = Main.getClient().getPlayer().getPositionX();
-        float myY = Main.getClient().getPlayer().getPositionY();
+
+        lakeY = 90 - lakeY;
+
+        float myX = Main.getClient().getPlayer().getPositionX()/32;
+        float myY = Main.getClient().getPlayer().getPositionY()/32;
         float deltaX = Math.abs(myX - lakeX);
         float deltaY = Math.abs(myY - lakeY);
         if (!(deltaX < 3f && deltaY < 3f)) {
@@ -439,7 +440,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }
 
         if (!Main.getClient().getPlayer().isFishing) {
-            tempFishing.setPosition(Main.getClient().getPlayer().getPositionX(), Main.getClient().getPlayer().getPositionY() + 40);
+            tempFishing.setPosition(stage.getWidth()/2, stage.getHeight()/2 + 30);
             tempFishing.draw(Main.getBatch(), 1f);
         }
 
@@ -471,14 +472,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         tempFishing.setVisible(true);
 
-        if (Main.getClient().getPlayer().isFishing) {
-            fisherman.setPosition(lakeX * TEXTURE_SIZE, (90 - lakeY) * TEXTURE_SIZE);
-            if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman"))
-                fisherman.setRegion(TextureManager.get("Ariyo/fisherwoman.png"));
-            else
-                fisherman.setRegion(TextureManager.get("Ariyo/fisherman.png"));
-            fisherman.draw(Main.getBatch());
-        }
 
 
     }
@@ -491,8 +484,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         float delta = Gdx.graphics.getDeltaTime();
 
-        minigame.setPosition(Main.getClient().getPlayer().getPositionX(), Main.getClient().getPlayer().getPositionY() - minigame.getHeight()/2f);
-        minigame.draw(Main.getBatch());
 
         minigameArea.set(
             Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f,
@@ -501,64 +492,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             360
         );
 
-        Main.getBatch().end();
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 1, 0, 0.5f);
-        if (shapeRendererLevel == 0)
-            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY() - 180, 30, 60);
-        else if (shapeRendererLevel == 1)
-            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY() - 120, 30, 60);
-        else if (shapeRendererLevel == 2)
-            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY() - 60, 30, 60);
-        else if (shapeRendererLevel == 3)
-            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY(), 30, 60);
-        else if (shapeRendererLevel == 4)
-            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY() + 60, 30, 60);
-        else if (shapeRendererLevel == 5)
-            shapeRenderer.rect(Main.getClient().getPlayer().getPositionX() + minigame.getWidth()/2.3f, Main.getClient().getPlayer().getPositionY() + 120, 30, 60);
-        shapeRenderer.end();
 
 
-        Rectangle greenBarBounds = new Rectangle(
-            Main.getClient().getPlayer().getPositionX() + minigame.getWidth() / 2.3f,
-            Main.getClient().getPlayer().getPositionY() - 180 + 60 * shapeRendererLevel,
-            30,
-            60
-        );
 
 
-        Rectangle fishBounds = new Rectangle(
-            fishToCatch.getX(),
-            fishToCatch.getY(),
-            fishToCatch.getWidth(),
-            fishToCatch.getHeight()
-        );
-
-        if (greenBarBounds.overlaps(fishBounds)) {
-            fishingProgress += 0.2f * delta;
-            if (fishingProgress > 1f) fishingProgress = 1f;
-        } else {
-            fishingProgress -= 0.5f * delta * 0.2f;
-            lostPerfectFishing = true;
-            if (fishingProgress < 0f) fishingProgress = 0f;
-        }
 
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0.6f, 0, 1f);
-
-        float barX = Main.getClient().getPlayer().getPositionX() + minigameArea.width*3.3f;
-        float barY = Main.getClient().getPlayer().getPositionY() - minigameArea.height / 2f;
-
-        float verticalHeight = 365;
-        shapeRenderer.rect(barX, barY, 10, verticalHeight * fishingProgress);
-
-        shapeRenderer.end();
-
-        Main.getBatch().begin();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && shapeRendererLevel < 5) {
             shapeRendererLevel++;
@@ -585,7 +524,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
             bobble = new Image(new TextureRegionDrawable(new TextureRegion(TextureManager.get("Ariyo/QM.png"))));
-            bobble.setPosition(Main.getClient().getPlayer().getPositionX() + minigame.getWidth(), Main.getClient().getPlayer().getPositionY() + minigameArea.height / 2f);
+            bobble.setPosition(stage.getWidth()/2 + minigame.getWidth(), stage.getHeight()/2 + minigameArea.height / 2f);
             bobble.setSize(bobble.getWidth()*2, bobble.getHeight()*2);
             bobble.addListener(new ClickListener() {
                 @Override
@@ -602,12 +541,18 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 }
             });
             stage.addActor(bobble);
+
+
         }
 
         fishAI.update(delta);
 
+        minigame.setPosition(Main.getClient().getPlayer().getPositionX(), Main.getClient().getPlayer().getPositionY() - 200);
+        minigame.draw(Main.getBatch(), 1f);
+
         fishToCatch.setPosition(fishAI.getPosition().x - 13f, fishAI.getPosition().y);
         fishToCatch.draw(Main.getBatch());
+
 
 
         if (fishCrown != null) {
@@ -615,6 +560,71 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             fishCrown.draw(Main.getBatch());
         }
 
+        Main.getBatch().end();
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0.6f, 0, 1f);
+
+        float barX = stage.getWidth()/2 + minigameArea.width*3.3f;
+        float barY = stage.getHeight()/2 - minigameArea.height / 2f;
+
+        float verticalHeight = 365;
+        shapeRenderer.rect(barX, barY, 10, verticalHeight * fishingProgress);
+
+        shapeRenderer.end();
+
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 1, 0, 0.5f);
+        if (shapeRendererLevel == 0)
+            shapeRenderer.rect(stage.getWidth()/2 + minigame.getWidth()/2.3f, stage.getHeight()/2 - 180, 30, 60);
+        else if (shapeRendererLevel == 1)
+            shapeRenderer.rect(stage.getWidth()/2 + minigame.getWidth()/2.3f, stage.getHeight()/2 - 120, 30, 60);
+        else if (shapeRendererLevel == 2)
+            shapeRenderer.rect(stage.getWidth()/2 + minigame.getWidth()/2.3f, stage.getHeight()/2 - 60, 30, 60);
+        else if (shapeRendererLevel == 3)
+            shapeRenderer.rect(stage.getWidth()/2 + minigame.getWidth()/2.3f, stage.getHeight()/2, 30, 60);
+        else if (shapeRendererLevel == 4)
+            shapeRenderer.rect(stage.getWidth()/2 + minigame.getWidth()/2.3f, stage.getHeight()/2 + 60, 30, 60);
+        else if (shapeRendererLevel == 5)
+            shapeRenderer.rect(stage.getWidth()/2 + minigame.getWidth()/2.3f, stage.getHeight()/2 + 120, 30, 60);
+        shapeRenderer.end();
+
+
+        Rectangle greenBarBounds = new Rectangle(
+            stage.getWidth()/2 + minigame.getWidth() / 2.3f,
+            stage.getHeight()/2 - 180 + 60 * shapeRendererLevel,
+            30,
+            60
+        );
+
+
+        Rectangle fishBounds = new Rectangle(
+            stage.getWidth()/2 + minigame.getWidth() / 2.3f,
+            fishAI.getPosition().y + 100,
+            30,
+            60
+        );
+
+        if (greenBarBounds.overlaps(fishBounds)) {
+            fishingProgress += 0.2f * delta;
+            if (fishingProgress > 1f) fishingProgress = 1f;
+        } else {
+            fishingProgress -= 0.5f * delta * 0.2f;
+            lostPerfectFishing = true;
+            if (fishingProgress < 0f) fishingProgress = 0f;
+        }
+
+        System.out.println("greenBarX = " + greenBarBounds.x);
+        System.out.println("greenBarY = " + greenBarBounds.y);
+        System.out.println("greenBarWidth = " + greenBarBounds.width);
+        System.out.println("greenBarHeight = " + greenBarBounds.height);
+        System.out.println();
+        System.out.println(fishBounds.x + " " + fishBounds.y + " " + fishBounds.width + " " + fishBounds.height);
+
+
+        Main.getBatch().begin();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
             endFishing(false, false);
@@ -629,10 +639,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         lostPerfectFishing = false;
         fishAI = null;
         fishToCatch = null;
-        fishingProgress = 0;
+        fishingProgress = 0f;
         shapeRendererLevel = 1;
         Main.getClient().getPlayer().doingMinigame = false;
-        helperBackGround.remove();
+//        helperBackGround.remove();
+//        minigame.remove();
         bobble.remove();
 
         if (!done)
@@ -642,7 +653,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         //only if you got the fish
         Random random = new Random();
         Quantity quantity = Quantity.values()[random.nextInt(Quantity.values().length)];
-
         if (!perfect) {
             HashMap<String , Object> body = new HashMap<>();
             body.put("Item" , new Fish(fishToCatchType, quantity));
@@ -970,9 +980,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     private void giftingInventory() {
-
         if (giftingFriendship == null)
             return;
+
         Result result = null;
         if (giftingFriendship.getPlayer1().getUsername().equals(Main.getClient().getPlayer().getUsername())) {
             result = sendGifts(giftingFriendship, giftingFriendship.getPlayer2().getUsername(), Main.getClient().getPlayer().currentItem);
@@ -1176,7 +1186,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
 
-        //  //  //  //   Erfan
+    //  //  //  //   Erfan
     private void initialize() {
         if (gameMenuInitialized)
             return;
@@ -1185,10 +1195,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         currentMenu = Menu.GameMenu;
 
 
-        controller = InputGameController.getInstance();
-        //stage = new Stage(new ScreenViewport());
+        stage = new Stage(new ScreenViewport());
         clockGroup = new Group();
         camera = new OrthographicCamera();
+
+        controller = InputGameController.getInstance();
 
         BitmapFont font = new BitmapFont();
         energyStyle = new Label.LabelStyle();
@@ -1304,6 +1315,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         ringImage.getColor().a = 0f;
         stage.addActor(ringImage);
 
+        minigame = new Sprite(TextureManager.get("Ariyo/minigame.png"));
+        minigame.setSize(minigame.getWidth() * 2.5f, minigame.getHeight() * 2.5f);
+        minigame.setRegion(TextureManager.get("Ariyo/minigame.png"));
+
 
         timeLabel = new Label("", Main.getSkin());
         dateLabel = new Label("", Main.getSkin());
@@ -1328,15 +1343,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         //Mohamadreza
         initializePlayer();
         gameState = Main.getClient().getLocalGameState();
-
-
-        HashMap<String , Object> body = new HashMap<>();
-        body.put("Player", Main.getClient().getPlayer());
-        body.put("Item", new Fish(FishType.Salmon, Quantity.Normal));
-        body.put("amount", 10);
-        Main.getClient().getRequests().add(new Message(CommandType.CHANGE_INVENTORY, body));
-
-
 
         lastDateHour = new DateHour(Season.Spring, 1, 9, 1950);
         gameState.currentDate = new DateHour(Season.Spring, 1, 9, 1950);
@@ -1863,7 +1869,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         descriptionLabel.setPosition(
             (showInformationPopup.getWidth() - descriptionLabel.getWidth()) / 2,
-                image.getY() - descriptionLabel.getHeight()
+            image.getY() - descriptionLabel.getHeight()
         );
 
         showInformationPopup.addActor(image);
@@ -2322,15 +2328,20 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         Texture newTexture1 = TextureManager.get(Main.getClient().getLocalGameState().currentWeather.getIconPath());
         weatherImage.setDrawable(new TextureRegionDrawable(new TextureRegion(newTexture1)));
 
+        String moneyStr = String.valueOf(Main.getClient().getPlayer().getMoney());
+        String spaced = String.join(" ", moneyStr.split(""));
+        moneyLabel.setText(spaced);
+
         lastDateHour = Main.getClient().getLocalGameState().currentDate.clone();
     }
+
 
     private void createEscMenu () {
 
         createGrayBackGround();
 
         EscPopup = new Window("", newSkin);
-        EscPopup.setSize(650, 350);
+        EscPopup.setSize(650, 400);
         EscPopup.setPosition(
             (stage.getWidth() - EscPopup.getWidth()) / 2,
             (stage.getHeight() - EscPopup.getHeight()) / 2);
@@ -2350,6 +2361,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         table.defaults().align(Align.center).pad(10);
         table.center();
 
+        TextButton greenHouseButton = new TextButton("GreenHouse", newSkin);
+
+        if (Main.getClient().getPlayer().getFarm().getGreenHouse().isCreated())
+            greenHouseButton.setText("Green House ✅");
+
         TextButton inventoryButton = new TextButton("Inventory", newSkin);
         TextButton skillsButton = new TextButton("Skills", newSkin);
         TextButton SocialButton = new TextButton("Social", newSkin);
@@ -2362,8 +2378,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         table.row().pad(15, 0, 10, 0);
         table.add(SocialButton).width(250).center();
         table.add(mapButton).width(250).center();
-        table.row().pad(30, 0, 10, 0);
-
+        table.row().pad(15, 0, 10, 0);
+        table.add(greenHouseButton).width(250).colspan(2).center();
+        table.row().pad(40, 0, 10, 0);
         table.add(backButton).width(150).colspan(2).center();
 
 
@@ -2373,6 +2390,36 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 helperBackGround.remove();
                 EscPopup.remove();
                 EscMenuIsActivated = false;
+            }
+        });
+        greenHouseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                Result result = controller.buildGreenHouse();
+
+                Label.LabelStyle style = new Label.LabelStyle();
+                style.font = new BitmapFont();
+
+                if (result.IsSuccess())
+                    style.fontColor = Color.GREEN;
+                else
+                    style.fontColor = Color.RED;
+
+                Label label = new Label(result.massage(), style);
+                label.setAlignment(Align.left);
+                label.pack();
+
+                float margin = 10f;
+                label.setPosition(margin, stage.getViewport().getWorldHeight() - label.getHeight() - margin);
+
+                stage.addActor(label);
+
+                label.addAction(Actions.sequence(
+                    Actions.delay(3),
+                    Actions.fadeOut(0.5f),
+                    Actions.run(label::remove)
+                ));
             }
         });
         inventoryButton.addListener(new ClickListener() {
@@ -2656,19 +2703,18 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     public boolean anyMenuIsActivated () {
         return
             inventoryIsActivated || socialMenuIsActivated ||
-            informationIsActivated || subMenuIsActivated ||
-            toolsMenuIsActivated || EscMenuIsActivated ||
-            setEnergyIsActivated || settingIsActivated ||
-            skillMenuIsActivated || mapIsActivated ||
-            NPCMenuIsActivated || questsIsActivated ||
-            skillMenuIsActivated || mapIsActivated ||
-            dialogActivated ||
-            Main.getClient().getPlayer().isFishing || Main.getClient().getPlayer().doingMinigame;
+                informationIsActivated || subMenuIsActivated ||
+                toolsMenuIsActivated || EscMenuIsActivated ||
+                setEnergyIsActivated || settingIsActivated ||
+                NPCMenuIsActivated || questsIsActivated ||
+                skillMenuIsActivated || mapIsActivated ||
+                dialogActivated ||
+                Main.getClient().getPlayer().isFishing || Main.getClient().getPlayer().doingMinigame;
     }
 
 
 
-     // // // // // // // // // // // // // // // // // // // // // // // Mohammad Reza
+    // // // // // // // // // // // // // // // // // // // // // // // Mohammad Reza
 
 
 
@@ -2718,10 +2764,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             vector = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         }
         vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
-        if (Main.getClient().getCurrentMenu()== Menu.GameMenu) {
+        if (Main.getClient().getCurrentMenu().getMenu() instanceof GameMenu) {
             camera.unproject(vector);
         }
-        if (Main.getClient().getCurrentMenu() == Menu.MarketMenu) {
+        if (Main.getClient().getCurrentMenu().getMenu() instanceof MarketMenu) {
             return MarketMenu.getVector();
         }
         return vector;
@@ -2787,10 +2833,15 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             controller.setPlayerPosition();
         }
     }
+    public void addToCraftingRenderers() {
+        while (! Main.getClient().getPlayer().getCraftingItems().isEmpty()) {
+            craftingRenderers.add(new CraftingRenderer(Main.getClient().getPlayer().getCraftingItems().poll()));
+        }
+    }
 
 
     public void resize(int i, int i1) {
-        //stage.getViewport().update(i, i1, true);
+
     }
     public void pause() {
 
@@ -2840,7 +2891,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     public Stage getStage() {
-
+        if (stage == null) {
+            stage = new Stage(new ScreenViewport());
+        }
         return stage;
     }
 

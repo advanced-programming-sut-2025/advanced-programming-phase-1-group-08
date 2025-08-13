@@ -21,6 +21,7 @@ import com.Graphic.model.Items;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.Places.Farm;
 import com.Graphic.model.Places.ShippingBin;
+import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.Graphic.model.User;
 import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.Gdx;
@@ -286,9 +287,15 @@ public class ClientWork {
                     catch (Exception e) {
                         e.printStackTrace();
                     }
+                    if (items instanceof CraftingItem) {
+                        Main.getClient().getPlayer().getCraftingItems().add((CraftingItem) items);
+                    }
                     if (items instanceof ShippingBin) {
                         items.setRemindInShop(items.getRemindInShop(null) - 1 , null);
+                        Main.getClient().getPlayer().getFarm().shippingBins.add((ShippingBin) items);
                     }
+                    items.setX(x);
+                    items.setY(y);
                 }
                 case REDUCE_ANIMAL -> {
                     AnimalType animalType = message.getFromBody("AnimalType");
@@ -336,7 +343,7 @@ public class ClientWork {
                 }
 
                 case A_FRIEND_IS_CLOSE -> {
-                    User friend = message.getFromBody("friend");
+                    User friend = message.getFromBody("PlayerName");
                     Main.getClient().getPlayer().setFriendCloseToMe(friend);
                 }
                 case UPDATE_CONVERSATIONS -> {
@@ -382,6 +389,9 @@ public class ClientWork {
                                     // Erfan
                 case SET_TIME -> {
                     controller.setTime(message.getFromBody("Hour"), message.getFromBody("Day"));
+                }
+                case PASS_TIME -> {
+                    controller.PassedTime(message.getFromBody("Hour"), message.getFromBody("Day"));
                 }
                 case ADD_MINERAL -> {
                     controller.addMineral(

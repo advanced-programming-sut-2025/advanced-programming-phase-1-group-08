@@ -220,7 +220,8 @@ public class ClientConnectionController {
         startGame.put("Players" , game.getPlayers());
         sendToAllExceptOnePerson(new Message(START_LOBBY , startGame) , game , Player);
 
-        ServerHandler serverHandler = ServerHandler.getInstance(game);
+        ServerHandler serverHandler = ServerHandler.getInstance();
+        serverHandler.setGame(game);
         serverHandler.start();
 
         return new Message(START_LOBBY , startGame);
@@ -264,12 +265,8 @@ public class ClientConnectionController {
             }
         }
 
-        if (game.getGameState().getNumberOfMaps() == 4) {
+        if (game.getGameState().getNumberOfMaps() == 4)
             sendToAll(build(game.getGameState()) , game);
-            for (Tile tile : game.getGameState().bigMap) {
-                System.out.println("x: " + tile.getX() + "y: " + tile.getY());
-            }
-        }
     }
 
     public Game newGame(Message message , Connection connection) throws IOException {
@@ -662,36 +659,30 @@ public class ClientConnectionController {
             instance = new ClientConnectionController();
         return instance;
     }
-    public void CheckFriendDistance() {
 
+                            // Ario
+    private boolean isClose(User user1, User user2) {
+        float firstX = user1.getPositionX();
+        float firstY = user1.getPositionY();
+        float secondX = user2.getPositionX();
+        float secondY = user2.getPositionY();
+        return Math.abs(firstX - secondX) < 5f && Math.abs(firstY - secondY) < 5f;
     }
-    public void checkLakeDistance(Game game) throws IOException {
-//        for (User player: game.getGameState().getPlayers()) {
-//            Lake lake = player.getFarm().getLake();
-//            if (lake == null) return;
-//            float myX = player.getPositionX();
-//            float myY = player.getPositionY();
-//            float lakeY = lake.getTopLeftY();
-//            float lakeX = lake.getTopLeftX() + lake.getWidth() / 2f;
-//            float deltaX = Math.abs(myX - lakeX);
-//            float deltaY = Math.abs(myY - lakeY);
-//            if (deltaX < 3f && deltaY < 3f) {
-//                player.setCloseToLake(true);
-//                HashMap<String , Object> body = new HashMap<>();
-//                body.put("Player", player);
-//                body.put("isClose", true);
-//                sendToOnePerson(new Message(CLOSE_TO_LAKE, body), game, player);
-//            }
-//            else {
-//                player.setCloseToLake(false);
-//                HashMap<String , Object> body = new HashMap<>();
-//                body.put("Player", player);
-//                body.put("isClose", false);
-//                sendToOnePerson(new Message(CLOSE_TO_LAKE, body), game, player);
-//            }
-//        }
-    }
+    public void CheckFriendDistance(Game game) throws IOException {
+        for (int i = 0; i < game.getGameState().getPlayers().size(); i++) {
+            for (int j = i + 1; j < game.getGameState().getPlayers().size(); j++) {
+                if (isClose(game.getGameState().getPlayers().get(i), game.getGameState().getPlayers().get(j))) {
+                    HashMap<String , Object> body = new HashMap<>();
+                    body.put("Player", game.getGameState().getPlayers().get(j));
+                    sendToOnePerson(new Message(A_FRIEND_IS_CLOSE, body), game, game.getGameState().getPlayers().get(i));
 
+                    HashMap<String , Object> body2 = new HashMap<>();
+                    body2.put("Player", game.getGameState().getPlayers().get(i));
+                    sendToOnePerson(new Message(A_FRIEND_IS_CLOSE, body2), game, game.getGameState().getPlayers().get(j));
+                }
+            }
+        }
+    }
 
                                         // Erfan
     public void sendSetTimeMessage (int hour, int day, Game game) throws IOException {
@@ -700,6 +691,13 @@ public class ClientConnectionController {
         PassedTime.put("Hour", hour);
         PassedTime.put("Day", day);
         sendToAll(new Message(CommandType.SET_TIME, PassedTime), game);
+    }
+    public void sendPassTimeMessage (int hour, int day, Game game) throws IOException {
+
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("Hour", hour);
+        PassedTime.put("Day", day);
+        sendToAll(new Message(CommandType.PASS_TIME, PassedTime), game);
     }
     public void passedOfTime (int day, int hour, DateHour currentDateHour, Game game) throws IOException {
 
@@ -727,16 +725,7 @@ public class ClientConnectionController {
         }
 
         currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
-        sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
-    }
-    public void setTime (int day, int hour, Game game) throws IOException {
-
-        DateHour currentDateHour = game.getGameState().currentDate;
-
-        currentDateHour.setDate(day);
-        currentDateHour.increaseHour(hour - currentDateHour.getHour());
-
-        sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
+        sendPassTimeMessage(hour, day, game);
     }
     public void sendSetGameObjectMessage (int x, int y, GameObject object, Game game) throws IOException {
 
@@ -830,41 +819,41 @@ public class ClientConnectionController {
     }
     public void createRandomMinerals (Game game) throws IOException {
 
-//        for (User user : game.getGameState().getPlayers()) {
-//
-//            List<Integer> positions = new ArrayList<>();
-//            for (int i = 0 ; i < 16 ; i++)
-//                positions.add(i);
-//
-//            Collections.shuffle(positions);
-//
-//            List<ForagingMineralsType> minerals = Arrays.asList(
-//                RUBY, COAL, IRON, TOPAZ, GOLD, JADE, IRIDIUM,
-//                QUARTZ, EMERALD, COPPER, DIAMOND, AMETHYST,
-//                AQUAMARINE, FROZEN_TEAR, FIRE_QUARTZ,
-//                PRISMATIC_SHARD, EARTH_CRYSTAL
-//            );
-//
-//            int posIndex = 0;
-//            for (ForagingMineralsType mineral : minerals) {
-//                while (posIndex < positions.size()) {
-//                    Point point = new Point(
-//                        user.getFarm().getMine().getPositions().get(positions.get(posIndex)));
-//
-//                    if (user.getFarm().getMine().checkPositionForMineral(point)) {
-//                        if (Math.random() <= mineral.getProbability()) {
-//                            ForagingMinerals f = new ForagingMinerals(mineral);
-//                            f.setPosition(point);
-//                            user.getFarm().getMine().getForagingMinerals().add(f);
-//                            user.getFarm().getMine().getTaken().add(point);
-//                            sendAddMineralMessage(user, f, point, game);
-//                            break;
-//                        }
-//                    }
-//                    posIndex ++;
-//                }
-//            }
-//        }
+        for (User user : game.getGameState().getPlayers()) {
+
+            List<Integer> positions = new ArrayList<>();
+            for (int i = 0 ; i < 16 ; i++)
+                positions.add(i);
+
+            Collections.shuffle(positions);
+
+            List<ForagingMineralsType> minerals = Arrays.asList(
+                RUBY, COAL, IRON, TOPAZ, GOLD, JADE, IRIDIUM,
+                QUARTZ, EMERALD, COPPER, DIAMOND, AMETHYST,
+                AQUAMARINE, FROZEN_TEAR, FIRE_QUARTZ,
+                PRISMATIC_SHARD, EARTH_CRYSTAL
+            );
+
+            int posIndex = 0;
+            for (ForagingMineralsType mineral : minerals) {
+                while (posIndex < positions.size()) {
+                    Point point = new Point(
+                        user.getFarm().getMine().getPositions().get(positions.get(posIndex)));
+
+                    if (user.getFarm().getMine().checkPositionForMineral(point)) {
+                        if (Math.random() <= mineral.getProbability()) {
+                            ForagingMinerals f = new ForagingMinerals(mineral);
+                            f.setPosition(point);
+                            user.getFarm().getMine().getForagingMinerals().add(f);
+                            user.getFarm().getMine().getTaken().add(point);
+                            sendAddMineralMessage(user, f, point, game);
+                            break;
+                        }
+                    }
+                    posIndex ++;
+                }
+            }
+        }
     }
 
     public Message changeCurrentItem(User player, Items item, Game game) throws IOException {

@@ -27,6 +27,9 @@ public class UserRenderer {
     }
 
     public void render(User user) {
+        if (Main.getClient().getPlayer().isFishing || Main.getClient().getPlayer().doingMinigame)
+            return;
+
         float x = 0;
         float y = 0;
 

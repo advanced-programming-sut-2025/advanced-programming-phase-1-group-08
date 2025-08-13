@@ -56,7 +56,7 @@ public class User {
     private Queue<User> joinMarket = new LinkedList<>();
     private Queue<User> exitMarket = new LinkedList<>();
     private ArrayList<String> messages = new ArrayList<>();
-    private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
+    private Queue<CraftingItem> craftingItems = new LinkedList<>();
 
     public boolean isFishing = false;
     public boolean doingMinigame = false;
@@ -782,7 +782,7 @@ public class User {
     public ArrayList<String> getMessages() {
         return messages;
     }
-    public ArrayList<CraftingItem> getCraftingItems() {
+    public Queue<CraftingItem> getCraftingItems() {
         return craftingItems;
     }
 }

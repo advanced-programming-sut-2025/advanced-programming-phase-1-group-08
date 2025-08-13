@@ -33,33 +33,55 @@ public class CraftingRenderer {
     }
 
     public void render() {
+        // ==== مرحله 1: Filled Rectangles ====
         shapeRenderer.setProjectionMatrix(Main.getBatch().getProjectionMatrix());
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 1, 0, 1);
+        shapeRenderer.setColor(0, 1, 0, 1); // سبز برای Filled
 
-        float x = 0;
-
-        for (int i = 0 ; i < craftingItem.getItems().size(); i++) {
+        for (int i = 0; i < craftingItem.getItems().size(); i++) {
             for (ArtisanType artisanType : ArtisanType.values()) {
-                if (artisanType.getName().toLowerCase().equals(craftingItem.getItems().get(i).getName().toLowerCase())) {
-                    if (! craftingItem.getItems().get(i).isCollected()) {
-                        x = (float) DateHour.getHourDifferent(craftingItem.getDateHours().get(i)) / artisanType.getTakesTime();
-                        if (x >= 1) {
-                            x = 1;
-                        }
-                        shapeRenderer.rect(TEXTURE_SIZE * craftingItem.getX() + 6,
-                            TEXTURE_SIZE * (90 - craftingItem.getY()) + TEXTURE_SIZE + (TEXTURE_SIZE / 2) * i + 3,
-                            (TEXTURE_SIZE * 2) * x - 10, TEXTURE_SIZE / 2 - 7);
+                if (artisanType.getName().equalsIgnoreCase(craftingItem.getItems().get(i).getName())) {
+                    if (!craftingItem.getItems().get(i).isCollected()) {
+                        float x = (float) DateHour.getHourDifferent(craftingItem.getDateHours().get(i))
+                            / artisanType.getTakesTime();
+                        if (x >= 1) x = 1;
 
-                        shapeRenderer.end();
+                        shapeRenderer.rect(
+                            TEXTURE_SIZE * craftingItem.getX() + 6,
+                            TEXTURE_SIZE * (90 - craftingItem.getY()) + TEXTURE_SIZE + (TEXTURE_SIZE / 2) * i + 3,
+                            (TEXTURE_SIZE * 2) * x - 10,
+                            TEXTURE_SIZE / 2 - 7
+                        );
                     }
                     break;
                 }
             }
         }
-        if (craftingItem.getItems().isEmpty()) {
-            shapeRenderer.end();
+        shapeRenderer.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(1, 1, 1, 1); // سفید برای Line
+
+        for (int i = 0; i < craftingItem.getItems().size(); i++) {
+            for (ArtisanType artisanType : ArtisanType.values()) {
+                if (artisanType.getName().equalsIgnoreCase(craftingItem.getItems().get(i).getName())) {
+                    if (!craftingItem.getItems().get(i).isCollected()) {
+                        float x = (float) DateHour.getHourDifferent(craftingItem.getDateHours().get(i))
+                            / artisanType.getTakesTime();
+                        if (x >= 1) x = 1;
+
+                        shapeRenderer.rect(
+                            TEXTURE_SIZE * craftingItem.getX() + 6,
+                            TEXTURE_SIZE * (90 - craftingItem.getY()) + TEXTURE_SIZE + (TEXTURE_SIZE / 2) * i + 3,
+                            (TEXTURE_SIZE * 2) * x - 10,
+                            TEXTURE_SIZE / 2 - 7
+                        );
+                    }
+                    break;
+                }
+            }
         }
+        shapeRenderer.end();
     }
 
     public void renderBg() {
