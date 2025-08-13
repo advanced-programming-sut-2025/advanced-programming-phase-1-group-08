@@ -20,7 +20,7 @@ public class AvatarController {
     private Preferences prefs;
 
     public AvatarController() {
-        prefs = Gdx.app.getPreferences(PREFS_NAME);
+
     }
 
 
@@ -102,6 +102,10 @@ public class AvatarController {
 
 
     private void updateUserAvatarInfo(int avatarIndex, float r, float g, float b) throws IOException {
+        if (prefs == null) {
+            prefs = Gdx.app.getPreferences(PREFS_NAME);
+        }
+
         List<User> users = UserStorage.loadUsers();
 
         for (User user : users) {

@@ -169,6 +169,7 @@ public class Network {
         kryo.register(com.Graphic.model.Enum.AllPlants.TreesProductType.class);
         kryo.register(com.Graphic.model.HumanCommunications.class);
         kryo.register(com.Graphic.model.Enum.ItemType.BarsAndOreType.class);
+        kryo.register(com.Graphic.model.Enum.Menu.class);
 
     }
 }
