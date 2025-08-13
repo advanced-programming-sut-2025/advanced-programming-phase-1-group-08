@@ -1242,7 +1242,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         currentMenu = Menu.GameMenu;
 
 
-        stage = new Stage(new ScreenViewport());
+        //stage = new Stage(new ScreenViewport());
         clockGroup = new Group();
         camera = new OrthographicCamera();
 
