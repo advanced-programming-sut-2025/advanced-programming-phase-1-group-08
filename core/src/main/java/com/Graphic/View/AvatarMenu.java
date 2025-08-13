@@ -3,6 +3,8 @@ package com.Graphic.View;
 import com.Graphic.Controller.Menu.AvatarController;
 import com.Graphic.Main;
 import com.Graphic.model.App;
+import com.Graphic.model.ClientServer.Message;
+import com.Graphic.model.Enum.Commands.CommandType;
 import com.Graphic.model.Enum.Menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -19,7 +21,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.Align;
 
-public class AvatarMenu implements Screen , AppMenu{
+import java.util.HashMap;
+
+public class AvatarMenu implements Screen, AppMenu {
+    private static AvatarMenu instance;
     private Stage stage;
     private Texture backgroundTexture;
     private AvatarController controller;
@@ -38,8 +43,16 @@ public class AvatarMenu implements Screen , AppMenu{
         controller = new AvatarController();
     }
 
+    public static AvatarMenu getInstance() {
+        if (instance == null) {
+            instance = new AvatarMenu();
+        }
+        return instance;
+    }
+
     @Override
     public void show() {
+        instance = this;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
@@ -47,8 +60,8 @@ public class AvatarMenu implements Screen , AppMenu{
         loadAvatarTextures();
         setupUI();
 
-        selectedAvatarIndex = controller.getCurrentAvatarIndex();
-        updateAvatarDisplay();
+        // Request current avatar settings from server
+        requestAvatarSettings();
     }
 
     private void setupBackground() {
@@ -148,27 +161,26 @@ public class AvatarMenu implements Screen , AppMenu{
         colorPreview.setSize(300, 300);
         colorSection.add(colorPreview).size(100, 100).colspan(3).padBottom(20).row();
 
-        float[] currentColor = controller.getCurrentColor();
-
+        // Initialize with default values
         colorSection.add(new Label("Red:", Main.getSkin())).width(75);
-        redSlider = new Slider(0, 100, 1, false, Main.getSkin());
-        redSlider.setValue(currentColor[0] * 100);
+        redSlider = new Slider(0, 255, 1, false, Main.getSkin());
+        redSlider.setValue(255);
         colorSection.add(redSlider).width(200).padRight(10);
-        redLabel = new Label(String.valueOf((int)redSlider.getValue()), Main.getSkin());
+        redLabel = new Label("255", Main.getSkin());
         colorSection.add(redLabel).width(40).row();
 
         colorSection.add(new Label("Green:", Main.getSkin())).width(75);
-        greenSlider = new Slider(0, 100, 1, false, Main.getSkin());
-        greenSlider.setValue(currentColor[1] * 100);
+        greenSlider = new Slider(0, 255, 1, false, Main.getSkin());
+        greenSlider.setValue(255);
         colorSection.add(greenSlider).width(200).padRight(10);
-        greenLabel = new Label(String.valueOf((int)greenSlider.getValue()), Main.getSkin());
+        greenLabel = new Label("255", Main.getSkin());
         colorSection.add(greenLabel).width(40).row();
 
         colorSection.add(new Label("Blue:", Main.getSkin())).width(75);
-        blueSlider = new Slider(0, 100, 1, false, Main.getSkin());
-        blueSlider.setValue(currentColor[2] * 100);
+        blueSlider = new Slider(0, 255, 1, false, Main.getSkin());
+        blueSlider.setValue(255);
         colorSection.add(blueSlider).width(200).padRight(10);
-        blueLabel = new Label(String.valueOf((int)blueSlider.getValue()), Main.getSkin());
+        blueLabel = new Label("255", Main.getSkin());
         colorSection.add(blueLabel).width(40).row();
 
         ChangeListener colorChangeListener = new ChangeListener() {
@@ -238,6 +250,7 @@ public class AvatarMenu implements Screen , AppMenu{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 App.currentMenu = Menu.MainMenu;
+                Main.getClient().setCurrentMenu(Menu.MainMenu);
                 Main.getMain().setScreen(new MainMenu());
             }
         });
@@ -275,20 +288,23 @@ public class AvatarMenu implements Screen , AppMenu{
     }
 
     private void saveChanges() {
-        float r = redSlider.getValue() / 255f;
-        float g = greenSlider.getValue() / 255f;
-        float b = blueSlider.getValue() / 255f;
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("avatarIndex", selectedAvatarIndex);
+        body.put("red", redSlider.getValue() / 255f);
+        body.put("green", greenSlider.getValue() / 255f);
+        body.put("blue", blueSlider.getValue() / 255f);
 
-        boolean success = controller.saveAvatarSettings(selectedAvatarIndex, r, g, b);
+        Message message = new Message(CommandType.SAVE_AVATAR_SETTINGS, body);
+        Main.getClient().getRequests().add(message);
 
-        if (success) {
-            showMessage("Avatar settings saved successfully!", false);
-        } else {
-            showMessage("Failed to save avatar settings!", true);
-        }
+        showMessage("Saving avatar settings...", false);
     }
 
     private void resetToDefaults() {
+        HashMap<String, Object> body = new HashMap<>();
+        Message message = new Message(CommandType.RESET_AVATAR_SETTINGS, body);
+        Main.getClient().getRequests().add(message);
+
         selectedAvatarIndex = 0;
         redSlider.setValue(255);
         greenSlider.setValue(255);
@@ -298,6 +314,39 @@ public class AvatarMenu implements Screen , AppMenu{
         updateColorPreview();
 
         showMessage("Reset to default settings", false);
+    }
+
+    private void requestAvatarSettings() {
+        HashMap<String, Object> body = new HashMap<>();
+        Message message = new Message(CommandType.GET_AVATAR_SETTINGS, body);
+        Main.getClient().getRequests().add(message);
+    }
+
+    public void handleResponse(Message message) {
+        switch (message.getCommandType()) {
+            case AVATAR_SETTINGS:
+                // Update UI with received settings
+                selectedAvatarIndex = Integer.parseInt(message.getFromBody("avatarIndex"));
+                float red = Float.parseFloat(message.getFromBody("red"));
+                float green = Float.parseFloat(message.getFromBody("green"));
+                float blue = Float.parseFloat(message.getFromBody("blue"));
+
+                redSlider.setValue(red * 255);
+                greenSlider.setValue(green * 255);
+                blueSlider.setValue(blue * 255);
+
+                updateAvatarDisplay();
+                updateColorPreview();
+                break;
+
+            case SUCCESS:
+                showMessage("Avatar settings saved successfully!", false);
+                break;
+
+            case ERROR:
+                showMessage(message.getFromBody("error"), true);
+                break;
+        }
     }
 
     private void showMessage(String message, boolean isError) {
@@ -315,6 +364,11 @@ public class AvatarMenu implements Screen , AppMenu{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
+
+        // Check for menu changes
+        if (Main.getClient().getCurrentMenu() != Menu.AvatarMenu) {
+            Main.getMain().setScreen(Main.getClient().getCurrentMenu().getScreen());
+        }
     }
 
     @Override
@@ -346,6 +400,6 @@ public class AvatarMenu implements Screen , AppMenu{
 
     @Override
     public Stage getStage() {
-        return null;
+        return stage;
     }
 }

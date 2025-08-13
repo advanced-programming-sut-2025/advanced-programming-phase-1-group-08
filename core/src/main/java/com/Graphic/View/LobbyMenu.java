@@ -117,6 +117,14 @@ public class LobbyMenu implements Screen , AppMenu {
                 PasswordField.setVisible(true);
             }
         });
+        publicCheck.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                passLabel.setVisible(false);
+                PasswordField.setVisible(false);
+            }
+        });
     }
     public void listenerForPublicCheck() {
         publicCheck.addListener(new ChangeListener() {

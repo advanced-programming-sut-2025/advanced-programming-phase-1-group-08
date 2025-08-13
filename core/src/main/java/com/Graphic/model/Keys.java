@@ -14,6 +14,7 @@ public class Keys {
     public static final int lighting = Input.Keys.L;
     public static final int delete = Input.Keys.DEL;
     public static final int NPCMenu = Input.Keys.N;
+    public static final int cheatMenu = Input.Keys.C;
 
 
     public static final int Test1 = Input.Keys.NUM_1;

@@ -84,9 +84,7 @@ public class Game {
     private final transient ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     //private ArrayList<User> players;
 
-    public Game () {
-
-    }
+    public Game () {}
 
     public Game(String name, String Id ,  String password, boolean isPrivate, boolean isVisible , User creator) {
         this.name = name;
@@ -99,10 +97,10 @@ public class Game {
         gameState.getPlayers().add(Creator);
 
         scheduler.schedule(() -> {
-            if (this.getPlayers().isEmpty() || (this.getPlayers().getFirst().getUsername().equals(creator.getUsername()) && this.getPlayers().size() == 1)) {
+            if (this.getPlayers().isEmpty() || (this.getPlayers().get(0).getUsername().equals(creator.getUsername()) && this.getPlayers().size() == 1)) {
                 App.gamesActive.remove(this);
             }
-        } , 5 , TimeUnit.MINUTES);
+        } , 2 , TimeUnit.MINUTES);
     }
 
 

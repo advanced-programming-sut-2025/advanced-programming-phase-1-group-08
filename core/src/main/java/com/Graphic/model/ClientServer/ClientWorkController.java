@@ -13,7 +13,9 @@ import com.Graphic.model.User;
 import com.Graphic.model.Weather.DateHour;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ClientWorkController {
 
@@ -30,6 +32,15 @@ public class ClientWorkController {
         if (instance == null)
             instance = new ClientWorkController();
         return instance;
+    }
+
+
+    public void addToChatHistory(String sender , String message) {
+        for (Map.Entry<String , ArrayList<String>> entry : Main.getClient().getPlayer().getPrivateChats().entrySet()) {
+            if (entry.getKey().equals(sender)) {
+                entry.getValue().add(message);
+            }
+        }
     }
 
                                     // Erfan

@@ -118,7 +118,7 @@ public class Network {
         kryo.register(com.Graphic.model.ToolsPackage.CraftingItem.class);
         kryo.register(com.Graphic.model.ToolsPackage.FishingPole.class);
         kryo.register(com.Graphic.model.ToolsPackage.MilkPail.class);
-        kryo.register(Menu.class);
+        // kryo.register(Menu.class);
         kryo.register(Weather.class);
         kryo.register(Connection.class);
         kryo.register(Server.class);
