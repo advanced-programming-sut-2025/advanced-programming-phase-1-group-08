@@ -106,6 +106,7 @@ public class Network {
         kryo.register(com.Graphic.model.Places.Farm.class);
         kryo.register(com.Graphic.model.Places.Lake.class);
         kryo.register(com.Graphic.model.Places.Mine.class);
+        kryo.register(com.Graphic.model.Enum.AllPlants.ForagingMineralsType.class);
         kryo.register(com.Graphic.model.Places.ShippingBin.class);
         kryo.register(com.Graphic.model.Places.Well.class);
         kryo.register(com.Graphic.model.Weather.DateHour.class);

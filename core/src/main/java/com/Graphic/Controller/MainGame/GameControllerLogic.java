@@ -734,8 +734,7 @@ public class GameControllerLogic {
                         return;
                     }
                 }
-                System.out.println("x: "+Player.getPositionX() + " y: "+Player.getPositionY());
-                System.out.println("mouseX: "+gameMenu.getMousePos().x + " mouseY: "+gameMenu.getMousePos().y);
+
             }
         }
     }
@@ -923,7 +922,6 @@ public class GameControllerLogic {
                     gameMenu.getCurrentBarnOrCageAnimals().add(new AnimalRenderer(animal));
                     animal.setPositionX(Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x);
                     animal.setPositionY(Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
-                    System.out.println(animal.getPositionX() + ",, " + animal.getPositionY());
                 }
             }
         }
@@ -1842,7 +1840,6 @@ public class GameControllerLogic {
         float darkness = getDarknessLevel(hour);
         Color color = helperBackGround.getColor();
         helperBackGround.setColor(color.r, color.g, color.b, darkness);
-        System.out.println("*************  -->  " + hour);
     }
     public static float getDarknessLevel(int hour) {
         if (hour <= 18)
@@ -1968,7 +1965,6 @@ public class GameControllerLogic {
 
     public static void startDay () {
 
-        System.out.println("KIR");
         doSeasonAutomaticTask();
         setPlayerLocation();
         setEnergyInMorning();

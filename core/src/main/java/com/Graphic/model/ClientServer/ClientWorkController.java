@@ -34,8 +34,7 @@ public class ClientWorkController {
 
                                     // Erfan
     public void PassedTime (int hour, int day) {
-
-        GameControllerLogic.passedOfTime(hour, day);
+        GameControllerLogic.passedOfTime(day, hour);
     }
     public void setTime(int hour, int day) {
 
@@ -47,6 +46,7 @@ public class ClientWorkController {
             DateHour dateHour = new DateHour();
             dateHour.setHour(hour);
             dateHour.setDate(day);
+            DateHour.getHourDifferent(dateHour);
             Main.getClient().getLocalGameState().currentDate = dateHour;
         }
     }
