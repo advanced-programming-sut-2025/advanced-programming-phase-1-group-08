@@ -14,6 +14,9 @@ import com.esotericsoftware.kryonet.Connection;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Game {
 
@@ -65,21 +68,43 @@ public class Game {
         }
 
     }
+    private final Queue<Message> diffQueue = new LinkedList<>();
 
     // بالایی ها همه باید اصلاح بشن
 
-    private GameState gameState = new GameState();
-    public final HashMap<User , Connection> connections = new HashMap<>();
-    private final Map<String , Integer> lastSentIndex = new HashMap<>();
+    private final GameState gameState = new GameState();
+    public final transient HashMap<User , Connection> connections = new HashMap<>();
     private boolean gameStarted = false;
-    private Queue<Message> diffQueue = new LinkedList<>();
-    private Message noDiff;
+    private String name;
+    private String Id;
+    private String Password;
+    private boolean isPrivate;
+    private boolean isVisible;
+    private User Creator;
+    private final transient ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    //private ArrayList<User> players;
 
-    public Game() {
-        HashMap<String , Object> body = new HashMap<>();
-        body.put("No Diff", "No Diff");
-        noDiff = new Message(CommandType.NO_DIFF , body);
+    public Game () {
+
     }
+
+    public Game(String name, String Id ,  String password, boolean isPrivate, boolean isVisible , User creator) {
+        this.name = name;
+        this.Id = Id;
+        this.Password = password;
+        this.isPrivate = isPrivate;
+        this.isVisible = isVisible;
+        this.Creator = creator;
+        //this.players = new ArrayList<>();
+        gameState.getPlayers().add(Creator);
+
+        scheduler.schedule(() -> {
+            if (this.getPlayers().isEmpty() || (this.getPlayers().get(0).getUsername().equals(creator.getUsername()) && this.getPlayers().size() == 1)) {
+                App.gamesActive.remove(this);
+            }
+        } , 5 , TimeUnit.SECONDS);
+    }
+
 
 
     public synchronized void addPlayer(User u , Connection connection) throws IOException {
@@ -98,28 +123,7 @@ public class Game {
         }
     }
 
-
-//    public  Message getStateFromPlayer(User u) {
-//
-//        int lastSent = lastSentIndex.get(u.getUsername());
-//
-//        if (diffQueue.size() > lastSent) {
-//            System.out.println(u.getUsername() + "lastSent: " + lastSent + "Size: " + diffQueue.size());
-//            int idx = 0;
-//            for (Message message : diffQueue) {
-//                if (idx == lastSent) {
-//                    lastSentIndex.put(u.getUsername(), lastSent + 1);
-//                    return message;
-//                }
-//                idx ++;
-//            }
-//        }
-//
-//        return noDiff;
-//
-//    }
-
-    public synchronized GameState getGameState() {
+    public GameState getGameState() {
         return gameState;
     }
 
@@ -127,4 +131,32 @@ public class Game {
         System.out.println("a");
         return diffQueue;
     }
+    public boolean isVisible() {
+        return isVisible;
+    }
+    public User getCreator() {
+        return Creator;
+    }
+    public ArrayList<User> getPlayers() {
+        return gameState.getPlayers();
+    }
+    public void setCreator(User u) {
+        Creator = u;
+    }
+    public String getName() {
+        return name;
+    }
+    public String getId() {
+        return Id;
+    }
+    public String getPassword() {
+        return Password;
+    }
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+
+
+
 }

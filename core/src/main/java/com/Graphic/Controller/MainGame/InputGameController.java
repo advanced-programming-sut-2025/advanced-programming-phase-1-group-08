@@ -91,7 +91,8 @@ public class InputGameController {
     public void update(OrthographicCamera camera, float v, Boolean menuActivated) {
 
         if (!menuActivated) {
-            if (Main.getClient().getPlayer().isInFarmExterior()) {
+
+            if (Main.getClient().getPlayer().isInFarmExterior() && Main.getClient().getPlayer().getDroppedItem() == null) {
                 updateMove();
                 print();
                 moveCamera(camera);
@@ -890,7 +891,20 @@ public class InputGameController {
 
 
     public List<Tile> shepherdAnimals(String x1, String y1, Animal animal) {
+        int X = animal.getPositionX();
+        int Y = animal.getPositionY();
 
+        if (! animal.isOut()) {
+            for (BarnOrCage barnOrCage : Main.getClient().getPlayer().BarnOrCages) {
+                for (Animal animal1 : barnOrCage.getAnimals()) {
+                    if (animal1.getName().equals(animal.getName())) {
+                        animal.setPositionX(barnOrCage.topLeftX + barnOrCage.getBarnORCageType().getDoorX());
+                        animal.setPositionY(barnOrCage.topLeftY + barnOrCage.getBarnORCageType().getDoorY() + 1);
+                        System.out.println(animal.getPositionX() + " aa " + animal.getPositionY());
+                    }
+                }
+            }
+        }
         int goalX=Integer.parseInt(x1);
         int goalY=Integer.parseInt(y1);
 
@@ -899,43 +913,80 @@ public class InputGameController {
         Queue<Tile> queue = new LinkedList<>();
         Set<Tile> tiles = new HashSet<>();
         for (int i = 0; i < 4; i++) {
-            if (checkTileForAnimalWalking(animal.getPositionX() + x[i] , animal.getPositionY() + y[i] )) {
-                queue.add(getTileByCoordinates(animal.getPositionX() + x[i] , animal.getPositionY() + y[i] ,
-                    Main.getClient().getLocalGameState()));
+            try {
+                if (checkTileForAnimalWalking(animal.getPositionX() + x[i], animal.getPositionY() + y[i])) {
+                    queue.add(getTileByCoordinates(animal.getPositionX() + x[i], animal.getPositionY() + y[i],
+                        Main.getClient().getLocalGameState()));
+                    tiles.add(getTileByCoordinates(animal.getPositionX() + x[i], animal.getPositionY() + y[i],
+                        Main.getClient().getLocalGameState()));
+                } else {
+//                    System.out.println("Name: " + getTileByCoordinates(animal.getPositionX() + x[i], animal.getPositionY() + y[i],
+//                        Main.getClient().getLocalGameState()).getGameObject().getIcon());
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        tiles.add(getTileByCoordinates(animal.getPositionX() , animal.getPositionY() , Main.getClient().getLocalGameState() ));
+        System.out.println(queue.size());
+        System.out.println(animal.getPositionX() + "pp" + animal.getPositionY());
+        try {
+            tiles.add(getTileByCoordinates(animal.getPositionX(), animal.getPositionY(), Main.getClient().getLocalGameState()));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         HashMap<Tile , Tile> cameFrom = new HashMap<>();
 
-        while (!queue.isEmpty()) {
-            Tile tile=queue.poll();
-            tiles.add(tile);
-            if (tile.getX() == goalX && tile.getY() == goalY) {
-                List<Tile> Path= new ArrayList<>();
-                while (tile != null) {
-                    Path.add(tile);
-                    tile = cameFrom.get(tile);
+        try {
+            while (!queue.isEmpty()) {
+                Tile tile = queue.poll();
+                System.out.println("X: " + tile.getX() + "Y: " + tile.getY());
+                if (tile.getX() == goalX && tile.getY() == goalY) {
+                    List<Tile> Path = new ArrayList<>();
+                    while (tile != null) {
+                        Path.add(tile);
+                        tile = cameFrom.get(tile);
+                    }
+                    animal.setPositionX(X);
+                    animal.setPositionY(Y);
+
+                    return Path;
                 }
 
-                return Path;
-            }
-
-            for (int i = 0; i < 4; i++) {
-                if (! checkTileForAnimalWalking(tile.getX() + x[i] , tile.getY() + y[i] ) ) {
-                    continue;
+                for (int i = 0; i < 4; i++) {
+                    if (!checkTileForAnimalWalking(tile.getX() + x[i], tile.getY() + y[i])) {
+                        continue;
+                    }
+                    if (getTileByCoordinates(tile.getX() + x[i], tile.getY() + y[i], Main.getClient().getLocalGameState()) == null) {
+                        continue;
+                    }
+//                if (tiles.contains(getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient().getLocalGameState()))) {
+//                    continue;
+//                }
+                    int l = 0;
+                    for (Tile tile1 : tiles) {
+                        if (tile1.getX() == tile.getX() + x[i] &&
+                            tile1.getY() == tile.getY() + y[i]) {
+                            l = 1;
+                        }
+                    }
+                    if (l == 1) {
+                        continue;
+                    }
+                    Tile next = getTileByCoordinates(tile.getX() + x[i], tile.getY() + y[i], Main.getClient().getLocalGameState());
+                    cameFrom.put(next, tile);
+                    queue.add(next);
+                    tiles.add(next);
                 }
-                if (getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient().getLocalGameState()) == null) {
-                    continue;
-                }
-                if (tiles.contains(getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient().getLocalGameState()))) {
-                    continue;
-                }
-                Tile next = getTileByCoordinates(tile.getX() + x[i] , tile.getY() + y[i] , Main.getClient().getLocalGameState());
-                cameFrom.put(next, tile);
-                queue.add(next);
             }
         }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        animal.setPositionX(X);
+        animal.setPositionY(Y);
         return null;
     }
 
@@ -958,19 +1009,19 @@ public class InputGameController {
         if (!(tile.getGameObject() instanceof Walkable)) {
             return new Result(false , "yot can't shepherd animals on this coordinate!");
         }
-        if (Main.getClient().getLocalGameState().currentWeather.equals(Weather.Snowy) ||
-            Main.getClient().getLocalGameState().currentWeather.equals(Weather.Rainy) ||
-            Main.getClient().getLocalGameState().currentWeather.equals(Weather.Stormy) ) {
-            return new Result(false , "The weather conditions isn't suitable");
-        }
-        if (animal.getType().equals(AnimalType.pig) && Main.getClient().getLocalGameState().currentDate.getSeason().equals(Season.Winter)) {
-            return new Result(false , "Pigs can't go out because we are in winter");
-        }
+//        if (Main.getClient().getLocalGameState().currentWeather.equals(Weather.Snowy) ||
+//            Main.getClient().getLocalGameState().currentWeather.equals(Weather.Rainy) ||
+//            Main.getClient().getLocalGameState().currentWeather.equals(Weather.Stormy) ) {
+//            return new Result(false , "The weather conditions isn't suitable");
+//        }
+//        if (animal.getType().equals(AnimalType.pig) && Main.getClient().getLocalGameState().currentDate.getSeason().equals(Season.Winter)) {
+//            return new Result(false , "Pigs can't go out because we are in winter");
+//        }
         Point start = new Point(animal.getPositionX() , animal.getPositionY());
         Point end = new Point(goalX , goalY);
-        if (start.distance(end) > 5) {
+        if (start.distance(end) > 100) {
             return new Result(false , "The distance is long and animal can't" +
-                " go to this coordinate.\nyou should a place with distance less than 5");
+                " go to this coordinate.\nyou should a place with distance less than 100");
         }
 
         if (animal == null) {
@@ -1121,8 +1172,9 @@ public class InputGameController {
             if (user.getUsername().trim().equals(player.getUsername().trim())) {
                 for (BarnOrCage barnOrCage : user.BarnOrCages) {
                     for (Animal animal1 : barnOrCage.animals) {
-                        if (animal1.equals(animal)) {
+                        if (animal1.getName().equals(animal.getName())) {
                             barnOrCage.animals.remove(animal1);
+                            animal1.setIsSold(true);
                             current = barnOrCage;
                             break;
                         }
@@ -1251,7 +1303,7 @@ public class InputGameController {
 
     public void placeItem() {
         if (Main.getClient().getPlayer().getDroppedItem() != null) {
-            camera.setToOrtho(false , Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+            camera.setToOrtho(false , Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
             if (Main.getClient().getPlayer().isPlaceArtisanOrShippingBin() &&
                 ! Main.getClient().getPlayer().isWaiting()) {
                 gameMenu.getWithMouse().setPosition(
@@ -1286,8 +1338,8 @@ public class InputGameController {
                 getTileByCoordinates(x, y , Main.getClient().getLocalGameState()).setGameObject(items);
 
                 if (Gdx.input.isKeyJustPressed(ENTER)) {
-                    TextButton Confirm = Marketing.getInstance().makeConfirmButton(currentMenu.getMenu());
-                    TextButton TryAgain = Marketing.getInstance().makeTryAgainButton(currentMenu.getMenu());
+                    TextButton Confirm = Marketing.getInstance().makeConfirmButton(Main.getClient().getCurrentMenu().getMenu());
+                    TextButton TryAgain = Marketing.getInstance().makeTryAgainButton(Main.getClient().getCurrentMenu().getMenu());
 
                     Confirm.addListener(new ChangeListener() {
                         @Override
@@ -1372,7 +1424,7 @@ public class InputGameController {
     }
 
     public void showSelectBoxOnCrafting() {
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && Main.getClient().getPlayer().getDroppedItem() == null) {
 
         int x = (int) (gameMenu.getVector().x/TEXTURE_SIZE);
         int y = (int) (gameMenu.getVector().y/TEXTURE_SIZE);

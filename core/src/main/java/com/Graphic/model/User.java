@@ -55,6 +55,9 @@ public class User {
     private MarketType currentMarket;
     private Queue<User> joinMarket = new LinkedList<>();
     private Queue<User> exitMarket = new LinkedList<>();
+    //private ArrayList<Game> gamesActiveInLobby = new ArrayList<>();
+    private ArrayList<String> messages = new ArrayList<>();
+    private ArrayList<CraftingItem> craftingItems = new ArrayList<>();
 
     public boolean isFishing = false;
     public boolean doingMinigame = false;
@@ -751,6 +754,14 @@ public class User {
     }
     public void setShowFlowered(boolean showFlowered) {
         this.showFlowered = showFlowered;
+    }
+
+//
+    public ArrayList<String> getMessages() {
+        return messages;
+    }
+    public ArrayList<CraftingItem> getCraftingItems() {
+        return craftingItems;
     }
 }
 

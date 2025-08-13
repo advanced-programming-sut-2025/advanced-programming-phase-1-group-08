@@ -31,10 +31,11 @@ public class UserRenderer {
             x = TEXTURE_SIZE;
             y = TEXTURE_SIZE * 1.5f;
         }
-        if (user.isInMarket()) {
+        if (user.isInMarket() || user.isInBarnOrCage()) {
             x = TEXTURE_SIZE/2;
             y = TEXTURE_SIZE * 0.75f;
         }
+
         Animation<Texture> animation = animations.get(user.getDirection());
         Main.getBatch().draw(animation.getKeyFrame(user.getTimer() , true) ,
             user.getPositionX() , user.getPositionY() , x , y);

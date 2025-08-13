@@ -73,6 +73,7 @@ import static com.Graphic.Main.newSkin;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
 import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
+import static com.badlogic.gdx.Input.Keys.U;
 
 
 public class GameMenu implements  Screen, InputProcessor , AppMenu {
@@ -220,6 +221,34 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
     public void show() {
+        if (stage == null) {
+            stage = new Stage(new ScreenViewport());
+        }
+        multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+
+        multiplexer.addProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if (keycode == Input.Keys.E && Food.itemIsEatable(Main.getClient().getPlayer().currentItem)) {
+                    ePressed = true;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean keyUp(int keycode) {
+                if (keycode == Input.Keys.E) {
+                    ePressed = false;
+                    holdTime = 0f;
+                    return true;
+                }
+                return false;
+            }
+        });
+        Gdx.input.setInputProcessor(multiplexer);
+
         if (! Main.getClient().getLocalGameState().getChooseMap()) {
             try {
                 controller = InputGameController.getInstance();
@@ -230,32 +259,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
                 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-                multiplexer = new InputMultiplexer();
-
-                multiplexer.addProcessor(stage);
-                multiplexer.addProcessor(new InputAdapter() {
-                    @Override
-                    public boolean keyDown(int keycode) {
-                        if (keycode == Input.Keys.E && Food.itemIsEatable(Main.getClient().getPlayer().currentItem)) {
-                            ePressed = true;
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public boolean keyUp(int keycode) {
-                        if (keycode == Input.Keys.E) {
-                            ePressed = false;
-                            holdTime = 0f;
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-
-                Gdx.input.setInputProcessor(multiplexer);
 
                 //createClock();
                 firstLoad = true;
@@ -269,45 +272,59 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         else if (lastDateHour == null) {
             setTime();
         }
+        System.out.println(Main.getClient().getPlayer().getPositionX() + " g "+Main.getClient().getPlayer().getPositionY());
     }
 
 
     public void render(float v) {
-
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         inputController();
+
         if (!Main.getClient().getLocalGameState().currentDate.equals(lastDateHour)) {
-            //updateClock();
+            // updateClock();
         }
+
         initialLake();
         updateEnergyLabel();
         giftNPCMenu();
+
+        // آپدیت دوربین و تنظیم projection برای batch world
+        //camera.update();
         Main.getBatch().setProjectionMatrix(camera.combined);
+
         gameState = Main.getClient().getLocalGameState();
-        if (!Main.getClient().getPlayer().isInFarmExterior()) {
-            getRenderer().setView(camera);
-            getRenderer().render();
-        }
+
         User x = null;
         if ((x = Main.getClient().getPlayer().getFriendCloseToMe()) != null) {
             printTempFriend(x);
-        }
-        else {
+        } else {
             tempFriend.setVisible(false);
         }
+
         if (activeDialog != null && TimeUtils.millis() > dialogExpirationTime) {
             activeDialog.hide();
             activeDialog.remove();
             activeDialog = null;
         }
+
         showUnseenMessages();
         showHugged();
         showGivenFlower();
 
         if (Main.getClient().getLocalGameState().getChooseMap()) {
+            changeMenu();
             createUserRenderes();
+
+            if (Main.getClient().getPlayer().isInMine() ||
+                Main.getClient().getPlayer().isInHome() || Main.getClient().getPlayer().isInBarnOrCage()) {
+                getRenderer().setView(camera);
+                getRenderer().render();
+            }
+
             Main.getBatch().begin();
+
             controller.update(camera, v, anyMenuIsActivated());
             drawCurrentItem();
             updateAnimals(Main.getClient().getLocalGameState().getAnimals());
@@ -315,14 +332,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             eatingManagement(v);
             checkLakeDistance(v);
             lightBeforeFishing(v);
-            mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(mousePos);
-            camera.update();
-            changeMenu();
-            if (Main.getClient().getPlayer().isInMine() || Main.getClient().getPlayer().isInHome()) {
-                getRenderer().setView(camera);
-                getRenderer().render();
-            }
+
+            // تبدیل مختصات موس به مختصات world
+
+
             if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
                 System.out.println("hi");
                 stage.addActor(activeDialog);
@@ -331,13 +344,22 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
 
             startFishing(v);
+
+            mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(mousePos);
+            camera.update();
+
             Main.getBatch().end();
         }
+
+
+        // رندر UI خارج از batch و بعد از رندر world
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
 
-                                                                // Ario
+
+    // Ario
 
     private void lightBeforeFishing(float v) {
         if (!showFishLight)
@@ -1083,7 +1105,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         currentMenu = Menu.GameMenu;
 
         controller = InputGameController.getInstance();
-        stage = new Stage(new ScreenViewport());
+        //stage = new Stage(new ScreenViewport());
         clockGroup = new Group();
         camera = new OrthographicCamera();
 
@@ -2567,10 +2589,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             vector = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         }
         vector.set(Gdx.input.getX() , Gdx.input.getY(), 0);
-        if (Main.getClient().getCurrentMenu().getMenu() instanceof GameMenu) {
+        if (Main.getClient().getCurrentMenu()== Menu.GameMenu) {
             camera.unproject(vector);
         }
-        if (Main.getClient().getCurrentMenu().getMenu() instanceof MarketMenu) {
+        if (Main.getClient().getCurrentMenu() == Menu.MarketMenu) {
             return MarketMenu.getVector();
         }
         return vector;
@@ -2639,7 +2661,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
     public void resize(int i, int i1) {
-
+        //stage.getViewport().update(i, i1, true);
     }
     public void pause() {
 
@@ -2689,9 +2711,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     public Stage getStage() {
-        if (stage == null) {
-            stage = new Stage(new ScreenViewport());
-        }
+
         return stage;
     }
 

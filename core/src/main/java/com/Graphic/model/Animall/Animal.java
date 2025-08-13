@@ -43,6 +43,7 @@ public class Animal extends GameObject {
     private boolean isMoving;
     private float x;
     private float y;
+    private boolean isSold = false;
     private ArrayList<Tile> Paths;
 
     public Animal(AnimalType type,int friendShip, String name, int day ) {
@@ -271,5 +272,12 @@ public class Animal extends GameObject {
 
     public ArrayList<Tile> getPath() {
         return Paths;
+    }
+
+    public void setIsSold(boolean isSold) {
+        this.isSold = isSold;
+    }
+    public boolean isSold() {
+        return isSold;
     }
 }

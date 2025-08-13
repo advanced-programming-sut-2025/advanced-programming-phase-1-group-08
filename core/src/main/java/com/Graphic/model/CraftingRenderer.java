@@ -22,11 +22,11 @@ public class CraftingRenderer {
             TextureManager.get("Mohamadreza/Bomb3.png") , TextureManager.get("Mohamadreza/Bomb4.png"));
 
     public static Animation<Texture> sprinklerAnimation = new Animation<>(0.3f ,
-        TextureManager.get("Mohamadreza/Sprinker1.png") , TextureManager.get("Mohamadreza/Sprinker2.png") ,
-        TextureManager.get("Mohamadreza/Sprinker3.png") , TextureManager.get("Mohamadreza/Sprinker4.png") ,
-        TextureManager.get("Mohamadreza/Sprinker5.png") , TextureManager.get("Mohamadreza/Sprinker6.png") ,
-        TextureManager.get("Mohamadreza/Sprinker7.png") , TextureManager.get("Mohamadreza/Sprinker8.png") ,
-        TextureManager.get("Mohamadreza/Sprinker9.png") , TextureManager.get("Mohamadreza/Sprinker10.png"));
+        TextureManager.get("Mohamadreza/Sprinkler1.png") , TextureManager.get("Mohamadreza/Sprinkler2.png") ,
+        TextureManager.get("Mohamadreza/Sprinkler3.png") , TextureManager.get("Mohamadreza/Sprinkler4.png") ,
+        TextureManager.get("Mohamadreza/Sprinkler5.png") , TextureManager.get("Mohamadreza/Sprinkler6.png") ,
+        TextureManager.get("Mohamadreza/Sprinkler7.png") , TextureManager.get("Mohamadreza/Sprinkler8.png") ,
+        TextureManager.get("Mohamadreza/Sprinkler9.png") , TextureManager.get("Mohamadreza/Sprinkler10.png"));
 
     public CraftingRenderer(CraftingItem craftingItem) {
         this.craftingItem = craftingItem;
@@ -56,6 +56,9 @@ public class CraftingRenderer {
                     break;
                 }
             }
+        }
+        if (craftingItem.getItems().isEmpty()) {
+            shapeRenderer.end();
         }
     }
 

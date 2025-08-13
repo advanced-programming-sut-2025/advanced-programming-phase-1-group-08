@@ -859,68 +859,80 @@ public class GameControllerLogic {
     }
 
     public static void walkInBarnOrCage() {
-//        float x = Main.getClient().getPlayer().sprite.getX();
-//        float y = Main.getClient().getPlayer().sprite.getY();
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
-//            System.out.println(Main.getClient().getPlayer().sprite.getX() + ", " + Main.getClient().getPlayer().sprite.getY());
-//        }
-//
-//        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-//            //InputGameController.moveAnimation();
-//            Main.getClient().getPlayer().setDirection(Direction.Up);
-//        }
-//        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-//            //InputGameController.moveAnimation();
-//            Main.getClient().getPlayer().setDirection(Direction.Down);
-//        }
-//        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//            //InputGameController.moveAnimation();
-//            Main.getClient().getPlayer().setDirection(Direction.Left);
-//        }
-//        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//            //InputGameController.moveAnimation();
-//            Main.getClient().getPlayer().setDirection(Direction.Right);
-//        }
-//
-//        else {
-//            Main.getClient().getPlayer().sprite.draw(Main.getBatch());
-//            return;
-//        }
-//
-//        Main.getClient().getPlayer().sprite.setSize(16 , 32);
-//
-//
-//        Main.getClient().getPlayer().sprite.
+        camera.position.set(Main.getClient().getPlayer().getPositionX() , Main.getClient().getPlayer().getPositionY() , 2f);
+        float x = Main.getClient().getPlayer().getPositionX();
+        float y = Main.getClient().getPlayer().getPositionY();
+
+        for (int i = 0 ; i < Main.getClient().getLocalGameState().getPlayers().size() ; i ++) {
+            if (Main.getClient().getPlayer().getUsername().equals(Main.getClient().getLocalGameState().getPlayers().get(i).getUsername())) {
+                gameMenu.getUserRenderer().get(i).render(Main.getClient().getLocalGameState().getPlayers().get(i));
+            }
+        }
+
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            //InputGameController.moveAnimation();
+            Main.getClient().getPlayer().setDirection(Direction.Up);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            //InputGameController.moveAnimation();
+            Main.getClient().getPlayer().setDirection(Direction.Down);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            //InputGameController.moveAnimation();
+            Main.getClient().getPlayer().setDirection(Direction.Left);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            //InputGameController.moveAnimation();
+            Main.getClient().getPlayer().setDirection(Direction.Right);
+        }
+
+        else {
+            //Main.getClient().getPlayer().sprite.draw(Main.getBatch());
+            return;
+        }
+
+        //Main.getClient().getPlayer().sprite.setSize(16 , 32);
+
+
+        Main.getClient().getPlayer().setPositionX(x + Main.getClient().getPlayer().getDirection().getX() * 50 * Gdx.graphics.getDeltaTime());
+        Main.getClient().getPlayer().setPositionY(y - Main.getClient().getPlayer().getDirection().getY() * 50 * Gdx.graphics.getDeltaTime());
+
 //            setPosition(x + Main.getClient().getPlayer().getDirection().getX() * 50 * Gdx.graphics.getDeltaTime(),
 //                y - Main.getClient().getPlayer().getDirection().getY() * 50 * Gdx.graphics.getDeltaTime());
-//
-////        if (! checkCollisionInBarnOrCage()) {
-////            Main.getClient().getPlayer().sprite.setPosition(x , y);
-////        }
-//        //Main.getClient().getPlayer().sprite.draw(Main.getBatch());
-//        try {
-//            Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(Main.getClient().getPlayer());
+
+//        if (! checkCollisionInBarnOrCage()) {
+//            Main.getClient().getPlayer().sprite.setPosition(x , y);
 //        }
-//        catch (Exception e) {
-//
-//        }
+        //Main.getClient().getPlayer().sprite.draw(Main.getBatch());
+        try {
+            if (Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().exitBarnOrCage(Main.getClient().getPlayer())) {
+                BarnOrCage b = Main.getClient().getPlayer().getCurrentBarnOrCage();
+                Main.getClient().getPlayer().setPositionX((TEXTURE_SIZE) * (b.topLeftX + b.getBarnORCageType().getWidth() / 2));
+                Main.getClient().getPlayer().setPositionY((TEXTURE_SIZE) * (90 - (b.topLeftY + b.getBarnORCageType().getHeight()) - 1));
+            }
+        }
+        catch (Exception e) {
+
+        }
     }
 
     public static void showAnimalsInBarnOrCage() {
-        if (! gameMenu.getCurrentBarnOrCageAnimals().isEmpty()) {
+        if ( gameMenu.getCurrentBarnOrCageAnimals().isEmpty()) {
+            //System.out.println("Empty");
             for (Animal animal : Main.getClient().getPlayer().getCurrentBarnOrCage().animals) {
+                System.out.println("Name: " +animal.getName());
                 if (! animal.isOut()) {
                     gameMenu.getCurrentBarnOrCageAnimals().add(new AnimalRenderer(animal));
+                    animal.setPositionX(Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x);
+                    animal.setPositionY(Main.getClient().getPlayer().getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
+                    System.out.println(animal.getPositionX() + ",, " + animal.getPositionY());
                 }
             }
         }
         for (AnimalRenderer animalRenderer : gameMenu.getCurrentBarnOrCageAnimals()) {
+            //System.out.println("hello");
             animalRenderer.render();
-            animalRenderer.getAnimal().setTimer(animalRenderer.getAnimal().getTimer() + Gdx.graphics.getDeltaTime());
-            if (animalRenderer.getAnimal().getTimer() >= 0.1f) {
-                animalRenderer.getAnimal().setTimer(0);
-            }
         }
 //        for (Animal animal : Main.getClient().getPlayer().getCurrentBarnOrCage().animals) {
 //            if (! animal.isOut()) {
@@ -967,10 +979,10 @@ public class GameControllerLogic {
             for (BarnOrCage barnOrCage : Main.getClient().getPlayer().BarnOrCages) {
                 for (Animal animal : barnOrCage.animals) {
                     if (animal.isOut()) {
-                        if (gameMenu.getMousePos().x >= animal.getPositionX() &&
-                            gameMenu.getMousePos().x <= animal.getPositionX() + TEXTURE_SIZE &&
-                            gameMenu.getMousePos().y >= animal.getPositionY() &&
-                            gameMenu.getMousePos().y <= animal.getPositionY() + TEXTURE_SIZE) {
+                        if (gameMenu.getMousePos().x >= animal.getPositionX() * TEXTURE_SIZE &&
+                            gameMenu.getMousePos().x <= animal.getPositionX() * TEXTURE_SIZE + TEXTURE_SIZE &&
+                            gameMenu.getMousePos().y >=(90 - animal.getPositionY() ) * TEXTURE_SIZE &&
+                            gameMenu.getMousePos().y <= (90 - animal.getPositionY() ) * TEXTURE_SIZE + TEXTURE_SIZE) {
 
                             Main.getBatch().draw(TextureManager.get("Mohamadreza/animalInfo.png"),
                                 animal.getPositionX() + TEXTURE_SIZE / 2,
@@ -986,33 +998,33 @@ public class GameControllerLogic {
 
     public static void createAnimalInformationWindow(Animal animal) {
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && animal!= null) {
-            BitmapFont font = gameMenu.getAnimalFont();
-            //font.setColor(Color.BROWN);
-            Table mainTable = new Table();
-            Window window = new Window("Information", getSkin(), "default");
-            window.setSize(1000, 750);
-            window.setPosition(Gdx.graphics.getWidth() / 2 - 500, Gdx.graphics.getHeight() / 2 - 375);
-            Image image = new Image(TextureManager.get(animal.getType().getIcon()));
-            Texture background = TextureManager.get("Mohamadreza/AnimalBackground2.png");
-            Drawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(background));
+                //BitmapFont font = gameMenu.getAnimalFont();
+                //font.setColor(Color.BROWN);
+                BitmapFont font = new BitmapFont(); // فونت پیش‌فرض ساده
+                Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+                Table mainTable = new Table();
+                Window window = new Window("Information", getSkin(), "default");
+                window.setSize(1000, 750);
+                window.setPosition(Gdx.graphics.getWidth() / 2 - 500, Gdx.graphics.getHeight() / 2 - 375);
+                Image image = new Image(TextureManager.get(animal.getType().getIcon()));
+                Texture background = TextureManager.get("Mohamadreza/AnimalBackground2.png");
+                Drawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(background));
 
-            Table content = new Table();
-            content.setBackground(backgroundDrawable);
-            content.add(image).size(200, 200).top().row();
+                Table content = new Table();
+                content.setBackground(backgroundDrawable);
+                content.add(image).size(200, 200).top().row();
 
-            Label.LabelStyle labelStyle = new Label.LabelStyle();
-            labelStyle.font = font;
-            Table right = new Table();
-            Table lowerRight = new Table();
-            right.add(createRightUpSideWindow(animal , labelStyle , backgroundDrawable , window , lowerRight)).top().width(500).height(350).row();
-            right.add(createRightMidWindow(animal , labelStyle , backgroundDrawable , lowerRight ,window)).width(500).height(200).row();
-            lowerRight.setBackground(backgroundDrawable);
-            right.add(lowerRight).width(500).height(200);
+                Table right = new Table();
+                Table lowerRight = new Table();
+                right.add(createRightUpSideWindow(animal, labelStyle, backgroundDrawable, window, lowerRight)).top().width(500).height(350).row();
+                right.add(createRightMidWindow(animal, labelStyle, backgroundDrawable, lowerRight, window)).width(500).height(200).row();
+                lowerRight.setBackground(backgroundDrawable);
+                right.add(lowerRight).width(500).height(200);
 
-            mainTable.add(createLeftSideWindow(animal, content, labelStyle, window)).width(500).height(750);
-            mainTable.add(right).padLeft(5).width(500).height(750);
-            window.add(mainTable).expand().fill();
-            gameMenu.getStage().addActor(window);
+                mainTable.add(createLeftSideWindow(animal, content, labelStyle, window)).width(500).height(750);
+                mainTable.add(right).padLeft(5).width(500).height(750);
+                window.add(mainTable).expand().fill();
+                gameMenu.getStage().addActor(window);
         }
 
     }
@@ -1240,7 +1252,7 @@ public class GameControllerLogic {
         while (!animalQueue.isEmpty()) {
             Animal animal = animalQueue.poll();
             for (AnimalRenderer animalRenderer : gameMenu.getAnimalRenderers()) {
-                if (animalRenderer.getAnimal().equals(animal)) {
+                if (animalRenderer.getAnimal().getName().equals(animal.getName())) {
                     exists = true;
                 }
             }
@@ -1274,8 +1286,8 @@ public class GameControllerLogic {
                             animal.setDirection(Direction.Left);
                         }
                         animal.setTimer(0);
-                        animal.setPositionX(TEXTURE_SIZE * Path.get(finalI+1).getX());
-                        animal.setPositionY(TEXTURE_SIZE * (90 - Path.get(finalI+1).getY()));
+                        animal.setPositionX(Path.get(finalI+1).getX());
+                        animal.setPositionY(Path.get(finalI+1).getY());
                         //animal.setPosition(TEXTURE_SIZE * Path.get(finalI+1).getX(), TEXTURE_SIZE * (90 - Path.get(finalI+1).getY()));
                         //animal.getSprite().setSize(TEXTURE_SIZE, TEXTURE_SIZE);
 
@@ -1316,6 +1328,7 @@ public class GameControllerLogic {
     public static boolean checkTileForAnimalWalking(int x, int y) {
         Tile tile = getTileByCoordinates(x , y , Main.getClient().getLocalGameState() );
         if (tile == null) {
+            System.out.println("null: " + x + " , " + y);
             return false;
         }
         if (!(tile.getGameObject() instanceof Walkable)) {
@@ -1817,6 +1830,8 @@ public class GameControllerLogic {
         advanceItem(new PickAxe(PickAxeType.primaryPickAxe), 1);
         advanceItem(new WateringCan(WateringCanType.PrimaryWateringCan), 1);
         advanceItem(new TrashCan(TrashCanType.primaryTrashCan), 1);
+        advanceItem(new MarketItem(MarketItemType.Hay) , 4);
+        advanceItem(new CraftingItem(CraftType.Loom) , 1);
 
         user.increaseMoney(10000 - user.getMoney());
 //        advanceItem(new Fish(FishType.Salmon, Quantity.Iridium), 1);

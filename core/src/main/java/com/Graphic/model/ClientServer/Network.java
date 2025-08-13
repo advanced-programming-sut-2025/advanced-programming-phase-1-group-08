@@ -6,19 +6,24 @@ import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.Fish.FishType;
 import com.Graphic.model.Enum.ItemType.*;
+import com.Graphic.model.Enum.Menu;
 import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.NPC.NPCHouse;
 import com.Graphic.model.Enum.SecurityQuestions;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Enum.WeatherTime.Season;
+import com.Graphic.model.Enum.WeatherTime.Weather;
 import com.Graphic.model.Inventory;
 import com.Graphic.model.OtherItem.Fridge;
 import com.Graphic.model.Plants.Wood;
+import com.Graphic.model.ToolsPackage.CraftingItem;
 import com.Graphic.model.ToolsPackage.MilkPail;
 import com.Graphic.model.collisionRect;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy;
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
@@ -49,7 +54,7 @@ public class Network {
     }
 
     public static void registerClasses(Kryo kryo) {
-        kryo.setRegistrationRequired(true);
+        //kryo.setRegistrationRequired(true);
         kryo.setReferences(true);
 
         kryo.register(CommandType.class);
@@ -112,6 +117,16 @@ public class Network {
         kryo.register(com.Graphic.model.ToolsPackage.CraftingItem.class);
         kryo.register(com.Graphic.model.ToolsPackage.FishingPole.class);
         kryo.register(com.Graphic.model.ToolsPackage.MilkPail.class);
+        kryo.register(Menu.class);
+        kryo.register(Weather.class);
+        kryo.register(Connection.class);
+        kryo.register(Server.class);
+        kryo.register(Connection[].class);
+        kryo.register(Server[].class);
+        kryo.register(Object.class);
+        kryo.register(Object[].class);
+        kryo.register(Listener[].class);
+        kryo.register(CraftType.class);
 
         kryo.register(com.Graphic.model.ToolsPackage.PickAxe.class);
         kryo.register(com.Graphic.model.ToolsPackage.Scythe.class);

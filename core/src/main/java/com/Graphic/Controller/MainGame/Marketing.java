@@ -75,7 +75,7 @@ public class Marketing {
                 MarketMenu.getInstance().addUserRenderer(user);
             }
             catch (Exception e) {
-
+                break;
             }
         }
     }
@@ -87,7 +87,7 @@ public class Marketing {
                 MarketMenu.getInstance().removeUserRenderer(user);
             }
             catch (Exception e) {
-
+                break;
             }
         }
     }
@@ -141,9 +141,11 @@ public class Marketing {
                 exit.put("Market", MarketMenu.getInstance().marketType);
                 exit.put("X", MarketMenu.getInstance().marketType.getOutsideDoor().getX());
                 exit.put("Y", MarketMenu.getInstance().marketType.getOutsideDoor().getY() - 10);
-                Main.getClient().getRequests().add(new Message(CommandType.EXIT_MARKET, exit));
-                Main.getMain().setScreen(GameMenu.getInstance());
+                Main.getClient().getPlayer().setPositionX(MarketMenu.getInstance().marketType.getOutsideDoor().getX());
+                Main.getClient().getPlayer().setPositionY(MarketMenu.getInstance().marketType.getOutsideDoor().getY());
                 Main.getClient().setCurrentMenu(Menu.GameMenu);
+                Main.getMain().setScreen(GameMenu.getInstance());
+                Main.getClient().getRequests().add(new Message(CommandType.EXIT_MARKET, exit));
             }
         }
     }
@@ -389,15 +391,15 @@ public class Marketing {
                     Label content = new Label(MarketType.endLimit(checkBuy(item,marketType).massage()), new Label.LabelStyle(getFont() , Color.BLACK));
                     addDialogToTable(dialog, content , MarketMenu.getInstance());
                 }
-//                else if (item instanceof ShippingBin) {
-//                    Main.getClient().getPlayer().setDroppedItem(new ShippingBin());
-//                    Main.getClient().getPlayer().setIsPlaceArtisanOrShippingBin(true);
-//                    Main.getClient().getPlayer().setWithMouse(new Sprite(TextureManager.get("Mohamadreza/Shipping Bin.png")));
-//                    Main.getClient().getPlayer().getWithMouse().setAlpha(0.5f);
-//                    choosePlace = true;
-//                    getWindow().remove();
-//                    removeImage();
-//                }
+                else if (item instanceof ShippingBin) {
+                    Main.getClient().getPlayer().setDroppedItem(new ShippingBin());
+                    Main.getClient().getPlayer().setIsPlaceArtisanOrShippingBin(true);
+                    Main.getClient().getPlayer().setDroppedItem(item);
+                    gameMenu.setWithMouse(new Sprite(TextureManager.get(item.getIcon())));
+                    choosePlace = true;
+                    getWindow().remove();
+                    removeImage();
+                }
                 else {
                     System.out.println("buy success");
                     HashMap<String , Object> body = new HashMap<>();
