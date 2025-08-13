@@ -13,7 +13,8 @@ import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
 import com.Graphic.model.Enum.AllPlants.TreeType;
 import com.Graphic.model.Enum.*;
-import com.Graphic.model.Enum.NPC;
+import com.Graphic.model.Enum.NPC.NPC;
+import com.Graphic.model.Enum.NPC.NPCManager;
 import com.Graphic.model.Enum.Skills;
 import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.Result;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -72,6 +74,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private ArrayList<HeartAnimation> heartAnimations;
     private OrthogonalTiledMapRenderer renderer;
     private InputMultiplexer multiplexer;
+
+    private boolean progressComplete = false;
+    private boolean ePressed = false;
+    private float holdTime = 0f;
+    private final float maxHoldTime = 5f;
+    private ShapeRenderer shapeRenderer;
 
     Texture friendsListTexture;
     TextureRegionDrawable buttonDrawable;
@@ -170,12 +178,14 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
     public void show() {
+        currentMenu = Menu.GameMenu;
         controller.init();
         mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.setToOrtho(false , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
-        multiplexer.addProcessor(this);
+
         Gdx.input.setInputProcessor(multiplexer);
         createClock();
         firstLoad = true;
@@ -200,6 +210,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         controller.update(camera, v, anyMenuIsActivated());
         drawCurrentItem();
         moveAnimal();
+        NPCManager.NPCWalk(v);
         mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(mousePos);
         camera.update();
@@ -215,7 +226,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         checkFriendDistance();
         if (activeDialog != null && TimeUtils.millis() < dialogExpirationTime) {
-            System.out.println("hi");
             stage.addActor(activeDialog);
         } else {
             activeDialog = null;
@@ -459,7 +469,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
         });
 
-
+        shapeRenderer = new ShapeRenderer();
 
         energyLabel = new Label("Energy : 100", newSkin);
         lastHealth = -1;
@@ -2069,7 +2079,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
     public boolean touchDown(int i, int i1, int i2, int i3) {
         Vector2 stageCoords = stage.screenToStageCoordinates(new Vector2(i, i1));
-        System.out.println("Clicked on stage at: x=" + stageCoords.x + ", y=" + stageCoords.y);
         return true;
     }
     public boolean touchCancelled(int i, int i1, int i2, int i3) {
@@ -2088,5 +2097,116 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     public void setIsInMine(boolean b) {
+    }
+    public void initializeNPCs() {
+        // Abigail's Movement
+        NPC.Abigail.setRight(new Animation<>(
+            0.8f,
+            TextureManager.get("Mohamadreza/NPC/Abigail,Right1.png"),
+            TextureManager.get("Mohamadreza/NPC/Abigail,Right2.png")
+        ));
+        NPC.Abigail.setDown(new Animation<>(
+            0.8f,
+            TextureManager.get("Mohamadreza/NPC/Abigail,Down1.png"),
+            TextureManager.get("Mohamadreza/NPC/Abigail,Down2.png")
+        ));
+        NPC.Abigail.setUp(new Animation<>(
+            0.8f,
+            TextureManager.get("Mohamadreza/NPC/Abigail,Up1.png"),
+            TextureManager.get("Mohamadreza/NPC/Abigail,Up2.png")
+        ));
+        NPC.Abigail.setLeft(new Animation<>(
+            0.8f,
+            TextureManager.get("Mohamadreza/NPC/Abigail,Left1.png"),
+            TextureManager.get("Mohamadreza/NPC/Abigail,Left2.png")
+        ));
+
+        // Harvey's Movement
+        NPC.Harvey.setRight(new Animation<>(
+            1f,
+            TextureManager.get("Mohamadreza/NPC/Harvey,Right1.png"),
+            TextureManager.get("Mohamadreza/NPC/Harvey,Right2.png")
+        ));
+        NPC.Harvey.setDown(new Animation<>(
+            1f,
+            TextureManager.get("Mohamadreza/NPC/Harvey,Down1.png"),
+            TextureManager.get("Mohamadreza/NPC/Harvey,Down2.png")
+        ));
+        NPC.Harvey.setUp(new Animation<>(
+            1f,
+            TextureManager.get("Mohamadreza/NPC/Harvey,Up1.png"),
+            TextureManager.get("Mohamadreza/NPC/Harvey,Up2.png")
+        ));
+        NPC.Harvey.setLeft(new Animation<>(
+            1f,
+            TextureManager.get("Mohamadreza/NPC/Harvey,Left1.png"),
+            TextureManager.get("Mohamadreza/NPC/Harvey,Left2.png")
+        ));
+
+        // Leah's Movement
+        NPC.Leah.setRight(new Animation<>(
+            0.5f,
+            TextureManager.get("Mohamadreza/NPC/Leah,Right1.png"),
+            TextureManager.get("Mohamadreza/NPC/Leah,Right2.png")
+        ));
+        NPC.Leah.setDown(new Animation<>(
+            0.5f,
+            TextureManager.get("Mohamadreza/NPC/Leah,Down1.png"),
+            TextureManager.get("Mohamadreza/NPC/Leah,Down2.png")
+        ));
+        NPC.Leah.setUp(new Animation<>(
+            0.5f,
+            TextureManager.get("Mohamadreza/NPC/Leah,Up1.png"),
+            TextureManager.get("Mohamadreza/NPC/Leah,Up2.png")
+        ));
+        NPC.Leah.setLeft(new Animation<>(
+            0.5f,
+            TextureManager.get("Mohamadreza/NPC/Leah,Left1.png"),
+            TextureManager.get("Mohamadreza/NPC/Leah,Left2.png")
+        ));
+
+        // Robin's Movement
+        NPC.Robin.setRight(new Animation<>(
+            0.9f,
+            TextureManager.get("Mohamadreza/NPC/Robin,Right1.png"),
+            TextureManager.get("Mohamadreza/NPC/Robin,Right2.png")
+        ));
+        NPC.Robin.setDown(new Animation<>(
+            0.9f,
+            TextureManager.get("Mohamadreza/NPC/Robin,Down1.png"),
+            TextureManager.get("Mohamadreza/NPC/Robin,Down2.png")
+        ));
+        NPC.Robin.setUp(new Animation<>(
+            0.9f,
+            TextureManager.get("Mohamadreza/NPC/Robin,Up1.png"),
+            TextureManager.get("Mohamadreza/NPC/Robin,Up2.png")
+        ));
+        NPC.Robin.setLeft(new Animation<>(
+            0.9f,
+            TextureManager.get("Mohamadreza/NPC/Robin,Left1.png"),
+            TextureManager.get("Mohamadreza/NPC/Robin,Left2.png")
+        ));
+
+        // Sebastian's Movement
+        NPC.Sebastian.setRight(new Animation<>(
+            0.7f,
+            TextureManager.get("Mohamadreza/NPC/Sebastian,Right1.png"),
+            TextureManager.get("Mohamadreza/NPC/Sebastian,Right2.png")
+        ));
+        NPC.Sebastian.setDown(new Animation<>(
+            0.7f,
+            TextureManager.get("Mohamadreza/NPC/Sebastian,Down1.png"),
+            TextureManager.get("Mohamadreza/NPC/Sebastian,Down2.png")
+        ));
+        NPC.Sebastian.setUp(new Animation<>(
+            0.7f,
+            TextureManager.get("Mohamadreza/NPC/Sebastian,Up1.png"),
+            TextureManager.get("Mohamadreza/NPC/Sebastian,Up2.png")
+        ));
+        NPC.Sebastian.setLeft(new Animation<>(
+            0.7f,
+            TextureManager.get("Mohamadreza/NPC/Sebastian,Left1.png"),
+            TextureManager.get("Mohamadreza/NPC/Sebastian,Left2.png")
+        ));
     }
 }

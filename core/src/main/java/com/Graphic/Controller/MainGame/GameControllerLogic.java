@@ -12,7 +12,8 @@ import com.Graphic.model.Enum.Direction;
 import com.Graphic.model.Enum.Door;
 import com.Graphic.model.Enum.FoodTypes;
 import com.Graphic.model.Enum.ItemType.*;
-import com.Graphic.model.Enum.NPC;
+import com.Graphic.model.Enum.NPC.NPC;
+import com.Graphic.model.Enum.NPC.NPCHouse;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Enum.WeatherTime.*;
 import com.Graphic.model.HelpersClass.Result;
@@ -465,21 +466,31 @@ public class GameControllerLogic {
 
                 else if (NPC.wallOrDoor(i, j) != null) {
                     NPC npc = NPC.wallOrDoor(i, j);
-                    if (i == npc.getTopLeftX() + npc.getWidth() -1 && j==npc.getTopLeftY() + 2) {
-                        Tile tile=new Tile(i , j , dor);
-                        currentGame.bigMap.add(tile);
-                    }
-                    else {
-                        Tile tile=new Tile(i , j , wall);
-                        currentGame.bigMap.add(tile);
-                    }
+
+                    NPCHouse house = new NPCHouse(npc);
+                    Tile tile = new Tile(i, j, house);
+                    currentGame.bigMap.add(tile);
+
+//                        if (i == npc.getTopLeftX() + npc.getWidth() -1 && j==npc.getTopLeftY() + 2) {
+//                        Tile tile=new Tile(i , j , dor);
+//                        currentGame.bigMap.add(tile);
+//                    }
+//                    else {
+//                        Tile tile=new Tile(i , j , wall);
+//                        currentGame.bigMap.add(tile);
+//                    }
                 }
                 else if (isInNpc(i , j) != null) {
                     NPC npc = isInNpc(i, j);
-                    Walkable walkable=new Walkable();
-                    walkable.setGrassOrFiber(npc.getName());
-                    Tile tile=new Tile(i , j , walkable);
+                    NPCHouse house = new NPCHouse(npc);
+                    Tile tile = new Tile(i, j, house);
                     currentGame.bigMap.add(tile);
+//                     else {
+//                        Walkable walkable = new Walkable();
+//                        walkable.setGrassOrFiber(npc.getName());
+//                        Tile tile = new Tile(i, j, walkable);
+//                        currentGame.bigMap.add(tile);
+//                    }
                 }
                 else {
                     Walkable walkable=new Walkable();
@@ -704,14 +715,7 @@ public class GameControllerLogic {
 
 
     public static boolean checkCoordinateForFishing(){
-//        int [] x={1,1,1,0,0,-1,-1,-1};
-//        int [] y={1,0,-1,1,-1,-1,0,1};
-//        for (int i=0;i<8;i++){
-//            if (getTileByCoordinates(currentGame.currentPlayer.getPositionX() +x[i],currentGame.currentPlayer.getPositionY() +y[i]).
-//                getGameObject() instanceof Lake){
-//                return true;
-//            }
-//        }
+
         return false;
     }
     public static FishingPole isFishingPoleTypeExist(String name){
@@ -721,7 +725,7 @@ public class GameControllerLogic {
             fishingPoleType=FishingPoleType.getFishingPoleType(name);
         }
         catch (NullPointerException e){
-            System.out.println(e.getMessage());
+
             return null;
         }
         FishingPole fishingPole=new FishingPole();
@@ -786,10 +790,6 @@ public class GameControllerLogic {
         float x = currentGame.currentPlayer.sprite.getX();
         float y = currentGame.currentPlayer.sprite.getY();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
-            System.out.println(currentGame.currentPlayer.sprite.getX() + ", " + currentGame.currentPlayer.sprite.getY());
-        }
-
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             InputGameController.moveAnimation();
             currentGame.currentPlayer.setDirection(Direction.Up);
@@ -846,7 +846,7 @@ public class GameControllerLogic {
                 animal.getSprite().setPosition(
                     currentGame.currentPlayer.getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).x,
                     currentGame.currentPlayer.getCurrentBarnOrCage().getBarnORCageType().getPoints().get(animal.getIndex()).y);
-                //System.out.println(animal.getSprite().getX()+ ",,"+animal.getSprite().getY());
+                //(animal.getSprite().getX()+ ",,"+animal.getSprite().getY());
                 animal.getSprite().setSize(animal.getType().getX() , animal.getType().getY());
 
                 animal.getSprite().draw(Main.getBatch());
@@ -1240,9 +1240,7 @@ public class GameControllerLogic {
                         animal.increaseFriendShip(- 20);
                     }
                     animal.setFeedPreviousDay(animal.isFeedToday());
-                    System.out.println(animal.isFeedPreviousDay() + "قبل");
                     animal.setFeedToday(false);
-                    System.out.println(animal.isFeedPreviousDay() + "بعد");
                     if (currentGame.currentDate.getDate() - animal.getLastProduceDay() == animal.getType().getPeriod()) {
                         animal.setLastProduceDay(currentGame.currentDate.clone().getDate());
                     }
@@ -1337,7 +1335,6 @@ public class GameControllerLogic {
             Farm farm = user.getFarm();
             for (ShippingBin shippingBin : farm.shippingBins) {
                 for (Map.Entry<Items,Integer> entry : shippingBin.binContents.entrySet()) {
-                    System.out.println(entry.getKey().getName() + " " + entry.getValue());
                     if (entry.getKey() instanceof Fish) {
                         Fish fish = (Fish) entry.getKey();
                         currentGame.currentPlayer.increaseMoney(fish.getSellPrice() * entry.getValue());
@@ -1372,10 +1369,8 @@ public class GameControllerLogic {
                         nextTurn();
                         return;
                     }
-                    System.out.println(currentGame.currentPlayer.getNickname() + "'s turn.");
 
                     // Display Unseen Messages...
-                    System.out.println("\nDisplaying Unseen Messages...");
                     for (List<MessageHandling> messages : currentGame.conversations.values()) {
                         for (MessageHandling m : messages) {
                             if (m.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !m.isSeen()) {
@@ -1394,8 +1389,6 @@ public class GameControllerLogic {
                             }
                         }
                     }
-                    System.out.println(GREEN+"Unseen Messages Displayed.\n"+RESET);
-
                     // proposals
                     for (List<MessageHandling> messages : currentGame.conversations.values()) {
                         for (MessageHandling m : messages) {
@@ -1405,7 +1398,6 @@ public class GameControllerLogic {
                                 Result result;
                                 do {
                                     result = Marriage.proposalResponse(m.getSender(), m.getReceiver());
-                                    System.out.println(result.massage());
                                 } while (!result.IsSuccess());
                             }
                         }
@@ -1418,7 +1410,6 @@ public class GameControllerLogic {
                 wrongAttempts++;
             }
         }
-        System.out.println(RED+"Couldn't find the next Player!"+RESET);
     }
     public static String DisplayFriendships () {
         String targetName = currentGame.currentPlayer.getUsername();
@@ -1532,20 +1523,16 @@ public class GameControllerLogic {
             }
         }
         if (!found) {
-            System.out.println(RED+"Username is Unavailable!"+RESET);
             return;
         }
         if (username.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't Talk to " + RED+"Yourself"+RESET + "!");
             return;
         }
         HumanCommunications f = getFriendship(currentGame.currentPlayer, destinationUser);
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
         }
         Result result = f.talkingHistory();
-        System.out.println(result);
     }
     public static Result hug (String input) {
         String username = GameMenuCommands.hug.getMatcher(input).group("username");
@@ -1567,26 +1554,21 @@ public class GameControllerLogic {
         String item = GameMenuCommands.sendGift.getMatcher(input).group("item");
         int amount = Integer.parseInt(GameMenuCommands.sendGift.getMatcher(input).group("amount"));
         if (username == null || item == null) {
-            System.out.println("Invalid Command!");
             return;
         }
         if (!currentGame.players.contains(findPlayerInGame(username))) {
-            System.out.println(RED+"Username '" + username + "' is Unavailable!"+RESET);
             return;
         }
         if (username.equals(currentGame.currentPlayer.getUsername())) {
-            System.out.println("You can't Send Gifts to " + RED+"Yourself"+RESET + "!");
             return;
         }
         HumanCommunications f = getFriendship(currentGame.currentPlayer, findPlayerInGame(username));
         if (f == null) {
-            System.out.println("There's " + RED+"no Friendship"+RESET + " Among these Users");
             return;
         }
 
 
         Result result = f.sendGifts(username, item, amount);
-        System.out.println(result);
         if (result.IsSuccess()) {
             Set<User> key = new HashSet<>(Arrays.asList(currentGame.currentPlayer, findPlayerInGame(username)));
             currentGame.conversations.putIfAbsent(key, new ArrayList<>());
@@ -1625,34 +1607,28 @@ public class GameControllerLogic {
     public static void unlockRecipe(String input) {
         Matcher matcher = GameMenuCommands.recipeUnlock.getMatcher(input);
         if (matcher == null) {
-            System.out.println(RED+"Oops!"+RESET);
             return;
         }
         String foodName = matcher.group("food");
         if (foodName == null) {
-            System.out.println(RED+"Oops!"+RESET);
             return;
         }
         Recipe recipe = Recipe.findRecipeByName(foodName);
         if (recipe == null) {
-            System.out.println(RED+"Food Name Unavailable!"+RESET);
             return;
         }
         recipe.setUsable(true);
-        System.out.println(GREEN+"Done!"+RESET);
 
     }
     public static void eatFood (String input) {
         Matcher matcher = GameMenuCommands.eatFood.getMatcher(input);
         if (matcher == null) {
-            System.out.println(RED+"Unknown Error!"+RESET);
             return;
         }
         String foodName = matcher.group("food");
 
         Recipe recipe = Recipe.findRecipeByName(foodName);
         if (recipe == null) {
-            System.out.println(RED+"Food Name Unavailable!"+RESET);
             return;
         }
 
@@ -1668,17 +1644,13 @@ public class GameControllerLogic {
             fridge.items.put(i, fridge.items.get(i) - 1);
             fridge.items.entrySet().removeIf(entry -> entry.getValue()==null || entry.getValue() <= 0);
         } else {
-            System.out.println(RED+"None of This Item in Fridge or Inventory!"+RESET);
             return;
         }
         currentGame.currentPlayer.setHealth(currentGame.currentPlayer.getHealth() + recipe.getEnergy());
         recipe.applyEffect(currentGame.currentPlayer);
-
-        System.out.println(GREEN+"Eaten Successfully."+RESET);
     }
     public static void exitGame () {
         if (currentGame.currentPlayer != currentUser) {
-            System.out.println(RED+"Access Denied!"+RESET);
             return;
         }
         //TODO بیشترین امتیاز و... سیو بشه
@@ -1692,10 +1664,8 @@ public class GameControllerLogic {
             if (user == terminator)
                 continue;
             currentGame.currentPlayer = user;
-            System.out.println(currentGame.currentPlayer.getNickname() + ", Do You Agree With the Game Termination?[Y/N]");
             String choice = scanner.next();
             if (!choice.trim().toLowerCase().equals("y")) {
-                System.out.println("Vote Failed! The Game won't be Terminated.");
                 currentGame.currentPlayer = terminator;
                 return;
             }
@@ -2240,7 +2210,6 @@ public class GameControllerLogic {
                     if (user.getFarm().getMine().checkPositionForMineral(point)) {
                         if (Math.random() <= mineral.getProbability()) {
                             if (user.equals(currentGame.currentPlayer)) {
-                                System.out.println("jdsfkfhbsk");
                             }
                             ForagingMinerals f = new ForagingMinerals(mineral);
                             f.setPosition(point);
@@ -2509,7 +2478,6 @@ public class GameControllerLogic {
             return new Result(false, RED+"You can't plow this tile!"+RESET);
 
         ((Walkable) tile.getGameObject()).setGrassOrFiber("Plowed");
-        System.out.println("TEST");
         return new Result(true, BLUE+"Tile("+tile.getX()+","+tile.getY()+") Plowed!"+RESET);
     }
     public static Result useWateringCan (int dir) {
