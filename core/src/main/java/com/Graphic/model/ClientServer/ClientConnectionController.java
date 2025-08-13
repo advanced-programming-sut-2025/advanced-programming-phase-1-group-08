@@ -688,19 +688,19 @@ public class ClientConnectionController {
         return Math.abs(firstX - secondX) < 5f && Math.abs(firstY - secondY) < 5f;
     }
     public void CheckFriendDistance(Game game) throws IOException {
-        for (int i = 0; i < game.getGameState().getPlayers().size(); i++) {
-            for (int j = i + 1; j < game.getGameState().getPlayers().size(); j++) {
-                if (isClose(game.getGameState().getPlayers().get(i), game.getGameState().getPlayers().get(j))) {
-                    HashMap<String , Object> body = new HashMap<>();
-                    body.put("Player", game.getGameState().getPlayers().get(j));
-                    sendToOnePerson(new Message(A_FRIEND_IS_CLOSE, body), game, game.getGameState().getPlayers().get(i));
-
-                    HashMap<String , Object> body2 = new HashMap<>();
-                    body2.put("Player", game.getGameState().getPlayers().get(i));
-                    sendToOnePerson(new Message(A_FRIEND_IS_CLOSE, body2), game, game.getGameState().getPlayers().get(j));
-                }
-            }
-        }
+//        for (int i = 0; i < game.getGameState().getPlayers().size(); i++) {
+//            for (int j = i + 1; j < game.getGameState().getPlayers().size(); j++) {
+//                if (isClose(game.getGameState().getPlayers().get(i), game.getGameState().getPlayers().get(j))) {
+//                    HashMap<String , Object> body = new HashMap<>();
+//                    body.put("Player", game.getGameState().getPlayers().get(j));
+//                    sendToOnePerson(new Message(A_FRIEND_IS_CLOSE, body), game, game.getGameState().getPlayers().get(i));
+//
+//                    HashMap<String , Object> body2 = new HashMap<>();
+//                    body2.put("Player", game.getGameState().getPlayers().get(i));
+//                    sendToOnePerson(new Message(A_FRIEND_IS_CLOSE, body2), game, game.getGameState().getPlayers().get(j));
+//                }
+//            }
+//        }
     }
 
                                         // Erfan
