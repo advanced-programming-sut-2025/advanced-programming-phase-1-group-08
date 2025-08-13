@@ -1695,20 +1695,37 @@ public class GameControllerLogic {
         return new Result(true, "");
     }
     public static Result propose(String username) {
-//        User wife = findPlayerInGame(username);
-//        if (wife == null) {
-//            return new Result(false, "Username is Unavailable!");
-//        }
-//        if (username.equals(Main.getClient().getPlayer().getUsername())) {
-//            return new Result(false, "You can't Propose to Yourself!");
-//        }
-//        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), wife);
-//        if (f == null) {
-//            return new Result(false, "There's no Friendship Among these Users");
-//        }
-//
-//        return f.propose();
-        return null;
+        if (Main.getClient().getPlayer().getGender().equalsIgnoreCase("woman")) {
+            return new Result(false, "Women Can't Propose!");
+        }
+
+        // gay marriage is ok for now!!!
+        if (Main.getClient().getPlayer().getSpouse() != null)
+            return new Result(false, "Cheating is not allowed here!");
+
+        HumanCommunications f = ClientWorkController.getInstance().getFriendship(Main.getClient().getPlayer(), findPlayerInGame(username));
+        if (f == null) {
+            return new Result(false, "There's no Friendship Among these Users");
+        }
+
+        if (f.getLevel() < 3) {
+            return new Result(false, "You need at least Friendship Level 3!");
+        }
+        if (f.getLevel() >= 3 && f.getXP() < 300) {
+            return new Result(false, "Not enough XPs in Friendship Level 3!");
+        }
+
+        Inventory inventory = Main.getClient().getPlayer().getBackPack().inventory;
+        if (!inventory.Items.containsKey(new MarketItem(MarketItemType.WeddingRing))) {
+            return  new Result(false, "You Have No Wedding Ring!");
+        }
+
+        HashMap<String , Object> map = new HashMap<>();
+        map.put("ProposerName", Main.getClient().getPlayer().getUsername());
+        map.put("ProposedName", username);
+        Main.getClient().getRequests().add(new Message(CommandType.SEND_PROPOSAL, map));
+
+        return new Result(true, "You Have Successfully Proposed.");
     }
     public static void unlockRecipe(String input) {
         Matcher matcher = GameMenuCommands.recipeUnlock.getMatcher(input);
