@@ -84,9 +84,7 @@ public class Game {
     private final transient ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     //private ArrayList<User> players;
 
-    public Game () {
-
-    }
+    public Game () {}
 
     public Game(String name, String Id ,  String password, boolean isPrivate, boolean isVisible , User creator) {
         this.name = name;

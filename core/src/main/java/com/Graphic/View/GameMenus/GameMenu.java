@@ -12,7 +12,6 @@ import com.Graphic.model.Animall.AnimalRenderer;
 import com.Graphic.model.ClientServer.ClientWorkController;
 import com.Graphic.model.ClientServer.GameState;
 import com.Graphic.model.ClientServer.Message;
-import com.Graphic.model.ClientServer.ServerHandler;
 import com.Graphic.model.Enum.AllPlants.CropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingCropsType;
 import com.Graphic.model.Enum.AllPlants.ForagingMineralsType;
@@ -38,7 +37,6 @@ import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Places.Lake;
 import com.Graphic.model.Plants.*;
 import com.Graphic.model.Plants.Tree;
-import com.Graphic.model.ToolsPackage.FishingPole;
 import com.Graphic.model.ToolsPackage.Tools;
 import com.Graphic.model.Weather.DateHour;
 import com.badlogic.gdx.*;
@@ -74,7 +72,6 @@ import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.Main.newSkin;
 import static com.Graphic.model.App.*;
 import static com.Graphic.model.HelpersClass.TextureManager.EQUIP_THING_SIZE;
-import static com.Graphic.model.HelpersClass.TextureManager.TEXTURE_SIZE;
 
 
 public class GameMenu implements  Screen, InputProcessor , AppMenu {
@@ -160,6 +157,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
     private boolean toolsMenuIsActivated;
     private Window toolsPopup;
+
+    private boolean cheatMenuIsActivated;
+    private Window cheatPopup;
 
     private boolean EscMenuIsActivated;
     private Window EscPopup;
@@ -1187,8 +1187,6 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
         currentMenu = Menu.GameMenu;
 
-
-        stage = new Stage(new ScreenViewport());
         clockGroup = new Group();
         camera = new OrthographicCamera();
 
@@ -1319,6 +1317,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         informationIsActivated = false;
         socialMenuIsActivated = false;
         toolsMenuIsActivated = false;
+        cheatMenuIsActivated = false;
         inventoryIsActivated = false;
         skillMenuIsActivated = false;
         EscMenuIsActivated = false;
@@ -1360,12 +1359,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 showSettingMenu();
             else if (Gdx.input.isKeyJustPressed(Keys.NPCMenu))
                 showNPCMenu();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.C))
-                test();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.X))
-                test2();
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.V))
-                test3();
+            else if (Gdx.input.isKeyJustPressed(Keys.cheatMenu))
+                createCheatMenu();
 
 
             else if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
@@ -1411,34 +1406,86 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         } else if (Gdx.input.isKeyJustPressed(Keys.EscMenu))
             ExitOfMenu();
     }
+    private void createCheatMenu() {
+
+        createGrayBackGround();
+        cheatPopup = new Window("", newSkin);
+        cheatPopup.setSize(650, 650);
+        cheatPopup.setPosition(
+            (stage.getWidth() - cheatPopup.getWidth()) / 2,
+            (stage.getHeight() - cheatPopup.getHeight()) / 2);
+
+
+        Table content = new Table();
+        createCheatButtons(content);
+
+        cheatPopup.add(content).expand().fill();
+
+        stage.addActor(cheatPopup);
+        cheatMenuIsActivated = true;
+    }
+    private void createCheatButtons (Table table) {
+
+        table.setFillParent(true);
+        table.defaults().align(Align.center).pad(10);
+        table.center();
+
+
+        TextButton tree = new TextButton("tree", newSkin);
+        TextButton watering = new TextButton("watering", newSkin);
+
+        TextButton backButton = new TextButton("back", newSkin);
+
+
+        table.add(tree).width(250).center();
+        table.add(watering).width(250).center();
+
+        // table.row().pad(15, 0, 10, 0);
+
+
+        table.row().pad(30, 0, 10, 0);
+        table.add(backButton).width(150).colspan(2).center();
+
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                helperBackGround.remove();
+                cheatPopup.remove();
+                cheatMenuIsActivated = false;
+            }
+        });
+        tree.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                test();
+            }
+        });
+        watering.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                test2();
+            }
+        });
+        stage.addActor(table);
+    }
     private void test () {
-        System.out.println("kir");
         for (Tile tile : Main.getClient().getPlayer().getFarm().Farm) {
             if (tile.getGameObject() instanceof Walkable) {
                 Tree tree = new Tree(TreeType.AppleTree, Main.getClient().getLocalGameState().currentDate.clone());
                 tile.setGameObject(tree);
                 controller.sendChangeGameObjectMessage(tile, tree);
-                System.out.println("$");
             }
         }
     }
     private void test2 () {
-        System.out.println("kos");
         for (Tile tile : Main.getClient().getPlayer().getFarm().Farm)
             if (tile.getGameObject() instanceof Tree) {
-                System.out.println("#");
                 Tree tree = (Tree) tile.getGameObject();
                 tree.setLastWater(Main.getClient().getLocalGameState().currentDate.clone());
             }
     }
-    private void test3 () {
-        System.out.println("kos mikh");
-        for (Tile tile : Main.getClient().getPlayer().getFarm().Farm)
-            if (tile.getGameObject() instanceof Tree) {
-                Tree tree = (Tree) tile.getGameObject();
-                System.out.println("Stage -> " + tree.getStage() + " Last Water " + tree.getLastWater().getDate() + "  hour " + Main.getClient().getLocalGameState().currentDate.getHour() + " day " + Main.getClient().getLocalGameState().currentDate.getDate());
-            }
-    }
+
     private void ExitOfMenu() {
 
         if (toolsMenuIsActivated) {
@@ -1472,6 +1519,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             NPCMenuPopup.remove();
             helperBackGround.remove();
             NPCMenuIsActivated = false;
+        } else if (cheatMenuIsActivated) {
+            helperBackGround.remove();
+            cheatPopup.remove();
+            cheatMenuIsActivated = false;
         }
 
     }
@@ -2384,31 +2435,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         greenHouseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
-                Result result = controller.buildGreenHouse();
-
-                Label.LabelStyle style = new Label.LabelStyle();
-                style.font = new BitmapFont();
-
-                if (result.IsSuccess())
-                    style.fontColor = Color.GREEN;
-                else
-                    style.fontColor = Color.RED;
-
-                Label label = new Label(result.massage(), style);
-                label.setAlignment(Align.left);
-                label.pack();
-
-                float margin = 10f;
-                label.setPosition(margin, stage.getViewport().getWorldHeight() - label.getHeight() - margin);
-
-                stage.addActor(label);
-
-                label.addAction(Actions.sequence(
-                    Actions.delay(3),
-                    Actions.fadeOut(0.5f),
-                    Actions.run(label::remove)
-                ));
+                handleGreenHouse ();
             }
         });
         inventoryButton.addListener(new ClickListener() {
@@ -2436,6 +2463,32 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
         });
         stage.addActor(table);
+    }
+    private void handleGreenHouse () {
+        Result result = controller.buildGreenHouse();
+
+        Label.LabelStyle style = new Label.LabelStyle();
+        style.font = new BitmapFont();
+
+        if (result.IsSuccess())
+            style.fontColor = Color.GREEN;
+        else
+            style.fontColor = Color.RED;
+
+        Label label = new Label(result.massage(), style);
+        label.setAlignment(Align.left);
+        label.pack();
+
+        float margin = 10f;
+        label.setPosition(margin, stage.getViewport().getWorldHeight() - label.getHeight() - margin);
+
+        stage.addActor(label);
+
+        label.addAction(Actions.sequence(
+            Actions.delay(3),
+            Actions.fadeOut(0.5f),
+            Actions.run(label::remove)
+        ));
     }
 
     private void drawCurrentItem() {
@@ -2698,7 +2751,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 skillMenuIsActivated || mapIsActivated ||
                 NPCMenuIsActivated || questsIsActivated ||
                 skillMenuIsActivated || mapIsActivated ||
-                dialogActivated ||
+                dialogActivated || cheatMenuIsActivated ||
                 Main.getClient().getPlayer().isFishing || Main.getClient().getPlayer().doingMinigame;
     }
 
@@ -2876,10 +2929,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
 
     public Stage getStage() {
-        if (stage == null) {
-            stage = new Stage(new ScreenViewport());
-            System.out.println("stage created");
-        }
+
         return stage;
     }
 
