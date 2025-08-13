@@ -383,6 +383,9 @@ public class ClientWork {
                 case SET_TIME -> {
                     controller.setTime(message.getFromBody("Hour"), message.getFromBody("Day"));
                 }
+                case PASS_TIME -> {
+                    controller.PassedTime(message.getFromBody("Hour"), message.getFromBody("Day"));
+                }
                 case ADD_MINERAL -> {
                     controller.addMineral(
                         message.getFromBody("Mineral"),

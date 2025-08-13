@@ -433,7 +433,6 @@ public class InputGameController {
 
     public Result print(){
 
-
         camera.position.set(Main.getClient().getPlayer().getPositionX() , Main.getClient().getPlayer().getPositionY() , 0f);
         //camera.update();
         //camera.unproject(camera.position);
@@ -473,6 +472,9 @@ public class InputGameController {
         for (User player : gameMenu.gameState.getPlayers()) {
 
             GreenHouse greenHouse = player.getFarm().getGreenHouse();
+
+            if (!greenHouse.isCreated())
+                continue;
 
             Main.getBatch().draw(TextureManager.get(GameTexturePath.GreenHouse.getPath()),
                 (greenHouse.getCoordinateX() + 1) * TEXTURE_SIZE, TEXTURE_SIZE * (92 - greenHouse.getCoordinateY() - greenHouse.getLength()),
@@ -926,8 +928,6 @@ public class InputGameController {
                 e.printStackTrace();
             }
         }
-        System.out.println(queue.size());
-        System.out.println(animal.getPositionX() + "pp" + animal.getPositionY());
         try {
             tiles.add(getTileByCoordinates(animal.getPositionX(), animal.getPositionY(), Main.getClient().getLocalGameState()));
         }
@@ -940,7 +940,6 @@ public class InputGameController {
         try {
             while (!queue.isEmpty()) {
                 Tile tile = queue.poll();
-                System.out.println("X: " + tile.getX() + "Y: " + tile.getY());
                 if (tile.getX() == goalX && tile.getY() == goalY) {
                     List<Tile> Path = new ArrayList<>();
                     while (tile != null) {
@@ -2081,7 +2080,6 @@ public class InputGameController {
                                                                     // Erfan
 
 
-                                                                  // input command Date
                                                                    // input command plant
 
 
@@ -2154,20 +2152,20 @@ public class InputGameController {
     public Result buildGreenHouse () {
 
         if (Main.getClient().getPlayer().getFarm().getGreenHouse().isCreated())
-            return new Result(false, BRIGHT_BLUE+"The greenhouse has been build!"+RESET);
+            return new Result(false, "The greenhouse has been build!");
 
         if (!checkAmountProductAvailable(new Wood(), GreenHouse.requiredWood))
-            return new Result(false, RED+"You don't have enough wood!"+RESET);
+            return new Result(false, "You don't have enough wood!");
 
         if (Main.getClient().getPlayer().getMoney() < GreenHouse.requiredCoins )
-            return new Result(false, RED+"You don't have enough Coin!"+RESET);
+            return new Result(false, "You don't have enough Coin!");
 
         Main.getClient().getPlayer().increaseMoney(-GreenHouse.requiredCoins);
         advanceItem(new Wood(), -GreenHouse.requiredWood);
 
         Main.getClient().getPlayer().getFarm().getGreenHouse().setCreated(true);
 
-        return new Result(true, RED + "-500 wood  -1000 Coin"+BLUE+"\nThe greenhouse has been built! \uD83C\uDF31"+RESET);
+        return new Result(true, "-500 wood  -1000 Coin\nThe greenhouse has been built! \uD83C\uDF31");
     }
     public Result info (String name) {
 
@@ -2660,8 +2658,8 @@ public class InputGameController {
         HashMap<String , Object> PassedTime = new HashMap<>();
         PassedTime.put("Hour", hour);
         PassedTime.put("Day", day);
+        System.out.println("Player req day : " + day + " hour : " + hour );
         Main.getClient().getRequests().add(new Message(CommandType.SET_TIME , PassedTime));
-
     }
     public void sendChangeGameObjectMessage (int x, int y, GameObject gameObject) {
         HashMap<String , Object> PassedTime = new HashMap<>();

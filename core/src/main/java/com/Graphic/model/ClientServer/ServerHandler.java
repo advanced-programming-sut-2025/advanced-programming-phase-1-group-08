@@ -48,7 +48,7 @@ public class ServerHandler extends Thread {
     }
     private void ServerRender() throws IOException {
 
-        if (TimeUtils.millis() - lastTime > 120000) {
+        if (TimeUtils.millis() - lastTime > 1200) {
             controller.passedOfTime(0, 1, game.getGameState().currentDate, game);
             lastTime = TimeUtils.millis();
         }

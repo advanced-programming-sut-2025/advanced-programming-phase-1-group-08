@@ -220,7 +220,7 @@ public class ClientConnectionController {
         startGame.put("Players" , game.getPlayers());
         sendToAllExceptOnePerson(new Message(START_LOBBY , startGame) , game , Player);
 
-        ServerHandler serverHandler = ServerHandler.getInstance(game);
+        ServerHandler serverHandler = ServerHandler.getInstance();
         serverHandler.start();
 
         return new Message(START_LOBBY , startGame);
@@ -264,12 +264,8 @@ public class ClientConnectionController {
             }
         }
 
-        if (game.getGameState().getNumberOfMaps() == 4) {
+        if (game.getGameState().getNumberOfMaps() == 4)
             sendToAll(build(game.getGameState()) , game);
-            for (Tile tile : game.getGameState().bigMap) {
-                System.out.println("x: " + tile.getX() + "y: " + tile.getY());
-            }
-        }
     }
 
     public Game newGame(Message message , Connection connection) throws IOException {
@@ -701,6 +697,13 @@ public class ClientConnectionController {
         PassedTime.put("Day", day);
         sendToAll(new Message(CommandType.SET_TIME, PassedTime), game);
     }
+    public void sendPassTimeMessage (int hour, int day, Game game) throws IOException {
+
+        HashMap<String , Object> PassedTime = new HashMap<>();
+        PassedTime.put("Hour", hour);
+        PassedTime.put("Day", day);
+        sendToAll(new Message(CommandType.PASS_TIME, PassedTime), game);
+    }
     public void passedOfTime (int day, int hour, DateHour currentDateHour, Game game) throws IOException {
 
         DateHour dateHour = currentDateHour.clone();
@@ -727,16 +730,7 @@ public class ClientConnectionController {
         }
 
         currentDateHour.increaseHour(dateHour.getHour() - currentDateHour.getHour());
-        sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
-    }
-    public void setTime (int day, int hour, Game game) throws IOException {
-
-        DateHour currentDateHour = game.getGameState().currentDate;
-
-        currentDateHour.setDate(day);
-        currentDateHour.increaseHour(hour - currentDateHour.getHour());
-
-        sendSetTimeMessage(currentDateHour.getHour(), currentDateHour.getDate(), game);
+        sendPassTimeMessage(hour, day, game);
     }
     public void sendSetGameObjectMessage (int x, int y, GameObject object, Game game) throws IOException {
 
@@ -830,41 +824,41 @@ public class ClientConnectionController {
     }
     public void createRandomMinerals (Game game) throws IOException {
 
-//        for (User user : game.getGameState().getPlayers()) {
-//
-//            List<Integer> positions = new ArrayList<>();
-//            for (int i = 0 ; i < 16 ; i++)
-//                positions.add(i);
-//
-//            Collections.shuffle(positions);
-//
-//            List<ForagingMineralsType> minerals = Arrays.asList(
-//                RUBY, COAL, IRON, TOPAZ, GOLD, JADE, IRIDIUM,
-//                QUARTZ, EMERALD, COPPER, DIAMOND, AMETHYST,
-//                AQUAMARINE, FROZEN_TEAR, FIRE_QUARTZ,
-//                PRISMATIC_SHARD, EARTH_CRYSTAL
-//            );
-//
-//            int posIndex = 0;
-//            for (ForagingMineralsType mineral : minerals) {
-//                while (posIndex < positions.size()) {
-//                    Point point = new Point(
-//                        user.getFarm().getMine().getPositions().get(positions.get(posIndex)));
-//
-//                    if (user.getFarm().getMine().checkPositionForMineral(point)) {
-//                        if (Math.random() <= mineral.getProbability()) {
-//                            ForagingMinerals f = new ForagingMinerals(mineral);
-//                            f.setPosition(point);
-//                            user.getFarm().getMine().getForagingMinerals().add(f);
-//                            user.getFarm().getMine().getTaken().add(point);
-//                            sendAddMineralMessage(user, f, point, game);
-//                            break;
-//                        }
-//                    }
-//                    posIndex ++;
-//                }
-//            }
-//        }
+        for (User user : game.getGameState().getPlayers()) {
+
+            List<Integer> positions = new ArrayList<>();
+            for (int i = 0 ; i < 16 ; i++)
+                positions.add(i);
+
+            Collections.shuffle(positions);
+
+            List<ForagingMineralsType> minerals = Arrays.asList(
+                RUBY, COAL, IRON, TOPAZ, GOLD, JADE, IRIDIUM,
+                QUARTZ, EMERALD, COPPER, DIAMOND, AMETHYST,
+                AQUAMARINE, FROZEN_TEAR, FIRE_QUARTZ,
+                PRISMATIC_SHARD, EARTH_CRYSTAL
+            );
+
+            int posIndex = 0;
+            for (ForagingMineralsType mineral : minerals) {
+                while (posIndex < positions.size()) {
+                    Point point = new Point(
+                        user.getFarm().getMine().getPositions().get(positions.get(posIndex)));
+
+                    if (user.getFarm().getMine().checkPositionForMineral(point)) {
+                        if (Math.random() <= mineral.getProbability()) {
+                            ForagingMinerals f = new ForagingMinerals(mineral);
+                            f.setPosition(point);
+                            user.getFarm().getMine().getForagingMinerals().add(f);
+                            user.getFarm().getMine().getTaken().add(point);
+                            sendAddMineralMessage(user, f, point, game);
+                            break;
+                        }
+                    }
+                    posIndex ++;
+                }
+            }
+        }
     }
 
     public Message changeCurrentItem(User player, Items item, Game game) throws IOException {
