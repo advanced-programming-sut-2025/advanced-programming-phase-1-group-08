@@ -1814,8 +1814,8 @@ public class GameControllerLogic {
         }
         else {
             Home home = user.getFarm().getHome();
-            user.setPositionX(home.getTopLeftX() + home.getWidth() / 2);
-            user.setPositionY(home.getTopLeftY() + home.getLength());
+            user.setPositionX((home.getTopLeftX() + home.getWidth() / 2) * TEXTURE_SIZE);
+            user.setPositionY((home.getTopLeftY() + home.getLength()) * TEXTURE_SIZE);
         }
     }
     public static void initializePlayer () {
@@ -1990,9 +1990,6 @@ public class GameControllerLogic {
         calculateAnimalsFriendship();
         checkAnimalProduct();
         NPCAutomaticTasks();
-
-        for (Tile tile : Main.getClient().getLocalGameState().bigMap)
-            tile.getGameObject().startDayAutomaticTask();
 
         doWeatherTask();
         crowAttack();
@@ -2851,23 +2848,20 @@ public class GameControllerLogic {
     // NPC task
     public static void NPCAutomaticTasks() {
 
-        User saveUser = Main.getClient().getPlayer();
+        User user = Main.getClient().getPlayer();
 
-        for (User user : Main.getClient().getLocalGameState().getPlayers()) {
-            for (NPC npc : NPC.values()) {
+        for (NPC npc : NPC.values()) {
 
-                Main.getClient().setPlayer(user);
-                user.setTodayTalking(npc, false);
-                user.setTodayGifting(npc, false);
+            Main.getClient().setPlayer(user);
+            user.setTodayTalking(npc, false);
+            user.setTodayGifting(npc, false);
 
-                if (user.getFriendshipLevel(npc) == 3 && Math.random() > 0.5)
-                    if (user.getBackPack().getType().getRemindCapacity() > 0 ||
-                        checkAmountProductAvailable(npc.getGiftItem(), 1))
+            if (user.getFriendshipLevel(npc) == 3 && Math.random() > 0.5)
+                if (user.getBackPack().getType().getRemindCapacity() > 0 ||
+                    checkAmountProductAvailable(npc.getGiftItem(), 1))
 
-                        advanceItem(npc.getGiftItem(), 1);
-            }
+                    advanceItem(npc.getGiftItem(), 1);
         }
-        Main.getClient().setPlayer(saveUser);
     }
     public static String OneNPCQuestsList (NPC npc) {
 

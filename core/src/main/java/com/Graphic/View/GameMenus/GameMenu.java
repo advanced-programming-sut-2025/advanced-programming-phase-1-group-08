@@ -1493,6 +1493,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         TextButton remove = new TextButton("remove", newSkin);
         TextButton plow = new TextButton("plow", newSkin);
 
+        TextButton money = new TextButton("money", newSkin);
+
         TextButton backButton = new TextButton("back", newSkin);
 
 
@@ -1504,6 +1506,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         table.row().pad(15, 0, 10, 0);
         table.add(remove).width(250).center();
         table.add(plow).width(250).center();
+        table.row().pad(15, 0, 10, 0);
+        table.add(money).width(250).center();
 
         table.row().pad(30, 0, 10, 0);
         table.add(backButton).width(150).colspan(2).center();
@@ -1515,6 +1519,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 helperBackGround.remove();
                 cheatPopup.remove();
                 cheatMenuIsActivated = false;
+            }
+        });
+        tree.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getClient().getPlayer().increaseMoney(500);
             }
         });
         tree.addListener(new ClickListener() {

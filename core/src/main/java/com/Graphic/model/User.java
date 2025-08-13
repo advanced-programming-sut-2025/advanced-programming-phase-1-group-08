@@ -433,7 +433,7 @@ public class User {
         return Math.min(friendshipPoint.get(npc)%200, 3);
     }
     public int getFriendshipLevel(NPC npc) {
-
+        System.out.println(npc.name());
         return Math.min((friendshipPoint.get(npc)/200), 3);
     }
     public int getFriendshipPoint(NPC npc) {
