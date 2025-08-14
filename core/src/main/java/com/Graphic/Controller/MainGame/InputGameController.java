@@ -296,7 +296,7 @@ public class InputGameController {
 
 
 
-    public Result print(){
+    public Result print() {
 
         for (int i =0 ; i< 90 ; i++)
             for (int j =0 ; j< 90 ; j++) {

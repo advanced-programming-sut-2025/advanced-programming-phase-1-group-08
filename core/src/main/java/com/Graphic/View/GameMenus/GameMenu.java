@@ -75,11 +75,11 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     private OrthogonalTiledMapRenderer renderer;
     private InputMultiplexer multiplexer;
 
-    private boolean progressComplete = false;
-    private boolean ePressed = false;
-    private float holdTime = 0f;
-    private final float maxHoldTime = 5f;
-    private ShapeRenderer shapeRenderer;
+//    private boolean progressComplete = false;
+//    private boolean ePressed = false;
+//    private float holdTime = 0f;
+//    private final float maxHoldTime = 5f;
+//    private ShapeRenderer shapeRenderer; 424
 
     Texture friendsListTexture;
     TextureRegionDrawable buttonDrawable;
@@ -469,7 +469,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
         });
 
-        shapeRenderer = new ShapeRenderer();
+        // shapeRenderer = new ShapeRenderer();
 
         energyLabel = new Label("Energy : 100", newSkin);
         lastHealth = -1;

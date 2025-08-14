@@ -10,7 +10,7 @@ public enum SampleAnimation {
     Pyramid ("Pyramid/Pyramid",13,13,4),
     Skeleton ("Skeleton/Skeleton",13,13,4),
     QuestionMark ("QuestionMark/QuestionMark",7,13,6),
-
+    Rain ("rain.png", 16, 16, 4)
 
 
     ;

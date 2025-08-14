@@ -16,7 +16,9 @@ import com.Graphic.model.Enum.NPC.NPC;
 import com.Graphic.model.Enum.NPC.NPCHouse;
 import com.Graphic.model.Enum.ToolsType.*;
 import com.Graphic.model.Enum.WeatherTime.*;
+import com.Graphic.model.HelpersClass.AnimatedImage;
 import com.Graphic.model.HelpersClass.Result;
+import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 import com.Graphic.model.MapThings.*;
 import com.Graphic.model.OtherItem.*;
@@ -31,6 +33,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -71,7 +74,6 @@ public class GameControllerLogic {
 
     public static GameMenu gameMenu = GameMenu.getInstance();
 
-    static int turnCounter = 0;
     static Image helperBackGround;
     static Random rand = new Random();
     static DateHour lastTimeUpdate;
@@ -79,7 +81,8 @@ public class GameControllerLogic {
 
     static Cloud cloud;
     public static LightningEffect lightningEffect;
-
+    private static Animation<TextureRegion> rainAnimation;
+    private static float rainStateTime = 0f;
 
 
 
@@ -88,7 +91,20 @@ public class GameControllerLogic {
         lastTimeUpdate = currentGame.currentDate.clone();
     }
 
+    public void loadRainAnimation() {
+        Texture rainSheet = new Texture("rain.png"); // اسپریت شیت باران
+        TextureRegion[][] tmp = TextureRegion.split(rainSheet,
+            rainSheet.getWidth() / 4, // تعداد فریم‌ها در عرض
+            rainSheet.getHeight() / 1 // تعداد فریم‌ها در ارتفاع
+        );
+        TextureRegion[] rainFrames = new TextureRegion[4];
+        for (int i = 0; i < 4; i++) {
+            rainFrames[i] = tmp[0][i];
+        }
+        rainAnimation = new Animation<>(0.1f, rainFrames); // هر فریم 0.1 ثانیه
+    }
     public static void update(float delta) {
+
         EnterTheBarnOrCage();
         EnterTheMine();
             if ( gameMenu.isFirstLoad() && currentGame.currentPlayer.isInMine()) {
@@ -111,6 +127,18 @@ public class GameControllerLogic {
         if (currentGame.currentDate.getHour() - lastTimeUpdate.getHour() > 3) {
             AutomaticFunctionAfterAnyAct();
             lastTimeUpdate = currentGame.currentDate.clone();
+        }
+
+        if (currentGame.currentWeather.equals(Weather.Rainy)) {
+            rainStateTime += delta;
+            for (Tile tile : currentGame.bigMap) {
+                TextureRegion currentFrame = rainAnimation.getKeyFrame(rainStateTime, true);
+
+                Main.getBatch().draw(currentFrame,
+                    tile.getX() * TEXTURE_SIZE,
+                    tile.getY() * TEXTURE_SIZE
+                );
+            }
         }
 
     }
@@ -1349,68 +1377,6 @@ public class GameControllerLogic {
         }
     }
 
-
-    public static void nextTurn () {
-        User old = currentGame.currentPlayer;
-        boolean done = false;
-        boolean temp = false;
-        int wrongAttempts = 0;
-
-        while (wrongAttempts <= 5) {
-            for (User user : currentGame.players) {
-                if (temp) {
-
-                    turnCounter++;
-                    currentGame.currentPlayer = user;
-
-                    AutomaticFunctionAfterOneTurn();
-
-                    if (checkForDeath()) {
-                        nextTurn();
-                        return;
-                    }
-
-                    // Display Unseen Messages...
-                    for (List<MessageHandling> messages : currentGame.conversations.values()) {
-                        for (MessageHandling m : messages) {
-                            if (m.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !m.isSeen()) {
-                                if (m.getText().contains("Proposal"))
-                                    break;
-                                m.print();
-                                m.setSeen(true);
-
-                                //بخش ریت کردن هدیه ها
-                                if (m.getText().endsWith("Rate it out of 5!")) {
-                                    HumanCommunications f = getFriendship(currentGame.currentPlayer, m.getSender());
-                                    do {
-                                        assert f != null;
-                                    } while (!f.rateGifts().IsSuccess());
-                                }
-                            }
-                        }
-                    }
-                    // proposals
-                    for (List<MessageHandling> messages : currentGame.conversations.values()) {
-                        for (MessageHandling m : messages) {
-                            if (m.getReceiver().getUsername().equals(currentGame.currentPlayer.getUsername()) && !m.isSeen() && m.getText().contains("Proposal")) {
-                                m.print();
-                                m.setSeen(true);
-                                Result result;
-                                do {
-                                    result = Marriage.proposalResponse(m.getSender(), m.getReceiver());
-                                } while (!result.IsSuccess());
-                            }
-                        }
-                    }
-
-                    return;
-                }
-                if (Objects.equals(user.getUsername(), old.getUsername()))
-                    temp = true;
-                wrongAttempts++;
-            }
-        }
-    }
     public static String DisplayFriendships () {
         String targetName = currentGame.currentPlayer.getUsername();
 
@@ -1887,13 +1853,15 @@ public class GameControllerLogic {
 
     public static void AutomaticFunctionAfterOneTurn () {
 
-        for (Tile tile : currentGame.bigMap)
-            tile.getGameObject().turnByTurnAutomaticTask();
+
     }
     public static void AutomaticFunctionAfterAnyAct () {
 
         checkForGiant();
         checkForProtect();
+
+        for (Tile tile : currentGame.bigMap)
+            tile.getGameObject().turnByTurnAutomaticTask();
 
         for (User user : currentGame.players) {
             user.checkHealth();
@@ -1904,12 +1872,11 @@ public class GameControllerLogic {
         }
 
 
-//        if (checkForDeath()) {
-//            currentGame.currentPlayer.setSleepTile(
-//                getTileByCoordinates(currentGame.currentPlayer.getPositionX(),
-//                    currentGame.currentPlayer.getPositionY()));
-//            return new Result(false, BRIGHT_RED + "No energy left! It's the next player's turn" + RESET);
-//        }
+        if (checkForDeath()) {
+            currentGame.currentPlayer.setSleepTile(
+                getTileByCoordinates((int) currentGame.currentPlayer.getPositionX(),
+                    (int) currentGame.currentPlayer.getPositionY()));
+        }
 
     }
 
@@ -1957,6 +1924,7 @@ public class GameControllerLogic {
                 if (object instanceof ForagingSeeds && !isInGreenHouse(tile))
                     ((ForagingSeeds) object).setLastWater(currentGame.currentDate);
             }
+
     }
 
     // Automatic Plant task
