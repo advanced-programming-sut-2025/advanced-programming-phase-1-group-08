@@ -700,7 +700,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         TextButton mineral = new TextButton("Mineral", newSkin);
         TextButton Detail = new TextButton("Detail", newSkin);
 
-        TextButton backButton = new TextButton("back", newSkin);
+        TextButton ProductTree = new TextButton("ProductTree", newSkin);
+        TextButton Crop = new TextButton("Crop", newSkin);
 
 
         table.add(tree).width(250).center();
@@ -717,23 +718,28 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         table.row().pad(15, 0, 10, 0);
         table.add(mineral).width(250).center();
         table.add(Detail).width(250).center();
+        table.row().pad(15, 0, 10, 0);
+        table.add(ProductTree).width(250).center();
+        table.add(Crop).width(250).center();
 
-        table.row().pad(30, 0, 10, 0);
-        table.add(backButton).width(150).colspan(2).center();
 
 
-        backButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                helperBackGround.remove();
-                cheatPopup.remove();
-                cheatMenuIsActivated = false;
-            }
-        });
         tree.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 currentGame.currentPlayer.increaseMoney(500);
+            }
+        });
+        ProductTree.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                treeProduct();
+            }
+        });
+        Crop.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                crop();
             }
         });
         Detail.addListener(new ClickListener() {
@@ -787,7 +793,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         watering.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                test2();
+                watering();
             }
         });
         stage.addActor(table);
@@ -810,13 +816,31 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         }
     }
     private void passSeason () {
-        for (int i = 0; i < 28; i++)
-            passedOfTime(1,0);
+        for (int i = 0; i < 28; i++) {
+            passedOfTime(1, 0);
+            watering();
+        }
+    }
+    private void crop () {
+        for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                AllCrops crops = new AllCrops(CropsType.Blueberry);
+                tile.setGameObject(crops);
+            }
+        }
     }
     private void test () {
         for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
             if (tile.getGameObject() instanceof Walkable) {
                 Tree tree = new Tree(TreeType.AppleTree, currentGame.currentDate.clone());
+                tile.setGameObject(tree);
+            }
+        }
+    }
+    private void treeProduct () {
+        for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                Tree tree = new Tree(TreeType.BananaTree, currentGame.currentDate.clone());
                 tile.setGameObject(tree);
             }
         }
@@ -853,7 +877,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
         }
     }
-    private void test2 () {
+    private void watering () {
         for (Tile tile : currentGame.currentPlayer.getFarm().Farm)
             if (tile.getGameObject() instanceof Tree) {
                 Tree tree = (Tree) tile.getGameObject();

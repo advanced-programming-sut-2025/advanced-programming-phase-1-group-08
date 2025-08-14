@@ -33,7 +33,7 @@ public enum Menu {
         this.menu = menu;
     }
 
-    public void checkCommand(Scanner scanner) throws IOException {
+    public void checkCommand(Scanner scanner) throws Exception {
         //this.menu.check(scanner);
     }
 }

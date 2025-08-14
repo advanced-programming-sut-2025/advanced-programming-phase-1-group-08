@@ -69,7 +69,7 @@ public class Game {
         users.add(newUser);
         try {
             com.Graphic.model.SaveData.UserStorage.saveUsers(users);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

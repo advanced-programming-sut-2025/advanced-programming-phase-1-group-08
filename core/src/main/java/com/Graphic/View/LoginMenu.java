@@ -136,12 +136,10 @@ public class LoginMenu implements Screen, AppMenu {
                 String username = usernameField.getText().trim();
                 String password = passwordField.getText().trim();
                 boolean stayLoggedIn = stayLoggedInCheckbox.isChecked();
-
                 if (username.isEmpty() || password.isEmpty()) {
                     showMessage("Please fill all fields!", true);
                     return;
                 }
-
                 try {
                     Result result = controller.LoginRes(username, password);
 
@@ -156,7 +154,7 @@ public class LoginMenu implements Screen, AppMenu {
                     } else {
                         showMessage(result.toString(), true);
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     showMessage("Login failed: " + e.getMessage(), true);
                 }
             }
@@ -231,7 +229,7 @@ public class LoginMenu implements Screen, AppMenu {
                         forgotMessageLabel.setText(result.toString());
                         forgotMessageLabel.setColor(1, 0.3f, 0.3f, 1);
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     forgotMessageLabel.setText("Error: " + e.getMessage());
                     forgotMessageLabel.setColor(1, 0.3f, 0.3f, 1);
                 }
@@ -384,7 +382,7 @@ public class LoginMenu implements Screen, AppMenu {
                         messageLabel.setText(result.toString());
                         messageLabel.setColor(1, 0.3f, 0.3f, 1);
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     messageLabel.setText("Error: " + e.getMessage());
                     messageLabel.setColor(1, 0.3f, 0.3f, 1);
                 }

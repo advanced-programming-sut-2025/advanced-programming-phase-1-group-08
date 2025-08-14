@@ -33,11 +33,11 @@ public class Main extends Game {
 //            )
 //        );
 
-        main.setScreen(GameMenu.getInstance());
+//        main.setScreen(GameMenu.getInstance());
 
 
-//        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-//        main.setScreen(new LoginMenu());
+        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
+        main.setScreen(new LoginMenu());
 
     }
 

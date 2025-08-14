@@ -199,7 +199,7 @@ public class ProfileMenu implements Screen, AppMenu {
                         updateUserInfo();
                         newUsernameField.setText("");
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     showMessage("Error: " + e.getMessage(), true);
                 }
             }
@@ -221,7 +221,7 @@ public class ProfileMenu implements Screen, AppMenu {
                         updateUserInfo();
                         newNicknameField.setText("");
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     showMessage("Error: " + e.getMessage(), true);
                 }
             }
@@ -243,7 +243,7 @@ public class ProfileMenu implements Screen, AppMenu {
                         updateUserInfo();
                         newEmailField.setText("");
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     showMessage("Error: " + e.getMessage(), true);
                 }
             }
@@ -267,7 +267,7 @@ public class ProfileMenu implements Screen, AppMenu {
                         oldPasswordField.setText("");
                         newPasswordField.setText("");
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     showMessage("Error: " + e.getMessage(), true);
                 }
             }

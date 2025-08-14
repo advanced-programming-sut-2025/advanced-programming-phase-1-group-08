@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ItemAdapterFactory implements TypeAdapterFactory {
+
+
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
         if (!Items.class.isAssignableFrom(type.getRawType())) {
@@ -48,7 +50,7 @@ public class ItemAdapterFactory implements TypeAdapterFactory {
         itemTypeMap.put("Tools", Tools.class);
         itemTypeMap.put("TrashCan", TrashCan.class);
         itemTypeMap.put("TreeSource", TreeSource.class);
-        itemTypeMap.put("TreesProdct", TreesProdct.class);
+        itemTypeMap.put("TreesProduct", TreesProdct.class);
         itemTypeMap.put("WateringCan", WateringCan.class);
 
         return new TypeAdapter<T>() {
@@ -58,6 +60,9 @@ public class ItemAdapterFactory implements TypeAdapterFactory {
                     out.nullValue(); // اگه مقدار null بود، همون null رو ذخیره کن
                     return;
                 }
+
+                System.out.println(out.toString() + " ****");
+                System.out.println(value + "^^^^^");
 
                 out.beginObject();
                 out.name("type").value(value.getClass().getSimpleName());
@@ -70,7 +75,8 @@ public class ItemAdapterFactory implements TypeAdapterFactory {
             @SuppressWarnings("unchecked")
             public T read(JsonReader in) throws IOException {
                 JsonObject obj = JsonParser.parseReader(in).getAsJsonObject();
-                String typeName = obj.get("type").getAsString();
+                System.out.println(obj.toString() + " 00000 ");
+                String typeName = obj.get("Type").getAsString();
                 Class<? extends Items> actualClass = itemTypeMap.get(typeName);
                 if (actualClass == null) {
                     throw new RuntimeException("Unknown item type: " + typeName);

@@ -21,8 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.Align;
 
-import java.io.IOException;
-import java.util.Scanner;
 
 public class RegisterMenu implements Screen, AppMenu {
     private Stage stage;
@@ -203,7 +201,8 @@ public class RegisterMenu implements Screen, AppMenu {
                             usernameStatus.setText("✗");
                             usernameStatus.setColor(1, 0.3f, 0.3f, 1);
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                         usernameStatus.setText("!");
                     }
                 } else {
@@ -365,7 +364,8 @@ public class RegisterMenu implements Screen, AppMenu {
                 showMessage(result.toString(), true);
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             showMessage("Registration error: " + e.getMessage(), true);
         }
     }
@@ -409,7 +409,8 @@ public class RegisterMenu implements Screen, AppMenu {
             buttonTable.add(cancelButton).width(100);
             content.add(buttonTable);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             content.add(new Label("Error generating suggestion", Main.getSkin()));
         }
 
@@ -462,9 +463,6 @@ public class RegisterMenu implements Screen, AppMenu {
         }
     }
 
-//    @Override
-//    public void check(Scanner scanner) throws IOException {
-//    }
     public Stage getStage() {
         return stage;
     }

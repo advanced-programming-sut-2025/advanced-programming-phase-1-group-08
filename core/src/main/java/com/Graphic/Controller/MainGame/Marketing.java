@@ -91,12 +91,12 @@ public class Marketing {
     }
 
     public Result checkBuy(Items item , MarketType marketType) {
-        if (item instanceof BackPack) {
-            if (currentGame.currentPlayer.getBackPack().getType().equals(BackPackType.DeluxePack)
-                || currentGame.currentPlayer.getBackPack().getType().equals( ((BackPack) item).getType()) ) {
-                return new Result(false, "4");
-            }
-        }
+//        if (item instanceof BackPack) {
+//            if (currentGame.currentPlayer.getBackPack().getType().equals(BackPackType.DeluxePack)
+//                || currentGame.currentPlayer.getBackPack().getType().equals( ((BackPack) item).getType()) ) {
+//                return new Result(false, "4");
+//            }
+//        }
         if (item instanceof FishingPole) {
             if ( ! ((FishingPole) item).type.checkAbility(currentGame.currentPlayer.getLevelFishing())) {
                 return new Result(false , "5");
@@ -118,13 +118,13 @@ public class Marketing {
         if (item.getMarketPrice(marketType) > currentGame.currentPlayer.getMoney() ) {
             return new Result(false,"2");
         }
-        if (! (item instanceof ShippingBin) && ! (item instanceof BackPack) ) {
-            if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
-                if (!currentGame.currentPlayer.getBackPack().inventory.Items.containsKey(item)) {
-                    return new Result(false, "3");
-                }
-            }
-        }
+//        if (! (item instanceof ShippingBin) && ! (item instanceof BackPack) ) {
+//            if (currentGame.currentPlayer.getBackPack().getType().getRemindCapacity() == 0) {
+//                if (!currentGame.currentPlayer.getBackPack().inventory.Items.containsKey(item)) {
+//                    return new Result(false, "3");
+//                }
+//            }
+//        }
         return new Result(true,"0");
 
     }
@@ -251,9 +251,9 @@ public class Marketing {
                     Label content = new Label(MarketType.endLimit(checkBuy(item,marketType).massage()), new Label.LabelStyle(getFont() , Color.BLACK));
                     addDialogToTable(dialog, content , MarketMenu.getInstance());
                 }
-                else if (item instanceof BackPack) {
-                    currentGame.currentPlayer.getBackPack().setType(((BackPack) item).getType());
-                }
+//                else if (item instanceof BackPack) {
+//                    currentGame.currentPlayer.getBackPack().setType(((BackPack) item).getType());
+//                }
                 else if (item instanceof ShippingBin) {
                     currentGame.currentPlayer.setDroppedItem(new ShippingBin());
                     currentGame.currentPlayer.setIsPlaceArtisanOrShippingBin(true);
@@ -757,7 +757,8 @@ public class Marketing {
                     if (id == 1 || backPack.getRemindInShop(marketType) > 0) {
                         TextButton coinButton = new TextButton("",getSkin());
                         coinButton.clearChildren();
-                        buy(coinButton , backPack , PierreGeneralStore);
+                        //
+                        // buy(coinButton , backPack , PierreGeneralStore);
 
                         Table innerTable = new Table();
                         innerTable.add(new Image(new Texture(Gdx.files.internal(f.getPath())))).left().padLeft(60).size(24, 24);
@@ -1024,7 +1025,7 @@ public class Marketing {
 
     }
 
-    
+
     public Result upgradeTool (String name) {
         if (currentGame.currentDate.getHour() < MarketType.FishShop.getStartHour() || currentGame.currentDate.getHour() > MarketType.FishShop.getEndHour()) {
             return new Result(false , RED + "Sorry. Store is close at this time"+RESET);

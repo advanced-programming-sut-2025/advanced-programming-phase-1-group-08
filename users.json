@@ -8,6 +8,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "Ariyo",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -30,9 +40,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -44,14 +52,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "Erfan1",
@@ -62,6 +74,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "Ariyo",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -84,9 +106,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -98,14 +118,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "Erfan22",
@@ -116,6 +140,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "Ariyo",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -138,9 +172,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -152,14 +184,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "Erfan3",
@@ -170,6 +206,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "Ariyo",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -192,9 +238,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -206,14 +250,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "Erfan4",
@@ -224,6 +272,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "Ariyo",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -246,9 +304,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -260,14 +316,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "Erfan5",
@@ -278,6 +338,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "Ariyo",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -300,9 +370,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -314,14 +382,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "Erfan6",
@@ -332,6 +404,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "Ariyo",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -354,9 +436,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -368,14 +448,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "Erfan7",
@@ -386,6 +470,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "Ariyo",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -408,9 +502,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -422,14 +514,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "sdaahas",
@@ -440,6 +536,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "goorba",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -462,9 +568,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -476,14 +580,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "sdaadsd",
@@ -494,6 +602,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "goorba",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -516,9 +634,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -530,14 +646,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "AriyoTR",
@@ -548,6 +668,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "dog",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -570,9 +700,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -584,14 +712,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "Erfan1384",
@@ -602,6 +734,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "Cow",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -624,9 +766,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -638,14 +778,18 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   },
   {
     "username": "Alireza-84",
@@ -656,6 +800,16 @@
     "MySecurityQuestion": "FavoriteAnimal",
     "MySecurityAnswer": "Cow",
     "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
     "Buff_maxEnergy_100_hoursLeft": 0,
     "Buff_maxEnergy_50_hoursLeft": 0,
     "Buff_foraging_hoursLeft": 0,
@@ -678,9 +832,7 @@
       "Type": "primary",
       "inventory": {
         "Items": {}
-      },
-      "capacity": 12,
-      "name": "BackPack"
+      }
     },
     "farmingAbility": 0,
     "miningAbility": 0,
@@ -692,13 +844,83 @@
       "height": 30,
       "x": 0,
       "y": 0,
+      "index": 0,
       "Farm": [],
       "shippingBins": []
     },
     "topLeftX": 0,
     "topLeftY": 0,
-    "positionX": 0,
-    "positionY": 0,
-    "BarnOrCages": []
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
+  },
+  {
+    "username": "Ali1",
+    "hashPass": "84cdc524677c24442d800dbe72c21a7d89f7a4fa0bd019c3bb9848a4e0675c7a",
+    "nickname": "Erfab",
+    "email": "sdf23@gmail.com",
+    "gender": "male",
+    "MySecurityQuestion": "FavoriteFood",
+    "MySecurityAnswer": "pussy",
+    "daysDepressedLeft": 0,
+    "isMoving": false,
+    "Timer": 0.0,
+    "first": true,
+    "isInMine": false,
+    "isPlaceArtisanOrShippingBin": false,
+    "isInBarnOrCage": false,
+    "isInHome": false,
+    "isInMarket": false,
+    "isInFarmExterior": true,
+    "isWaiting": false,
+    "Buff_maxEnergy_100_hoursLeft": 0,
+    "Buff_maxEnergy_50_hoursLeft": 0,
+    "Buff_foraging_hoursLeft": 0,
+    "Buff_farming_hoursLeft": 0,
+    "Buff_fishing_hoursLeft": 0,
+    "Buff_mining_hoursLeft": 0,
+    "max_point": 0,
+    "games_played": 0,
+    "currently_in_game": false,
+    "point": 0,
+    "health": 0,
+    "MAX_HEALTH": 200,
+    "healthUnlimited": false,
+    "friendshipPoint": {},
+    "level3Date": {},
+    "todayTalking": {},
+    "todayGifting": {},
+    "buffer": {},
+    "backPack": {
+      "Type": "primary",
+      "inventory": {
+        "Items": {}
+      }
+    },
+    "farmingAbility": 0,
+    "miningAbility": 0,
+    "foragingAbility": 0,
+    "fishingAbility": 0,
+    "money": 0,
+    "farm": {
+      "width": 30,
+      "height": 30,
+      "x": 0,
+      "y": 0,
+      "index": 0,
+      "Farm": [],
+      "shippingBins": []
+    },
+    "topLeftX": 0,
+    "topLeftY": 0,
+    "positionX": 0.0,
+    "positionY": 0.0,
+    "BarnOrCages": [],
+    "isDead": false,
+    "deathAnimationDone": false,
+    "deathAnimationTimer": 0.0
   }
 ]
