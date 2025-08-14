@@ -52,7 +52,7 @@ public class User {
     private boolean isInBarnOrCage = false;
     private boolean isInHome = false;
     private boolean isInMarket = false;
-    private boolean isInFarmExterior=false;
+    private boolean isInFarmExterior = true;
     private boolean isWaiting = false;
     private Sprite withMouse;
     private Items droppedItem;

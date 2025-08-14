@@ -21,6 +21,7 @@ import com.Graphic.model.HelpersClass.Result;
 import com.Graphic.model.HelpersClass.SampleAnimation;
 import com.Graphic.model.HelpersClass.TextureManager;
 
+import com.Graphic.model.MapThings.GameObject;
 import com.Graphic.model.MapThings.Tile;
 import com.Graphic.model.MapThings.Walkable;
 import com.Graphic.model.Plants.*;
@@ -227,6 +228,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
                 0f);
             getRenderer().setView(camera);
             getRenderer().render();
+
         }
 
         checkFriendDistance();
@@ -696,6 +698,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         TextButton season = new TextButton("Season Pass", newSkin);
 
         TextButton mineral = new TextButton("Mineral", newSkin);
+        TextButton Detail = new TextButton("Detail", newSkin);
 
         TextButton backButton = new TextButton("back", newSkin);
 
@@ -713,6 +716,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         table.add(season).width(250).center();
         table.row().pad(15, 0, 10, 0);
         table.add(mineral).width(250).center();
+        table.add(Detail).width(250).center();
 
         table.row().pad(30, 0, 10, 0);
         table.add(backButton).width(150).colspan(2).center();
@@ -730,6 +734,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 currentGame.currentPlayer.increaseMoney(500);
+            }
+        });
+        Detail.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Detail();
             }
         });
         mineral.addListener(new ClickListener() {
@@ -782,6 +792,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         });
         stage.addActor(table);
     }
+    private void Detail () {
+        for (int i = 1; i < 9; i++)
+            System.out.println(getTileByDir(i).getGameObject().toString());
+    }
     private void mineral () {
         for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
             if (tile.getGameObject() instanceof Walkable) {
@@ -825,7 +839,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
     private void remove () {
         for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
-            if (tile.getGameObject() instanceof Walkable) {
+            if (tile.getGameObject() instanceof Tree || tile.getGameObject() instanceof BasicRock) {
                 Walkable tree = new Walkable();
                 tile.setGameObject(tree);
             }
@@ -833,9 +847,9 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
     }
     private void plow () {
         for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
-            if (tile.getGameObject() instanceof Walkable) {
-                Walkable tree = new Walkable("Plow");
-                tile.setGameObject(tree);
+            GameObject object = tile.getGameObject();
+            if (object instanceof Walkable) {
+                ((Walkable) object).setGrassOrFiber("Plowed");
             }
         }
     }

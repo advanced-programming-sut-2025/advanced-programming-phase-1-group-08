@@ -1361,7 +1361,16 @@ public enum ForagingSeedsType {
         return marketTypes;
     }
     public String getGiantTexturePath() {
-        return null;
+        if (this.equals(PowdermelonSeeds))
+            return "Erfan/plants/crops/giant/Giant_Powdermelon.png";
+        else if (this.equals(PumpkinSeeds))
+            return "Erfan/plants/crops/giant/Giant_Pumpkin.png";
+        else if (this.equals(MelonSeeds))
+            return "Erfan/plants/crops/giant/Giant_Melon.png";
+        else if (this.equals(CauliflowerSeeds))
+            return "Erfan/plants/crops/giant/Giant_Cauliflower.png";
+
+        else return null;
     }
     public String getInventoryIconPath() {
         return inventoryIconPath;

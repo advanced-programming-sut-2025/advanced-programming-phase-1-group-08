@@ -99,7 +99,7 @@ public class GameControllerLogic {
 
     public static void initRain() {
         Texture rainSheet = new Texture("Erfan/rain.png"); // همین عکس
-        int FRAME_COLS = 4; // تعداد ستون‌ها
+        int FRAME_COLS = 2; // تعداد ستون‌ها
         int FRAME_ROWS = 2; // تعداد ردیف‌ها
 
         TextureRegion[][] tmp = TextureRegion.split(
@@ -173,7 +173,7 @@ public class GameControllerLogic {
         rainStateTime += delta;
         rainStateTime1 += delta;
 
-        for (int x = 0; x < 90 * TEXTURE_SIZE; x += TEXTURE_SIZE) {
+        for (int x = 0; x < 90 * TEXTURE_SIZE; x += TEXTURE_SIZE)
             for (int y = 0; y < 90 * TEXTURE_SIZE; y += TEXTURE_SIZE) {
                 int probability = rand.nextInt(10);
                 if ((probability % 10) == 0) {
@@ -188,7 +188,6 @@ public class GameControllerLogic {
                     Main.getBatch().draw(frame, x, y);
                 }
             }
-        }
     }
     public static void handleLightning (float delta) {
 
@@ -299,8 +298,8 @@ public class GameControllerLogic {
 
     public static Tile getTileByDir (int dir) {
 
-        float x = currentGame.currentPlayer.getPositionX();
-        float y = currentGame.currentPlayer.getPositionY();
+        float x = currentGame.currentPlayer.getPositionX() + 1;
+        float y = currentGame.currentPlayer.getPositionY() + 1;
 
         if (dir == 1)
             return getTileByCoordinates((int) (x+1), (int) y);
@@ -329,7 +328,6 @@ public class GameControllerLogic {
         return targetTile;
     }
 
-    // create initial map
 
     public static void createInitialMine( int x, int y , int topLeftX, int topLeftY, int width , int height) {
         Farm farm = currentGame.currentPlayer.getFarm();
@@ -1728,6 +1726,9 @@ public class GameControllerLogic {
                 user.setTodayGifting(npc, false);
                 user.setLevel3Date(npc, currentGame.currentDate);
             }
+
+            advanceItem(new ForagingSeeds(ForagingSeedsType.PowdermelonSeeds), 10);
+            advanceItem(new MixedSeeds(), 10);
             advanceItem(new Scythe(), 1);
             advanceItem(new Hoe(HoeType.primaryHoe), 1);
             advanceItem(new Axe(AxeType.primaryAxe), 1);
@@ -1739,9 +1740,6 @@ public class GameControllerLogic {
             user.setPositionX(home.getTopLeftX() + home.getWidth() / 2);
             user.setPositionY(home.getTopLeftY() + home.getLength());
             user.increaseMoney(500 - user.getMoney());
-            advanceItem(new Fish(FishType.Salmon , Quantity.Iridium) , 1);
-            advanceItem(new Fish(FishType.Salmon , Quantity.Golden), 1);
-            advanceItem(new Fish(FishType.Sardine , Quantity.Normal) , 1);
             advanceItem(new Wood(),400);
         }
         currentGame.currentPlayer = user1;
@@ -2035,6 +2033,7 @@ public class GameControllerLogic {
                             (((ForagingSeeds) tile3.getGameObject()).getType() == type) &&
                             (((ForagingSeeds) tile4.getGameObject()).getType() == type)) {
 
+                            System.out.println("Giant found");
                             GiantProduct giantProduct = new GiantProduct(
                                 type, ((ForagingSeeds) tile1.getGameObject()).getBirthDay(),
                                 new ArrayList<>(List.of(tile2, tile3, tile4)));
@@ -2332,6 +2331,13 @@ public class GameControllerLogic {
                         + currentGame.currentDate.getSeason(), App.newSkin);
                     tooltipLabel.setColor(Color.LIGHT_GRAY);
                     Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                        @Override
+                        public void run() {
+                            dialog.remove();
+                        }
+                    }, 3);
+                    return;
                 }
 
             GameObject object = tile.getGameObject();
@@ -2339,6 +2345,13 @@ public class GameControllerLogic {
                 Label tooltipLabel = new Label("First you must create green House", App.newSkin);
                 tooltipLabel.setColor(Color.LIGHT_GRAY);
                 Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        dialog.remove();
+                    }
+                }, 3);
+                return;
             }
 
             if ((tile.getGameObject() instanceof Walkable &&
@@ -2352,19 +2365,26 @@ public class GameControllerLogic {
                 Label tooltipLabel = new Label("The tree begins its journey", App.newSkin);
                 tooltipLabel.setColor(Color.LIGHT_GRAY);
                 Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        dialog.remove();
+                    }
+                }, 3);
+                return;
 
             } else {
                 Label tooltipLabel = new Label("First, you must plow the tile", App.newSkin);
                 tooltipLabel.setColor(Color.LIGHT_GRAY);
                 Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        dialog.remove();
+                    }
+                }, 3);
+                return;
             }
-
-            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                @Override
-                public void run() {
-                    dialog.remove();
-                }
-            }, 3);
         }
     }
     public static void plantMixedSeed (int dir) {
@@ -2387,6 +2407,13 @@ public class GameControllerLogic {
                     Label tooltipLabel = new Label("First you must create green House", App.newSkin);
                     tooltipLabel.setColor(Color.LIGHT_GRAY);
                     Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                        @Override
+                        public void run() {
+                            dialog.remove();
+                        }
+                    }, 3);
+                    return;
                 }
 
                 if ((tile.getGameObject() instanceof Walkable &&
@@ -2395,22 +2422,29 @@ public class GameControllerLogic {
 
                     tile.setGameObject(new ForagingSeeds(type, currentGame.currentDate));
 
-                    Label tooltipLabel = new Label("The plant \" + type.getDisplayName() + \" has come to life! \\uD83C\\uDF31✨", App.newSkin);
+                    Label tooltipLabel = new Label("The plant " + type.getDisplayName() + " has come to life! ", App.newSkin);
                     tooltipLabel.setColor(Color.LIGHT_GRAY);
                     Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                        @Override
+                        public void run() {
+                            dialog.remove();
+                        }
+                    }, 3);
+                    return;
 
                 } else {
                     Label tooltipLabel = new Label("First, you must plow the tile.", App.newSkin);
                     tooltipLabel.setColor(Color.LIGHT_GRAY);
                     Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                    com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                        @Override
+                        public void run() {
+                            dialog.remove();
+                        }
+                    }, 3);
+                    return;
                 }
-
-                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-                    @Override
-                    public void run() {
-                        dialog.remove();
-                    }
-                }, 3);
             }
         }
     }
@@ -2434,6 +2468,13 @@ public class GameControllerLogic {
                                     + currentGame.currentDate.getSeason(), App.newSkin);
                                 tooltipLabel.setColor(Color.LIGHT_GRAY);
                                 Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                                    @Override
+                                    public void run() {
+                                        dialog.remove();
+                                    }
+                                }, 3);
+                                return;
                             }
 
                         GameObject object = tile.getGameObject();
@@ -2441,12 +2482,26 @@ public class GameControllerLogic {
                             Label tooltipLabel = new Label("First you must create green House", App.newSkin);
                             tooltipLabel.setColor(Color.LIGHT_GRAY);
                             Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                                @Override
+                                public void run() {
+                                    dialog.remove();
+                                }
+                            }, 3);
+                            return;
                         }
 
                         if (tile.getGameObject() instanceof Walkable && (!((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed"))) {
                             Label tooltipLabel = new Label("First, you must plow the tile.", App.newSkin);
                             tooltipLabel.setColor(Color.LIGHT_GRAY);
                             Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                                @Override
+                                public void run() {
+                                    dialog.remove();
+                                }
+                            }, 3);
+                            return;
                         }
                         if ((tile.getGameObject() instanceof Walkable &&
                             ((Walkable) tile.getGameObject()).getGrassOrFiber().equals("Plowed")) ||
@@ -2458,11 +2513,25 @@ public class GameControllerLogic {
                             Label tooltipLabel = new Label("The earth welcomes your seed", App.newSkin);
                             tooltipLabel.setColor(Color.LIGHT_GRAY);
                             Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                                @Override
+                                public void run() {
+                                    dialog.remove();
+                                }
+                            }, 3);
+                            return;
 
                         } else {
                             Label tooltipLabel = new Label("You can't plant in this tile", App.newSkin);
                             tooltipLabel.setColor(Color.LIGHT_GRAY);
                             Marketing.getInstance().addDialogToTable(dialog, tooltipLabel, GameMenu.getInstance());
+                            com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                                @Override
+                                public void run() {
+                                    dialog.remove();
+                                }
+                            }, 3);
+                            return;
                         }
                     }
                 }

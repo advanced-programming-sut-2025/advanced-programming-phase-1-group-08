@@ -2023,17 +2023,9 @@ public class InputGameController {
         return null;
     }
     public Result useTools (int dir) {
-        if (!currentGame.currentPlayer.isHealthUnlimited()) {
-            if (currentGame.currentPlayer.getHealth() < currentGame.currentPlayer.currentTool.healthCost())
-                return new Result(false, RED+"you are not in your hand"+RESET);
-
-            currentGame.currentPlayer.increaseHealth(currentGame.currentPlayer.currentTool.healthCost());
-        }
 
         Tools tools = currentGame.currentPlayer.currentTool;
 
-        if (currentGame.currentPlayer.currentTool == null)
-            return new Result(false, RED + "please pick up a tools" + RESET);
 
         switch (tools) {
             case Axe axe -> {

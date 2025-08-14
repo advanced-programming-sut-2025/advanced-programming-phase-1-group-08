@@ -7,9 +7,7 @@ import com.Graphic.model.Items;
 
 public class MixedSeeds extends Items {
 
-    public MixedSeeds() {
-
-    }
+    public MixedSeeds() {}
 
     public ForagingSeedsType getSeeds (Season season) {
 
@@ -20,13 +18,13 @@ public class MixedSeeds extends Items {
             if (probability < 0.2)
                 return ForagingSeedsType.PotatoSeeds;
 
-            if (probability < 0.4)
+            else if (probability < 0.4)
                 return ForagingSeedsType.JazzSeeds;
 
-            if (probability < 0.6)
+            else if (probability < 0.6)
                 return ForagingSeedsType.TulipBulb;
 
-            if (probability < 0.8)
+            else if (probability < 0.8)
                 return ForagingSeedsType.ParsnipSeeds;
 
             else
@@ -37,19 +35,19 @@ public class MixedSeeds extends Items {
             if (probability < 0.14)
                 return ForagingSeedsType.CornSeeds;
 
-            if (probability < 0.28)
+            else if (probability < 0.28)
                 return ForagingSeedsType.PepperSeeds;
 
-            if (probability < 0.42)
+            else if (probability < 0.42)
                 return ForagingSeedsType.RadishSeeds;
 
-            if (probability < 0.56)
+            else if (probability < 0.56)
                 return ForagingSeedsType.WheatSeeds;
 
-            if (probability < 0.70)
+            else if (probability < 0.70)
                 return ForagingSeedsType.PoppySeeds;
 
-            if (probability < 0.84)
+            else if (probability < 0.84)
                 return ForagingSeedsType.SunflowerSeeds;
 
             else
@@ -60,16 +58,16 @@ public class MixedSeeds extends Items {
             if (probability < 0.17)
                 return ForagingSeedsType.ArtichokeSeeds;
 
-            if (probability < 0.34)
+            else if (probability < 0.34)
                 return ForagingSeedsType.CornSeeds;
 
-            if (probability < 0.5)
+            else if (probability < 0.5)
                 return ForagingSeedsType.EggplantSeeds;
 
-            if (probability < 0.67)
+            else if (probability < 0.67)
                 return ForagingSeedsType.PumpkinSeeds;
 
-            if (probability < 0.84)
+            else if (probability < 0.84)
                 return ForagingSeedsType.SunflowerSeeds;
 
             else
