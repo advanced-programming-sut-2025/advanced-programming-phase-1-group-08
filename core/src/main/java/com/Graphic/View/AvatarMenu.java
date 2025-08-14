@@ -63,7 +63,7 @@ public class AvatarMenu implements Screen , AppMenu{
     private void loadAvatarTextures() {
         avatarTextures = new Texture[6];
         for (int i = 0; i < 6; i++) {
-            String path = String.format("avatars/avatar_%d.png", i + 1);
+            String path = String.format("Avatars/Avatar_%d.png", i + 1);
             if (Gdx.files.internal(path).exists()) {
                 avatarTextures[i] = new Texture(Gdx.files.internal(path));
             } else {
