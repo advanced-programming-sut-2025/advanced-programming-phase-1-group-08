@@ -1,7 +1,9 @@
 package com.Graphic.model.MapThings;
 
 import com.Graphic.model.Enum.ItemType.MarketType;
+import com.Graphic.model.Enum.WeatherTime.Season;
 
+import static com.Graphic.model.App.currentGame;
 import static com.Graphic.model.HelpersClass.Color_Eraser.*;
 
 public class Walkable extends GameObject {
@@ -27,6 +29,17 @@ public class Walkable extends GameObject {
         switch (this.grassOrFiber) {
 
             case "Walk" -> {
+                if (currentGame.currentDate != null) {
+
+                    if (currentGame.currentDate.getSeason().equals(Season.Winter)) {
+                        return "Erfan/Winter.png";
+                    }
+                    else if (currentGame.currentDate.getSeason().equals(Season.Fall)) {
+                        return "Erfan/Full.png";
+                    }
+                    else
+                        return "Places/Walkable.png";
+                }
                 return "Places/Walkable.png";
             }
             case "Grass" -> {

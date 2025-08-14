@@ -678,16 +678,17 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         table.center();
 
 
-        TextButton tree = new TextButton("tree", newSkin);
-        TextButton watering = new TextButton("watering", newSkin);
+        TextButton tree = new TextButton("Tree", newSkin);
+        TextButton watering = new TextButton("Watering", newSkin);
 
-        TextButton stone = new TextButton("stone", newSkin);
-        TextButton plant = new TextButton("plant", newSkin);
+        TextButton stone = new TextButton("Stone", newSkin);
+        TextButton plant = new TextButton("Plant", newSkin);
 
-        TextButton remove = new TextButton("remove", newSkin);
-        TextButton plow = new TextButton("plow", newSkin);
+        TextButton remove = new TextButton("Remove", newSkin);
+        TextButton plow = new TextButton("Plow", newSkin);
 
-        TextButton money = new TextButton("money", newSkin);
+        TextButton money = new TextButton("Money", newSkin);
+        TextButton season = new TextButton("Season Pass", newSkin);
 
         TextButton backButton = new TextButton("back", newSkin);
 
@@ -702,6 +703,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         table.add(plow).width(250).center();
         table.row().pad(15, 0, 10, 0);
         table.add(money).width(250).center();
+        table.add(season).width(250).center();
 
         table.row().pad(30, 0, 10, 0);
         table.add(backButton).width(150).colspan(2).center();
@@ -719,6 +721,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 currentGame.currentPlayer.increaseMoney(500);
+            }
+        });
+        season.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                passSeason();
             }
         });
         tree.addListener(new ClickListener() {
@@ -758,6 +766,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
         });
         stage.addActor(table);
+    }
+    private void passSeason () {
+        for (int i = 0; i < 28; i++)
+            passedOfTime(1,0);
     }
     private void test () {
         for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {

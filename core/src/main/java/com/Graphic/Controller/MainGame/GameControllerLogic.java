@@ -81,27 +81,62 @@ public class GameControllerLogic {
 
     static Cloud cloud;
     public static LightningEffect lightningEffect;
+
     private static Animation<TextureRegion> rainAnimation;
     private static float rainStateTime = 0f;
+
+    private static Animation<TextureRegion> rainAnimation1;
+    private static float rainStateTime1 = 0f;
 
 
 
     public static void init() {
+        initRain();
+        initRain1();
         createScreenOverlay(gameMenu.getStage());
         lastTimeUpdate = currentGame.currentDate.clone();
     }
 
-    public void loadRainAnimation() {
-        Texture rainSheet = new Texture("rain.png"); // اسپریت شیت باران
-        TextureRegion[][] tmp = TextureRegion.split(rainSheet,
-            rainSheet.getWidth() / 4, // تعداد فریم‌ها در عرض
-            rainSheet.getHeight() / 1 // تعداد فریم‌ها در ارتفاع
+    public static void initRain() {
+        Texture rainSheet = new Texture("Erfan/rain.png"); // همین عکس
+        int FRAME_COLS = 4; // تعداد ستون‌ها
+        int FRAME_ROWS = 2; // تعداد ردیف‌ها
+
+        TextureRegion[][] tmp = TextureRegion.split(
+            rainSheet,
+            rainSheet.getWidth() / FRAME_COLS,
+            rainSheet.getHeight() / FRAME_ROWS
         );
-        TextureRegion[] rainFrames = new TextureRegion[4];
-        for (int i = 0; i < 4; i++) {
-            rainFrames[i] = tmp[0][i];
+
+        TextureRegion[] rainFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                rainFrames[index++] = tmp[i][j];
+            }
         }
-        rainAnimation = new Animation<>(0.1f, rainFrames); // هر فریم 0.1 ثانیه
+        rainAnimation = new Animation<>(5f, rainFrames);
+    }
+    public static void initRain1() {
+
+        Texture rainSheet = new Texture("Erfan/rain.png"); // همین عکس
+        int FRAME_COLS = 2; // تعداد ستون‌ها
+        int FRAME_ROWS = 2; // تعداد ردیف‌ها
+
+        TextureRegion[][] tmp = TextureRegion.split(
+            rainSheet,
+            rainSheet.getWidth() / FRAME_COLS,
+            rainSheet.getHeight() / FRAME_ROWS
+        );
+
+        TextureRegion[] rainFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                rainFrames[index++] = tmp[i][j];
+            }
+        }
+        rainAnimation1 = new Animation<>(5f, rainFrames);
     }
     public static void update(float delta) {
 
@@ -129,20 +164,32 @@ public class GameControllerLogic {
             lastTimeUpdate = currentGame.currentDate.clone();
         }
 
-        if (currentGame.currentWeather.equals(Weather.Rainy)) {
-            rainStateTime += delta;
-            for (Tile tile : currentGame.bigMap) {
-                TextureRegion currentFrame = rainAnimation.getKeyFrame(rainStateTime, true);
-
-                Main.getBatch().draw(currentFrame,
-                    tile.getX() * TEXTURE_SIZE,
-                    tile.getY() * TEXTURE_SIZE
-                );
-            }
-        }
+        test(delta);
 
     }
+    public static void test (float delta) {
+        if (!currentGame.currentWeather.equals(Weather.Rainy)) return;
 
+        rainStateTime += delta;
+        rainStateTime1 += delta;
+
+        for (int x = 0; x < 90 * TEXTURE_SIZE; x += TEXTURE_SIZE) {
+            for (int y = 0; y < 90 * TEXTURE_SIZE; y += TEXTURE_SIZE) {
+                int probability = rand.nextInt(10);
+                if ((probability % 10) == 0) {
+                    float offset = ((x + y) % 60) / 60f; // نتیجه بین 0 و 1 ثانیه
+                    TextureRegion frame = rainAnimation.getKeyFrame(rainStateTime + offset, true);
+
+                    Main.getBatch().draw(frame, x, y);
+                }
+                else if (probability % 10 == 1) {
+                    float offset1 = ((x + y) % 60) / 60f; // نتیجه بین 0 و 1 ثانیه
+                    TextureRegion frame = rainAnimation1.getKeyFrame(rainStateTime1 + offset1, true);
+                    Main.getBatch().draw(frame, x, y);
+                }
+            }
+        }
+    }
     public static void handleLightning (float delta) {
 
         if (cloud == null) {
@@ -1829,8 +1876,6 @@ public class GameControllerLogic {
 
     public static void startDay () {
 
-
-
         doSeasonAutomaticTask();
         setPlayerLocation();
         setEnergyInMorning();
@@ -1846,9 +1891,6 @@ public class GameControllerLogic {
 
         doWeatherTask();
         crowAttack(); // قبل محصول دادن درخت باید باشه
-
-
-
     }
 
     public static void AutomaticFunctionAfterOneTurn () {
@@ -1901,8 +1943,8 @@ public class GameControllerLogic {
     public static void setTimeAndWeather () {
 
         currentGame.currentDate = new DateHour(Season.Spring, 1, 9, 1980);
-        currentGame.currentWeather = Weather.Sunny;
-        currentGame.tomorrowWeather = Weather.Sunny;
+        currentGame.currentWeather = Weather.Rainy;
+        currentGame.tomorrowWeather = Weather.Rainy;
 
     }
     public static void doSeasonAutomaticTask () {

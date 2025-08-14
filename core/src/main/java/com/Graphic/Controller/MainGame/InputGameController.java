@@ -305,7 +305,15 @@ public class InputGameController {
                     Tile tile = getTileByCoordinates(i, j);
                     GameObject gameObject = tile.getGameObject();
 
-                    Main.getBatch().draw(TextureManager.get("Places/Walkable.png") ,
+                    String path;
+                    if (currentGame.currentDate.getSeason().equals(Season.Winter))
+                        path = "Erfan/Winter.png";
+                    else if (currentGame.currentDate.getSeason().equals(Season.Fall))
+                        path = "Erfan/Full.png";
+                    else
+                        path = "Places/Walkable.png";
+
+                    Main.getBatch().draw(TextureManager.get(path) ,
                         TEXTURE_SIZE * i , TEXTURE_SIZE * (90 - j) , TEXTURE_SIZE , TEXTURE_SIZE);
 
                     if (gameObject instanceof UnWalkable) {
@@ -320,12 +328,8 @@ public class InputGameController {
                     if (getTileByCoordinates(i , j).getGameObject() instanceof Lake) {
                         LakeAnimation((Lake) getTileByCoordinates(i , j).getGameObject());
                     }
-
-
                 }
-                catch (Exception e) {
-
-                }
+                catch (Exception e) {}
             }
 
         for (User player : currentGame.players) {
