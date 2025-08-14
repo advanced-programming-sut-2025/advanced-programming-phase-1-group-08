@@ -96,7 +96,7 @@ public class InputGameController {
         if (!menuActivated) {
             if (currentGame.currentPlayer.isInFarmExterior()) {
                 updateMove();
-                print();
+                print(v);
                 GameControllerLogic.update(v);
                 showSelectBoxOnCrafting();
             }
@@ -107,10 +107,6 @@ public class InputGameController {
             if (currentGame.currentPlayer.isInMine()) {
                 walkInBarnOrCage();
             }
-            camera.position.set(
-                currentGame.currentPlayer.getPositionX()*TEXTURE_SIZE,
-                (90 - currentGame.currentPlayer.getPositionY() )*TEXTURE_SIZE,
-                0f);
             createAnimalInformationWindow(showAnimalInfo());
             effectAfterPetAnimal();
             openArtisanMenu();
@@ -129,11 +125,14 @@ public class InputGameController {
             }
         } else {
             if (currentGame.currentPlayer.isInFarmExterior())
-                print();
+                print(v);
         }
     }
 
     public void updateMove() {
+
+        if (checkForDeath()) return;
+
         if (Gdx.input.isKeyPressed(Input.Keys.UP) ) {
             currentGame.currentPlayer.setDirection(Direction.Up);
             if (checkWalking()) {
@@ -171,7 +170,6 @@ public class InputGameController {
             currentGame.currentPlayer.setMoving(false);
             currentGame.currentPlayer.setTimer(0);
             currentGame.currentPlayer.getSprite().setRegion(currentGame.currentPlayer.getAnimation().getKeyFrame(0));
-
         }
     }
 
@@ -296,7 +294,12 @@ public class InputGameController {
 
 
 
-    public Result print() {
+    public Result print(float delta) {
+
+        camera.position.set(
+            currentGame.currentPlayer.getPositionX()*TEXTURE_SIZE,
+            (90 - currentGame.currentPlayer.getPositionY() )*TEXTURE_SIZE,
+            0f);
 
         for (int i =0 ; i< 90 ; i++)
             for (int j =0 ; j< 90 ; j++) {
@@ -343,8 +346,11 @@ public class InputGameController {
         }
 
         for (User player : currentGame.players) {
-            player.getSprite().draw(Main.getBatch());
+            player.update(delta);
+            if (!player.isDead())
+                player.getSprite().draw(Main.getBatch());
         }
+
 
         for (User player : currentGame.players) {
             for (BarnOrCage barnOrCage : player.BarnOrCages) {

@@ -546,9 +546,6 @@ public class User {
         return direction;
     }
 
-    public boolean isMoving() {
-        return isMoving;
-    }
     public void setMoving(boolean isMoving) {
         this.isMoving = isMoving;
     }
@@ -665,5 +662,39 @@ public class User {
 
     public boolean isWaiting() {
         return isWaiting;
+    }
+
+    private boolean isDead = false;
+    private boolean deathAnimationDone = false;
+    private float deathAnimationTimer = 0f;
+
+
+    public void update(float delta) {
+        if (isDead && !deathAnimationDone) {
+            deathAnimationTimer += delta;
+
+            // چرخش تدریجی
+            sprite.setRotation(deathAnimationTimer * 360); // مثلا یک دور کامل
+
+            // افتادن به زمین (کوچک شدن ارتفاع)
+            float scale = Math.max(0.5f, 1f - deathAnimationTimer * 0.5f);
+            sprite.setScale(1f, scale);
+
+            // وقتی مثلا ۱.۵ ثانیه گذشت، انیمیشن تمام می‌شود
+            if (deathAnimationTimer >= 1.5f) {
+                deathAnimationDone = true;
+                sprite.setRotation(90); // روی زمین افتاده
+                sprite.setScale(1f, 0.5f);
+            }
+        }
+    }
+    public void startDeathAnimation() {
+        isDead = true;
+        deathAnimationDone = false;
+        deathAnimationTimer = 0f;
+    }
+
+    public boolean isDead() {
+        return isDead;
     }
 }

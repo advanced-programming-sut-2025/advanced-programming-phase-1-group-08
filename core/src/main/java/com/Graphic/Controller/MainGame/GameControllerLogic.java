@@ -765,7 +765,7 @@ public class GameControllerLogic {
             if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
                 if (currentGame.currentPlayer.getFarm().getMine().getDoor().checkCollisionMouse(gameMenu.getMousePos())
                     && currentGame.currentPlayer.getFarm().getMine().getDoor().checkCollision(currentGame.currentPlayer) ) {
-
+                    camera.zoom = 1f;
                     currentGame.currentPlayer.setInMine(true);
                     currentGame.currentPlayer.setInFarmExterior(false);
 
@@ -2477,8 +2477,6 @@ public class GameControllerLogic {
 
     // Tools
     public static Result useHoe (int dir) {
-        plow();
-
         Tile tile = getTileByDir(dir);
 
         if (tile.getGameObject() instanceof Walkable &&

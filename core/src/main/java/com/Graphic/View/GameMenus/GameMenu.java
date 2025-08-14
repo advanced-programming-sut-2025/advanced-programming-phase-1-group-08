@@ -50,6 +50,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import static com.Graphic.Controller.MainGame.GameControllerLogic.*;
 import static com.Graphic.model.App.*;
@@ -220,6 +221,10 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
 
         if (! currentGame.currentPlayer.isInFarmExterior()) {
+            camera.position.set(
+                currentGame.currentPlayer.getPositionX()*TEXTURE_SIZE,
+                (90 - currentGame.currentPlayer.getPositionY() )*TEXTURE_SIZE,
+                0f);
             getRenderer().setView(camera);
             getRenderer().render();
         }
@@ -690,6 +695,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         TextButton money = new TextButton("Money", newSkin);
         TextButton season = new TextButton("Season Pass", newSkin);
 
+        TextButton mineral = new TextButton("Mineral", newSkin);
+
         TextButton backButton = new TextButton("back", newSkin);
 
 
@@ -704,6 +711,8 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
         table.row().pad(15, 0, 10, 0);
         table.add(money).width(250).center();
         table.add(season).width(250).center();
+        table.row().pad(15, 0, 10, 0);
+        table.add(mineral).width(250).center();
 
         table.row().pad(30, 0, 10, 0);
         table.add(backButton).width(150).colspan(2).center();
@@ -721,6 +730,12 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 currentGame.currentPlayer.increaseMoney(500);
+            }
+        });
+        mineral.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                mineral();
             }
         });
         season.addListener(new ClickListener() {
@@ -766,6 +781,19 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
             }
         });
         stage.addActor(table);
+    }
+    private void mineral () {
+        for (Tile tile : currentGame.currentPlayer.getFarm().Farm) {
+            if (tile.getGameObject() instanceof Walkable) {
+                Random random = new Random();
+                if ((random.nextInt(20) % 20) == 0)
+                    tile.setGameObject(new ForagingMinerals(ForagingMineralsType.IRIDIUM));
+                else if ((random.nextInt(20) % 20) == 1)
+                    tile.setGameObject(new ForagingMinerals(ForagingMineralsType.IRON));
+                else if ((random.nextInt(20) % 20) == 2)
+                    tile.setGameObject(new ForagingMinerals(ForagingMineralsType.QUARTZ));
+            }
+        }
     }
     private void passSeason () {
         for (int i = 0; i < 28; i++)
@@ -1842,6 +1870,7 @@ public class GameMenu implements  Screen, InputProcessor , AppMenu {
 
             Items item = entry.getKey();
             int count = entry.getValue();
+            System.out.println(item.getClass().getName());
 
             Image itemButton = new Image(new Texture(item.getInventoryIconPath()));
 

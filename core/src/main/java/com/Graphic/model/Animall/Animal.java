@@ -36,7 +36,7 @@ public class Animal extends GameObject {
     private Animation<Texture> Down;
     private float timer = 0.0f;
     private Direction direction;
-    private Sprite sprite;
+    private Sprite sprite1;
     private boolean isMoving;
 
     public Animal(AnimalType type,int friendShip, String name, int day ) {
@@ -52,7 +52,7 @@ public class Animal extends GameObject {
         isOut=false;
         isMoving = false;
         direction = Direction.Down;
-        sprite = new Sprite(TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_down.png"));
+        sprite1 = new Sprite(TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_down.png"));
         this.Up = new Animation<>(0.1f ,
             TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+1+"_up.png"),
             TextureManager.get("Mohamadreza/animal/"+type.getType().toLowerCase()+2+"_up.png") ,
@@ -238,7 +238,7 @@ public class Animal extends GameObject {
     }
 
     public Sprite getSprite() {
-        return sprite;
+        return sprite1;
     }
 
     public boolean isMoving() {

@@ -55,7 +55,7 @@ public enum ForagingMineralsType {
     }
 
     public String getDisplayName() {return displayName;};
-    public String getTexturePath()   {return texturePath;}
+    public String getTexturePath() {return texturePath;}
     public int getPrice()          {return price;}
     public String getDescription() {return description;}
     public double getProbability()     {return probability;}

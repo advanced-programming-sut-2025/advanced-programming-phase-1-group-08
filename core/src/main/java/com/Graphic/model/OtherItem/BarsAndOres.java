@@ -22,7 +22,7 @@ public class BarsAndOres extends Items {
 
     @Override
     public String getInventoryIconPath() {
-        return "";
+        return type.getAddress();
     }
 
     @Override

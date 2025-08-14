@@ -2,7 +2,9 @@ package com.Graphic;
 
 import com.Graphic.Controller.MainGame.InputGameController;
 import com.Graphic.View.GameMenus.GameMenu;
+import com.Graphic.View.LoginMenu;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -30,10 +32,12 @@ public class Main extends Game {
 //                1f
 //            )
 //        );
+
         main.setScreen(GameMenu.getInstance());
 
+
 //        skin = new Skin(Gdx.files.internal("Skin/craftacular-ui.json"));
-//        main.setScreen(new ProfileMenu());
+//        main.setScreen(new LoginMenu());
 
     }
 
